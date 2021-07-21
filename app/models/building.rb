@@ -153,7 +153,6 @@ class Building < ApplicationRecord
   def ensure_primary_address
     addresses.build(is_primary: true) if new_record? && addresses.blank?
   end
-  # after_initialize :ensure_primary_address
 
   def name_the_house
     return if name.present?
@@ -218,15 +217,12 @@ class Building < ApplicationRecord
 
   private
 
-  # FIXME: This doesn't work
   def validate_primary_address
     primary_addresses = addresses.to_a.select(&:is_primary)
     if primary_addresses.blank?
       errors.add(:base, 'Primary address missing.')
     elsif primary_addresses.size > 1
-      primary_addresses.each do |address|
-        address.errors.add(:is_primary, 'must be unique.')
-      end
+      errors.add(:base, 'Multiple primary addresses not allowed.')
     end
   end
 end
