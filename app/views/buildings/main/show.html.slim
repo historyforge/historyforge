@@ -113,6 +113,8 @@
         .card-body
           = simple_format @building.notes
 
+    = render 'shared/change_history', item: @building
+
 
   .col-sm-4.card.bg-light
     .card-body

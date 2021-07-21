@@ -1,11 +1,19 @@
-class CensusRecordSearch
+# frozen_string_literal: true
 
+# Performs three roles that might ought to be broken out into separate classes.
+# 1. Converts a hash of form parameters - filters, sorts, pagination - into an SQL query
+# 2. Converts the results of the query into AgGrid-friendly hash
+# 3. Converts the hash to a CSV string
+
+class CensusRecordSearch
   extend ActiveModel::Naming
   include ActiveModel::Conversion
   include ActiveModel::Validations
 
   attr_accessor :page, :s, :f, :fs, :g, :user, :sort, :paged, :per, :entity_class, :from, :to, :scope
+
   attr_writer :scoped
+
   delegate :any?, :present?, :each, :first, :last,
            :current_page, :total_pages, :limit_value,
            to: :scoped
@@ -17,7 +25,7 @@ class CensusRecordSearch
   end
 
   def to_a
-    @results ||= scoped.to_a.map {|row| CensusRecordPresenter.new(row, user) }
+    @to_a ||= scoped.to_a.map {|row| CensusRecordPresenter.new(row, user) }
   end
 
   def ransack_params
@@ -27,10 +35,9 @@ class CensusRecordSearch
     @s.each do |key, value|
       if value.is_a?(Array) && value.include?('blank')
         p[:g] ||= []
-        case key
-        when /_not_in$/
+        if key =~ /_not_in$/
           p[:g] << { m: 'and', key.to_sym => value, key.sub(/not_in$/, 'present').to_sym => true }
-        when /_in$/
+        elsif key =~ /_in$/
           p[:g] << { m: 'or', key.to_sym => value, key.sub(/in$/, 'present').to_sym => true }
         end
       else
@@ -76,7 +83,7 @@ class CensusRecordSearch
       elsif col =~ /street/
         order << street_address_order_clause(dir) unless streeted
         streeted = true
-      elsif %w{census_scope ward enum_dist page_number page_size line_number}.include?(col)
+      elsif %w[census_scope ward enum_dist page_number page_size line_number].include?(col)
         order << census_page_order_clause(dir) unless censused
         censused = true
       elsif entity_class.columns.map(&:name).include?(col)
@@ -144,13 +151,12 @@ class CensusRecordSearch
 
   def columns
     return @columns if defined?(@columns)
+
     @columns = (fieldsets.map { |fs|
       method = "#{fs}_fields"
       respond_to?(method) ? Set.new(public_send(method)) : nil
     }.compact + [Set.new(f)]).reduce(&:union)
-    @columns = @columns.to_a
-    @columns << 'id'
-    @columns
+    @columns = @columns.to_a + ['id']
   end
 
   def fieldsets
@@ -159,23 +165,23 @@ class CensusRecordSearch
   end
 
   def default_fields
-    %w{}
+    %w[]
   end
 
   def all_fields
-    %w{}
+    %w[]
   end
 
   def all_fieldsets
-    %w{location}
+    %w[location]
   end
 
   def census_scope_fields
-    %w{page_number page_side line_number}
+    %w[page_number page_side line_number]
   end
 
   def location_fields
-    %w{county city ward enum_dist}
+    %w[county city ward enum_dist]
   end
 
   def is_default_field?(field)
@@ -200,19 +206,19 @@ class CensusRecordSearch
 
   def column_config(column)
     options = {
-        headerName: translated_label(column), # I18n.t("simple_form.labels.census_record.#{column}", default: column.humanize),
-        field: column,
-        resizable: true
+      headerName: translated_label(column), # I18n.t("simple_form.labels.census_record.#{column}", default: column.humanize),
+      field: column,
+      resizable: true
     }
     options[:headerName] = 'Actions' if column == 'id'
-    options[:pinned] = 'left' if %w{id name}.include?(column)
+    options[:pinned] = 'left' if %w[id name].include?(column)
     options[:cellRenderer] = 'actionCellRenderer' if column == 'id'
     options[:cellRenderer] = 'nameCellRenderer' if column == 'name'
-    options[:width] = 50 if census_scope_fields.include?(column) || %w{age sex marital_status}.include?(column)
-    options[:width] = 60 if %w{id ward enum_dist dwelling_number family_id}.include?(column)
-    options[:width] = 130 if %w{marital_status profession industry}.include?(column)
-    options[:width] = 160 if %w{census_scope name street_address notes profession}.include?(column)
-    options[:width] = 250 if %w{coded_occupation_name coded_industry_name}.include?(column)
+    options[:width] = 50 if census_scope_fields.include?(column) || %w[age sex marital_status].include?(column)
+    options[:width] = 60 if %w[id ward enum_dist dwelling_number family_id].include?(column)
+    options[:width] = 130 if %w[marital_status profession industry].include?(column)
+    options[:width] = 160 if %w[census_scope name street_address notes profession].include?(column)
+    options[:width] = 250 if %w[coded_occupation_name coded_industry_name].include?(column)
     options[:sortable] = true unless column == 'id'
     options
   end
@@ -221,9 +227,7 @@ class CensusRecordSearch
     records.map do |record|
       columns.inject({ id: record.id} ) do |hash, column|
         value = record.field_for(column)
-        if column == 'name'
-          value = { name: value, reviewed: record.reviewed? }
-        end
+        value = { name: value, reviewed: record.reviewed? } if column == 'name'
         hash[column] = value
         hash
       end

@@ -128,34 +128,7 @@
     .alert.alert-info
       = "Reviewed by #{@record.reviewed_by.andand.name || 'a kind soul'} on #{@record.reviewed_at.to_s(:long)}"
 
-  - if @record.versions.present?
-    .card.mb-3
-      .card-header
-        | Change History
-      table.table.table-condensed.table-bordered
-        thead
-          tr
-            th Date
-            th Changes
-        tbody
-          - @record.versions.reverse.each do |version|
-            tr
-              td= version.created_at.to_s
-              td
-                .row
-                  .col-4
-                    strong Field
-                  .col-4
-                    strong From
-                  .col-4
-                    strong To
-                - version.changeset.each do |key, changes|
-                  - next if key == 'updated_at'
-                  .row
-                    .col-4= translated_label(@model.class, key)
-                    .col-4= changes[0] || 'blank'
-                    .col-4= changes[1] || 'blank'
-
+= render 'shared/change_history', item: @model
 
 - if @model.person_id.blank? && can?(:review, @model)
   - matches = Person.likely_matches_for(@model)
