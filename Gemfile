@@ -58,6 +58,6 @@ group :development, :test do
 end
 
 group :test do
-  gem 'apparition'
+  gem 'apparition', github: 'dfurber/apparition'
   gem 'faker'
 end
