@@ -93,10 +93,6 @@
     - if controller.year == 1940 && @model.supplemental?
       = Census1940SupplementalFormFields.new(form).render
 
-    - if @model.notes.present?
-      = panel('Notes') do
-        = simple_format @model.notes
-
 
 - if @record.notes.present?
   .card.mb-3
@@ -156,7 +152,7 @@
                 - version.changeset.each do |key, changes|
                   - next if key == 'updated_at'
                   .row
-                    .col-4= t("simple_form.labels.census_record.#{key}", default: key.titleize)
+                    .col-4= translated_label(@model.class, key)
                     .col-4= changes[0] || 'blank'
                     .col-4= changes[1] || 'blank'
 

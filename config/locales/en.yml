@@ -120,9 +120,6 @@ en:
 
   simple_form:
     labels:
-      defaults:
-        building_type_ids: 'Building type'
-        building_types_id: 'Building type'
       building:
         id: 'ID'
         address: 'Street address'

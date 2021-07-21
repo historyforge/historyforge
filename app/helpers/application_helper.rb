@@ -44,6 +44,28 @@ module ApplicationHelper
     can?(:manage, User)
   end
 
+  # Renders form using readonly, display-friendly view.
+  def view_for(record, options = {}, &block)
+    raise ArgumentError, "Missing block" unless block_given?
+    html_options = options[:html] ||= {}
+    html_options[:class] ||= ''
+    html_options[:class] << ' readonly-form'
+    html_options[:class] = html_options[:class].strip
+
+    case record
+    when String, Symbol
+      object_name = record
+      object      = nil
+    else
+      object      = record.is_a?(Array) ? record.last : record
+      object_name = model_name_from_record_or_class(object).param_key
+    end
+    builder = FormViewBuilder.new(object_name, object, self, options)
+    output  = capture(builder, &block)
+
+    content_tag(:div, html_options) { output }
+  end
+
   def message_for_item(message, item = nil)
     if item.is_a?(Array)
      raw message % link_to(*item)

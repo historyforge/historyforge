@@ -4,13 +4,11 @@ module CensusRecordsHelper
   end
 
   def translated_label(klass, key)
-    I18n.t("simple_form.labels.#{klass ? klass.name.underscore : nil}.#{key}", default:
-      I18n.t("simple_form.labels.census_record.#{key}", default:
-        I18n.t("simple_form.labels.defaults.#{key}", default: (klass ? klass : CensusRecord).human_attribute_name(key))))
+    Translator.label(klass, key)
   end
 
   def translated_option(attribute_name, item)
-    I18n.t("#{attribute_name}.#{item.downcase.gsub(/\W/, '')}", scope: 'census_codes', default: item).presence
+    Translator.option(attribute_name, item)
   end
 
   def census_fields_select

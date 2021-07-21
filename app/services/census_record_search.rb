@@ -231,8 +231,6 @@ class CensusRecordSearch
   end
 
   def translated_label(key)
-    I18n.t("simple_form.labels.#{entity_class.name.underscore}.#{key}", default:
-      I18n.t("simple_form.labels.census_record.#{key}", default:
-        I18n.t("simple_form.labels.defaults.#{key}", default: entity_class.human_attribute_name(key))))
+    Translator.label(entity_class, key)
   end
 end

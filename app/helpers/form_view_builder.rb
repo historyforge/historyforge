@@ -1,30 +1,7 @@
-module FormViewHelper
-
-  def view_for(record, options = {}, &block)
-    raise ArgumentError, "Missing block" unless block_given?
-    html_options = options[:html] ||= {}
-    html_options[:class] ||= ''
-    html_options[:class] << ' readonly-form'
-    html_options[:class] = html_options[:class].strip
-
-    case record
-      when String, Symbol
-        object_name = record
-        object      = nil
-      else
-        object      = record.is_a?(Array) ? record.last : record
-        object_name = model_name_from_record_or_class(object).param_key
-    end
-    builder = FormViewBuilder.new(object_name, object, self, options)
-    output  = capture(builder, &block)
-
-    content_tag(:div, html_options) { output }
-  end
-
-end
-
+# We use the Rails form builder system to show the "detail page" view as well.
+# This form builder helps format the form correctly and not let any editable
+# stuff leak through.
 class FormViewBuilder < SimpleForm::FormBuilder
-
   def initialize(*) #:nodoc:
     super
     @default_options = { readonly: true }
@@ -69,7 +46,6 @@ class FormViewBuilder < SimpleForm::FormBuilder
   def content_tag(*args)
     @template.content_tag *args
   end
-
 
   def card(options)
     @template.census_card_show options
