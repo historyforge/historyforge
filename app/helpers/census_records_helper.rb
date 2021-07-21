@@ -1,4 +1,9 @@
 module CensusRecordsHelper
+  def editing_users_for(item)
+    user_ids = item.versions.map(&:whodunnit).compact.map(&:to_i)
+    User.where(id: user_ids).each_with_object({}) { |u, o| o[u.id.to_s] = u.login }
+  end
+
   def census_form_renderer
     "Census#{controller.year}FormFields".constantize
   end

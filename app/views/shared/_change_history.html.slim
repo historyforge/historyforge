@@ -1,5 +1,5 @@
 - if user_signed_in? && item.versions.present?
-  - users = User.where(id: item.versions.map(&:whodunnit).compact.map(&:to_i)).each_with_object({}) { |u, o| o[u.id.to_s] = u.login }
+  - users = editing_users_for(item)
   .card.mb-3
     .card-header
       | Change History
