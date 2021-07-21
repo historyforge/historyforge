@@ -1,0 +1,45 @@
+en:
+  cms:
+    tabs:
+      meta: 'Meta'
+      css: 'CSS'
+      template: 'Content'
+      sections: 'Sections'
+      redirects: 'Redirects'
+
+    add:
+      section: 'Add Media'
+      wysiwyg: 'Add WYSIWYG Text'
+      picture: 'Add Picture'
+      document: 'Add Document (PDF)'
+      embed: 'Add Embedded Video'
+      audio: 'Add Audio Player'
+
+    widgets:
+      pagesection: 'WYSIWYG Text'
+      picture: 'Picture'
+      embed: 'Embedded Video'
+      document: 'Document Upload'
+      audio: 'Audio Player'
+
+
+  simple_form:
+    labels:
+      defaults:
+        human_name: 'Administrative Title'
+        css_class: 'CSS Class'
+        css_id: 'CSS ID'
+        use_auto_template: 'Auto Layout'
+      cms_page:
+        sections:
+          name: 'Template Token'
+        widgets:
+          name: 'Template Token'
+    hints:
+      defaults:
+        human_name: 'Name of this section as it appears in lists on this edit page.'
+      cms_page:
+        sections:
+          name: 'Name of this {{section}} when you insert it into the Template.'
+        widgets:
+          name: 'Name of this {{section}} when you insert it into the Template.'

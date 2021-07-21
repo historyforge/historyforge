@@ -1,0 +1,58 @@
+- content_for :pills do
+  = link_to 'Add New', { action: :new }, class: 'btn btn-light'
+  = link_to 'All Vocabularies', :vocabularies, class: 'btn btn-light'
+  = link_to url_for(format: :csv), class: 'btn btn-light' do
+    i.fa.fa-sign-out
+    | &nbsp; Export
+  = link_to '#importModal', class: 'btn btn-light', data: {toggle: 'modal'} do
+    i.fa.fa-sign-in
+    | &nbsp; Import
+
+- set_page_title "#{@vocabulary.name} Terms"
+
+.row
+  p.col-6= page_entries_info @terms
+  = search_form_for @search, url: [@vocabulary, :terms], html: {class: 'col-6 d-flex justify-content-end'} do |form|
+    .form-inline
+      = form.text_field :name_cont, class: 'form-control'
+      = form.submit "Search", class: 'btn btn-primary'
+      - if params[:q][:name_cont]
+        = link_to 'Reset', vocabulary_terms_path(reset: true), class: 'btn btn-light'
+table.table.table-condensed.table-striped
+  thead
+    tr
+      th Term
+      th IPUMS
+      th 1900
+      th 1910
+      th 1920
+      th 1930
+      th
+  tbody
+    - @terms.each do |term|
+      tr
+        td= term.name
+        td= term.ipums
+        td= term.count_records_for(1900)
+        td= term.count_records_for(1910)
+        td= term.count_records_for(1920)
+        td= term.count_records_for(1930)
+        td style="text-align:right;white-space:nowrap"
+          = link_to 'Edit', [:edit, @vocabulary, term], class: 'btn btn-xs btn-light'
+
+= paginate @terms
+
+- content_for :body_end do
+  .modal.fade id="importModal"
+    .modal-dialog.modal-lg
+      = form_with method: :post, url: import_vocabulary_terms_path(@vocabulary), builder: SimpleForm::FormBuilder, html: { data: { remote: false } } do |form|
+        .modal-content
+          .modal-header
+            h5.modal-title Import Terms
+            button.close(type="button" data-dismiss="modal") &times;
+          .modal-body
+            p.lead Import a list of terms to this vocabulary.
+            p.lead Be sure it is the correct vocabulary, or you will have to delete the terms you accidentally import.
+            = form.input :file, as: :file
+          .modal-footer
+            = form.submit 'Submit', data: {:disable_with => 'Sending...'}, :class => 'btn btn-primary'

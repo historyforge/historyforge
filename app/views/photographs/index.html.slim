@@ -1,0 +1,54 @@
+- if can?(:create, Photograph)
+  - content_for :pills do
+    = link_to 'Add Photo', { action: :new }, class: 'btn btn-light'
+
+- content_for :pills do
+  span.dropdown.btn.btn-light.btn-xs#cart data-controller="cart"
+
+- set_page_title 'Photographs'
+
+.row
+  .col-9
+    = page_entries_info @photographs
+
+    .list-group#photographs
+      - @photographs.each do |record|
+        - photo = PhotographPresenter.new(record, current_user)
+        .list-group-item
+          .row
+            .col-xl-2.col-lg-3.col-sm-3.col-md-3
+              - if photo.file.attached?
+                = thumb_for photo
+              - else
+                .alert.alert-danger No Photo!
+            .col-xl-7.col-lg-6.col-sm-6.col-md-6.widest
+              - unless record.reviewed?
+                span.badge.badge-danger UNREVIEWED
+                br
+              = [photo.title, truncate(photo.description, length: 100), photo.date].select(&:present?).join('<br />').html_safe
+              = photo.buildings.map { |building| link_to(building.street_address, building) }.join('<br />').html_safe
+            .col-3.text-right
+              button.btn.btn-light.btn-xs type="button" title="Add to Cart" data-controller="add-to-cart" data-cart-add=photo.id
+                | &#128722;
+              = link_to record, class: 'btn btn-xs btn-light' do
+                i.fa.fa-eye
+              - if can?(:update, record)
+                = link_to [:edit, record], class: 'btn btn-xs btn-light' do
+                  i.fa.fa-pencil
+
+    = paginate @photographs
+
+  .col-3
+    = search_form_for @search, as: :q, builder: SimpleForm::FormBuilder do |form|
+      .card
+        .card-header
+          h5.card-title Filters
+        .card-body
+          = form.input :full_text_search, label: 'Search'
+          = form.input :physical_format_id, collection: PhysicalType.still_image.physical_formats.order(:id), label: 'Format'
+          = form.input :rights_statement_id, collection: RightsStatement.order(:id), label: 'Copyright'
+          - if can?(:review, Photograph)
+            = form.input :unreviewed, as: :boolean, label: 'Show only unreviewed', wrapper: :inline_boolean
+        .card-footer
+          = form.submit 'Search', class: 'btn btn-primary'
+          = link_to 'Reset', photographs_path(reset: true), class: 'btn btn-light'

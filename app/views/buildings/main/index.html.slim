@@ -1,0 +1,17 @@
+- if can?(:create, Building) || can?(:review, Building)
+  - content_for :filter_buttons do
+    .btn-group.btn-group-toggle data-toggle="buttons"
+      = checkbox_button 'All', 'on', @search.scope.blank?
+      - if can?(:create, Building)
+        = checkbox_button 'Unpeopled', :unpeopled, @search.unpeopled?
+      - if can?(:review, Building)
+        = checkbox_button 'Unreviewed', :unreviewed, @search.unreviewed?
+        = checkbox_button 'Uninvestigated', :uninvestigated, @search.uninvestigated?
+#grid-filters= render 'shared/grid_filters', resource_class: Building
+#grid.ag-theme-balham
+
+.navbar.navbar-light.bg-light.navbar-expand-lg.navbar-static.bottom#search-pagination-bottom
+  - count = @search.scoped.total_count
+  .nav-item.mr-auto= "Found #{number_with_delimiter count} #{'record'.pluralize(count)}"
+
+= render 'index_script'

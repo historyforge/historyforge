@@ -1,0 +1,9 @@
+= simple_form_for @map_overlay do |form|
+
+  = form.input :name
+  = form.input :year_depicted
+  = form.input :url
+  = form.input :active, inline_label: "Active and visible in the list of map layers"
+
+  .form-actions
+    = form.submit 'Save', class: 'btn btn-primary btn-lg'

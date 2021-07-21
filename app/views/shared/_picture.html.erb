@@ -1,0 +1,8 @@
+<picture>
+<!--[if IE 9]><video style="display: none;"><![endif]-->
+<source srcset="/photos/<%= id %>/<%= style %>/phone.jpg" media="(max-width:480px)">
+<source srcset="/photos/<%= id %>/<%= style %>/tablet.jpg" media="(min-width:481px) and (max-width:1024px)">
+<source srcset="/photos/<%= id %>/<%= style %>/desktop.jpg" media="(min-width:1025px)">
+<!--[if IE 9]></video><![endif]-->
+<img src alt="<%= alt_text %>" title="" class="img-responsive <%= img_class %>">
+</picture>

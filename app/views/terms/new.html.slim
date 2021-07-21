@@ -1,0 +1,4 @@
+.float-right
+  = link_to 'View All', [@vocabulary, :terms], class: 'btn btn-light'
+h1.page-title New #{@vocabulary.name} Term
+= render 'form'

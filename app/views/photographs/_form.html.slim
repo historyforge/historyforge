@@ -1,0 +1,202 @@
+= review_error_messages_for @photograph
+
+= simple_form_for @photograph, html: { id: 'photo-wizard' } do |form|
+  .card.active
+    .float-right
+      button.btn.btn-secondary.btn-next.step-1-next-button type="button" disabled=!form.object.file.attached? Next &raquo;
+    .card-body
+      .row
+        .col-6
+          = form.input :file, as: :file, label: 'Upload your photo', hint: 'JPG files only please!', input_html: { accept: 'image/jpeg' }
+        .col-6#selected-file
+          - if form.object.file.attached?
+            = image_tag form.object.file
+    .card-footer.d-flex.justify-content-center
+      button.btn.btn-secondary.btn-lg.btn-next.step-1-next-button type="button" disabled=!form.object.file.attached? Next &raquo;
+
+  .card
+    .float-right
+      button.btn.btn-secondary.btn-prev type="button" &laquo; Previous
+      button.btn.btn-secondary.btn-next type="button" Next &raquo;
+    .card-body
+      .row
+        .col-8
+          = form.input :caption, as: :text, label: "Caption for HistoryForge", hint: "When this photo appears with buildings and people, this text will be used. Title and description are reserved for NYHeritage metadata."
+        .col-3.offset-1.thumb= thumb_for form.object
+    .card-footer.d-flex.justify-content-center
+      button.btn.btn-secondary.btn-lg.btn-prev type="button" &laquo; Previous
+      button.btn.btn-secondary.btn-lg.btn-next type="button" Next &raquo;
+
+  .card
+    .float-right
+      button.btn.btn-secondary.btn-prev type="button" &laquo; Previous
+      button.btn.btn-secondary.btn-next type="button" Next &raquo;
+    .card-body
+      .row
+        .col-8
+          = form.input :title
+          = form.input :description, as: :text
+          = form.input :creator, hint: 'Who took the photo?'
+          = form.input :subject, hint: 'Names of people, Library of Congress subject headings...'
+        .col-3.offset-1.thumb= thumb_for form.object
+    .card-footer.d-flex.justify-content-center
+      button.btn.btn-secondary.btn-lg.btn-prev type="button" &laquo; Previous
+      button.btn.btn-secondary.btn-lg.btn-next type="button" Next &raquo;
+
+  .card
+    .float-right
+      button.btn.btn-secondary.btn-prev type="button" &laquo; Previous
+      button.btn.btn-secondary.btn-next type="button" Next &raquo;
+    .card-body
+      .row
+        .col-8
+          - if form.object.building_ids.present?
+            = render 'building_fields', form: form
+          - else
+            #building-question
+              p.lead Is this a picture of a building?
+              p
+                button.btn.btn-lg.btn-primary type="button" YES
+                | &nbsp;
+                button.btn.btn-secondary.btn-lg.btn-next type="button" NO
+            #building-fields style="display:none"
+              = render 'building_fields', form: form
+        .col-3.offset-1.thumb= thumb_for form.object
+    .card-footer.d-flex.justify-content-center
+      button.btn.btn-secondary.btn-lg.btn-prev type="button" &laquo; Previous
+      button.btn.btn-secondary.btn-lg.btn-next type="button" Next &raquo;
+
+  / Connect to people
+
+  .card
+    .float-right
+      button.btn.btn-secondary.btn-prev type="button" &laquo; Previous
+      button.btn.btn-secondary.btn-next type="button" Next &raquo;
+    .card-body
+      .row
+        .col-8
+          p.alert.alert-info You only need to do this if latitude and longitude are empty, or the marker is in the wrong place.
+          input.form-control.mb-3#pac-input type="text" placeholder="Enter a location to find on map"
+          #map.mb-3 data-center="[#{form.object.latitude || AppConfig.latitude},#{form.object.longitude || AppConfig.longitude}]"
+          .row
+            .col-6= form.input :latitude
+            .col-6= form.input :longitude
+        .col-3.offset-1.thumb= thumb_for form.object
+    .card-footer.d-flex.justify-content-center
+      button.btn.btn-secondary.btn-lg.btn-prev type="button" &laquo; Previous
+      button.btn.btn-secondary.btn-lg.btn-next type="button" Next &raquo;
+
+  .card
+    .float-right
+      button.btn.btn-secondary.btn-prev type="button" &laquo; Previous
+      button.btn.btn-secondary.btn-next type="button" Next &raquo;
+    .card-body
+      .row
+        .col-8
+          = form.hidden_field :date_type
+          #dates-question
+            p.lead You can date this photograph down to:
+            p
+              button.btn.btn-sm class=(form.object.year? ? 'btn-primary' : 'btn-light') type="button" data-date-type="year" The year
+              | &nbsp;
+              button.btn.btn-sm class=(form.object.month? ? 'btn-primary' : 'btn-light') type="button" data-date-type="month" The month
+              | &nbsp;
+              button.btn.btn-sm class=(form.object.day? ? 'btn-primary' : 'btn-light') type="button" data-date-type="day" The day
+              | &nbsp;
+              button.btn.btn-sm class=(form.object.years? ? 'btn-primary' : 'btn-light') type="button" data-date-type="years" A range of years
+              | &nbsp;
+              button.btn.btn-sm class=(form.object.months? ? 'btn-primary' : 'btn-light') type="button" data-date-type="months" A range of months
+              | &nbsp;
+              button.btn.btn-sm class=(form.object.days? ? 'btn-primary' : 'btn-light') type="button" data-date-type="days" A range of days
+
+          - years = Date.today.year.downto(1800).map
+          - months = Date::MONTHNAMES.each_with_index.map { |m, i| [m, i] }
+          - days = 1.upto(31).map
+          #photograph-date-type class=@photograph.date_type
+            .row
+              .col-6
+                = form.input :date_year, collection: years, label: 'Enter the year:'
+                = form.input :date_month, collection: months, label: 'Enter the month:'
+                = form.input :date_day, collection: days, label: 'Enter the day:'
+              .col-6
+                = form.input :date_year_end, collection: years, label: 'Enter the ending year:'
+                = form.input :date_month_end, collection: months, label: 'Enter the ending month:'
+                = form.input :date_day_end, collection: days, label: 'Enter the ending day:'
+
+          / p For example, if you know the picture was probably taken in 1930 but don't know when, you should enter "1930" as the date of original, then start and end dates from the beginning of 1930 to the end of 1930.
+          = form.input :date_text, label: 'Date of original', hint: 'Human readable date such as "1940" or "Ca. July 1935" ...'
+        .col-3.offset-1.thumb= thumb_for form.object
+    .card-footer.d-flex.justify-content-center
+      button.btn.btn-secondary.btn-lg.btn-prev type="button" &laquo; Previous
+      button.btn.btn-secondary.btn-lg.btn-next type="button" Next &raquo;
+
+  .card
+    .float-right
+      button.btn.btn-secondary.btn-prev type="button" &laquo; Previous
+      button.btn.btn-secondary.btn-next type="button" Next &raquo;
+    .card-body
+      .row
+        .col-8
+          p.lead What is the physical format of the photograph? Click on an item in the list:
+          = form.hidden_field :physical_type_id
+          = form.hidden_field :physical_format_id
+          .list-group#physical-formats
+            - PhysicalType.still_image.physical_formats.order(:id).each do |item|
+              .list-group-item data-physical-format-id=item.id class=(form.object.physical_format_id == item.id ? 'active' : nil)
+                h4 #{item.name}
+                = simple_format item.description
+        .col-3.offset-1.thumb= thumb_for form.object
+    .card-footer.d-flex.justify-content-center
+      button.btn.btn-secondary.btn-lg.btn-prev type="button" &laquo; Previous
+      button.btn.btn-secondary.btn-lg.btn-next type="button" Next &raquo;
+
+  .card
+    .float-right
+      button.btn.btn-secondary.btn-prev type="button" &laquo; Previous
+      button.btn.btn-secondary.btn-next type="button" Next &raquo;
+    .card-body
+      .row
+        .col-8
+          = form.input :physical_description
+          = form.input :location, label: 'Physical location', hint: 'Not the location depicted in the picture, but the actual location of the physical picture.'
+          = form.input :identifier, hint: 'Identifying number on piece, typically catalog number.'
+        .col-3.offset-1.thumb= thumb_for form.object
+    .card-footer.d-flex.justify-content-center
+      button.btn.btn-secondary.btn-lg.btn-prev type="button" &laquo; Previous
+      button.btn.btn-secondary.btn-lg.btn-next type="button" Next &raquo;
+
+  .card
+    .float-right
+      button.btn.btn-secondary.btn-prev type="button" &laquo; Previous
+      button.btn.btn-secondary.btn-next type="button" Next &raquo;
+    .card-body
+      .row
+        .col-8
+          = form.input :notes
+        .col-3.offset-1.thumb= thumb_for form.object
+    .card-footer.d-flex.justify-content-center
+      button.btn.btn-secondary.btn-lg.btn-prev type="button" &laquo; Previous
+      button.btn.btn-secondary.btn-lg.btn-next type="button" Next &raquo;
+
+  .card
+    .float-right
+      button.btn.btn-secondary.btn-prev type="button" &laquo; Previous
+      = form.submit 'Submit', class: 'btn btn-secondary btn-next'
+    .card-body
+      .row
+        .col-8
+          p.lead Which of the following rights statements applies to the photograph? Click on the one that applies:
+          = form.hidden_field :rights_statement_id
+          .list-group#rights-statements
+            - RightsStatement.order(:id).each do |item|
+              .list-group-item data-rights-statement-id=item.id class=(form.object.rights_statement_id == item.id ? 'active' : nil)
+                h4 #{item.name}
+                = simple_format item.description
+        .col-3.offset-1.thumb= thumb_for form.object
+    .card-footer.d-flex.justify-content-center
+      button.btn.btn-secondary.btn-lg.btn-prev type="button" &laquo; Previous
+      = form.submit 'Submit', class: 'btn btn-lg btn-primary'
+
+p.clearfix.lead.text-center You can click Previous and Next buttons at any time.
+
+script async="async" defer="defer" src="https://maps.googleapis.com/maps/api/js?key=#{AppConfig.google_api_key}&libraries=places,visualization"

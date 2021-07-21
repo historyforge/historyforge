@@ -1,0 +1,45 @@
+- set_page_title 'Page Manager'
+
+- content_for :pills do
+  = link_to 'Add new page', new_cms_page_path, class: 'btn btn-primary'
+
+.row
+  .col-9
+    - if @pages.blank?
+      .alert.alert-info
+        p There are no pages to show!
+    - else
+      = page_entries_info @pages
+      = table do
+        thead
+          tr
+            th= sort_link @search, :title, 'Name'
+            th= sort_link @search, :controller, "Controller/Action"
+            th Type
+            th Published
+            /th Visible
+            th Actions
+        tbody
+          - @pages.each do |row|
+            tr
+              td= row.title
+              td= "#{row.controller}##{row.action}" if row.controller.present?
+              td= row.display_type
+              td= yes_or_no row.published?
+              /td= yes_or_no row.visible?
+              td
+                - if row.visible?
+                  => link_to 'View', row.formatted_url, class: 'btn btn-default btn-sm'
+                = link_to 'Edit', edit_cms_page_path(row), class: 'btn btn-default btn-sm'
+      = paginate @pages
+
+  .col-3
+    = panel 'Filters' do
+      = search_form_for @search, builder: ::SimpleForm::FormBuilder, wrapper: :vertical_form do |form|
+        = form.input :title_cont, label: 'Title contains'
+        = form.input :controller_cont, label: 'Controller contains'
+        = form.input :action_cont, label: 'Action contains'
+        = form.input :published_true, as: :boolean, inline_label: 'Show only published?', label: false
+        .form-actions
+          = form.submit 'Search', class: 'btn btn-primary'
+          =< link_to 'Reset', cms_pages_path(reset: true), class: 'btn btn-default'

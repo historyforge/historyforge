@@ -1,0 +1,16 @@
+.tab-pane.page-section id="widget#{form.object.id}"
+  = render 'cms/pages/cms_widget_name', form: form
+
+  = panel 'File Upload' do
+    .row
+      .col-8
+        = form.input :file, as: :file, label: form.object.file.attached? ? 'Replace file' : 'File to upload', input_html: { direct_upload: true }
+      - if form.object.file.attached?
+        .col-4
+          = link_to 'Download', form.object.url
+
+  = panel 'Document Info' do
+    = form.input :title
+    = form.input :description, as: :text
+
+  = render 'cms_widget_details', form: form

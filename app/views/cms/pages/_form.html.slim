@@ -1,0 +1,100 @@
+- content_for :pills do
+  ul.nav.nav-pills
+    li.nav-item= link_to 'Pages', cms_pages_path, class: 'nav-link'
+    - if @page.persisted?
+      li.nav-item#add-section.dropdown
+        a.nav-link.dropdown-toggle data-toggle="dropdown" href='#'
+          = t('cms.add.section')
+          span.caret
+        .dropdown-menu.dropdown-menu-right
+          a.dropdown-item data-no-turbolinks="true" id="add-text-button"= t('cms.add.wysiwyg')
+          a.dropdown-item data-no-turbolinks="true" id="add-picture-button" = t('cms.add.picture')
+          a.dropdown-item data-no-turbolinks="true" id="add-document-button" = t('cms.add.document')
+          a.dropdown-item data-no-turbolinks="true" id="add-embed-button" = t('cms.add.embed')
+          a.dropdown-item data-no-turbolinks="true" id="add-audio-button" = t('cms.add.audio')
+
+= simple_form_for @page, wrapper: :horizontal_form, html: { id: 'cms-page-form' } do |form|
+  - if @page.persisted?
+    = page_text_fields(form)
+    = page_embed_fields(form)
+    = page_picture_fields(form)
+    = page_document_fields(form)
+    = page_audio_fields(form)
+
+  = form.hidden_field :controller
+  = form.hidden_field :action
+  - if @page.persisted?
+    ul.nav-tabs.nav.mb-3
+      li.nav-item
+        a.nav-link href="#metadata" data-toggle="tab" = t('cms.tabs.meta')
+      li.nav-item
+        a.nav-link.active href="#template" data-toggle="tab" = t('cms.tabs.template')
+      li.nav-item.dropdown
+        a.nav-link.dropdown-toggle href='#' data-toggle='dropdown' Media
+        .dropdown-menu
+          - @page.widgets.each do |widget|
+            a.dropdown-item href="#widget#{widget.id}" data-toggle="tab" = widget.human_name
+
+  .tab-content
+    .tab-pane#metadata class=(@page.new_record? ? 'active' : '')
+      = error_messages_for @page
+      - if form.object.controller.present?
+        .alert.alert-info
+          | This is the page template for
+          code<>
+            = "#{form.object.controller}##{form.object.action}"
+          | Rails template output available in template as
+          code<
+            | {{content}}
+
+      = panel 'Title & URL Alias', collapsible: true do
+        = form.input :title, as: :string
+        = form.input :show_title, as: :boolean, label: false, inline_label: 'Show title on page.'
+        - if form.object.controller.blank? && form.object.action.blank?
+          = form.input :automatic_url_alias, as: :boolean, label: false, inline_label: 'Automatic URL alias?', input_html: { id: "cms_page_automatic_url_alias" }
+          .clearfix
+          = form.input :url_path, as: :string, hint: 'URL path starting with slash, or unique identifier if application page. If you checked "Automatic URL Alias" then this box filled in as you typed the title. Uncheck that box to put something else here.'
+          = form.input :published, as: :boolean, inline_label: 'Visitors can see this page (meaning it is published).'
+        - else
+          = form.input :controller, hint: 'Leave blank unless you know what you are doing.'
+          = form.input :action, hint: 'Leave blank unless you know what you are doing.'
+
+      = panel 'SEO', collapsible: true do
+        = form.input :browser_title, as: :string, hint: 'If different from the page title.'
+        = form.input :keywords, as: :string, label: 'Meta keywords'
+        = form.input :description, as: :string, label: 'Meta description'
+
+      / = panel 'Misc', collapsible: true do
+      /   = form.input :access_callback, as: :string, hint: 'Controller method that determines if the user can view this page if it is visible and published.'
+      /   = form.input :clear_dummy_vars, as: :boolean, inline_label: 'Rails templates updated - clear dummy vars!'
+
+
+    - if @page.persisted?
+      .tab-pane.active#template
+        .alert.alert-info
+          | Liquid template for this page. The purpose is to inject the content defined in the page sections into a HTML frame using
+          code<
+            | {{page-section-name}}
+          a.pull-right< href="https://github.com/Shopify/liquid/wiki/Liquid-for-Designers" target="_blank"
+            | Learn more about Liquid.
+          p
+            | Available tokens:
+            code = "{{content}}"
+            - @page.widgets.each do |item|
+              code<> = "{{#{item.name}}}"
+
+        = form.text_area :template, class: 'codemirror', data: { mode: 'htmlmixed' }
+        br
+        p Any admin notes about this page and template?
+        = form.text_area :notes, style: 'width:100%;height:60px'
+        br
+        br
+
+      = form.simple_fields_for :widgets, wrapper: :horizontal_form do |widget_form|
+        = render widget_form.object.class.to_s.sub(/Cms\:\:/, '').downcase, form: widget_form
+  .form-actions.clearfix
+    = hidden_field_tag 'next', nil
+    => form.submit 'Save & Edit', class: 'btn btn-primary btn-lg save-edit'
+    - if @page.persisted?
+      =<> form.submit 'Save & View', class: 'btn btn-primary btn-lg save-view'
+      =<> link_to 'Delete Page', @page, class: 'btn btn-danger btn-lg', data: { method: :delete, confirm: 'Are you sure you want to delete this page?' }

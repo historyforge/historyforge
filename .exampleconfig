@@ -1,0 +1,20 @@
+dokku config:set hf \
+APP_NAME="Your HistoryForge" \
+BASE_URL="your.domain.com" \
+DEVISE_SECRET_KEY="a long random string" \
+GOOGLE_API_KEY="your google maps javascript api key" \
+GOOGLE_GEOCODING_KEY="your google geocoding api key" \
+MAIL_FROM="me@your.domain.com" \
+RACK_ENV="production" \
+RAILS_ENV="production" \
+SECRET_KEY_BASE="a long random string" \
+SMTP_HOST="smtp.sendgrid.net" \
+SMTP_PASSWORD="generate me on sendgrid" \
+SMTP_PORT="587" \
+SMTP_USERNAME="apikey" \
+RECAPTCHA_SITE_KEY=getmefromgooglerecaptcha \
+RECAPTCHA_SECRET_KEY=getmefromgooglerecaptcha \
+CONTACT_EMAIL=me@your.domain.com \
+DOKKU_LETSENCRYPT_EMAIL=me@yourdomain.com
+
+

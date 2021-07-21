@@ -1,0 +1,8 @@
+- prepare_blanks_for_1910_census(form.object)
+
+= hidden_field_tag 'census_record[owned_or_rented]', nil, id: 'chf1'
+= hidden_field_tag 'census_record[farm_or_house]', nil, id: 'chf2'
+= hidden_field_tag 'census_record[mortgage]', nil, id: 'chf3'
+= hidden_field_tag 'census_record[naturalized_alien]', nil, id: 'chf5'
+
+= Census1910FormFields.new(form).render

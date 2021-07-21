@@ -1,0 +1,28 @@
+<script type="text/javascript">
+    window.initialGridState = {
+        initialized: false,
+        data: <%= @search.row_data(@search.to_a).to_json.html_safe %>
+    };
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+      $('#new_s').advancedSearch({
+        url: '<%= File.join(url_for().sub(/\/unhoused|\/unreviewed|\/unmatched/, ''), 'advanced_search_filters.json') -%>',
+        fields: <%== @search.f.to_json.html_safe -%>,
+        filters: <%== @search.s.to_json.html_safe -%>
+      });
+
+      new agGrid.Grid(document.querySelector('#grid'), {
+        components: {
+          actionCellRenderer: ActionCellRenderer,
+          nameCellRenderer: NameCellRenderer,
+        },
+        columnDefs: <%= @search.column_def.to_json.html_safe -%>,
+        defaultColDef: { width: 100 },
+        rowSelection: 'single',
+        rowModelType: 'infinite',
+        datasource: GridDataSource
+      });
+    });
+
+
+</script>

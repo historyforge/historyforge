@@ -1,0 +1,2 @@
+class RightsStatement < ApplicationRecord
+end

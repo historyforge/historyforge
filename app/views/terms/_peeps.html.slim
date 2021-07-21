@@ -1,0 +1,23 @@
+- if @records.present? || @records.current_page > 1
+  .card.mb-3
+    .card-header
+      h3.card-title #{params[:year]} Census Records
+    .card-body
+      = page_entries_info @records
+      table.table.table-striped.table-condensed
+        thead
+          tr
+            th Name
+            th Address
+            th Age
+            th Profession
+            th
+        tbody
+          - @records.each do |row|
+            tr
+              td= row.name
+              td= row.street_address
+              td= row.age
+              td= row.profession
+              td= link_to 'View', row, class: 'btn btn-sm btn-light', target: '_blank'
+      = paginate @records, remote: true

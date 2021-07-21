@@ -1,0 +1,21 @@
+<div id="miniforge"></div>
+<script type="text/javascript">
+    window.initialState = {
+        layers: { layers: <%== MapOverlay.order(:position).where(active: true).to_json %> },
+        buildingTypes: { types: <%== BuildingType.order(:name).to_json %> },
+        buildings: { buildings: <%== @neighbors.to_json  %>, current: <%== @building.to_json %>, editable: <%== can?(:update, @building).to_json %>},
+        search: { params: <%== params.to_json %> }
+    }
+    window.googleApiKey = '<%== AppConfig.google_api_key %>'
+    window.mapCenter = [<%== @building.lat %>, <%== @building.lon %>]
+    <% if ENV['AIRBRAKE_KEY'] %>
+    window.airbrakeCreds = {
+        app_id: '<%== ENV['AIRBRAKE_ID'] %>',
+        api_key: '<%== ENV['AIRBRAKE_KEY'] %>',
+        host: '<%== ENV['AIRBRAKE_URL'] %>'
+    }
+    window.env = "<%= Rails.env.to_s %>"
+    <% end %>
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=<%= AppConfig.google_api_key -%>&libraries=visualization"></script>

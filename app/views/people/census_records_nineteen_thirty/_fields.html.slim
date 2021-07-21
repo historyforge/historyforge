@@ -1,0 +1,9 @@
+= hidden_field_tag 'census_record[owned_or_rented]', nil, id: 'chf1'
+= hidden_field_tag 'census_record[lives_on_farm]', nil, id: 'chf2'
+= hidden_field_tag 'census_record[home_value]', nil, id: 'chf3'
+= hidden_field_tag 'census_record[has_radio]', nil, id: 'chf4'
+= hidden_field_tag 'census_record[naturalized_alien]', nil, id: 'chf5'
+= hidden_field_tag 'census_record[war_fought]', nil, id: 'chf6'
+
+= Census1930FormFields.new(form).render
+

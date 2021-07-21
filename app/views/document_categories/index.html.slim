@@ -1,0 +1,37 @@
+- set_page_title 'Document Categories'
+
+.col-xs-9
+  - if @document_categories.blank?
+    p No categories yet!
+  - else
+    = table do
+      thead
+        tr
+          th Name
+          th Description
+          th Documents
+          th Actions
+      tbody
+        - @document_categories.each do |row|
+          tr
+            td style="white-space:nowrap"= row.name
+            td= row.description
+            td= link_to row.documents.count, document_category_documents_path(row)
+            td style="white-space:nowrap"
+              - if can? :update, row
+                = link_to 'Edit', edit_document_category_path(row), class: 'btn btn-xs btn-default'
+                = link_to move_to_top_document_category_path(row), class: 'btn btn-sm btn-light', data: {method: :put} do
+                  i.fa.fa-long-arrow-up
+                = link_to move_up_document_category_path(row), class: 'btn btn-sm btn-light', data: {method: :put} do
+                  i.fa.fa-arrow-up
+                = link_to move_down_document_category_path(row), class: 'btn btn-sm btn-light', data: {method: :put} do
+                  i.fa.fa-arrow-down
+                = link_to move_to_bottom_document_category_path(row), class: 'btn btn-sm btn-light', data: {method: :put} do
+                  i.fa.fa-long-arrow-down
+
+              - if can? :destroy, row
+                = link_to 'Delete', document_category_path(row), class: 'btn btn-xs btn-default', data: {method: :delete, confirm: 'Are you sure? Regrets may ensue.'}
+
+- if can? :create, DocumentCategory
+  - content_for :pills do
+    = link_to 'Add Category', new_document_category_path, class: 'btn btn-light'

@@ -1,0 +1,23 @@
+- set_page_title 'Resolve Flagged Content'
+- content_for :pills do
+  = link_to 'Back to Flags', flags_path, class: 'btn btn-light'
+
+h4 What was flagged?
+h5= link_to @flag.flaggable.name, @flag.flaggable, target: :_blank
+p The link opens in a new tab. Go there to fix the issues, then switch back to this tab to mark it resolved.
+
+h4 Why was it flagged?
+p= @flag.display_reason
+= simple_format @flag.message
+
+= error_messages_for @flag
+
+= simple_form_for @flag do |form|
+  = form.hidden_field :flaggable_type
+  = form.hidden_field :flaggable_id
+
+  = form.input :mark_resolved, as: :boolean, inline_label: 'Yes', label: 'Is this issue resolved?'
+  = form.input :comment, as: :string, label: 'Any comments on this issue?'
+
+  .form-actions
+    = form.submit 'Submit', data: {:disable_with => 'Sending...'}, :class => 'btn btn-primary'

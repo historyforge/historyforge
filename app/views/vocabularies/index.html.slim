@@ -1,0 +1,13 @@
+- set_page_title 'Controlled Vocabularies'
+
+table.table.table-condensed.table-striped
+  thead
+    tr
+      th Name
+  tbody
+    - @vocabularies.each do |record|
+      tr
+        td= record.name
+        td style="text-align:right;white-space:nowrap"
+          = link_to 'View', vocabulary_terms_path(record), class: 'btn btn-xs btn-light'
+

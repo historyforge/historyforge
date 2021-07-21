@@ -1,0 +1,122 @@
+- set_page_title @building.has_proper_name? ? @building.name : @building.primary_street_address
+
+= render 'shared/flag_resolution', item: @building
+= render 'merge_modal'
+
+- content_for :pills do
+  - if can?(:create, Flag)
+    = render 'shared/flag_it', item: @building, item_class: 'btn btn-light'
+  - if can?(:update, @building)
+    = link_to 'Edit', [:edit, @building], class: 'btn btn-light'
+  - if can?(:review, @building) && !@building.reviewed?
+    = link_to 'Review', [:review, @building], class: 'btn btn-light', data: { method: :put }
+  = link_to 'View All', buildings_path, class: 'btn btn-light'
+
+.row
+  .col-sm-8
+    - if can?(:review, @building) && @building.investigate?
+      .alert.alert-danger
+        | This building requires further investigation before it can be marked as reviewed.
+        - if @building.investigate_reason?
+          | &nbsp; &nbsp;
+          b= @building.investigate_reason
+    .card.mb-1
+      .card-header Details
+      .card-body
+        dl
+          - if @building.has_proper_name?
+            dt Name
+            dd= @building.name
+          dt Address
+          - @building.addresses.each do |address|
+            dd= address.address
+          dt Years
+          - if @building.year_earliest? || @building.year_latest?
+            dd
+              - if @building.year_earliest?
+                = "Built in #{@building.year_earliest}."
+              - if @building.year_latest?
+                = " Torn down in #{@building.year_latest}."
+              - else
+                = " Still standing."
+          - else
+            dd Not known.
+          dt Architects
+          dd= @building.architects.present? ? @building.architects.map(&:name).to_sentence : 'None'
+          dt Building Type
+          dd= @building.building_type_name || 'not specified'
+          dt Construction
+          dd
+            - if @building.stories
+              => "#{@building.stories.to_i}-story"
+            - if @building.frame_type_id
+              = "#{@building.frame_type.name} structure"
+            - if @building.lining_type_id
+              = " with #{@building.lining_type.name} lining."
+            - if !@building.stories && !@building.frame_type_id && !@building.lining_type_id
+              = 'not specified'
+          - if @building.annotations.present?
+            dt Annotations
+            dd= simple_format @building.annotations
+          - if @building.block_number?
+            dt Block Number
+            dd= @building.block_number
+
+    - if @building.description?
+      .card.mb-1
+        .card-header
+          | Description
+        .card-body
+          = simple_format @building.description
+
+    /- photos = can?(:review, Photo) ? @building.photos : @building.photos.reviewed
+    - photos = @building.photos
+    - if photos.present?
+      .card.mb-1
+        .card-header
+          = link_to 'See all', [@building, :photographs], class: 'btn btn-light float-right'
+          | Photos
+        .card-body
+          .row
+            - photos.each do |photo|
+              .building-photo.col-sm-4 data-href=building_photograph_path(@building, photo)
+                = picture_tag photo: photo, style: 'quarter', img_class: 'img-thumbnail'
+                = simple_format photo.full_caption
+
+    - %w[1900 1910 1920 1930 1940].each do |year|
+      - if @building.public_send("census_#{year}_records").present?
+        .card.mb-1
+          .card-header
+            = "Residents in #{year}"
+          .card-body
+            - @building.public_send("families_in_#{year}").each do |id, family|
+              table.table.table-condensed.table-bordered
+                thead
+                  tr
+                    th Name
+                    th Sex
+                    th Age
+                    th Relation
+                    th Profession
+                tbody
+                  - family.each do |row|
+                    tr
+                      td= link_to row.name, row
+                      td= row.sex
+                      td= row.age
+                      td= row.relation_to_head
+                      td= row.profession
+    - if @building.notes?
+      .card.mb-1
+        .card-header
+          | Additional Notes
+        .card-body
+          = simple_format @building.notes
+
+
+  .col-sm-4.card.bg-light
+    .card-body
+      - if @building.lat?
+        = render 'map'
+      - else
+        .alert.alert-danger Building is not yet mapped!

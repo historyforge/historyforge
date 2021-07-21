@@ -1,0 +1,4 @@
+- set_page_title 'Page Not Found'
+
+- if can?(:create, Cms::Page)
+  = link_to 'Create page at this URL?', new_cms_page_path(page: { url_path: request.path })

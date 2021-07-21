@@ -1,0 +1,10 @@
+= simple_form_for @document do |form|
+  .row
+    .col-6
+      = form.input :file, as: :file, hint: 'Upload a file'
+    .col-6
+      = form.input :url, hint: 'Or paste a URL, but not both'
+  = form.input :name, as: :string
+  = form.input :description, as: :text
+  = form.input :document_category_id, collection: DocumentCategory.all, required: true
+  = form.submit 'Upload', class: 'btn btn-primary', data: { disable_with: 'Submitting...' }

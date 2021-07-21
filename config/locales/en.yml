@@ -1,0 +1,235 @@
+# Files in the config/locales directory are used for internationalization
+# and are automatically loaded by Rails. If you want to use locales other
+# than English, add the necessary files in this directory.
+#
+# To use the locales, use `I18n.t`:
+#
+#     I18n.t 'hello'
+#
+# In views, this is aliased to just `t`:
+#
+#     <%= t('hello') %>
+#
+# To use a different locale, set it with `I18n.locale`:
+#
+#     I18n.locale = :es
+#
+# This would use the information in config/locales/es.yml.
+#
+# To learn more, please read the Rails Internationalization guide
+# available at http://guides.rubyonrails.org/i18n.html.
+
+en:
+  census_codes:
+    default:
+      other: 'Other'
+      blank: 'Left blank'
+      unk: 'Unknown'
+    grade_completed:
+      h1: 'H-1 or 9'
+      h4: 'H-4 or 5'
+      c5: 'C-5 or over'
+    owned_or_rented:
+      o: 'Owned'
+      r: 'Rented'
+      neither: 'Neither'
+    race:
+      w: 'White'
+      b: 'Black'
+      m: 'Mixed/Mulatto'
+      mu: 'Mulatto'
+      in: 'Indian'
+      ch: 'Chinese'
+      jp: 'Japanese'
+      fil: 'Filipino'
+      hin: 'Hindu'
+      kor: 'Korean'
+      neg: 'Black'
+      mex: 'Mexican'
+      ot: 'Other'
+    sex:
+      m: 'Male'
+      f: 'Female'
+    marital_status:
+      s: 'Single'
+      m: 'Married'
+      w: 'Widowed'
+      wd: 'Widowed'
+      d: 'Divorced'
+      m7: 'Married spouse not present'
+      m_or_m1: '1st marriage'
+      m2_or_m3: '2nd or subsequent marriage'
+    farm_or_house:
+      f: 'Farm'
+      h: 'House'
+    mortgage:
+      m: 'Mortgage'
+      f: 'Free of mortgage'
+    naturalized_alien:
+      al: 'Alien'
+      pa: 'Papers'
+      na: 'Naturalized'
+      amcit: 'American Citizen'
+    employment:
+      e: 'Employer'
+      emp: 'Employer'
+      em: 'Employer'
+      w: 'Wage or salary worker'
+      oa: 'Own account'
+    usual_worker_class:
+      pw: 'Private wage or salary worker'
+      gw: 'Government wage or salary worker'
+      e: 'Employer'
+      oa: 'Own account'
+      np: 'Unpaid family worker'
+    worker_class:
+      e: 'Employer'
+      emp: 'Employer'
+      w: 'Wage or salary worker'
+      o: 'Own account'
+      oa: 'Own account'
+      np: 'Unpaid family worker'
+      pw: 'Private wage or salary worker'
+      gw: 'Government wage or salary worker'
+    war_fought:
+      ww: 'World War'
+      sp: 'Spanish-American War'
+      civ: 'Civil War'
+      phil: 'Philippine Insurrection'
+      box: 'Boxer Rebellion'
+      mex: 'Mexican Expedition'
+      w: 'World War'
+      s: 'Spanish-American War, Philippine Insurrection, or Boxer Rebellion'
+      sw: 'Spanish-American War and World War'
+      r: 'Regular establishment (Army, Navy, or Marine Corps) peace-time service only'
+      ot: 'Other war or expedition'
+    civil_war_vet:
+      ua: 'Union Army'
+      un: 'Union Navy'
+      ca: 'Confederate Army'
+      cn: 'Confederate Navy'
+    no_work_reason:
+      h: 'Home housework'
+      s: 'School'
+      u: 'Unable to work'
+      o: 'Other'
+    deduction_rate:
+      1: 'all'
+      2: 'half or more'
+      3: 'less than half'
+
+  simple_form:
+    labels:
+      defaults:
+        building_type_ids: 'Building type'
+        building_types_id: 'Building type'
+      building:
+        id: 'ID'
+        address: 'Street address'
+        architects_list: 'Architects'
+        year_earliest: 'Year Built'
+        year_latest: 'Year Demolished'
+        architects: 'Architect(s)'
+        lat: 'Latitude'
+        lon: 'Longitude'
+        name: 'Building Name'
+        address_house_number: 'House Number'
+        address_street_prefix: 'Prefix'
+        address_street_name: 'Street Name'
+        address_street_suffix: 'Suffix'
+        building_type: 'Building type'
+        building_type_ids: 'Building type'
+      census_record:
+        census_scope: 'Census Scope'
+        id: 'ID'
+        page_no: 'Sheet'
+        page_number: 'Sheet'
+        page_side: 'Side'
+        line_number: 'Line'
+        street_house_number: 'House No.'
+        street_prefix: 'Prefix'
+        street_name: 'Street Name'
+        street_suffix: 'Suffix'
+        family_id: 'Family No.'
+        name_prefix: 'Title (Dr, Mrs)'
+        name_suffix: 'Suffix (Jr, Sr)'
+        pob: 'Place of Birth'
+        pob_code: 'Place of Birth Code'
+        pob_father: 'Place of Birth - Father'
+        pob_mother: 'Place of Birth - Mother'
+        name: 'Name'
+        years_married: 'Years of Present Marriage'
+        years_in_us: 'Years in US'
+        mother_tongue_father: 'Mother Tongue - Father'
+        mother_tongue_mother: 'Mother Tongue - Mother'
+        mother_tongue: 'Mother Tongue'
+        farm_schedule: 'Farm Number'
+        num_farm_sched: 'Farm Schedule No.'
+        dwelling_number: 'Dwelling No.'
+        naturalized_alien: 'Naturalization'
+        homemaker: 'Home-maker'
+        age_months: 'Age (months)'
+        apartment_number: 'Apt.'
+        worker_class: 'Employment Status'
+        employment: 'Employment Status'
+        occupation1930_code_id: 'Coded Occupation'
+        industry1930_code_id: 'Coded Industry'
+        can_speak_english: 'Speaks English?'
+        can_read: 'Can Read?'
+        can_write: 'Can Write?'
+        can_read_write: 'Able to read and write?'
+        foreign_born: 'This person is foreign born.'
+        unemployed: 'Without work?'
+        attended_school: 'Attended School?'
+        blind: 'Blind'
+        deaf_dumb: 'Deaf & Dumb'
+        has_radio: 'Radio Set'
+        live_on_farm: 'Lives on Farm?'
+        veteran: 'Veteran?'
+        worked_yesterday: 'At work yesterday?'
+        civil_war_vet: 'Civil War Vet'
+      census1920_record:
+        profession: 'Occupation'
+        profession_code: 'Occupation Code'
+        employment_code: 'Occupation Code'
+      census1930_record:
+        profession: 'Occupation'
+        profession_code: 'Occupation Code'
+      census1940_record:
+        family_id: 'Household No.'
+        race: 'Color or Race'
+        age: 'Age at Last Birthday'
+        grade_completed: 'Highest grade of school completed'
+        income: 'Income (Wages or Salary)'
+        private_work: 'Private/Non-emergency Government Work'
+        public_work: 'Public Emergency Work'
+        seeking_work: 'Seeking Work?'
+        had_job: 'Employed but Temporarily Absent'
+        private_hours_worked: 'Hours Worked Week Prior to Census'
+        unemployed_weeks: 'Duration of Unemployment in Weeks'
+        profession: 'Occupation'
+        profession_code: 'Code Occupation Industry'
+        full_time_weeks: 'Weeks Worked in 1939'
+        had_unearned_income: 'Other Income Source'
+        veteran_dead: 'Father is deceased veteran?'
+        soc_sec: 'Social Security Number'
+        deductions: 'Old Age or Railroad Insurance'
+        deducation_rate: 'Other Deductions'
+        usual_profession: 'Usual Occupation'
+        naturalization: 'Citizenship'
+        worker_class: 'Worker Class'
+        residence_1935_town: 'Town'
+        residence_1935_county: 'County'
+        residence_1935_state: 'State'
+        residence_1935_farm: 'On a Farm?'
+        attended_school: 'Attended school or college?'
+        veteran: 'Veteran or veteran-related?'
+    hints:
+      building:
+        address: 'Address'
+        architects_list: 'comma-separated list of names'
+        year_earliest: 'Year built or first mentioned.'
+        year_latest: 'Year in which the building was demolished.'
+        annotations: 'Such as words written about the building on a Sanborn map. Eventually this will be more complicated.'
+      census1910_record:
+        owned_or_rented: "Neither - two checks"

@@ -1,0 +1,13 @@
+<% provide_cms_with :person_finder do %>
+<input type="search" id="search-people-input" placeholder="Type a name here" class="form-control" />
+<% end %>
+
+<% provide_cms_with :home_finder do %>
+<input type="search" id="search-buildings-input" placeholder="Type an address here" class="form-control" />
+<% end %>
+
+<% unless @page %>
+  <% content_for :content do %>
+    <h2>Welcome to HistoryForge. You are up and running.</h2>
+  <% end %>
+<% end %>

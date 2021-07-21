@@ -1,0 +1,351 @@
+Advertisements
+Text
+Public notices or paid announcements, especially those in print.
+
+Aerial photographs
+Still Image
+Photographs of the earth taken from aircraft. Do not use for photographs of celestial bodies or astronomical phenomena.
+
+Albumen prints
+Still Image
+Photographic prints having albumen as the binder; always black-and-white, though they may be toned to a monochrome hue.
+
+Ammunition and weapons
+Physical Object
+Implements and mechanisms designed to be used as a means of physical attack or defense. Included are weapons such as swords, ground- or carriage-supported artillery, arrowheads, and objects propelled by firearms (e.g., cartridges). Examples include swords, American Long Rifles, and spears.
+
+Announcements and press releases
+Text
+An official written communication issued to the news media or other targeted audiences for the purpose of letting the public know of a news item or upcoming event.
+
+Architectural drawings (visual works)
+Image
+Drawings of architecture and architectural projects, whether the project was executed or not. The term may also refer to any image in a two-dimensional medium that serves this same purpose, including prints and computer images. Includes blueprints and blue-line drawings.
+
+Art and decorative works
+Physical Object
+A piece of fine art such as paintings and decorative art, that is art that also has a function. Includes folk art, crafts.
+
+Articles
+Text
+Written compositions prepared for publication as an independent portion of a magazine, newspaper, encyclopedia, or other work.
+
+Atlases
+Image
+Volumes of maps, with or without descriptive text, which may be issued to supplement or accompany texts or be published independently.
+
+Black-and-white photographs
+Still Image
+Refers to a broad class of photographs having images in gray tones, black, and white, and sometimes one hue (which can result from chemical processes used, including toning, or from aging).
+
+Books
+Text
+Items comprising a collection of leaves of paper, parchment, wood, stiffened textile, ivory, metal tablets, or other flat material, that are blank, written on, or printed, and are strung or bound together in a volume.
+
+Born digital Moving
+Image; Sound; Still Image; Text
+Describes material or content created in electronic form and saved as digital data, having had no initial or interstitial state as an analog or physical product. Usually used to refer to electronically produced drafts of text, correspondence or visual works such as photographs created with digital cameras. This material may be written or saved on personal computers, floppy disks, CDs, DVDs, hard drives, or any mode of digital storage media.
+
+Broadcasts
+Sound; Moving Image
+Transmissions of signals, usually taking the form of programs made public by means of television or radio.
+
+Broadsides
+Text
+Sizeable single-sheet notices or advertisements printed on one or both sides, often chiefly textual rather than pictorial, and printed to be read unfolded.
+
+Cabinet photographs
+Still Image
+Mounted on cards and a larger alternative to the Cartes-de-visite. The larger size (approximately 6 ½ x 4 ¼ inches) was considered more appropriate for display, allowed for group portraits, and permitted the image to be retouched. Popular until World War I.
+
+Calendars
+Text
+Registers of days or other contrivances for reckoning days, months, years, etc., such as a table showing the division of a given year into its months, weeks, days, years, or other divisions of time.
+
+Cartes-de-visite (card photographs)
+Still Image
+Small-format photographs affixed to cardstock, popular in the mid-19th century. They went out of fashion in the 1870s.
+
+Catalogs
+Text
+Enumerations of items, such as a file of bibliographic records or a list of art objects, usually arranged systematically and with descriptive details; may be in book or pamphlet form, or on cards Certificates Text Documents giving authoritative recognition of a fact, qualification, or promise.
+
+Charts and graphs
+Image
+A diagram or table intended to communicate information visually.
+
+Coins (money)
+Physical Object
+Pieces of metal stamped by government authority for use as money.
+
+Collodion prints
+Still Image
+Photographic prints having collodion as the binder.
+
+Color photographs
+Still Image
+The broad class of photographs having images composed of more than one hue, plus the neutral tones. For photographs having a range of tones within one hue, see Black-and-white photographs.
+
+Contact prints
+Still Image
+Photographic prints made by interfacing a negative and a sheet of photographic paper and exposing the paper with raw light. Includes contact sheets.
+
+Containers
+Physical Object
+Artifacts used to hold substances or objects. Included are descriptors for containers intended for culinary use, for horticultural use, for health care, hygiene, and similar personal needs as well as descriptors for containers associated with liturgical, funerary, and other ceremonial activities. Examples include baskets, buckets, and tea tins.
+
+Correspondence
+Text
+Written communication that is somewhat more formal than memoranda or notes, usually on paper and delivered. Use for email communications too.
+
+Costume (mode of fashion)
+Physical Object
+Includes garments considered items of dress (e.g., shirts, trousers, undershirts, parkas). Also includes protective wear, including types of armor; vestments and other ceremonial garments; uniforms; and other accessories, including those worn on the body (e.g., bonnets, moccasins) and those carried on the person (e.g., evening bags, jewelry, parasols). Examples include trousers, parasols, and uniforms. Cyanotypes Still Image Blue-toned photographic prints produced by the blueprint process. These do NOT include reproductive prints of architectural or other technical drawings; for these, use Architectural drawings.
+
+Daguerreotypes
+Still Image
+Daguerreotypes produce a direct positive image on a silver-coated copper plate, often mounted in special cases lined with colored velvet or leather. Daguerreotypes are not to be confused with Tintypes which use a thin sheet of lacquered iron as the image support.
+
+Diaries
+Text
+Refers to books containing the daily, personal accounts of the writer's own experiences, attitudes, and observations. Use Financial documents when referring to an individual's or an organization's account of occurrences or transactions.
+
+Directories
+Text
+A book containing an alphabetical or classified listing of names, addresses, and other data of specific persons, groups, or firms.
+
+Drawings
+Image
+Art produced by drawing, which is the application of lines on a surface, often paper, by using a pencil, pen, chalk, or some other tracing instrument to focus on the delineation of form rather than the application of color.
+
+Ephemera (images)
+Image
+Materials, usually printed, created for a specific, limited purpose. Examples include trade cards, bookmarks, posters, airsickness bags, prospectuses, stock certificates, and programs. Ephemera (text) Text Materials, usually printed, created for a specific, limited purpose. Examples include bulletins, directions, applications, invitations, tickets, programs, notes, postal cards, and applications.
+
+Equipment and tools
+Physical Object
+Machines, implements or other things needed for a particular job or activity. Examples include sewing machines, toasting forks, cradleboards, and hand mirrors.
+
+Financial documents
+Text
+Documents on the financial activities of a business, an individual or any other entity. Examples include personal saving books, account ledgers, journal (accounts), balance sheets, loan, investment, and financial statements.
+
+Flags
+Physical Object
+A piece of cloth, usually rectangular, of distinctive color and design, used as a symbol, standard, signal, or emblem.
+
+Furniture
+Physical Object
+Furniture are primarily movable articles that provide comfort, convenience, or protection in dwellings, places or business, or other public or private spaces. They may be useful or ornamental and may be used in indoor or outdoor spaces. Examples include Windsor chair, sofa, and sewing table.
+
+Games and toys
+Physical Object
+Equipment and accessories used in a large array of activities engaged in for personal satisfaction or amusement during leisure time, including playthings and other devices used as pastimes or during competitive play. Examples include croquet sets, hockey sticks, dolls, and board games.
+
+Gelatin silver prints
+Still Image
+Refers to photographic prints having gelatin as the binder, holding silver as the final image material; always black-and-white, though they may be toned to a monochrome hue.
+
+Genealogical tables
+Text
+Documents representing the lineage of a person or persons in tabular or diagrammatic form.
+
+Greeting cards
+Text
+Cards often imprinted with messages and suitable illustrations, sent or given on special occasions or holidays.
+
+Home movies
+Moving Image
+Motion pictures on film or videotape made by amateurs, or professionals in a nonprofessional capacity, intended for home viewing by family and friends. People, scenes and events filmed generally feature the filmmakers' immediate circle and personal activities.
+
+Illuminated manuscripts
+Text
+An illuminated manuscript is a hand-written text supplemented by the addition of decoration, such as decorated initials, borders (marginalia) and miniature illustrations.
+
+Independent films
+Moving Image
+Motion pictures created by independent filmmakers, without financial backing from a major studio and with generally a greater degree of artistic control in the hands of the filmmakers than is the case with studio films.
+
+Instructional materials
+Text
+Print or non-print materials used for the purpose of imparting knowledge, attitudes, or skills to others.
+
+Journals and magazines (periodicals)
+Text
+Periodicals containing articles, essays, poems, or other writings by different authors, usually on a variety of topics and intended for a general reading public or treating a particular area of interest for a popular audience.
+
+Lantern slides
+Still Image
+Transparent positive image made or mounted on glass, usually (but not necessarily) photographic measuring 3.25 to 3.5 inches by 4 inches. Lantern slides are projected onto a screen by means of a specialized projector.
+
+Law and legal documents
+Text
+Documents related to statutes, administrative regulations, and judicial precedents. Examples include affidavits, charters, testimony, employment forms, certificates, wills and trusts.
+
+Manuscripts
+Text
+Unpublished documents.
+
+Maps
+Image
+Refers to graphic or photogrammetric representations of the Earth's surface or a part of it, including physical features and political boundaries, where each point corresponds to a geographical or celestial position according to a definite scale or projection. The term may also refer to similar depictions of other planets, suns, other heavenly bodies, or areas of the heavens. Examples include contour maps, engineering maps, fire insurance maps, forestry maps, plats (maps), relief maps, topographic maps, tourist maps, transportation maps, and zoning maps.
+
+Medals
+Physical Object
+Pieces of metal, usually gold, silver, or bronze and bearing a relief design on one or both sides and having a commemorative purpose; resembling a coin, but not used as a medium of exchange.
+
+Meeting minutes
+Text
+The written record of an official proceeding.
+
+Memorandums
+Text
+Documents recording information used primarily for business communication. Lacks the salutation and formal ending of a letter.
+
+Menus
+Text
+A list of dishes served at a meal or that can be ordered in a restaurant.
+
+Music (audio)
+Sound
+Recordings in any format of music, including songs, operas, and musicals.
+
+Music (text)
+Text
+Music written in notation so it can be read and played. Examples include hymnals, librettos, scores, songbooks, and sheet music.
+
+Negatives (photographic)
+Still Image
+Photographs, usually on a transparent support, in which the tones or colors are reversed from their appearance in nature. Includes glass plate negatives.
+
+Newsletters
+Text
+Letters, reports, or other brief written communications that communicate news, particularly those written by societies or business organizations. Historically referred to serial publications consisting of one or a few printed sheets containing news and information of interest to the general public or to a special group.
+
+Newspapers
+Text
+Serials published at stated, frequent intervals, such as daily or weekly, and containing news, editorials, features, advertisements, and other items of current interest.
+
+Newsreels
+Moving Image
+Nonfiction motion pictures originally released to theaters in periodic issues, each issue consisting of a number of news stories reporting or commenting on recent events.
+
+Oral histories
+Sound; Moving Image
+Works that record interviews conducted to preserve the recollections of persons whose experience or memories are representative or are of special historical or social significance.
+
+Paintings
+Image
+Unique works in which images are formed primarily by the direct application of pigments onto a generally two-dimensional surface.
+
+Pamphlets
+Text
+Independent publications consisting of a few leaves of printed matter folded or fastened together but not bound, often with no cover or a paper cover. Examples include booklets and leaflets
+
+Panoramas
+Still Image
+A pictorial representation with a very broad horizontal ranges of view. The term is also used specifically for photographs that show a wide view produced by a panoramic camera or by joining photographs together.
+
+Petitions
+Text
+Includes any written requests and lists of signatures submitted to an authority to appeal for the performance of specific action.
+
+Photocopies
+Still image; Text
+General term for copies produced by photocopying, that is, in a machine employing a light-sensitive process, and usually at a one-to-one scale.
+
+Photograph albums
+Still Image
+A collection of photographs, generally in a book. Photographs Still Image An image rendered using a camera. This term should only be used when the photographic format is unknown or unidentifiable.
+
+Postcards
+Still Image
+Cards on which a message may be written or printed for mailing without an envelope, usually at a lower rate than that for letters in envelopes. One side of the card frequently features a photographic image, advertisement or graphic illustration.
+
+Posters
+Still Image
+Notices, usually decorative or pictorial, intended to be posted to advertise, promote, or publicize an activity, cause, product, or service; also, decorative, mass-produced prints intended for hanging.
+
+Prints
+Image
+Pictorial works produced by transferring images by means of a matrix such as a plate, block, or screen, using any of various printing processes. Common types of prints include engravings, etchings and lithographs.
+
+Report cards
+Text
+Statements of a student's academic record for a particular period, often including grades and an evaluation of the student's rate of progress.
+
+Reports
+Text
+Official or formal records in the form of documents containing presentations of facts, proceedings, investigations, or events.
+
+Schedules (time plans)
+Text
+Plans of procedure, showing the sequence of items or operations and the time allotted for each.
+
+Scrapbooks
+Still Image
+Books or albums designed so that a variety of items may be affixed to the pages, including photographs, clippings, and other memorabilia.
+
+Sepia photographs
+Still Image
+A photograph with a brown tint.
+
+Signs
+Text
+A display (as a lettered board or a configuration of neon tubing) used to identify or advertise a place of business or a product or a posted notice bearing a designation, directions, or command. Examples include traffic signs, political signs, and notification signs.
+
+Sketchbooks
+Still Image
+Books or pads of blank sheets used or intended for sketching, which are informal or rough drawings.
+
+Slides (photographs)
+Still Image
+Positive transparencies in mounts suitable for projection, usually 35mm film in a mount of 2 by 2 inches. An image on film or glass, usually positive, intended to be viewed by means of light passing through the image and base using a viewer or projector.
+
+Speeches (audio)
+Sound
+Sound recording in which someone is orating a public address or talk.
+
+Speeches (text)
+Text
+Written transcripts. The text of any public address or talk.
+
+Stereographs
+Still Image
+Refers to the most common form of stereoscopic photographs, which are double photographs of the same image taken from two slightly different perspectives. Stereographs are distinctive among other stereoscopic photographs because they are photographic prints mounted on cards.
+
+Stock shots
+Moving Image
+Filmed shots of various subjects stored in a film library and used in other productions. They tend to be general scenes such as busy street scenes, natural disasters or historic places and events
+
+Studio portraits (photographs)
+Still Image
+Portraits taken in a professional photographer's studio, often making use of backdrops or props.
+
+Telegrams
+Text
+Messages sent by telegraph.
+
+Television programs
+Moving Image
+Presentations of informational or entertainment shows such as news, sports, drama, comedy, music, documentary, talk or game shows to the public by means of television transmission.
+
+Tintypes
+Still Image
+Photographs produced by the wet collodion process and then placed directly on thin sheets of lacquered metal, usually iron. Tintypes are not to be confused with Daguerreotypes, which utilize a copper plate for the image support.
+
+Transcripts
+Text
+A printed record that is a verbatim account of something originally presented in another medium, like a radio broadcast or a handwritten letter.
+
+Transportation vehicles
+Physical Object
+Vehicles designed to carry or convey merchandise, materials, or passengers across a distance, whether on land or water, or through water, air, or space. Examples include airplane, stagecoach, canoe, rocket, wagon, and car, and truck.
+
+Woodcuts (visual works)
+Image
+Prints made from designs cut in relief on wood.
+
+Yearbooks
+Still Image
+An annual publication giving current information and listing events or aspects of the previous year, esp. in a particular field or a book containing photographs of the senior class in a school or college and details of school activities in the previous year.

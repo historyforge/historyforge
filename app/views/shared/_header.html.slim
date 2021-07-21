@@ -1,0 +1,73 @@
+header
+  nav.navbar.navbar-light.navbar-expand-lg.navbar-static.top role="navigation"
+    .container
+      = link_to root_path, class: 'navbar-brand' do
+        = image_pack_tag 'media/images/logo-hf.png'
+        = image_pack_tag 'media/images/logo-text.png'
+
+      button.navbar-toggler type="button" data-toggle="collapse" data-target="#navbar-nav"
+        span.navbar-toggler-icon
+
+      .collapse.navbar-collapse#navbar-nav
+        ul.nav.navbar-nav.ml-auto
+          - if user_signed_in?
+            - if current_user.has_role?("administrator")
+              - flags_count = Flag.unresolved.count
+              li.dropdown.nav-item
+                a.nav-link.dropdown-toggle data-toggle='dropdown' href="#"
+                  - if flags_count > 0
+                    span.badge.badge-danger= flags_count
+                    = ' '
+                  | Admin
+                .dropdown-menu
+                  = link_to flags_path, class: 'dropdown-item' do
+                    | Flagged Content &nbsp;
+                    - if flags_count > 0
+                      span.badge.badge-danger= flags_count
+                  = link_to "Photographs", photographs_path, class: 'dropdown-item'
+                  = link_to "Localities", localities_path, class: 'dropdown-item'
+                  = link_to "Users", users_path, class: 'dropdown-item'
+                  = link_to "Map Overlays", map_overlays_path, class: 'dropdown-item'
+                  = link_to "Street Conversions", street_conversions_path, class: 'dropdown-item'
+                  = link_to "Controlled Vocabularies", vocabularies_path, class: 'dropdown-item'
+                  = link_to "Settings", settings_path, class: 'dropdown-item'
+                  = link_to "Documents", documents_path, class: 'dropdown-item'
+                  = link_to "CMS Pages", cms_pages_path, class: 'dropdown-item'
+                  = cms_link
+
+            - elsif current_user.has_role?("editor")
+              - flags_count = Flag.unresolved.count
+              li.nav-item= link_to flags_path, class: 'nav-link' do
+                | Flagged Content &nbsp;
+                - if flags_count > 0
+                  span.badge.badge-danger= flags_count
+
+          - unless user_signed_in?
+            li.nav-item= link_to 'Log In', '/u/sign_in', class: 'nav-link'
+          li.nav-item= link_to 'The Forge', '/forge', class: 'nav-link'
+          li.nav-item.dropdown
+            a.nav-link.dropdown-toggle data-toggle='dropdown' href="#"
+              | Data
+            .dropdown-menu
+              = link_to 'Buildings', '/buildings', class: 'dropdown-item'
+              = link_to '1900 US Census', '/census/1900', class: 'dropdown-item' if can_census?(1900)
+              = link_to '1910 US Census', '/census/1910', class: 'dropdown-item' if can_census?(1910)
+              = link_to '1920 US Census', '/census/1920', class: 'dropdown-item' if can_census?(1920)
+              = link_to '1930 US Census', '/census/1930', class: 'dropdown-item' if can_census?(1930)
+              = link_to '1940 US Census', '/census/1940', class: 'dropdown-item' if can_census?(1940)
+              = link_to 'All People', '/people', class: 'dropdown-item' if can_people?
+              = link_to 'For Transcribers', '/documents', class: 'dropdown-item' if user_signed_in?
+          - if request.subdomain.blank? || %w{www ithaca}.include?(request.subdomain)
+            li.nav-item= link_to 'About', '/about', class: 'nav-link'
+          li.nav-item= link_to 'Contact', '/contact', class: 'nav-link'
+          li.nav-item= link_to 'Volunteer', '/volunteer', class: 'nav-link'
+
+          - if user_signed_in?
+            li.nav-item.dropdown
+              a.nav-link.dropdown-toggle data-toggle='dropdown' href="#"
+                i.fa.fa-user
+              .dropdown-menu
+                .dropdown-item-text= current_user.name
+                = link_to 'My profile', user_path(current_user), class: 'dropdown-item'
+                = link_to 'Edit my account', edit_user_path(current_user), class: 'dropdown-item'
+                = link_to "Log out", destroy_user_session_path, method: :delete, class: 'dropdown-item'

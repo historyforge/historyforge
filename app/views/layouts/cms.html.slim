@@ -1,0 +1,15 @@
+- content_for :head do
+  - if @page.keywords.present?
+    meta name="keywords" content=@page.keywords
+  - if @page.description.present?
+    meta name="description" content=@page.description
+
+- if @page.browser_title.present?
+  - set_browser_title @page.browser_title
+- if @page.show_title?
+  - set_page_title @page.title
+
+- content_for :content do
+  == @page.render(self, content: yield)
+
+= render file: 'layouts/application'

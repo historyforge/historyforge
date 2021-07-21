@@ -1,0 +1,5 @@
+h3= form.object.human_name
+= panel 'Field Info' do
+  = form.input :human_name, input_html: { class: 'human_name' }, hint: "This appears in the Media dropdown on this page, to help you find me later."
+  = form.input :name, input_html: { class: 'name' }, hint: "This is my token name. Leave out the {{ }} and make me unique. Otherwise you will soon want aspirin."
+  = form.hidden_field :type

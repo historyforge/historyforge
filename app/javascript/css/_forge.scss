@@ -1,0 +1,116 @@
+nav.navbar.navbar-static {
+  position:fixed;
+  top:0;
+  left:0;
+  height:80px;
+  width:100%;
+  z-index:200;
+}
+
+.map-wrap {
+  width: 100%;
+  height: 100vh;
+}
+
+#forge {
+  #map-wrapper {
+    position: fixed;
+    width: calc(100% - 450px);
+    height: 100% !important ;
+
+    #map {
+      width: 100%;
+      height: 100%;
+    }
+  }
+}
+#forge {
+  ng-map {
+    position: fixed;
+    width: calc(100% - 450px);
+    height: 100% !important ;
+  }
+}
+
+#forge-right-col {
+  z-index: 19;
+  position:relative;
+  top:80px;
+  margin-left: calc(100% - 450px);
+  width:450px;
+  padding: 15px;
+  box-sizing: border-box;
+  background-color: white;
+  .btn-group {
+    margin-bottom:12px;
+  }
+  .layer {
+    margin-bottom: 6px;
+  }
+  .layer-slider {
+    width: 400px;
+  }
+}
+
+#miniforge {
+  position:relative;
+  .map-wrap {
+    width:100%;
+    height: auto;
+    #map {
+      width: 100%;
+      height: 300px;
+    }
+    select {
+      margin-bottom: 30px;
+    }
+    input[type=range] {
+      width: 100%;
+    }
+    .building p {
+      margin: 0;
+      a {
+        white-space: pre-wrap;
+      }
+    }
+    .building.active p a {
+      color: white;
+    }
+  }
+  .highlighted {
+    border:none;
+    background: #ffffff;
+  }
+  #layer-slider {
+    position:absolute;
+    top:350px;
+    left:5%;
+    right:15%;
+    width:80%;
+    z-index:120;
+  }
+}
+.gm-style-iw {
+  div.row {
+    margin-left:0;
+    margin-right:0;
+    & > div:first-child {
+      padding-left:0;
+    }
+    & > div:last-child {
+      padding-right:0;
+    }
+  }
+}
+
+.layer {
+  input[type=range] {
+    width: 100%;
+  }
+}
+
+#building-details {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px dotted $border-color;
+}

@@ -1,0 +1,21 @@
+- if can?(:resolve, Flag) && item.flags.unresolved
+  - item.flags.unresolved.each do |flag|
+    .alert.alert-danger
+      a.float-right.btn.btn-danger data-toggle="modal" href="#flagModal#{flag.id}" Resolve
+      h4.alert-heading Flagged as #{flag.display_reason} by #{flag.flagged_by.name}
+      p.mb-0= flag.message
+    - content_for :body_end do
+      .modal.fade id="flagModal#{flag.id}"
+        .modal-dialog.modal-lg
+          = simple_form_for flag do |form|
+            = form.hidden_field :flaggable_type
+            = form.hidden_field :flaggable_id
+            .modal-content
+              .modal-header
+                h5.modal-title Resolve
+                button.close(type="button" data-dismiss="modal") &times;
+              .modal-body
+                = form.input :mark_resolved, as: :boolean, inline_label: 'Yes', label: 'Is this issue resolved?'
+                = form.input :comment, label: 'Any comments?'
+              .modal-footer
+                = form.submit 'Submit', data: {:disable_with => 'Sending...'}, :class => 'btn btn-primary'

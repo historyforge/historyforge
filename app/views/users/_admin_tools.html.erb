@@ -1,0 +1,58 @@
+<% if admin_authorized? -%>
+<dl>
+  <dt>
+    Email
+  </dt>
+  <dd>
+    <%= @user.email %>
+  </dd>
+</dl>
+<dl>
+  <dt>
+    Enabled?
+  </dt>
+  <dd>
+    <%= @user.enabled ? 'Yes' : 'No' -%>
+  </dd>
+</dl>
+<dl>
+  <dt>
+    <%= link_to('Delete User', user_path(@user.id), :method => :delete, :data => {:confirm => 'Are you sure'}, class: 'btn btn-light' ) -%>
+  </dt>
+  <dd>
+    This cannot be undone. All the census records they've added won't be deleted but will be separated from this user account.
+  </dd>
+</dl>
+<dl>
+  <dt>
+  <% if @user.enabled -%>
+    <%= link_to 'Disable', disable_user_path(@user.id), :method => :put, class: 'btn btn-light' -%>
+  <% else -%>
+    <%= link_to 'Enable', enable_user_path(@user.id), :method => :put, class: 'btn btn-light' -%>
+  <% end -%>
+  </dt>
+  <dd>
+    the user's account - changeable by admin
+  </dd>
+</dl>
+
+<%- unless @user.provider? %>
+<dl>
+  <dt>
+    <%= link_to "Password", disable_and_reset_user_path(@user.id), :method => :put, class: 'btn btn-light' %>
+  </dt>
+  <dd>
+    This changes the password of the users account, and sends link via email to user to create a new password. Until a password is changed, the user cannot login.
+  </dd>
+</dl>
+<% end %>
+<dl>
+  <dt>
+    <%= link_to 'Edit roles', user_roles_path(@user), class: 'btn btn-light' -%>
+  </dt>
+  <dd>
+    Change roles / groups that the user belongs to
+  </dd>
+</dl>
+
+<% end -%>

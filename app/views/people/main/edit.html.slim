@@ -1,0 +1,8 @@
+- content_for :pills do
+  = link_to 'Save', "javascript: $('form.edit_person').submit()", class: 'btn btn-primary'
+  = link_to 'View', @person, class: 'btn btn-light'
+  = link_to 'View All', people_path, class: 'btn btn-light'
+  - if can?(:destroy, @person)
+    = link_to 'Delete', @person, class: 'btn btn-danger', data: { method: :delete, confirm: 'Are you sure? There is no undo.' }
+- set_page_title @person.name
+= render 'form'

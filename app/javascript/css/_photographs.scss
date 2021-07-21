@@ -1,0 +1,106 @@
+#cart {
+  &::before {
+    content: "\01F6D2";
+  }
+}
+
+#photo-wizard {
+  .card {
+    //position: absolute;
+    //width: calc(100% - 40px);
+    background: white;
+    display: none;
+
+    .card-body {
+      padding: 30px 50px;
+    }
+    > .float-right {
+      position: absolute;
+      right: 20px;
+      top: 20px;
+    }
+  }
+  //.card.activating,
+  //.card.deactivating {
+  //  z-index: -1;
+  //  opacity: 0;
+  //  transition: 0.5s ease opacity;
+  //  display: block;
+  //}
+  .card.active {
+    z-index: 1;
+    opacity: 1;
+    display: block;
+  }
+
+  #selected-file {
+    img {
+      max-width: 100%;
+    }
+  }
+  .thumb {
+    padding-top: 30px;
+  }
+
+  #map {
+    width: 100%;
+    height: 300px;
+  }
+
+  #photograph-date-type {
+    .form-group { display: none; }
+    &.year {
+      .photograph_photograph_date_year { display: block; }
+    }
+    &.month {
+      .photograph_photograph_date_year { display: block; }
+      .photograph_photograph_date_month { display: block; }
+    }
+    &.day {
+      .photograph_photograph_date_year { display: block; }
+      .photograph_photograph_date_month { display: block; }
+      .photograph_photograph_date_day { display: block; }
+    }
+    &.years {
+      .photograph_photograph_date_year { display: block; }
+      .photograph_photograph_date_year_end { display: block; }
+    }
+    &.months {
+      .photograph_photograph_date_year { display: block; }
+      .photograph_photograph_date_month { display: block; }
+      .photograph_photograph_date_year_end { display: block; }
+      .photograph_photograph_date_month_end { display: block; }
+    }
+    &.days {
+      .photograph_photograph_date_year { display: block; }
+      .photograph_photograph_date_month { display: block; }
+      .photograph_photograph_date_day { display: block; }
+      .photograph_photograph_date_year_end { display: block; }
+      .photograph_photograph_date_month_end { display: block; }
+      .photograph_photograph_date_day_end { display: block; }
+    }
+  }
+}
+
+#photograph-page {
+  h1 {
+    font-size: 1rem;
+    margin-bottom: 24px;
+  }
+  h2 {
+    font-style: italic;
+    font-size: 2rem;
+  }
+  h3 {
+    font-size: 1.25rem;
+  }
+  h4 {
+    font-size: 1.25rem;
+  }
+}
+
+#photographs {
+  .list-group-item .widest a {
+    display: block;
+  }
+}

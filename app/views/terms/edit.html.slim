@@ -1,0 +1,9 @@
+.float-right.btn-group
+  = link_to 'View All', [@vocabulary, :terms], class: 'btn btn-light'
+  /= link_to 'Delete', [@vocabulary, @term], class: 'btn btn-danger', data: { method: :delete, confirm: 'Are you sure? There is no undo.' }
+h1.page-title #{@term.name}
+p.lead Rename a term to an existing term to merge it with that term.
+= render 'form'
+
+- [1900, 1910, 1920, 1930, 1940].each do |year|
+  div.term-peeps id="peeps_#{year}" data-year=year data-base-url=url_for([@vocabulary, @term])

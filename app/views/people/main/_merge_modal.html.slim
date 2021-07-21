@@ -1,0 +1,19 @@
+- if can?(:merge, Person)
+  - content_for :pills do
+    = link_to '#mergeModal', class: 'btn btn-light', data: { toggle: 'modal' } do
+      i.fa.fa-code-fork
+      | &nbsp; Merge
+  - content_for :body_end do
+    .modal.fade id="mergeModal"
+      .modal-dialog.modal-lg
+        = form_with method: :get, url: new_person_merge_path(@person) do |form|
+          .modal-content
+            .modal-header
+              h5.modal-title Merge Person Record
+              button.close(type="button" data-dismiss="modal") &times;
+            .modal-body
+              p.lead Merge another person record into this one.
+              p.lead Enter the Person ID of the duplicate person record:
+              = form.text_field :merge_id, class: 'form-control'
+            .modal-footer
+              = form.submit 'Submit', data: {:disable_with => 'Sending...'}, :class => 'btn btn-primary'

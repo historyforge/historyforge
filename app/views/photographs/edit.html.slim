@@ -1,0 +1,8 @@
+= render 'shared/flag_resolution', item: @photograph
+- content_for :pills do
+  = link_to 'View All', photographs_path, class: 'btn btn-light'
+  = link_to 'View', @photograph, class: 'btn btn-light'
+  = link_to 'Save', "javascript: $('#photo-wizard').submit()", class: 'btn btn-primary'
+
+- set_page_title 'Edit Photo'
+= render 'form'

@@ -1,0 +1,91 @@
+<% set_page_title 'Statistics' %>
+<h2>Census Records</h2>
+
+<div class="row">
+  <div class="col-sm-6">
+    <h3>Added in past 90 days</h3>
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th>Year</th>
+        <th>Total</th>
+        <th>Reviewed</th>
+      </tr>
+      </thead>
+      <tbody>
+        <% @stats.recent_census_summaries.each do |row| %>
+        <tr>
+          <th><%= row[:year] %></th>
+          <th><%= number_with_delimiter row[:total] %></th>
+          <th><%= number_with_delimiter row[:reviewed] %></th>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+  <div class="col-sm-6">
+    <h3>Overall</h3>
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th>Year</th>
+        <th>Total</th>
+        <th>Reviewed</th>
+      </tr>
+      </thead>
+      <tbody>
+        <% @stats.census_summaries.each do |row| %>
+        <tr>
+          <th><%= row[:year] %></th>
+          <th><%= number_with_delimiter row[:total] %></th>
+          <th><%= number_with_delimiter row[:reviewed] %></th>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<h2>Data Entry Heroes</h2>
+<div class="row">
+  <div class="col-sm-6">
+    <h3>Recent - Past 90 days</h3>
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Total Census Records</th>
+      </tr>
+      </thead>
+      <tbody>
+        <% @stats.recent_heroes.each do |row| %>
+        <tr>
+          <th><%= row.login %></th>
+          <td><%= number_with_delimiter row.total %></td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="col-sm-6">
+    <h3>All-Time</h3>
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Total Census Records</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @stats.overall_heroes.each do |row| %>
+        <tr>
+          <th><%= row.login %></th>
+          <td><%= number_with_delimiter row.total %></td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
+

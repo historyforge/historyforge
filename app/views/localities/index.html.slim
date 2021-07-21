@@ -1,0 +1,29 @@
+- content_for :pills do
+  = link_to 'Add New', { action: :new }, class: 'btn btn-light btn-xs'
+- set_page_title "Localities"
+
+- if @localities.blank?
+  p.alert.alert-info No records found.
+- else
+  table.table.table-condensed.table-striped
+    thead
+      tr
+        th Name
+        th 1900
+        th 1910
+        th 1920
+        th 1930
+        th 1940
+        th
+    tbody
+      - @localities.each do |record|
+        tr
+          td= record.name
+          td= number_with_delimiter record.census1900_records_count
+          td= number_with_delimiter record.census1910_records_count
+          td= number_with_delimiter record.census1920_records_count
+          td= number_with_delimiter record.census1930_records_count
+          td= number_with_delimiter record.census1940_records_count
+          td style="text-align:right;white-space:nowrap"
+            = link_to 'Edit', [:edit, record], class: 'btn btn-xs btn-light'
+

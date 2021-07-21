@@ -1,0 +1,4 @@
+= simple_form_for @document_category do |form|
+  = form.input :name, as: :string
+  = form.input :description, as: :text
+  = form.submit 'Submit', class: 'btn btn-primary', data: { disable_with: 'Submitting...' }

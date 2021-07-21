@@ -1,0 +1,46 @@
+- set_page_title @person.name
+= render 'shared/flag_resolution', item: @person
+= render 'merge_modal'
+- content_for :pills do
+  - if can?(:create, Flag)
+    = render 'shared/flag_it', item: @person, item_class: 'btn btn-light'
+  - if can?(:update, @person)
+    = link_to [:edit, @person], class: 'btn btn-light' do
+      i.fa.fa-pencil
+      | &nbsp; Edit
+
+dl
+  dt Person ID
+  dd= @person.id
+  dt Sex
+  dd= @person.sex
+  dt Race
+  dd= @person.race
+  dt Est Birth Year
+  dd= @person.estimated_birth_year
+
+.card.mb-3
+  .card-header Census Records
+  = table do
+    thead
+      tr
+        th Year
+        th Name
+        th Address
+        th Age
+        th Marriage
+        th Profession
+        th Relation to Head
+        th
+    tbody
+      - @person.census_records.each do |row|
+        tr
+          td= row.year
+          td= row.name
+          td= row.street_address
+          td= row.age
+          td= row.marital_status
+          td= row.profession
+          td= row.relation_to_head
+          td= link_to 'View', row
+

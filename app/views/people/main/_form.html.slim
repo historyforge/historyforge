@@ -1,0 +1,40 @@
+= simple_form_for @person do |form|
+  .card.mb-1
+    .card-header Name
+    .card-body
+      .row
+        .col-1
+          = form.input :name_prefix, input_html: {autocomplete: 'new-password'}, label: 'Prefix'
+        .col-3
+          = form.input :first_name, input_html: {autocomplete: 'new-password'}, label: 'First'
+        .col-3
+          = form.input :middle_name, input_html: {autocomplete: 'new-password'}, label: 'Middle'
+        .col-3
+          = form.input :last_name, input_html: {autocomplete: 'new-password'}, label: 'Last'
+        .col-1
+          = form.input :name_suffix, input_html: {autocomplete: 'new-password'}, label: 'Suffix'
+
+  .card.mb-1
+    .card-header Race and sex
+    .card-body
+      .row
+        .col-6
+          = form.input :race, as: :radio_buttons, collection: Census1900Record.race_choices, coded: true
+        .col-6
+          = form.input :sex, as: :radio_buttons, collection: Census1900Record.sex_choices, coded: true
+
+  .card.mb-1
+    .card-header Birth year and place
+    .card-body
+      .row
+        .col-8
+          = form.input :birth_year
+        .col-4
+          = form.input :is_birth_year_estimated, as: :boolean, inline_label: 'Yes', label: 'Estimated?'
+      .row
+        .col-8
+          = form.input :pob, input_html: {autocomplete: 'new-password'}
+        .col-4
+          = form.input :is_pob_estimated, as: :boolean, inline_label: 'Yes', label: 'Estimated?'
+  .form-actions
+    = form.submit 'Save', class: 'btn btn-primary btn-lg'

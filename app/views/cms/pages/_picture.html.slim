@@ -1,0 +1,28 @@
+.tab-pane.page-section id="widget#{form.object.id}"
+  = render 'cms/pages/cms_widget_name', form: form
+
+  = panel 'File Upload' do
+    .row
+      .col-8
+        = form.input :file, as: :file, label: 'File to upload', input_html: { direct_upload: true }
+      - if form.object.file.present?
+        .col-4
+          = image_tag form.object.url, class: 'img img-thumbnail'
+          br
+          br
+
+  = panel 'Information' do
+    = form.input :bootstrap_class, as: :select, collection: Cms::Picture.bootstrap_class_choices, include_blank: 'none'
+    = form.input :alignment, as: :select, collection: Cms::Picture.alignment_choices
+    = form.input :style, as: :select, collection: Cms::Picture.style_options, include_blank: 'Original IMG'
+    = form.input :width, label: 'IMG Width in Px'
+    = form.input :height, label: 'IMG Height in Px'
+    = form.input :alt_text, placeholder: 'Alt Text'
+    = form.input :caption, placeholder: 'Caption'
+
+  = panel 'Outlink' do
+    = form.input :outlink, hint: 'Open this URL when clicking on the image.'
+    = form.input :new_tab, as: :boolean, label: 'Open the link in a new tab by adding target="_blank"?'
+    = form.input :nofollow, as: :boolean, label: 'Deny this link search engine love by adding rel="nofollow"?'
+
+  = render 'cms_widget_details', form: form

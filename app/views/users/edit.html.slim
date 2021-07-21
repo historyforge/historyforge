@@ -1,0 +1,11 @@
+.float-right
+  = link_to 'View', user_path(@user), class: 'btn btn-sm btn-light'
+  
+h2= "Edit #{@user.login}"
+= simple_form_for @user do |form|
+  = form.input :login, label: 'Username'
+  = form.input :email
+  = form.input :password
+  = form.input :password_confirmation
+  .form-actions
+    = form.submit 'Submit', class: 'btn btn-primary btn-lg'

@@ -1,0 +1,18 @@
+- content_for :pills do
+  = link_to 'Add New', { action: :new }, class: 'btn btn-light btn-xs'
+- set_page_title 'Street Name Conversions'
+
+- if @street_conversions.blank?
+  p.alert.alert-info No records found.
+- else
+  table.table.table-condensed.table-striped
+    thead
+      tr
+        th Description
+    tbody
+      - @street_conversions.each do |record|
+        tr
+          td= record.description
+          td style="text-align:right;white-space:nowrap"
+            = link_to 'Edit', [:edit, record], class: 'btn btn-xs btn-light'
+

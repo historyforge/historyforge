@@ -1,0 +1,8 @@
+- content_for :pills do
+  = link_to 'Save', "javascript: $('form.edit_building').submit()", class: 'btn btn-primary'
+  = link_to 'View', @building, class: 'btn btn-light'
+  = link_to 'View All', buildings_path, class: 'btn btn-light'
+  - if can?(:destroy, @building)
+    = link_to 'Delete', @building, class: 'btn btn-danger', data: { method: :delete, confirm: 'Are you sure? There is no undo.' }
+- set_page_title @building.name
+= render 'form'

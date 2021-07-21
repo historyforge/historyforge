@@ -1,0 +1,9 @@
+APP_NAME:                 My HistoryForge
+APP_PLACE_POSTAL_CODE:    14850
+BASE_URL:                 localhost:3000
+CONTACT_EMAIL:            email@example.com
+DEVISE_SECRET_KEY:        results-of-running-rake-secret
+GOOGLE_API_KEY:           get-your-own-key
+GOOGLE_GEOCODING_KEY:     can-be-the-same-key
+MAIL_FROM:                some.email@example.com
+SECRET_KEY_BASE:          results-of-running-rake-secret

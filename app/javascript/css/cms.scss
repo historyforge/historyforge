@@ -1,0 +1,186 @@
+body.drag {
+  cursor: move;
+}
+/*
+** Table drag and drop.
+*/
+.draggable a.tabledrag-handle {
+  cursor: move;
+  float: left; /* LTR */
+  height: 1.7em;
+  margin: -0.4em 0 -0.4em -0.5em; /* LTR */
+  padding: 0.42em 1.5em 0.42em 0.5em; /* LTR */
+  text-decoration: none;
+}
+a.tabledrag-handle:hover {
+  text-decoration: none;
+}
+a.tabledrag-handle .handle {
+  margin-top: 4px;
+  height: 13px;
+  width: 13px;
+  background: url('draggable.png') no-repeat 0 0;
+}
+a.tabledrag-handle-hover .handle {
+  background-position: 0 -20px;
+}
+div.indentation {
+  float: left; /* LTR */
+  height: 1.7em;
+  margin: -0.4em 0.2em -0.4em -0.4em; /* LTR */
+  padding: 0.42em 0 0.42em 0.6em; /* LTR */
+  width: 20px;
+}
+div.tree-child { background:url('tree.png') no-repeat 10px 50%; }
+div.tree-child-last { background:url('tree-bottom.png') no-repeat 10px 50%; }
+div.tree-child-horizontal { background:url('tree.png') no-repeat -10px 50%; }
+
+#add-section {
+  button {
+    float:none;
+    display:inline-block;
+    padding:10px 15px;
+  }
+  input {
+    padding:5px;
+    vertical-align: middle;
+  }
+}
+.edit_cms_page, .new_cms_page {
+  .tab-content {
+    overflow:hidden;
+  }
+}
+
+.img-left {
+  float:left;
+  margin-right:2em;
+}
+.img-right {
+  float:right;
+  margin-right:2em;
+}
+.img-center {
+  margin:1em auto;
+  display:flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Everything Liquid */
+.CodeMirror .cm-liquid {
+  color: #000;
+  background-color: #EEE;
+  background-color: rgba(200, 200, 200, 0.5); /* for newer browsers, use transparent background, so selection is visible behind it */
+}
+.cm-liquid.CodeMirror-searching {
+  background: #FFA;
+  background: rgba(255, 255, 0, .4);
+}
+/* Every whitespace inside Liquid markup (except inside string constants) */
+.CodeMirror .cm-liquid-whitespace {
+
+}
+/* Number constants */
+.CodeMirror .cm-liquid-atom {
+  color: #AA00BB;
+}
+/* Variables, keywords and operators. Assigned by the Tokenizer which cannot differentiate between these */
+.CodeMirror .cm-liquid-word {
+
+}
+/* String constants */
+.CodeMirror .cm-liquid-string {
+  color: #228811;
+}
+/* {{, }}, {%, %} */
+.CodeMirror .cm-liquid-markup-delimiter {
+  color: #555;
+}
+/* The name of a Liquid tag (if, assign, for, ...) */
+.CodeMirror .cm-liquid-tag-name {
+  font-weight: bold;
+}
+/* The closing name of a Liquid block tag (endif, endfor) */
+.CodeMirror .cm-liquid-endtag-name {
+  font-weight: bold;
+}
+/* Keywords (in, reversed, with, ...) */
+.CodeMirror .cm-liquid-keyword {
+  font-weight: bold;
+}
+/* Operators */
+.CodeMirror .cm-liquid-operator {
+
+}
+/* The name of a Tag attribute (limit, offset) */
+.CodeMirror .cm-liquid-tag-attribute-name {
+  font-style: italic;
+}
+/* A Variable */
+.CodeMirror .cm-liquid-variable {
+
+}
+/* A method of a drop */
+.CodeMirror .cm-liquid-method {
+  font-style: italic;
+}
+/* The name one can give to a cycle tag */
+.CodeMirror .cm-liquid-tag-cycle-name {
+  font-style: italic;
+}
+/* A filter in output markdown */
+.CodeMirror .cm-liquid-filter {
+  font-style: italic;
+}
+/* Every output markup, including the {{ and }} */
+.CodeMirror .cm-liquid-output-markup {
+
+}
+/* Every tag markup, including the {% and %} */
+.CodeMirror .cm-liquid-tag-markup {
+
+}
+
+.direct-upload {
+  display: inline-block;
+  position: relative;
+  padding: 2px 4px;
+  margin: 0 3px 3px 0;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  border-radius: 3px;
+  font-size: 11px;
+  line-height: 13px;
+}
+
+.direct-upload--pending {
+  opacity: 0.6;
+}
+
+.direct-upload__progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  opacity: 0.2;
+  background: #0076ff;
+  transition: width 120ms ease-out, opacity 60ms 60ms ease-in;
+  transform: translate3d(0, 0, 0);
+}
+
+.direct-upload--complete .direct-upload__progress {
+  opacity: 0.4;
+}
+
+.direct-upload--error {
+  border-color: red;
+}
+
+input[type=file][data-direct-upload-url][disabled] {
+  display: none;
+}
+
+.CodeMirror {
+  resize: vertical;
+  overflow: auto !important;
+}

@@ -1,0 +1,92 @@
+- set_page_title 'Merge Person Records'
+
+p.lead You propose to merge person ##{@source.id} #{@source.name} into person ##{@target.id} #{@target.name}.
+
+.row
+  .col-6
+    h3 Merge Source
+    p This person will disappear.
+    dl
+      dt Person ID
+      dd= @source.id
+      dt Sex
+      dd= @source.sex
+      dt Race
+      dd= @source.race
+      dt Est Birth Year
+      dd= @source.estimated_birth_year
+
+    - @source.census_records.each do |row|
+      .card.mb-3
+        .card-header #{row.year} Census Record
+        .card-body
+          = table do
+            tbody
+              tr
+                th Name
+                td= row.name
+              tr
+                th Address
+                td= row.street_address
+              tr
+                th Age in #{row.year - 1}
+                td= row.age
+              tr
+                th Marital Status
+                td= row.marital_status
+              tr
+                th Profession
+                td= row.profession
+              tr
+                th Relation to Head
+                td= row.relation_to_head
+              tr
+                th Link
+                td= link_to 'View', row
+
+  .col-6
+    h3 Merge Target
+    p This person will get bigger.
+    dl
+      dt Person ID
+      dd= @target.id
+      dt Sex
+      dd= @target.sex
+      dt Race
+      dd= @target.race
+      dt Est Birth Year
+      dd= @target.estimated_birth_year
+    - @target.census_records.each do |row|
+      .card.mb-3
+        .card-header #{row.year} Census Record
+        .card-body
+          = table do
+            tbody
+              tr
+                th Name
+                td= row.name
+              tr
+                th Address
+                td= row.street_address
+              tr
+                th Age in #{row.year - 1}
+                td= row.age
+              tr
+                th Marital Status
+                td= row.marital_status
+              tr
+                th Profession
+                td= row.profession
+              tr
+                th Relation to Head
+                td= row.relation_to_head
+              tr
+                th Link
+                td= link_to 'View', row
+
+- if @check.okay?
+  = form_with url: person_merges_url(@source) do |form|
+    = hidden_field_tag 'merge_id', @target.id
+    = form.submit 'Yes Please', class: 'btn btn-danger btn-lg'
+- else
+  .alert.alert-danger You can't actually do merge this people because they share same-year census records in #{@check.years.to_sentence}.

@@ -1,0 +1,25 @@
+{
+  "dependencies": {
+    "@airbrake/browser": "^1.4.1",
+    "@babel/preset-react": "^7.12.10",
+    "@rails/actiontext": "^6.0.2-2",
+    "@rails/ujs": "^6.0.4",
+    "@rails/webpacker": "5.2.1",
+    "activestorage": "^5.2.4-2",
+    "axios": "^0.21.0",
+    "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
+    "codemirror": "^5.52.2",
+    "font-awesome": "^4.7.0",
+    "include-media": "^1.4.10",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-redux": "^7.2.2",
+    "redux": "^4.0.5",
+    "redux-logger": "^3.0.6",
+    "stimulus": "^1.1.1",
+    "trix": "^1.0.0"
+  },
+  "devDependencies": {
+    "webpack-dev-server": "^3.11.0"
+  }
+}

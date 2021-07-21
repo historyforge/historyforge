@@ -1,0 +1,32 @@
+- set_page_title "Bulk Updates for #{controller.year}"
+- content_for :pills do
+  = link_to 'Start Bulk Update', "/census/#{year}/bulk/new", class: 'btn btn-primary'
+- if @bulk_updates.any?
+  = page_entries_info @bulk_updates
+  = table do
+    thead
+      tr
+        th Field
+        th From
+        th To
+        th Date
+        th Affected
+        th Action
+    tbody
+      - @bulk_updates.each do |row|
+        tr
+          td= translated_label resource_class, row.field
+          td= row.value_from
+          td= row.value_to
+          td= "#{distance_of_time_in_words_to_now(row.created_at)} ago"
+          - count = row.records.count
+          td= pluralize count, 'record'
+          td
+            - if count > 0
+              = link_to 'View', "/census/#{year}/bulk/#{row.id}", class: 'btn btn-light btn-sm'
+            - else
+              = link_to 'Edit', "/census/#{year}/bulk/#{row.id}/edit", class: 'btn btn-light btn-sm'
+  = paginate @bulk_updates
+- else
+  p.lead None yet!
+  = link_to "Care to start?", "/census/#{year}/bulk/new"

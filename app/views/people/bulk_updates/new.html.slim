@@ -1,0 +1,7 @@
+- set_page_title "Start Bulk Update For #{year}"
+= form_with url: "/census/#{year}/bulk",
+            model: @bulk_update,
+            builder: SimpleForm::FormBuilder, data: { remote: false }, id: 'edit_census_record' do |form|
+  = form.input :field, collection: census_fields_select
+  .card-footer
+    = form.submit 'Select Field', class: 'btn btn-lg btn-primary'

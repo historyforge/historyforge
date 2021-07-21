@@ -1,0 +1,17 @@
+- set_page_title 'View Cart'
+
+- content_for :pills do
+  = link_to 'Photographs', photographs_path, class: 'btn btn-sm btn-light'
+  =< form_with(url: '/cart/export.zip', html: { style: 'display:inline', data: { remote: false } }) do |form|
+    span#cart-export-params
+    button.btn.btn-primary.btn-sm type="submit"
+      | Export to NY Heritage
+
+table.table
+  thead
+    tr
+      td Photo
+      td Description
+      td
+  tbody#cart-contents data-controller="cart-page"
+

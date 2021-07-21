@@ -1,0 +1,11 @@
+<div class="float-right">
+  <%= link_to 'Edit User', edit_user_path(@user), class: 'btn btn-sm btn-light' %>
+  <%= link_to 'View User', user_path(@user), class: 'btn btn-sm btn-light' %>
+</div>
+<h2>Roles for <%=h @user.login.capitalize %></h2>
+
+<h3>Roles assigned:</h3>
+<ul><%= render :partial => "role", :collection => @user.roles %></ul>
+
+<h3>Roles available:</h3>
+<ul><%= render :partial => "role", :collection => (@all_roles - @user.roles) %></ul>

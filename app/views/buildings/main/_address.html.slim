@@ -1,0 +1,18 @@
+.list-group-item.nested-form-item
+  .row
+    .col-sm-1
+      = form.input_field :is_primary, as: :boolean, class: 'form-check'
+    .col-sm-2
+      = form.input_field :house_number, class: 'form-control'
+    .col-sm-1
+      = form.input_field :prefix, collection: Building.address_street_prefix_choices, class: 'form-control'
+    .col-sm-3
+      = form.input_field :name, class: 'form-control'
+    .col-sm-2
+      = form.input_field :suffix, collection: Building.address_street_suffix_choices, class: 'form-control'
+    .col-sm-2
+      = form.input_field :city, class: 'form-control'
+    .col-sm-1
+      button.remove.float-right.btn.btn-default
+        | &times;
+  = form.hidden_field :_destroy

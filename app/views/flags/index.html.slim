@@ -1,0 +1,19 @@
+- set_page_title 'Unresolved Flags'
+
+- if @flags.blank?
+  .alert.alert-success All flags have been resolved!
+- else
+  = table do
+    thead
+      tr
+        th Flagged Item
+        th Reason
+        th Flagger
+        th When
+    tbody
+      - @flags.each do |flag|
+        tr
+          td= flag.flaggable ? link_to(flag.flaggable.name, flag.flaggable) : 'Oops a stray'
+          td= flag.display_reason
+          td= flag.flagged_by&.name
+          td= flag.created_at.strftime('%-m/%-d/%y')

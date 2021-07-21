@@ -1,0 +1,9 @@
+= simple_form_for @locality do |form|
+
+  = form.input :name
+  /= form.input :locality_id, collection: Locality.order(:position)
+  = form.input :latitude
+  = form.input :longitude
+
+  .form-actions
+    = form.submit 'Save', class: 'btn btn-primary btn-lg'

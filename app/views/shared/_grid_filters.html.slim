@@ -1,0 +1,129 @@
+- content_for :pills do
+  - if can?(:create, resource_class)
+    = link_to 'Add New Record', new_resource_path, class: 'btn btn-sm btn-light'
+  - if can?(:bulk_update, resource_class) && controller.respond_to?(:year)
+    = link_to 'Bulk Update', "/census/#{controller.year}/bulk", class: 'btn btn-sm btn-light'
+  - if can?(:review, resource_class)
+    - count = @search.scoped.to_a.select { |rec| !rec.reviewed? }.length
+    - if count > 0
+      = link_to "Mark #{count} Reviewed", request.params.merge(action: :bulk_review), class: 'btn btn-sm btn-light', data: { remote: false, method: :post, confirm: "Are you sure? Undoing this action may be painful." }
+  - if @search.active?
+    = link_to 'Start New Search', url_for(reset: true), class: 'btn btn-sm btn-light'
+  .dropdown.ml-2 data-controller="load-saved-search"
+    a.dropdown-toggle.btn.btn-sm.btn-light data-toggle="dropdown" Load Search
+    .dropdown-menu
+
+= simple_form_for @search, url: url_for(), method: :get, as: :s do |form|
+  .float-right
+    = form.submit 'Submit', style: 'display: none'
+    => link_to 'CSV', params.permit!.merge(format: :csv), class: 'btn btn-sm btn-primary'
+    - if controller.respond_to?(:year)
+      => form.submit 'Map It', class: 'btn btn-sm btn-primary', id: 'search-map', data: {year: controller.year}
+    - elsif params[:controller] == 'buildings/main'
+      => form.submit 'Map It', class: 'btn btn-sm btn-primary', id: 'search-map'
+    - if @search.active?
+      button.btn.btn-sm.btn-primary type="button" data-controller="save-search" Save It
+  .mb-3
+    button.btn.btn-sm.btn-light type="button" data-toggle="collapse" data-target="#fieldSelector" = pluralize @search.columns.size, 'Field'
+    button.btn.btn-sm.btn-light.mr-3 type="button" data-toggle="collapse" data-target="#newAttributeFilter" Filter
+
+  = yield :filter_buttons
+
+  #attribute-filters
+
+  .collapse.fade#fieldSelector
+    .card.mb-3
+      .card-header
+        button.float-right.close(type="button" data-toggle="collapse" data-target="#fieldSelector") &times;
+        span Filters
+
+      .card-body
+        .value-input-container.column-count-3.checkboxes#fields
+          - @search.all_fieldsets.each do |field|
+            label.dropdown-item.checkbox for="fs_#{field}"
+              = check_box_tag 'fs[]', field, @search.fieldsets.include?(field), id: "fs_#{field}", data: { default: @search.is_default_field?(field) }
+              = translated_label resource_class, field
+          - @search.all_fields.each do |field|
+            label.dropdown-item.checkbox for="f_#{field}"
+              = check_box_tag 'f[]', field, @search.f.include?(field), id: "f_#{field}", data: { default: @search.is_default_field?(field) }
+              = translated_label resource_class, field
+      .card-footer
+        = form.submit 'Submit', data: { :disable_with => 'Sending...' }, :class => 'btn btn-primary mr-auto'
+        button.btn.btn-light.ml-auto.checkall data-scope="#fields" type="button" Check all
+
+  .collapse.fade#newAttributeFilter
+    .card.mb-3
+      .card-header
+        button.float-right.close(type="button" data-toggle="collapse" data-target="#newAttributeFilter") &times;
+        span Search Filters
+      .card-body
+        - if controller_name =~ /census/
+          .row
+            .col-3
+              label for="s_name_cont" Name
+              input.form-control#s_name_cont type="search" name="s[name_cont]" value=@search.s[:name_cont]
+            .col-3
+              label for="s_race_in" Race
+              = select_tag 's[race_eq]', options_for_select(resource_class.race_choices.map { |choice| [translated_option('race', choice), choice] }, @search.s[:race_eq]), include_blank: true, class: 'form-control'
+            .col-3
+              label for="s_marital_status_eq" Marital Status
+              = select_tag 's[marital_status_eq]', options_for_select(resource_class.marital_status_choices.map { |choice| [translated_option('marital_status', choice), choice] }, @search.s[:marital_status_eq]), include_blank: true, class: 'form-control'
+            .col-3
+              label for="s_age_eq" Age
+              = select_tag 's[age_eq]', options_for_select((1..135).map, @search.s[:age_eq]), include_blank: true, class: 'form-control'
+          hr
+
+          .row
+            .col-3
+              label for="s_pob_cont" Place of Birth
+              = text_field_tag "s[pob_cont]", @search.s[:pob_cont], class: 'form-control', data: { controller: 'autocomplete', attribute: 'pob' }
+            .col-3
+              label for="s_street_address_cont" Street Address
+              = text_field_tag "s[street_address_cont]", @search.s[:street_address_cont], class: 'form-control', data: { controller: 'autocomplete', attribute: 'street_address' }
+            .col-3
+              label for="s_profession_cont" Profession
+              = text_field_tag "s[profession_cont]", @search.s[:profession_cont], class: 'form-control', data: { controller: 'autocomplete', attribute: 'profession' }
+            .col-3
+              label for="s_industry_cont" Industry
+              = text_field_tag "s[industry_cont]", @search.s[:industry_cont], class: 'form-control', data: { controller: 'autocomplete', attribute: 'industry' }
+          hr
+
+          - if user_signed_in?
+            .row
+              .col-3
+                label for="s_ward_eq" Ward
+                input.form-control#s_ward_eq type="search" name="s[ward_eq]" value=@search.s[:ward_eq]
+              .col-3
+                label for="s_enum_dist_eq" Enum. Dist.
+                input.form-control#s_enum_dist_eq type="search" name="s[enum_dist_eq]" value=@search.s[:enum_dist_eq]
+              .col-3
+                label for="s_page_number_eq" Sheet
+                = select_tag 's[page_number_eq]', options_for_select((1..100).map, @search.s[:page_number_eq]), include_blank: true, class: 'form-control'
+              .col-3
+                label for="s_page_side_eq" Side
+                = select_tag 's[page_side_eq]', options_for_select(%w[A B], @search.s[:page_side_eq]), include_blank: true, class: 'form-control'
+            hr
+
+        - elsif controller_path =~ /people/
+          .row
+            .col-3
+              label for="s_name_cont" Name
+              input.form-control#s_name_cont type="search" name="s[name_cont]" value=@search.s[:name_cont]
+            .col-3
+              label for="s_pob_cont" Place of Birth
+              = text_field_tag "s[pob_cont]", @search.s[:pob_cont], class: 'form-control'
+            .col-3
+              label for="s_race_in" Race
+              = select_tag 's[race_eq]', options_for_select(resource_class.race_choices.map { |choice| [translated_option('race', choice), choice] }, @search.s[:race_eq]), include_blank: true, class: 'form-control'
+            .col-3
+              label for="s_birth_year_eq" Age
+              = text_field_tag "s[birth_year_eq]", @search.s[:birth_year_eq], class: 'form-control'
+          hr
+
+        .row
+          .col-3
+            select.attribute.form-control
+          .scope-selection-container.col-3
+          .value-input-container.col-6
+      .card-footer
+        = form.submit 'Submit', data: { disable_with: 'Sending...' }, class: 'btn btn-primary'

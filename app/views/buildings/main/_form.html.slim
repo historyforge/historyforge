@@ -1,0 +1,98 @@
+= simple_form_for @building do |form|
+  = error_messages_for @building
+  .card.mb-2
+    .card-header
+      | Name and Use
+    .card-body
+      .row
+        .col-sm-6
+          = form.input :name
+        .col-sm-6
+          = form.input :building_type_ids, collection: BuildingType.order(:name), as: :check_boxes
+      .row
+        .col-sm-6
+          = form.input :year_earliest
+          = form.input :year_earliest_circa, inline_label: 'Circa: Exact building year unknown.'
+        .col-sm-6
+          = form.input :year_latest
+          = form.input :year_latest_circa, inline_label: 'Circa: Exact demolition year unknown.'
+
+  .card.mb-2
+    .card-header Address
+    .card-body
+      .nested-form
+        .list-group-item
+          .row
+            .col-sm-1 Main
+            .col-sm-2 No.
+            .col-sm-1 Prefix
+            .col-sm-3 Street
+            .col-sm-2 Suffix
+            .col-sm-2 City
+            .col-sm-1
+        .nested-form-items.list-group
+          = form.fields_for :addresses do |form2|
+            = render 'buildings/main/address', form: form2
+        p= add_child_link 'Add alternate, additional, or historical address for this building', form, :addresses, object: Address.new, partial: 'buildings/main/address'
+
+  .card.mb-2
+    .card-header Geography
+    .card-body
+      .row
+        .col-sm-4
+          = form.input :city
+        .col-sm-4
+          = form.input :state
+        .col-sm-4
+          = form.input :postal_code
+      .row
+        .col-sm-6
+          = form.input :lat
+        .col-sm-6
+          = form.input :lon
+
+  .card.mb-2
+    .card-header Construction Details
+    .card-body
+      = form.input :architects_list
+      .row
+        .col-sm-3
+          = form.input :stories
+        .col-sm-3
+          = form.input :frame_type_id,  collection: ConstructionMaterial.order(:name)
+        .col-sm-3
+          = form.input :lining_type_id, collection: ConstructionMaterial.order(:name)
+        .col-sm-3
+          = form.input :block_number
+      = form.input :annotations, input_html: { rows: 6 }
+
+  .card.mb-2
+    .card-header Narrative
+    .card-body
+      = form.input :description, input_html: { rows: 12 }
+
+  - if !@building.reviewed? && can?(:review, @building)
+    .card.mb-2
+      .card-header Investigation
+      .card-body
+        = form.input :investigate, as: :boolean, inline_label: 'This building requires further investigation before it can be marked as reviewed.'
+        = form.input :investigate_reason
+        h5 Possible reasons:
+        ul
+          li The house number does not appear on the Sanborn map
+          li The Sanborn map does not cover this area
+          li The street name is different now than it was then
+          li The building does not yet have longitude/latitude entries
+          li There appears to have been a data entry error (i.e. this building contains only a daughter with no other family members)
+          li There are two instances of the same building
+
+  .card.mb-2
+    .card-header
+      | Additional Notes
+    .card-body
+      = form.input :notes, input_html: { rows: 12 }
+
+  .form-actions
+    = form.submit 'Save', class: 'btn btn-primary btn-lg'
+    - if !@building.reviewed? && can?(:review, @building)
+      = form.submit 'Review', class: 'btn btn-danger btn-lg'

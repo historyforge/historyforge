@@ -1,0 +1,19 @@
+<%- headers = [
+  'Title', 'Alternate Viewing Location', 'Description', 'Creator', 'Subject.Name', 'Subject.TGM', 'Subject.LCSH',
+  'Location', 'Contributors', 'Publisher of Original', 'Date of Original', 'Hidden Date Start', 'Hidden Date End', 'Physical Format',
+  'Physical Description', 'Local Location', 'Relation-Is Part of Item', 'Type', 'Language', 'Format of Digital',
+  'Identifier', 'Collection ID', 'Holding Institution', 'Publisher of Digital', 'Date of Digital', 'Digital Collection',
+  'Library Council', 'Notes', 'Rights', 'Latitude', 'Longitude', 'Technical Data', 'Transcript', 'File Name'
+] -%>
+<%== CSV.generate_line headers -%>
+<%-
+@photos.each do |photo|
+row = [photo.title, nil, photo.description, photo.creator, photo.subject, nil, nil]
+row = row.concat([nil, nil, nil, photo.date_text, photo.date_start&.strftime('%Y-%m-%d'), photo.date_end&.strftime('%Y-%m-%d'), photo.physical_format&.name])
+row = row.concat([photo.physical_description, photo.location, nil, photo.physical_type&.name, nil, nil])
+row = row.concat([photo.identifier, nil, nil, photo.created_at, nil, nil])
+row = row.concat([nil, photo.notes, photo.rights_statement&.name, photo.latitude, photo.longitude, nil, nil, photo.file.filename])
+
+-%>
+<%== CSV.generate_line row -%>
+<%- end -%>

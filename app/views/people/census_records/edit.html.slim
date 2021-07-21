@@ -1,0 +1,9 @@
+.float-right.btn-group
+  = link_to 'Save', "javascript: $('form.simple_form').submit()", class: 'btn btn-primary'
+  = link_to 'View', resource_path(@record), class: 'btn btn-light'
+  = link_to 'View All', collection_path, class: 'btn btn-light'
+  - if can?(:destroy, @record)
+    = link_to 'Delete', resource_path(@record), class: 'btn btn-danger', data: { method: :delete, confirm: 'Are you sure? There is no undo.' }
+h1.page-title= @record.name
+= render 'shared/flag_resolution', item: @record
+= render 'form'

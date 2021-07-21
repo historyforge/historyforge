@@ -1,0 +1,18 @@
+- set_page_title 'Transcriber\'s Corner'
+- content_for :pills do
+  = link_to "Manage Categories", document_categories_path, class: 'btn btn-light'
+  - if can?(:create, Document)
+    = link_to "Add Document", new_document_path, class: 'btn btn-light'
+.col-xs-9#documents
+  - if @documents.blank?
+    p No documents yet!
+  - else
+    - @categories.each do |category|
+      - if @documents[category.id]
+        = panel category.name do
+          - if category.description.present?
+            = simple_format category.description
+          = render 'table', documents: @documents[category.id]
+  - if @documents[nil]
+    h3 Uncategorized
+    = render 'table', documents: @documents[nil]

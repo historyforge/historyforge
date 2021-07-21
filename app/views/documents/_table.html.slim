@@ -1,0 +1,28 @@
+.list-group
+  - documents.each do |row|
+    .list-group-item
+      - if can? :update, row
+        .float-right
+          = link_to 'Edit', edit_document_path(row), class: 'btn btn-sm  btn-light'
+          - if can? :destroy, row
+            = link_to 'Delete', document_path(row), class: 'btn btn-sm btn-light', data: {method: :delete, confirm: 'Are you sure? Regrets may ensue.'}
+          .btn-group
+            = link_to move_to_top_document_path(row), class: 'btn btn-sm btn-light', data: {method: :put} do
+              i.fa.fa-long-arrow-up
+            = link_to move_up_document_path(row), class: 'btn btn-sm btn-light', data: {method: :put} do
+              i.fa.fa-arrow-up
+            = link_to move_down_document_path(row), class: 'btn btn-sm btn-light', data: {method: :put} do
+              i.fa.fa-arrow-down
+            = link_to move_to_bottom_document_path(row), class: 'btn btn-sm btn-light', data: {method: :put} do
+              i.fa.fa-long-arrow-down
+
+      h3
+        - if row.url.present?
+          = link_to row.name, row.url, target: '_blank'
+        - elsif row.file.attached?
+          = link_to row.name, row.file, target: '_blank'
+        - else
+          = row.name
+          span.badge.badge-danger MISSING FILE
+      = simple_format row.description
+

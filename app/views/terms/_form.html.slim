@@ -1,0 +1,8 @@
+= simple_form_for [@vocabulary, @term] do |form|
+  .row
+    .col-8
+      = form.input :name, hint: 'Change to the name of another term if you want to merge this term into that other term.'
+      = form.input :ipums, hint: 'The IPUMS code value for this term.'
+    .col-4
+      br
+      = form.submit 'Save', class: 'btn btn-primary'

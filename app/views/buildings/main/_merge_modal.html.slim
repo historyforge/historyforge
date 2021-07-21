@@ -1,0 +1,19 @@
+- if can?(:merge, Building) && @neighbors
+  - content_for :pills do
+    = link_to '#mergeModal', class: 'btn btn-light', data: { toggle: 'modal' } do
+      i.fa.fa-code-fork
+      | &nbsp; Merge
+  - content_for :body_end do
+    .modal.fade id="mergeModal"
+      .modal-dialog.modal-lg
+        = form_with method: :get, url: new_building_merge_path(@building), builder: SimpleForm::FormBuilder, html: { data: { remote: false } } do |form|
+          .modal-content
+            .modal-header
+              h5.modal-title Merge Building Record
+              button.close(type="button" data-dismiss="modal") &times;
+            .modal-body
+              p.lead Merge another building record into this one.
+              p.lead Choose from the nearest buildings:
+              = form.input_field :merge_id, input_html: { class: 'form-control' }, as: :radio_buttons, bare: true, collection: @neighbors.map { |b| c = b.instance_variable_get(:"@resource"); [c.street_address, c.id] }
+            .modal-footer
+              = form.submit 'Submit', data: {:disable_with => 'Sending...'}, :class => 'btn btn-primary'

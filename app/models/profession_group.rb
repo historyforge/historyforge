@@ -1,0 +1,2 @@
+class ProfessionGroup < ApplicationRecord
+end

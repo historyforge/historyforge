@@ -1,0 +1,7 @@
+.float-right.btn-group
+  = link_to 'Save', "javascript: $('form.edit_locality').submit()", class: 'btn btn-primary'
+  = link_to 'View', @locality, class: 'btn btn-light'
+  = link_to 'View All', localities_path, class: 'btn btn-light'
+  = link_to 'Delete', @locality, class: 'btn btn-danger', data: { method: :delete, confirm: 'Are you sure? There is no undo.' }
+h1.page-title Edit Locality
+= render 'form'

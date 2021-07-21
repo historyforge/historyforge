@@ -1,0 +1,8 @@
+.tab-pane.page-section id="widget#{form.object.id}"
+  = render 'cms/pages/cms_widget_name', form: form
+
+  = panel 'Embed' do
+    = form.input :embed_url, placeholder: 'Share URL', hint: 'From YouTube or Vimeo'
+    = form.input :embed_code, as: :text, placeholder: 'Paste embed code here.'
+
+  = render 'cms_widget_details', form: form

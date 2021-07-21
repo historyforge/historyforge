@@ -1,0 +1,7 @@
+= panel 'CMS Details' do
+  = form.input :css_clear, as: :select, collection: Cms::PageWidget.css_clear_choices
+  = form.input :css_class
+  = form.input :css_id
+  = form.input :access_callback
+  - if form.object.persisted?
+    = form.input :_destroy, as: :boolean, inline_label: 'Delete on SAVE'

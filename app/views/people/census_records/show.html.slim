@@ -1,0 +1,196 @@
+- set_page_title @record.name
+
+- content_for :pills do
+  .dropdown style="display:inline-block"
+    - if can?(:create, Flag)
+      = render 'shared/flag_it', item: @model, item_class: 'btn btn-secondary'
+    - if can?(:update, @model)
+      = link_to edit_resource_path(@model), class: 'btn btn-secondary' do
+        i.fa.fa-pencil
+        | Edit
+    a.btn.btn-primary.dropdown-toggle data-toggle='dropdown' href="#"
+      | Actions
+      = ' '
+      span.caret
+    .dropdown-menu
+      - if !@model.reviewed? && can?(:review, @model)
+        = link_to 'Mark as Reviewed', reviewed_resource_path(@model), method: :put, class: 'dropdown-item'
+      - if can?(:update, @model)
+        = link_to 'Edit', edit_resource_path(@model), class: 'dropdown-item'
+      - if can?(:destroy, @model)
+        = link_to 'Delete', resource_path(@model), data: { method: :delete, confirm: 'Are you sure? There is no return.' }, class: 'dropdown-item'
+      = link_to 'View All', collection_path, class: 'dropdown-item'
+      - if @model.building_id?
+        = link_to 'View Building', building_path(@model.building_id), class: 'dropdown-item'
+
+  - if can?(:create, CensusRecord)
+    | &nbsp;
+    div style="display:inline-block;vertical-align:middle"
+      = form_tag(save_as_resource_path(@model), method: :put, class: 'form-inline') do
+        = select_tag 'then', options_for_select([['In this family', 'family'], ['In this dwelling', 'dwelling'], ['On this page', 'page'], ['In this enumeration district', 'enumeration']], params[:then]), prompt: 'Select', class: 'form-control'
+        = submit_tag 'Add Record', class: 'btn btn-primary'
+
+  - if !@model.reviewed? && can?(:review, @model)
+    | &nbsp;
+    => link_to 'Good to go!', reviewed_resource_path(@model), class: 'btn btn-danger', data: { method: :put, confirm: 'You are about to make this census record public.' }
+
+= render 'shared/flag_resolution', item: @model
+
+.card.mb-3
+  .card-header
+    - if @record.person_id
+      = link_to 'Go to Person Record', @record.person, class: 'float-right'
+    | Census Scope
+  .card-body.p-0
+    table.table.table-bordered.table-condensed.mb-0
+      thead
+        tr
+          th Year
+          th County
+          th City
+          th Ward
+          th Enum Dist
+          th Page
+          th Line
+          - unless controller.year == 1940
+            th Dwelling
+          th= translated_label(Census1940Record, :family_id)
+      tbody
+        tr
+          td= controller.year
+          td= @record.county
+          td= @record.city
+          td= @record.ward
+          td= @record.enum_dist
+          td= "#{@record.page_number}#{@record.page_side}"
+          td= @record.line_number
+          - unless controller.year == 1940
+            td= @record.dwelling_number
+          td= @record.family_id
+
+= view_for @model do |form|
+  .form-horizontal
+    .card.mb-3
+      .card-header Location
+      ul.list-group.list-group-flush
+        li.list-group-item
+          .form-group.row
+            .col-6.col-form-label Census Address
+            .col-6= @record.street_address
+
+        li.list-group-item
+          .form-group.row
+            .col-6.col-form-label Building Record
+            .col-6= link_to_building @record.building
+
+        li.list-group-item
+          .form-group.row
+            .col-6.col-form-label Locality
+            .col-6= @record.locality
+
+    = census_form_renderer.new(form).render
+
+    - if controller.year == 1940 && @model.supplemental?
+      = Census1940SupplementalFormFields.new(form).render
+
+    - if @model.notes.present?
+      = panel('Notes') do
+        = simple_format @model.notes
+
+
+- if @record.notes.present?
+  .card.mb-3
+    .card-header
+      | Notes
+    .card-body= simple_format @record.notes
+
+- if @record.fellows.present?
+  .card.mb-3
+    .card-header
+      | Other Family Members
+    table.table.table-condensed.table-bordered
+      thead
+        tr
+          th Name
+          th Sex
+          th Age
+          th Relation
+          th Profession
+      tbody
+        - @record.fellows.each do |row|
+          tr
+            td= link_to row.name, resource_path(row)
+            td= row.sex
+            td= row.age
+            td= row.relation_to_head
+            td= row.profession
+
+- if can?(:review, CensusRecord)
+  .alert.alert-info
+    = "Entered by #{@record.created_by.andand.name || 'a kind soul'} on #{@record.created_at.to_s(:long)}"
+  - if @record.reviewed?
+    .alert.alert-info
+      = "Reviewed by #{@record.reviewed_by.andand.name || 'a kind soul'} on #{@record.reviewed_at.to_s(:long)}"
+
+  - if @record.versions.present?
+    .card.mb-3
+      .card-header
+        | Change History
+      table.table.table-condensed.table-bordered
+        thead
+          tr
+            th Date
+            th Changes
+        tbody
+          - @record.versions.reverse.each do |version|
+            tr
+              td= version.created_at.to_s
+              td
+                .row
+                  .col-4
+                    strong Field
+                  .col-4
+                    strong From
+                  .col-4
+                    strong To
+                - version.changeset.each do |key, changes|
+                  - next if key == 'updated_at'
+                  .row
+                    .col-4= t("simple_form.labels.census_record.#{key}", default: key.titleize)
+                    .col-4= changes[0] || 'blank'
+                    .col-4= changes[1] || 'blank'
+
+
+- if @model.person_id.blank? && can?(:review, @model)
+  - matches = Person.likely_matches_for(@model)
+  .card.mb-2
+    .card-header
+      = link_to 'Create New Person Record', [:make_person, @model], class: 'float-right', data: { method: :put, confirm: 'This will generate a new person record out of this census record.' }
+      | Match Person Record
+    - if matches.blank?
+      .card-body
+        p No matches on Last Name/First Name or Last Name.
+    - else
+      table.table.table-condensed
+        thead
+          tr
+            th Name
+            th Age in #{@model.year}
+            th Relation
+            th Profession
+            th Address
+            th
+        tbody
+          - matches.each do |match|
+            tr
+              td= link_to match, target: :_blank do
+                => match.name
+                i.fa.fa-external-link
+              td= match.age_in_year(@model.year)
+              td= match.relation_to_head
+              td= match.profession
+              td= match.address
+              td
+                = form_for @model do |form|
+                  = hidden_field_tag 'census_record[person_id]', match.id
+                  = form.submit 'Match!', class: 'btn btn-sm btn-secondary'

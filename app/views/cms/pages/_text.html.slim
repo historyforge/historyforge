@@ -1,0 +1,8 @@
+.tab-pane.page-section id="widget#{form.object.id}"
+  = render 'cms/pages/cms_widget_name', form: form
+  = form.hidden_field :id, class: 'id'
+
+  = form.rich_text_area :html, style: 'min-height:300px'
+  br
+
+  = render 'cms_widget_details', form: form

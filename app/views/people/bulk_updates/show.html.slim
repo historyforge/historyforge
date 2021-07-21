@@ -1,0 +1,16 @@
+- set_page_title "Bulk Update for #{year}"
+- content_for :pills do
+  = link_to 'Bulk Updates', "/census/#{year}/bulk", class: 'btn btn-light'
+  = link_to 'Start Another', "/census/#{year}/bulk/new", class: 'btn btn-primary'
+
+h3= "#{translated_label(resource_class, @bulk_update.field)} changed from #{@bulk_update.value_from} to #{@bulk_update.value_to}."
+h3= "#{pluralize @bulk_update.records.count, "Record"} affected:"
+= table do
+  tbody
+    - @bulk_update.records.each do |row|
+      - record = row.record
+      tr
+        td= record.name
+        td= record.public_send(@bulk_update.field)
+        td= record.street_address
+        td= link_to 'View', record, class: 'btn btn-sm btn-light'

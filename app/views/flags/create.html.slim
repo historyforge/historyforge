@@ -1,0 +1,9 @@
+- set_page_title 'Flag Form Invalid'
+= error_messages_for @flag
+= simple_form_for @flag do |form|
+  = form.hidden_field :flaggable_type
+  = form.hidden_field :flaggable_id
+  = form.input :reason, collection: Flag.reason_choices, label: "What is the issue?"
+  = form.input :message, label: "Please tell us more so we can fix it."
+  .form-actions
+    = form.submit 'Submit', data: {:disable_with => 'Sending...'}, :class => 'btn btn-primary'
