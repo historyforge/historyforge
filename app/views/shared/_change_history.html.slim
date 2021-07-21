@@ -1,16 +1,20 @@
 - if user_signed_in? && item.versions.present?
+  - users = User.where(id: item.versions.map(&:whodunnit).compact.map(&:to_i)).each_with_object({}) { |u, o| o[u.id.to_s] = u.login }
   .card.mb-3
     .card-header
       | Change History
     table.table.table-condensed.table-bordered
       thead
         tr
-          th Date
+          th Metadata
           th Changes
       tbody
         - item.versions.reverse.each do |version|
           tr
-            td= version.created_at.to_s
+            td
+              = version.created_at.to_s
+              br
+              = users[version.whodunnit] || 'Automated Update'
             td
               .row
                 .col-4
