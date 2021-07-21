@@ -90,10 +90,6 @@
 
     = census_form_renderer.new(form).render
 
-    - if controller.year == 1940 && @model.supplemental?
-      = Census1940SupplementalFormFields.new(form).render
-
-
 - if @record.notes.present?
   .card.mb-3
     .card-header
