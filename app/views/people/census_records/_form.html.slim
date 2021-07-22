@@ -91,5 +91,5 @@
         => form.submit 'Save', class: 'btn btn-primary btn-lg'
         label for="then"
           | &nbsp; After saving, add another person:
-        =< select_tag 'then', options_for_select([['In this family', 'family'], ['In this dwelling', 'dwelling'], ['On the same street', 'street'], ['On this page', 'page'], ['In this enumeration district', 'enumeration']], params[:then]), prompt: 'Select'
+        =< select_tag 'then', options_for_select([['In this family', 'family'], ['In this dwelling', 'dwelling'], ['On the same street', 'street'], ['In this enumeration district', 'enumeration']], params[:then]), prompt: 'Select'
         = yield :extra_buttons

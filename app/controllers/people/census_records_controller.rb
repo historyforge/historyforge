@@ -164,37 +164,9 @@ module People
       params.require(:census_record).permit!
     end
 
-    AFTER_SAVED_FIELDS = {
-      'street' => %w[page_number county city ward enum_dist street_prefix street_suffix street_name locality_id],
-      'enumeration' => %w[page_number county city ward enum_dist locality_id],
-      'page' => %w[page_number county city ward enum_dist locality_id],
-      'dwelling' => %w[page_number county city ward enum_dist dwelling_number street_house_number street_prefix street_suffix street_name building_id locality_id],
-      'family' => %w[page_number county city ward enum_dist dwelling_number street_house_number street_prefix street_suffix street_name family_id building_id last_name locality_id]
-    }
-
     def after_saved
       if params[:then].present?
-        attrs = []
-        attrs += AFTER_SAVED_FIELDS[params[:then]]
-        attributes = attrs.inject({}) { |hash, item|
-          hash[item] = @record.public_send(item)
-          hash
-        }
-        if @record.line_number == @record.per_page
-          attributes[:line_number] = 1
-          if @record.page_side == 'A'
-            attributes[:page_side] = 'B'
-            attributes[:page_number] = @record.page_number
-          else
-            attributes[:page_side] = 'A'
-            attributes[:page_number] = @record.page_number + 1
-          end
-        else
-          attributes[:line_number] = (@record.line_number || 0) + 1
-          attributes[:page_side] = @record.page_side
-          attributes[:page_number] = @record.page_number
-        end
-
+        attributes = NextCensusRecordAttributes.new(@record, params[:then]).attributes
         redirect_to action: :new, attributes: attributes
       else
         redirect_to @record
