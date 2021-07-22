@@ -23,3 +23,9 @@ Ransack.configure do |config|
                        validator: proc { |v| v.present? },
                        type: :string
 end
+
+Ransack::Search.class_eval do
+  def self.human_attribute_name(attribute)
+    attribute.to_s.titleize
+  end
+end
