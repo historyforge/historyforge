@@ -1,4 +1,4 @@
-- set_page_title @building.has_proper_name? ? @building.name : @building.primary_street_address
+- set_page_title @building.proper_name? ? @building.name : @building.primary_street_address
 
 = render 'shared/flag_resolution', item: @building
 = render 'merge_modal'
@@ -24,7 +24,7 @@
       .card-header Details
       .card-body
         dl
-          - if @building.has_proper_name?
+          - if @building.proper_name?
             dt Name
             dd= @building.name
           dt Address

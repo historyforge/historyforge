@@ -1,3 +1,7 @@
+# frozen_string_literal: true
+
+# A person record is the glue that connects multiple census records to the same individual person. A person record
+# itself is pretty sparse, mainly glue, but does not have to have census records.
 class Person < ApplicationRecord
   include PersonNames
   include PgSearch::Model
@@ -7,11 +11,9 @@ class Person < ApplicationRecord
   define_enumeration :sex, %w{M F}
   define_enumeration :race, %w{W B M}
 
-  has_one :census_1900_record, dependent: :nullify
-  has_one :census_1910_record, dependent: :nullify
-  has_one :census_1920_record, dependent: :nullify
-  has_one :census_1930_record, dependent: :nullify
-  has_one :census_1940_record, dependent: :nullify
+  CensusYears.each do |year|
+    has_one :"census_#{year}_record", dependent: :nullify, class_name: "Census#{year}Record"
+  end
   has_and_belongs_to_many :photographs
   validates :last_name, :sex, :race, presence: true
 
@@ -22,19 +24,25 @@ class Person < ApplicationRecord
                   against: :last_name,
                   using: %i[dmetaphone]
 
-  # To make the "Mark n Reviewed" button work for now...
+  # To make the "Mark n Reviewed" button not show up because there is not a person review system at the moment
   def reviewed?
     true
   end
 
+  # TODO: Move to service object
   def self.likely_matches_for(record)
     matches = where(sex: record.sex, last_name: record.last_name, first_name: record.first_name).order(:first_name, :middle_name)
     matches = last_name_search(record.last_name).where(sex: record.sex) unless matches.exists?
-    matches = where(sex: record.sex, last_name: record.last_name).order(:first_name, :middle_name) unless matches.exists?
-    matches = matches.includes(:census_1900_record, :census_1910_record, :census_1920_record, :census_1930_record)
+    unless matches.exists?
+      matches = where(sex: record.sex, last_name: record.last_name).order(:first_name, :middle_name)
+    end
+    CensusYears.each do |year|
+      matches = matches.includes(:"census_#{year}_record")
+    end
     matches.select { |match| match.census_records.blank? || match.similar_in_age?(record) }
   end
 
+  # TODO: Move to service object
   def self.probable_match_for(record)
     matches = where(sex: record.sex, last_name: record.last_name, first_name: record.first_name).order(:first_name, :middle_name)
     probables = []
@@ -53,7 +61,9 @@ class Person < ApplicationRecord
             score += 1 if match_record.profession == record.profession
             match_record.fellows.each do |match_record_fellow|
               record.fellows.each do |fellow|
-                score += 1 if fellow.first_name == match_record_fellow.first_name && fellow.relation_to_head == match_record_fellow.relation_to_head
+                if fellow.first_name == match_record_fellow.first_name && fellow.relation_to_head == match_record_fellow.relation_to_head
+                  score += 1
+                end
               end
             end
             return match if score >= 1
@@ -71,15 +81,17 @@ class Person < ApplicationRecord
   end
 
   def age_in_year(year)
-    match = [census_1940_record, census_1930_record, census_1920_record, census_1910_record, census_1900_record].compact.first
-    diff = match.year - year
-    match.age - diff
-  rescue
-    -1
+    match = census_records.first
+    if match
+      diff = match.year - year
+      match.age - diff
+    else
+      -1
+    end
   end
 
   def census_records
-    @census_records ||= [census_1940_record, census_1930_record, census_1920_record, census_1910_record, census_1900_record].compact
+    @census_records ||= CensusYears.map { |year| send("census_#{year}_record")}.compact
   end
 
   def relation_to_head
@@ -97,6 +109,7 @@ class Person < ApplicationRecord
   def estimated_birth_year
     records = census_records&.select { |r| r.age.present? }
     return if records.blank?
+
     records.map { |r| r.year - r.age }.reduce(&:+) / census_records.size
   end
 
@@ -108,6 +121,7 @@ class Person < ApplicationRecord
 
   def estimate_pob
     return if pob.present? || !is_pob_estimated? || census_records.blank?
+
     pobs = census_records.map(&:pob).compact.uniq
     self.pob = pobs.first if pobs.present?
   end

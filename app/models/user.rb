@@ -6,11 +6,9 @@ class User < ApplicationRecord
 
   has_many :search_params, dependent: :destroy
 
-  has_many :census1900_records, dependent: :nullify, foreign_key: :created_by_id
-  has_many :census1910_records, dependent: :nullify, foreign_key: :created_by_id
-  has_many :census1920_records, dependent: :nullify, foreign_key: :created_by_id
-  has_many :census1930_records, dependent: :nullify, foreign_key: :created_by_id
-  has_many :census1940_records, dependent: :nullify, foreign_key: :created_by_id
+  CensusYears.each do |year|
+    has_many :"census#{year}_records", dependent: :nullify, foreign_key: :created_by_id
+  end
 
   validates_presence_of    :login
   validates_length_of      :login,    :within => 3..40

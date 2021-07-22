@@ -126,7 +126,7 @@ class CensusRecord < ApplicationRecord
       last_name_eq: last_name,
       first_name_eq: first_name,
       age_eq: age || 0
-    ).result.count > 0
+    ).result.count.positive?
   end
 
   def street_address

@@ -12,7 +12,7 @@ class BuildingListingSerializer
   end
 
   attribute :name do |object|
-    object.has_proper_name? ? object.name : object.street_address
+    object.proper_name? ? object.name : object.street_address
   end
 
   # has_many :architects, serializer: ArchitectSerializer

@@ -2,7 +2,7 @@ class BuildingSerializer
   include FastJsonapi::ObjectSerializer
 
   attribute :name do |object|
-    object.has_proper_name? ? object.name : object.street_address
+    object.proper_name? ? object.name : object.street_address
   end
 
   attributes :id, :year_earliest, :year_latest, :description, :stories,

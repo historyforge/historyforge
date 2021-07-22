@@ -4,8 +4,8 @@ class Building < ApplicationRecord
   include DefineEnumeration
   include Flaggable
 
-  define_enumeration :address_street_prefix, %w{N S E W}
-  define_enumeration :address_street_suffix, %w{St Rd Ave Blvd Pl Terr Ct Pk Tr Dr Hill Ln Way}.sort
+  define_enumeration :address_street_prefix, %w[N S E W]
+  define_enumeration :address_street_suffix, %w[St Rd Ave Blvd Pl Terr Ct Pk Tr Dr Hill Ln Way].sort
 
   has_many :addresses, dependent: :destroy, autosave: true
   accepts_nested_attributes_for :addresses, allow_destroy: true, reject_if: proc { |p| p['name'].blank? }
@@ -15,40 +15,41 @@ class Building < ApplicationRecord
   belongs_to :frame_type, class_name: 'ConstructionMaterial', optional: true
   belongs_to :lining_type, class_name: 'ConstructionMaterial', optional: true
 
-  has_many :census_1900_records, dependent: :nullify, class_name: 'Census1900Record'
-  has_many :census_1910_records, dependent: :nullify, class_name: 'Census1910Record'
-  has_many :census_1920_records, dependent: :nullify, class_name: 'Census1920Record'
-  has_many :census_1930_records, dependent: :nullify, class_name: 'Census1930Record'
-  has_many :census_1940_records, dependent: :nullify, class_name: 'Census1940Record'
+  CensusYears.each do |year|
+    has_many :"census_#{year}_records", dependent: :nullify, class_name: "Census#{year}Record"
+  end
 
   has_and_belongs_to_many :photos, class_name: 'Photograph', dependent: :nullify
 
   validates :name, presence: true, length: { maximum: 255 }
-  # validates :address_house_number, presence: true, if: :residence?
   validates :year_earliest, :year_latest, numericality: { minimum: 1500, maximum: 2100, allow_nil: true }
   validate :validate_primary_address
 
   delegate :name, to: :frame_type, prefix: true, allow_nil: true
   delegate :name, to: :lining_type, prefix: true, allow_nil: true
 
-  scope :as_of_year, -> (year) { where("(year_earliest is null and year_latest is null) or (year_earliest<=:year and (year_latest is null or year_latest>=:year)) or (year_earliest is null and year_latest>=:year)", year: year)}
-  scope :as_of_year_eq, -> (year) { where("(year_earliest<=:year and (year_latest is null or year_latest>=:year)) or (year_earliest is null and year_latest>=:year)", year: year)}
-  scope :without_residents, -> {
-    joins("LEFT OUTER JOIN census_1900_records ON census_1900_records.building_id=buildings.id")
-      .joins("LEFT OUTER JOIN census_1910_records ON census_1910_records.building_id=buildings.id")
-      .joins("LEFT OUTER JOIN census_1920_records ON census_1920_records.building_id=buildings.id")
-      .joins("LEFT OUTER JOIN census_1930_records ON census_1930_records.building_id=buildings.id")
-      .joins("LEFT OUTER JOIN census_1940_records ON census_1940_records.building_id=buildings.id")
+  scope :as_of_year, lambda { |year|
+    where('(year_earliest is null and year_latest is null) or (year_earliest<=:year and (year_latest is null or year_latest>=:year)) or (year_earliest is null and year_latest>=:year)', year: year)
+  }
+  scope :as_of_year_eq, lambda { |year|
+    where('(year_earliest<=:year and (year_latest is null or year_latest>=:year)) or (year_earliest is null and year_latest>=:year)', year: year)
+  }
+  scope :without_residents, lambda {
+    joins('LEFT OUTER JOIN census_1900_records ON census_1900_records.building_id=buildings.id')
+      .joins('LEFT OUTER JOIN census_1910_records ON census_1910_records.building_id=buildings.id')
+      .joins('LEFT OUTER JOIN census_1920_records ON census_1920_records.building_id=buildings.id')
+      .joins('LEFT OUTER JOIN census_1930_records ON census_1930_records.building_id=buildings.id')
+      .joins('LEFT OUTER JOIN census_1940_records ON census_1940_records.building_id=buildings.id')
       .joins(:building_types)
-      .where("census_1900_records.id IS NULL AND census_1910_records.id IS NULL AND census_1920_records.id IS NULL AND census_1930_records.id IS NULL AND census_1940_records.id IS NULL")
+      .where('census_1900_records.id IS NULL AND census_1910_records.id IS NULL AND census_1920_records.id IS NULL AND census_1930_records.id IS NULL AND census_1940_records.id IS NULL')
       .where(building_types: { name: 'residence' }) }
-  scope :by_street_address, -> {
+  scope :by_street_address, lambda {
     left_outer_joins(:addresses)
-      .order("addresses.name asc, addresses.prefix asc, addresses.house_number asc")
+      .order('addresses.name asc, addresses.prefix asc, addresses.house_number asc')
   }
 
-  def self.ransackable_scopes(auth_object=nil)
-    %i{as_of_year without_residents as_of_year_eq}
+  def self.ransackable_scopes(_auth_object=nil)
+    %i[as_of_year without_residents as_of_year_eq]
   end
 
   has_paper_trail
@@ -80,7 +81,7 @@ class Building < ApplicationRecord
   alias_attribute :latitude, :lat
   alias_attribute :longitude, :lon
 
-  def has_proper_name?
+  def proper_name?
     name && (address_house_number.blank? || !name.include?(address_house_number))
   end
 
@@ -93,11 +94,9 @@ class Building < ApplicationRecord
   end
 
   def do_the_geocode
-    begin
-      geocode
-    rescue Errno::ENETUNREACH
-      nil
-    end
+    geocode
+  rescue Errno::ENETUNREACH
+    nil
   end
 
   def architects_list
@@ -105,7 +104,7 @@ class Building < ApplicationRecord
   end
 
   def architects_list=(value)
-    self.architects = value.split(',').map(&:strip).map {|item| Architect.where(name: item).first_or_create }
+    self.architects = value.split(',').map(&:strip).map {|item| Architect.find_or_create_by(name: item) }
   end
 
   def building_type_name
@@ -164,51 +163,30 @@ class Building < ApplicationRecord
   attr_accessor :residents
 
   def with_filtered_residents(year, params)
-    if year.present?
-      people_class = "Census#{year}Record".constantize
-      people = people_class.where.not(reviewed_at: nil)
-      if params.present?
-        params = JSON.parse(params) if params.is_a?(String)
-        q = params.inject({}) {|hash, item|
-          hash[item[0].to_sym] = item[1] if item[1].present?
-          hash
-        }
-        @residents = people.where(building_id: id).ransack(q).result
-      end
-    end
+    return if year.blank? || params.blank?
+
+    people_class = "Census#{year}Record".constantize
+    people = people_class.where.not(reviewed_at: nil)
+    params = JSON.parse(params) if params.is_a?(String)
+    q = params.each_with_object({}) {|item, hash|
+      hash[item[0].to_sym] = item[1] if item[1].present?
+    }
+    @residents = people.where(building_id: id).ransack(q).result
   end
 
   def with_residents
-    @residents = [1900, 1910, 1920, 1930, 1940].map { |year| send("census_#{year}_records").to_a }.flatten
+    @residents = CensusYears.map { |year| send("census_#{year}_records").to_a }.flatten
     self
   end
 
   def families
-    @families = if residents
-      residents.group_by(&:dwelling_number)
-    else
-      nil
+    @families = residents&.group_by(&:dwelling_number)
+  end
+
+  CensusYears.each do |year|
+    define_method("families_in_#{year}") do
+      send("census_#{year}_records").group_by(&:dwelling_number)
     end
-  end
-
-  def families_in_1900
-    census_1900_records.group_by(&:dwelling_number)
-  end
-
-  def families_in_1910
-    census_1910_records.group_by(&:dwelling_number)
-  end
-
-  def families_in_1920
-    census_1920_records.group_by(&:dwelling_number)
-  end
-
-  def families_in_1930
-    census_1930_records.group_by(&:dwelling_number)
-  end
-
-  def families_in_1940
-    census_1940_records.group_by(&:family_id)
   end
 
   private

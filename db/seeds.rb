@@ -66,7 +66,7 @@ Setting.add 'geocoding_key', value: ENV['GOOGLE_GEOCODING_KEY'], group: 'API Key
 Setting.add 'recaptcha_site_key', value: nil, group: 'API Keys'
 Setting.add 'recaptcha_secret_key', value: nil, group: 'API Keys'
 
-[1900, 1910, 1920, 1930, 1940].each do |year|
+CensusYears.each do |year|
   group = "#{year} US Census"
   Setting.add "enabled_private_#{year}", type: :boolean, value: '1', group: group, name: 'Enabled Private', hint: 'This census year is available to logged-in users for data entry.'
   Setting.add "enabled_public_#{year}", type: :boolean, value: '1', group: group, name: 'Enabled Public', hint: 'This census year is available to the public for search.'
