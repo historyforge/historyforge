@@ -34,28 +34,12 @@ module People
     end
 
     def autocomplete
-      attribute = params[:attribute]
-      term = params[:term]
-      results = if %w[street_name street_house_number].include?(attribute)
-                  building_attribute = if attribute == 'street_name'
-                                         'name'
-                                       elsif attribute == 'street_house_number'
-                                         'house_number'
-                                       end
-                  Address.ransack(:"#{building_attribute}_start" => term).result.distinct.limit(15).pluck(building_attribute)
-                elsif attribute == 'street_address'
-                  Address.ransack(street_address_cont: term).result.distinct.limit(15).map(&:address)
-                elsif %w[first_name middle_name last_name].include?(attribute)
-                  Person.ransack(:"#{attribute}_start" => term).result.distinct.limit(15).pluck(attribute)
-                else
-                  vocab = Vocabulary.controlled_attribute_for year, attribute
-                  if vocab
-                    vocab.terms.ransack(name_start: term).result.distinct.limit(15).pluck('name')
-                  else
-                    resource_class.ransack(:"#{attribute}_start" => term).result.distinct.limit(15).pluck(attribute)
-                  end
-                end
-      render json: results.compact.map(&:strip).uniq
+      results = AttributeAutocomplete.new(
+        attribute: params[:attribute],
+        term: params[:term],
+        year: year
+      ).perform
+      render json: results
     end
 
     def create

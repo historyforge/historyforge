@@ -60,4 +60,5 @@ end
 group :test do
   gem 'apparition', github: 'dfurber/apparition'
   gem 'faker'
+  gem 'rspec-collection_matchers'
 end

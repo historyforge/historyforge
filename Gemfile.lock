@@ -248,6 +248,8 @@ GEM
       actionpack (>= 5.0)
       railties (>= 5.0)
     rexml (3.2.5)
+    rspec-collection_matchers (1.2.0)
+      rspec-expectations (>= 2.99.0.beta1)
     rspec-core (3.10.1)
       rspec-support (~> 3.10.0)
     rspec-expectations (3.10.1)
@@ -379,6 +381,7 @@ DEPENDENCIES
   rails (< 6.1)
   ransack
   recaptcha
+  rspec-collection_matchers
   rspec-rails
   rubocop-rails
   ruby-vips
