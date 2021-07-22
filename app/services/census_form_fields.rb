@@ -17,6 +17,13 @@ class CensusFormFields
     inputs[title] = { as: :divider, label: title }
   end
 
+  def self.halt(**options)
+    self.fields ||= []
+    self.inputs ||= {}
+    fields << 'halt'
+    inputs['halt'] = options.merge({ as: :halt })
+  end
+
   def initialize(form)
     @fields = self.class.fields.dup
     @inputs = self.class.inputs.dup
@@ -38,9 +45,13 @@ class CensusFormFields
               else
                 FormBuilder.new(form)
               end
+
     fields.each do |field|
       config = config_for(field)
-      if config[:as] == :divider
+      case config[:as]
+      when :halt
+        return builder.to_html if form.is_a?(FormViewBuilder) && config[:if].call(form.object)
+      when :divider
         builder.start_card(config[:label])
       else
         builder.add_field(field, config)
