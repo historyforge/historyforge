@@ -159,13 +159,6 @@ class CensusRecord < ApplicationRecord
     @fellows = self.class.where('id<>?', id).ransack(options).result
   end
 
-  def buildings_on_street
-    return [] unless (street_name.present? && city.present?)
-    return @buildings_on_street if defined?(@buildings_on_street)
-
-    @buildings_on_street = BuildingsOnStreet.new(self).perform
-  end
-
   def ensure_housing
     return unless (building_id.blank? && ensure_building == '1' && street_name.present? && city.present? && street_house_number.present?)
 

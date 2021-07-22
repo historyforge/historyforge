@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe AttributeAutocomplete do
-  # name
-  # other attribute
   subject { AttributeAutocomplete.new(attribute: attribute, term: term, year: year).perform }
   let(:year) { 1900 }
 

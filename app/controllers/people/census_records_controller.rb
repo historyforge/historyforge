@@ -22,14 +22,13 @@ module People
     end
 
     def building_autocomplete
-      record = resource_class.new
-      record.street_house_number = params[:house]
-      record.street_prefix = params[:prefix]
-      record.street_name = params[:street]
-      record.street_suffix = params[:suffix]
-      record.city = params[:city]
+      record = resource_class.new street_house_number: params[:house],
+                                  street_prefix: params[:prefix],
+                                  street_name: params[:street],
+                                  street_suffix: params[:suffix],
+                                  city: params[:city]
       record.auto_strip_attributes
-      buildings = BuildingsOnStreet.new(record).perform.map { |building| { id: building.id, name: building.name } }
+      buildings = BuildingsOnStreet.new(record).perform
       render json: buildings.to_json
     end
 
