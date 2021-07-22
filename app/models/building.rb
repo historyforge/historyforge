@@ -77,10 +77,6 @@ class Building < ApplicationRecord
 
   auto_strip_attributes :name, :stories
 
-  def field_for(field)
-    respond_to?(field) ? public_send(field) : '?'
-  end
-
   alias_attribute :latitude, :lat
   alias_attribute :longitude, :lon
 

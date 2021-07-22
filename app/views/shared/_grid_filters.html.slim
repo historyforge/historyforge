@@ -39,10 +39,6 @@
 
       .card-body
         .value-input-container.column-count-3.checkboxes#fields
-          - @search.all_fieldsets.each do |field|
-            label.dropdown-item.checkbox for="fs_#{field}"
-              = check_box_tag 'fs[]', field, @search.fieldsets.include?(field), id: "fs_#{field}", data: { default: @search.is_default_field?(field) }
-              = translated_label resource_class, field
           - @search.all_fields.each do |field|
             label.dropdown-item.checkbox for="f_#{field}"
               = check_box_tag 'f[]', field, @search.f.include?(field), id: "f_#{field}", data: { default: @search.is_default_field?(field) }

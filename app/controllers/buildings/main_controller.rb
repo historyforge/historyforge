@@ -1,6 +1,5 @@
 class Buildings::MainController < ApplicationController
   include AdvancedRestoreSearch
-  include RenderCsv
 
   wrap_parameters format: []
   respond_to :json, only: %i[index show update]
@@ -177,7 +176,6 @@ class Buildings::MainController < ApplicationController
 
   def load_buildings
     authorize! :read, Building
-    massage_params
     @search = BuildingSearch.generate params: params,
                                       user: current_user,
                                       paged: request.format.html?,
@@ -204,15 +202,22 @@ class Buildings::MainController < ApplicationController
     end
   end
 
-  def massage_params
-    unless params[:q]
-      params[:q] = {}
-      params.each_pair do |key, value|
-        params[:q][key] = value unless %w{controller action page format q}.include?(key)
+  def render_csv
+    require 'csv'
+    headers['X-Accel-Buffering'] = 'no'
+    headers['Cache-Control'] = 'no-cache'
+    headers['Content-Type'] = 'text/csv; charset=utf-8'
+    headers['Content-Disposition'] = %(attachment; filename="historyforge-buildings.csv")
+    headers['Last-Modified'] = Time.zone.now.ctime.to_s
+    self.response_body = Enumerator.new do |csv|
+      headers = @search.columns.map { |field| Translator.label(Building, field) }
+      csv << CSV.generate_line(headers)
+      @search.paged = false
+      @search.to_a.each do |row|
+        row = BuildingPresenter.new(row, current_user)
+        row_results = @search.columns.map { |field| row.field_for(field) }
+        csv << CSV.generate_line(row_results)
       end
-    end
-    if params[:q][:s].blank?
-      params[:q][:s] = 'street_address asc'
     end
   end
 end

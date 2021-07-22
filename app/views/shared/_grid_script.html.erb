@@ -1,9 +1,4 @@
 <script type="text/javascript">
-    window.initialGridState = {
-        initialized: false,
-        data: <%= @search.row_data(@search.to_a).to_json.html_safe %>
-    };
-
     document.addEventListener('DOMContentLoaded', (event) => {
       $('#new_s').advancedSearch({
         url: '<%= File.join(url_for().sub(/\/unhoused|\/unreviewed|\/unmatched/, ''), 'advanced_search_filters.json') -%>',

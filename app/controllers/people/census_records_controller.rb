@@ -1,7 +1,6 @@
 module People
   class CensusRecordsController < ApplicationController
     include AdvancedRestoreSearch
-    include RenderCsv
 
     respond_to :json, only: :index
     respond_to :csv, only: :index
@@ -218,6 +217,24 @@ module People
           render_csv
         else
           respond_with @records, each_serializer: CensusRecordSerializer
+        end
+      end
+    end
+
+    def render_csv
+      require 'csv'
+      headers['X-Accel-Buffering'] = 'no'
+      headers['Cache-Control'] = 'no-cache'
+      headers['Content-Type'] = 'text/csv; charset=utf-8'
+      headers['Content-Disposition'] = %(attachment; filename="historyforge-census-records-#{year}.csv")
+      headers['Last-Modified'] = Time.zone.now.ctime.to_s
+      self.response_body = Enumerator.new do |csv|
+        headers = @search.columns.map { |field| Translator.label(resource_class, field) }
+        csv << CSV.generate_line(headers)
+        @search.paged = false
+        @search.to_a.each do |row|
+          row_results = @search.columns.map { |field| row.field_for(field) }
+          csv << CSV.generate_line(row_results)
         end
       end
     end
