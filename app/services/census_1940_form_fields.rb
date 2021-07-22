@@ -196,7 +196,7 @@ class Census1940FormFields < CensusFormFields
                hint: 'Column 34. Enter as written.'
 
   # TODO: tell it to stop if it's showing and it's not supplemental
-  halt if: ->(record) { !record.supplemental? }
+  halt if: ->(record) { record && !record.supplemental? }
 
   divider "Supplemental Questions"
 
