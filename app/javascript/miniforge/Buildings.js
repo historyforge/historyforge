@@ -1,6 +1,5 @@
 import React from 'react'
 import {connect} from "react-redux";
-import SimpleFormat from '../forge/SimpleFormat'
 
 class Building extends React.PureComponent {
     render() {

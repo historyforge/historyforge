@@ -148,8 +148,10 @@ class Map extends React.PureComponent {
             if (currentLayers[0] === layer.name) return
             map.overlayMapTypes.removeAt(0)
         }
-        loadWMS(map, layer, layer.name)
-        this.doOpacity()
+        if (layer) {
+            loadWMS(map, layer, layer.name)
+            this.doOpacity()
+        }
     }
 
     doOpacity() {

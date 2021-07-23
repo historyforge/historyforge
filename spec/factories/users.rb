@@ -15,6 +15,12 @@ FactoryBot.define do
       end
     end
 
+    trait :with_builder_role do
+      after(:create) do |user|
+        user.roles << Role.find_by(name: 'builder')
+      end
+    end
+
     trait :with_administrator_role do
       after(:create) do |user|
         user.roles << Role.find_by(name: 'administrator')
@@ -22,6 +28,7 @@ FactoryBot.define do
     end
 
     factory :active_user, traits: [:active]
+    factory :builder, traits: %i[active with_builder_role]
     factory :census_taker, traits: %i[active with_census_taker_role]
     factory :administrator, traits: %i[active with_administrator_role]
   end

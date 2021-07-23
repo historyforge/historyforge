@@ -7,7 +7,6 @@ require File.expand_path('../config/environment', __dir__)
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 require 'rspec/rails'
 # Add additional requires below this line. Rails is not loaded until this point!
-require 'capybara/apparition'
 require 'rspec/collection_matchers'
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
@@ -38,7 +37,33 @@ RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
   config.include DeviseRequestSpecHelpers, type: :feature
 
-  Capybara.default_driver = :apparition
+  Capybara.register_driver :chrome do |app|
+    Capybara::Selenium::Driver.new(app, browser: :chrome)
+  end
+
+  Capybara.register_driver :headless_chrome do |app|
+    opts = Selenium::WebDriver::Chrome::Options.new
+    opts.add_argument('--headless') unless ENV['UI']
+    opts.add_argument('--no-sandbox')
+    opts.add_argument('--disable-gpu')
+    opts.add_argument('--disable-dev-shm-usage')
+    opts.add_argument('--window-size=1400,1400')
+
+    # opts.add_preference(:download,
+    #                     directory_upgrade: true,
+    #                     prompt_for_download: false,
+    #                     default_directory: download_path)
+
+    opts.add_preference(:browser, set_download_behavior: { behavior: 'allow' })
+    Capybara::Selenium::Driver.new app,
+                                   browser: :chrome,
+                                   options: opts
+  end
+
+  Capybara.default_driver = :headless_chrome
+  Capybara.javascript_driver = :headless_chrome
+
+  Capybara.default_max_wait_time = 3
 
   config.use_transactional_fixtures = true
 

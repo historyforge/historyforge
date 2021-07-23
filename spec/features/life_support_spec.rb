@@ -24,6 +24,5 @@ RSpec.describe 'Checking for life support' do
     fill_in 'Password', with: 'b1g_sekrit'
     click_on 'Log in'
     expect(page).to have_no_content('Log in')
-    expect(page).to have_content(user.login)
   end
 end

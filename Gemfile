@@ -58,7 +58,7 @@ group :development, :test do
 end
 
 group :test do
-  gem 'apparition', github: 'dfurber/apparition'
+  gem 'capybara-selenium'
   gem 'faker'
   gem 'rspec-collection_matchers'
 end
