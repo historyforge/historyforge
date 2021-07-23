@@ -162,7 +162,7 @@ module CensusRecords
 
     def load_census_records
       authorize! :read, resource_class
-      @search = census_record_search_class.generate params: params, user: current_user, entity_class: resource_class, paged: request.format.html?, per: 100
+      @search = census_record_search_class.generate params: params, user: current_user, paged: request.format.html?, per: 100
     end
 
     def render_census_records

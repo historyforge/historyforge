@@ -10,7 +10,7 @@ class CensusRecordSearch
   include ActiveModel::Conversion
   include ActiveModel::Validations
 
-  attr_accessor :page, :s, :f, :fs, :g, :user, :sort, :paged, :per, :entity_class, :from, :to, :scope
+  attr_accessor :page, :s, :f, :fs, :g, :user, :sort, :paged, :per, :from, :to, :scope
 
   attr_writer :scoped
 
@@ -68,7 +68,6 @@ class CensusRecordSearch
 
       add_sorts
     end
-
   end
 
   def add_sorts
@@ -106,9 +105,8 @@ class CensusRecordSearch
     "last_name #{dir}, first_name #{dir}, middle_name #{dir}"
   end
 
-  def self.generate(params: {}, user:, entity_class:, paged: true, per: 25)
+  def self.generate(params: {}, user:, paged: true, per: 25)
     item = self.new
-    item.entity_class = entity_class
     item.user = user
     item.s = params[:s] || {}
     item.f = params[:f] || item.default_fields

@@ -17,4 +17,8 @@ class CensusRecord1930Search < CensusRecordSearch
       notes latitude longitude
     ]
   end
+
+  def entity_class
+    Census1930Record
+  end
 end

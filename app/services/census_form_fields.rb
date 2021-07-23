@@ -61,7 +61,7 @@ class CensusFormFields
   end
 
   def resource_class
-    @resource_class ||= self.class.to_s.sub(/FormFields/, 'Record').sub('Supplemental', '').constantize
+    @resource_class ||= self.class.to_s.sub(/FormFields/, 'Record').safe_constantize
   end
 
   class Card
