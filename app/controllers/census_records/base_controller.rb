@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 # Base class for census record CRUD actions.
-module People
-  class CensusRecordsController < ApplicationController
+module CensusRecords
+  class BaseController < ApplicationController
     include AdvancedRestoreSearch
 
     respond_to :json, only: :index

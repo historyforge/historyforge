@@ -57,36 +57,36 @@ Rails.application.routes.draw do
   end
 
   CensusYears.each do |year|
-    resources :bulk, controller: 'people/bulk_updates', path: "census/#{year}/bulk", as: "census_#{year}_bulk"
+    resources :bulk, controller: 'census_records/bulk_updates', path: "census/#{year}/bulk", as: "census_#{year}_bulk"
   end
 
   resources :census_1900_records,
             concerns: [:people_directory],
-            controller: 'people/census_records_nineteen_aught',
+            controller: 'census_records/nineteen_aught',
             path: 'census/1900',
             as: 'census1900_records'
 
   resources :census_1910_records,
             concerns: [:people_directory],
-            controller: 'people/census_records_nineteen_ten',
+            controller: 'census_records/nineteen_ten',
             path: 'census/1910',
             as: 'census1910_records'
 
   resources :census_1920_records,
             concerns: [:people_directory],
-            controller: 'people/census_records_nineteen_twenty',
+            controller: 'census_records/nineteen_twenty',
             path: 'census/1920',
             as: 'census1920_records'
 
   resources :census_1930_records,
             concerns: [:people_directory],
-            controller: 'people/census_records_nineteen_thirty',
+            controller: 'census_records/nineteen_thirty',
             path: 'census/1930',
             as: 'census1930_records'
 
   resources :census_1940_records,
             concerns: [:people_directory],
-            controller: 'people/census_records_nineteen_forty',
+            controller: 'census_records/nineteen_forty',
             path: 'census/1940',
             as: 'census1940_records'
 
