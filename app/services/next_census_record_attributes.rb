@@ -7,6 +7,7 @@ class NextCensusRecordAttributes
   ALWAYS_FIELDS = %i[county city ward enum_dist locality_id].freeze
 
   AFTER_SAVED_FIELDS = {
+    'page' => [],
     'enumeration' => [],
     'street' => %i[street_prefix street_suffix street_name],
     'dwelling' => %i[dwelling_number street_house_number street_prefix street_suffix street_name building_id],
