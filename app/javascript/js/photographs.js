@@ -96,7 +96,7 @@ class PhotoWizard {
         const formId = `photograph_building_ids_${id}`
         $(`#${formId}`).closest('.form-check').remove()
         const html = `<div class="form-check"><input type="checkbox" class="form-check-input" name="photograph[building_ids][]" id="${formId}" value="${id}" checked /><label class="form-check-label" for="${formId}">${address}</label></div>`
-        $('.photograph_photograph_building_ids').append(html)
+        $('.photograph_building_ids').append(html)
         $('#photograph_latitude').val(lat)
         $('#photograph_longitude').val(lon)
     }
