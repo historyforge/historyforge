@@ -128,19 +128,6 @@ class CensusRecordSearch
     item
   end
 
-  def to_csv(csv)
-    @paged = false
-    require 'csv'
-
-    headers = ['ID'] + columns.map { |field| translated_label(field) }
-    csv << CSV.generate_line(headers)
-
-    to_a.each do |row|
-      row_results = [row.id] + columns.map { |field| row.field_for(field) }
-      csv << CSV.generate_line(row_results)
-    end
-  end
-
   def paged?
     !defined?(@paged) || paged
   end
@@ -179,7 +166,7 @@ class CensusRecordSearch
 
   def row_data(records)
     records.map do |record|
-      columns.each_with_object({ id: record.id} ) do |column, hash|
+      columns.each_with_object({ id: record.id}) do |column, hash|
         value = record.field_for(column)
         value = { name: value, reviewed: record.reviewed? } if column == 'name'
         hash[column] = value

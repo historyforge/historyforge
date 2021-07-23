@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# Base class for census record CRUD actions.
 module People
   class CensusRecordsController < ApplicationController
     include AdvancedRestoreSearch
@@ -128,6 +131,7 @@ module People
 
     private
 
+    # This is a blanket access check for whether this census year is activated for this HF instance
     def check_access
       permission_denied unless can_census?(year)
     end
@@ -142,7 +146,7 @@ module People
 
     def resource_params
       params[:census_record].each do |key2, value|
-        params[:census_record][key2] = nil if value == 'on' || value == 'nil'
+        params[:census_record][key2] = nil if ['on', 'nil'].include?(value)
       end
       params.require(:census_record).permit!
     end
@@ -162,34 +166,33 @@ module People
     end
 
     def render_census_records
-      if request.format.html?
-        render action: :index
+      respond_to do |format|
+        format.html { render action: :index }
+        format.csv { render_csv }
+        format.json { render_json }
+      end
+    end
+
+    def render_json
+      if params[:from]
+        render json: @search.row_data(@search.to_a)
       else
-        @records = @search.to_a
-        if params[:from]
-          render json: @search.row_data(@records)
-        elsif request.format.csv?
-          render_csv
-        else
-          respond_with @records, each_serializer: CensusRecordSerializer
-        end
+        respond_with @search.to_a, each_serializer: CensusRecordSerializer
       end
     end
 
     def render_csv
-      require 'csv'
       headers['X-Accel-Buffering'] = 'no'
       headers['Cache-Control'] = 'no-cache'
       headers['Content-Type'] = 'text/csv; charset=utf-8'
-      headers['Content-Disposition'] = %(attachment; filename="historyforge-census-records-#{year}.csv")
+      headers['Content-Disposition'] = "attachment; filename=\"historyforge-census-records-#{year}.csv\""
       headers['Last-Modified'] = Time.zone.now.ctime.to_s
       self.response_body = Enumerator.new do |csv|
         headers = @search.columns.map { |field| Translator.label(resource_class, field) }
         csv << CSV.generate_line(headers)
         @search.paged = false
         @search.to_a.each do |row|
-          row_results = @search.columns.map { |field| row.field_for(field) }
-          csv << CSV.generate_line(row_results)
+          csv << CSV.generate_line(@search.columns.map { |field| row.field_for(field) })
         end
       end
     end

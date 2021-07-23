@@ -28,6 +28,7 @@ class BuildingSearch
     @results
   end
 
+  # This serves the Forge
   def as_json
     sql = scoped.select("buildings.id,buildings.lat,buildings.lon").to_sql
     sql = "select array_to_json(array_agg(row_to_json(t))) as data, count(t.id) as meta from (#{sql}) t"

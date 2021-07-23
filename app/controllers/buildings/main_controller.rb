@@ -183,31 +183,28 @@ class Buildings::MainController < ApplicationController
   end
 
   def render_buildings
-    if request.format.html?
-      render action: :index
-    elsif request.format.csv?
-      render_csv
-    else
-      if request.format.json? && !params[:from]
-        @search.expanded = true
-        @buildings = @search.as_json
-      end
-
-      if params[:from]
-        @buildings = @search.to_a.map {|building| BuildingPresenter.new(building, current_user) }
-        render json: @search.row_data(@buildings)
-      else
-        respond_with @buildings, each_serializer: BuildingListingSerializer
-      end
+    respond_to do |format|
+      format.html { render action: :index }
+      format.csv  { render_csv }
+      format.json { params[:from] ? render_grid : render_forge }
     end
   end
 
+  def render_forge
+    @search.expanded = true
+    render plain: @search.as_json, content_type: 'application/json'
+  end
+
+  def render_grid
+    @buildings = @search.to_a.map {|building| BuildingPresenter.new(building, current_user) }
+    render json: @search.row_data(@buildings)
+  end
+
   def render_csv
-    require 'csv'
     headers['X-Accel-Buffering'] = 'no'
     headers['Cache-Control'] = 'no-cache'
     headers['Content-Type'] = 'text/csv; charset=utf-8'
-    headers['Content-Disposition'] = %(attachment; filename="historyforge-buildings.csv")
+    headers['Content-Disposition'] = 'attachment; filename="historyforge-buildings.csv'
     headers['Last-Modified'] = Time.zone.now.ctime.to_s
     self.response_body = Enumerator.new do |csv|
       headers = @search.columns.map { |field| Translator.label(Building, field) }
