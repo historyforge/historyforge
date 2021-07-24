@@ -82,7 +82,7 @@ class Person < ApplicationRecord
 
   def age_in_year(year)
     match = census_records.first
-    if match
+    if match&.age
       diff = match.year - year
       match.age - diff
     else
