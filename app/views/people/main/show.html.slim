@@ -12,12 +12,12 @@
 dl
   dt Person ID
   dd= @person.id
-  dt Sex
-  dd= @person.sex
-  dt Race
-  dd= @person.race
-  dt Est Birth Year
-  dd= @person.estimated_birth_year
+  dt About
+  dd
+    = "#{Translator.option(:race, @person.race)} " if @person.race
+    = "#{Translator.option(:sex, @person.sex)} " if @person.sex
+    - if @person.birth_year
+      = "born in #{@person.birth_year}"
 
 .card.mb-3
   .card-header Census Records
