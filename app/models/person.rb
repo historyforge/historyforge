@@ -76,19 +76,22 @@ class Person < ApplicationRecord
     nil
   end
 
+  # Takes a census record and returns whether this person's age is within two years of the census record's age
   def similar_in_age?(target)
-    return false if target.age.blank?
-
-    (age_in_year(target.year) - target.age).abs <= 2
+    (age_in_year(target.year) - (target.age || 0)).abs <= 2
   end
 
   def age_in_year(year)
-    match = census_records.first
-    if match&.age
-      diff = match.year - year
-      match.age - diff
+    if birth_year
+      year - birth_year
     else
-      -1
+      match = census_records.first
+      if match
+        diff = match.year - year
+        (match.age || 0) - diff
+      else
+        -1
+      end
     end
   end
 

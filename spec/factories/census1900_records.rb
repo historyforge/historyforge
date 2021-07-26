@@ -1,5 +1,8 @@
 FactoryBot.define do
   factory(:census1900_record) do
+    city { 'Ithaca' }
+    county { 'Tompkins' }
+    state { 'New York' }
     first_name { Faker::Name.first_name }
     middle_name { Faker::Name.first_name }
     last_name { Faker::Name.last_name }
@@ -14,5 +17,6 @@ FactoryBot.define do
     enum_dist { 1 }
     locality
     dwelling_number { 1 }
+    language_spoken { 'English' }
   end
 end
