@@ -1,6 +1,6 @@
 = review_error_messages_for @photograph
 
-= simple_form_for @photograph, html: { id: 'photo-wizard' } do |form|
+= simple_form_for @photograph, html: { id: 'photo-wizard', data: { controller: 'photo-wizard' } } do |form|
   .card.active
     .float-right
       button.btn.btn-secondary.btn-next.step-1-next-button type="button" disabled=!form.object.file.attached? Next &raquo;
@@ -21,23 +21,9 @@
     .card-body
       .row
         .col-8
-          = form.input :caption, as: :text, label: "Caption for HistoryForge", hint: "When this photo appears with buildings and people, this text will be used. Title and description are reserved for NYHeritage metadata."
-        .col-3.offset-1.thumb= thumb_for form.object
-    .card-footer.d-flex.justify-content-center
-      button.btn.btn-secondary.btn-lg.btn-prev type="button" &laquo; Previous
-      button.btn.btn-secondary.btn-lg.btn-next type="button" Next &raquo;
+          = form.input :caption, as: :text, label: "Caption", hint: "When this photo appears with buildings and people, this text will be used. Title and description are reserved for NYHeritage metadata."
+          = form.input :description, as: :text, label: "Description", hint: "If there is a longer story to show when someone goes to the page for this media, put it here."
 
-  .card
-    .float-right
-      button.btn.btn-secondary.btn-prev type="button" &laquo; Previous
-      button.btn.btn-secondary.btn-next type="button" Next &raquo;
-    .card-body
-      .row
-        .col-8
-          = form.input :title
-          = form.input :description, as: :text
-          = form.input :creator, hint: 'Who took the photo?'
-          = form.input :subject, hint: 'Names of people, Library of Congress subject headings...'
         .col-3.offset-1.thumb= thumb_for form.object
     .card-footer.d-flex.justify-content-center
       button.btn.btn-secondary.btn-lg.btn-prev type="button" &laquo; Previous
@@ -66,7 +52,28 @@
       button.btn.btn-secondary.btn-lg.btn-prev type="button" &laquo; Previous
       button.btn.btn-secondary.btn-lg.btn-next type="button" Next &raquo;
 
-  / Connect to people
+  .card
+    .float-right
+      button.btn.btn-secondary.btn-prev type="button" &laquo; Previous
+      button.btn.btn-secondary.btn-next type="button" Next &raquo;
+    .card-body
+      .row
+        .col-8
+          - if form.object.person_ids.present?
+            = render 'person_fields', form: form
+          - else
+            #person-question
+              p.lead Is this a picture of a person?
+              p
+                button.btn.btn-lg.btn-primary type="button" YES
+                | &nbsp;
+                button.btn.btn-secondary.btn-lg.btn-next type="button" NO
+            #person-fields style="display:none"
+              = render 'person_fields', form: form
+        .col-3.offset-1.thumb= thumb_for form.object
+    .card-footer.d-flex.justify-content-center
+      button.btn.btn-secondary.btn-lg.btn-prev type="button" &laquo; Previous
+      button.btn.btn-secondary.btn-lg.btn-next type="button" Next &raquo;
 
   .card
     .float-right
@@ -123,43 +130,7 @@
                 = form.input :date_month_end, collection: months, label: 'Enter the ending month:'
                 = form.input :date_day_end, collection: days, label: 'Enter the ending day:'
 
-          / p For example, if you know the picture was probably taken in 1930 but don't know when, you should enter "1930" as the date of original, then start and end dates from the beginning of 1930 to the end of 1930.
           = form.input :date_text, label: 'Date of original', hint: 'Human readable date such as "1940" or "Ca. July 1935" ...'
-        .col-3.offset-1.thumb= thumb_for form.object
-    .card-footer.d-flex.justify-content-center
-      button.btn.btn-secondary.btn-lg.btn-prev type="button" &laquo; Previous
-      button.btn.btn-secondary.btn-lg.btn-next type="button" Next &raquo;
-
-  .card
-    .float-right
-      button.btn.btn-secondary.btn-prev type="button" &laquo; Previous
-      button.btn.btn-secondary.btn-next type="button" Next &raquo;
-    .card-body
-      .row
-        .col-8
-          p.lead What is the physical format of the photograph? Click on an item in the list:
-          = form.hidden_field :physical_type_id
-          = form.hidden_field :physical_format_id
-          .list-group#physical-formats
-            - PhysicalType.still_image.physical_formats.order(:id).each do |item|
-              .list-group-item data-physical-format-id=item.id class=(form.object.physical_format_id == item.id ? 'active' : nil)
-                h4 #{item.name}
-                = simple_format item.description
-        .col-3.offset-1.thumb= thumb_for form.object
-    .card-footer.d-flex.justify-content-center
-      button.btn.btn-secondary.btn-lg.btn-prev type="button" &laquo; Previous
-      button.btn.btn-secondary.btn-lg.btn-next type="button" Next &raquo;
-
-  .card
-    .float-right
-      button.btn.btn-secondary.btn-prev type="button" &laquo; Previous
-      button.btn.btn-secondary.btn-next type="button" Next &raquo;
-    .card-body
-      .row
-        .col-8
-          = form.input :physical_description
-          = form.input :location, label: 'Physical location', hint: 'Not the location depicted in the picture, but the actual location of the physical picture.'
-          = form.input :identifier, hint: 'Identifying number on piece, typically catalog number.'
         .col-3.offset-1.thumb= thumb_for form.object
     .card-footer.d-flex.justify-content-center
       button.btn.btn-secondary.btn-lg.btn-prev type="button" &laquo; Previous
@@ -175,26 +146,6 @@
           = form.input :notes
         .col-3.offset-1.thumb= thumb_for form.object
     .card-footer.d-flex.justify-content-center
-      button.btn.btn-secondary.btn-lg.btn-prev type="button" &laquo; Previous
-      button.btn.btn-secondary.btn-lg.btn-next type="button" Next &raquo;
-
-  .card
-    .float-right
-      button.btn.btn-secondary.btn-prev type="button" &laquo; Previous
-      = form.submit 'Submit', class: 'btn btn-secondary btn-next'
-    .card-body
-      .row
-        .col-8
-          p.lead Which of the following rights statements applies to the photograph? Click on the one that applies:
-          = form.hidden_field :rights_statement_id
-          .list-group#rights-statements
-            - RightsStatement.order(:id).each do |item|
-              .list-group-item data-rights-statement-id=item.id class=(form.object.rights_statement_id == item.id ? 'active' : nil)
-                h4 #{item.name}
-                = simple_format item.description
-        .col-3.offset-1.thumb= thumb_for form.object
-    .card-footer.d-flex.justify-content-center
-      button.btn.btn-secondary.btn-lg.btn-prev type="button" &laquo; Previous
       = form.submit 'Submit', class: 'btn btn-lg btn-primary'
 
 p.clearfix.lead.text-center You can click Previous and Next buttons at any time.

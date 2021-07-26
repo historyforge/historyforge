@@ -1,0 +1,4 @@
+= form.input :person_ids, collection: form.object.people, as: :check_boxes, label: ''
+p.lead To add a person to the list, type an name:
+input.form-control.mb-3#person-autocomplete placeholder="Enter name here"
+#person-results.list-group style="display:none"

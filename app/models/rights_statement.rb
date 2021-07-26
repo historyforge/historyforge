@@ -1,2 +1,0 @@
-class RightsStatement < ApplicationRecord
-end

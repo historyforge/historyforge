@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_19_173748) do
+ActiveRecord::Schema.define(version: 2021_07_26_141221) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
@@ -787,16 +787,12 @@ ActiveRecord::Schema.define(version: 2021_07_19_173748) do
 
   create_table "photographs", force: :cascade do |t|
     t.bigint "created_by_id"
-    t.bigint "rights_statement_id"
     t.bigint "building_id"
-    t.string "title"
     t.text "description"
     t.string "creator"
-    t.string "subject"
     t.string "date_text"
     t.date "date_start"
     t.date "date_end"
-    t.text "physical_description"
     t.string "location"
     t.string "identifier"
     t.text "notes"
@@ -806,34 +802,11 @@ ActiveRecord::Schema.define(version: 2021_07_19_173748) do
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "reviewed_by_id"
     t.datetime "reviewed_at"
-    t.bigint "physical_type_id"
-    t.bigint "physical_format_id"
     t.integer "date_type", default: 0
     t.text "caption"
     t.index ["building_id"], name: "index_photographs_on_building_id"
     t.index ["created_by_id"], name: "index_photographs_on_created_by_id"
-    t.index ["physical_format_id"], name: "index_photographs_on_physical_format_id"
-    t.index ["physical_type_id"], name: "index_photographs_on_physical_type_id"
     t.index ["reviewed_by_id"], name: "index_photographs_on_reviewed_by_id"
-    t.index ["rights_statement_id"], name: "index_photographs_on_rights_statement_id"
-  end
-
-  create_table "physical_formats", force: :cascade do |t|
-    t.string "name"
-    t.text "description"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-  end
-
-  create_table "physical_formats_types", id: false, force: :cascade do |t|
-    t.bigint "physical_format_id", null: false
-    t.bigint "physical_type_id", null: false
-  end
-
-  create_table "physical_types", force: :cascade do |t|
-    t.string "name"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "profession_groups", force: :cascade do |t|
@@ -859,14 +832,6 @@ ActiveRecord::Schema.define(version: 2021_07_19_173748) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["profession_group_id"], name: "index_professions_on_profession_group_id"
     t.index ["profession_subgroup_id"], name: "index_professions_on_profession_subgroup_id"
-  end
-
-  create_table "rights_statements", force: :cascade do |t|
-    t.string "name"
-    t.text "description"
-    t.string "url"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "roles", id: :serial, force: :cascade do |t|
@@ -1021,9 +986,6 @@ ActiveRecord::Schema.define(version: 2021_07_19_173748) do
   add_foreign_key "flags", "users", column: "resolved_by_id"
   add_foreign_key "map_overlays", "localities"
   add_foreign_key "photographs", "buildings"
-  add_foreign_key "photographs", "physical_formats"
-  add_foreign_key "photographs", "physical_types"
-  add_foreign_key "photographs", "rights_statements"
   add_foreign_key "photographs", "users", column: "created_by_id"
   add_foreign_key "photographs", "users", column: "reviewed_by_id"
   add_foreign_key "profession_subgroups", "profession_groups"

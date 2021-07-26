@@ -83,7 +83,7 @@
                 = picture_tag photo: photo, style: 'quarter', img_class: 'img-thumbnail'
                 = simple_format photo.full_caption
 
-    - %w[1900 1910 1920 1930 1940].each do |year|
+    - CensusYears.each do |year|
       - if @building.public_send("census_#{year}_records").present?
         .card.mb-1
           .card-header

@@ -44,3 +44,16 @@ dl
           td= row.relation_to_head
           td= link_to 'View', row
 
+/- photos = can?(:review, Photo) ? @building.photos : @building.photos.reviewed
+- photos = @person.photos
+- if photos.present?
+  .card.mb-1
+    .card-header
+      = link_to 'See all', [@person, :photographs], class: 'btn btn-light float-right'
+      | Photos
+    .card-body
+      .row
+        - photos.each do |photo|
+          .person-photo.col-sm-4 data-href=person_photograph_path(@person, photo)
+            = picture_tag photo: photo, style: 'quarter', img_class: 'img-thumbnail'
+            = simple_format photo.full_caption

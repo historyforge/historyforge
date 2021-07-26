@@ -19,25 +19,6 @@ ConstructionMaterial.find_or_create_by(name: 'stone', color: 'blue')
 ConstructionMaterial.find_or_create_by(name: 'iron', color: 'gray')
 ConstructionMaterial.find_or_create_by(name: 'adobe', color: 'green')
 
-file = File.open(Rails.root.join('db', 'PhysicalFormats.txt')).read
-entries = file.split("\n\n")
-entries.each do |row|
-  entry = row.split("\n")
-  types = entry[1].split(";").map(&:strip).map { |t| PhysicalType.find_or_create_by(name: t.titleize) }
-
-  item = PhysicalFormat.find_or_initialize_by name: entry[0]
-  item.description = entry[2]
-  item.physical_types = types
-  item.save
-end
-
-file = File.open(Rails.root.join('db', 'RightsStatements.txt')).read
-entries = file.split("\n\n")
-entries.each do |row|
-  entry = row.split("\n")
-  RightsStatement.find_or_create_by name: entry[0], description: entry[1], url: entry[2]
-end
-
 if Vocabulary.count == 0
   [
     ['Language Spoken', 'language'],

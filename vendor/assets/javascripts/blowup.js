@@ -74,7 +74,7 @@
     // Mouse motion on image
     $element.mousemove(function (e) {
       // Otherwise it doesn't calculate correctly
-      const $contentArea = $('body > .container-fluid')[0]
+      const $contentArea = document.querySelector('body > .container')
 
       // Lens position coordinates
       var lensX = e.pageX - $options.width / 2;

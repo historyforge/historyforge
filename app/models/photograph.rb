@@ -5,9 +5,6 @@ class Photograph < ApplicationRecord
 
   has_and_belongs_to_many :buildings
   has_and_belongs_to_many :people
-  belongs_to :physical_type, optional: true
-  belongs_to :physical_format, optional: true
-  belongs_to :rights_statement, optional: true
   has_one_attached :file
 
   alias_attribute :name, :title
@@ -18,11 +15,12 @@ class Photograph < ApplicationRecord
   enum date_type: %i[year month day years months days]
 
   before_validation :set_dates
-  validates :title, :description, :physical_type_id, :physical_format_id, :rights_statement_id, presence: true, if: :reviewed?
   validates :file, attached: true, content_type: ['image/jpg', 'image/jpeg', 'image/png']
 
+  has_paper_trail
+
   pg_search_scope :full_text_search,
-                  against: %i[title description creator subject location physical_description notes],
+                  against: %i[caption location notes],
                   using: {
                       tsearch: { prefix: true, any_word: true }
                   }

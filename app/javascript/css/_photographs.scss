@@ -6,8 +6,6 @@
 
 #photo-wizard {
   .card {
-    //position: absolute;
-    //width: calc(100% - 40px);
     background: white;
     display: none;
 
@@ -20,13 +18,6 @@
       top: 20px;
     }
   }
-  //.card.activating,
-  //.card.deactivating {
-  //  z-index: -1;
-  //  opacity: 0;
-  //  transition: 0.5s ease opacity;
-  //  display: block;
-  //}
   .card.active {
     z-index: 1;
     opacity: 1;
@@ -84,7 +75,7 @@
 
 #photograph-page {
   h1 {
-    font-size: 1rem;
+    //font-size: 1rem;
     margin-bottom: 24px;
   }
   h2 {

@@ -7,6 +7,16 @@ module People
       render_people
     end
 
+    def autocomplete
+      @people = Person.fuzzy_name_search(params[:term]).limit(5).by_name
+      render json: @people.map { |person|
+        {
+          id: person.id,
+          name: person.name
+        }
+      }
+    end
+
     def show
       @person = Person.find params[:id]
       authorize! :read, @person

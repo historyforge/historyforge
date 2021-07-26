@@ -1,20 +1,7 @@
-$(document).ready(function () {
-    $('#photo-wizard').each(function () {
-        new PhotoWizard()
-    })
-    $('#photograph').each(function () {
-        new PhotoPage()
-    })
-})
+import {Controller} from "stimulus";
 
-class PhotoPage {
-    constructor() {
-        $('#photograph').blowup({scale: 2, cursor: false, width: 300, height: 300})
-    }
-}
-
-class PhotoWizard {
-    constructor() {
+export default class extends Controller {
+    connect() {
         this.addStepNumbers()
 
         window.scrollTo(0, 0)
@@ -25,8 +12,6 @@ class PhotoWizard {
         $('button.btn-next').on('click', (e) => {
             this.next(e.target)
         })
-        $('#physical-formats .list-group-item').on('click', (e) => this.selectFormat(e.target))
-        $('#rights-statements .list-group-item').on('click', (e) => this.selectStatement(e.target))
 
         $('#photograph_file').on('change', function () {
             if (this.files.length) {
@@ -42,6 +27,7 @@ class PhotoWizard {
         })
 
         this.initBuildings()
+        this.initPeople()
         this.initDates()
     }
 
@@ -56,6 +42,37 @@ class PhotoWizard {
                 disable_search_threshold: 15
             })
 
+        })
+    }
+
+    initPeople() {
+        $('#person-question .btn-primary').on('click', function () {
+            $('#person-question').fadeOut()
+            $('#person-fields').fadeIn()
+        })
+
+        $('#person-autocomplete').on('keyup', (e) => {
+            if (e.keyCode === 13) {
+                e.stopPropagation()
+            }
+            const input = e.target
+            const value = input.value
+            if (value.length > 1) {
+                $.getJSON('/people/autocomplete', {term: value}, (json) => {
+                    const people = []
+                    json.forEach((person) => {
+                        people.push(`<div class="list-group-item list-group-item-action" data-person=${person.id}>${person.name}</div>`)
+                    })
+                    $('#person-results').html(people).show()
+                    $('#person-results .list-group-item').on('click', (e) => {
+                        const id = e.target.dataset.person
+                        const name = e.target.innerHTML
+                        this.addPerson(id, name)
+                        input.value = null
+                        $('#person-results').html('')
+                    })
+                })
+            }
         })
     }
 
@@ -101,6 +118,13 @@ class PhotoWizard {
         $('#photograph_longitude').val(lon)
     }
 
+    addPerson(id, name) {
+        const formId = `photograph_person_ids_${id}`
+        $(`#${formId}`).closest('.form-check').remove()
+        const html = `<div class="form-check"><input type="checkbox" class="form-check-input" name="photograph[person_ids][]" id="${formId}" value="${id}" checked /><label class="form-check-label" for="${formId}">${name}</label></div>`
+        $('.photograph_person_ids').append(html)
+    }
+
     addStepNumbers() {
         const steps = $('#photo-wizard .card')
         const numSteps = steps.length
@@ -127,18 +151,6 @@ class PhotoWizard {
 
     next(el) {
         this.initCard($(el).closest('.card').deactivateCard().next().activateCard())
-    }
-
-    selectFormat(el) {
-        $('#physical-formats .list-group-item').removeClass('active')
-        const id = $(el).closest('.list-group-item').addClass('active').attr('data-physical-format-id')
-        $('#photograph_physical_format_id').val(id)
-    }
-
-    selectStatement(el) {
-        $('#rights-statements .list-group-item').removeClass('active')
-        const id = $(el).closest('.list-group-item').addClass('active').attr('data-rights-statement-id')
-        $('#photograph_rights_statement_id').val(id)
     }
 
     initMap() {
@@ -200,20 +212,14 @@ class PhotoWizard {
 
 $.fn.activateCard = function () {
     return this.each(function () {
-        // $(this).addClass('activating')
-        // window.setTimeout(() => {
-            $(this).addClass('active')
-        // }, 100)
+        $(this).addClass('active')
         return this
     })
 }
 
 $.fn.deactivateCard = function () {
     return this.each(function () {
-        $(this).removeClass('active') //.addClass('deactivating')
-        // window.setTimeout(() => {
-        //     $(this).removeClass('deactivating')
-        // }, 1000)
+        $(this).removeClass('active')
         return this
     })
 }

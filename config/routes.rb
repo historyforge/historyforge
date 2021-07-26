@@ -12,12 +12,6 @@ Rails.application.routes.draw do
 
   get '/forge' => 'forge#index', as: 'forge'
 
-  get '/cart' => 'photo_carts#index'
-  post '/cart' => 'photo_carts#create'
-  post '/cart/fetch' => 'photo_carts#fetch'
-  post '/cart/export.csv' => 'photo_carts#export'
-  post '/cart/export.zip' => 'photo_carts#export'
-
   devise_for :users,
              path: 'u',
              skip: [ :registerable, :confirmable ],
@@ -117,8 +111,10 @@ Rails.application.routes.draw do
   resources :people, controller: 'people/main' do
     collection do
       get :advanced_search_filters
+      get :autocomplete
     end
     resources :merges, only: %i[new create], controller: 'people/merges'
+    resources :photographs
   end
 
   resources :photographs do

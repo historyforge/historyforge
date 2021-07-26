@@ -30,20 +30,16 @@ import '../js/add_child'
 import '../js/advanced_search'
 import '../js/census_form'
 import '../js/home_page'
-import '../js/photographs'
 import '../js/terms'
 
 import Rails from '@rails/ujs'
 Rails.start()
 
-import Cart from './../js/cart'
 import "controllers"
 import React from 'react'
 import ReactDOM from 'react-dom'
 import Forge from '../forge/App'
 import MiniForge from '../miniforge/App'
-
-window.cart = new Cart()
 
 document.addEventListener('DOMContentLoaded', () => {
   const forge = document.getElementById('forge')

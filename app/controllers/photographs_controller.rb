@@ -1,6 +1,6 @@
 class PhotographsController < ApplicationController
   include RestoreSearch
-  before_action :load_building, except: :review
+  before_action :load_parent, except: :review
 
 
   def index
@@ -13,7 +13,6 @@ class PhotographsController < ApplicationController
   def new
     @photograph = model_class.new
     authorize! :create, @photograph
-    @photograph.physical_type = PhysicalType.still_image
     if @building
       @photograph.buildings << @building
       @photograph.latitude = @building.latitude
@@ -88,8 +87,16 @@ class PhotographsController < ApplicationController
 
   private
 
-  def load_building
-    if params[:building_id]
+  def load_parent
+    if params[:person_id]
+      @person = Person.find params[:person_id]
+      @model_class = @person.photos
+
+      if @person
+        params[:q] ||= {}
+        params[:q][:people_id_eq] = params[:person_id]
+      end
+    elsif params[:building_id]
       @building = Building.find params[:building_id]
       @model_class = @building.photos
 
@@ -111,13 +118,12 @@ class PhotographsController < ApplicationController
   def resource_params
     params
         .require(:photograph)
-        .permit :file, :title, :description, :caption,
-                :creator, :subject, { building_ids: [], person_ids: [] },
+        .permit :file, :description, :caption,
+                { building_ids: [], person_ids: [] },
                 :latitude, :longitude,
                 :date_text, :date_start, :date_end, :date_type,
-                :physical_type_id, :physical_format_id,
-                :physical_description, :location, :identifier,
-                :notes, :rights_statement_id,
+                :location, :identifier,
+                :notes,
                 :date_year, :date_month, :date_day,
                 :date_year_end,
                 :date_month_end,

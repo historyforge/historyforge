@@ -14,7 +14,9 @@ class Person < ApplicationRecord
   CensusYears.each do |year|
     has_one :"census_#{year}_record", dependent: :nullify, class_name: "Census#{year}Record"
   end
-  has_and_belongs_to_many :photographs
+
+  has_and_belongs_to_many :photos, class_name: 'Photograph', dependent: :nullify
+
   validates :last_name, :sex, :race, presence: true
 
   before_save :estimate_birth_year
