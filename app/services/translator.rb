@@ -8,7 +8,11 @@ module Translator
 
     lookups << :"defaults.#{key}"
 
-    lookups << klass.human_attribute_name(key)
+    lookups << if klass.respond_to?(:human_attribute_name)
+                 klass.human_attribute_name(key)
+               else
+                 key.to_s.humanize
+               end
 
     I18n.t(lookups.shift, scope: 'simple_form.labels', default: lookups).presence
   end
