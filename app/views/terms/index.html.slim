@@ -23,20 +23,16 @@ table.table.table-condensed.table-striped
     tr
       th Term
       th IPUMS
-      th 1900
-      th 1910
-      th 1920
-      th 1930
+      - CensusYears.each do |year|
+        th= year
       th
   tbody
     - @terms.each do |term|
       tr
         td= term.name
         td= term.ipums
-        td= term.count_records_for(1900)
-        td= term.count_records_for(1910)
-        td= term.count_records_for(1920)
-        td= term.count_records_for(1930)
+        - CensusYears.each do |year|
+          td= term.count_records_for(year)
         td style="text-align:right;white-space:nowrap"
           = link_to 'Edit', [:edit, @vocabulary, term], class: 'btn btn-xs btn-light'
 
