@@ -14,14 +14,10 @@ class Map extends BaseMap {
         styles: [{ featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'off' }]}]
     }
 
-    iconCurrent = {
-        path: google.maps.SymbolPath.CIRCLE,
+    iconCurrent = Object.assign({}, this.iconBase, {
         fillColor: 'green',
-        fillOpacity: .9,
         scale: 10,
-        strokeColor: '#333',
-        strokeWeight: 1,
-    }
+    })
 
     render() {
         return <div id="map" />

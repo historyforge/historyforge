@@ -2,25 +2,22 @@ import React from 'react'
 
 class BaseMap extends React.PureComponent {
     state = { map: null }
-    mapOptions = {}
 
-    iconHover = {
+    iconBase = {
         path: google.maps.SymbolPath.CIRCLE,
+        fillOpacity: 0.9,
+        scale: 6,
+        strokeColor: '#333',
+        strokeWeight: 1
+    }
+
+    iconHover = Object.assign({}, this.iconBase, {
         fillColor: 'blue',
-        fillOpacity: 0.9,
-        scale: 6,
-        strokeColor: '#333',
-        strokeWeight: 1
-    }
+    })
 
-    iconStatic = {
-        path: google.maps.SymbolPath.CIRCLE,
+    iconStatic = Object.assign({}, this.iconBase, {
         fillColor: 'red',
-        fillOpacity: 0.9,
-        scale: 6,
-        strokeColor: '#333',
-        strokeWeight: 1
-    }
+    })
 
     render() {}
 
