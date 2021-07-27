@@ -171,7 +171,7 @@ const addAttributeFilter = function(scope, scopeValue) {
         desc.innerHTML += field_config.append;
     }
     html.appendChild(desc);
-    return jQuery('#attribute-filters').append(html);
+    return $('#attribute-filters').append(html);
 };
 
 jQuery(document).on('click', '.attribute-filter button.close', function() {

@@ -6,9 +6,9 @@
       button.btn.btn-secondary.btn-next.step-1-next-button type="button" disabled=!form.object.file.attached? Next &raquo;
     .card-body
       .row
-        .col-6
+        .col-sm-6.col-xs-12
           = form.input :file, as: :file, label: 'Upload your photo', hint: 'JPG files only please!', input_html: { accept: 'image/jpeg' }
-        .col-6#selected-file
+        .col-sm-6.col-xs-12#selected-file
           - if form.object.file.attached?
             = image_tag form.object.file
     .card-footer.d-flex.justify-content-center
@@ -20,7 +20,7 @@
       button.btn.btn-secondary.btn-next type="button" Next &raquo;
     .card-body
       .row
-        .col-8
+        .col-sm-8.col-sm-12
           = form.input :caption, as: :text, label: "Caption", hint: "When this photo appears with buildings and people, this text will be used. Title and description are reserved for NYHeritage metadata."
           = form.input :description, as: :text, label: "Description", hint: "If there is a longer story to show when someone goes to the page for this media, put it here."
 
@@ -35,7 +35,7 @@
       button.btn.btn-secondary.btn-next type="button" Next &raquo;
     .card-body
       .row
-        .col-8
+        .col-sm-8.col-sm-12
           - if form.object.building_ids.present?
             = render 'building_fields', form: form
           - else
@@ -58,7 +58,7 @@
       button.btn.btn-secondary.btn-next type="button" Next &raquo;
     .card-body
       .row
-        .col-8
+        .col-sm-8.col-sm-12
           - if form.object.person_ids.present?
             = render 'person_fields', form: form
           - else
@@ -81,7 +81,7 @@
       button.btn.btn-secondary.btn-next type="button" Next &raquo;
     .card-body
       .row
-        .col-8
+        .col-sm-8.col-sm-12
           p.alert.alert-info You only need to do this if latitude and longitude are empty, or the marker is in the wrong place.
           input.form-control.mb-3#pac-input type="text" placeholder="Enter a location to find on map"
           #map.mb-3 data-center="[#{form.object.latitude || AppConfig.latitude},#{form.object.longitude || AppConfig.longitude}]"
@@ -99,7 +99,7 @@
       button.btn.btn-secondary.btn-next type="button" Next &raquo;
     .card-body
       .row
-        .col-8
+        .col-sm-8.col-sm-12
           = form.hidden_field :date_type
           #dates-question
             p.lead You can date this photograph down to:
@@ -142,7 +142,7 @@
       button.btn.btn-secondary.btn-next type="button" Next &raquo;
     .card-body
       .row
-        .col-8
+        .col-sm-8.col-sm-12
           = form.input :notes
         .col-3.offset-1.thumb= thumb_for form.object
     .card-footer.d-flex.justify-content-center

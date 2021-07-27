@@ -1,46 +1,37 @@
-nav.navbar.navbar-static {
-  position:fixed;
-  top:0;
-  left:0;
-  height:80px;
-  width:100%;
-  z-index:200;
-}
-
-.map-wrap {
-  width: 100%;
-  height: 100vh;
-}
+//nav.navbar.navbar-static {
+//  position:fixed;
+//  top:0;
+//  left:0;
+//  height:80px;
+//  width:100%;
+//  z-index:200;
+//}
 
 #forge {
   #map-wrapper {
-    position: fixed;
-    width: calc(100% - 450px);
-    height: 100% !important ;
-
+    position: absolute;
+    left: 0;
+    top: 0;
     #map {
-      width: 100%;
-      height: 100%;
+      width: 100vw;
+      height: 100vh;
     }
-  }
-}
-#forge {
-  ng-map {
-    position: fixed;
-    width: calc(100% - 450px);
-    height: 100% !important ;
   }
 }
 
 #forge-right-col {
   z-index: 19;
-  position:relative;
-  top:80px;
-  margin-left: calc(100% - 450px);
-  width:450px;
-  padding: 15px;
   box-sizing: border-box;
   background-color: white;
+  max-height: calc(100vh - 66px);
+  overflow-y: scroll;
+  &.closed {
+    left: -100%;
+  }
+  &.open {
+    left: 0;
+  }
+  transition: 0.5s left ease;
   .btn-group {
     margin-bottom:12px;
   }
@@ -49,6 +40,51 @@ nav.navbar.navbar-static {
   }
   .layer-slider {
     width: 400px;
+  }
+}
+
+#forge-sidebar-toggle {
+  position: absolute;
+  z-index: 20;
+}
+
+@include media('<tablet') {
+  #forge #map-wrapper {
+    width: 100vw;
+    height: 100% !important;
+    overflow: hidden;
+  }
+
+  #forge-sidebar-toggle {
+    top: 64px;
+    right: 6px;
+  }
+
+  #forge-right-col {
+    position:absolute;
+    top:50px;
+    width:100%;
+    padding: 15px;
+  }
+}
+
+@include media('>=tablet') {
+  #forge #map-wrapper {
+    width: 100vw;
+    height: 100% !important;
+  }
+
+  #forge-sidebar-toggle {
+    top: 80px;
+    left: 16px;
+  }
+
+  #forge-right-col {
+    position:relative;
+    top:0;
+    //margin-left: calc(100% - 450px);
+    width:450px;
+    padding: 56px 15px 15px;
   }
 }
 
@@ -109,8 +145,3 @@ nav.navbar.navbar-static {
   }
 }
 
-#building-details {
-  margin-top: 15px;
-  padding-top: 15px;
-  border-top: 1px dotted $border-color;
-}

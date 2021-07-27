@@ -4,44 +4,41 @@
 
 - set_page_title 'Photographs'
 
-.row
-  .col-9
-    = page_entries_info @photographs
+- content_for :pills do
+  a.btn.btn-default type="button" data-toggle="collapse" href="#filters" Filters
 
-    .list-group#photographs
-      - @photographs.each do |record|
-        - photo = PhotographPresenter.new(record, current_user)
-        .list-group-item
-          .row
-            .col-xl-2.col-lg-3.col-sm-3.col-md-3
-              - if photo.file.attached?
-                = thumb_for photo
-              - else
-                .alert.alert-danger No Photo!
-            .col-xl-7.col-lg-6.col-sm-6.col-md-6.widest
-              - unless record.reviewed?
-                span.badge.badge-danger UNREVIEWED
-                br
-              = [photo.caption, photo.date].select(&:present?).join('<br />').html_safe
-              = photo.buildings.map { |building| link_to(building.street_address, building) }.join('<br />').html_safe
-            .col-3.text-right
-              = link_to record, class: 'btn btn-xs btn-light' do
-                i.fa.fa-eye
-              - if can?(:update, record)
-                = link_to [:edit, record], class: 'btn btn-xs btn-light' do
-                  i.fa.fa-pencil
+.collapse#filters
+  = search_form_for @search, as: :q, builder: SimpleForm::FormBuilder do |form|
+    = form.input :full_text_search, label: 'Search'
+    - if can?(:review, Photograph)
+      = form.input :unreviewed, as: :boolean, label: 'Show only unreviewed', wrapper: :inline_boolean
+    .card-footer
+      = form.submit 'Search', class: 'btn btn-primary'
+      = link_to 'Reset', photographs_path(reset: true), class: 'btn btn-light'
 
-    = paginate @photographs
+= page_entries_info @photographs
 
-  .col-3
-    = search_form_for @search, as: :q, builder: SimpleForm::FormBuilder do |form|
-      .card
-        .card-header
-          h5.card-title Filters
-        .card-body
-          = form.input :full_text_search, label: 'Search'
-          - if can?(:review, Photograph)
-            = form.input :unreviewed, as: :boolean, label: 'Show only unreviewed', wrapper: :inline_boolean
-        .card-footer
-          = form.submit 'Search', class: 'btn btn-primary'
-          = link_to 'Reset', photographs_path(reset: true), class: 'btn btn-light'
+.list-group#photographs
+  - @photographs.each do |record|
+    - photo = PhotographPresenter.new(record, current_user)
+    .list-group-item
+      .row
+        .col-xl-2.col-lg-3.col-md-3.col-sm-12.col-xs-12
+          - if photo.file.attached?
+            = thumb_for photo
+          - else
+            .alert.alert-danger No Photo!
+        .col-xl-7.col-lg-6.col-sm-12.col-xs-12.col-md-6.widest
+          - unless record.reviewed?
+            span.badge.badge-danger UNREVIEWED
+            br
+          = [photo.caption, photo.date].select(&:present?).join('<br />').html_safe
+          = photo.buildings.map { |building| link_to(building.street_address, building) }.join('<br />').html_safe
+        .col-sm-12.col-xs-12.text-right
+          = link_to record, class: 'btn btn-xs btn-light' do
+            i.fa.fa-eye
+          - if can?(:update, record)
+            = link_to [:edit, record], class: 'btn btn-xs btn-light' do
+              i.fa.fa-pencil
+
+= paginate @photographs

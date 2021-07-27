@@ -37,8 +37,9 @@ a {
 }
 
 body > header {
-  nav.navbar.navbar-static {
+  nav.navbar.navbar-fixed {
     //height: auto !important;
+    z-index: 25;
     box-shadow: 0 30px 30px 2px rgba(0, 0, 0, 0.05);
     margin-bottom: 0;
     background: white;
@@ -61,7 +62,6 @@ body > header {
     margin-top: 110px;
     //height: calc(100% - 110px);
   }
-
 }
 
 .btn + .btn {
@@ -88,18 +88,29 @@ p.text-center {
   }
 }
 
-//@include media('>=desktop') {
-//  dl {
-//    overflow:hidden;
-//    dt {
-//      float:left;
-//      width:150px;
-//    }
-//    dd {
-//      margin-left:160px;
-//    }
-//  }
-//}
+@include media('<tablet') {
+  h1 {
+    font-size: 2rem;
+  }
+  body > header nav.navbar.navbar-fixed {
+    height: auto;
+
+    .navbar-brand {
+      margin-right: 0;
+    }
+
+    img:first-of-type {
+      height: 30px;
+    }
+    img + img {
+      height: 20px;
+      margin-left: 4px;
+    }
+  }
+  body > header + .container {
+    margin-top: 80px;
+  }
+}
 
 p {
   margin:1em 0;

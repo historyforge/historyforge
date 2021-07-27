@@ -204,8 +204,8 @@ SimpleForm.setup do |config|
     b.optional :maxlength
     b.optional :minlength
     b.optional :readonly
-    b.use :label, class: 'col-sm-6 col-form-label'
-    b.wrapper :grid_wrapper, tag: 'div', class: 'col-sm-6' do |ba|
+    b.use :label, class: 'col-sm-6 col-xs-12 col-form-label'
+    b.wrapper :grid_wrapper, tag: 'div', class: 'col-sm-6 col-xs-12' do |ba|
       ba.use :input, error_class: 'is-invalid'
       ba.use :full_error, wrap_with: { tag: 'div', class: 'invalid-feedback d-block' }
       ba.use :hint, wrap_with: { tag: 'small', class: 'hint-bubble' }

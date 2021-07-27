@@ -20,17 +20,25 @@ const buildStore = () => {
 export default class App extends React.PureComponent {
     mapRef = React.createRef()
     store = buildStore()
+    state = { sidebar: true }
     render() {
+        const { sidebar } = this.state
         return (
             <ErrorBoundary>
                 <Provider store={this.store}>
                     <div className={'map-wrap'}>
                         <Map />
-                        <div id={'forge-right-col'}>
+                        <div id={'forge-right-col'} className={sidebar ? 'open' : 'closed'}>
                             <Layers />
                             <Search />
-                            <Building />
                         </div>
+                        <button type="button"
+                                id="forge-sidebar-toggle"
+                                className="btn btn-primary"
+                                onClick={() => this.setState({ sidebar: !sidebar })}>
+                            <i className={`fa fa-chevron-${sidebar ? 'left' : 'right'}`} />
+                        </button>
+                        <Building />
                     </div>
                 </Provider>
             </ErrorBoundary>

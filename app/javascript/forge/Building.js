@@ -1,14 +1,50 @@
 import React from 'react'
 import {connect} from "react-redux";
 import SimpleFormat from './SimpleFormat'
+import {Modal, ModalHeader, ModalBody} from 'reactstrap'
 
 class Building extends React.PureComponent {
+    state = { visible: false, building_id: null }
+    get building() {
+        return this.props.attributes
+    }
+
+    close() {
+        this.setState({ visible: false })
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        if (props.attributes && props.attributes.id) {
+            if (!state.building_id || (props.attributes.id !== state.building_id)) {
+                state.building_id = props.attributes.id
+                state.visible = true
+            }
+        } else {
+            state.building_id =  null
+            state.visible = false
+        }
+        return state
+    }
+
     render() {
-        if (this.props.attributes) {
-            const building = this.props.attributes
+        const { visible } = this.state
+        return (
+            <Modal isOpen={visible}>
+                <ModalHeader toggle={this.close.bind(this)}>
+                    Building Details
+                </ModalHeader>
+                <ModalBody>
+                    {this.renderBuilding()}
+                </ModalBody>
+            </Modal>
+        )
+    }
+
+    renderBuilding() {
+        if (this.building) {
+            const {building} = this
             return (
                 <div id="building-details">
-                    <h3>Building Details</h3>
                     <h5>
                         <a href={`/buildings/${ building.id }`} target="_blank"
                            title="Open building record in new tab">
@@ -88,9 +124,8 @@ class Building extends React.PureComponent {
                         </div>
                     )}
                 </div>
-        )
-        } else {
-            return <p className="alert alert-info">Click on a dot to see who lived there.</p>
+            )
+
         }
     }
 }

@@ -9,13 +9,26 @@
     background: white;
     display: none;
 
-    .card-body {
-      padding: 30px 50px;
+    @include media('<tablet') {
+      .card-body {
+        padding: 10px 15px;
+      }
+      > .float-right {
+        display: none;
+      }
+      .thumb {
+        display: none;
+      }
     }
-    > .float-right {
-      position: absolute;
-      right: 20px;
-      top: 20px;
+    @include media('>=tablet') {
+      .card-body {
+        padding: 30px 50px;
+      }
+      > .float-right {
+        position: absolute;
+        right: 20px;
+        top: 20px;
+      }
     }
   }
   .card.active {

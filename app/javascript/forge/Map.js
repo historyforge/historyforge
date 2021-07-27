@@ -33,7 +33,6 @@ class Map extends React.PureComponent {
         }
     }
 
-    // TODO: only add the markers when the buildings are different
     componentDidUpdate(prevProps, prevState, snapshot) {
         if ((!prevProps.layeredAt && this.props.layeredAt) || (prevProps.layeredAt !== this.props.layeredAt)) {
             this.addLayers()
@@ -45,16 +44,16 @@ class Map extends React.PureComponent {
             this.addMarkers()
         }
         if (prevProps.highlighted && prevProps.highlighted !== this.props.highlighted) {
-            this.unhighlightMarker(prevProps.highlighted)
+            this.unhighlightMarker(parseInt(prevProps.highlighted))
         }
         if ((!prevProps.heatmapOpacityAt && this.props.heatmapOpacityAt) || (prevProps.heatmapOpacityAt !== this.props.heatmapOpacityAt)) {
             this.doHeatmapOpacity()
         }
         if (this.props.highlighted) {
-            this.highlightMarker(this.props.highlighted)
+            this.highlightMarker(parseInt(this.props.highlighted))
             if (this.props.building) {
                 const buildingId = parseInt(this.props.building.id)
-                if (buildingId !== this.props.highlighted)
+                if (buildingId !== parseInt(this.props.highlighted))
                     this.unhighlightMarker(buildingId)
             }
         } else if (this.props.building) {
@@ -63,12 +62,14 @@ class Map extends React.PureComponent {
     }
 
     highlightMarker(id) {
+        console.log('highlighting', id)
         const marker = this.state.markers.find(item => item.buildingId === id)
         marker.setIcon(this.iconHover)
         marker.setZIndex(100)
     }
 
     unhighlightMarker(id) {
+        console.log('unhighlighting', id)
         const marker = this.state.markers.find(item => item.buildingId === id)
         marker.setIcon(this.iconStatic)
         marker.setZIndex(10)
@@ -159,7 +160,6 @@ class Map extends React.PureComponent {
 
     addLayers() {
         const selectedLayers = this.props.layers.filter(layer => layer.selected)
-        // if (!selectedLayers.length) return
 
         const { map } = this.state
         const currentLayers = map.overlayMapTypes.getArray()

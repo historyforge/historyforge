@@ -17,12 +17,13 @@ class Term < ApplicationRecord
   def records_for(year)
     fields = relevant_fields_for_year year
     return if fields.blank?
-    model_class_for_year(year).where([fields.map { |field| "#{field}=:name" }.join( ' OR '), name: name])
+
+    model_class_for_year(year).where([fields.map { |field| "#{field}=:name" }.join(' OR '), { name: name }])
   end
 
   def count_records_for(year)
     records = records_for(year)
-    records && records.count
+    records&.count
   end
 
   private
@@ -30,7 +31,10 @@ class Term < ApplicationRecord
   def update_census_records
     from, to = name_change
     each_relevant_field do |year, attribute|
-      model_class_for_year(year).where(attribute => from).update_all(attribute => to)
+      model_class_for_year(year).where(attribute => from).each do |census_record|
+        census_record[attribute] = to
+        census_record.save validate: false
+      end
     end
   end
 
