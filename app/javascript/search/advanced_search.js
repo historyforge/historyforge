@@ -1,6 +1,8 @@
+import axios from 'axios'
+
 const getFieldConfig = function(attribute) {
     let key, value;
-    const ref = window.attributeFilters["filters"];
+    const ref = window.attributeFilters
     for (key in ref) {
         value = ref[key];
         if (attribute === key) {
@@ -11,23 +13,13 @@ const getFieldConfig = function(attribute) {
 
 const getFieldConfigFromScope = function(scope) {
     var attribute, ref, ref1, value;
-    ref = window.attributeFilters["filters"];
+    ref = window.attributeFilters;
     for (attribute in ref) {
         value = ref[attribute];
         if (((ref1 = value.scopes) != null ? ref1[scope] : void 0) != null) {
             return value;
         }
     }
-};
-
-const getSortableFields = function() {
-    const fields = {};
-    window.attributeFilters.filters.forEach((filter) => {
-        if (filter.sortable) {
-            fields[filter.sortable] = filter.label
-        }
-    })
-    return fields;
 };
 
 const addAttributeFilter = function(scope, scopeValue) {
@@ -402,45 +394,46 @@ $(document).on('change', 'select.attribute', function() {
 });
 
 $.fn.advancedSearch = function(options) {
-    options = options || {};
-
     return this.each(function() {
-        const { url, fields, filters, sorts } = options;
-        const attributeFiltersCallback = function(json) {
-            window.attributeFilters = json;
-            window.sortedAttributeFilters = [];
+        $(this).data('search', new AdvancedSearch(options));
+        return this;
+    })
+};
 
-            const ref = json['filters'];
-            for (let key in ref) {
-                const value = ref[key];
-                window.sortedAttributeFilters.push({ key, label: value.label, value });
-            }
+class AdvancedSearch {
+    constructor(options) {
+        options = options || {};
+        this.currentFilters = options.filters;
 
-            if (Object.entries(filters).length) {
-                $('#attribute-filters').addClass('mb-3').empty();
-                for (let scope in filters) {
-                    addAttributeFilter(scope, filters[scope]);
-                }
+        axios.get(options.url).then((json) => {
+            window.attributeFilters = json.data.filters;
+            this.showCurrentFilters()
+            this.showAddableFilters();
+        })
+    }
+
+    showCurrentFilters() {
+        if (Object.entries(this.currentFilters).length) {
+            $('#attribute-filters').addClass('mb-3').empty();
+            for (let scope in this.currentFilters) {
+                addAttributeFilter(scope, this.currentFilters[scope]);
             }
         }
+    }
 
-        jQuery.getJSON(url, function(json) { attributeFiltersCallback(json); });
-
-        $(document).on('shown.bs.collapse', '#newAttributeFilter', function() {
-            $(this).find('select.scope').hide();
-            $(this).find('.value-input-container').empty();
-            const attrSelect = $(this).find('select.attribute');
-            attrSelect.html("<option>Select field name</option>");
-            window.sortedAttributeFilters.forEach((item) => {
-                const { key, label,  value } = item;
-                if (value.scopes) {
-                    attrSelect.append('<option value="' + key + '">' + label + '</option>');
-                }
-            })
-        });
-
-    });
-};
+    showAddableFilters() {
+        $('select.scope').hide();
+        $('.value-input-container').empty();
+        const attrSelect = $('select.attribute');
+        attrSelect.html("<option>Select field name</option>");
+        for (let key in window.attributeFilters) {
+            const config = window.attributeFilters[key];
+            if (config.scopes) {
+                attrSelect.append('<option value="' + key + '">' + config.label + '</option>');
+            }
+        }
+    }
+}
 
 $.fn.searchDateRange = function(from, to) {
     return this.each(function() {
