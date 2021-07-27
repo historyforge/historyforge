@@ -12,10 +12,6 @@ export const layers = function(state = {}, action) {
         return {...state, layers: [...state.layers], opacityAt: new Date().getTime()}
     }
 
-    if (action.type === 'HEATMAP_OPACITY') {
-        return {...state, heatmapOpacity: parseInt(action.opacity), heatmapOpacityAt: new Date().getTime()}
-    }
-
     return state
 }
 
