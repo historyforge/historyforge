@@ -206,7 +206,7 @@ class CensusRecordSearch
     options[:sortable] = true unless column == 'id'
     options
   end
-  
+
   def translated_label(key)
     Translator.label(entity_class, key)
   end
