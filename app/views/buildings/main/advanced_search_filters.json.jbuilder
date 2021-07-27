@@ -15,13 +15,13 @@ json.filters do
   end
 
   building_types = BuildingType.order(:name).map {|item| [ item.name.capitalize, item.id ]}
-  AttributeBuilder.collection json, Building, :building_types_id, building_types
+  AttributeBuilder.collection json, :building_types_id, klass: Building, collection: building_types
 
   lining_types = ConstructionMaterial.order(:name).map {|item| [ item.name.capitalize, item.id ]}
-  AttributeBuilder.collection json, Building, :lining_type_id, lining_types
+  AttributeBuilder.collection json, :lining_type_id, klass: Building, collection: lining_types
 
   frame_types = ConstructionMaterial.order(:name).map {|item| [ item.name.capitalize, item.id ]}
-  AttributeBuilder.collection json, Building, :frame_type_id, frame_types
+  AttributeBuilder.collection json, :frame_type_id, klass: Building, collection: frame_types
   AttributeBuilder.text       json, :block_number
   json.as_of_year do
     json.type 'number'
@@ -38,6 +38,6 @@ json.filters do
   AttributeBuilder.text       json, :annotations
 
   architects = Architect.order(:name).map {|item| [item.name, item.id] }
-  AttributeBuilder.collection json, Architect, :architects_id, architects
+  AttributeBuilder.collection json, :architects_id, klass: Architect, collection: architects
 
 end

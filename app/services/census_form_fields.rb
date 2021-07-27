@@ -115,7 +115,7 @@ class CensusFormFields
       @klass = klass
       @card = nil
       # add name and address fields to start
-      AttributeBuilder.collection json, klass,:locality_id, Locality.select_options
+      AttributeBuilder.collection json, :locality_id, klass: klass, collection: Locality.select_options
       AttributeBuilder.text(json, :name, klass: klass)
       AttributeBuilder.text   json, :first_name, klass: klass
       AttributeBuilder.text   json, :middle_name, klass: klass
@@ -160,7 +160,7 @@ class CensusFormFields
                      else
                        config[:collection]
                      end
-        AttributeBuilder.collection json, klass, field, collection
+        AttributeBuilder.collection json, field, klass: klass, collection: collection
         return
       end
 
@@ -183,7 +183,7 @@ class CensusFormFields
     private
 
     def translated_option(item, field)
-      I18n.t("#{field}.#{item.downcase.gsub(/\W/, '')}", scope: 'census_codes', default: item)
+      Translator.option field, item
     end
   end
 end

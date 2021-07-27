@@ -4,8 +4,16 @@ class AttributeBuilder
     AttributeBuilder::Boolean.new(json: json, key: key, extras: args.extract_options!).to_json
   end
 
-  def self.collection(json, klass, key, choices, cols=2, sortable=true)
-    AttributeBuilder::Collection.new(json: json, klass: klass, key: key, columns: cols, extras: { choices: choices, sortable: sortable }).to_json
+  # def self.collection(json, klass, key, choices, cols=2, sortable=true)
+  def self.collection(json, key, *args)
+    options = args.extract_options!
+    AttributeBuilder::Collection.new(
+      json: json,
+      klass: options[:klass],
+      key: key,
+      columns: options[:columns],
+      extras: { choices: options[:choices] || options[:collection], sortable: options[:sortable] }
+    ).to_json
   end
 
   def self.enumeration(json, klass, key, cols=2)
@@ -39,7 +47,7 @@ class AttributeBuilder::BaseAttribute
     @sortable = @extras&.delete(:sortable)
   end
 
-  def to_json
+  def to_json(*_args)
     json.set! key do
       json.type type
       json.label label
@@ -50,8 +58,7 @@ class AttributeBuilder::BaseAttribute
     end
   end
 
-  def scopes
-  end
+  def scopes; end
 
   def label
     I18n.t("simple_form.labels.#{@klass ? @klass.name.underscore : nil}.#{key}", default:
@@ -134,17 +141,14 @@ class AttributeBuilder::Number < AttributeBuilder::BaseAttribute
     json.set! "#{key}_not_null".to_sym, 'is not blank'
     json.set! "#{key}_null".to_sym, 'is blank'
   end
+
   def extras
     super
     json.sortable(key) if @sortable != false
   end
 end
 
-class AttributeBuilder::Time < AttributeBuilder::BaseAttribute
-  def type
-    'number'
-  end
-
+class AttributeBuilder::Time < AttributeBuilder::Number
   def scopes
     json.set! "#{key}_eq".to_sym, 'equals'
     json.set! "#{key}_lt".to_sym, 'earlier than'
@@ -154,17 +158,14 @@ class AttributeBuilder::Time < AttributeBuilder::BaseAttribute
     json.set! "#{key}_not_null".to_sym, 'is not blank'
     json.set! "#{key}_null".to_sym, 'is blank'
   end
+
   def extras
     super
     json.sortable key
   end
 end
 
-class AttributeBuilder::Age < AttributeBuilder::BaseAttribute
-  def type
-    'number'
-  end
-
+class AttributeBuilder::Age < AttributeBuilder::Number
   def scopes
     json.set! "#{key}_eq".to_sym, 'equals'
     json.set! "#{key}_lt".to_sym, 'younger than'
@@ -174,6 +175,7 @@ class AttributeBuilder::Age < AttributeBuilder::BaseAttribute
     json.set! "#{key}_not_null".to_sym, 'is not blank'
     json.set! "#{key}_null".to_sym, 'is blank'
   end
+
   def extras
     super
     json.sortable key
@@ -195,6 +197,7 @@ class AttributeBuilder::Text < AttributeBuilder::BaseAttribute
     json.set! "#{key}_cont_any_term".to_sym, 'contains one of'
     json.set! "#{key}_cont_every_term".to_sym, 'contains all of'
   end
+
   def extras
     super
     json.sortable key
