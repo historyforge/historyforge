@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class Census1920FormFields < CensusFormFields
-  divider "Name"
+  divider 'Name'
 
   input :last_name,
         input_html: { autocomplete: 'new-password' },
@@ -21,13 +23,13 @@ class Census1920FormFields < CensusFormFields
         input_html: { autocomplete: 'new-password' },
         hint: -> { suffix_hint }
 
-  divider "Relation"
+  divider 'Relation'
 
   input :relation_to_head,
         input_html: { autocomplete: 'new-password' },
         hint: -> { relation_to_head_hint }
 
-  divider "Household Data"
+  divider 'Household Data'
 
   input :owned_or_rented,
         as: :radio_buttons,
@@ -41,7 +43,7 @@ class Census1920FormFields < CensusFormFields
         coded: true,
         hint: -> { mortgage_hint }
 
-  divider "Personal Description"
+  divider 'Personal Description'
 
   input :sex,
         as: :radio_buttons,
@@ -67,7 +69,7 @@ class Census1920FormFields < CensusFormFields
         coded: true,
         hint: -> { column_hint(12) }
 
-  divider "Citizenship, Education, and Place of Birth"
+  divider 'Citizenship, Education, and Place of Birth'
 
   input :foreign_born,
         as: :boolean,
@@ -131,7 +133,7 @@ class Census1920FormFields < CensusFormFields
         as: :boolean,
         hint: -> { boolean_hint(25) }
 
-  divider "Occupation, Industry, and Class of Worker"
+  divider 'Occupation, Industry, and Class of Worker'
 
   input :profession,
         input_html: { autocomplete: 'new-password' },

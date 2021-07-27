@@ -112,7 +112,7 @@ class Building extends React.PureComponent {
                                     {building.census_records[year] && building.census_records[year].map(person => (
                                         <tr key={person.id}>
                                             <td>{year}</td>
-                                            <td><a href={`/census/${year}/${person.id}`} target="_blank">{person.name}</a></td>
+                                            <td><a href={`/census/${year}/${person.id}`}>{person.name}</a></td>
                                             <td>{person.age}</td>
                                             <td>{person.race}</td>
                                             <td>{person.sex}</td>

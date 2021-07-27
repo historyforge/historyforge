@@ -40,7 +40,7 @@ class CensusFormFields
   end
 
   def render
-    builder = if form.respond_to?(:supercrazy)
+    builder = if form.respond_to?(:supercrazy) # Jbuilder responds to everything but form builder does not
                 JSONBuilder.new(form, resource_class)
               else
                 FormBuilder.new(form)
@@ -50,6 +50,8 @@ class CensusFormFields
       config = config_for(field)
       case config[:as]
       when :halt
+        # the purpose of this is to stop outputting supplemental form fields when viewing a 1940 record that
+        # does not have them filled in
         return builder.to_html if form.is_a?(FormViewBuilder) && config[:if].call(form.object)
       when :divider
         builder.start_card(config[:label])
@@ -80,6 +82,7 @@ class CensusFormFields
     end
   end
 
+  # Outputs the form using Rails form builder which is passed in as @form
   class FormBuilder
     def initialize(form)
       @form = form
@@ -104,6 +107,8 @@ class CensusFormFields
     end
   end
 
+  # Converts the census form into a format consumable by the "advanced search" filter button
+  # using JBuilder object passed in as json
   class JSONBuilder
     def initialize(json, klass)
       @json = json

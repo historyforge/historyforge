@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class Census1940FormFields < CensusFormFields
-  divider "Household Data"
+  divider 'Household Data'
 
   input :owned_or_rented,
                as: :radio_buttons,
@@ -16,7 +18,7 @@ class Census1940FormFields < CensusFormFields
                as: :boolean,
                hint: -> {lives_on_farm_hint}
 
-  divider "Name"
+  divider 'Name'
 
   input :last_name,
                input_html: {autocomplete: 'new-password'},
@@ -36,13 +38,13 @@ class Census1940FormFields < CensusFormFields
   input :name_suffix,
                input_html: {autocomplete: 'new-password'}
 
-  divider "Relation"
+  divider 'Relation'
 
   input :relation_to_head,
                input_html: { autocomplete: 'new-password' },
                hint: -> {relation_to_head_hint}
 
-  divider "Personal Description"
+  divider 'Personal Description'
 
   input :sex,
                as: :radio_buttons,
@@ -77,7 +79,7 @@ class Census1940FormFields < CensusFormFields
                as: :radio_buttons,
                hint: -> { grade_completed_hint }
 
-  divider "Place of Birth & Citizenship"
+  divider 'Place of Birth & Citizenship'
 
   input :pob,
                input_html: { autocomplete: 'new-password' },
@@ -92,7 +94,7 @@ class Census1940FormFields < CensusFormFields
                coded: true,
                hint: -> { citizenship_hint }
 
-  divider "Residence, April 1, 1935"
+  divider 'Residence, April 1, 1935'
 
   input :residence_1935_town,
                input_html: { autocomplete: 'new-password' },
@@ -100,34 +102,34 @@ class Census1940FormFields < CensusFormFields
 
   input :residence_1935_county,
                input_html: { autocomplete: 'new-password' },
-               hint: "Column 18. Enter as written."
+               hint: 'Column 18. Enter as written.'
 
   input :residence_1935_state,
                input_html: { autocomplete: 'new-password' },
-               hint: "Column 19. Enter as written."
+               hint: 'Column 19. Enter as written.'
 
   input :residence_1935_farm,
                as: :boolean,
                inline_label: 'Yes',
-               hint: "Column 20. Check if the response is yes."
+               hint: 'Column 20. Check if the response is yes.'
 
-  divider "For Persons 14 Years Old and Over - Employment Status"
+  divider 'For Persons 14 Years Old and Over - Employment Status'
 
   input :private_work,
                as: :boolean,
-               hint: "Column 21. Check if the response is yes."
+               hint: 'Column 21. Check if the response is yes.'
 
   input :public_work,
                as: :boolean,
-               hint: "Column 22. Check if the response is yes."
+               hint: 'Column 22. Check if the response is yes.'
 
   input :seeking_work,
                as: :boolean,
-               hint: "Column 23. Check if the response is yes."
+               hint: 'Column 23. Check if the response is yes.'
 
   input :had_job,
                as: :boolean,
-               hint: "Column 24. Check if the response is yes."
+               hint: 'Column 24. Check if the response is yes.'
 
   divider 'For Persons Answering "No" to the Above Questions'
 
@@ -135,21 +137,21 @@ class Census1940FormFields < CensusFormFields
                collection: Census1940Record.no_work_reason_choices,
                coded: true,
                as: :radio_buttons,
-               hint: "Column 25. Check box that corresponds to the answer indicated."
+               hint: 'Column 25. Check box that corresponds to the answer indicated.'
 
   divider 'If "Yes" to Private Work'
 
   input :private_hours_worked,
                as: :integer,
-               hint: "Column 26. Enter as written."
+               hint: 'Column 26. Enter as written.'
 
   divider 'If "Yes" to Public Work or Seeking Work'
 
   input :unemployed_weeks,
                as: :integer,
-               hint: "Column 27. Enter as written."
+               hint: 'Column 27. Enter as written.'
 
-  divider "Occupation, Industry, and Class of Worker"
+  divider 'Occupation, Industry, and Class of Worker'
 
   input :occupation,
                hint: 'Column 28. Enter as written. Enter "None" if empty',
@@ -181,7 +183,7 @@ class Census1940FormFields < CensusFormFields
                as: :integer,
                hint: 'Column 31. Enter as written.'
 
-  divider "Income in 1939 (12 months ending Dec. 31, 1939)"
+  divider 'Income in 1939 (12 months ending Dec. 31, 1939)'
 
   input :income,
                as: :integer,
@@ -198,7 +200,7 @@ class Census1940FormFields < CensusFormFields
   # TODO: tell it to stop if it's showing and it's not supplemental
   halt if: ->(record) { record && !record.supplemental? }
 
-  divider "Supplemental Questions"
+  divider 'Supplemental Questions'
 
   input :pob_father,
         input_html: { autocomplete: 'new-password' },

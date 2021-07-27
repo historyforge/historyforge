@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class Census1910FormFields < CensusFormFields
-  divider "Name"
+  divider 'Name'
 
   input :last_name,
                input_html: { autocomplete: 'new-password' },
@@ -21,13 +23,13 @@ class Census1910FormFields < CensusFormFields
                input_html: { autocomplete: 'new-password' },
                hint: -> { name_suffix_hint }
 
-  divider "Relation"
+  divider 'Relation'
 
   input :relation_to_head,
                input_html: { autocomplete: 'new-password' },
                hint: -> { relation_to_head_hint }
 
-  divider "Personal Description"
+  divider 'Personal Description'
 
   input :sex,
                as: :radio_buttons,
@@ -66,7 +68,7 @@ class Census1910FormFields < CensusFormFields
                input_html: { min: 0 },
                hint: -> { num_children_alive_hint }
 
-  divider "Place of Birth & Citizenship"
+  divider 'Place of Birth & Citizenship'
 
   input :pob,
                input_html: {autocomplete: 'new-password'},
@@ -111,7 +113,7 @@ class Census1910FormFields < CensusFormFields
 
   input :language_spoken, hint: -> { language_spoken_hint }
 
-  divider "Occupation, Industry, Education and Employment Status"
+  divider 'Occupation, Industry, Education and Employment Status'
 
   input :profession,
                hint: -> { profession_hint },
@@ -146,7 +148,7 @@ class Census1910FormFields < CensusFormFields
                as: :boolean,
                hint: -> { boolean_hint(25) }
 
-  divider "Household Data"
+  divider 'Household Data'
 
   input :owned_or_rented,
                as: :radio_buttons,
@@ -170,7 +172,7 @@ class Census1910FormFields < CensusFormFields
                as: :integer,
                hint: -> { num_farm_sched_hint }
 
-  divider "More Personal Data"
+  divider 'More Personal Data'
 
   input :civil_war_vet,
                as: :radio_buttons,

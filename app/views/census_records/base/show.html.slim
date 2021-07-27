@@ -1,13 +1,13 @@
 - set_page_title @record.name
 
 - content_for :pills do
+  - if can?(:create, Flag)
+    = render 'shared/flag_it', item: @model, item_class: 'btn btn-secondary'
+  - if can?(:update, @model)
+    => link_to edit_resource_path(@model), class: 'btn btn-secondary' do
+      i.fa.fa-pencil
+      | Edit
   .dropdown style="display:inline-block"
-    - if can?(:create, Flag)
-      = render 'shared/flag_it', item: @model, item_class: 'btn btn-secondary'
-    - if can?(:update, @model)
-      = link_to edit_resource_path(@model), class: 'btn btn-secondary' do
-        i.fa.fa-pencil
-        | Edit
     a.btn.btn-primary.dropdown-toggle data-toggle='dropdown' href="#"
       | Actions
       = ' '
@@ -25,7 +25,7 @@
 
   - if can?(:create, CensusRecord)
     | &nbsp;
-    div style="display:inline-block;vertical-align:middle"
+    .add-another-form
       = form_tag(save_as_resource_path(@model), method: :put, class: 'form-inline') do
         = select_tag 'then', options_for_select([['In this family', 'family'], ['In this dwelling', 'dwelling'], ['On this page', 'page'], ['In this enumeration district', 'enumeration']], params[:then]), prompt: 'Select', class: 'form-control'
         = submit_tag 'Add Record', class: 'btn btn-primary'
@@ -73,15 +73,21 @@
     .card.mb-3
       .card-header Location
       ul.list-group.list-group-flush
-        li.list-group-item
-          .form-group.row
-            .col-6.col-form-label Census Address
-            .col-6= @record.street_address
-
-        li.list-group-item
-          .form-group.row
-            .col-6.col-form-label Building Record
-            .col-6= link_to_building @record.building
+        - show_census_address = @record.building.blank? || @record.building.street_address.include?("\n")
+        - if show_census_address
+          li.list-group-item
+            .form-group.row
+              .col-6.col-form-label Census Address
+              .col-6= @record.street_address
+          li.list-group-item
+            .form-group.row
+              .col-6.col-form-label Building Record
+              .col-6= link_to_building @record.building
+        - else
+          li.list-group-item
+            .form-group.row
+              .col-6.col-form-label Address
+              .col-6= link_to_building @record.building
 
         li.list-group-item
           .form-group.row

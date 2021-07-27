@@ -1,22 +1,24 @@
+# frozen_string_literal: true
+
 class Census1930FormFields < CensusFormFields
-  divider "Name"
+  divider 'Name'
   input :last_name, input_html: { autocomplete: 'new-password' }
   input :first_name, input_html: { autocomplete: 'new-password' }
   input :middle_name, input_html: { autocomplete: 'new-password' }
   input :name_prefix, input_html: { autocomplete: 'new-password' }
   input :name_suffix, input_html: { autocomplete: 'new-password' }
 
-  divider "Relation"
+  divider 'Relation'
   input :relation_to_head, input_html: { autocomplete: 'new-password' }
 
-  divider "Household Data"
+  divider 'Household Data'
   input :homemaker, as: :boolean, inline_label: 'Yes'
   input :owned_or_rented, as: :radio_buttons, collection: Census1910Record.owned_or_rented_choices, label: 'Home owned or rented', coded: true
   input :home_value, as: :integer, label: 'Value of home or monthly payment', hint: 'Enter 999 for unknown or leave blank if taker left empty'
   input :has_radio, as: :boolean
   input :lives_on_farm, as: :boolean
 
-  divider "Personal Description"
+  divider 'Personal Description'
   input :sex, as: :radio_buttons, collection: CensusRecord.sex_choices, coded: true
   input :race, as: :radio_buttons_other, collection: Census1930Record.race_choices, coded: true
   input :age, as: :integer, hint: 'Enter 999 for unknown or leave blank if taker left empty'
@@ -26,7 +28,7 @@ class Census1930FormFields < CensusFormFields
   input :attended_school, as: :boolean
   input :can_read_write, as: :boolean
 
-  divider "Place of Birth & Citizenship"
+  divider 'Place of Birth & Citizenship'
   input :pob, input_html: { autocomplete: 'new-password' }
   input :pob_father, input_html: { autocomplete: 'new-password' }
   input :pob_mother, input_html: { autocomplete: 'new-password' }
@@ -36,7 +38,7 @@ class Census1930FormFields < CensusFormFields
   input :naturalized_alien, as: :radio_buttons, collection: CensusRecord.naturalized_alien_choices, coded: true, wrapper_html: { data: { depends_on: :foreign_born } }
   input :can_speak_english, as: :boolean
 
-  divider "Occupation, Industry, and Class of Worker"
+  divider 'Occupation, Industry, and Class of Worker'
   input :profession, hint: 'Enter "None" if empty', input_html: { autocomplete: 'new-password' }
   input :industry, input_html: { autocomplete: 'new-password' }
   input :profession_code, input_html: { autocomplete: 'new-password' }

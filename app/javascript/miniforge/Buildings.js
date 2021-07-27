@@ -7,8 +7,8 @@ class Building extends React.PureComponent {
         return(
             <div className={`list-group-item building ${this.highlighted && 'active'}`}>
                 <p>
-                    <a href={`/buildings/${ id }`} target="_blank"
-                       title="Open building record in new tab">
+                    <a href={`/buildings/${ id }`}
+                       title="Open building record">
                         {street_address}
                     </a>
                 </p>
