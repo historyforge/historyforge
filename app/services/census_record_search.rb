@@ -48,49 +48,63 @@ class CensusRecordSearch
   end
 
   def scoped
-    @scoped || begin
-      rp = ransack_params
-      @active = rp.keys.any?
-      rp[:reviewed_at_not_null] = 1 unless user
-      @scoped = entity_class.ransack(rp).result
+    return @scoped if defined?(@scoped)
 
-      if paged?
-        @scoped = @scoped.page(page).per(per)
-      elsif from && to
-        @scoped = @scoped.offset(from).limit(to.to_i - from.to_i)
-      end
+    rp = ransack_params
+    @active = rp.keys.any?
+    rp[:reviewed_at_not_null] = 1 unless user
+    @scoped = entity_class.ransack(rp).result.includes(:locality)
 
-      @scoped = @scoped.includes(:locality)
-      @scoped = @scoped.includes(:building) if f.include?('latitude') || f.include?('longitude')
-      @scoped = @scoped.unhoused if unhoused?
-      @scoped = @scoped.unreviewed if unreviewed?
-      @scoped = @scoped.unmatched if unmatched?
-
-      add_sorts
+    if paged?
+      @scoped = @scoped.page(page).per(per)
+    elsif from && to
+      @scoped = @scoped.offset(from).limit(to.to_i - from.to_i)
     end
+
+    add_scopes
+    add_sorts
+
+    @scoped
+  end
+
+  def add_scopes
+    @scoped = @scoped.includes(:building) if f.include?('latitude') || f.include?('longitude')
+    @scoped = @scoped.unhoused if unhoused?
+    @scoped = @scoped.unreviewed if unreviewed?
+    @scoped = @scoped.unmatched if unmatched?
   end
 
   def add_sorts
-    order = []
-    streeted = false
-    censused = false
-    sort&.each do |_key, sort_unit|
+    if sort.blank?
+      add_default_sort_order
+    else
+      add_custom_sort_order
+    end
+  end
+
+  def add_default_sort_order
+    @scoped = @scoped.order census_page_order_clause('asc')
+  end
+
+  def add_custom_sort_order
+    sort.each do |_key, sort_unit|
       col = sort_unit['colId']
       dir = sort_unit['sort']
-      if col == 'name'
-        order << name_order_clause(dir)
-      elsif col =~ /street/
-        order << street_address_order_clause(dir) unless streeted
-        streeted = true
-      elsif %w[census_scope ward enum_dist page_number page_size line_number].include?(col)
-        order << census_page_order_clause(dir) unless censused
-        censused = true
-      elsif entity_class.columns.map(&:name).include?(col)
-        order << "#{col} #{dir}"
-      end
+      order = order_clause_for(col, dir)
+      @scoped = @scoped.order(entity_class.sanitize_sql_for_order(order)) if order
     end
-    order << census_page_order_clause('asc') if sort.blank?
-    @scoped = @scoped.order entity_class.send(:sanitize_sql, order.join(', '))
+  end
+
+  def order_clause_for(col, dir)
+    if col == 'name'
+      name_order_clause(dir)
+    elsif col == 'street_address'
+      street_address_order_clause(dir)
+    elsif col == 'census_scope'
+      census_page_order_clause(dir)
+    elsif entity_class.columns.map(&:name).include?(col)
+      "#{col} #{dir}"
+    end
   end
 
   def street_address_order_clause(dir)
