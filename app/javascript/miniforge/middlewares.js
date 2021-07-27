@@ -1,4 +1,5 @@
 import axios from 'axios'
+import buildParams from "../forge/buildParams";
 
 const csrfMetaTag = document.getElementsByName('csrf-token')[0]
 const token = csrfMetaTag ? csrfMetaTag.getAttribute('content') : null
@@ -25,15 +26,3 @@ export const forgeMiddleware = store => next => (incomingAction) => {
     }
 }
 
-const buildParams = function(search) {
-    const params = { s: {} }
-    if (search.buildings) {
-        params.s = search.s
-    }
-    if (search.people) {
-        params.people = search.people
-        params.peopleParams = search.s
-    }
-    params.s.lat_not_null = 1
-    return params
-}

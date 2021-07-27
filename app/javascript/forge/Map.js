@@ -1,9 +1,8 @@
 import React from 'react'
 import {connect} from "react-redux";
-import loadWMS from "./wms";
+import BaseMap from './BaseMap'
 
-class Map extends React.PureComponent {
-    state = { map: null }
+class Map extends BaseMap {
     mapOptions = {
         zoom: 14,
         disableDefaultUI: true,
@@ -33,66 +32,7 @@ class Map extends React.PureComponent {
         }
     }
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        if ((!prevProps.layeredAt && this.props.layeredAt) || (prevProps.layeredAt !== this.props.layeredAt)) {
-            this.addLayers()
-        }
-        if ((!prevProps.opacityAt && this.props.opacityAt) || (prevProps.opacityAt !== this.props.opacityAt)) {
-            this.doOpacity()
-        }
-        if ((!prevProps.loadedAt && this.props.loadedAt) || (prevProps.loadedAt !== this.props.loadedAt)) {
-            this.addMarkers()
-        }
-        if (prevProps.highlighted && prevProps.highlighted !== this.props.highlighted) {
-            this.unhighlightMarker(parseInt(prevProps.highlighted))
-        }
-        if (this.props.highlighted) {
-            this.highlightMarker(parseInt(this.props.highlighted))
-            if (this.props.building) {
-                const buildingId = parseInt(this.props.building.id)
-                if (buildingId !== parseInt(this.props.highlighted))
-                    this.unhighlightMarker(buildingId)
-            }
-        } else if (this.props.building) {
-            this.highlightMarker(parseInt(this.props.building.id))
-        }
-    }
-
-    highlightMarker(id) {
-        console.log('highlighting', id)
-        const marker = this.state.markers.find(item => item.buildingId === id)
-        marker.setIcon(this.iconHover)
-        marker.setZIndex(100)
-    }
-
-    unhighlightMarker(id) {
-        console.log('unhighlighting', id)
-        const marker = this.state.markers.find(item => item.buildingId === id)
-        marker.setIcon(this.iconStatic)
-        marker.setZIndex(10)
-    }
-
-    iconHover = {
-        path: google.maps.SymbolPath.CIRCLE,
-        fillColor: 'blue',
-        fillOpacity: 0.9,
-        scale: 6,
-        strokeColor: '#333',
-        strokeWeight: 1
-    }
-
-    iconStatic = {
-        path: google.maps.SymbolPath.CIRCLE,
-        fillColor: 'red',
-        fillOpacity: 0.9,
-        scale: 6,
-        strokeColor: '#333',
-        strokeWeight: 1
-    }
-
     addMarkers() {
-        if (this.state.heatmap) this.state.heatmap.setMap(null)
-
         const clusterer = this.state.clusterer || new MarkerClusterer(this.state.map, [], {
             imagePath: 'https://cdn.rawgit.com/googlemaps/js-marker-clusterer/gh-pages/images/m',
             minimumClusterSize: 10,
@@ -107,25 +47,16 @@ class Map extends React.PureComponent {
         this.setState({ clusterer, markers })
     }
 
-    get markers() {
-        return this.props.buildings && this.props.buildings.map(building => {
-            const marker = new google.maps.Marker({
-                position: new google.maps.LatLng(building.lat, building.lon),
-                icon: this.iconStatic,
-                zIndex: 10
-            })
-            marker.buildingId = building.id
-            google.maps.event.addListener(marker, 'click', () => {
-                this.props.select(building.id, this.props.params)
-            })
-            google.maps.event.addListener(marker, 'mouseover', () => {
-                this.props.highlight(building.id)
-            })
-            google.maps.event.addListener(marker, 'mouseout', () => {
-                this.props.highlight(building.id)
-            })
-            return marker
-        })
+    handleMarkerClick(building) {
+        this.props.select(building.id, this.props.params)
+    }
+
+    handleMarkerMouseOver(building) {
+        this.props.highlight(building.id)
+    }
+
+    handleMarkerMouseOut(building) {
+        this.props.highlight(building.id)
     }
 
     addLayers() {
