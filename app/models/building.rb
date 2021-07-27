@@ -94,6 +94,8 @@ class Building < ApplicationRecord
   end
 
   def do_the_geocode
+    return if Rails.env.test?
+
     geocode
   rescue Errno::ENETUNREACH
     nil

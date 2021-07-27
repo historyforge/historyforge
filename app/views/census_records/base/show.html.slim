@@ -4,7 +4,7 @@
   - if can?(:create, Flag)
     = render 'shared/flag_it', item: @model, item_class: 'btn btn-secondary'
   - if can?(:update, @model)
-    => link_to edit_resource_path(@model), class: 'btn btn-secondary' do
+    => link_to [:edit, @model], class: 'btn btn-secondary' do
       i.fa.fa-pencil
       | Edit
   .dropdown style="display:inline-block"
@@ -14,25 +14,25 @@
       span.caret
     .dropdown-menu
       - if !@model.reviewed? && can?(:review, @model)
-        = link_to 'Mark as Reviewed', reviewed_resource_path(@model), method: :put, class: 'dropdown-item'
+        = link_to 'Mark as Reviewed', [:reviewed, @model], method: :put, class: 'dropdown-item'
       - if can?(:update, @model)
-        = link_to 'Edit', edit_resource_path(@model), class: 'dropdown-item'
+        = link_to 'Edit', [:edit, @model], class: 'dropdown-item'
       - if can?(:destroy, @model)
-        = link_to 'Delete', resource_path(@model), data: { method: :delete, confirm: 'Are you sure? There is no return.' }, class: 'dropdown-item'
-      = link_to 'View All', collection_path, class: 'dropdown-item'
+        = link_to 'Delete', @model, data: { method: :delete, confirm: 'Are you sure? There is no return.' }, class: 'dropdown-item'
+      = link_to 'View All', resource_class, class: 'dropdown-item'
       - if @model.building_id?
         = link_to 'View Building', building_path(@model.building_id), class: 'dropdown-item'
 
   - if can?(:create, CensusRecord)
     | &nbsp;
     .add-another-form
-      = form_tag(save_as_resource_path(@model), method: :put, class: 'form-inline') do
+      = form_tag([:save_as, @model], method: :put, class: 'form-inline') do
         = select_tag 'then', options_for_select([['In this family', 'family'], ['In this dwelling', 'dwelling'], ['On this page', 'page'], ['In this enumeration district', 'enumeration']], params[:then]), prompt: 'Select', class: 'form-control'
         = submit_tag 'Add Record', class: 'btn btn-primary'
 
   - if !@model.reviewed? && can?(:review, @model)
     | &nbsp;
-    => link_to 'Good to go!', reviewed_resource_path(@model), class: 'btn btn-danger', data: { method: :put, confirm: 'You are about to make this census record public.' }
+    => link_to 'Good to go!', [:reviewed, @model], class: 'btn btn-danger', data: { method: :put, confirm: 'You are about to make this census record public.' }
 
 = render 'shared/flag_resolution', item: @model
 

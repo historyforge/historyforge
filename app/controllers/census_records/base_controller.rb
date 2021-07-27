@@ -200,30 +200,6 @@ module CensusRecords
     # These are all defined in subclass but are declared here because of the helper_method call below
     def census_record_search_class; end
 
-    def resource_path; end
-
-    def new_resource_path; end
-
-    def save_as_resource_path; end
-
-    def edit_resource_path; end
-
-    def reviewed_resource_path; end
-
-    def collection_path; end
-
-    def unhoused_collection_path; end
-
-    def unreviewed_collection_path; end
-
-    helper_method :resource_path,
-                  :edit_resource_path,
-                  :new_resource_path,
-                  :save_as_resource_path,
-                  :reviewed_resource_path,
-                  :collection_path,
-                  :unhoused_collection_path,
-                  :unreviewed_collection_path,
-                  :resource_class
+    helper_method :resource_class
   end
 end
