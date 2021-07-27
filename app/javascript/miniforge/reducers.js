@@ -41,7 +41,3 @@ export const buildings = function(state = {}, action) {
 export const search = function(state = {}, action) {
     return state
 }
-
-// export const buildingTypes = function(state, action) {
-//
-// }

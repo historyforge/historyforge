@@ -8,12 +8,12 @@ import { createLogger } from 'redux-logger'
 import { createStore, applyMiddleware, combineReducers } from 'redux'
 import { Provider } from 'react-redux'
 import { layers, buildings, buildingTypes, search } from "./reducers"
-import { forgeMiddleware } from "./middlewares";
+import { miniForgeMiddleware } from "./middlewares";
 
 const buildStore = () => {
     const loggerMiddleware = createLogger({collapsed: true})
     const reducers = combineReducers({ layers, buildings, buildingTypes, search })
-    return createStore(reducers, window.initialState, applyMiddleware(loggerMiddleware, forgeMiddleware))
+    return createStore(reducers, window.initialState, applyMiddleware(loggerMiddleware, miniForgeMiddleware))
 }
 
 export default class App extends React.PureComponent {
