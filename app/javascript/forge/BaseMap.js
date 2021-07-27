@@ -37,33 +37,33 @@ class BaseMap extends React.PureComponent {
     }
 
     doMarkerHighlighting(prevProps) {
-        const wasHighlighted = prevProps.highlighted && parseInt(prevProps.highlighted)
-        const isHighlighted = this.props.highlighted && parseInt(this.props.highlighted)
+        const wasHighlighted = parseInt(prevProps.highlighted)
+        const isHighlighted = parseInt(this.props.highlighted)
         const buildingId = this.props.building && parseInt(this.props.building.id)
         if (wasHighlighted && wasHighlighted !== isHighlighted) {
             this.unhighlightMarker(wasHighlighted)
         }
         if (isHighlighted) {
             this.highlightMarker(isHighlighted)
-            if (buildingId) {
-                if (buildingId !== isHighlighted)
-                    this.unhighlightMarker(buildingId)
-            }
         } else if (buildingId) {
             this.highlightMarker(buildingId)
         }
     }
 
+    propertyChanged(prevProps, property) {
+        return (!prevProps[property] && this.props[property]) || (prevProps[property] !== this.props[property]);
+    }
+
     markersChanged(prevProps) {
-        return (!prevProps.loadedAt && this.props.loadedAt) || (prevProps.loadedAt !== this.props.loadedAt);
+        return this.propertyChanged(prevProps, 'loadedAt')
     }
 
     opacityChanged(prevProps) {
-        return (!prevProps.opacityAt && this.props.opacityAt) || (prevProps.opacityAt !== this.props.opacityAt);
+        return this.propertyChanged(prevProps, 'opacityAt')
     }
 
     layersChanged(prevProps) {
-        return (!prevProps.layeredAt && this.props.layeredAt) || (prevProps.layeredAt !== this.props.layeredAt)
+        return this.propertyChanged(prevProps, 'layeredAt')
     }
 
     highlightMarker(id) {
