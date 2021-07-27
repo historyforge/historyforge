@@ -136,13 +136,10 @@ module CensusRecords
       permission_denied unless can_census?(year)
     end
 
-    def page_title
-      raise 'Need to implement page title.'
-    end
-
     def resource_class
       raise 'resource_class needs a constant name!'
     end
+    helper_method :resource_class
 
     def resource_params
       params[:census_record].each do |key2, value|
@@ -199,7 +196,5 @@ module CensusRecords
 
     # These are all defined in subclass but are declared here because of the helper_method call below
     def census_record_search_class; end
-
-    helper_method :resource_class
   end
 end

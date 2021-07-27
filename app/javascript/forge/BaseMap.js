@@ -1,5 +1,4 @@
 import React from 'react'
-import loadWMS from "./wms";
 
 class BaseMap extends React.PureComponent {
     state = { map: null }
@@ -28,40 +27,60 @@ class BaseMap extends React.PureComponent {
     componentDidMount() {}
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if ((!prevProps.layeredAt && this.props.layeredAt) || (prevProps.layeredAt !== this.props.layeredAt)) {
+        if (this.layersChanged(prevProps)) {
             this.addLayers()
         }
-        if ((!prevProps.opacityAt && this.props.opacityAt) || (prevProps.opacityAt !== this.props.opacityAt)) {
+        if (this.opacityChanged(prevProps)) {
             this.doOpacity()
         }
-        if ((!prevProps.loadedAt && this.props.loadedAt) || (prevProps.loadedAt !== this.props.loadedAt)) {
+        if (this.markersChanged(prevProps)) {
             this.addMarkers()
         }
-        if (prevProps.highlighted && prevProps.highlighted !== this.props.highlighted) {
-            this.unhighlightMarker(parseInt(prevProps.highlighted))
+        this.doMarkerHighlighting(prevProps);
+    }
+
+    doMarkerHighlighting(prevProps) {
+        const wasHighlighted = prevProps.highlighted && parseInt(prevProps.highlighted)
+        const isHighlighted = this.props.highlighted && parseInt(this.props.highlighted)
+        const buildingId = this.props.building && parseInt(this.props.building.id)
+        if (wasHighlighted && wasHighlighted !== isHighlighted) {
+            this.unhighlightMarker(wasHighlighted)
         }
-        if (this.props.highlighted) {
-            this.highlightMarker(parseInt(this.props.highlighted))
-            if (this.props.building) {
-                const buildingId = parseInt(this.props.building.id)
-                if (buildingId !== parseInt(this.props.highlighted))
+        if (isHighlighted) {
+            this.highlightMarker(isHighlighted)
+            if (buildingId) {
+                if (buildingId !== isHighlighted)
                     this.unhighlightMarker(buildingId)
             }
-        } else if (this.props.building) {
-            this.highlightMarker(parseInt(this.props.building.id))
+        } else if (buildingId) {
+            this.highlightMarker(buildingId)
         }
+    }
+
+    markersChanged(prevProps) {
+        return (!prevProps.loadedAt && this.props.loadedAt) || (prevProps.loadedAt !== this.props.loadedAt);
+    }
+
+    opacityChanged(prevProps) {
+        return (!prevProps.opacityAt && this.props.opacityAt) || (prevProps.opacityAt !== this.props.opacityAt);
+    }
+
+    layersChanged(prevProps) {
+        return (!prevProps.layeredAt && this.props.layeredAt) || (prevProps.layeredAt !== this.props.layeredAt)
     }
 
     highlightMarker(id) {
-        const marker = this.state.markers.find(item => item.buildingId === id)
-        marker.setIcon(this.iconHover)
-        marker.setZIndex(100)
+        this.tweakMarker(id, this.iconHover, 100)
     }
 
     unhighlightMarker(id) {
+        this.tweakMarker(id, this.iconStatic, 10)
+    }
+
+    tweakMarker(id, icon, zIndex) {
         const marker = this.state.markers.find(item => item.buildingId === id)
-        marker.setIcon(this.iconStatic)
-        marker.setZIndex(10)
+        marker.setIcon(icon)
+        marker.setZIndex(zIndex)
     }
 
     addMarkers() {}

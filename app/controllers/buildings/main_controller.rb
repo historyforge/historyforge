@@ -14,6 +14,7 @@ class Buildings::MainController < ApplicationController
     render_buildings
   end
 
+  # This has to do with buildings but is here because it is used to populate the building_id dropdown on the census form
   def autocomplete
     @buildings = Building.ransack(street_address_cont: params[:term]).result.limit(5).by_street_address
     render json: @buildings.map { |building|
@@ -65,7 +66,6 @@ class Buildings::MainController < ApplicationController
 
   def edit
     @building = Building.find params[:id]
-    @building.photos.build
     authorize! :update, @building
   end
 
@@ -155,11 +155,6 @@ class Buildings::MainController < ApplicationController
 
     redirect_to @photo.file.variant(resize_to_fit: [width, width * 3])
   end
-
-  def new_resource_path
-    new_building_path
-  end
-  helper_method :new_resource_path
 
   private
 

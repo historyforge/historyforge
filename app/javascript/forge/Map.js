@@ -1,6 +1,7 @@
 import React from 'react'
 import {connect} from "react-redux";
 import BaseMap from './BaseMap'
+import loadWMS from "./wms";
 
 class Map extends BaseMap {
     mapOptions = {
