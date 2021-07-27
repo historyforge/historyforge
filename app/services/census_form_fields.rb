@@ -40,7 +40,7 @@ class CensusFormFields
   end
 
   def render
-    builder = if form.respond_to?(:supercrazy) # Jbuilder responds to everything but form builder does not
+    builder = if form.respond_to?(:supercrazy)
                 JSONBuilder.new(form, resource_class)
               else
                 FormBuilder.new(form)
@@ -66,6 +66,7 @@ class CensusFormFields
     @resource_class ||= self.class.to_s.sub(/FormFields/, 'Record').safe_constantize
   end
 
+  # Card will group its inputs into a bootstrap card with the title as the header
   class Card
     def initialize(title)
       @title = title
@@ -95,9 +96,7 @@ class CensusFormFields
     end
 
     def add_field(field, config)
-      if config[:hint]&.respond_to?(:call)
-        config[:hint] = form.template.instance_exec &config[:hint]
-      end
+      config[:hint] = form.template.instance_exec &config[:hint] if config[:hint].respond_to?(:call)
 
       @cards.last << form.input(field, config).html_safe
     end
@@ -115,31 +114,9 @@ class CensusFormFields
       @klass = klass
       @card = nil
       # add name and address fields to start
-      AttributeBuilder.collection json, :locality_id, klass: klass, collection: Locality.select_options
-      AttributeBuilder.text(json, :name, klass: klass)
-      AttributeBuilder.text   json, :first_name, klass: klass
-      AttributeBuilder.text   json, :middle_name, klass: klass
-      AttributeBuilder.text   json, :last_name, klass: klass
-      json.census_scope do
-        json.label 'Census Schedule'
-        json.sortable 'census_scope'
-      end
+      output_common_fields(json, klass)
 
-      AttributeBuilder.number json, :page_number, klass: klass
-      AttributeBuilder.enumeration json, klass, :page_side
-      AttributeBuilder.number json, :line_number, sortable: false, klass: klass
-      AttributeBuilder.text   json, :county, klass: klass
-      AttributeBuilder.text   json, :city, klass: klass
-      AttributeBuilder.number json, :ward, klass: klass
-      AttributeBuilder.number json, :enum_dist, klass: klass
-      AttributeBuilder.text   json, :street_address, klass: klass
-      AttributeBuilder.text   json, :dwelling_number, klass: klass unless klass == Census1940Record
-      AttributeBuilder.text   json, :family_id, klass: klass
-
-      AttributeBuilder.boolean json, :foreign_born, klass: klass
-      AttributeBuilder.text json, :notes, klass: klass
     end
-
     attr_accessor :json, :card, :klass
 
     def start_card(title)
@@ -181,6 +158,25 @@ class CensusFormFields
     end
 
     private
+
+    def output_common_fields(json, klass)
+      AttributeBuilder.text(json, :name, klass: klass)
+      AttributeBuilder.text json, :street_address, klass: klass
+      AttributeBuilder.text json, :first_name, klass: klass
+      AttributeBuilder.text json, :middle_name, klass: klass
+      AttributeBuilder.text json, :last_name, klass: klass
+      AttributeBuilder.text json, :county, klass: klass
+      AttributeBuilder.text json, :city, klass: klass
+      AttributeBuilder.number json, :ward, klass: klass
+      AttributeBuilder.number json, :page_number, klass: klass
+      AttributeBuilder.enumeration json, klass, :page_side
+      AttributeBuilder.number json, :line_number, sortable: false, klass: klass
+      AttributeBuilder.number json, :enum_dist, klass: klass
+      AttributeBuilder.text json, :dwelling_number, klass: klass unless klass == Census1940Record
+      AttributeBuilder.text json, :family_id, klass: klass
+      AttributeBuilder.collection json, :locality_id, klass: klass, collection: Locality.select_options
+      AttributeBuilder.text json, :notes, klass: klass
+    end
 
     def translated_option(item, field)
       Translator.option field, item
