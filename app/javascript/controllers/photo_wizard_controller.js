@@ -174,24 +174,8 @@ export default class extends Controller {
         const autocomplete = new google.maps.places.Autocomplete(input)
         autocomplete.bindTo('bounds', map)
         autocomplete.setFields(['address_components', 'geometry', 'icon', 'name'])
-        autocomplete.addListener('place_changed', function () {
-            marker.setVisible(false);
-            const place = autocomplete.getPlace()
-            if (!place.geometry) {
-                window.alert("No details available for input: '" + place.name + "'")
-                return
-            }
-
-            if (place.geometry.viewport) {
-                map.fitBounds(place.geometry.viewport)
-            } else {
-                map.setCenter(place.geometry.location)
-                map.setZoom(17)
-            }
-            marker.setPosition(place.geometry.location)
-            document.getElementById('photograph_latitude').value = place.geometry.location.lat()
-            document.getElementById('photograph_longitude').value = place.geometry.location.lng()
-
+        autocomplete.addListener('place_changed', () => {
+            this.handlePlaceAutocompletion(marker, autocomplete, map);
         });
 
         marker.addListener('dragend', function () {
@@ -207,6 +191,25 @@ export default class extends Controller {
             marker.setPosition(loc)
             map.setCenter(loc)
         })
+    }
+
+    handlePlaceAutocompletion(marker, autocomplete, map) {
+        marker.setVisible(false);
+        const place = autocomplete.getPlace()
+        if (!place.geometry) {
+            window.alert("No details available for input: '" + place.name + "'")
+            return
+        }
+
+        if (place.geometry.viewport) {
+            map.fitBounds(place.geometry.viewport)
+        } else {
+            map.setCenter(place.geometry.location)
+            map.setZoom(17)
+        }
+        marker.setPosition(place.geometry.location)
+        document.getElementById('photograph_latitude').value = place.geometry.location.lat()
+        document.getElementById('photograph_longitude').value = place.geometry.location.lng()
     }
 }
 
