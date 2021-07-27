@@ -1,171 +1,5 @@
 import axios from 'axios'
-
-const getFieldConfig = function(attribute) {
-    let key, value;
-    const ref = window.attributeFilters
-    for (key in ref) {
-        value = ref[key];
-        if (attribute === key) {
-            return value;
-        }
-    }
-};
-
-const getFieldConfigFromScope = function(scope) {
-    var attribute, ref, ref1, value;
-    ref = window.attributeFilters;
-    for (attribute in ref) {
-        value = ref[attribute];
-        if (((ref1 = value.scopes) != null ? ref1[scope] : void 0) != null) {
-            return value;
-        }
-    }
-};
-
-const addAttributeFilter = function(scope, scopeValue) {
-    let html, input;
-    if (scope === 'reviewed_at_null') {
-        html = document.createElement('DIV');
-        html.classList.add('attribute-filter');
-        html.classList.add('dropdown-item');
-        html.innerHTML = 'Unreviewed records';
-        $('#attribute-filters').append(html);
-        return;
-    }
-    if (scope === 'building_id_null') {
-        html = document.createElement('DIV');
-        html.classList.add('attribute-filter');
-        html.classList.add('dropdown-item');
-        html.innerHTML = 'Records not attached to buildings';
-        $('#attribute-filters').append(html);
-        return;
-    }
-    const field_config = getFieldConfigFromScope(scope) || getFieldConfigFromScope(scope.replace(/_eq/, '_in'))
-
-    if (!field_config || !field_config.scopes) {
-        return;
-    }
-
-    html = document.createElement('DIV');
-    ['attribute-filter', 'btn', 'btn-sm', 'btn-light'].forEach((text) => {
-        html.classList.add(text)
-    })
-
-    const sentence = [field_config.label];
-
-    for (let key in field_config.scopes) {
-        const value = field_config.scopes[key];
-        if (key === scope) {
-            sentence.push(value);
-        }
-    }
-
-    if (scope.match(/null$/)) {
-        input = document.createElement('INPUT');
-        input.setAttribute('type', 'hidden');
-        input.setAttribute('name', `s[${scope}]`);
-        input.setAttribute('value', '1');
-        html.appendChild(input);
-    } else {
-        switch (field_config.type) {
-            case 'boolean':
-                input = document.createElement('INPUT');
-                input.setAttribute('type', 'hidden');
-                input.setAttribute('name', `s[${scope}]`);
-                input.setAttribute('value', '1');
-                html.appendChild(input);
-                break;
-
-            case 'checkboxes':
-                const values = [];
-                field_config.choices.forEach((choice) => {
-                    let label, value;
-                    if (typeof choice === 'string') {
-                        label = value = choice;
-                    } else {
-                        [label, value ] = choice;
-                    }
-                    scopeValue.forEach((singleScopeValue) => {
-                        if (value.toString() === singleScopeValue.toString()) {
-                            values.push(label);
-                            input = document.createElement('INPUT');
-                            input.setAttribute('type', 'hidden');
-                            input.setAttribute('name', `s[${scope}][]`);
-                            input.setAttribute('value', singleScopeValue);
-                            html.appendChild(input);
-                        }
-                    })
-                })
-                sentence.push(values.join(', '));
-                break;
-
-            case 'text':
-                input = document.createElement('INPUT');
-                input.setAttribute('type', 'hidden');
-                input.setAttribute('name', `s[${scope}]`);
-                input.setAttribute('value', scopeValue);
-                html.appendChild(input);
-                sentence.push(`"${scopeValue}"`)
-                break;
-
-            case 'number':
-                input = document.createElement('INPUT');
-                input.setAttribute('type', 'hidden');
-                input.setAttribute('name', `s[${scope}]`);
-                input.setAttribute('value', scopeValue);
-                html.appendChild(input);
-                sentence.push(scopeValue);
-                break;
-
-            case 'dropdown':
-                input = document.createElement('INPUT');
-                input.setAttribute('type', 'hidden');
-                input.setAttribute('name', `s[${scope}]`);
-                input.setAttribute('value', scopeValue);
-                html.appendChild(input);
-
-                field_config.choices.forEach((choice) => {
-                    if (scopeValue === choice.toString()) {
-                        sentence.push(choice);
-                    }
-                })
-                break;
-
-            case 'daterange':
-                const input1 = document.createElement('INPUT');
-                input1.setAttribute('type', 'hidden');
-                input1.setAttribute('name', `s[${scope}]`);
-                input1.setAttribute('name', "s[" + scope + "]");
-                input1.setAttribute('value', scopeValue);
-                html.appendChild(input1);
-
-                const otherScope = scope.replace(/gteq/, 'lteq');
-                const otherValue = window.currentAttributeFilters[otherScope];
-                const input2 = document.createElement('INPUT');
-                input2.setAttribute('type', 'hidden');
-                input2.setAttribute('name', `s[${otherScope}]`);
-                input2.setAttribute('value', otherValue);
-                html.appendChild(input2);
-                sentence.push(moment(scopeValue).format('M/D/YY'));
-                sentence.push(' to ');
-                sentence.push(moment(otherValue).format('M/D/YY'));
-        }
-    }
-    const closeButton = document.createElement('BUTTON');
-    closeButton.type = 'button';
-    closeButton.classList.add('close');
-    closeButton.classList.add('remove-filter');
-    closeButton.innerHTML = "&times;";
-
-    const desc = document.createElement('SPAN');
-    desc.appendChild(closeButton);
-    desc.innerHTML += sentence.join(' ');
-    if (field_config.append) {
-        desc.innerHTML += field_config.append;
-    }
-    html.appendChild(desc);
-    $('#attribute-filters').append(html);
-};
+import addAttributeFilter from "./addAttributeFilter";
 
 jQuery(document).on('click', '.attribute-filter button.close', function() {
     const $filter = $(this).closest('.attribute-filter')
@@ -226,7 +60,7 @@ $(document).on('change', 'select.scope', function() {
 $(document).on('change', 'select.attribute', function() {
     const attribute = $(this).val();
     const form = $(this).closest('.card-body');
-    const field_config = getFieldConfig(attribute);
+    const field_config = window.attributeFilters[attribute];
 
     if (field_config) {
         const scopeSelectContainer = form.find('.scope-selection-container').empty().hide();
@@ -364,31 +198,6 @@ $(document).on('change', 'select.attribute', function() {
                 })
                 appendToValueBox(input);
                 break;
-
-            case 'daterange':
-                const startDate = moment().startOf('month');
-                const endDate = moment().endOf('month');
-                const div = $('<div class="picker"></div>');
-                div.append(jQuery('<i class="icon-calendar.icon-large"></i>'));
-                div.append(`<span>${startDate.format('M/D/YY')} - ${endDate.format('M/D/YY')}</span><b class="caret"></b>`);
-                div.css('display', 'inline');
-
-                const from = document.createElement('INPUT');
-                from.setAttribute('type', 'hidden');
-                from.setAttribute('name', `s[${scopeSelect.val()}]`);
-                from.setAttribute('value', startDate.format('YYYY-MM-DD'));
-                from.className = 'from';
-
-                const to = document.createElement('INPUT');
-                to.setAttribute('type', 'hidden');
-                to.setAttribute('name', `s[${scopeSelect.val().replace(/gteq/, 'lteq')}]`);
-                to.setAttribute('value', endDate.format('YYYY-MM-DD'));
-                to.className = 'to';
-
-                valueBox.append(from);
-                valueBox.append(to);
-                appendToValueBox(div);
-                valueBox.searchDateRange(startDate, endDate);
         }
     }
 });
@@ -416,7 +225,10 @@ class AdvancedSearch {
         if (Object.entries(this.currentFilters).length) {
             $('#attribute-filters').addClass('mb-3').empty();
             for (let scope in this.currentFilters) {
-                addAttributeFilter(scope, this.currentFilters[scope]);
+                const field_config = this.getFieldConfigFromScope(scope) || this.getFieldConfigFromScope(scope.replace(/_eq/, '_in'))
+                if (field_config || field_config.scopes) {
+                    addAttributeFilter(field_config, scope, this.currentFilters[scope]);
+                }
             }
         }
     }
@@ -433,36 +245,14 @@ class AdvancedSearch {
             }
         }
     }
+
+    getFieldConfigFromScope(scope) {
+        for (let attribute in window.attributeFilters) {
+            const value = window.attributeFilters[attribute];
+            if ((value.scopes != null ? value.scopes[scope] : void 0) != null) {
+                return value;
+            }
+        }
+    }
 }
 
-$.fn.searchDateRange = function(from, to) {
-    return this.each(function() {
-        const dateRangeOptions = {
-            startDate: from,
-            endDate: to,
-            opens: 'left',
-            alwaysShowCalendars: true,
-            ranges: {
-                'Today': [moment(), moment()],
-                'Yesterday': [moment().subtract('days', 1), moment().subtract('days', 1)],
-                'Last 7 Days': [moment().subtract('days', 6), moment()],
-                'Last 30 Days': [moment().subtract('days', 29), moment()],
-                'This Month': [moment().startOf('month'), moment().endOf('month')],
-                'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')],
-                'This Year': [moment().startOf('year'), moment()],
-                'Last Year': [moment().subtract('years', 1).startOf('year'), moment().subtract('years', 1).endOf('year')]
-            }
-        };
-        const fromInput = $(this).find('.from');
-        const toInput = $(this).find('.to');
-        const picker = $(this).find('.picker');
-        picker.daterangepicker(dateRangeOptions, function(start, end) {
-            start = moment(start);
-            end = moment(end);
-            picker.find('span').html(start.format('M/D/YYYY') + ' - ' + end.format('M/D/YYYY'));
-            fromInput.val(start.format('YYYY-MM-DD'));
-            return toInput.val(end.format('YYYY-MM-DD'));
-        });
-        return this;
-    });
-};
