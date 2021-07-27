@@ -203,6 +203,8 @@ div.date {
 .value-input-container {
   display:inline;
 }
+
+#fieldSelector .checkboxes,
 .value-input-container.checkboxes {
   display:block;
   // max-height:200px;
@@ -219,8 +221,6 @@ div.date {
 
   &.column-count-2 {
     column-count: 2;
-    //flex: 0 0 100%;
-    //max-width: 100%;
   }
   &.column-count-3 {
     column-count: 3;

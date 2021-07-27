@@ -35,10 +35,10 @@
     .card.mb-3
       .card-header
         button.float-right.close(type="button" data-toggle="collapse" data-target="#fieldSelector") &times;
-        span Filters
+        span Fields
 
       .card-body
-        .value-input-container.column-count-3.checkboxes#fields
+        .column-count-3.checkboxes#fields
           - @search.all_fields.each do |field|
             label.dropdown-item.checkbox for="f_#{field}"
               = check_box_tag 'f[]', field, @search.f.include?(field), id: "f_#{field}", data: { default: @search.is_default_field?(field) }

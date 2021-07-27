@@ -35,6 +35,18 @@ class AttributeFilter {
         closeButton.classList.add('remove-filter');
         closeButton.innerHTML = "&times;";
 
+        closeButton.addEventListener('click', function() {
+            const $filter = $(this).closest('.attribute-filter')
+            const name = $filter.find('input:first').attr('name')
+
+            $(`[name="${name}"]`).val(null)
+            $(`[name="${name.replace('[]', '')}"]`).val(null)
+            $(`[name="${name.replace('_in', '_eq')}"]`).val(null)
+
+            $filter.remove();
+            $('#new_s').submit();
+        });
+
         const desc = document.createElement('SPAN');
         desc.appendChild(closeButton);
         desc.innerHTML += this.sentence.join(' ');
