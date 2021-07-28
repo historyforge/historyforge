@@ -11,7 +11,7 @@
 #grid.ag-theme-balham
 
 .navbar.navbar-light.bg-light.navbar-expand-lg.navbar-static.bottom#search-pagination-bottom
-  - count = @search.scoped.total_count
+  - count = @search.scoped.count
   .nav-item.mr-auto= "Found #{number_with_delimiter count} #{'record'.pluralize(count)}"
 
 = render 'shared/grid_script'

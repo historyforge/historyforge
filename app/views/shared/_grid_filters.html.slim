@@ -4,9 +4,9 @@
   - if can?(:bulk_update, resource_class) && controller.respond_to?(:year)
     = link_to 'Bulk Update', "/census/#{controller.year}/bulk", class: 'btn btn-sm btn-light'
   - if can?(:review, resource_class)
-    - count = @search.scoped.to_a.select { |rec| !rec.reviewed? }.length
+    - count = @search.scoped.unreviewed.count
     - if count > 0
-      = link_to "Mark #{count} Reviewed", request.params.merge(action: :bulk_review), class: 'btn btn-sm btn-light', data: { remote: false, method: :post, confirm: "Are you sure? Undoing this action may be painful." }
+      = link_to "Mark #{count} Reviewed", request.params.merge(action: :bulk_review, from: 1, to: 100), class: 'btn btn-sm btn-light', data: { remote: false, method: :post, confirm: "Are you sure? Undoing this action may be painful." }
   - if @search.active?
     = link_to 'Start New Search', url_for(reset: true), class: 'btn btn-sm btn-light'
   .dropdown.ml-2 data-controller="load-saved-search"

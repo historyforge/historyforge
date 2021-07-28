@@ -29,6 +29,7 @@ class Ability
 
       if user.has_role?('administrator')
         can :manage, :all
+        cannot :review, Person # because it isn't a thing right now
       end
 
       if user.has_role?('editor')

@@ -5,34 +5,19 @@
 # 2. Converts the results of the query into AgGrid-friendly hash
 # 3. Converts the hash to a CSV string
 
-class CensusRecordSearch
-  extend ActiveModel::Naming
-  include ActiveModel::Conversion
-  include ActiveModel::Validations
+class CensusRecordSearch < SearchQueryBuilder
+  attr_accessor :page, :s, :f, :fs, :g, :user, :sort, :from, :to, :scope
 
-  attr_accessor :page, :s, :f, :fs, :g, :user, :sort, :paged, :per, :from, :to, :scope
-
-  attr_writer :scoped
-
-  delegate :any?, :present?, :each, :first, :last,
-           :current_page, :total_pages, :limit_value,
-           to: :scoped
-
-  validates :t, presence: true
-
-  def active?
-    @active
-  end
-
-  def to_a
-    @to_a ||= scoped.to_a.map {|row| CensusRecordPresenter.new(row, user) }
+  def results
+    @results ||= scoped.to_a.map {|row| CensusRecordPresenter.new(row, user) }
   end
 
   def ransack_params
-    @s = @s.to_unsafe_hash if @s.respond_to?(:to_unsafe_hash)
-    @s = @s.reject { |_k, v| v == '' }
+    return @ransack_params if defined?(@ransack_params)
+    s = @s.respond_to?(:to_unsafe_hash) ? @s.to_unsafe_hash : @s
+    s = s.reject { |_k, v| v == '' }
     p = Hash.new
-    @s.each do |key, value|
+    s.each do |key, value|
       if value.is_a?(Array) && value.include?('blank')
         p[:g] ||= []
         if key =~ /_not_in$/
@@ -44,34 +29,29 @@ class CensusRecordSearch
         p[key.to_sym] = value
       end
     end
-    p
+    @ransack_params = p
   end
 
   def scoped
     return @scoped if defined?(@scoped)
 
-    rp = ransack_params
-    @active = rp.keys.any?
-    rp[:reviewed_at_not_null] = 1 unless user
-    @scoped = entity_class.ransack(rp).result.includes(:locality)
+    builder.includes(:locality)
+    builder.reviewed unless user
 
-    if paged?
-      @scoped = @scoped.page(page).per(per)
-    elsif from && to
-      @scoped = @scoped.offset(from).limit(to.to_i - from.to_i)
-    end
+    builder.offset(from) if from
+    builder.limit(to.to_i - from.to_i) if from && to
 
     add_scopes
     add_sorts
 
-    @scoped
+    @scoped = builder.scoped
   end
 
   def add_scopes
-    @scoped = @scoped.includes(:building) if f.include?('latitude') || f.include?('longitude')
-    @scoped = @scoped.unhoused if unhoused?
-    @scoped = @scoped.unreviewed if unreviewed?
-    @scoped = @scoped.unmatched if unmatched?
+    builder.includes(:building) if f.include?('latitude') || f.include?('longitude')
+    builder.unhoused if unhoused?
+    builder.unreviewed if unreviewed?
+    builder.unmatched if unmatched?
   end
 
   def add_sorts
@@ -83,7 +63,7 @@ class CensusRecordSearch
   end
 
   def add_default_sort_order
-    @scoped = @scoped.order census_page_order_clause('asc')
+    builder.order census_page_order_clause('asc')
   end
 
   def add_custom_sort_order
@@ -91,7 +71,7 @@ class CensusRecordSearch
       col = sort_unit['colId']
       dir = sort_unit['sort']
       order = order_clause_for(col, dir)
-      @scoped = @scoped.order(entity_class.sanitize_sql_for_order(order)) if order
+      builder.order(entity_class.sanitize_sql_for_order(order)) if order
     end
   end
 
@@ -128,20 +108,10 @@ class CensusRecordSearch
     item.sort = params[:sort]
     scope = params[:scope]
     item.scope = scope.to_sym if scope && scope != 'on'
-    if paged
-      item.paged = true
-      item.page = params[:page] || 1
-      item.per = per
-    else
-      item.paged = false
-      item.from = params[:from]
-      item.to = params[:to]
-    end
-    item
-  end
+    item.from = params[:from]
+    item.to = params[:to]
 
-  def paged?
-    !defined?(@paged) || paged
+    item
   end
 
   def columns
@@ -172,42 +142,5 @@ class CensusRecordSearch
     @scope == :unmatched
   end
 
-  def column_def
-    columns.map { |column| column_config(column) }
-  end
-
-  def row_data(records)
-    records.map do |record|
-      columns.each_with_object({ id: record.id}) do |column, hash|
-        value = record.field_for(column)
-        value = { name: value, reviewed: record.reviewed? } if column == 'name'
-        hash[column] = value
-      end
-    end
-  end
-
   private
-
-  def column_config(column)
-    options = {
-      headerName: translated_label(column), # I18n.t("simple_form.labels.census_record.#{column}", default: column.humanize),
-      field: column,
-      resizable: true
-    }
-    options[:headerName] = 'Actions' if column == 'id'
-    options[:pinned] = 'left' if %w[id name].include?(column)
-    options[:cellRenderer] = 'actionCellRenderer' if column == 'id'
-    options[:cellRenderer] = 'nameCellRenderer' if column == 'name'
-    options[:width] = 50 if %w[page_number page_side line_number age sex marital_status].include?(column)
-    options[:width] = 60 if %w[id ward enum_dist dwelling_number family_id].include?(column)
-    options[:width] = 130 if %w[marital_status profession industry].include?(column)
-    options[:width] = 160 if %w[census_scope name street_address notes profession].include?(column)
-    options[:width] = 250 if %w[coded_occupation_name coded_industry_name].include?(column)
-    options[:sortable] = true unless column == 'id'
-    options
-  end
-
-  def translated_label(key)
-    Translator.label(entity_class, key)
-  end
 end

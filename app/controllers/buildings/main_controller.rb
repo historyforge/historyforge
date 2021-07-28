@@ -172,9 +172,7 @@ class Buildings::MainController < ApplicationController
   def load_buildings
     authorize! :read, Building
     @search = BuildingSearch.generate params: params,
-                                      user: current_user,
-                                      paged: request.format.html?,
-                                      per: 50
+                                      user: current_user
   end
 
   def render_buildings
@@ -186,13 +184,12 @@ class Buildings::MainController < ApplicationController
   end
 
   def render_forge
-    @search.expanded = true
-    render plain: @search.as_json, content_type: 'application/json'
+    render plain: ForgeQuery.new(@search).to_json, content_type: 'application/json'
   end
 
   def render_grid
-    @buildings = @search.to_a.map {|building| BuildingPresenter.new(building, current_user) }
-    render json: @search.row_data(@buildings)
+    @search.expanded = true
+    render json: BuildingGridTranslator.new(@search).row_data
   end
 
   def render_csv
@@ -204,9 +201,8 @@ class Buildings::MainController < ApplicationController
     self.response_body = Enumerator.new do |csv|
       headers = @search.columns.map { |field| Translator.label(Building, field) }
       csv << CSV.generate_line(headers)
-      @search.paged = false
-      @search.to_a.each do |row|
-        row = BuildingPresenter.new(row, current_user)
+      @search.expanded = true
+      @search.results.each do |row|
         row_results = @search.columns.map { |field| row.field_for(field) }
         csv << CSV.generate_line(row_results)
       end

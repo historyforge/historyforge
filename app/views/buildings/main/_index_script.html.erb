@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
       actionCellRenderer: ActionCellRenderer,
       nameCellRenderer: NameCellRenderer,
     },
-    columnDefs: <%= @search.column_def -%>,
+    columnDefs: <%= BuildingGridTranslator.new(@search).column_def -%>,
     defaultColDef: { width: 100 },
     rowSelection: 'single',
     rowModelType: 'infinite',

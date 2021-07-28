@@ -163,6 +163,7 @@ module CensusRecords
     end
 
     def render_census_records
+      @translator = CensusGridTranslator.new(@search)
       respond_to do |format|
         format.html { render action: :index }
         format.csv { render_csv }
@@ -172,7 +173,7 @@ module CensusRecords
 
     def render_json
       if params[:from]
-        render json: @search.row_data(@search.to_a)
+        render json: @translator.row_data
       else
         respond_with @search.to_a, each_serializer: CensusRecordSerializer
       end
@@ -187,8 +188,8 @@ module CensusRecords
       self.response_body = Enumerator.new do |csv|
         headers = @search.columns.map { |field| Translator.label(resource_class, field) }
         csv << CSV.generate_line(headers)
-        @search.paged = false
-        @search.to_a.each do |row|
+        @search.results.each do |row|
+          record =
           csv << CSV.generate_line(@search.columns.map { |field| row.field_for(field) })
         end
       end

@@ -94,29 +94,37 @@ module People
 
     def load_people
       authorize! :read, Person
-      @search = PersonSearch.generate params: params, user: current_user, paged: request.format.html?, per: 100
+      @search = PersonSearch.generate params: params, user: current_user
     end
 
     def render_people
+      @translator = CensusGridTranslator.new(@search)
       if request.format.html?
         render action: :index
       else
-        @records = @search.to_a
         if params[:from]
-          render json: @search.row_data(@records)
+          render plain: @translator.row_data, content_type: 'application/json'
         elsif request.format.csv?
-          filename = "historyforge.csv"
-          headers["X-Accel-Buffering"] = "no"
-          headers["Cache-Control"] = "no-cache"
-          headers["Content-Type"] = "text/csv; charset=utf-8"
-          headers["Content-Disposition"] =
-              %(attachment; filename="#{filename}")
-          headers["Last-Modified"] = Time.zone.now.ctime.to_s
-          self.response_body = Enumerator.new do |output|
-            @search.to_csv(output)
-          end
+          render_csv
         else
+          @records = @search.results
           respond_with @records, each_serializer: PersonSerializer
+        end
+      end
+    end
+
+    def render_csv
+      headers["X-Accel-Buffering"] = "no"
+      headers["Cache-Control"] = "no-cache"
+      headers["Content-Type"] = "text/csv; charset=utf-8"
+      headers["Content-Disposition"] = %(attachment; filename="historyforge-person-search.csv")
+      headers["Last-Modified"] = Time.zone.now.ctime.to_s
+      self.response_body = Enumerator.new do |csv|
+        headers = @search.columns.map { |field| Translator.label(Person, field) }
+        csv << CSV.generate_line(headers)
+        @search.results.each do |row|
+          row_results = @search.columns.map { |field| row.field_for(field) }
+          csv << CSV.generate_line(row_results)
         end
       end
     end

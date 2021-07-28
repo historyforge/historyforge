@@ -117,7 +117,7 @@
       tbody
         - @record.fellows.each do |row|
           tr
-            td= link_to row.name, resource_path(row)
+            td= link_to row.name, row
             td= row.sex
             td= row.age
             td= row.relation_to_head

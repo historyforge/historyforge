@@ -11,7 +11,7 @@
           actionCellRenderer: ActionCellRenderer,
           nameCellRenderer: NameCellRenderer,
         },
-        columnDefs: <%= @search.column_def.to_json.html_safe -%>,
+        columnDefs: <%= @translator.try(:column_def) || @search.column_def.to_json.html_safe -%>,
         defaultColDef: { width: 100 },
         rowSelection: 'single',
         rowModelType: 'infinite',
