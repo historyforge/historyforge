@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class BuildingResidentsLoader
-  def initialize(building:, year:, filters:, reviewed_only: false)
+  def initialize(building:, year: nil, filters: nil, reviewed_only: true)
     @building = building
     @year = year
     prepare_filters(filters)

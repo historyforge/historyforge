@@ -8,6 +8,8 @@
       .row
         .col-sm-6.col-xs-12
           = form.input :file, as: :file, label: 'Upload your photo', hint: 'JPG files only please!', input_html: { accept: 'image/jpeg' }
+          - if form.object.file.attached?
+            .alert.alert-success Your photo is uploaded. To get to the other stuff, simply click Next to get to it. You only need to click "Choose file" if you want to replace the photo that was already uploaded.
         .col-sm-6.col-xs-12#selected-file
           - if form.object.file.attached?
             = image_tag form.object.file

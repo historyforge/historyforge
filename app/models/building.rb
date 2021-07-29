@@ -85,10 +85,6 @@ class Building < ApplicationRecord
     name && (address_house_number.blank? || !name.include?(address_house_number))
   end
 
-  def residence?
-    building_types.include?(BuildingType.find_by(name: 'residence'))
-  end
-
   def full_street_address
     "#{[street_address, city, state].join(' ')} #{postal_code}"
   end
@@ -106,7 +102,7 @@ class Building < ApplicationRecord
   end
 
   def architects_list=(value)
-    self.architects = value.split(',').map(&:strip).map {|item| Architect.find_or_create_by(name: item) }
+    self.architects = value.split(',').map(&:strip).map { |item| Architect.find_or_create_by(name: item) }
   end
 
   def building_type_name
@@ -165,7 +161,7 @@ class Building < ApplicationRecord
   attr_writer :residents
 
   def residents
-    @residents ||= CensusYears.map { |year| send("census_#{year}_records").to_a }.flatten
+    @residents ||= BuildingResidentsLoader.new(building: self).call
   end
 
   def families
