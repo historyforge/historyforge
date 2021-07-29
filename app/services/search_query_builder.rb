@@ -57,8 +57,25 @@ class SearchQueryBuilder
   def ransack_params
     return @ransack_params if defined?(@ransack_params)
 
-    s = @s.is_a?(String) ? JSON.parse(@s) : @s
-    s = s.to_unsafe_hash if s.respond_to?(:to_unsafe_hash)
-    @ransack_params = s.each_with_object({}) { |value, hash| hash[value[0].to_sym] = value[1]; }
+    prepare_search_filters
+    p = Hash.new
+    s.each do |key, value|
+      if value.is_a?(Array) && value.include?('blank')
+        p[:g] ||= []
+        if key =~ /_not_in$/
+          p[:g] << { m: 'and', key.to_sym => value, key.sub(/not_in$/, 'present').to_sym => true }
+        elsif key =~ /_in$/
+          p[:g] << { m: 'or', key.to_sym => value, key.sub(/in$/, 'present').to_sym => true }
+        end
+      else
+        p[key.to_sym] = value
+      end
+    end
+    @ransack_params = p
+  end
+
+  def prepare_search_filters
+    @s = @s.respond_to?(:to_unsafe_hash) ? @s.to_unsafe_hash : @s
+    @s = @s.reject { |_k, v| v == '' }
   end
 end

@@ -12,26 +12,6 @@ class CensusRecordSearch < SearchQueryBuilder
     @results ||= scoped.to_a.map {|row| CensusRecordPresenter.new(row, user) }
   end
 
-  def ransack_params
-    return @ransack_params if defined?(@ransack_params)
-    s = @s.respond_to?(:to_unsafe_hash) ? @s.to_unsafe_hash : @s
-    s = s.reject { |_k, v| v == '' }
-    p = Hash.new
-    s.each do |key, value|
-      if value.is_a?(Array) && value.include?('blank')
-        p[:g] ||= []
-        if key =~ /_not_in$/
-          p[:g] << { m: 'and', key.to_sym => value, key.sub(/not_in$/, 'present').to_sym => true }
-        elsif key =~ /_in$/
-          p[:g] << { m: 'or', key.to_sym => value, key.sub(/in$/, 'present').to_sym => true }
-        end
-      else
-        p[key.to_sym] = value
-      end
-    end
-    @ransack_params = p
-  end
-
   def scoped
     return @scoped if defined?(@scoped)
 
