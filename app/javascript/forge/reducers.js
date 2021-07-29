@@ -34,7 +34,11 @@ export const buildings = function(state = {}, action) {
 
     if (action.type === 'BUILDING_SELECTED') {
         const { building } = action
-        return { ...state, building, highlighted: action.building.id }
+        return { ...state, building, highlighted: null } //, highlighted: action.building.id }
+    }
+
+    if (action.type === 'BUILDING_DESELECT') {
+        return { ...state, building: null, highlighted: null }
     }
 
     return state

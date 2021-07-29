@@ -51,7 +51,11 @@ class Buildings::MainController < ApplicationController
   def show
     @building = Building.includes(:architects, :building_types).find params[:id]
     authorize! :read, @building
-    @building.with_filtered_residents params[:people], params[:peopleParams]
+    @building.residents = BuildingResidentsLoader.new(
+      building: @building,
+      year: params[:people],
+      filters: params[:peopleParams]
+    ).call
     respond_to do |format|
       format.html do
         @neighbors = @building.neighbors.map { |building| BuildingListingSerializer.new(building) }

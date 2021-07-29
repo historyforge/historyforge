@@ -159,26 +159,13 @@ class Building < ApplicationRecord
   before_validation :name_the_house
 
   def neighbors
-    lat? ? Building.near([lat, lon], 0.1).where('id<>?', id).limit(4) : []
+    lat? ? Building.near([lat, lon], 0.1).where('id<>?', id).limit(4).includes(:building_types, :addresses) : []
   end
 
-  attr_accessor :residents
+  attr_writer :residents
 
-  def with_filtered_residents(year, params)
-    return if year.blank? || params.blank?
-
-    people_class = "Census#{year}Record".constantize
-    people = people_class.where.not(reviewed_at: nil)
-    params = JSON.parse(params) if params.is_a?(String)
-    q = params.each_with_object({}) {|item, hash|
-      hash[item[0].to_sym] = item[1] if item[1].present?
-    }
-    @residents = people.where(building_id: id).ransack(q).result
-  end
-
-  def with_residents
-    @residents = CensusYears.map { |year| send("census_#{year}_records").to_a }.flatten
-    self
+  def residents
+    @residents ||= CensusYears.map { |year| send("census_#{year}_records").to_a }.flatten
   end
 
   def families

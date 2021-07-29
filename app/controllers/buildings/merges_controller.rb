@@ -20,8 +20,8 @@ module Buildings
 
     def load_and_authorize
       authorize! :merge, Building
-      @target = Building.find(params[:building_id]).with_residents
-      @source = Building.find(params[:merge_id]).with_residents
+      @target = Building.find(params[:building_id])
+      @source = Building.find(params[:merge_id])
       @check = BuildingMergeEligibilityCheck.new(@source, @target)
       @check.perform
     end

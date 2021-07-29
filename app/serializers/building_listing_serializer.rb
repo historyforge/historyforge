@@ -14,13 +14,4 @@ class BuildingListingSerializer
   attribute :name do |object|
     object.proper_name? ? object.name : object.street_address
   end
-
-  # has_many :architects, serializer: ArchitectSerializer
-
-  # attribute :residents do |object|
-  #   object.residents.present? && object
-  #       .residents
-  #       .map { |item| CensusRecordSerializer.new(item).as_json }
-  #       .group_by { |item| item['data']['attributes']['year'] }
-  # end
 end

@@ -99,7 +99,7 @@ const mapStateToProps = state => {
 const actions = {
     load: (params) => ({ type: 'BUILDING_LOAD', params }),
     highlight: (id) => ({ type: 'BUILDING_HIGHLIGHT', id }),
-    select: (id, params) => ({ type: 'BUILDING_SELECT', id, params })
+    select: (id, params) => ({ type: 'BUILDING_SELECT', id, params }),
 }
 
 const Component = connect(mapStateToProps, actions)(Map)

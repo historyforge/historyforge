@@ -10,7 +10,9 @@ class Building extends React.PureComponent {
     }
 
     close() {
-        this.setState({ visible: false })
+        this.setState({ visible: false }, () => {
+            this.props.deselect(this.state.building_id)
+        })
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -136,6 +138,7 @@ const mapStateToProps = state => {
 }
 
 const actions = {
+    deselect: (id) => ({ type: 'BUILDING_DESELECT', id })
 }
 
 const Component = connect(mapStateToProps, actions)(Building)

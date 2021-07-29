@@ -102,9 +102,7 @@ class BuildingSearch < SearchQueryBuilder
     people_class = "Census#{people}Record".constantize
     people = people_class.where.not(reviewed_at: nil)
 
-    if people_params.present?
-      people = people.ransack(people_params).result
-    end
+    people = people.ransack(people_params).result if people_params.present?
 
     return if people.blank?
 
