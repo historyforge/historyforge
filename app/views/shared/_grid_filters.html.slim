@@ -53,54 +53,55 @@
         button.float-right.close(type="button" data-toggle="collapse" data-target="#newAttributeFilter") &times;
         span Search Filters
       .card-body
-        - if controller_name =~ /teen/
+        - if controller_name =~ /teen/ && user_signed_in?
           .row
             .col-3
-              label for="s_name_cont" Name
-              input.form-control#s_name_cont type="search" name="s[name_cont]" value=@search.s[:name_cont]
+              label for="s_ward_eq" Ward
+              input.form-control#s_ward_eq type="search" name="s[ward_eq]" value=@search.s[:ward_eq]
             .col-3
-              label for="s_race_in" Race
-              = select_tag 's[race_eq]', options_for_select(resource_class.race_choices.map { |choice| [translated_option('race', choice), choice] }, @search.s[:race_eq]), include_blank: true, class: 'form-control'
+              label for="s_enum_dist_eq" Enum. Dist.
+              input.form-control#s_enum_dist_eq type="search" name="s[enum_dist_eq]" value=@search.s[:enum_dist_eq]
             .col-3
-              label for="s_marital_status_eq" Marital Status
-              = select_tag 's[marital_status_eq]', options_for_select(resource_class.marital_status_choices.map { |choice| [translated_option('marital_status', choice), choice] }, @search.s[:marital_status_eq]), include_blank: true, class: 'form-control'
+              label for="s_page_number_eq" Sheet
+              = select_tag 's[page_number_eq]', options_for_select((1..100).map, @search.s[:page_number_eq]), include_blank: true, class: 'form-control'
             .col-3
-              label for="s_age_eq" Age
-              = select_tag 's[age_eq]', options_for_select((1..135).map, @search.s[:age_eq]), include_blank: true, class: 'form-control'
+              label for="s_page_side_eq" Side
+              = select_tag 's[page_side_eq]', options_for_select(%w[A B], @search.s[:page_side_eq]), include_blank: true, class: 'form-control'
           hr
 
-          .row
-            .col-3
-              label for="s_pob_cont" Place of Birth
-              = text_field_tag "s[pob_cont]", @search.s[:pob_cont], class: 'form-control', data: { controller: 'autocomplete', attribute: 'pob' }
-            .col-3
-              label for="s_street_address_cont" Street Address
-              = text_field_tag "s[street_address_cont]", @search.s[:street_address_cont], class: 'form-control', data: { controller: 'autocomplete', attribute: 'street_address' }
-            .col-3
-              label for="s_profession_cont" Profession
-              = text_field_tag "s[profession_cont]", @search.s[:profession_cont], class: 'form-control', data: { controller: 'autocomplete', attribute: 'profession' }
-            .col-3
-              label for="s_industry_cont" Industry
-              = text_field_tag "s[industry_cont]", @search.s[:industry_cont], class: 'form-control', data: { controller: 'autocomplete', attribute: 'industry' }
-          hr
 
-          - if user_signed_in?
-            .row
-              .col-3
-                label for="s_ward_eq" Ward
-                input.form-control#s_ward_eq type="search" name="s[ward_eq]" value=@search.s[:ward_eq]
-              .col-3
-                label for="s_enum_dist_eq" Enum. Dist.
-                input.form-control#s_enum_dist_eq type="search" name="s[enum_dist_eq]" value=@search.s[:enum_dist_eq]
-              .col-3
-                label for="s_page_number_eq" Sheet
-                = select_tag 's[page_number_eq]', options_for_select((1..100).map, @search.s[:page_number_eq]), include_blank: true, class: 'form-control'
-              .col-3
-                label for="s_page_side_eq" Side
-                = select_tag 's[page_side_eq]', options_for_select(%w[A B], @search.s[:page_side_eq]), include_blank: true, class: 'form-control'
-            hr
+          / .row
+          /   .col-3
+          /     label for="s_name_cont" Name
+          /     input.form-control#s_name_cont type="search" name="s[name_cont]" value=@search.s[:name_cont]
+          /   .col-3
+          /     label for="s_race_in" Race
+          /     = select_tag 's[race_eq]', options_for_select(resource_class.race_choices.map { |choice| [translated_option('race', choice), choice] }, @search.s[:race_eq]), include_blank: true, class: 'form-control'
+          /   .col-3
+          /     label for="s_marital_status_eq" Marital Status
+          /     = select_tag 's[marital_status_eq]', options_for_select(resource_class.marital_status_choices.map { |choice| [translated_option('marital_status', choice), choice] }, @search.s[:marital_status_eq]), include_blank: true, class: 'form-control'
+          /   .col-3
+          /     label for="s_age_eq" Age
+          /     = select_tag 's[age_eq]', options_for_select((1..135).map, @search.s[:age_eq]), include_blank: true, class: 'form-control'
+          / hr
+          /
+          / .row
+          /   .col-3
+          /     label for="s_pob_cont" Place of Birth
+          /     = text_field_tag "s[pob_cont]", @search.s[:pob_cont], class: 'form-control', data: { controller: 'autocomplete', attribute: 'pob' }
+          /   .col-3
+          /     label for="s_street_address_cont" Street Address
+          /     = text_field_tag "s[street_address_cont]", @search.s[:street_address_cont], class: 'form-control', data: { controller: 'autocomplete', attribute: 'street_address' }
+          /   .col-3
+          /     label for="s_profession_cont" Profession
+          /     = text_field_tag "s[profession_cont]", @search.s[:profession_cont], class: 'form-control', data: { controller: 'autocomplete', attribute: 'profession' }
+          /   .col-3
+          /     label for="s_industry_cont" Industry
+          /     = text_field_tag "s[industry_cont]", @search.s[:industry_cont], class: 'form-control', data: { controller: 'autocomplete', attribute: 'industry' }
+          / hr
 
-        - elsif controller_path =~ /people/
+
+        /- elsif controller_path =~ /people/
           .row
             .col-3
               label for="s_name_cont" Name

@@ -75,7 +75,16 @@ class SearchQueryBuilder
   end
 
   def prepare_search_filters
+    @s = @s.is_a?(String) ? JSON.parse(@s) : @s
     @s = @s.respond_to?(:to_unsafe_hash) ? @s.to_unsafe_hash : @s
     @s = @s.reject { |_k, v| v == '' }
   end
+
+  # def ransack_params
+  #   return @ransack_params if defined?(@ransack_params)
+  #
+  #   @s = @s.to_unsafe_hash if @s.respond_to?(:to_unsafe_hash)
+  #   @s = @s.each_with_object({}) { |value, hash| hash[value[0].to_sym] = value[1] if value[1].present? }
+  #   @ransack_params = @s
+  # end
 end
