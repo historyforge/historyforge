@@ -20,16 +20,15 @@ class Buildings::MainController < ApplicationController
       format.csv  { render_csv('buildings', Building) }
       format.json do
         if params[:from]
-          render plain: ForgeQuery.new(@search).to_json, content_type: 'application/json'
-        else
           @search.expanded = true
           render json: BuildingGridTranslator.new(@search).row_data
+        else
+          render plain: ForgeQuery.new(@search).to_json, content_type: 'application/json'
         end
       end
     end
   end
 
-  # This has to do with buildings but is here because it is used to populate the building_id dropdown on the census form
   def autocomplete
     @buildings = Building.ransack(street_address_cont: params[:term]).result.limit(5).by_street_address
     render json: @buildings.map { |building|

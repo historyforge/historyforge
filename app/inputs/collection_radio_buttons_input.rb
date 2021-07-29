@@ -38,7 +38,7 @@ class CollectionRadioButtonsInput < SimpleForm::Inputs::CollectionRadioButtonsIn
   end
 
   def option_label(item)
-    return item unless item.kind_of?(String)
+    return item unless item.is_a?(String)
     return 'blank' if item.blank?
 
     if options[:coded]

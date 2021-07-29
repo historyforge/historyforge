@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module BulkUpdatesHelper
   # This exists so that bulk update can render the input of a census field outside of the context of its own form.
   # The bulk update form isn't a form_for a specific census record, but an operation that will change all matching

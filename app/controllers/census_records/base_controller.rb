@@ -25,6 +25,7 @@ module CensusRecords
       @record.attributes = params.require(:attributes).permit! if params[:attributes]
     end
 
+    # Used to populate the building_id field on census forms
     def building_autocomplete
       record = resource_class.new street_house_number: params[:house],
                                   street_prefix: params[:prefix],
@@ -36,6 +37,8 @@ module CensusRecords
       render json: buildings.to_json
     end
 
+    # Any text field that has autocomplete=off is hooked up to autocomplete based on controlled vocabulary and other
+    # entries for that field for that year.
     def autocomplete
       results = AttributeAutocomplete.new(
         attribute: params[:attribute],
