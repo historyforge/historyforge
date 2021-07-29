@@ -4,6 +4,7 @@
 module CensusRecords
   class BaseController < ApplicationController
     include AdvancedRestoreSearch
+    include RenderCsv
 
     respond_to :json, only: :index
     respond_to :csv, only: :index
@@ -166,7 +167,7 @@ module CensusRecords
       @translator = CensusGridTranslator.new(@search)
       respond_to do |format|
         format.html { render action: :index }
-        format.csv { render_csv }
+        format.csv { render_csv("census-records-#{year}", resource_class) }
         format.json { render_json }
       end
     end
@@ -179,23 +180,6 @@ module CensusRecords
       end
     end
 
-    def render_csv
-      headers['X-Accel-Buffering'] = 'no'
-      headers['Cache-Control'] = 'no-cache'
-      headers['Content-Type'] = 'text/csv; charset=utf-8'
-      headers['Content-Disposition'] = "attachment; filename=\"historyforge-census-records-#{year}.csv\""
-      headers['Last-Modified'] = Time.zone.now.ctime.to_s
-      self.response_body = Enumerator.new do |csv|
-        headers = @search.columns.map { |field| Translator.label(resource_class, field) }
-        csv << CSV.generate_line(headers)
-        @search.results.each do |row|
-          record =
-          csv << CSV.generate_line(@search.columns.map { |field| row.field_for(field) })
-        end
-      end
-    end
-
-    # These are all defined in subclass but are declared here because of the helper_method call below
     def census_record_search_class; end
   end
 end

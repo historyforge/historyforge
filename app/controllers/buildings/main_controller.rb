@@ -1,5 +1,6 @@
 class Buildings::MainController < ApplicationController
   include AdvancedRestoreSearch
+  include RenderCsv
 
   wrap_parameters format: []
   respond_to :json, only: %i[index show update]
@@ -9,12 +10,23 @@ class Buildings::MainController < ApplicationController
   skip_before_action :verify_authenticity_token, only: :autocomplete
   before_action :load_building, only: %i[show edit update destroy review]
   before_action :authorize_action
+  before_action :load_buildings, only: %i[index bulk_review]
   before_action :review_building, only: %i[update review]
   before_action :load_residents, only: :show
 
   def index
-    load_buildings
-    render_buildings
+    respond_to do |format|
+      format.html
+      format.csv  { render_csv('buildings', Building) }
+      format.json do
+        if params[:from]
+          render plain: ForgeQuery.new(@search).to_json, content_type: 'application/json'
+        else
+          @search.expanded = true
+          render json: BuildingGridTranslator.new(@search).row_data
+        end
+      end
+    end
   end
 
   # This has to do with buildings but is here because it is used to populate the building_id dropdown on the census form
@@ -92,7 +104,6 @@ class Buildings::MainController < ApplicationController
   end
 
   def bulk_review
-    load_buildings
     @search.scoped.to_a.each do |record|
       next if record.reviewed?
 
@@ -184,39 +195,6 @@ class Buildings::MainController < ApplicationController
     authorize! :read, Building
     @search = BuildingSearch.generate params: params,
                                       user: current_user
-  end
-
-  def render_buildings
-    respond_to do |format|
-      format.html { render action: :index }
-      format.csv  { render_csv }
-      format.json { params[:from] ? render_grid : render_forge }
-    end
-  end
-
-  def render_forge
-    render plain: ForgeQuery.new(@search).to_json, content_type: 'application/json'
-  end
-
-  def render_grid
-    @search.expanded = true
-    render json: BuildingGridTranslator.new(@search).row_data
-  end
-
-  def render_csv
-    headers['X-Accel-Buffering'] = 'no'
-    headers['Cache-Control'] = 'no-cache'
-    headers['Content-Type'] = 'text/csv; charset=utf-8'
-    headers['Content-Disposition'] = 'attachment; filename="historyforge-buildings.csv'
-    headers['Last-Modified'] = Time.zone.now.ctime.to_s
-    self.response_body = Enumerator.new do |csv|
-      headers = @search.columns.map { |field| Translator.label(Building, field) }
-      csv << CSV.generate_line(headers)
-      @search.expanded = true
-      @search.results.each do |row|
-        row_results = @search.columns.map { |field| row.field_for(field) }
-        csv << CSV.generate_line(row_results)
-      end
-    end
+    @search.expanded = true if request.format.csv?
   end
 end
