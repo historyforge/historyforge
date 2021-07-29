@@ -1,25 +1,24 @@
+# frozen_string_literal: true
 class CollectionRadioButtonsInput < SimpleForm::Inputs::CollectionRadioButtonsInput
   def input_type
     :radio_buttons
   end
 
   def input(wrapper_options={})
-    if @builder.is_a?(FormViewBuilder)
-      values = @builder.object.send(attribute_name)
-      if values.is_a?(String)
-        values = values.starts_with?('[') ? JSON.parse(values) : [values]
-      end
+    view_input || super
+  end
 
-      return 'blank' if values.blank?
+  def view_input
+    return unless @builder.is_a?(FormViewBuilder)
 
-      if value.respond_to?(:map)
-        values = values.map { |v| option_label(v) } || []
-        values.select(&:present?).join("<br>").html_safe
-      else
-        option_label(value)
-      end
+    values = @builder.object.public_send(attribute_name)
+
+    return 'blank' if values.blank?
+
+    if value.respond_to?(:map)
+      values.map { |v| option_label(v) }.select(&:present?).join("<br>").html_safe
     else
-      super
+      option_label(value)
     end
   end
 
@@ -33,14 +32,9 @@ class CollectionRadioButtonsInput < SimpleForm::Inputs::CollectionRadioButtonsIn
     options[:collection] = extract_collection_from_choices if !options[:collection] && !options[:original_collection]
     options[:original_collection] ||= options[:collection]
     items = options[:original_collection].dup
-    if items.first && items.first.is_a?(String)
-      items = items.map { |item| [option_label(item), item]}
-    end
+    items = items.map { |item| [option_label(item), item]} if items.first&.is_a?(String)
     items = with_extra_items(items) unless options[:bare]
     @collection = items
-  end
-
-  def base_collection
   end
 
   def option_label(item)
