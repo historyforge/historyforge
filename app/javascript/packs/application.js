@@ -40,6 +40,21 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import Forge from '../forge/App'
 import MiniForge from '../miniforge/App'
+import { Notifier } from '@airbrake/browser';
+
+if (window.airbrakeCreds && window.env === 'production') {
+  const airbrake = new Notifier({
+    projectId: window.airbrakeCreds.app_id,
+    projectKey: window.airbrakeCreds.api_key,
+    host: window.airbrakeCreds.host
+  });
+
+  window.addEventListener('error', (error) => {
+    airbrake.notify({
+      error,
+    });
+  })
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   const forge = document.getElementById('forge')

@@ -3,45 +3,35 @@ import Layers from "./Layers"
 import Map from './Map'
 import Search from './Search'
 import Building from './Building'
-import ErrorBoundary from "./ErrorBoundary";
 
-import { createLogger } from 'redux-logger'
-import { createStore, applyMiddleware, combineReducers } from 'redux'
 import { Provider } from 'react-redux'
-import { layers, buildings, buildingTypes, search } from "./reducers"
-import { forgeMiddleware } from "./middlewares";
-
-const buildStore = () => {
-    const loggerMiddleware = createLogger({collapsed: true})
-    const reducers = combineReducers({ layers, buildings, buildingTypes, search })
-    return createStore(reducers, window.initialState, applyMiddleware(loggerMiddleware, forgeMiddleware))
-}
+import * as reducers from "./reducers"
+import {forgeMiddleware} from './middlewares'
+import { buildStore } from "./store";
 
 export default class App extends React.PureComponent {
     mapRef = React.createRef()
-    store = buildStore()
+    store = buildStore(reducers, forgeMiddleware)
     state = { sidebar: true }
     render() {
         const { sidebar } = this.state
         return (
-            <ErrorBoundary>
-                <Provider store={this.store}>
-                    <div className={'map-wrap'}>
-                        <Map />
-                        <div id={'forge-right-col'} className={sidebar ? 'open' : 'closed'}>
-                            <Layers />
-                            <Search />
-                        </div>
-                        <button type="button"
-                                id="forge-sidebar-toggle"
-                                className="btn btn-primary"
-                                onClick={() => this.setState({ sidebar: !sidebar })}>
-                            <i className={`fa fa-chevron-${sidebar ? 'left' : 'right'}`} />
-                        </button>
-                        <Building />
+            <Provider store={this.store}>
+                <div className={'map-wrap'}>
+                    <Map />
+                    <div id={'forge-right-col'} className={sidebar ? 'open' : 'closed'}>
+                        <Layers />
+                        <Search />
                     </div>
-                </Provider>
-            </ErrorBoundary>
+                    <button type="button"
+                            id="forge-sidebar-toggle"
+                            className="btn btn-primary"
+                            onClick={() => this.setState({ sidebar: !sidebar })}>
+                        <i className={`fa fa-chevron-${sidebar ? 'left' : 'right'}`} />
+                    </button>
+                    <Building />
+                </div>
+            </Provider>
         )
     }
 
