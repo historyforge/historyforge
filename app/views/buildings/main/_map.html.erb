@@ -1,9 +1,8 @@
 <div id="miniforge"></div>
 <script type="text/javascript">
     window.initialState = {
-        layers: { layers: <%== MapOverlay.order(:position).where(active: true).to_json %> },
-        buildingTypes: { types: <%== BuildingType.order(:name).to_json %> },
-        buildings: { buildings: <%== @neighbors.to_json  %>, current: <%== @building.to_json %>, editable: <%== can?(:update, @building).to_json %>},
+        layers: { layers: <%== mini_forge_layers.to_json %> },
+        buildings: { buildings: <%== mini_forge_buildings.to_json  %>, current: <%== @building.to_json %>, editable: <%== can?(:update, @building).to_json %>},
         search: { params: <%== params.to_json %> }
     }
     window.googleApiKey = '<%== AppConfig.google_api_key %>'

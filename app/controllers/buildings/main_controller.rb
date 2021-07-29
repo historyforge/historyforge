@@ -7,9 +7,12 @@ class Buildings::MainController < ApplicationController
   respond_to :html
 
   skip_before_action :verify_authenticity_token, only: :autocomplete
+  before_action :load_building, only: %i[show edit update destroy review]
+  before_action :authorize_action
+  before_action :review_building, only: %i[update review]
+  before_action :load_residents, only: :show
 
   def index
-    @page_title = 'Buildings'
     load_buildings
     render_buildings
   end
@@ -29,14 +32,12 @@ class Buildings::MainController < ApplicationController
   end
 
   def new
-    authorize! :create, Building
     @building = Building.new
     @building.ensure_primary_address
   end
 
   def create
     @building = Building.new building_params
-    authorize! :create, @building
     @building.created_by = current_user
     if @building.save
       flash[:notice] = 'Building created.'
@@ -49,44 +50,20 @@ class Buildings::MainController < ApplicationController
   end
 
   def show
-    @building = Building.includes(:architects, :building_types).find params[:id]
-    authorize! :read, @building
-    @building.residents = BuildingResidentsLoader.new(
-      building: @building,
-      year: params[:people],
-      filters: params[:peopleParams]
-    ).call
     respond_to do |format|
-      format.html do
-        @neighbors = @building.neighbors.map { |building| BuildingListingSerializer.new(building) }
-        @layer = MapOverlay.where(active: true, year_depicted: 1910).first
-      end
-      format.json do
-        serializer = BuildingSerializer.new(@building)
-        render json: serializer
-      end
+      format.html
+      format.json { render json: BuildingSerializer.new(@building) }
     end
   end
 
-  def edit
-    @building = Building.find params[:id]
-    authorize! :update, @building
-  end
+  def edit; end
 
   def update
-    @building = Building.find params[:id]
-    authorize! :update, @building
-    if params[:Review] && can?(:review, @building) && !@building.reviewed?
-      @building.reviewed_by = current_user
-      @building.reviewed_at = Time.now
-    end
-
     if @building.update(building_params)
       flash[:notice] = 'Building updated.'
-      if request.format.json?
-        render json: BuildingSerializer.new(@building)
-      else
-        redirect_to action: :show
+      respond_to do |format|
+        format.json { render json: BuildingSerializer.new(@building) }
+        format.html { redirect_to action: :show }
       end
     else
       flash[:errors] = 'Building not saved.'
@@ -95,8 +72,6 @@ class Buildings::MainController < ApplicationController
   end
 
   def destroy
-    @building = Building.find params[:id]
-    authorize! :destroy, @building
     if @building.destroy
       flash[:notice] = 'Building deleted.'
       redirect_to action: :index
@@ -107,10 +82,6 @@ class Buildings::MainController < ApplicationController
   end
 
   def review
-    @building = Building.find params[:id]
-    authorize! :review, @building
-    @building.investigate = false
-    @building.review! current_user
     if @building.reviewed?
       flash[:notice] = 'Building reviewed.'
       redirect_to @building
@@ -121,12 +92,10 @@ class Buildings::MainController < ApplicationController
   end
 
   def bulk_review
-    authorize! :review, Building
     load_buildings
     @search.scoped.to_a.each do |record|
       next if record.reviewed?
 
-      record.investigate = false
       record.review! current_user
     end
 
@@ -161,6 +130,44 @@ class Buildings::MainController < ApplicationController
   end
 
   private
+
+  def load_residents
+    @building.residents = BuildingResidentsLoader.new(
+      building: @building,
+      year: params[:people],
+      filters: params[:peopleParams]
+    ).call
+  end
+
+  AUTH_ACTIONS = {
+    new: :create,
+    create: :create,
+    edit: :update,
+    update: :update,
+    destroy: :destroy,
+    review: :review,
+    bulk_review: :review
+  }.freeze
+
+  def load_building
+    @building = Building.find params[:id]
+  end
+
+  def authorize_action
+    authorize! action_to_authorize || :read, @building || Building
+  end
+
+  def action_to_authorize
+    AUTH_ACTIONS[params[:action].intern]
+  end
+
+  def review_building
+    @building.review!(current_user) if wants_to_review_building?
+  end
+
+  def wants_to_review_building?
+    params[:action] == 'review' || (params[:Review] && can?(:review, @building) && !@building.reviewed?)
+  end
 
   def building_params
     params.require(:building).permit :name, :description, :annotations, :stories, :block_number,

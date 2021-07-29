@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Moderation
   extend ActiveSupport::Concern
   included do
@@ -16,6 +18,7 @@ module Moderation
 
   def review!(reviewer)
     return if reviewed?
+
     self.reviewed_at = Time.now
     self.reviewed_by = reviewer
     unless save
@@ -27,6 +30,7 @@ module Moderation
 
   def prepare_for_review
     return if reviewed?
+
     self.reviewed_at = Time.now
     validate
     self.reviewed_at = nil
