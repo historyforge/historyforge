@@ -47,7 +47,7 @@
           code<
             | {{content}}
 
-      = panel 'Title & URL Alias', collapsible: true do
+      = panel 'Title & URL Alias' do
         = form.input :title, as: :string
         = form.input :show_title, as: :boolean, label: false, inline_label: 'Show title on page.'
         - if form.object.controller.blank? && form.object.action.blank?
@@ -59,7 +59,7 @@
           = form.input :controller, hint: 'Leave blank unless you know what you are doing.'
           = form.input :action, hint: 'Leave blank unless you know what you are doing.'
 
-      = panel 'SEO', collapsible: true do
+      = panel 'SEO' do
         = form.input :browser_title, as: :string, hint: 'If different from the page title.'
         = form.input :keywords, as: :string, label: 'Meta keywords'
         = form.input :description, as: :string, label: 'Meta description'

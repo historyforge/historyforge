@@ -1,4 +1,23 @@
 module CensusRecordsHelper
+  def census_card_edit(title: nil, list: nil)
+    header = title && content_tag(:div, title, class: 'card-header')
+
+    slider = content_tag :div, list.join('').html_safe, class: 'census-slider vertical'
+    wrapped_slider = content_tag :div, slider, class: 'census-slider-wrapper'
+    body = content_tag :div, wrapped_slider, class: 'card-body'
+    content_tag(:div, header + body, class: 'card mb-3')
+  end
+
+  def census_card_show(title: nil, list: nil)
+    header = title && content_tag(:div, title, class: 'card-header')
+    body = content_tag(
+      :ul,
+      list.map { |item| content_tag(:li, item, class: 'list-group-item')}.join('').html_safe,
+      class: 'list-group list-group-flush'
+    )
+    content_tag(:div, header + body, class: 'card mb-3')
+  end
+
   def editing_users_for(item)
     user_ids = item.versions.map(&:whodunnit).compact.map(&:to_i)
     User.where(id: user_ids).each_with_object({}) { |u, o| o[u.id.to_s] = u.login }

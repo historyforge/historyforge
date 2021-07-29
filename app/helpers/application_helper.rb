@@ -41,9 +41,7 @@ module ApplicationHelper
     raise ArgumentError, 'Missing block' unless block_given?
 
     html_options = options[:html] ||= {}
-    html_options[:class] ||= ''
-    html_options[:class] << ' readonly-form'
-    html_options[:class] = html_options[:class].strip
+    html_options[:class] = (html_options[:class] || '').strip << ' readonly-form'
 
     case record
     when String, Symbol
@@ -84,16 +82,6 @@ module ApplicationHelper
     end
   end
 
-  def assets(directory)
-    assets = {}
-
-    Rails.application.assets.index.each_logical_path("#{directory}/*") do |path|
-      assets[path.sub(/^#{directory}\//, '')] = asset_path(path)
-    end
-
-    assets
-  end
-
   def picture_tag(photo: nil, style: 'quarter', img_class: 'img-thumb')
     render 'shared/picture', id: photo.id, style: style, alt_text: photo.caption, img_class: img_class
   end
@@ -104,70 +92,6 @@ module ApplicationHelper
            attr: attr,
            label_text: label,
            checked: checked
-  end
-
-  def panel(title=nil, *args, &block)
-    options = args.extract_options!
-    options.reverse_merge! open: true, removable: false
-    form = options[:form]
-    tools = options[:tools]
-    tools = tools.html_safe if tools.present?
-    panel_class = options[:class] || 'card-default'
-    heading = ''.html_safe
-    extra_body = ''.html_safe
-
-    if title
-      if options[:removable]
-        extra_body << form.hidden_field(:_destroy) if form
-        remove_button = content_tag(:button, '&times;'.html_safe, class: 'remove pull-right btn btn-default btn-sm', type: 'button', title: 'Remove', 'data-toggle' => 'tooltip')
-      else
-        remove_button = ''.html_safe
-      end
-      title = content_tag :span, title
-      if form && options[:input]
-        title << form.text_field(options[:input], placeholder: options[:input].to_s.humanize)
-      end
-
-      panel_title_options = { class: 'card-title' }
-      panel_body_options = { class: 'card-body' }
-      if options[:collapsible] || options[:collapse]
-        id = SecureRandom.uuid
-        panel_title_options['data-toggle'] = 'collapse'
-        panel_title_options['data-target'] = "##{id}"
-        panel_body_options[:class] << ' card-collapse'
-        panel_body_options[:id] = id
-        if options[:open]
-          panel_body_options[:class] << ' in'
-        else
-          panel_title_options[:class] << ' collapsed'
-          panel_body_options[:class] << ' collapse'
-          panel_body_options[:style] = 'height:0px;'
-        end
-      end
-
-      heading = title ? content_tag(:div, remove_button + content_tag(:h4, title, panel_title_options) + content_tag(:div, tools, class: 'tools'), class: 'card-header') : nil
-    end
-    body    = content_tag(:div, extra_body + capture(&block), panel_body_options)
-    content_tag :div, heading + body, class: "card #{panel_class} mb-3"
-  end
-
-  def census_card_edit(title: nil, list: nil)
-    header = title && content_tag(:div, title, class: 'card-header')
-
-    slider = content_tag :div, list.join('').html_safe, class: 'census-slider vertical'
-    wrapped_slider = content_tag :div, slider, class: 'census-slider-wrapper'
-    body = content_tag :div, wrapped_slider, class: 'card-body'
-    content_tag(:div, header + body, class: 'card mb-3')
-  end
-
-  def census_card_show(title: nil, list: nil)
-    header = title && content_tag(:div, title, class: 'card-header')
-    body = content_tag(
-      :ul,
-      list.map { |item| content_tag(:li, item, class: 'list-group-item')}.join('').html_safe,
-      class: 'list-group list-group-flush'
-    )
-    content_tag(:div, header + body, class: 'card mb-3')
   end
 
   def table(attrs={}, &block)
