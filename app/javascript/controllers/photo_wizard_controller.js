@@ -29,6 +29,7 @@ export default class extends Controller {
         this.initBuildings()
         this.initPeople()
         this.initDates()
+        this.initMap()
     }
 
     initDates() {
@@ -157,8 +158,8 @@ export default class extends Controller {
         this.mapInitialized = true
         const startLat = document.getElementById('photograph_latitude').value
         const startLon = document.getElementById('photograph_longitude').value
-        const loc = (startLat && startLon) ? [parseFloat(startLat), parseFloat(startLon)] : eval(document.getElementById('map').dataset.center)
-        const map = new google.maps.Map(document.getElementById('map'), {
+        const loc = (startLat && startLon) ? [parseFloat(startLat), parseFloat(startLon)] : eval(document.getElementById('photograph-map').dataset.center)
+        const map = new google.maps.Map(document.getElementById('photograph-map'), {
             center: {lat: loc[0], lng: loc[1]},
             zoom: 13
         })

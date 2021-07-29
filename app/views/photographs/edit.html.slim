@@ -5,4 +5,95 @@
   = link_to 'Save', "javascript: $('#photo-wizard').submit()", class: 'btn btn-primary'
 
 - set_page_title 'Edit Photo'
-= render 'form'
+
+= review_error_messages_for @photograph
+
+= simple_form_for @photograph, html: { data: { controller: 'photo-wizard' } } do |form|
+  = panel 'The Photograph' do
+    .row
+      .col-sm-6.col-xs-12
+        = form.input :file, as: :file, label: 'Upload your photo', hint: 'JPG files only please!', input_html: { accept: 'image/jpeg' }
+        - if form.object.file.attached?
+          .alert.alert-success Your photo is uploaded. To get to the other stuff, simply click Next to get to it. You only need to click "Choose file" if you want to replace the photo that was already uploaded.
+      .col-sm-6.col-xs-12#selected-file
+        - if form.object.file.attached?
+          = image_tag form.object.file
+
+  = panel 'Caption & Description' do
+    = form.input :caption, as: :text, label: "Caption", hint: "When this photo appears with buildings and people, this text will be used. Title and description are reserved for NYHeritage metadata."
+    = form.input :description, as: :text, label: "Description", hint: "If there is a longer story to show when someone goes to the page for this media, put it here."
+
+  = panel 'Buildings' do
+    - if form.object.building_ids.present?
+      = render 'building_fields', form: form
+    - else
+      #building-question
+        p.lead Is this a picture of a building?
+        p
+          button.btn.btn-lg.btn-primary type="button" YES
+          | &nbsp;
+          button.btn.btn-secondary.btn-lg.btn-next type="button" NO
+      #building-fields style="display:none"
+        = render 'building_fields', form: form
+
+  = panel 'People' do
+    - if form.object.person_ids.present?
+      = render 'person_fields', form: form
+    - else
+      #person-question
+        p.lead Is this a picture of a person?
+        p
+          button.btn.btn-lg.btn-primary type="button" YES
+          | &nbsp;
+          button.btn.btn-secondary.btn-lg.btn-next type="button" NO
+      #person-fields style="display:none"
+        = render 'person_fields', form: form
+
+  = panel 'Map Location' do
+    p.alert.alert-info You only need to do this if latitude and longitude are empty, or the marker is in the wrong place.
+    input.form-control.mb-3#pac-input type="text" placeholder="Enter a location to find on map"
+    #photograph-map.mb-3 data-center="[#{form.object.latitude || AppConfig.latitude},#{form.object.longitude || AppConfig.longitude}]"
+    .row
+      .col-6= form.input :latitude
+      .col-6= form.input :longitude
+
+  = panel 'Date of Photograph' do
+    = form.hidden_field :date_type
+    #dates-question
+      p.lead You can date this photograph down to:
+      p
+        button.btn.btn-sm class=(form.object.year? ? 'btn-primary' : 'btn-light') type="button" data-date-type="year" The year
+        | &nbsp;
+        button.btn.btn-sm class=(form.object.month? ? 'btn-primary' : 'btn-light') type="button" data-date-type="month" The month
+        | &nbsp;
+        button.btn.btn-sm class=(form.object.day? ? 'btn-primary' : 'btn-light') type="button" data-date-type="day" The day
+        | &nbsp;
+        button.btn.btn-sm class=(form.object.years? ? 'btn-primary' : 'btn-light') type="button" data-date-type="years" A range of years
+        | &nbsp;
+        button.btn.btn-sm class=(form.object.months? ? 'btn-primary' : 'btn-light') type="button" data-date-type="months" A range of months
+        | &nbsp;
+        button.btn.btn-sm class=(form.object.days? ? 'btn-primary' : 'btn-light') type="button" data-date-type="days" A range of days
+
+    - years = Date.today.year.downto(1800).map
+    - months = Date::MONTHNAMES.each_with_index.map { |m, i| [m, i] }
+    - days = 1.upto(31).map
+    #photograph-date-type class=@photograph.date_type
+      .row
+        .col-6
+          = form.input :date_year, collection: years, label: 'Enter the year:'
+          = form.input :date_month, collection: months, label: 'Enter the month:'
+          = form.input :date_day, collection: days, label: 'Enter the day:'
+        .col-6
+          = form.input :date_year_end, collection: years, label: 'Enter the ending year:'
+          = form.input :date_month_end, collection: months, label: 'Enter the ending month:'
+          = form.input :date_day_end, collection: days, label: 'Enter the ending day:'
+
+    = form.input :date_text, label: 'Date of original', hint: 'Human readable date such as "1940" or "Ca. July 1935" ...'
+
+  = panel 'Notes' do
+    = form.input :notes, label: false
+
+  .card-footer.d-flex.justify-content-center
+    = form.submit 'Submit', class: 'btn btn-lg btn-primary'
+
+script async="async" defer="defer" src="https://maps.googleapis.com/maps/api/js?key=#{AppConfig.google_api_key}&libraries=places,visualization"
