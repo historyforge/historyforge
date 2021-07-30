@@ -115,8 +115,10 @@ export default class extends Controller {
         $(`#${formId}`).closest('.form-check').remove()
         const html = `<div class="form-check"><input type="checkbox" class="form-check-input" name="photograph[building_ids][]" id="${formId}" value="${id}" checked /><label class="form-check-label" for="${formId}">${address}</label></div>`
         $('.photograph_building_ids').append(html)
-        $('#photograph_latitude').val(lat)
-        $('#photograph_longitude').val(lon)
+        if ($('.photograph_building_ids input:checked').length === 1) {
+            $('#photograph_latitude').val(lat)
+            $('#photograph_longitude').val(lon).trigger('change')
+        }
     }
 
     addPerson(id, name) {
@@ -192,7 +194,7 @@ export default class extends Controller {
             document.getElementById('photograph_longitude').value = position.lng()
         })
 
-        document.getElementById('photograph_longitude').addEventListener('change', function() {
+        $('#photograph_longitude').on('change', function() {
             const lat = document.getElementById('photograph_latitude').value
             const lon = document.getElementById('photograph_longitude').value
             const loc = new google.maps.LatLng(parseFloat(lat), parseFloat(lon))
