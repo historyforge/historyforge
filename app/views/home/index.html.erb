@@ -1,7 +1,7 @@
 <% if @announcement %>
   <% content_for :announcement do %>
       <% if @announcement[:url].present? %>
-        <a class="alert alert-info text-center mb-3" style="border-radius: 0; border: none" href=<%= @announcement[:url] %>>
+        <a class="alert alert-info text-center mb-3 d-block" style="border-radius: 0; border: none" href=<%= @announcement[:url] %>>
           <%= @announcement[:text] %> | Click to learn more
         </a>
       <% else %>
