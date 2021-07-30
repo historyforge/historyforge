@@ -30,11 +30,13 @@
     <% if @onload -%>
       <%= javascript_tag "document.body.onload=\"#{@onload}\"" %>
     <%end%>
+    <%= yield :announcement %>
     <%= render 'shared/header' %>
     <% if @full_layout %>
       <%== yield %>
     <% else %>
       <div class="container<%= @full_layout ? '-fluid' : '' %>">
+
 
         <%= flash_messages %>
 

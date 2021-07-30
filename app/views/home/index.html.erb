@@ -1,3 +1,16 @@
+<% if @announcement %>
+  <% content_for :announcement do %>
+      <% if @announcement[:url].present? %>
+        <a class="alert alert-info text-center mb-3" style="border-radius: 0; border: none" href=<%= @announcement[:url] %>>
+          <%= @announcement[:text] %> | Click to learn more
+        </a>
+      <% else %>
+        <div class="alert alert-info text-center mb-3" style="border-radius: 0; border: none">
+          <%= @announcement[:text] %>
+        </div>
+      <% end %>
+  <% end %>
+<% end %>
 <% provide_cms_with :person_finder do %>
 <input type="search" id="search-people-input" placeholder="Type a name here" class="form-control" />
 <% end %>

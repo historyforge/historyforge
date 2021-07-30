@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 class HomeController < ApplicationController
+
+  before_action :load_announcement, only: :index
+
   def index
     @html_title = 'Home - History Forge'
   end
@@ -31,5 +34,16 @@ class HomeController < ApplicationController
       @buildings = @buildings.to_a.concat(@names)
     end
     render json: @buildings.map { |b| { url: url_for(b), id: b.id, name: b.full_street_address, lat: b.latitude, lon: b.longitude } }
+  end
+
+  private
+
+  def load_announcement
+    return unless AppConfig.announcement_show
+
+    @announcement = {
+      text: AppConfig.announcement_text,
+      url: AppConfig.announcement_url
+    }
   end
 end
