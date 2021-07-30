@@ -2,7 +2,6 @@ class PhotographsController < ApplicationController
   include RestoreSearch
   before_action :load_parent, except: :review
 
-
   def index
     authorize! :read, Photograph
     @search = Photograph.ransack(params[:q])
@@ -13,50 +12,47 @@ class PhotographsController < ApplicationController
   def new
     @photograph = model_class.new
     authorize! :create, @photograph
-    if @building
-      @photograph.buildings << @building
-      @photograph.latitude = @building.latitude
-      @photograph.longitude = @building.longitude
-    end
+
+    return unless @building
+
+    @photograph.buildings << @building
+    @photograph.latitude = @building.latitude
+    @photograph.longitude = @building.longitude
   end
 
   def create
     @photograph = model_class.new resource_params
-    authorize! :create, @photograph
     @photograph.created_by = current_user
+    authorize! :create, @photograph
     if @photograph.save
       flash[:notice] = 'The photograph has been uploaded and saved.'
       redirect_to @building ? [@building, @photograph] : @photograph
     else
       flash[:errors] = 'Sorry we could not save the photograph. Please correct the errors and try again.'
-      render action: :new
+      render action: :edit
     end
   end
 
   def show
     @photograph = model_class.find params[:id]
     authorize! :read, @photograph
-    @photograph.prepare_for_review
     @photograph = PhotographPresenter.new @photograph, current_user
   end
 
   def edit
     @photograph = model_class.find params[:id]
     authorize! :update, @photograph
-    @photograph.prepare_for_review
   end
 
   def update
     @photograph = model_class.find params[:id]
     authorize! :update, @photograph
     @photograph.attributes = resource_params
-    @photograph.save validate: false
-    if @photograph.valid?
+    if @photograph.save
       flash[:notice] = 'The photograph has been updated.'
       redirect_to @building ? [@building, @photograph] : @photograph
     else
       flash[:errors] = 'The photograph has been saved, but cannot be marked as reviewed until it has been fully dressed.'
-      @photograph.prepare_for_review
       render action: :edit
     end
   end

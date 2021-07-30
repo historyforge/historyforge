@@ -1,6 +1,6 @@
-- set_page_title 'Add Photograph'
+- set_page_title "Add Photograph #{@building && "to #{@building.name}"}#{@person && "to #{@person.name}"}"
 
-= review_error_messages_for @photograph
+= error_messages_for @photograph
 
 = simple_form_for @photograph, html: { id: 'photo-wizard', data: { controller: 'photo-wizard' } } do |form|
   .card.active

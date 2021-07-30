@@ -7,11 +7,4 @@ module PhotographsHelper
   rescue ActiveSupport::MessageVerifier::InvalidSignature
     nil
   end
-
-  def review_error_messages_for(*objects)
-    error_messages_for *objects,
-                       header_message: 'Review Status',
-                       message: 'Things to do before we can mark this as reviewed:'
-  end
-
 end

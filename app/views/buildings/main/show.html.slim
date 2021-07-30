@@ -6,6 +6,8 @@
 - content_for :pills do
   - if can?(:create, Flag)
     = render 'shared/flag_it', item: @building, item_class: 'btn btn-light'
+  - if can?(:create, Photograph)
+    = link_to 'Add Photo', new_building_photograph_path(@building), class: 'btn btn-right'
   - if can?(:update, @building)
     = link_to 'Edit', [:edit, @building], class: 'btn btn-light'
   - if can?(:review, @building) && !@building.reviewed?

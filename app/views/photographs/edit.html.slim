@@ -6,7 +6,7 @@
 
 - set_page_title 'Edit Photo'
 
-= review_error_messages_for @photograph
+= error_messages_for @photograph
 
 = simple_form_for @photograph, html: { data: { controller: 'photo-wizard' } } do |form|
   = panel 'The Photograph' do
