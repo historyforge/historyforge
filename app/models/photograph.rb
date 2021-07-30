@@ -17,7 +17,7 @@ class Photograph < ApplicationRecord
   before_validation :set_dates
   validates :file, attached: true, content_type: ['image/jpg', 'image/jpeg', 'image/png']
 
-  has_paper_trail
+  has_paper_trail skip: %i[created_at updated_at]
 
   pg_search_scope :full_text_search,
                   against: %i[caption location notes],

@@ -15,17 +15,26 @@
               = version.created_at.to_s
               br
               = users[version.whodunnit] || 'Automated Update'
+              br
+              = version.event.titleize
             td
               .row
                 .col-4
                   strong Field
-                .col-4
-                  strong From
-                .col-4
-                  strong To
+                - if version.event == 'create'
+                  .col-8
+                    strong Value
+                - else
+                  .col-4
+                    strong From
+                  .col-4
+                    strong To
               - version.changeset.each do |key, changes|
                 - next if key == 'updated_at'
                 .row
                   .col-4= translated_label(item.class, key)
-                  .col-4= changes[0] || 'blank'
-                  .col-4= changes[1] || 'blank'
+                  - if version.event == 'create'
+                    .col-8= changes[1].presence || 'blank'
+                  - else
+                    .col-4= changes[0].presence || 'blank'
+                    .col-4= changes[1].presence || 'blank'

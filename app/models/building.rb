@@ -52,7 +52,7 @@ class Building < ApplicationRecord
     %i[as_of_year without_residents as_of_year_eq]
   end
 
-  has_paper_trail
+  has_paper_trail skip: %i[created_at updated_at]
 
   Geocoder.configure(
     timeout: 2,

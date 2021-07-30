@@ -35,30 +35,27 @@
           =< link_to 'Review', [:review, @photograph], class: 'btn btn-primary', data: { method: :patch, confirm: 'Go ahead with it?' }
 
   - if can?(:review, @photograph)
-    .card
-      .card-header
-        .card-title Metadata
-      .card-body
-        .list-group.list-group-flush
-          .list-group-item
-            .row
-              .col-4 Date of Original
-              .col-8= @photograph.date
-          .list-group-item
-            .row
-              .col-4 Local Location
-              .col-8= @photograph.location
-          .list-group-item
-            .row
-              .col-4 Identifier
-              .col-8= @photograph.identifier
-          .list-group-item
-            .row
-              .col-4 Date of Digital
-              .col-8= @photograph.created_at.strftime('%Y-%m-%d')
-          .list-group-item
-            .row
-              .col-4 Notes
-              .col-8= simple_format @photograph.notes
+    = panel 'Metadata' do
+      .list-group.list-group-flush
+        .list-group-item
+          .row
+            .col-4 Date of Original
+            .col-8= @photograph.date
+        .list-group-item
+          .row
+            .col-4 Local Location
+            .col-8= @photograph.location
+        .list-group-item
+          .row
+            .col-4 Identifier
+            .col-8= @photograph.identifier
+        .list-group-item
+          .row
+            .col-4 Date of Digital
+            .col-8= @photograph.created_at.strftime('%Y-%m-%d')
+        .list-group-item
+          .row
+            .col-4 Notes
+            .col-8= simple_format @photograph.notes
 
     = render 'shared/change_history', item: @photograph.model

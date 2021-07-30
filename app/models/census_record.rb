@@ -47,7 +47,8 @@ class CensusRecord < ApplicationRecord
   define_enumeration :civil_war_vet, %w{UA UN CA CN}
 
   attr_accessor :comment
-  has_paper_trail meta: { comment: :comment }
+
+  has_paper_trail meta: { comment: :comment }, skip: %i[created_at updated_at]
 
   multisearchable against: :name,
                   using: {
