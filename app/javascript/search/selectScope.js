@@ -21,3 +21,4 @@ const selectScope = function() {
     }
 }
 
+export default selectScope;

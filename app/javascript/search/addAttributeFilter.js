@@ -108,7 +108,8 @@ class AttributeFilter {
             } else {
                 [label, value] = choice;
             }
-            this.scopeValue.forEach((singleScopeValue) => {
+            const scopeValue = (typeof this.scopeValue === 'string') ? [this.scopeValue] : this.scopeValue;
+            scopeValue.forEach((singleScopeValue) => {
                 if (value.toString() === singleScopeValue.toString()) {
                     values.push(label);
                     let multiInput = document.createElement('INPUT');
