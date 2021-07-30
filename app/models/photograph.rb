@@ -7,7 +7,8 @@ class Photograph < ApplicationRecord
   has_and_belongs_to_many :people
   has_one_attached :file
 
-  alias_attribute :name, :title
+  alias_attribute :title, :caption
+  alias_attribute :name, :caption
 
   attr_writer :date_year, :date_month, :date_day
   attr_writer :date_year_end, :date_month_end, :date_day_end
@@ -73,9 +74,9 @@ class Photograph < ApplicationRecord
     if date_year.present? && date_month.present? && date_day.present?
       self.date_start = Date.parse("#{date_year}-#{date_month.rjust(2, '0')}-#{date_day.rjust(2, '0')}")
     end
-    if days? && date_year_end.present? && date_month_end.present? && date_day_end.present?
-      self.date_end = Date.parse("#{date_year_end}-#{date_month_end.rjust(2, '0')}-#{date_day_end.rjust(2, '0')}")
-    end
+    return unless days? && date_year_end.present? && date_month_end.present? && date_day_end.present?
+
+    self.date_end = Date.parse("#{date_year_end}-#{date_month_end.rjust(2, '0')}-#{date_day_end.rjust(2, '0')}")
   end
 
   def set_date_from_months
@@ -84,9 +85,9 @@ class Photograph < ApplicationRecord
     if date_year.present? && date_month.present?
       self.date_start = Date.parse("#{date_year}-#{date_month.rjust(2, '0')}-01")
     end
-    if months? && date_year_end.present? && date_month_end.present?
-      self.date_end = Date.parse("#{date_year_end}-#{date_month_end.rjust(2, '0')}-01").end_of_month
-    end
+    return unless months? && date_year_end.present? && date_month_end.present?
+
+    self.date_end = Date.parse("#{date_year_end}-#{date_month_end.rjust(2, '0')}-01").end_of_month
   end
 
   def set_date_from_years
