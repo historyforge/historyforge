@@ -80,11 +80,8 @@ class AttributeFilter {
         this.input.setAttribute('value', this.scopeValue);
         this.html.appendChild(this.input);
 
-        this.config.choices.forEach((choice) => {
-            if (this.scopeValue === choice.toString()) {
-                this.sentence.push(choice);
-            }
-        })
+        const selection = this.config.choices.find((choice) => this.scopeValue === choice.toString())
+        this.sentence.push(selection)
     }
 
     renderNumber() {

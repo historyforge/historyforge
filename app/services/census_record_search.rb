@@ -8,6 +8,10 @@
 class CensusRecordSearch < SearchQueryBuilder
   attr_accessor :page, :s, :f, :fs, :g, :user, :sort, :from, :to, :scope
 
+  def census_scope_search?
+    @s[:enum_dist_eq].present? && @s[:page_number_eq].present? && @s[:page_side_eq].present?
+  end
+
   def results
     @results ||= scoped.to_a.map {|row| CensusRecordPresenter.new(row, user) }
   end
@@ -18,8 +22,8 @@ class CensusRecordSearch < SearchQueryBuilder
     builder.includes(:locality)
     builder.reviewed unless user
 
-    builder.offset(from) if from
-    builder.limit(to.to_i - from.to_i) if from && to
+    builder.offset(from - 1) if from && from > 0
+    builder.limit(to - from - 1) if from && to
 
     add_scopes
     add_sorts
@@ -79,7 +83,7 @@ class CensusRecordSearch < SearchQueryBuilder
     "last_name #{dir}, first_name #{dir}, middle_name #{dir}"
   end
 
-  def self.generate(params: {}, user:, paged: true, per: 25)
+  def self.generate(params: {}, user:)
     item = self.new
     item.user = user
     item.s = params[:s] || {}
@@ -88,8 +92,8 @@ class CensusRecordSearch < SearchQueryBuilder
     item.sort = params[:sort]
     scope = params[:scope]
     item.scope = scope.to_sym if scope && scope != 'on'
-    item.from = params[:from]
-    item.to = params[:to]
+    item.from = params[:from]&.to_i
+    item.to = params[:to]&.to_i
 
     item
   end
@@ -121,6 +125,4 @@ class CensusRecordSearch < SearchQueryBuilder
   def unmatched?
     @scope == :unmatched
   end
-
-  private
 end
