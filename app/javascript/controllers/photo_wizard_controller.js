@@ -155,6 +155,13 @@ export default class extends Controller {
     }
 
     initMap() {
+        if (typeof google === "undefined") {
+            setTimeout(
+                () => this.initMap(),
+                1000
+            )
+            return
+        }
         this.mapInitialized = true
         const startLat = document.getElementById('photograph_latitude').value
         const startLon = document.getElementById('photograph_longitude').value
