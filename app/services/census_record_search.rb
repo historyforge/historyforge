@@ -22,8 +22,8 @@ class CensusRecordSearch < SearchQueryBuilder
     builder.includes(:locality)
     builder.reviewed unless user
 
-    builder.offset(from - 1) if from && from > 0
-    builder.limit(to - from - 1) if from && to
+    builder.offset(from) if from&.positive?
+    builder.limit(to - from) if from && to
 
     add_scopes
     add_sorts

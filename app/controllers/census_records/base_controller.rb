@@ -112,6 +112,8 @@ module CensusRecords
 
     def bulk_review
       authorize! :review, resource_class
+      params[:from] = 0
+      params[:to] = 100
       load_census_records
 
       @search.scoped.to_a.each do |record|
