@@ -1,21 +1,21 @@
-class AttributeFilter {
+class AttributeFilter implements IAttributeFilter {
+    html = document.createElement('DIV');
+    input = document.createElement('INPUT');
+    config; scope; scopeValue; sentence;
+
     constructor(config, scope, scopeValue) {
-        this.config = config;
-        this.scope = scope;
-        this.scopeValue = scopeValue;
+        Object.assign(this, { config, scope, scopeValue })
+        this.sentence = [this.config.label];
     }
 
     render() {
-        this.html = document.createElement('DIV');
         ['attribute-filter', 'btn', 'btn-sm', 'btn-light'].forEach((text) => {
             this.html.classList.add(text)
         })
 
-        this.input = document.createElement('INPUT');
         this.input.setAttribute('type', 'hidden');
         this.input.setAttribute('name', `s[${this.scope}]`);
 
-        this.sentence = [this.config.label];
 
         for (let key in this.config.scopes) {
             const value = this.config.scopes[key];
@@ -29,8 +29,8 @@ class AttributeFilter {
     }
 
     renderLabel() {
-        const closeButton = document.createElement('BUTTON');
-        closeButton.type = 'button';
+        const closeButton: HTMLElement = document.createElement('BUTTON');
+        closeButton.setAttribute('type', 'button');
         closeButton.classList.add('close');
         closeButton.classList.add('remove-filter');
         closeButton.innerHTML = "&times;";
@@ -39,7 +39,7 @@ class AttributeFilter {
         desc.appendChild(closeButton);
         desc.innerHTML += this.sentence.join(' ');
         if (this.config.append) {
-            desc.innerHTML += config.append;
+            desc.innerHTML += this.config.append;
         }
         this.html.appendChild(desc);
         this.html.addEventListener('click', function() {
@@ -51,10 +51,8 @@ class AttributeFilter {
             $(`[name="${name.replace('_in', '_eq')}"]`).val(null)
 
             $filter.remove();
-            $('#new_s').submit();
+            $('#new_s').trigger('submit');
         });
-
-
     }
 
     renderInput() {
@@ -81,7 +79,7 @@ class AttributeFilter {
         this.html.appendChild(this.input);
 
         const selection = this.config.choices.find((choice) => this.scopeValue === choice.toString())
-        this.sentence.push(selection)
+        this.sentence.push(selection.toString())
     }
 
     renderNumber() {
@@ -131,7 +129,7 @@ class AttributeFilter {
     }
 }
 
-const addAttributeFilter = function(field_config, scope, scopeValue) {
+const addAttributeFilter = function(field_config: AttributeFilterConfig, scope: string, scopeValue: ScopeValue) {
     const filter = new AttributeFilter(field_config, scope, scopeValue);
     filter.render();
     $('#attribute-filters').append(filter.html);

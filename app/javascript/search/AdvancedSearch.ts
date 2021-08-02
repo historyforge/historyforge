@@ -1,3 +1,5 @@
+// import {ChangeEvent} from "@types/jquery/misc";
+import { IAdvancedSearch, AttributeFilterConfig, AdvancedSearchOptions} from "./types";
 import axios from 'axios'
 import addAttributeFilter from "./addAttributeFilter";
 import selectAttribute from "./selectAttribute";
@@ -9,9 +11,10 @@ $.fn.advancedSearch = function(options) {
     })
 };
 
-class AdvancedSearch {
-    constructor(form, options) {
-        options = options || {};
+class AdvancedSearch implements IAdvancedSearch {
+    currentFilters; attributeFilters; form
+
+    constructor(form: JQuery, options: AdvancedSearchOptions) {
         this.currentFilters = options.filters;
         this.form = $(form);
         this.initFormEvents();
@@ -22,7 +25,7 @@ class AdvancedSearch {
         })
     }
 
-    initFormEvents() {
+    initFormEvents(): void {
         // when you click toggle buttons like "unreviewed" and "unhoused" this submits the form
         $(document).on('click', '#new_s .btn-group-toggle label', () => {
             this.form.submit();
@@ -48,7 +51,7 @@ class AdvancedSearch {
     }
 
     // filters already applied are listed as buttons with an X that removes the filter
-    showCurrentFilters() {
+    showCurrentFilters(): void {
         if (Object.entries(this.currentFilters).length) {
             $('#attribute-filters').addClass('mb-3').empty();
             for (let scope in this.currentFilters) {
@@ -61,28 +64,28 @@ class AdvancedSearch {
     }
 
     // underneath any quick filters is a dropdown that lets you select a field to filter on
-    showAddableFilters() {
+    showAddableFilters(): void {
         $('select.scope').hide();
         $('.value-input-container').empty();
         const attrSelect = $('select.attribute');
-        attrSelect.on('change', (e) => {
-            const attribute = e.target.value;
+        attrSelect.on('change', (event: JQuery.ChangeEvent) => {
+            const attribute = event.target.getAttribute('value');
             const config = this.attributeFilters[attribute]
             if (config) {
                 selectAttribute(attribute, this.form, config)
             }
-        })
+        });
         attrSelect.html("<option>Select field name</option>");
-        for (let key in this.attributeFilters) {
+        Object.keys(this.attributeFilters).forEach((key) => {
             const config = this.attributeFilters[key];
             if (config.scopes) {
                 attrSelect.append('<option value="' + key + '">' + config.label + '</option>');
             }
-        }
+        });
     }
 
     // returns the field config from a scope name
-    getFieldConfigFromScope(scope) {
+    getFieldConfigFromScope(scope: string): AttributeFilterConfig {
         for (let attribute in this.attributeFilters) {
             const value = this.attributeFilters[attribute];
             if ((value.scopes != null ? value.scopes[scope] : void 0) != null) {

@@ -1,6 +1,6 @@
-const selectScope = function() {
-    const scope = jQuery(this).val();
-    let name = 's[' + scope + ']';
+const selectScope = function(): void {
+    const scope = jQuery(this).val().toString();
+    let name = `s[${scope}]`;
     const form = jQuery(this).closest('.card-body').find('.value-input-container');
     const inputs = form.find('input, select');
     if (scope.match(/null$/)) {
