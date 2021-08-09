@@ -1,10 +1,10 @@
-// import {ChangeEvent} from "@types/jquery/misc";
-import { IAdvancedSearch, AttributeFilterConfig, AdvancedSearchOptions} from "./types";
+// import { IAdvancedSearch, AttributeFilterConfig, AdvancedSearchOptions } from "./types";
 import axios from 'axios'
 import addAttributeFilter from "./addAttributeFilter";
 import selectAttribute from "./selectAttribute";
 
-$.fn.advancedSearch = function(options) {
+// @ts-ignore
+JQuery.fn.advancedSearch = function(options: AdvancedSearchOptions): JQuery {
     return this.each(function() {
         $(this).data('search', new AdvancedSearch(this, options));
         return this;

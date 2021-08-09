@@ -1,9 +1,9 @@
-export type ScopeValue = string | number | string[] | number[];
-export type ChoiceValue = string | string[];
-export type Choices = Array<ChoiceValue>;
-export type AddInputFn = (input: HTMLElement) => void;
+type ScopeValue = string | number | string[] | number[];
+type ChoiceValue = string | string[];
+type Choices = Array<ChoiceValue>;
+type AddInputFn = (input: HTMLElement) => void;
 
-export interface AttributeFilterConfig {
+interface AttributeFilterConfig {
     type: string;
     label: string;
     scopes: object;
@@ -12,7 +12,7 @@ export interface AttributeFilterConfig {
     columns?: number
 }
 
-export interface IAttributeFilter {
+interface IAttributeFilter {
     render(): HTMLElement;
     renderLabel(): void;
     renderInput(): void;
@@ -24,12 +24,12 @@ export interface IAttributeFilter {
     scopeValue: ScopeValue
 }
 
-export interface AdvancedSearchOptions {
+interface AdvancedSearchOptions {
     url: string;
     filters: Array<AttributeFilterConfig>;
 }
 
-export interface IAdvancedSearch {
+interface IAdvancedSearch {
     currentFilters: Array<AttributeFilterConfig>;
     attributeFilters: Array<AttributeFilterConfig>;
     form: JQuery;
@@ -37,3 +37,4 @@ export interface IAdvancedSearch {
     showCurrentFilters(): void;
     showAddableFilters(): void;
 }
+

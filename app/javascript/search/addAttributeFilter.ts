@@ -1,3 +1,5 @@
+// import {IAttributeFilter, AttributeFilterConfig, ScopeValue} from "./types";
+
 class AttributeFilter implements IAttributeFilter {
     html = document.createElement('DIV');
     input = document.createElement('INPUT');

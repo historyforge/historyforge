@@ -4,6 +4,8 @@
     Author     : "Gavin Jackson <Gavin.Jackson@csiro.au>"
 
     Refactored code from http://lyceum.massgis.state.ma.us/wiki/doku.php?id=googlemapsv3:home
+
+    The code below was actually refactored from the above code, via MapWarper.
 */
 
 function bound(value, opt_min, opt_max) {
@@ -61,9 +63,15 @@ class MercatorProjection {
 }
 
 class WMSLoader {
+    map: IMap;
+    baseURL: string;
+    id: number;
+    position: string;
+    wmsParams: string;
+
     constructor(map, layer, position) {
         this.baseURL = layer.url.replace(/mosaics\/tile/, 'mosaics/wms').replace("/{z}/{x}/{y}.png", "").split('?')[0] + '?';
-        this.name = layer.id;
+        this.id = layer.id;
         this.map = map;
         this.position = position;
         this.wmsParams = [
@@ -105,7 +113,7 @@ class WMSLoader {
             maxZoom: 28,
             opacity: 1,
             isPng: true,
-            name: this.name
+            name: this.id
         }
     }
 

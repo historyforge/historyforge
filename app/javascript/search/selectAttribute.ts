@@ -1,4 +1,5 @@
 import selectScope from './selectScope'
+// import {AttributeFilterConfig, AddInputFn, ChoiceValue, Choices} from './types';
 
 const selectAttribute = function(attribute: string, form: JQuery, config: AttributeFilterConfig) {
     const scopeSelect = buildScopeSelector(form, config)
@@ -142,7 +143,7 @@ function buildScopeSelector(form: JQuery, config: AttributeFilterConfig): JQuery
         scopeSelect.append(`<option value="${key}" ">${value}</option>`);
     }
     scopeSelect.find('option:first').prop('selected', true);
-    if (scopeSelect.find('option').size() === 1) {
+    if (scopeSelect.find('option').length === 1) {
         scopeSelect.hide();
         container.append($('<span>' + scopeSelect.find('option:first').text() + '</span>'));
     }
