@@ -1,3 +1,3 @@
 json.filters do
-  census_form_renderer.json(json)
+  CensusFiltersGenerator.generate(json, census_form_renderer)
 end

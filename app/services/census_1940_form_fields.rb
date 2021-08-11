@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Census1940FormFields < CensusFormFields
+class Census1940FormFields < CensusFormFieldConfig
   include CensusScopeFormFields
 
   divider 'Household Data'

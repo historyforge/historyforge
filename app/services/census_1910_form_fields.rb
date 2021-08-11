@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Census1910FormFields < CensusFormFields
+class Census1910FormFields < CensusFormFieldConfig
   include CensusScopeFormFields
   include CensusNameFields
 

@@ -1,4 +1,3 @@
-// import { IAdvancedSearch, AttributeFilterConfig, AdvancedSearchOptions } from "./types";
 import axios from 'axios'
 import addAttributeFilter from "./addAttributeFilter";
 import selectAttribute from "./selectAttribute";
@@ -55,8 +54,9 @@ class AdvancedSearch implements IAdvancedSearch {
         if (Object.entries(this.currentFilters).length) {
             $('#attribute-filters').addClass('mb-3').empty();
             for (let scope in this.currentFilters) {
-                const field_config = this.getFieldConfigFromScope(scope) || this.getFieldConfigFromScope(scope.replace(/_eq/, '_in'))
-                if (field_config || field_config.scopes) {
+                const field_config = this.getFieldConfigFromScope(scope) ||
+                    this.getFieldConfigFromScope(scope.replace(/_eq/, '_in'))
+                if (field_config || field_config?.scopes) {
                     addAttributeFilter(field_config, scope, this.currentFilters[scope]);
                 }
             }

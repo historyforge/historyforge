@@ -5,7 +5,7 @@ module BulkUpdatesHelper
   # The bulk update form isn't a form_for a specific census record, but an operation that will change all matching
   # values to a new value.
   def bulk_update_field_for(field, form)
-    "Census#{year}FormFields".safe_constantize.new(form).config_for(field.intern).dup
+    "Census#{year}FormFields".safe_constantize.options_for(field.intern).dup
   end
 
   # Populates the dropdown of available fields for bulk update.

@@ -94,7 +94,7 @@
             .col-6.col-form-label Locality
             .col-6= @record.locality
 
-    = census_form_renderer.html(form)
+    = CensusFormGenerator.generate form, census_form_renderer
 
 - if @record.notes.present?
   .card.mb-3

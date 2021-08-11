@@ -2,41 +2,42 @@
 
 # Converts the census form into a format consumable by the "advanced search" filter button
 # using JBuilder object passed in as json
+class CensusFiltersGenerator
+  def self.generate(json, config)
+    new(json, config).render
+  end
 
-class CensusJsonBuilder
-  def initialize(json, klass)
+  def initialize(json, config)
     @json = json
-    @klass = klass
+    @config = config
+    @klass = config.census_record_class
     @card = nil
-    output_common_fields
   end
 
-  attr_accessor :json, :card, :klass
-
-  def start_card(card)
-    @card = card[:label]
+  def render
+    output_header_fields
+    config.fields.each { |field| add_field field, config.options_for(field) }
+    output_footer_fields
+    json
   end
 
-  def add_field(field, config)
-    return if config[:edit_only]
+  private
+
+  attr_reader :json, :card, :klass, :config
+
+  def add_field(field, options)
+    return if options[:edit_only]
+
+    @card = options[:label] and return if options[:as] == :divider
     return if card == 'Name' || card == 'Census Scope'
 
-    if config[:collection]
-      collection = if config[:coded]
-                     config[:collection].map do |item|
-                       code = item.downcase == item ? item.capitalize : item
-                       code = code.gsub('_', ' ')
-                       label = translated_option item, field
-                       code == label ? label : ["#{code} - #{translated_option(item, field)}", code]
-                     end
-                   else
-                     config[:collection]
-                   end
+    if options[:collection]
+      collection = options[:coded] ? coded_collection(field, options) : options[:collection]
       AttributeBuilder.collection json, field, klass: klass, collection: collection
       return
     end
 
-    case config[:as]
+    case options[:as]
     when :number, :integer
       AttributeBuilder.number json, field, klass: klass
     when :boolean
@@ -48,7 +49,16 @@ class CensusJsonBuilder
     end
   end
 
-  def output_common_fields
+  def coded_collection(field, options)
+    options[:collection].map do |item|
+      code = item.downcase == item ? item.capitalize : item
+      code = code.gsub('_', ' ')
+      label = Translator.option field, item
+      code == label ? label : ["#{code} - #{Translator.option(field, item)}", code]
+    end
+  end
+
+  def output_header_fields
     AttributeBuilder.collection json, :locality_id, klass: klass, collection: Locality.select_options
     AttributeBuilder.text(json, :name, klass: klass)
     AttributeBuilder.text   json, :first_name, klass: klass
@@ -68,17 +78,10 @@ class CensusJsonBuilder
     AttributeBuilder.text   json, :street_address, klass: klass
     AttributeBuilder.text   json, :dwelling_number, klass: klass unless klass == Census1940Record
     AttributeBuilder.text   json, :family_id, klass: klass
+  end
 
+  def output_footer_fields
     AttributeBuilder.boolean json, :foreign_born, klass: klass
     AttributeBuilder.text json, :notes, klass: klass
-  end
-  def to_html
-    json
-  end
-
-  private
-
-  def translated_option(item, field)
-    Translator.option field, item
   end
 end

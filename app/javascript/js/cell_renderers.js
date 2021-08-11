@@ -6,7 +6,6 @@ window.GridDataSource = {
       sort: options.sortModel
     };
     $.getJSON(document.location.toString(), params, (json) => {
-      console.log(json.length)
       const lastRow = json.length < 100 ? options.startRow + json.length : null;
       options.successCallback(json, lastRow);
     });
