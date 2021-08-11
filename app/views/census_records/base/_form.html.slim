@@ -1,6 +1,6 @@
 = simple_form_for @record, as: :census_record, html: { autocomplete: :off } do |form|
   = error_messages_for @record
-  = "Census#{controller.year}FormFields".safe_constantize.new(form).render
+  = "Census#{controller.year}FormFields".safe_constantize.html(form)
 
   .card.mb-3
     .card-body
