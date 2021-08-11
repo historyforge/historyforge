@@ -1,286 +1,92 @@
 # frozen_string_literal: true
 
 class Census1940FormFields < CensusFormFields
+  include CensusScopeFormFields
+
   divider 'Household Data'
+  input :owned_or_rented,as: :radio_buttons, coded: true
+  input :home_value, as: :integer
+  input :lives_on_farm, as: :boolean
 
-  input :owned_or_rented,
-               as: :radio_buttons,
-               collection: Census1940Record.owned_or_rented_choices,
-               label: 'Home owned or rented',
-               coded: true,
-               hint: -> {owned_or_rented_hint}
-
-  input :home_value, as: :integer,
-               label: 'Value of home or monthly payment',
-               hint: -> {home_value_hint}
-
-  input :lives_on_farm,
-               as: :boolean,
-               hint: -> {lives_on_farm_hint}
-
-  divider 'Name'
-
-  input :last_name,
-               input_html: {autocomplete: 'new-password'},
-               hint: -> {name_hint}
-
-  input :first_name,
-               input_html: {autocomplete: 'new-password'},
-               hint: -> {name_hint}
-
-  input :middle_name,
-               input_html: {autocomplete: 'new-password'},
-               hint: -> {name_hint}
-
-  input :name_prefix,
-               input_html: {autocomplete: 'new-password'}
-
-  input :name_suffix,
-               input_html: {autocomplete: 'new-password'}
+  include CensusNameFields
 
   divider 'Relation'
-
-  input :relation_to_head,
-               input_html: { autocomplete: 'new-password' },
-               hint: -> {relation_to_head_hint}
+  input :relation_to_head
 
   divider 'Personal Description'
-
-  input :sex,
-               as: :radio_buttons,
-               collection: Census1940Record.sex_choices,
-               coded: true,
-               hint: -> {sex_hint}
-
-  input :race,
-               as: :radio_buttons_other,
-               collection: Census1940Record.race_choices,
-               coded: true,
-               hint: -> {race_hint}
-
-  input :age, as: :integer,
-               hint: -> {age_hint}
-
-  input :age_months, as: :integer,
-               hint: -> {age_hint}
-
-  input :marital_status,
-               as: :radio_buttons,
-               collection: Census1940Record.marital_status_choices,
-               coded: true,
-               hint: -> {marital_status_hint}
-
-  input :attended_school,
-               as: :boolean,
-               hint: -> {attended_school_hint}
-
-  input :grade_completed,
-               collection: Census1940Record.grade_completed_choices,
-               as: :radio_buttons,
-               hint: -> { grade_completed_hint }
+  input :sex,as: :radio_buttons, coded: true
+  input :race,as: :radio_buttons_other, coded: true
+  input :age, as: :integer, min: 0, max: 130
+  input :age_months, as: :integer, min: 0, max: 12
+  input :marital_status,as: :radio_buttons, coded: true
+  input :attended_school, as: :boolean
+  input :grade_completed, as: :radio_buttons
 
   divider 'Place of Birth & Citizenship'
-
-  input :pob,
-               input_html: { autocomplete: 'new-password' },
-               hint: -> { pob_1940_hint(15) }
-
-  input :foreign_born,
-               as: :boolean
-
-  input :naturalized_alien,
-               as: :radio_buttons,
-               collection: Census1940Record.naturalized_alien_choices,
-               coded: true,
-               hint: -> { citizenship_hint }
+  input :pob
+  input :foreign_born, as: :boolean
+  input :naturalized_alien, as: :radio_buttons, coded: true
 
   divider 'Residence, April 1, 1935'
-
-  input :residence_1935_town,
-               input_html: { autocomplete: 'new-password' },
-               hint: -> { residence_1935_town_hint }
-
-  input :residence_1935_county,
-               input_html: { autocomplete: 'new-password' },
-               hint: 'Column 18. Enter as written.'
-
-  input :residence_1935_state,
-               input_html: { autocomplete: 'new-password' },
-               hint: 'Column 19. Enter as written.'
-
-  input :residence_1935_farm,
-               as: :boolean,
-               inline_label: 'Yes',
-               hint: 'Column 20. Check if the response is yes.'
+  input :residence_1935_town
+  input :residence_1935_county
+  input :residence_1935_state
+  input :residence_1935_farm, as: :boolean
 
   divider 'For Persons 14 Years Old and Over - Employment Status'
-
-  input :private_work,
-               as: :boolean,
-               hint: 'Column 21. Check if the response is yes.'
-
-  input :public_work,
-               as: :boolean,
-               hint: 'Column 22. Check if the response is yes.'
-
-  input :seeking_work,
-               as: :boolean,
-               hint: 'Column 23. Check if the response is yes.'
-
-  input :had_job,
-               as: :boolean,
-               hint: 'Column 24. Check if the response is yes.'
+  input :private_work, as: :boolean
+  input :public_work, as: :boolean
+  input :seeking_work, as: :boolean
+  input :had_job, as: :boolean
 
   divider 'For Persons Answering "No" to the Above Questions'
-
-  input :no_work_reason,
-               collection: Census1940Record.no_work_reason_choices,
-               coded: true,
-               as: :radio_buttons,
-               hint: 'Column 25. Check box that corresponds to the answer indicated.'
+  input :no_work_reason, as: :radio_buttons, coded: true
 
   divider 'If "Yes" to Private Work'
-
-  input :private_hours_worked,
-               as: :integer,
-               hint: 'Column 26. Enter as written.'
+  input :private_hours_worked, as: :integer
 
   divider 'If "Yes" to Public Work or Seeking Work'
-
-  input :unemployed_weeks,
-               as: :integer,
-               hint: 'Column 27. Enter as written.'
+  input :unemployed_weeks, as: :integer, min: 0
 
   divider 'Occupation, Industry, and Class of Worker'
-
-  input :occupation,
-               hint: 'Column 28. Enter as written. Enter "None" if empty',
-               input_html: { autocomplete: 'new-password' }
-
-  input :industry,
-               input_html: { autocomplete: 'new-password' },
-               hint: 'Column 29. Enter as written.'
-
-  input :worker_class,
-               collection: Census1940Record.worker_class_choices,
-               coded: true,
-               as: :radio_buttons,
-               hint: 'Column 30. Check the box that corresponds to the answer indicated.'
-
-  input :occupation_code,
-               input_html: {autocomplete: 'new-password'},
-               hint: -> {occupation_code_hint('F') }
-
-  input :industry_code,
-               input_html: {autocomplete: 'new-password'},
-               hint: -> {occupation_code_hint('F') }
-
-  input :worker_class_code,
-               input_html: {autocomplete: 'new-password'},
-               hint: -> {occupation_code_hint('F') }
-
-  input :full_time_weeks,
-               as: :integer,
-               hint: 'Column 31. Enter as written.'
+  input :occupation
+  input :industry
+  input :worker_class, coded: true, as: :radio_buttons
+  input :occupation_code
+  input :industry_code
+  input :worker_class_code
+  input :full_time_weeks, as: :integer, min: 0
 
   divider 'Income in 1939 (12 months ending Dec. 31, 1939)'
+  input :income, as: :integer, min: 0
+  input :had_unearned_income, as: :boolean
+  input :farm_schedule
 
-  input :income,
-               as: :integer,
-               hint: 'Column 32. Enter as written.'
+  with_options if: ->(form) { form.object && !form.object.supplemental? } do
+    divider 'Supplemental Questions'
+    input :pob_father
+    input :pob_mother
+    input :mother_tongue
+    input :veteran, as: :boolean, dependents: true
+    input :veteran_dead, as: :boolean, dependents: true
+    input :war_fought,
+          as: :radio_buttons_other,
+          other_label: 'Ot - Other war or expedition',
+          coded: true,
+          depends_on: :veteran
+    input :soc_sec, as: :boolean
+    input :deductions, as: :boolean
+    input :deduction_rate, coded: true, as: :radio_buttons
+    input :usual_profession
+    input :usual_industry
+    input :usual_worker_class, as: :radio_buttons, coded: true, collection: Census1940Record.worker_class_choices
+    input :usual_occupation_code
+    input :usual_industry_code
+    input :usual_worker_class_code
+    input :multi_marriage, as: :boolean
+    input :first_marriage_age, min: 0
+    input :children_born, min: 0
+  end
 
-  input :had_unearned_income,
-               as: :boolean,
-               hint: 'Column 33. Check box if the response is yes.'
-
-  input :farm_schedule,
-               label: 'Farm Number',
-               hint: 'Column 34. Enter as written.'
-
-  # TODO: tell it to stop if it's showing and it's not supplemental
-  halt if: ->(record) { record && !record.supplemental? }
-
-  divider 'Supplemental Questions'
-
-  input :pob_father,
-        input_html: { autocomplete: 'new-password' },
-        hint: -> { pob_1940_hint(36) }
-
-  input :pob_mother,
-        input_html: { autocomplete: 'new-password' },
-        hint: -> { pob_1940_hint(37) }
-
-  input :mother_tongue,
-        input_html: { autocomplete: 'new-password' },
-        hint: 'Column 38. Enter as written.'
-
-  input :veteran,
-        as: :boolean,
-        wrapper_html: { data: { dependents: 'true' } },
-        hint: 'Column 39. Check box if the response is yes.'
-
-  input :veteran_dead,
-        as: :boolean,
-        wrapper_html: { data: { dependents: 'true' } },
-        hint: 'Column 40. Check box if the answer is yes.'
-
-  input :war_fought,
-        label: 'What War?',
-        as: :radio_buttons_other,
-        other_label: 'Ot - Other war or expedition',
-        collection: Census1940Record.war_fought_choices,
-        coded: true,
-        wrapper_html: { data: { depends_on: :veteran } },
-        hint: 'Column 41. Check the box that corresponds to the answer indicated.'
-
-  input :soc_sec,
-        as: :boolean,
-        hint: 'Column 42. Check box if the answer is yes.'
-
-  input :deductions,
-        as: :boolean,
-        hint: 'Column 43. Check box if the answer is yes.'
-
-  input :deduction_rate,
-        collection: Census1940Record.deduction_rate_choices,
-        coded: true,
-        as: :radio_buttons,
-        hint: 'Column 44. Check the box that corresponds to the answer indicated.'
-
-  input :usual_profession,
-        input_html: { autocomplete: 'new-password' },
-        hint: 'Column 45. Enter as written.'
-
-  input :usual_industry,
-        input_html: { autocomplete: 'new-password' },
-        hint: 'Column 46. Enter as written.'
-
-  input :usual_worker_class,
-        collection: Census1940Record.worker_class_choices,
-        coded: true,
-        as: :radio_buttons,
-        hint: 'Column 47. Check the box that corresponds to the answer indicated.'
-
-  input :usual_occupation_code,
-        input_html: { autocomplete: 'new-password' },
-        hint: -> { occupation_code_hint('J') }
-
-  input :usual_industry_code,
-        input_html: { autocomplete: 'new-password' },
-        hint: -> { occupation_code_hint('J') }
-
-  input :usual_worker_class_code,
-        input_html: { autocomplete: 'new-password' },
-        hint: -> { occupation_code_hint('J') }
-
-  input :multi_marriage,
-        as: :boolean,
-        hint: 'Column 48. Enter as written. Women only please!'
-
-  input :first_marriage_age,
-        hint: 'Column 49. Enter as written. Women only please!'
-
-  input :children_born,
-        hint: 'Column 50. Enter as written. Women only please!'
-
+  include CensusAdditionalFormFields
 end

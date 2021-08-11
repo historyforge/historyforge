@@ -1,92 +1,9 @@
-= simple_form_for @record, as: :census_record, html: { autocomplete: 'off' } do |form|
+= simple_form_for @record, as: :census_record, html: { autocomplete: :off } do |form|
   = error_messages_for @record
-  .card.mb-3
-    .card-header
-      | Census Scope
-
-    .card-body
-      .census-slider-wrapper
-        .census-slider.vertical
-          = form.input :page_number,
-                  as: :integer,
-                  input_html: { min: 0, max: 10_000 },
-                  hint: sheet_hint
-
-          = form.input :page_side,
-                  collection: %w{A B},
-                  hint: side_hint
-
-          = form.input :line_number,
-                  as: :integer,
-                  input_html: { min: 0, max: 100 },
-                  hint: line_number_hint
-
-          = form.input :county
-
-          = form.input :city, input_html: { id: 'city' }
-
-          = form.input :ward,
-                  as: :integer,
-                  input_html: { min: 0, max: 10_000 },
-                  hint: ward_hint
-
-          = form.input :enum_dist,
-                  as: :integer,
-                  input_html: { min: 0, max: 10_000 },
-                  hint: enumeration_district_hint
-
-          = form.input :street_house_number,
-                  input_html: { autocomplete: 'new-password' },
-                  hint: house_number_hint
-
-          = form.input :street_prefix,
-                  collection: %w{N S E W},
-                  input_html: { autocomplete: 'new-password' },
-                  hint: street_prefix_hint
-
-          = form.input :street_name,
-                  input_html: { id: 'street_name', autocomplete: 'new-password' },
-                  hint: street_name_hint
-
-          = form.input :street_suffix,
-                  collection: CensusRecord.street_suffix_choices,
-                  input_html: { id: 'street_suffix', autocomplete: 'new-password' },
-                  hint: street_suffix_hint
-
-          = form.input :apartment_number,
-                  input_html: { autocomplete: 'new-password' },
-                  hint: apartment_number_hint
-
-          = form.input :building_id,
-                  as: :select,
-                  collection: BuildingsOnStreet.new(form.object).perform,
-                  input_html: { id: 'building_id' },
-                  hint: building_hint
-
-          - if form.object.building_id.blank? && Setting.can_add_buildings?(controller.year)
-            = form.input :ensure_building,
-                    as: :boolean,
-                    label: 'Add building with address',
-                    inline_label: 'Yes'
-
-          = form.input :locality_id,
-                  collection: Locality.order(:position),
-                  as: :select,
-                  hint: locality_hint,
-                  required: true
-
-          - unless form.object.year == 1940
-            = form.input :dwelling_number, hint: dwelling_number_hint
-
-          = form.input :family_id, hint: family_id_hint
-
-  = render 'fields', form: form
+  = "Census#{controller.year}FormFields".safe_constantize.new(form).render
 
   .card.mb-3
     .card-body
-      = form.input :notes, as: :text, hint: notes_hint
-      - if form.object.persisted? && can?(:review, form.object)
-        = form.input :person_id, label: 'Person ID', hint: 'Use this to link this census record to a person record manually. Clearing out this field will detach any existing person link.'
       .form-actions
         => form.submit 'Save', class: 'btn btn-primary btn-lg'
         label for="then"

@@ -4,7 +4,7 @@ import addAttributeFilter from "./addAttributeFilter";
 import selectAttribute from "./selectAttribute";
 
 // @ts-ignore
-JQuery.fn.advancedSearch = function(options: AdvancedSearchOptions): JQuery {
+$.fn.advancedSearch = function(options: AdvancedSearchOptions): JQuery {
     return this.each(function() {
         $(this).data('search', new AdvancedSearch(this, options));
         return this;
@@ -69,7 +69,7 @@ class AdvancedSearch implements IAdvancedSearch {
         $('.value-input-container').empty();
         const attrSelect = $('select.attribute');
         attrSelect.on('change', (event: JQuery.ChangeEvent) => {
-            const attribute = event.target.getAttribute('value');
+            const attribute = $(event.target).val().toString();
             const config = this.attributeFilters[attribute]
             if (config) {
                 selectAttribute(attribute, this.form, config)

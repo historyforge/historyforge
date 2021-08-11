@@ -2,11 +2,7 @@ class BooleanInput < SimpleForm::Inputs::BooleanInput
   def input(wrapper_options={})
     if @builder.is_a?(FormViewBuilder)
       value = @builder.object.send(attribute_name)
-      value === true ? 'Yes' : 'blank'
-      # if value
-      #   'Yes'
-      #   # self.class.boolean_collection.detect {|item| item[1] == value }.andand[0]
-      # end
+      value == true ? 'Yes' : 'blank'
     else
       super
     end

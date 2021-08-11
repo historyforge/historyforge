@@ -6,7 +6,7 @@ RSpec.describe Translator do
       expect(Translator.label(Building, :year_earliest)).to eq('Year Built')
     end
     it 'translates a label that has not been overridden' do
-      expect(Translator.label(Census1900Record, :can_read)).to eq('Can Read?')
+      expect(Translator.label(Census1900Record, :can_read)).to eq('Can Read')
     end
     it 'translates label specific to a census year' do
       expect(Translator.label(Census1940Record, :race)).to eq('Color or Race')

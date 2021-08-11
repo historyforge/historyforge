@@ -1,6 +1,9 @@
+# frozen_string_literal: true
+
+# A basic text area. Overridden simply to provide FormViewBuilder support.
 class TextInput < SimpleForm::Inputs::TextInput
 
-  def input(wrapper_options={})
+  def input(wrapper_options = {})
     if @builder.is_a?(FormViewBuilder)
       text = @builder.object.send(attribute_name)
       @builder.content_tag(:div, @builder.format_text(text), input_html_options)

@@ -1,7 +1,7 @@
 const selectScope = function(): void {
-    const scope = jQuery(this).val().toString();
+    const scope = $(this).val().toString();
     let name = `s[${scope}]`;
-    const form = jQuery(this).closest('.card-body').find('.value-input-container');
+    const form = $(this).closest('.card-body').find('.value-input-container');
     const inputs = form.find('input, select');
     if (scope.match(/null$/)) {
         if (form.find('input.null-choice').length > 0) {

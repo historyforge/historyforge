@@ -1,0 +1,236 @@
+en:
+  simple_form:
+    columns:
+      census1900_record:
+        street_house_number: '2nd column on the left'
+        street_prefix: '1st column on the left'
+        street_name: '1st column on the left'
+        street_suffix: '1st column on the left'
+        dwelling_number: 1
+        family_id: 2
+        last_name: 3
+        first_name: 3
+        middle_name: 3
+        name_prefix: 3
+        name_suffix: 3
+        relation_to_head: 4
+        race: 5
+        sex: 6
+        birth_month: 7
+        birth_year: 7
+        age: 8
+        age_months: 8
+        marital_status: 9
+        years_married: 10
+        num_children_born: 11
+        num_children_alive: 12
+        pob: 13
+        pob_father: 14
+        pob_mother: 15
+        year_immigrated: 16
+        years_in_us: 17
+        naturalized_alien: 18
+        profession: 19
+        industry: 19
+        unemployed_months: 20
+        attended_school: 21
+        can_read: 22
+        can_write: 23
+        can_speak_english: 24
+        language_spoken:
+        owned_or_rented: 25
+        mortgage: 26
+        farm_or_house: 27
+        farm_schedule: 28
+
+      census1910_record:
+        street_house_number: '2nd column on the left'
+        street_prefix: '1st column on the left'
+        street_name: '1st column on the left'
+        street_suffix: '1st column on the left'
+        dwelling_number: 1
+        family_id: 2
+        last_name: 3
+        first_name: 3
+        middle_name: 3
+        name_prefix: 3
+        name_suffix: 3
+        relation_to_head: 4
+        race: 6
+        sex: 5
+        age: 7
+        age_months: 7
+        marital_status: 8
+        years_married: 9
+        num_children_born: 10
+        num_children_alive: 11
+        pob: 12
+        mother_tongue: 12
+        pob_father: 13
+        mother_tongue_father: 13
+        pob_mother: 14
+        mother_tongue_mother: 14
+        year_immigrated: 15
+        naturalized_alien: 16
+        language_spoken: 17
+        profession: 18
+        industry: 19
+        employment: 20
+        unemployed: 21
+        unemployed_weeks_1909: 22
+        can_read: 23
+        can_write: 24
+        attended_school: 25
+        owned_or_rented: 26
+        mortgage: 27
+        farm_or_house: 28
+        num_farm_sched: 29
+        civil_war_vet: 30
+        blind: 31
+        dumb: 32
+
+      census1920_record:
+        street_house_number: 2
+        street_prefix: 1
+        street_name: 1
+        street_suffix: 1
+        dwelling_number: 3
+        family_id: 4
+        last_name: 5
+        first_name: 5
+        middle_name: 5
+        name_prefix: 5
+        name_suffix: 5
+        relation_to_head: 6
+        owned_or_rented: 7
+        mortage: 8
+        sex: 9
+        race: 10
+        age: 11
+        age_months: 11
+        marital_status: 12
+        year_immigrated: 13
+        naturalized_alien: 14
+        year_naturalized: 15
+        attended_school: 16
+        can_read: 17
+        can_write: 18
+        pob: 19
+        mother_tongue: 20
+        pob_father: 21
+        mother_tongue_father: 22
+        pob_mother: 23
+        mother_tongue_mother: 24
+        speaks_english: 25
+        profession: 26
+        industry: 27
+        employment: 28
+        farm_schedule: 29
+        employment_code: 'right margin'
+
+      census1930_record:
+        street_house_number: 2
+        street_prefix: 1
+        street_name: 1
+        street_suffix: 1
+        dwelling_number: 3
+        family_id: 4
+        last_name: 5
+        first_name: 5
+        middle_name: 5
+        name_prefix: 5
+        name_suffix: 5
+        relation_to_head: 6
+        owned_or_rented: 7
+        home_value: 8
+        has_radio: 9
+        lives_on_farm: 10
+        sex: 11
+        race: 12
+        age: 13
+        age_months: 13
+        marital_status: 14
+        age_married: 15
+        attended_school: 16
+        can_read_write: 17
+        pob: 18
+        pob_father: 19
+        pob_mother: 20
+        mother_tongue: 21
+        year_immigrated: 22
+        naturalized_alien: 23
+        can_speak_english: 24
+        profession: 25
+        industry: 26
+        worker_class: 27
+        profession_code: 'D'
+        worked_yesterday: 28
+        unemployment_line: 29
+        veteran: 30
+        war_fought: 31
+        farm_schedule: 32
+
+      census1940_record:
+        street_house_number: 2
+        street_prefix: 1
+        street_name: 1
+        street_suffix: 1
+        family_id: 3
+        owned_or_rented: 4
+        home_value: 5
+        lives_on_farm: 6
+        last_name: 7
+        first_name: 7
+        middle_name: 7
+        name_prefix: 7
+        name_suffix: 7
+        relation_to_head: 8
+        sex: 9
+        race: 10
+        age: 11
+        age_months: 11
+        marital_status: 12
+        attended_school: 13
+        grade_completed: 14
+        pob: 15
+        naturalized_alien: 16
+        residence_1935_town: 17
+        residence_1935_county: 18
+        residence_1935_state: 19
+        residence_1935_farm: 20
+        private_work: 21
+        public_work: 22
+        seeking_work: 23
+        had_job: 24
+        no_work_reason: 25
+        private_hours_worked: 26
+        unemployed_weeks: 27
+        occupation: 28
+        industry: 29
+        worker_class: 30
+        occupation_code: 'F'
+        industry_code: 'F'
+        worker_class_code: 'F'
+        full_time_weeks: 31
+        income: 32
+        had_unearned_income: 33
+        farm_schedule: 34
+        pob_father: 36
+        pob_mother: 37
+        mother_tongue: 38
+        veteran: 39
+        veteran_dead: 40
+        war_fought: 41
+        soc_sec: 42
+        deductions: 43
+        deduction_rate: 44
+        usual_profession: 45
+        usual_industry: 46
+        usual_worker_class: 47
+        usual_occupation_code: 'J'
+        usual_industry_code: 'J'
+        usual_worker_class_code: 'J'
+        multi_marriage: 48
+        first_marriage_age: 49
+        children_born: 50
+

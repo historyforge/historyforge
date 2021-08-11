@@ -299,7 +299,7 @@ SimpleForm.setup do |config|
 end
 
 SimpleForm::Inputs::Base.class_eval do
-  def translate_from_namespace(namespace, default = '')
-    Translator.label object.class, reflection_or_attribute_name
+  def translate_from_namespace(namespace, _default = '')
+    Translator.translate object.class, reflection_or_attribute_name, namespace
   end
 end

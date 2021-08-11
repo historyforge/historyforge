@@ -1,5 +1,4 @@
 import selectScope from './selectScope'
-// import {AttributeFilterConfig, AddInputFn, ChoiceValue, Choices} from './types';
 
 const selectAttribute = function(attribute: string, form: JQuery, config: AttributeFilterConfig) {
     const scopeSelect = buildScopeSelector(form, config)

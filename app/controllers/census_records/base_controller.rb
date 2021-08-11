@@ -53,7 +53,7 @@ module CensusRecords
       authorize! :create, @record
       @record.created_by = current_user
       if @record.save
-        flash[:notice] = 'Census Record created.'
+        flash[:notice] = 'Census Record saved.'
         after_saved
       else
         flash[:errors] = 'Census Record not saved.'
@@ -76,7 +76,7 @@ module CensusRecords
       @record = resource_class.find params[:id]
       authorize! :update, @record
       if @record.update(resource_params)
-        flash[:notice] = 'Census Record updated.'
+        flash[:notice] = 'Census Record saved.'
         after_saved
       else
         flash[:errors] = 'Census Record not saved.'
@@ -149,7 +149,7 @@ module CensusRecords
 
     def resource_params
       params[:census_record].each do |key2, value|
-        params[:census_record][key2] = nil if ['on', 'nil'].include?(value)
+        params[:census_record][key2] = nil if %w[on nil].include?(value)
       end
       params.require(:census_record).permit!
     end
@@ -165,8 +165,7 @@ module CensusRecords
 
     def load_census_records
       authorize! :read, resource_class
-      @search = census_record_search_class.generate params: params,
-                                                    user: current_user
+      @search = census_record_search_class.generate params: params, user: current_user
     end
 
     def render_census_records

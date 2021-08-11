@@ -10,11 +10,11 @@ class CensusFormFields
     inputs[field] = options
   end
 
-  def self.divider(title)
+  def self.divider(title, **options)
     self.fields ||= []
     self.inputs ||= {}
     fields << title
-    inputs[title] = { as: :divider, label: title }
+    inputs[title] = options.merge({ as: :divider, label: title })
   end
 
   def self.halt(**options)
@@ -54,7 +54,7 @@ class CensusFormFields
         # does not have them filled in
         return builder.to_html if form.is_a?(FormViewBuilder) && config[:if].call(form.object)
       when :divider
-        builder.start_card(config[:label])
+        builder.start_card(config)
       else
         builder.add_field(field, config)
       end
@@ -91,18 +91,60 @@ class CensusFormFields
     end
     attr_accessor :form
 
-    def start_card(title)
-      @cards << Card.new(title)
+    def start_card(config)
+      return if skip_me?(config)
+
+      @cards << Card.new(config[:label])
     end
 
     def add_field(field, config)
-      config[:hint] = form.template.instance_exec &config[:hint] if config[:hint].respond_to?(:call)
+      return if skip_me?(config)
 
-      @cards.last << form.input(field, config).html_safe
+      apply_config_for field, config
+      @cards.last << form.input(field, **config).html_safe
     end
 
     def to_html
       @cards.map { |card| form.card(card.to_h).html_safe }.join.html_safe
+    end
+
+    def skip_me?(config)
+      return true if config[:if] && !config[:if].call(form)
+      return true if config[:edit_only] && form.is_a?(FormViewBuilder)
+      return true if config[:view_only] && !form.is_a?(FormViewBuilder)
+
+      false
+    end
+
+    def apply_config_for(field, config)
+      config[:hint] = hint_for(field)
+      config.delete :placeholder
+      config[:wrapper_html] = { data: { dependents: 'true' } } if config[:dependents]
+      config[:wrapper_html] = { data: { depends_on: config[:depends_on] } } if config[:depends_on]
+      if config[:min] || config[:max]
+        config[:input_html] ||= {}
+        config[:input_html].merge!({ min: config[:min] }) unless config[:min].nil?
+        config[:input_html].merge!({ max: config[:max] }) unless config[:max].nil?
+      end
+
+      if config[:as] == :boolean
+        config[:inline_label] ||= 'Yes'
+      elsif %i[select radio_buttons radio_buttons_other].include?(config[:as])
+        config[:collection] ||= form.object.class.try(:"#{field}_choices")
+        config[:collection] = config[:collection].call(form) if config[:collection].respond_to?(:call)
+      elsif config[:as].blank?
+        config[:input_html] ||= {}
+        config[:input_html].merge! autocomplete: :off
+      end
+    end
+
+    def hint_for(field)
+      column = Translator.translate(form.object.class, field, 'columns')
+      text   = Translator.translate(form.object.class, field, 'hints')
+
+      column = "<u>Column #{column}</u><br /><br />" if column
+
+      column.present? || text.present? ? "#{column}#{text}".html_safe : false
     end
   end
 
@@ -113,10 +155,8 @@ class CensusFormFields
       @json = json
       @klass = klass
       @card = nil
-      # add name and address fields to start
-      output_common_fields(json, klass)
-
     end
+
     attr_accessor :json, :card, :klass
 
     def start_card(title)
@@ -158,25 +198,6 @@ class CensusFormFields
     end
 
     private
-
-    def output_common_fields(json, klass)
-      AttributeBuilder.text(json, :name, klass: klass)
-      AttributeBuilder.text json, :street_address, klass: klass
-      AttributeBuilder.text json, :first_name, klass: klass
-      AttributeBuilder.text json, :middle_name, klass: klass
-      AttributeBuilder.text json, :last_name, klass: klass
-      AttributeBuilder.text json, :county, klass: klass
-      AttributeBuilder.text json, :city, klass: klass
-      AttributeBuilder.number json, :ward, klass: klass
-      AttributeBuilder.number json, :page_number, klass: klass
-      AttributeBuilder.enumeration json, klass, :page_side
-      AttributeBuilder.number json, :line_number, sortable: false, klass: klass
-      AttributeBuilder.number json, :enum_dist, klass: klass
-      AttributeBuilder.text json, :dwelling_number, klass: klass unless klass == Census1940Record
-      AttributeBuilder.text json, :family_id, klass: klass
-      AttributeBuilder.collection json, :locality_id, klass: klass, collection: Locality.select_options
-      AttributeBuilder.text json, :notes, klass: klass
-    end
 
     def translated_option(item, field)
       Translator.option field, item

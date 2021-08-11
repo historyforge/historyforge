@@ -1,0 +1,166 @@
+en:
+  simple_form:
+    hints:
+      census_record:
+        age_married: 'Enter what you see on the census. If the field is blank on the census, leave it blank on HistoryForge. If the answer is Un (Unknown) enter 999.'
+        apartment_number: 'Enter only when applicable.  If there is no apartment number on the census, leave the field blank on HistoryForge.'
+        attended_school: 'Check the box if the response is yes.'
+        birth_month: 'Select the option that corresponds to the answer on the census.'
+        birth_year: 'Enter what you see on the census. If the field is blank on the census, leave it blank on HistoryForge. If the answer is Un (Unknown) enter 999.'
+        blind: 'Check the box if the field contains a slash (/). Enumerators used this mark to indicate yes. Enter any additional information in the notes.'
+        building_id: 'There is no corresponding field on the census, however, this field allows us to link the people in the census to a mapped building.  Once you have entered the address, select the building with the same address from the dropdown menu. In some cases, the building name might include multiple historical addresses. If a building with the same address does not appear: First, check to make sure that the street name is spelled correctly and that the prefix and suffix are correct. Second, if the building still does not appear, check the box for Add building with address, if available. This will add the building.'
+        can_read_write: 'Check the box if the response is yes.'
+        can_read: 'Check the box if the response is yes.'
+        cannot_read: 'Check the box if the response is yes.'
+        can_speak_english: 'Check the box if the response is yes.'
+        can_write: 'Check the box if the response is yes.'
+        cannot_write: 'Check the box if the response is yes.'
+        children_born: 'Enter what you see on the census. If the field is blank on the census, leave it blank on HistoryForge. If the answer is Un (Unknown) enter 999.'
+        city:
+        civil_war_vet: 'Select the option that corresponds to the answer on the census.'
+        county:
+        deaf_dumb: 'Check the box if the field contains a slash (/). Enumerators used this mark to indicate yes. Enter any additional information in the notes.'
+        deduction_rate: 'Select the option that corresponds to the answer on the census. If the deduction rate on the census contains a different number than HistoryForge, leave the field blank.'
+        deductions: 'Check the box if the response is yes.'
+        dwelling_number: 'Enter what you see on the census. If the Dwelling number is not listed on the first line of the sheet, it can be found listed with the head of that household on the previous sheet. Note: Dwelling and Family numbers are generally sequential.  If it is hard to read either number check the numbers above and below for a pattern.'
+        employment_code:
+        employment: 'Select the option that corresponds to the answer on the census.'
+        enum_dist: 'The Enumeration District (ED) is in the upper right corner of the sheet.'
+        family_id: 'Enter what you see on the census. If the Family number is not listed on the first line of the sheet, it can be found listed with the head of that household on the previous sheet. Note: Dwelling and Family numbers are generally sequential.  If it is hard to read either number check the numbers above and below for a pattern.'
+        farm_or_house: 'Select the option that corresponds to the answer on the census. Note: This information should only be entered once for the family/household.'
+        farm_schedule: 'Enter what you see on the census. If the field is blank on the census, leave it blank on HistoryForge.'
+        first_marriage_age:
+        first_name: 'Names are listed in the following order: Last, First, Middle.  If several members of a family have the same last name, the last name will be listed in the first record only and in following records it might be replaced by a line or a blank space. If the name is hard to read, attempt to verify the spelling with the city directory where possible. Note: If you see a last name that looks crossed out because it was written over that line, enter it as the last name. Sometimes the enumerator drew the lines first for the last name of all the people in the household, and then had to write a new last name over the line to indicate a person had a different last name. These were written over the line, not crossed out.'
+        foreign_born: 'There is no corresponding field on the census.  Check the box if the individual was not born in the United States and does not have the designation “Am Cit” after their place of birth.'
+        full_time_weeks: 'Enter what you see on the census. If the field is blank on the census, leave it blank on HistoryForge. If the field contains 0 (zero) on the census, enter the 0 (zero) on HistoryForge.'
+        grade_completed: 'Select the option that corresponds to the answer on the census.'
+        had_job: 'Check the box if the response is yes.'
+        had_unearned_income: 'Check the box if the response is yes or a 1.'
+        has_radio: 'Check the box if the response is yes. Note: This information should only be entered once for the family/household.'
+        histid:
+        homemaker: 'Check the box if the response is yes.'
+        home_value: 'Enter what you see on the census. If the field is blank on the census, leave it blank on HistoryForge. Note: This information should only be entered once for the family/household.'
+        idiotic: 'Check the box if the field contains a slash (/). Enumerators used this mark to indicate yes. Enter any additional information in the notes.'
+        income:
+        industry_code: 'This is a three-digit occupation code followed by a two-figure industry code and a 1-figure worker class code. The occupation code can contain a “V” or “X” as well as numbers. The industry code can contain a “V” or “X” as well as numbers. The worker class code is a number from 1 to 6. If you are unsure, check the resource for verifying the occupation code on the Transcriber’s Corner.'
+        industry: 'Enter what you see on the census. If the field is blank on the census, leave it blank on HistoryForge.'
+        industry1930_code_id: 'This is a three-digit occupation code followed by a two-figure industry code and a 1-figure worker class code. The occupation code can contain a “V” or “X” as well as numbers. The industry code can contain a “V” or “X” as well as numbers. The worker class code is a number from 1 to 6. If you are unsure, check the resource for verifying the occupation code on the Transcriber’s Corner.'
+        insane: 'Check the box if the field contains a slash (/). Enumerators used this mark to indicate yes. Enter any additional information in the notes.'
+        language_spoken: 'Enter what you see on the census. If the field is blank on the census, leave it blank on HistoryForge.'
+        last_name: 'Names are listed in the following order: Last, First, Middle.  If several members of a family have the same last name, the last name will be listed in the first record only and in following records it might be replaced by a line or a blank space. If the name is hard to read, attempt to verify the spelling with the city directory where possible. Note: If you see a last name that looks crossed out because it was written over that line, enter it as the last name. Sometimes the enumerator drew the lines first for the last name of all the people in the household, and then had to write a new last name over the line to indicate a person had a different last name. These were written over the line, not crossed out.'
+        line_number: 'Line numbers are located on the left and right side of each sheet.'
+        lives_on_farm: 'Check the box if the response is yes. Note: This information should only be entered once for the family/household.'
+        locality_id: 'This field is not on the census but allows for the inclusion of multiple localities (cities, towns, villages, etc.) in one database. Select your locality from the dropdown menu.'
+        maimed: 'Check the box if the field contains a slash (/). Enumerators used this mark to indicate yes. Enter any additional information in the notes.'
+        marital_status: 'Select the option that corresponds to the answer on the census.'
+        middle_name: 'Names are listed in the following order: Last, First, Middle.  If several members of a family have the same last name, the last name will be listed in the first record only and in following records it might be replaced by a line or a blank space. If the name is hard to read, attempt to verify the spelling with the city directory where possible. Note: If you see a last name that looks crossed out because it was written over that line, enter it as the last name. Sometimes the enumerator drew the lines first for the last name of all the people in the household, and then had to write a new last name over the line to indicate a person had a different last name. These were written over the line, not crossed out.'
+        month_born: 'Select the option that corresponds to the answer on the census.'
+        mortgage: 'Select the option that corresponds to the answer on the census. Note: This information should only be entered once for the family/household.'
+        mother_tongue_father: 'Generally, for foreign born only.  Enter what you see on the census. If the enumerator wrote un (see below) or don’t know enter Unknown. Note: This field has a controlled vocabulary. If, as you enter the term from the census, the term does not appear from the list of controlled vocabulary, enter an X in the field and enter “Mother Tongue is ____” in the notes field.'
+        mother_tongue_mother: 'Generally, for foreign born only.  Enter what you see on the census. If the enumerator wrote un (see below) or don’t know enter Unknown. Note: This field has a controlled vocabulary. If, as you enter the term from the census, the term does not appear from the list of controlled vocabulary, enter an X in the field and enter “Mother Tongue is ____” in the notes field.'
+        mother_tongue: 'Generally, for foreign born only.  Enter what you see on the census. If the enumerator wrote un (see below) or don’t know enter Unknown. Note: This field has a controlled vocabulary. If, as you enter the term from the census, the term does not appear from the list of controlled vocabulary, enter an X in the field and enter “Mother Tongue is ____” in the notes field.'
+        multi_marriage: 'Check the box if the response is yes.'
+        name_prefix: 'Enter a title in HistoryForge only if it is entered on the census sheet.'
+        name_suffix: 'Enter a suffix in HistoryForge only if it is entered on the census sheet.'
+        naturalized_alien: 'Select the option that corresponds to the answer on the census.'
+        no_work_reason: 'Select the option that corresponds to the answer on the census.'
+        notes: '<p>If you find additional or conflicting information about the person from a different source such as a different name spelling or address, include the information as written by the enumerator in the relevant field and enter the alternative information here and its source. If you checked the city directory, include the year. i.e. The address in the 1919 City Directory is _________________.</p><p><b>* Important</b> - the information in the notes field will become public.'
+        num_children_alive: 'Enter what you see on the census. If the field is blank on the census, leave it blank on HistoryForge. If the answer is Un (Unknown) enter 999.'
+        num_children_born: 'Enter what you see on the census. If the field is blank on the census, leave it blank on HistoryForge. If the answer is Un (Unknown) enter 999.'
+        num_farm_sched:
+        occupation_code: 'This is a three-digit occupation code followed by a two-figure industry code and a 1-figure worker class code. The occupation code can contain a “V” or “X” as well as numbers. The industry code can contain a “V” or “X” as well as numbers. The worker class code is a number from 1 to 6. If you are unsure, check the resource for verifying the occupation code on the Transcriber’s Corner.'
+        occupation: 'Enter what you see on the census.  If the field is blank on the census, leave the default “None.” If, however, the industry is not blank or there is some other indicator of an occupation enter the word “Blank” to indicate that there was an occupation.'
+        occupation1930_code_id: 'This is a three-digit occupation code followed by a two-figure industry code and a 1-figure worker class code. The occupation code can contain a “V” or “X” as well as numbers. The industry code can contain a “V” or “X” as well as numbers. The worker class code is a number from 1 to 6. If you are unsure, check the resource for verifying the occupation code on the Transcriber’s Corner.'
+        owned_or_rented: 'Select the option that corresponds to the answer on the census. Note: This information should only be entered once for the family/household.'
+        page_number: 'The sheet (page) number is in the upper left corner of the sheet.'
+        page_side: 'Each census sheet has side A and B printed next to the sheet number.'
+        pob_code: 'Place of Birth (Code)'
+        pob_father_code:
+        pob_father: 'Enter what you see on the census. Note: This field has a controlled vocabulary. If, as you enter the term from the census, the term does not appear from the list of controlled vocabulary, enter an X in the field and enter “Place of Birth is ____” in the notes field.'
+        pob_mother_code:
+        pob_mother: 'Enter what you see on the census. Note: This field has a controlled vocabulary. If, as you enter the term from the census, the term does not appear from the list of controlled vocabulary, enter an X in the field and enter “Place of Birth is ____” in the notes field.'
+        pob: 'Enter what you see on the census. Note: This field has a controlled vocabulary. If, as you enter the term from the census, the term does not appear from the list of controlled vocabulary, enter an X in the field and enter “Place of Birth is ____” in the notes field.'
+        private_hours_worked: 'Enter what you see on the census. If the field is blank on the census or the number is crossed out, leave it blank on HistoryForge.'
+        private_work: 'Check the box if the response is yes.'
+        profession_code: 'This is a three-digit occupation code followed by a two-figure industry code and a 1-figure worker class code. The occupation code can contain a “V” or “X” as well as numbers. The industry code can contain a “V” or “X” as well as numbers. The worker class code is a number from 1 to 6. If you are unsure, check the resource for verifying the occupation code on the Transcriber’s Corner.'
+        profession: 'Enter what you see on the census.  If the field is blank on the census, leave the default “None.” If, however, the industry is not blank or there is some other indicator of an occupation enter the word “Blank” to indicate that there was an occupation.'
+        provisional:
+        public_work: 'Check the box if the response is yes.'
+        race: 'Select the option that corresponds to the answer on the census.'
+        relation_to_head: 'Enter what you see on the census. If this field is blank enter the word Blank so you can save it.  Note:This field has a controlled vocabulary. If, as you enter the term from the census, the term does not appear from the list of controlled vocabulary, enter an X in the field and enter “relation to head is ____” in the notes field.'
+        residence_1935_county:
+        residence_1935_farm:
+        residence_1935_state:
+        residence_1935_town:
+        seeking_work: 'Check the box if the response is yes.'
+        sex: 'Select the option that corresponds to the answer on the census.'
+        sick: 'Enter what you see on the census. If the field is blank on the census, leave it blank on HistoryForge. If the enumerator made a mark, enter X. For difficult handwriting, a list of Sickness on Day of Enumeration is available on the Transcriber’s Corner.'
+        soc_sec: 'Check the box if the response is yes.'
+        state:
+        street_house_number: 'If the number includes a fraction leave a space between the number and the fraction. i.e. 102 ½. If the number indicates rear (as in rear apartment) enter the street number followed by a space and the word Rear, i.e. 313 Rear. If the number includes a range enter as written, i.e. 102-104. If there is no house number and there is a different dwelling number, try to verify the house number using another source such as the city directory.'
+        street_name: 'The name of the street itself, i.e., Aurora. The name is written vertically down the side of the sheet. If you are unsure, check the resources on the Transcriber’s Corner or search the building database on HistoryForge for the street name to see how it has been entered before. Note: Street names can change at least once on the sheet.  These changes are often indicated by a hand-drawn line across the column separating the buildings on one street from the next.'
+        street_prefix: 'The prefix is the directional North, South, East, West preceding the street name. Exception: On occasion the street name will include North, South, East, or West in the formal name, as in South Hill Terrace.  In this case you would include South in the street address, not the prefix.  If you are unsure, check the resources on the Transcriber’s Corner or search the building database on HistoryForge for the street name to see how it has been entered before.'
+        street_suffix: 'The suffix is the Avenue, Road, Street, etc, after the street name. Some areas have street names with different suffixes, for example Cascadilla St and Cascadilla Ave are two different streets. If you are unsure, check the resources on the Transcriber’s Corner or search the building database on HistoryForge for the street name to see how it has been entered before.'
+        taker_error:
+        unemployed_months: 'Enter what you see on the census. If the field is blank on the census, leave it blank on HistoryForge.'
+        unemployed_weeks_1909: 'Enter what you see on the census. If the field is blank on the census, leave it blank on HistoryForge.'
+        unemployed_weeks: 'Enter what you see on the census. If the field is blank on the census or the number is crossed out, leave it blank on HistoryForge. Note: If the total number of weeks is crossed out and a code starting with a V is written above, enter the total number of weeks, not the code.'
+        unemployed: 'Check the box if the response is yes.'
+        unemployment_line:
+        usual_industry_code:
+        usual_industry:
+        usual_occupation_code:
+        usual_profession:
+        usual_worker_class_code:
+        usual_worker_class:
+        veteran_dead: 'Check the box if the response is yes.'
+        veteran: 'Check the box if the response is yes.'
+        war_fought: 'Select the option that corresponds to the answer on the census.'
+        ward: 'The ward is in the upper right corner of the sheet underneath the Enumeration District. Enter the ward as a number (2).  If there is no ward on the census, leave the field blank on HistoryForge.'
+        worked_yesterday: 'Check the box if the response is yes.'
+        worker_class_code: 'This is a three-digit occupation code followed by a two-figure industry code and a 1-figure worker class code. The occupation code can contain a “V” or “X” as well as numbers. The industry code can contain a “V” or “X” as well as numbers. The worker class code is a number from 1 to 6. If you are unsure, check the resource for verifying the occupation code on the Transcriber’s Corner.'
+        worker_class: 'Select the option that corresponds to the answer on the census.'
+        year_immigrated: 'Enter what you see on the census. If the field is blank on the census, leave it blank on HistoryForge. If the answer is Un (Unknown) enter 999.'
+        year_naturalized: 'Enter what you see on the census. If the field is blank on the census, leave it blank on HistoryForge. If the answer is Un (Unknown) enter 999.'
+        years_in_us: 'Enter what you see on the census. If the field is blank on the census, leave it blank on HistoryForge. If the answer is Un (Unknown) enter 999.'
+        years_married: 'Enter what you see on the census. If the field is blank on the census, leave it blank on HistoryForge. If the answer is Un (Unknown) enter 999.'
+
+      census1880_record:
+        page_side: 'Each census page has side A, B, C and D printed in the upper left corner of the page.'
+        enum_dist: 'The Enumeration District (ED) is in the upper left corner of the sheet.'
+        age_months: 'Enter what you see on the census. If the field is blank, leave blank. If the answer is Un (Unknown) enter 999. A child that is less than one year of age will be listed by their age in months on the census i.e., 3/12 or 11/12. If the age is entered this way on the census, enter the years in the Age field and the months in the Age (months) field on HistoryForge.'
+        age: 'Enter what you see on the census. If the field is blank, leave blank. If the answer is Un (Unknown) enter 999. A child that is less than one year of age will be listed by their age in months on the census i.e., 3/12 or 11/12. If the age is entered this way on the census, enter the years in the Age field and the months in the Age (months) field on HistoryForge.'
+        marital_status: 'Select the option that corresponds to the answer on the census. Enumerators used this mark (/) to indicate yes.'
+        just_married: 'Check the box if the response is yes. Enumerators often used this mark (/) for the affirmative. If the enumerator listed a month instead, check the box and enter “month of marriage ___” in the notes field.'
+        foreign_born: 'There is no corresponding field on the census.  Check the box if the individual was not born in the United States.'
+        unemployed_months: 'Enter the number of months only, do not record checks or other markings.'
+        attended_school: 'Check the box if the field contains a slash (/). Enumerators used this mark to indicate yes.'
+
+      census1900_record:
+        age_months: 'Enter what you see on the census. If the field is blank, leave blank. If the answer is Un (Unknown) enter 999. A child that is less than one year of age will be listed by their age in months on the census i.e., 3/12 or 11/12. If the age is entered this way on the census, enter the years in the Age field and the months in the Age (months) field on HistoryForge.'
+        age: 'Enter what you see on the census. If the field is blank, leave blank. If the answer is Un (Unknown) enter 999. A child that is less than one year of age will be listed by their age in months on the census i.e., 3/12 or 11/12. If the age is entered this way on the census, enter the years in the Age field and the months in the Age (months) field on HistoryForge.'
+
+      census1910_record:
+        age_months: 'Enter what you see on the census. If the field is blank, leave blank. If the answer is Un (Unknown) enter 999. A child that is less than two years of age will be listed by their age in months on the census i.e., 1 and 3/12. If the age is entered this way on the census, enter the years in the Age field and the months in the Age (months) field on HistoryForge.'
+        age: 'Enter what you see on the census. If the field is blank, leave blank. If the answer is Un (Unknown) enter 999. A child that is less than two years of age will be listed by their age in months on the census i.e., 1 and 3/12. If the age is entered this way on the census, enter the years in the Age field and the months in the Age (months) field on HistoryForge.'
+        industry: 'There is no industry field on this census, but sometimes it was supplied by the enumerator after the profession.  If that is the case, enter it here.'
+
+      census1920_record:
+        age: 'Enter what you see on the census. If the field is blank, leave blank. If the answer is Un (Unknown) enter 999. A child that is less than five years of age will be listed by their age in months on the census i.e., 1 and 3/12. If the age is entered this way on the census, enter the years in the Age field and the months in the Age (months) field on HistoryForge.'
+        age_months: 'Enter what you see on the census. If the field is blank, leave blank. If the answer is Un (Unknown) enter 999. A child that is less than five years of age will be listed by their age in months on the census i.e., 1 and 3/12. If the age is entered this way on the census, enter the years in the Age field and the months in the Age (months) field on HistoryForge.'
+        occupation_code: 'There is no official column for occupation codes on the census, these 3-digit numbers which range from 000-999 were added in the right margin or sometimes under farm number, please enter the numbers here. If you are unsure of the code, check the resource for verifying the occupation code on the Transcriber’s Corner.'
+        farm_schedule: 'If this column contains a 1- or 2-digit number enter it here.  If it contains a 3-digit number enter it under occupation code.'
+
+      census1930_record:
+        ward: 'The ward is on the upper left side of the sheet. Enter the ward as a number (2). If there is no ward on the census, leave the field blank on HistoryForge.'
+        enum_dist: 'The Enumeration District (ED) is in the upper right corner of the sheet.  Enter only the number(s) after the (-) dash.'
+        age: 'Enter what you see on the census. If the field is blank, leave blank. If the answer is Un (Unknown) enter 999. A child that is less than five years of age will be listed by their age in months on the census i.e., 1 and 3/12. If the age is entered this way on the census, enter the years in the Age field and the months in the Age (months) field on HistoryForge.'
+        age_months: 'Enter what you see on the census. If the field is blank, leave blank. If the answer is Un (Unknown) enter 999. A child that is less than five years of age will be listed by their age in months on the census i.e., 1 and 3/12. If the age is entered this way on the census, enter the years in the Age field and the months in the Age (months) field on HistoryForge.'
+        occupation_code: 'This is a four-digit code, the first two digits represent the occupation, and the second two represent the industry.  Primarily numerical, this code may contain the letters “V” or “X” which should be entered as capital letters. If you are unsure of the code, check the resource for verifying the occupation code on the Transcriber’s Corner.'
+
+      census1940_record:
+        ward: 'The ward is on the upper left side of the sheet. Enter the ward as a number (2). If there is no ward on the census, leave the field blank on HistoryForge.'
+        enum_dist: 'The Enumeration District (ED) is in the upper right corner of the sheet.  Enter only the number(s) after the (-) dash.'
+        street_house_number: 'If the number includes a fraction leave a space between the number and the fraction. i.e. 102 ½. If the number indicates rear (as in rear apartment) enter the street number followed by a space and the word Rear, i.e. 313 Rear. If the number includes a range enter as written, i.e. 102-104.'
+        age: 'Enter what you see on the census. If the field is blank, leave blank. If the answer is Un (Unknown) enter 999. A child that is less than one year of age will be listed by their age in months on the census i.e., 3/12 or 11/12. If the age is entered this way on the census, enter the years in the Age field and the months in the Age (months) field on HistoryForge.'
+        age_months: 'Enter what you see on the census. If the field is blank, leave blank. If the answer is Un (Unknown) enter 999. A child that is less than one year of age will be listed by their age in months on the census i.e., 3/12 or 11/12. If the age is entered this way on the census, enter the years in the Age field and the months in the Age (months) field on HistoryForge.'

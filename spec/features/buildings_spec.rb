@@ -15,7 +15,7 @@ RSpec.describe 'buildings' do
     expect(page).to have_content 'Buildings'
     expect(page).to have_content 'Found 3 records'
     click_button 'Filter'
-    select 'Street address'
+    select 'Street Address'
     select 'starts with'
     fill_in with: '405 N Titus'
     click_on 'Submit'

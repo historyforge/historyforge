@@ -16,32 +16,32 @@ RSpec.describe '1910 US Census' do
     fill_in 'County', with: 'Tompkins'
     fill_in 'City', with: 'Ithaca'
     fill_in 'Ward', with: '1'
-    fill_in 'Enum dist', with: '1'
+    fill_in 'Enum Dist', with: '1'
     fill_in 'House No.', with: '405'
     select 'N', from: 'Prefix'
     fill_in 'Street Name', with: 'Tioga'
     select 'St', from: 'Suffix'
-    check 'Add building with address'
+    check 'Add Building at Address'
     select locality.name, from: 'Locality'
     fill_in 'Dwelling No.', with: '1'
     fill_in 'Family No.', with: '1'
 
-    fill_in 'Last name', with: 'Squarepants'
-    fill_in 'First name', with: 'Sponge'
-    fill_in 'Middle name', with: 'Bob'
+    fill_in 'Last Name', with: 'Squarepants'
+    fill_in 'First Name', with: 'Sponge'
+    fill_in 'Middle Name', with: 'Bob'
     fill_in 'Title', with: 'Dr'
     fill_in 'Suffix', with: 'III'
 
-    fill_in 'Relation to head', with: 'Head'
+    fill_in 'Relation to Head', with: 'Head'
 
     choose 'W - White', name: 'census_record[race]'
     choose 'M - Male', name: 'census_record[sex]'
     fill_in 'Age', with: '28'
-    fill_in 'Age (months)', with: '5'
+    fill_in 'Age (Months)', with: '5'
     choose 'M or M1 - 1st marriage', name: 'census_record[marital_status]'
     fill_in 'Years of Present Marriage', with: '6'
-    fill_in 'Num children born', with: '3'
-    fill_in 'Num children alive', with: '1'
+    fill_in 'No. Children Born', with: '3'
+    fill_in 'No. Children Alive', with: '1'
 
     fill_in 'Place of Birth', with: 'New York'
     fill_in 'Mother Tongue', with: 'English'
@@ -50,21 +50,21 @@ RSpec.describe '1910 US Census' do
     fill_in 'Place of Birth - Mother', with: 'Germany'
     fill_in 'Mother Tongue - Mother', with: 'German'
 
-    fill_in 'Profession', with: 'Turnkey'
+    fill_in 'Occupation', with: 'Turnkey'
     fill_in 'Industry', with: 'Hotel'
     choose 'W - Wage or salary worker', name: 'census_record[employment]'
-    check 'Without work?'
-    fill_in 'Unemployed weeks 1909', with: '10'
-    check 'Can Read?'
-    check 'Can Write?'
-    check 'Attended School?'
+    check 'Without Work'
+    fill_in 'Unemployed Weeks (1909)', with: '10'
+    check 'Can Read'
+    check 'Can Write'
+    check 'Attended School'
 
     choose 'R - Rented', name: 'census_record[owned_or_rented]'
     choose 'F - Free of mortgage', name: 'census_record[mortgage]'
     choose 'H - House', name: 'census_record[farm_or_house]'
     choose 'UA - Union Army', name: 'census_record[civil_war_vet]'
     check 'Blind'
-    check 'Deaf & Dumb'
+    check 'Deaf and Dumb'
 
     select 'In this family', from: 'After saving, add another person:'
     click_on 'Save'
@@ -83,15 +83,15 @@ RSpec.describe '1910 US Census' do
     expect(find_field('County').value).to eq 'Tompkins'
     expect(find_field('City').value).to eq 'Ithaca'
     expect(find_field('Ward').value).to eq '1'
-    expect(find_field('Enum dist').value).to eq '1'
+    expect(find_field('Enum Dist').value).to eq '1'
     expect(find_field('Dwelling No.').value).to eq '1'
     expect(find_field('House No.').value).to eq '405'
     expect(find_field('Prefix').value).to eq 'N'
     expect(find_field('Street Name').value).to eq 'Tioga'
-    expect(find_field('Suffix').value).to eq 'St'
+    expect(find_field('Suffix', match: :first).value).to eq 'St'
     expect(find_field('Family No.').value).to eq '1'
-    expect(find_field('Building').value).to eq building.id.to_s
-    expect(find_field('Last name').value).to eq 'Squarepants'
+    # expect(find_field('Building').value).to eq building.id.to_s
+    expect(find_field('Last Name').value).to eq 'Squarepants'
     expect(find_field('Locality').value).to eq locality.id.to_s
 
     click_link 'View All'
@@ -106,8 +106,8 @@ RSpec.describe '1910 US Census' do
 
     click_on 'Edit'
     expect(page).to have_content 'Census Scope'
-    expect(find_field('Last name').value).to eq('Squarepants')
-    fill_in 'Last name', with: 'Roundpants'
+    expect(find_field('Last Name').value).to eq('Squarepants')
+    fill_in 'Last Name', with: 'Roundpants'
     click_on 'Save', match: :first
     expect(page).to have_content 'Roundpants'
 

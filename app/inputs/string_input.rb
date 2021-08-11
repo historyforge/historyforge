@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
+# A basic text input. Overridden simply to provide FormViewBuilder support.
 class StringInput < SimpleForm::Inputs::StringInput
-  def input(wrapper_options={})
+  def input(wrapper_options = {})
     if @builder.is_a?(FormViewBuilder)
       text = @builder.object.send(attribute_name)
       text = 'blank' if text.blank?

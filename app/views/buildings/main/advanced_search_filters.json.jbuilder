@@ -1,6 +1,6 @@
 json.filters do
 
-  AttributeBuilder.text       json, :street_address
+  AttributeBuilder.text       json, :street_address, label: 'Street Address'
   AttributeBuilder.text       json, :name, label: 'Building Name'
 
   json.city do
@@ -14,13 +14,13 @@ json.filters do
     json.sortable 'city'
   end
 
-  building_types = BuildingType.order(:name).map {|item| [ item.name.capitalize, item.id ]}
+  building_types = BuildingType.order(:name).map { |item| [item.name.capitalize, item.id] }
   AttributeBuilder.collection json, :building_types_id, klass: Building, collection: building_types
 
-  lining_types = ConstructionMaterial.order(:name).map {|item| [ item.name.capitalize, item.id ]}
+  lining_types = ConstructionMaterial.order(:name).map { |item| [item.name.capitalize, item.id] }
   AttributeBuilder.collection json, :lining_type_id, klass: Building, collection: lining_types
 
-  frame_types = ConstructionMaterial.order(:name).map {|item| [ item.name.capitalize, item.id ]}
+  frame_types = ConstructionMaterial.order(:name).map { |item| [item.name.capitalize, item.id] }
   AttributeBuilder.collection json, :frame_type_id, klass: Building, collection: frame_types
   AttributeBuilder.text       json, :block_number
   json.as_of_year do
@@ -31,8 +31,8 @@ json.filters do
     end
   end
 
-  AttributeBuilder.time       json, :year_earliest
-  AttributeBuilder.time       json, :year_latest
+  AttributeBuilder.time       json, :year_earliest, label: 'Year Built'
+  AttributeBuilder.time       json, :year_latest, label: 'Year Demolished'
   AttributeBuilder.number     json, :stories
   AttributeBuilder.text       json, :description
   AttributeBuilder.text       json, :annotations

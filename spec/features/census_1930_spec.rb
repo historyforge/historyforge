@@ -16,53 +16,53 @@ RSpec.describe '1930 US Census' do
     fill_in 'County', with: 'Tompkins'
     fill_in 'City', with: 'Ithaca'
     fill_in 'Ward', with: '1'
-    fill_in 'Enum dist', with: '1'
+    fill_in 'Enum Dist', with: '1'
     fill_in 'House No.', with: '405'
     select 'N', from: 'Prefix'
     fill_in 'Street Name', with: 'Tioga'
     select 'St', from: 'Suffix'
-    check 'Add building with address'
+    check 'Add Building at Address'
     select locality.name, from: 'Locality'
     fill_in 'Dwelling No.', with: '1'
     fill_in 'Family No.', with: '1'
 
-    fill_in 'Last name', with: 'Squarepants'
-    fill_in 'First name', with: 'Sponge'
-    fill_in 'Middle name', with: 'Bob'
+    fill_in 'Last Name', with: 'Squarepants'
+    fill_in 'First Name', with: 'Sponge'
+    fill_in 'Middle Name', with: 'Bob'
     fill_in 'Title', with: 'Dr'
     fill_in 'Suffix', with: 'III'
 
-    fill_in 'Relation to head', with: 'Head'
+    fill_in 'Relation to Head', with: 'Head'
 
     # choose 'F - Free of mortgage', name: 'census_record[mortgage]'
 
-    check 'Home-maker'
+    check 'Home-Maker'
     choose 'O - Owned', name: 'census_record[owned_or_rented]'
-    fill_in 'Value of home or monthly payment', with: '40000'
+    fill_in 'Value of Home or Monthly Payment', with: '40000'
     check 'Radio Set'
-    check 'Lives on farm'
+    check 'Lives on Farm'
 
     choose 'M - Male', name: 'census_record[sex]'
     choose 'W - White', name: 'census_record[race]'
     fill_in 'Age', with: '28'
-    fill_in 'Age (months)', with: '5'
+    fill_in 'Age (Months)', with: '5'
     choose 'M - Married', name: 'census_record[marital_status]'
-    fill_in 'Age married', with: '22'
-    check 'Attended School?'
-    check 'Able to read and write?'
+    fill_in 'Age at First Marriage', with: '22'
+    check 'Attended School'
+    check 'Can Read and Write'
 
     fill_in 'Place of Birth', with: 'New York'
     fill_in 'Mother Tongue', with: 'English'
     fill_in 'Place of Birth - Father', with: 'Ireland'
     fill_in 'Place of Birth - Mother', with: 'Germany'
-    check 'Speaks English?'
+    check 'Speaks English'
 
     fill_in 'Occupation', with: 'Turnkey', match: :first
     fill_in 'Industry', with: 'Hotel'
     fill_in 'Occupation Code', with: 'VX70'
     choose 'W - Wage or salary worker', name: 'census_record[worker_class]'
-    check 'At work yesterday?'
-    check 'Veteran?'
+    check 'At Work Yesterday'
+    check 'Veteran'
     choose 'Civ - Civil War', name: 'census_record[war_fought]'
 
     fill_in 'Notes', with: 'Sponge Bob is a fictional cartoon character.'
@@ -84,15 +84,15 @@ RSpec.describe '1930 US Census' do
     expect(find_field('County').value).to eq 'Tompkins'
     expect(find_field('City').value).to eq 'Ithaca'
     expect(find_field('Ward').value).to eq '1'
-    expect(find_field('Enum dist').value).to eq '1'
+    expect(find_field('Enum Dist').value).to eq '1'
     expect(find_field('Dwelling No.').value).to eq '1'
     expect(find_field('House No.').value).to eq '405'
     expect(find_field('Prefix').value).to eq 'N'
     expect(find_field('Street Name').value).to eq 'Tioga'
-    expect(find_field('Suffix').value).to eq 'St'
+    expect(find_field('Suffix', match: :first).value).to eq 'St'
     expect(find_field('Family No.').value).to eq '1'
-    expect(find_field('Building').value).to eq building.id.to_s
-    expect(find_field('Last name').value).to eq 'Squarepants'
+    # expect(find_field('Building').value).to eq building.id.to_s
+    expect(find_field('Last Name').value).to eq 'Squarepants'
     expect(find_field('Locality').value).to eq locality.id.to_s
 
     click_link 'View All'
@@ -107,8 +107,8 @@ RSpec.describe '1930 US Census' do
 
     click_on 'Edit'
     expect(page).to have_content 'Census Scope'
-    expect(find_field('Last name').value).to eq('Squarepants')
-    fill_in 'Last name', with: 'Roundpants'
+    expect(find_field('Last Name').value).to eq('Squarepants')
+    fill_in 'Last Name', with: 'Roundpants'
     click_on 'Save', match: :first
     expect(page).to have_content 'Roundpants'
 

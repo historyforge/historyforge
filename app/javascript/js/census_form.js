@@ -54,7 +54,7 @@ $(document).ready(function() {
     const tempBU = $('#bulk_update_field').val()
     const isBulkUpdate = tempBU && tempBU.length
 
-    $forms.find('input[autocomplete=new-password]').each(function () {
+    $forms.find('input[autocomplete=off]').each(function () {
         const attribute_name = isBulkUpdate ? $('#bulk_update_field').val() : this.getAttribute('name').match(/census_record\[(\w+)]/)[1]
         const urlParts = document.location.pathname.split('/');
         const url = `/census/${urlParts[2]}/autocomplete?attribute=${attribute_name}`
@@ -97,11 +97,11 @@ $(document).ready(function() {
                 e.preventDefault()
             })
     })
-})
+});
 
-jQuery(document).on('change', '#census_record_page_side', function() {
-    const value = jQuery(this).val()
-    const $line = jQuery('#census_record_line_number')
+$(document).on('change', '#census_record_page_side', function() {
+    const value = $(this).val()
+    const $line = $('#census_record_line_number')
     if (value === 'A') {
         $line.attr('min', 1)
         $line.attr('max', 50)
@@ -109,23 +109,23 @@ jQuery(document).on('change', '#census_record_page_side', function() {
         $line.attr('min', 51)
         $line.attr('max', 100)
     }
-})
+});
 
-jQuery(document).on('change', '#census_record_sex', function() {
-    const value = jQuery(this).val()
+$(document).on('change', '#census_record_sex', function() {
+    const value = $(this).val()
     if (value === 'M') {
-        jQuery('#census_record_num_children_born').val(null).prop('disabled', true)
-        jQuery('#census_record_num_children_alive').val(null).prop('disabled', true)
+        $('#census_record_num_children_born').val(null).prop('disabled', true)
+        $('#census_record_num_children_alive').val(null).prop('disabled', true)
     } else if (value === 'F') {
-        jQuery('#census_record_num_children_born').prop('disabled', false)
-        jQuery('#census_record_num_children_alive').prop('disabled', false)
+        $('#census_record_num_children_born').prop('disabled', false)
+        $('#census_record_num_children_alive').prop('disabled', false)
     }
-})
+});
 
-jQuery(document).on('change', '#census_record_marital_status', function() {
-    const value = jQuery(this).val()
+$(document).on('change', '#census_record_marital_status', function() {
+    const value = $(this).val()
     if (value === 'S' || value === 'D')
-        jQuery('#census_record_years_married').val(null).prop('disabled', true)
+        $('#census_record_years_married').val(null).prop('disabled', true)
     else
-        jQuery('#census_record_years_married').val(null).prop('disabled', false)
-})
+        $('#census_record_years_married').val(null).prop('disabled', false)
+});
