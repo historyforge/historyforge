@@ -7,7 +7,8 @@ class Census1920Record < CensusRecord
   validates :mother_tongue, :mother_tongue_father, :mother_tongue_mother, vocabulary: { name: :language, allow_blank: true }
   validates :dwelling_number, presence: true
 
-  define_enumeration :employment, %w{W Em OA}
+  define_enumeration :employment, %w[W Em OA]
+  define_enumeration :race, %w[W B Mu In Ch Jp Fil Hin Kor Ot]
 
   auto_strip_attributes :industry, :employment, :employment_code
 
@@ -15,9 +16,4 @@ class Census1920Record < CensusRecord
     1920
   end
 
-  def self.folder_name
-    'census_records_nineteen_twenty'
-  end
-
-  define_enumeration :race, %w{W B Mu In Ch Jp Fil Hin Kor Ot}
 end

@@ -1,16 +1,16 @@
 require 'rails_helper'
 
-RSpec.describe '1930 US Census' do
+RSpec.describe '1880 US Census' do
   scenario 'record life cycle' do
     user = create(:census_taker)
     locality = create(:locality)
 
     sign_in user
 
-    visit new_census1930_record_path
-    expect(page).to have_content('New 1930 Census Record')
+    visit new_census1880_record_path
+    expect(page).to have_content('New 1880 Census Record')
 
-    fill_in 'Sheet', with: '1'
+    fill_in 'Page', with: '1'
     select 'A', from: 'Side'
     fill_in 'Line', with: '1'
     fill_in 'County', with: 'Tompkins'
@@ -34,42 +34,25 @@ RSpec.describe '1930 US Census' do
 
     fill_in 'Relation to Head', with: 'Head'
 
-    # choose 'F - Free of mortgage', name: 'census_record[mortgage]'
-
-    check 'Home-Maker'
-    choose 'O - Owned', name: 'census_record[owned_or_rented]'
-    fill_in 'Value of Home or Monthly Payment', with: '40000'
-    check 'Radio Set'
-    check 'Lives on Farm'
-
-    choose 'M - Male', name: 'census_record[sex]'
     choose 'W - White', name: 'census_record[race]'
+    choose 'M - Male', name: 'census_record[sex]'
+    choose '8 - August', name: 'census_record[birth_month]'
     fill_in 'Age', with: '28'
     fill_in 'Age (Months)', with: '5'
     choose 'M - Married', name: 'census_record[marital_status]'
-    fill_in 'Age at First Marriage', with: '22'
-    check 'Attended School'
-    check 'Can Read and Write'
 
     fill_in 'Place of Birth', with: 'New York'
-    fill_in 'Mother Tongue', with: 'English'
     fill_in 'Place of Birth - Father', with: 'Ireland'
     fill_in 'Place of Birth - Mother', with: 'Germany'
-    check 'Speaks English'
 
-    fill_in 'Occupation', with: 'Turnkey', match: :first
-    fill_in 'Industry', with: 'Hotel'
-    fill_in 'Occupation Code', with: 'VX70'
-    choose 'W - Wage or salary worker', name: 'census_record[worker_class]'
-    check 'At Work Yesterday'
-    check 'Veteran'
-    choose 'Civ - Civil War', name: 'census_record[war_fought]'
-
-    fill_in 'Notes', with: 'Sponge Bob is a fictional cartoon character.'
+    fill_in 'Occupation', with: 'Turnkey'
+    check 'Cannot Read'
+    check 'Cannot Write'
+    check 'Attended School'
 
     select 'In this family', from: 'After saving, add another person:'
     click_on 'Save'
-    record = Census1930Record.first
+    record = Census1880Record.first
     expect(record.last_name).to eq('Squarepants')
     expect(record.reviewed?).to be_falsey
     expect(record.created_by).to eq user
@@ -78,8 +61,8 @@ RSpec.describe '1930 US Census' do
     expect(building).to_not be_nil
 
     # Make sure it saves and moves on to the next form with the correct fields prefilled
-    expect(page).to have_content('New 1930 Census Record')
-    expect(find_field('Sheet').value).to eq '1'
+    expect(page).to have_content('New 1880 Census Record')
+    expect(find_field('Page').value).to eq '1'
     expect(find_field('Side').value).to eq 'A'
     expect(find_field('County').value).to eq 'Tompkins'
     expect(find_field('City').value).to eq 'Ithaca'
@@ -96,7 +79,7 @@ RSpec.describe '1930 US Census' do
     expect(find_field('Locality').value).to eq locality.id.to_s
 
     click_link 'View All'
-    expect(page).to have_content '1930 U.S. Census'
+    expect(page).to have_content '1880 U.S. Census'
     expect(find('.ag-cell', match: :first)).to have_content('Squarepants')
     expect(find('span.badge.badge-danger')).to have_content('NEW')
     expect(page).to have_content 'Found 1 record'
@@ -118,7 +101,7 @@ RSpec.describe '1930 US Census' do
 
     # Upgrade the user to Reviewer
     user.roles << Role.find_by(name: 'reviewer')
-    visit census1930_record_path(record)
+    visit census1880_record_path(record)
 
     # Now review the record
     expect(page).to have_css('.dropdown-item', text: 'Mark as Reviewed', visible: :hidden)

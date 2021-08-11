@@ -50,39 +50,14 @@ Rails.application.routes.draw do
     resources :merges, only: %i[new create], controller: 'buildings/merges'
   end
 
-  CensusYears.each do |year|
+  CensusYears.each do |year, words|
     resources :bulk, controller: 'census_records/bulk_updates', path: "census/#{year}/bulk", as: "census_#{year}_bulk"
+    resources :"census_#{year}_records",
+              concerns: [:people_directory],
+              controller: "census_records/#{words}",
+              path: "census/#{year}",
+              as: "census#{year}_records"
   end
-
-  resources :census_1900_records,
-            concerns: [:people_directory],
-            controller: 'census_records/nineteen_aught',
-            path: 'census/1900',
-            as: 'census1900_records'
-
-  resources :census_1910_records,
-            concerns: [:people_directory],
-            controller: 'census_records/nineteen_ten',
-            path: 'census/1910',
-            as: 'census1910_records'
-
-  resources :census_1920_records,
-            concerns: [:people_directory],
-            controller: 'census_records/nineteen_twenty',
-            path: 'census/1920',
-            as: 'census1920_records'
-
-  resources :census_1930_records,
-            concerns: [:people_directory],
-            controller: 'census_records/nineteen_thirty',
-            path: 'census/1930',
-            as: 'census1930_records'
-
-  resources :census_1940_records,
-            concerns: [:people_directory],
-            controller: 'census_records/nineteen_forty',
-            path: 'census/1940',
-            as: 'census1940_records'
 
   resources :contacts, only: %i[new create]
   get '/contact' => 'contacts#new'

@@ -9,22 +9,18 @@ class Census1930Record < CensusRecord
   validates :mother_tongue, vocabulary: { name: :language, allow_blank: true }
   validates :dwelling_number, presence: true
 
-  define_enumeration :worker_class, %w{E W OA NP}
-  define_enumeration :war_fought, %w{WW Sp Civ Phil Box Mex}
-  define_enumeration :race, %w{W Neg Mex In Ch Jp Fil Hin Kor}
-  define_enumeration :relation_to_head, %w{Head Wife Son Daughter Lodger Roomer Boarder Sister Servant}
-  define_enumeration :name_suffix, %w{Jr Sr}
-  define_enumeration :name_prefix, %w{Dr Mr Mrs}
+  define_enumeration :worker_class, %w[E W OA NP]
+  define_enumeration :war_fought, %w[WW Sp Civ Phil Box Mex]
+  define_enumeration :race, %w[W Neg Mex In Ch Jp Fil Hin Kor]
+  define_enumeration :relation_to_head, %w[Head Wife Son Daughter Lodger Roomer Boarder Sister Servant]
+  define_enumeration :name_suffix, %w[Jr Sr]
+  define_enumeration :name_prefix, %w[Dr Mr Mrs]
 
   auto_strip_attributes :industry, :profession_code, :pob_code, :worker_class
 
   def year
     1930
   end
-
-  # def set_defaults
-  #   self.pob_code ||= 56
-  # end
 
   def coded_occupation_name
     coded_occupation&.name_with_code
@@ -51,9 +47,5 @@ class Census1930Record < CensusRecord
     if profession_code.present? && (industry1930_code_id.blank? || occupation1930_code_id.blank?)
       errors.add :profession_code, "Invalid profession code."
     end
-  end
-
-  def self.folder_name
-    'census_records_nineteen_thirty'
   end
 end

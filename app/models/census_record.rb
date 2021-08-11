@@ -33,18 +33,18 @@ class CensusRecord < ApplicationRecord
   auto_strip_attributes :first_name, :middle_name, :last_name, :street_house_number, :street_name,
                         :street_prefix, :street_suffix, :apartment_number, :profession, :name_prefix, :name_suffix
 
-  define_enumeration :page_side, %w{A B}, true
-  define_enumeration :street_prefix, %w{N S E W}
-  define_enumeration :street_suffix, %w{St Rd Ave Blvd Pl Terr Ct Pk Tr Dr Hill Ln Way}.sort
-  define_enumeration :sex, %w{M F}
-  define_enumeration :race, %w{W B M}
-  define_enumeration :marital_status, %w{S M Wd D}
-  define_enumeration :naturalized_alien, %w{Na Pa Al}
-  define_enumeration :employment, %w{W Emp OA}
-  define_enumeration :owned_or_rented, %w{O R Neither}
-  define_enumeration :mortgage, %w{M F}
-  define_enumeration :farm_or_house, %w{F H}
-  define_enumeration :civil_war_vet, %w{UA UN CA CN}
+  define_enumeration :page_side, %w[A B], true
+  define_enumeration :street_prefix, %w[N S E W]
+  define_enumeration :street_suffix, %w[St Rd Ave Blvd Pl Terr Ct Pk Tr Dr Hill Ln Way].sort
+  define_enumeration :sex, %w[M F]
+  define_enumeration :race, %w[W B M]
+  define_enumeration :marital_status, %w[S M Wd D]
+  define_enumeration :naturalized_alien, %w[Na Pa Al]
+  define_enumeration :employment, %w[W Emp OA]
+  define_enumeration :owned_or_rented, %w[O R Neither]
+  define_enumeration :mortgage, %w[M F]
+  define_enumeration :farm_or_house, %w[F H]
+  define_enumeration :civil_war_vet, %w[UA UN CA CN]
 
   attr_accessor :comment
 
@@ -187,7 +187,7 @@ class CensusRecord < ApplicationRecord
   end
 
   def unmarried_female?
-    sex == 'F' && %w{S W D}.include?(marital_status)
+    sex == 'F' && %w[S W D].include?(marital_status)
   end
 
   def generate_person_record!

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_30_214839) do
+ActiveRecord::Schema.define(version: 2021_08_11_185354) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
@@ -147,6 +147,71 @@ ActiveRecord::Schema.define(version: 2021_07_30_214839) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["user_id"], name: "index_bulk_updates_on_user_id"
+  end
+
+  create_table "census1880_records", force: :cascade do |t|
+    t.bigint "locality_id"
+    t.bigint "building_id"
+    t.bigint "person_id"
+    t.bigint "created_by_id"
+    t.bigint "reviewed_by_id"
+    t.datetime "reviewed_at"
+    t.integer "page_number"
+    t.string "page_side", limit: 1
+    t.integer "line_number"
+    t.string "county"
+    t.string "city"
+    t.string "state"
+    t.string "ward"
+    t.string "enum_dist"
+    t.string "street_house_number"
+    t.string "street_prefix"
+    t.string "street_name"
+    t.string "street_suffix"
+    t.string "apartment_number"
+    t.string "dwelling_number"
+    t.string "family_id"
+    t.string "last_name"
+    t.string "first_name"
+    t.string "middle_name"
+    t.string "name_prefix"
+    t.string "name_suffix"
+    t.string "sex"
+    t.string "race"
+    t.integer "age"
+    t.integer "age_months"
+    t.integer "birth_month"
+    t.string "relation_to_head"
+    t.string "marital_status"
+    t.boolean "just_married"
+    t.string "occupation", default: "None"
+    t.integer "unemployed_months"
+    t.boolean "sick"
+    t.boolean "blind"
+    t.boolean "deaf_dumb"
+    t.boolean "idiotic"
+    t.boolean "insane"
+    t.boolean "maimed"
+    t.boolean "attended_school"
+    t.boolean "cannot_read"
+    t.boolean "cannot_write"
+    t.string "pob"
+    t.string "pob_father"
+    t.string "pob_mother"
+    t.text "notes"
+    t.boolean "provisional", default: false
+    t.boolean "foreign_born", default: false
+    t.boolean "taker_error", default: false
+    t.integer "farm_schedule"
+    t.text "searchable_name"
+    t.uuid "histid"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["building_id"], name: "index_census1880_records_on_building_id"
+    t.index ["created_by_id"], name: "index_census1880_records_on_created_by_id"
+    t.index ["locality_id"], name: "index_census1880_records_on_locality_id"
+    t.index ["person_id"], name: "index_census1880_records_on_person_id"
+    t.index ["reviewed_by_id"], name: "index_census1880_records_on_reviewed_by_id"
   end
 
   create_table "census_1900_records", id: :serial, force: :cascade do |t|
@@ -953,6 +1018,11 @@ ActiveRecord::Schema.define(version: 2021_07_30_214839) do
   add_foreign_key "buildings_building_types", "buildings"
   add_foreign_key "bulk_updated_records", "bulk_updates"
   add_foreign_key "bulk_updates", "users"
+  add_foreign_key "census1880_records", "buildings"
+  add_foreign_key "census1880_records", "localities"
+  add_foreign_key "census1880_records", "people"
+  add_foreign_key "census1880_records", "users", column: "created_by_id"
+  add_foreign_key "census1880_records", "users", column: "reviewed_by_id"
   add_foreign_key "census_1900_records", "buildings"
   add_foreign_key "census_1900_records", "localities"
   add_foreign_key "census_1900_records", "people"

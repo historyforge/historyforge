@@ -51,11 +51,8 @@ header
               | Data
             .dropdown-menu
               = link_to 'Buildings', '/buildings', class: 'dropdown-item'
-              = link_to '1900 US Census', '/census/1900', class: 'dropdown-item' if can_census?(1900)
-              = link_to '1910 US Census', '/census/1910', class: 'dropdown-item' if can_census?(1910)
-              = link_to '1920 US Census', '/census/1920', class: 'dropdown-item' if can_census?(1920)
-              = link_to '1930 US Census', '/census/1930', class: 'dropdown-item' if can_census?(1930)
-              = link_to '1940 US Census', '/census/1940', class: 'dropdown-item' if can_census?(1940)
+              - CensusYears.each do |year|
+                = link_to "#{year} US Census", "/census/#{year}", class: 'dropdown-item' if can_census?(year)
               = link_to 'All People', '/people', class: 'dropdown-item' if can_people?
               = link_to 'For Transcribers', '/documents', class: 'dropdown-item' if user_signed_in?
           - if request.subdomain.blank? || %w{www ithaca}.include?(request.subdomain)

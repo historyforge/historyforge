@@ -16,7 +16,7 @@ class CensusRecordPresenter < ApplicationPresenter
   end
 
   def locality
-    model.locality.name
+    model.locality&.name
   end
 
   %w{foreign_born can_read can_write can_speak_english foreign_born unemployed attended_school

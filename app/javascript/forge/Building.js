@@ -108,7 +108,7 @@ class Building extends React.PureComponent {
                                 <th>Sex</th>
                             </tr>
                             </thead>
-                            {[1900, 1910, 1920, 1930, 1940].map(year => (
+                            {[1880, 1900, 1910, 1920, 1930, 1940].map(year => (
                                 <tbody key={year}>
                                 {building.census_records[year] && building.census_records[year].map(person => (
                                     <tr key={person.id}>

@@ -14,14 +14,10 @@ class Census1900Record < CensusRecord
 
   auto_strip_attributes :industry
 
-  define_enumeration :race, %w{W B Ch Jp In}
+  define_enumeration :race, %w[W B Ch Jp In]
 
   def year
     1900
-  end
-
-  def self.folder_name
-    'census_records_nineteen_aught'
   end
 
   def birth_month=(value)
