@@ -50,7 +50,7 @@ class CensusFormGenerator
   end
 
   def apply_options_for(field, options)
-    options[:hint] = hint_for(field)
+    options[:hint] = hint_for(field, options[:as])
     options.delete :placeholder
     options[:wrapper_html] = { data: { dependents: 'true' } } if options[:dependents]
     options[:wrapper_html] = { data: { depends_on: options[:depends_on] } } if options[:depends_on]
@@ -70,11 +70,21 @@ class CensusFormGenerator
     end
   end
 
-  def hint_for(field)
+  def hint_for(field, type)
     column = Translator.translate(form.object.class, field, 'columns')
-    text   = Translator.translate(form.object.class, field, 'hints')
+    text   = Translator.translate(form.object.class, field, 'hints') ||
+             Translator.translate(form.object.class, type || 'string', 'hints')
 
-    column = "<u>Column #{column}</u><br /><br />" if column
+    if column
+      column = case column
+               when /-/
+                 "<u>Columns #{column}</u><br />"
+               when String
+                 column.length > 1 ? "<u>#{column}</u><br />" : "<u>Column #{column}</u><br />"
+               else
+                 "<u>Column #{column}</u><br />"
+               end
+    end
 
     column.present? || text.present? ? "#{column}#{text}".html_safe : false
   end

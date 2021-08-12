@@ -1,11 +1,46 @@
 en:
   simple_form:
     columns:
+      census1880_record:
+        street_house_number: '2nd Column on the Left'
+        street_prefix: '1st Column on the Left'
+        street_name: '1st Column on the Left'
+        street_suffix: '1st Column on the Left'
+        dwelling_number: 1
+        family_id: 2
+        last_name: 3
+        first_name: 3
+        middle_name: 3
+        name_prefix: 3
+        name_suffix: 3
+        relation_to_head: 8
+        race: 4
+        sex: 5
+        birth_month: 7
+        age: 6
+        age_months: 6
+        marital_status: 9-11
+        just_married: 12
+        pob: 24
+        pob_father: 25
+        pob_mother: 26
+        occupation: 13
+        unemployed_months: 14
+        attended_school: 21
+        cannot_read: 22
+        cannot_write: 23
+        sick: 15
+        blind: 16
+        deaf_dumb: 17
+        idiotic: 18
+        insane: 19
+        maimed: 20
+
       census1900_record:
-        street_house_number: '2nd column on the left'
-        street_prefix: '1st column on the left'
-        street_name: '1st column on the left'
-        street_suffix: '1st column on the left'
+        street_house_number: '2nd Column on the Left'
+        street_prefix: '1st Column on the Left'
+        street_name: '1st Column on the Left'
+        street_suffix: '1st Column on the Left'
         dwelling_number: 1
         family_id: 2
         last_name: 3
@@ -44,10 +79,10 @@ en:
         farm_schedule: 28
 
       census1910_record:
-        street_house_number: '2nd column on the left'
-        street_prefix: '1st column on the left'
-        street_name: '1st column on the left'
-        street_suffix: '1st column on the left'
+        street_house_number: '2nd Column on the Left'
+        street_prefix: '1st Column on the Left'
+        street_name: '1st Column on the Left'
+        street_suffix: '1st Column on the Left'
         dwelling_number: 1
         family_id: 2
         last_name: 3
@@ -126,7 +161,7 @@ en:
         industry: 27
         employment: 28
         farm_schedule: 29
-        employment_code: 'right margin'
+        employment_code: 'Right Margin'
 
       census1930_record:
         street_house_number: 2

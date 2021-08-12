@@ -11,7 +11,7 @@ module CensusScopeFormFields
       input :line_number, as: :integer, min: 0, max: 100
       input :county
       input :city, input_html: { id: 'city' }
-      input :ward, as: :integer, min: 0, max: 10_000
+      input :ward, as: :integer, min: 0, max: 10_000, if: ->(form) { form.object.year > 1880 }
       input :enum_dist, as: :integer, min: 0, max: 10_000
       input :street_house_number
       input :street_prefix, as: :select, collection: %w[N S E W]
