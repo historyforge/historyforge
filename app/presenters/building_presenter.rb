@@ -1,6 +1,6 @@
 class BuildingPresenter < ApplicationPresenter
-  def building_type
-    model.building_type_name.andand.capitalize || 'Unknown'
+  def building_type_name
+    model.building_type_name&.capitalize || 'Unknown'
   end
 
   def street_address
@@ -9,12 +9,14 @@ class BuildingPresenter < ApplicationPresenter
 
   def year_earliest
     return model.year_earliest if model.year_earliest.present?
-    model.year_earliest_circa.present? ? "ca. #{model.year_earliest_circa}" : 'Unknown'
+
+    model.year_earliest_circa.present? ? "ca. #{model.year_earliest_circa}" : ''
   end
 
   def year_latest
     return model.year_latest if model.year_latest.present?
-    model.year_latest_circa.present? ? "ca. #{model.year_latest_circa}" : 'Unknown'
+
+    model.year_latest_circa.present? ? "ca. #{model.year_latest_circa}" : ''
   end
 
   def name
@@ -22,19 +24,19 @@ class BuildingPresenter < ApplicationPresenter
   end
 
   def architects
-    model.architects.andand.map(&:name).andand.join(', ') || 'Unknown'
+    model.architects&.map(&:name)&.join(', ') || ''
   end
 
-  def lining_type
-    model.lining_type.andand.name.andand.capitalize || 'Unknown'
+  def lining_type_name
+    model.lining_type&.name&.capitalize || ''
   end
 
-  def frame_type
-    model.frame_type.andand.name.andand.capitalize || 'Unknown'
+  def frame_type_name
+    model.frame_type&.name&.capitalize || ''
   end
 
   def stories
-    model.stories.present? ? (model.stories % 1 == 0 ? model.stories.to_i : model.stories) : 'Unknown'
+    model.stories.present? ? (model.stories % 1 == 0 ? model.stories.to_i : model.stories) : ''
   end
 
   def field_for(col)

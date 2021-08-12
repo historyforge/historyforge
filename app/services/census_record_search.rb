@@ -19,7 +19,7 @@ class CensusRecordSearch < SearchQueryBuilder
   def scoped
     return @scoped if defined?(@scoped)
 
-    builder.includes(:locality)
+    builder.includes(:locality) if f.include?('locality')
     builder.reviewed unless user
 
     builder.offset(from) if from&.positive?

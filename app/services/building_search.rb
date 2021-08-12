@@ -47,7 +47,7 @@ class BuildingSearch < SearchQueryBuilder
     builder.limit(to.to_i - from.to_i) if from && to
 
     if expanded
-      builder.includes(:building_types)
+      builder.includes(:building_types) if f.include?('building_type')
       builder.includes(:addresses) if f.include?('street_address')
       builder.includes(:lining_type) if f.include?('lining_type')
       builder.includes(:frame_type)  if f.include?('frame_type')
