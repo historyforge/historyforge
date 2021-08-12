@@ -34,6 +34,7 @@ class Census1880FormFields < CensusFormFieldConfig
   input :pob
   input :pob_father
   input :pob_mother
+  input :foreign_born, as: :boolean
 
   include CensusAdditionalFormFields
 end

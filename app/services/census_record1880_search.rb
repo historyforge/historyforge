@@ -12,7 +12,7 @@ class CensusRecord1880Search < CensusRecordSearch
       name sex race age age_months birth_month
       relation_to_head marital_status just_married occupation unemployed_months
       sick blind deaf_dumb idiotic insane maimed attended_school cannot_read cannot_write
-      pob pob_father pob_mother
+      pob pob_father pob_mother foreign_born
       notes latitude longitude
     ]
   end

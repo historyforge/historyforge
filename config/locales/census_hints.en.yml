@@ -29,7 +29,7 @@ en:
         family_id: 'Enter what you see on the census. If the Family number is not listed on the first line of the sheet, it can be found listed with the head of that household on the previous sheet. Note: Dwelling and Family numbers are generally sequential.  If it is hard to read either number check the numbers above and below for a pattern.'
         farm_or_house: 'Select the option that corresponds to the answer on the census. Note: This information should only be entered once for the family/household.'
         farm_schedule: 'Enter what you see on the census. If the field is blank on the census, leave it blank on HistoryForge.'
-        first_marriage_age:
+        first_marriage_age: 'Enter what you see on the census. If the field is blank on the census, leave it blank on HistoryForge. If the answer is Un (Unknown) enter 999.'
         first_name: 'Names are listed in the following order: Last, First, Middle.  If several members of a family have the same last name, the last name will be listed in the first record only and in following records it might be replaced by a line or a blank space. If the name is hard to read, attempt to verify the spelling with the city directory where possible. Note: If you see a last name that looks crossed out because it was written over that line, enter it as the last name. Sometimes the enumerator drew the lines first for the last name of all the people in the household, and then had to write a new last name over the line to indicate a person had a different last name. These were written over the line, not crossed out.'
         foreign_born: 'There is no corresponding field on the census.  Check the box if the individual was not born in the United States and does not have the designation “Am Cit” after their place of birth.'
         full_time_weeks: 'Enter what you see on the census. If the field is blank on the census, leave it blank on HistoryForge. If the field contains 0 (zero) on the census, enter the 0 (zero) on HistoryForge.'
@@ -135,6 +135,8 @@ en:
         foreign_born: 'There is no corresponding field on the census.  Check the box if the individual was not born in the United States.'
         unemployed_months: 'Enter the number of months only, do not record checks or other markings.'
         attended_school: 'Check the box if the field contains a slash (/). Enumerators used this mark to indicate yes.'
+        cannot_read: 'Check the box if the field contains a slash (/). Enumerators used this mark to indicate yes.'
+        cannot_write: 'Check the box if the field contains a slash (/). Enumerators used this mark to indicate yes.'
 
       census1900_record:
         age_months: 'Enter what you see on the census. If the field is blank, leave blank. If the answer is Un (Unknown) enter 999. A child that is less than one year of age will be listed by their age in months on the census i.e., 3/12 or 11/12. If the age is entered this way on the census, enter the years in the Age field and the months in the Age (months) field on HistoryForge.'
