@@ -1,22 +1,41 @@
 class Setting < ApplicationRecord
+
+  after_commit :expire_cache
+
+  def expire_cache
+    Rails.cache.delete('settings')
+  end
+  class_attribute :current
+
+  def self.load
+    self.current = Rails.cache.fetch('settings') do
+      all.each_with_object({}) { |item, acc| acc[item.key] = item }
+    end
+  end
+
+  def self.unload
+    self.current = nil
+  end
+
   def self.value_of(key)
     return unless table_exists?
 
-    setting = find_by(key: key)
+    setting = current && current[key] || find_by(key: key)
     setting&.cast_value
   end
 
   def cast_value
     return nil if value.blank?
 
-    if input_type == 'string'
-      value
-    elsif input_type == 'integer'
+    case input_type
+    when 'integer'
       value.to_i
-    elsif input_type == 'number'
+    when 'number'
       value.to_f
-    elsif input_type == 'boolean'
+    when 'boolean'
       value == '1'
+    else
+      value
     end
   end
 

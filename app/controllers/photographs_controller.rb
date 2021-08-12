@@ -5,7 +5,11 @@ class PhotographsController < ApplicationController
   def index
     authorize! :read, Photograph
     @search = Photograph.ransack(params[:q])
-    @photographs = @search.result.page(params[:page] || 1).per(20)
+    @photographs = @search.result
+                          .page(params[:page] || 1)
+                          .per(20)
+                          .with_attached_file
+                          .includes(buildings: :addresses)
     @photographs = @photographs.reviewed unless can?(:review, Photograph)
   end
 

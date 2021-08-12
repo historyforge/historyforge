@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
+  around_action :load_settings
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :set_paper_trail_whodunnit
 
@@ -85,4 +86,11 @@ class ApplicationController < ActionController::Base
   def after_invite_path_for(_user)
     users_path
   end
+
+  def load_settings
+    Setting.load
+    yield
+    Setting.unload
+  end
+
 end
