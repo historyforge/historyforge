@@ -7,6 +7,7 @@ class Person < ApplicationRecord
   include PgSearch::Model
   include Flaggable
   include DefineEnumeration
+  include Versioning
 
   define_enumeration :sex, %w{M F}
   define_enumeration :race, %w{W B M}

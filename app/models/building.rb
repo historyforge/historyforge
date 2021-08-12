@@ -3,6 +3,7 @@ class Building < ApplicationRecord
   include Moderation
   include DefineEnumeration
   include Flaggable
+  include Versioning
 
   define_enumeration :address_street_prefix, %w[N S E W]
   define_enumeration :address_street_suffix, %w[St Rd Ave Blvd Pl Terr Ct Pk Tr Dr Hill Ln Way].sort
@@ -51,8 +52,6 @@ class Building < ApplicationRecord
   def self.ransackable_scopes(_auth_object=nil)
     %i[as_of_year without_residents as_of_year_eq]
   end
-
-  has_paper_trail skip: %i[created_at updated_at]
 
   Geocoder.configure(
     timeout: 2,

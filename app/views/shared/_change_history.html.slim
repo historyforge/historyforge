@@ -1,4 +1,4 @@
-- if user_signed_in? && item.versions.present?
+- if user_signed_in? && item.change_history.present?
   - users = editing_users_for(item)
   .card.mb-3
     .card-header
@@ -9,7 +9,7 @@
           th Metadata
           th Changes
       tbody
-        - item.versions.reverse.each do |version|
+        - item.change_history.each do |version|
           tr
             td
               = version.created_at.to_s

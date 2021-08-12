@@ -8,6 +8,7 @@ class CensusRecord < ApplicationRecord
   include PersonNames
   include PgSearch::Model
   include Flaggable
+  include Versioning
 
   belongs_to :building, optional: true
   belongs_to :person, optional: true
@@ -45,10 +46,6 @@ class CensusRecord < ApplicationRecord
   define_enumeration :mortgage, %w[M F]
   define_enumeration :farm_or_house, %w[F H]
   define_enumeration :civil_war_vet, %w[UA UN CA CN]
-
-  attr_accessor :comment
-
-  has_paper_trail meta: { comment: :comment }, skip: %i[created_at updated_at]
 
   multisearchable against: :name,
                   using: {
