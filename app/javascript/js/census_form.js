@@ -51,22 +51,6 @@ $(document).ready(function() {
         else
             $input.attr('disabled', true)
     })
-    const tempBU = $('#bulk_update_field').val()
-    const isBulkUpdate = tempBU && tempBU.length
-
-    $forms.find('input[autocomplete=off]').each(function () {
-        const attribute_name = isBulkUpdate ? $('#bulk_update_field').val() : this.getAttribute('name').match(/census_record\[(\w+)]/)[1]
-        const urlParts = document.location.pathname.split('/');
-        const url = `/census/${urlParts[2]}/autocomplete?attribute=${attribute_name}`
-        $(this).autoComplete({
-            source: function(term, response) {
-                $.getJSON(url, { term }, function(json) {
-                    response(json)
-                })
-            },
-            onSelect: () => $(this).trigger('click')
-        })
-    })
 
     $('input[data-type="other-radio-button"]').on('change', function () {
         $(this).closest('.form-check').find('input[type=radio]').prop('checked', true).val($(this).val())
