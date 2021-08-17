@@ -46,4 +46,13 @@ class Census1880Record < CensusRecord
     insane: 19,
     maimed: 20
   }.freeze
+
+  IMAGES = {
+    page_number: '1880/ward.png',
+    page_side: '1880/side-a.png',
+    enum_dist: '1880/ward.png',
+    first_name: '1910/names.png',
+    middle_name: '1910/names.png',
+    last_name: '1910/names.png'
+  }.freeze
 end

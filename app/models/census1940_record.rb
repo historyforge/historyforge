@@ -129,4 +129,30 @@ class Census1940Record < CensusRecord
     first_marriage_age: 49,
     children_born: 50
   }.freeze
+
+  IMAGES = {
+    page_number: '1940/sheet-side.png',
+    page_side: '1940/sheet-side.png',
+    ward: '1940/ward.png',
+    enum_dist: '1940/ward.png',
+    first_name: '1940/names.png',
+    middle_name: '1940/names.png',
+    last_name: '1940/names.png',
+    grade_completed: '1940/grade-completed.png',
+    owned_or_rented: 'unknown-scribble.png',
+    home_value: 'unknown-scribble.png',
+    age: 'unknown-scribble.png',
+    year_immigrated: 'unknown-scribble.png',
+    citizenship: '1920/citizenship.png',
+    pob: 'unknown-scribble.png',
+    mother_tongue: 'unknown-scribble.png',
+    pob_father: 'unknown-scribble.png',
+    pob_mother: 'unknown-scribble.png',
+    occupation_code: '1940/occupation-codes.png',
+    industry_code: '1940/occupation-codes.png',
+    worker_class_code: '1940/occupation-codes.png',
+    usual_occupation_code: '1940/occupation-codes.png',
+    usual_industry_code: '1940/occupation-codes.png',
+    usual_worker_class_code: '1940/occupation-codes.png',
+  }.freeze
 end

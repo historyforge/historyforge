@@ -71,7 +71,7 @@ class CensusFormGenerator
   end
 
   def hint_for(field, type)
-    CensusFormHint.generate form.object.class, field, type
+    CensusFormHint.generate form, field, type
   end
 
   # Card will group its inputs into a bootstrap card with the title as the header

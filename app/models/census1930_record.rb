@@ -91,4 +91,6 @@ class Census1930Record < CensusRecord
     war_fought: 31,
     farm_schedule: 32
   }.freeze
+
+  IMAGES = {}.freeze
 end

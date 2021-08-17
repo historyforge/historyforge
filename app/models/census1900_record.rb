@@ -71,4 +71,14 @@ class Census1900Record < CensusRecord
     farm_or_house: 27,
     farm_schedule: 28
   }.freeze
+
+  IMAGES = {
+    page_number: '1900/sheet-side.png',
+    page_side: '1900/sheet-side.png',
+    ward: '1900/ward.png',
+    enum_dist: '1900/ed.png',
+    first_name: '1910/names.png',
+    middle_name: '1910/names.png',
+    last_name: '1910/names.png',
+  }.freeze
 end

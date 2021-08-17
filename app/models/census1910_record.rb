@@ -63,4 +63,15 @@ class Census1910Record < CensusRecord
     blind: 31,
     dumb: 32
   }.freeze
+
+  IMAGES = {
+    page_number: '1910/sheet-side.png',
+    page_side: '1910/sheet-side.png',
+    ward: '1910/sheet-side.png',
+    enum_dist: '1910/sheet-side.png',
+    first_name: '1910/names.png',
+    middle_name: '1910/names.png',
+    last_name: '1910/names.png',
+    civil_war_vet: '1910/punch-card-symbols.png'
+  }.freeze
 end

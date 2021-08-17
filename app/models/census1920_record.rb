@@ -55,4 +55,14 @@ class Census1920Record < CensusRecord
     farm_schedule: 29,
     employment_code: 'Right Margin'
   }.freeze
+
+  IMAGES = {
+    page_number: '1920/sheet-side.png',
+    page_side: '1920/sheet-side.png',
+    ward: '1920/sheet-side.png',
+    enum_dist: '1920/sheet-side.png',
+    first_name: '1920/names.png',
+    middle_name: '1920/names.png',
+    last_name: '1920/names.png'
+  }.freeze
 end
