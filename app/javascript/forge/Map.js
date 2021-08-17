@@ -37,7 +37,7 @@ class Map extends BaseMap {
         const clusterer = this.state.clusterer || new MarkerClusterer(this.state.map, [], {
             imagePath: 'https://cdn.rawgit.com/googlemaps/js-marker-clusterer/gh-pages/images/m',
             minimumClusterSize: 10,
-            maxZoom: 16,
+            maxZoom: 20,
         })
 
         clusterer.clearMarkers()
