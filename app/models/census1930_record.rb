@@ -48,4 +48,47 @@ class Census1930Record < CensusRecord
       errors.add :profession_code, "Invalid profession code."
     end
   end
+
+  COLUMNS = {
+    street_house_number: 2,
+    street_prefix: 1,
+    street_name: 1,
+    street_suffix: 1,
+    dwelling_number: 3,
+    family_id: 4,
+    last_name: 5,
+    first_name: 5,
+    middle_name: 5,
+    name_prefix: 5,
+    name_suffix: 5,
+    relation_to_head: 6,
+    owned_or_rented: 7,
+    home_value: 8,
+    has_radio: 9,
+    lives_on_farm: 10,
+    sex: 11,
+    race: 12,
+    age: 13,
+    age_months: 13,
+    marital_status: 14,
+    age_married: 15,
+    attended_school: 16,
+    can_read_write: 17,
+    pob: 18,
+    pob_father: 19,
+    pob_mother: 20,
+    mother_tongue: 21,
+    year_immigrated: 22,
+    naturalized_alien: 23,
+    can_speak_english: 24,
+    profession: 25,
+    industry: 26,
+    worker_class: 27,
+    profession_code: 'D',
+    worked_yesterday: 28,
+    unemployment_line: 29,
+    veteran: 30,
+    war_fought: 31,
+    farm_schedule: 32
+  }.freeze
 end

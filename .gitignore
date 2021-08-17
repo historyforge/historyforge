@@ -19,6 +19,7 @@
 .env.*
 .env
 certs
+coverage
 
 bin/deploy.sh
 

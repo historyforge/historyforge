@@ -29,4 +29,46 @@ class Census1900Record < CensusRecord
     value = read_attribute(:birth_month)
     value == 999 ? 'unknown' : value
   end
+
+  COLUMNS = {
+    street_house_number: '2nd Column on the Left',
+    street_prefix: '1st Column on the Left',
+    street_name: '1st Column on the Left',
+    street_suffix: '1st Column on the Left',
+    dwelling_number: 1,
+    family_id: 2,
+    last_name: 3,
+    first_name: 3,
+    middle_name: 3,
+    name_prefix: 3,
+    name_suffix: 3,
+    relation_to_head: 4,
+    race: 5,
+    sex: 6,
+    birth_month: 7,
+    birth_year: 7,
+    age: 8,
+    age_months: 8,
+    marital_status: 9,
+    years_married: 10,
+    num_children_born: 11,
+    num_children_alive: 12,
+    pob: 13,
+    pob_father: 14,
+    pob_mother: 15,
+    year_immigrated: 16,
+    years_in_us: 17,
+    naturalized_alien: 18,
+    profession: 19,
+    industry: 19,
+    unemployed_months: 20,
+    attended_school: 21,
+    can_read: 22,
+    can_write: 23,
+    can_speak_english: 24,
+    owned_or_rented: 25,
+    mortgage: 26,
+    farm_or_house: 27,
+    farm_schedule: 28
+  }.freeze
 end

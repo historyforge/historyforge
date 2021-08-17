@@ -71,22 +71,7 @@ class CensusFormGenerator
   end
 
   def hint_for(field, type)
-    column = Translator.translate(form.object.class, field, 'columns')
-    text   = Translator.translate(form.object.class, field, 'hints') ||
-             Translator.translate(form.object.class, type || 'string', 'hints')
-
-    if column
-      column = case column
-               when /-/
-                 "<u>Columns #{column}</u><br />"
-               when String
-                 column.length > 1 ? "<u>#{column}</u><br />" : "<u>Column #{column}</u><br />"
-               else
-                 "<u>Column #{column}</u><br />"
-               end
-    end
-
-    column.present? || text.present? ? "#{column}#{text}".html_safe : false
+    CensusFormHint.generate form.object.class, field, type
   end
 
   # Card will group its inputs into a bootstrap card with the title as the header

@@ -46,6 +46,7 @@ group :development do
   gem "letter_opener_web"
   gem "pry"
   gem "rubocop-rails"
+  gem 'simplecov', require: false
   gem "spring"
   gem "web-console" #, "~> 2.0"
 end
