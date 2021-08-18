@@ -65,7 +65,7 @@ en:
         enum_dist: 'The Enumeration District (ED) is in the upper left or right corner of the sheet.'
         age_months: 'Enter what you see on the census. If the field is blank, leave blank. If the answer is Un (Unknown) enter 999. A child that is less than one year of age will be listed by their age in months on the census i.e., 3/12 or 11/12. If the age is entered this way on the census, enter the years in the Age field and the months in the Age (months) field on HistoryForge.'
         age: 'Enter what you see on the census. If the field is blank, leave blank. If the answer is Un (Unknown) enter 999. A child that is less than one year of age will be listed by their age in months on the census i.e., 3/12 or 11/12. If the age is entered this way on the census, enter the years in the Age field and the months in the Age (months) field on HistoryForge.'
-        marital_status: 'Select the option that corresponds to the answer on the census. Enumerators used this mark (/) to indicate married status.'
+        marital_status: 'Select the option that corresponds to the answer on the census. Enumerators used this mark (/) to indicate Married, Single, or Widowed, and used (D) for Divorced.'
         just_married: 'Check the box if the response is yes. Enumerators often used this mark (/) for the affirmative. If the enumerator listed a month instead, check the box and enter “month of marriage ___” in the notes field.'
         foreign_born: 'There is no corresponding field on the census.  Check the box if the individual was not born in the United States.'
         unemployed_months: 'Enter the number of months only, do not record checks or other markings.'
