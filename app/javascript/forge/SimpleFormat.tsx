@@ -23,16 +23,18 @@ const SimpleFormat = (props: SimpleFormatData): JSX.Element => {
     // Based on:
     // https://github.com/rails/rails/blob/312485f3e88af3966b586275ae5097198bfef6a0/actionview/lib/action_view/helpers/text_helper.rb#L454-L460
 
-    const { wrapperTag, wrapperTagProps, postfix } = props
+    let { wrapperTag, wrapperTagProps, postfix } = props
+    wrapperTag = wrapperTag || 'div';
     const text = toParagraphs(props.text);
+
     if (!text.length) return null;
 
     if (text.length === 1 && text[0].match(/\<p\>/)) {
         const props = {...wrapperTagProps, dangerouslySetInnerHTML: { __html: text[0] } }
-        return createElement(wrapperTag, props)
+        return React.createElement(wrapperTag, props)
     }
 
-    return createElement(wrapperTag, wrapperTagProps, text.map((paragraph, index) => (
+    return React.createElement(wrapperTag, wrapperTagProps, text.map((paragraph, index) => (
         (postfix && index === text.length - 1)
             ? <p key={ index }>
                 <span dangerouslySetInnerHTML={{ __html: paragraph }} />

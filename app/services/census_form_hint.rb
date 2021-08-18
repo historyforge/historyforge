@@ -13,6 +13,7 @@ class CensusFormHint
   def initialize(form, field, type)
     @klass = form.object.class
     @template = form.template
+    @year = form.object.year
     @field = field
     @type = type
   end
@@ -21,7 +22,7 @@ class CensusFormHint
     column.present? || text.present? ? "#{column}#{text}#{image}#{unknown}".html_safe : false
   end
 
-  attr_reader :klass, :field, :type, :template
+  attr_reader :klass, :field, :type, :template, :year
 
   def column
     @column ||= formatted_column klass::COLUMNS[field]
@@ -51,6 +52,7 @@ class CensusFormHint
   end
 
   def unknown
+    return if year >= 1940
     return unless field !~ /name|head/ && (%i[integer radio_buttons radio_buttons_other].include?(type) || type.blank?)
 
     "<br />The scribble for &ldquo;Unknown&rdquo; often looks like this:<br />#{template.image_pack_tag('unknown-scribble.png')}"
