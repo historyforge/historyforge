@@ -4,7 +4,6 @@
 <script type="text/javascript">
   window.initialState = {
       layers: { layers: <%== MapOverlay.order(:position).where(active: true).to_json %>, heatmapOpacity: 25 },
-      buildingTypes: { types: <%== BuildingType.order(:name).to_json %> },
       buildings: { buildings: null },
       search: { params: <%== params.to_json %> }
   }

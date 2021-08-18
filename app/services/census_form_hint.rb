@@ -1,7 +1,14 @@
+# frozen_string_literal: true
+
+# Generates the contents of the question mark hint bubbles on the census forms. Hint text comes from the
+# census-hints.en.yml file. Column numbers and images currently live in the model files for each year because
+# it didn't feel appropriate to use the translation system for those even though it would work.
 class CensusFormHint
   def self.generate(form, field, type)
     new(form, field, type).generate
   end
+
+  # Everything below here is private
 
   def initialize(form, field, type)
     @klass = form.object.class
