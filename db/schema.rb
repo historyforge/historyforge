@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_11_185354) do
+ActiveRecord::Schema.define(version: 2021_08_18_205926) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
@@ -149,7 +149,7 @@ ActiveRecord::Schema.define(version: 2021_08_11_185354) do
     t.index ["user_id"], name: "index_bulk_updates_on_user_id"
   end
 
-  create_table "census1880_records", force: :cascade do |t|
+  create_table "census_1880_records", force: :cascade do |t|
     t.bigint "locality_id"
     t.bigint "building_id"
     t.bigint "person_id"
@@ -186,7 +186,7 @@ ActiveRecord::Schema.define(version: 2021_08_11_185354) do
     t.boolean "just_married"
     t.string "occupation", default: "None"
     t.integer "unemployed_months"
-    t.boolean "sick"
+    t.string "sick"
     t.boolean "blind"
     t.boolean "deaf_dumb"
     t.boolean "idiotic"
@@ -207,11 +207,11 @@ ActiveRecord::Schema.define(version: 2021_08_11_185354) do
     t.uuid "histid"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["building_id"], name: "index_census1880_records_on_building_id"
-    t.index ["created_by_id"], name: "index_census1880_records_on_created_by_id"
-    t.index ["locality_id"], name: "index_census1880_records_on_locality_id"
-    t.index ["person_id"], name: "index_census1880_records_on_person_id"
-    t.index ["reviewed_by_id"], name: "index_census1880_records_on_reviewed_by_id"
+    t.index ["building_id"], name: "index_census_1880_records_on_building_id"
+    t.index ["created_by_id"], name: "index_census_1880_records_on_created_by_id"
+    t.index ["locality_id"], name: "index_census_1880_records_on_locality_id"
+    t.index ["person_id"], name: "index_census_1880_records_on_person_id"
+    t.index ["reviewed_by_id"], name: "index_census_1880_records_on_reviewed_by_id"
   end
 
   create_table "census_1900_records", id: :serial, force: :cascade do |t|
@@ -1018,11 +1018,11 @@ ActiveRecord::Schema.define(version: 2021_08_11_185354) do
   add_foreign_key "buildings_building_types", "buildings"
   add_foreign_key "bulk_updated_records", "bulk_updates"
   add_foreign_key "bulk_updates", "users"
-  add_foreign_key "census1880_records", "buildings"
-  add_foreign_key "census1880_records", "localities"
-  add_foreign_key "census1880_records", "people"
-  add_foreign_key "census1880_records", "users", column: "created_by_id"
-  add_foreign_key "census1880_records", "users", column: "reviewed_by_id"
+  add_foreign_key "census_1880_records", "buildings"
+  add_foreign_key "census_1880_records", "localities"
+  add_foreign_key "census_1880_records", "people"
+  add_foreign_key "census_1880_records", "users", column: "created_by_id"
+  add_foreign_key "census_1880_records", "users", column: "reviewed_by_id"
   add_foreign_key "census_1900_records", "buildings"
   add_foreign_key "census_1900_records", "localities"
   add_foreign_key "census_1900_records", "people"

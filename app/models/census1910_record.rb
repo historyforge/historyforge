@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# Model class for 1910 US Census records.
 class Census1910Record < CensusRecord
 
   self.table_name = 'census_1910_records'

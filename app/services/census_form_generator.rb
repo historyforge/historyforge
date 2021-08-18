@@ -28,6 +28,8 @@ class CensusFormGenerator
     return if skip_me?(options)
 
     @cards << Card.new(options[:label])
+
+    @cards.last << "<p style=\"flex-basis: 100%; margin-left: 1.125rem\">#{options[:hint]}</p>".html_safe if options[:hint]
   end
 
   def add_field(field, options)
@@ -50,7 +52,7 @@ class CensusFormGenerator
   end
 
   def apply_options_for(field, options)
-    options[:hint] = hint_for(field, options[:as])
+    options[:hint] = options.key?(:hint) ? options[:hint] : hint_for(field, options[:as])
     options.delete :placeholder
     options[:wrapper_html] = { data: { dependents: 'true' } } if options[:dependents]
     options[:wrapper_html] = { data: { depends_on: options[:depends_on] } } if options[:depends_on]

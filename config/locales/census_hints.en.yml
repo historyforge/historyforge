@@ -41,7 +41,7 @@ en:
         occupation: 'Enter what you see on the census.  If the field is blank on the census, leave the default “None.” If, however, the industry is not blank or there is some other indicator of an occupation enter the word “Blank” to indicate that there was an occupation.'
         occupation1930_code_id: 'This is a three-digit occupation code followed by a two-figure industry code and a 1-figure worker class code. The occupation code can contain a “V” or “X” as well as numbers. The industry code can contain a “V” or “X” as well as numbers. The worker class code is a number from 1 to 6. If you are unsure, check the resource for verifying the occupation code on the Transcriber’s Corner.'
         owned_or_rented: 'Select the option that corresponds to the answer on the census. Note: This information should only be entered once for the family/household.'
-        page_number: 'The sheet (page) number is in the upper left corner of the sheet.'
+        page_number: 'The sheet (page) number is in the upper right corner of the sheet.'
         page_side: 'Each census sheet has side A and B printed next to the sheet number.'
         pob_code: 'Place of Birth (Code)'
         pob_father: 'Enter what you see on the census. Note: This field has a controlled vocabulary. If, as you enter the term from the census, the term does not appear from the list of controlled vocabulary, enter an X in the field and enter “Place of Birth is ____” in the notes field.'
@@ -61,6 +61,7 @@ en:
 
       census1880_record:
         boolean: 'Check the box if the field contains a slash (/). Enumerators used this mark to indicate yes. Enter any additional information in the notes.'
+        page_number: 'The sheet (page) number is in the upper left corner of the sheet.'
         page_side: 'Each census page has side A, B, C and D printed in the upper left or right corner of the page.'
         enum_dist: 'The Enumeration District (ED) is in the upper left or right corner of the sheet.'
         age_months: 'Enter what you see on the census. If the field is blank, leave blank. If the answer is Un (Unknown) enter 999. A child that is less than one year of age will be listed by their age in months on the census i.e., 3/12 or 11/12. If the age is entered this way on the census, enter the years in the Age field and the months in the Age (months) field on HistoryForge.'
@@ -83,7 +84,7 @@ en:
       census1920_record:
         age: 'Enter what you see on the census. If the field is blank, leave blank. If the answer is Un (Unknown) enter 999. A child that is less than five years of age will be listed by their age in months on the census i.e., 1 and 3/12. If the age is entered this way on the census, enter the years in the Age field and the months in the Age (months) field on HistoryForge.'
         age_months: 'Enter what you see on the census. If the field is blank, leave blank. If the answer is Un (Unknown) enter 999. A child that is less than five years of age will be listed by their age in months on the census i.e., 1 and 3/12. If the age is entered this way on the census, enter the years in the Age field and the months in the Age (months) field on HistoryForge.'
-        occupation_code: 'There is no official column for occupation codes on the census, these 3-digit numbers which range from 000-999 were added in the right margin or sometimes under farm number, please enter the numbers here. If you are unsure of the code, check the resource for verifying the occupation code on the Transcriber’s Corner.'
+        employment_code: 'There is no official column for occupation codes on the census, these 3-digit numbers which range from 000-999 were added in the right margin or sometimes under farm number, please enter the numbers here. If you are unsure of the code, check the resource for verifying the occupation code on the Transcriber’s Corner.'
         farm_schedule: 'If this column contains a 1- or 2-digit number enter it here.  If it contains a 3-digit number enter it under occupation code.'
 
       census1930_record:
@@ -92,6 +93,7 @@ en:
         age: 'Enter what you see on the census. If the field is blank, leave blank. If the answer is Un (Unknown) enter 999. A child that is less than five years of age will be listed by their age in months on the census i.e., 1 and 3/12. If the age is entered this way on the census, enter the years in the Age field and the months in the Age (months) field on HistoryForge.'
         age_months: 'Enter what you see on the census. If the field is blank, leave blank. If the answer is Un (Unknown) enter 999. A child that is less than five years of age will be listed by their age in months on the census i.e., 1 and 3/12. If the age is entered this way on the census, enter the years in the Age field and the months in the Age (months) field on HistoryForge.'
         occupation_code: 'This is a four-digit code, the first two digits represent the occupation, and the second two represent the industry.  Primarily numerical, this code may contain the letters “V” or “X” which should be entered as capital letters. If you are unsure of the code, check the resource for verifying the occupation code on the Transcriber’s Corner.'
+        has_radio: 'Check the box if the response is yes or R.'
 
       census1940_record:
         ward: 'The ward is on the upper left side of the sheet. Enter the ward as a number (2). If there is no ward on the census, leave the field blank on HistoryForge.'

@@ -3,7 +3,7 @@ en:
     filters:
       census_record:
         residence_1935_county: '[Residence April 1, 1935] County'
-        residence_1935_farm: '[Residence April 1, 1935] On a Farm?'
+        residence_1935_farm: '[Residence April 1, 1935] On a Farm'
         residence_1935_state: '[Residence April 1, 1935] State'
         residence_1935_town: '[Residence April 1, 1935] Town'
 
@@ -26,7 +26,7 @@ en:
         can_speak_english: 'Speaks English'
         can_write: 'Can Write'
         cannot_write: 'Cannot Write'
-        children_born: 'Num Children Born'
+        children_born: 'No. Children Born'
         city: 'City'
         civil_war_vet: 'Civil War'
         county: 'County'
@@ -105,7 +105,7 @@ en:
         race: 'Race'
         relation_to_head: 'Relation to Head'
         residence_1935_county: 'County'
-        residence_1935_farm: 'On a Farm?'
+        residence_1935_farm: 'On a Farm'
         residence_1935_state: 'State'
         residence_1935_town: 'Town'
         reviewed_at: 'Reviewed'
@@ -154,7 +154,6 @@ en:
         family_id: 'Household No.'
         naturalized_alien: 'Citizenship'
         attended_school: 'Attended School or College?'
-        race: 'Color or Race'
         age: 'Age at Last Birthday'
         veteran: 'Veteran or Veteran-related'
 

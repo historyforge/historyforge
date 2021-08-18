@@ -3,7 +3,7 @@
 # Base class for census form configuration. Provides a DSL for describing census forms using "divider" and "input"
 # commands. Implemented as singleton with each census year existing as a subclass.
 class CensusFormFieldConfig
-  class_attribute :inputs, :fields
+  class_attribute :inputs, :fields, :comments
 
   def self.input(field, **options)
     self.fields ||= []

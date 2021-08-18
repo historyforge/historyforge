@@ -20,14 +20,18 @@ class Census1920FormFields < CensusFormFieldConfig
   input :age_months, as: :integer, min: 0, max: 12
   input :marital_status, as: :radio_buttons, coded: true
 
-  divider 'Citizenship, Education, and Place of Birth'
+  divider 'Citizenship'
   input :foreign_born, as: :boolean, dependents: true
   input :year_immigrated, as: :integer, depends_on: :foreign_born
   input :naturalized_alien, as: :radio_buttons, coded: true, depends_on: :foreign_born
   input :year_naturalized, as: :integer, depends_on: :foreign_born
+
+  divider 'Education'
   input :attended_school, as: :boolean
   input :can_read, as: :boolean
   input :can_write, as: :boolean
+
+  divider 'Place of Birth'
   input :pob
   input :mother_tongue
   input :pob_father

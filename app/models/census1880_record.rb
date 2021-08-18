@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
+# Model class for 1880 US Census records.
 class Census1880Record < CensusRecord
+  self.table_name = 'census_1880_records'
+
   belongs_to :locality, inverse_of: :census1880_records
 
   define_enumeration :race, %w[W B Mu Ch In]
@@ -48,9 +51,9 @@ class Census1880Record < CensusRecord
   }.freeze
 
   IMAGES = {
-    page_number: '1880/ward.png',
+    page_number: '1880/enum.png',
     page_side: '1880/side-a.png',
-    enum_dist: '1880/ward.png',
+    enum_dist: '1880/enum.png',
     first_name: '1910/names.png',
     middle_name: '1910/names.png',
     last_name: '1910/names.png'

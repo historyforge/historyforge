@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# Model class for 1940 US Census records.
 class Census1940Record < CensusRecord
   self.table_name = 'census_1940_records'
 
@@ -134,7 +137,7 @@ class Census1940Record < CensusRecord
     page_number: '1940/sheet-side.png',
     page_side: '1940/sheet-side.png',
     ward: '1940/ward.png',
-    enum_dist: '1940/ward.png',
+    enum_dist: '1940/sheet-side.png',
     first_name: '1940/names.png',
     middle_name: '1940/names.png',
     last_name: '1940/names.png',

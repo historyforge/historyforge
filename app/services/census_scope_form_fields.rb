@@ -9,8 +9,8 @@ module CensusScopeFormFields
       input :page_number, as: :integer, min: 0, max: 10_000
       input :page_side, as: :select, collection: %w[A B]
       input :line_number, as: :integer, min: 0, max: 100
-      input :county
-      input :city, input_html: { id: 'city' }
+      input :county, hint: false
+      input :city, input_html: { id: 'city' }, hint: false
       input :ward, as: :integer, min: 0, max: 10_000, if: ->(form) { form.object.year > 1880 }
       input :enum_dist, as: :integer, min: 0, max: 10_000
       input :street_house_number
@@ -24,6 +24,7 @@ module CensusScopeFormFields
             input_html: { id: 'building_id' }
       input :ensure_building,
             as: :boolean,
+            hint: false,
             if: ->(form) { form.object.building_id.blank? && Setting.can_add_buildings?(form.object.year) }
       input :locality_id, as: :select, collection: Locality.order(:position), required: true
       input :dwelling_number, if: ->(form) { form.object.year < 1940 }

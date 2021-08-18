@@ -20,12 +20,14 @@ class Census1880FormFields < CensusFormFieldConfig
   input :unemployed_months, as: :integer, min: 0
 
   divider 'Physical and Mental Condition'
-  input :sick, as: :boolean
+  input :sick
   input :blind, as: :boolean
   input :deaf_dumb, as: :boolean
   input :idiotic, as: :boolean
   input :insane, as: :boolean
   input :maimed, as: :boolean
+
+  divider 'Education'
   input :attended_school, as: :boolean
   input :cannot_read, as: :boolean
   input :cannot_write, as: :boolean

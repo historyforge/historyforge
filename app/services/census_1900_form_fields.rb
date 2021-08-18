@@ -29,10 +29,12 @@ class Census1900FormFields < CensusFormFieldConfig
   input :years_in_us, as: :integer, depends_on: :foreign_born, min: 0
   input :naturalized_alien, as: :radio_buttons, coded: true, depends_on: :foreign_born
 
-  divider 'Occupation, Industry, Education and Employment Status'
+  divider 'Occupation, Industry, Employment Status'
   input :profession
   input :industry
   input :unemployed_months, as: :integer, min: 0
+
+  divider 'Education'
   input :attended_school, as: :integer
   input :can_read, as: :boolean
   input :can_write, as: :boolean

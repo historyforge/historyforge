@@ -1,5 +1,7 @@
-class Census1900Record < CensusRecord
+# frozen_string_literal: true
 
+# Model class for 1900 US Census records.
+class Census1900Record < CensusRecord
   self.table_name = 'census_1900_records'
 
   belongs_to :locality, inverse_of: :census1900_records

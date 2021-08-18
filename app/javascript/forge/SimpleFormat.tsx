@@ -29,7 +29,7 @@ const SimpleFormat = (props: SimpleFormatData): JSX.Element => {
 
     if (!text.length) return null;
 
-    if (text.length === 1 && text[0].match(/\<p\>/)) {
+    if (text.length === 1 && text[0].match(/<p>/)) {
         const props = {...wrapperTagProps, dangerouslySetInnerHTML: { __html: text[0] } }
         return React.createElement(wrapperTag, props)
     }

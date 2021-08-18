@@ -19,6 +19,8 @@ class Census1940FormFields < CensusFormFieldConfig
   input :age, as: :integer, min: 0, max: 130
   input :age_months, as: :integer, min: 0, max: 12
   input :marital_status,as: :radio_buttons, coded: true
+
+  divider 'Education'
   input :attended_school, as: :boolean
   input :grade_completed, as: :radio_buttons
 
@@ -63,10 +65,14 @@ class Census1940FormFields < CensusFormFieldConfig
   input :farm_schedule
 
   with_options if: ->(form) { form.object && !form.object.supplemental? } do
-    divider 'Supplemental Questions'
+    divider 'Supplemental Questions', hint: 'For persons enumerated on lines 14 and 29.'
+
+    divider 'Place of Birth of Father/Mother & Mother Tongue'
     input :pob_father
     input :pob_mother
     input :mother_tongue
+
+    divider 'Veteran'
     input :veteran, as: :boolean, dependents: true
     input :veteran_dead, as: :boolean, dependents: true
     input :war_fought,
@@ -74,15 +80,21 @@ class Census1940FormFields < CensusFormFieldConfig
           other_label: 'Ot - Other war or expedition',
           coded: true,
           depends_on: :veteran
+
+    divider 'Social Security'
     input :soc_sec, as: :boolean
     input :deductions, as: :boolean
     input :deduction_rate, coded: true, as: :radio_buttons
+
+    divider 'Usual Employment'
     input :usual_profession
     input :usual_industry
     input :usual_worker_class, as: :radio_buttons, coded: true, collection: Census1940Record.worker_class_choices
     input :usual_occupation_code
     input :usual_industry_code
     input :usual_worker_class_code
+
+    divider 'Women'
     input :multi_marriage, as: :boolean
     input :first_marriage_age, min: 0
     input :children_born, min: 0

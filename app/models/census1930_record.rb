@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# Model class for 1930 US Census records.
 class Census1930Record < CensusRecord
   self.table_name = 'census_1930_records'
 
@@ -92,5 +95,14 @@ class Census1930Record < CensusRecord
     farm_schedule: 32
   }.freeze
 
-  IMAGES = {}.freeze
+  IMAGES = {
+    page_number: '1930/enum.png',
+    page_side: '1930/enum.png',
+    enum_dist: '1190/enum.png',
+    first_name: '1910/names.png',
+    middle_name: '1910/names.png',
+    last_name: '1910/names.png',
+    ward: '1930/ward.png',
+    homemaker: '1930/homemaker.png'
+  }.freeze
 end

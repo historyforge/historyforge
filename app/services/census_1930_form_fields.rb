@@ -21,6 +21,8 @@ class Census1930FormFields < CensusFormFieldConfig
   input :age_months, as: :integer, min: 0, max: 12
   input :marital_status, as: :radio_buttons, coded: true
   input :age_married, as: :integer, min: 0, max: 140
+
+  divider 'Education'
   input :attended_school, as: :boolean
   input :can_read_write, as: :boolean
 
@@ -40,6 +42,8 @@ class Census1930FormFields < CensusFormFieldConfig
   input :profession_code
   input :worker_class, coded: true, as: :radio_buttons
   input :worked_yesterday, as: :boolean
+
+  divider 'More Personal Data'
   input :veteran, as: :boolean
   input :war_fought, as: :radio_buttons_other, coded: true
   input :farm_schedule
