@@ -9,7 +9,7 @@ RSpec.describe Translator do
       expect(Translator.label(Census1900Record, :can_read)).to eq('Can Read')
     end
     it 'translates label specific to a census year' do
-      expect(Translator.label(Census1940Record, :race)).to eq('Color or Race')
+      expect(Translator.label(Census1880Record, :page_number)).to eq('Page')
     end
   end
 

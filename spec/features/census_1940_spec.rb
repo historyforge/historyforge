@@ -49,7 +49,7 @@ RSpec.describe '1940 US Census' do
     fill_in 'Town', with: 'Ithaca', name: 'census_record[residence_1935_town]'
     fill_in 'County', with: 'Tompkins', name: 'census_record[residence_1935_county]'
     fill_in 'State', with: 'New York', name: 'census_record[residence_1935_state]'
-    check 'On a Farm?'
+    check 'On a Farm'
 
     check 'Private/Non-emergency Government Work'
     check 'Public Emergency Work'
