@@ -20,9 +20,10 @@ module CensusScopeFormFields
       input :apartment_number
       input :building_id,
             as: :select,
-            collection: ->(form) { BuildingsOnStreet.new(form.object).perform },
+            collection: [], #->(form) { BuildingsOnStreet.new(form.object).perform },
             input_html: { id: 'building_id' }
-      input :ensure_building, as: :boolean,
+      input :ensure_building,
+            as: :boolean,
             if: ->(form) { form.object.building_id.blank? && Setting.can_add_buildings?(form.object.year) }
       input :locality_id, as: :select, collection: Locality.order(:position), required: true
       input :dwelling_number, if: ->(form) { form.object.year < 1940 }

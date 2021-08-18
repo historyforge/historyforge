@@ -94,8 +94,7 @@ jQuery(document).on('click', '#search-map', function() {
   $form.submit()
 })
 
-// When the user fills address on census form, this refills the building_id dropdown
-jQuery(document).on('blur', '#city, #street_name, #street_suffix', function() {
+function getBuildingList() {
   let city = jQuery('#city').val()
   if (city === '') city = null
   let street = jQuery('#street_name').val()
@@ -117,7 +116,13 @@ jQuery(document).on('blur', '#city, #street_name, #street_suffix', function() {
       building.val(current_value)
     })
   }
-})
+}
+// When the user fills address on census form, this refills the building_id dropdown
+jQuery(document)
+    .on('blur', '#city, #street_name, #street_suffix', getBuildingList)
+    .ready(function() {
+      $('.census_record_building_id').each(getBuildingList);
+    })
 
 let buildingNamed = false
 jQuery(document).on('ready', function() {
