@@ -77,8 +77,8 @@ class Census1900Record < CensusRecord
   IMAGES = {
     page_number: '1900/sheet-side.png',
     page_side: '1900/sheet-side.png',
-    ward: '1900/ward.png',
-    enum_dist: '1900/ed.png',
+    ward: '1900/sheet-side.png',
+    enum_dist: '1900/sheet-side.png',
     first_name: '1910/names.png',
     middle_name: '1910/names.png',
     last_name: '1910/names.png',
