@@ -64,7 +64,7 @@ class Census1940FormFields < CensusFormFieldConfig
   input :had_unearned_income, as: :boolean
   input :farm_schedule
 
-  with_options if: ->(form) { form.object && !form.object.supplemental? } do
+  with_options if: ->(form) { form.object&.supplemental? } do
     divider 'Supplemental Questions', hint: 'For persons enumerated on lines 14 and 29.'
 
     divider 'Place of Birth of Father/Mother & Mother Tongue'

@@ -36,19 +36,15 @@ class Census1940Record < CensusRecord
   end
 
   def supplemental?
-    mother_tongue.present?
+    new_record? || mother_tongue.present? || line_number == 14 || line_number == 29
   end
 
   def validate_code(field)
     value = public_send(field)
     return unless value
 
-    if value =~ /[a-zA-UWYZ]/
-      errors.add field, 'can only have letters V or X'
-    end
-    if value =~ /\W/
-      errors.add field, 'can only have digits and V or X'
-    end
+    errors.add field, 'can only have letters V or X' if value =~ /[a-zA-UWYZ]/
+    errors.add field, 'can only have digits and V or X' if value =~ /\W/
   end
 
   def validate_worker_class_code(field)
