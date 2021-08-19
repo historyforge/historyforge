@@ -65,7 +65,7 @@ class Census1940FormFields < CensusFormFieldConfig
   input :farm_schedule
 
   with_options if: ->(form) { form.object&.supplemental? } do
-    divider 'Supplemental Questions', hint: 'For persons enumerated on lines 14 and 29.'
+    divider 'Supplemental Questions', hint: 'For persons whose names appear on the line numbers requiring supplementary question responses.'
 
     divider 'Place of Birth of Father/Mother & Mother Tongue'
     input :pob_father
