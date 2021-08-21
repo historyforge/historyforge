@@ -165,7 +165,7 @@ module CensusRecords
 
     def load_census_records
       authorize! :read, resource_class
-      @search = census_record_search_class.generate params: params, user: current_user
+      @search = CensusRecordSearch.generate params: params, year: year, user: current_user
     end
 
     def render_census_records

@@ -21,21 +21,17 @@ class BuildingSearch < SearchQueryBuilder
 
   attr_reader :people_params
 
-  def results
-    return @results if defined?(@results)
-
-    @results = scoped.to_a
+  memoize def results
+    results = scoped.to_a
     if @residents
-      @results.each do |result|
+      results.each do |result|
         result.residents = @residents[result.id]
       end
     end
-    @results.map { |result| BuildingPresenter.new result, user }
+    results.map { |result| BuildingPresenter.new result, user }
   end
 
-  def scoped
-    return @scoped if defined?(@scoped)
-
+  memoize def scoped
     active? && builder.left_outer_joins(:addresses)
 
     builder.reviewed unless user
@@ -58,7 +54,7 @@ class BuildingSearch < SearchQueryBuilder
 
     enrich_with_residents if people.present?
 
-    @scoped = builder.scoped
+    builder.scoped
   end
 
   def default_fields

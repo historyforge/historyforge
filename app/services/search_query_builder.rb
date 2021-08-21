@@ -5,6 +5,7 @@ class SearchQueryBuilder
   extend ActiveModel::Naming
   include ActiveModel::Conversion
   include ActiveModel::Validations
+  include Memery
 
   attr_accessor :page, :s, :f, :g, :user, :c, :d, :sort, :paged, :per, :scope, :from, :to
 
@@ -14,16 +15,26 @@ class SearchQueryBuilder
 
   validates :t, presence: true
 
+  def initialize(*args)
+    options = args.extract_options!
+    options&.each do |key, value|
+      instance_variable_set "@#{key}", value
+    end
+    @f ||= default_fields
+    @s ||= {}
+    @g ||= {}
+  end
+
   def active?
     ransack_params.keys.any?
   end
 
-  def is_default_field?(field)
+  def default_field?(field)
     default_fields.include?(field.to_s)
   end
 
-  def columns
-    @columns ||= f.concat(['id'])
+  memoize def columns
+    f.concat(['id'])
   end
 
   class Builder
@@ -50,28 +61,27 @@ class SearchQueryBuilder
 
   private
 
-  def builder
-    @builder ||= Builder.new entity_class, ransack_params
+  memoize def builder
+    Builder.new entity_class, ransack_params
   end
 
-  def ransack_params
-    return @ransack_params if defined?(@ransack_params)
-
+  memoize def ransack_params
     prepare_search_filters
     p = Hash.new
     s.each do |key, value|
       if value.is_a?(Array) && value.include?('blank')
         p[:g] ||= []
-        if key =~ /_not_in$/
+        case key
+        when /_not_in$/
           p[:g] << { m: 'and', key.to_sym => value, key.sub(/not_in$/, 'present').to_sym => true }
-        elsif key =~ /_in$/
+        when /_in$/
           p[:g] << { m: 'or', key.to_sym => value, key.sub(/in$/, 'present').to_sym => true }
         end
       else
         p[key.to_sym] = value
       end
     end
-    @ransack_params = p
+    p
   end
 
   def prepare_search_filters
