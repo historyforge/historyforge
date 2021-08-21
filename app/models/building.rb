@@ -12,6 +12,8 @@ class Building < ApplicationRecord
   define_enumeration :address_street_prefix, %w[N S E W]
   define_enumeration :address_street_suffix, %w[St Rd Ave Blvd Pl Terr Ct Pk Tr Dr Hill Ln Way].sort
 
+  belongs_to :locality, optional: true
+
   has_many :addresses, dependent: :destroy, autosave: true
   accepts_nested_attributes_for :addresses, allow_destroy: true, reject_if: proc { |p| p['name'].blank? }
 
@@ -26,6 +28,8 @@ class Building < ApplicationRecord
 
   has_and_belongs_to_many :photos, class_name: 'Photograph', dependent: :nullify
 
+  before_validation :check_locality
+
   validates :name, presence: true, length: { maximum: 255 }
   validates :year_earliest, :year_latest, numericality: { minimum: 1500, maximum: 2100, allow_nil: true }
   validate :validate_primary_address
@@ -36,9 +40,11 @@ class Building < ApplicationRecord
   scope :as_of_year, lambda { |year|
     where('(year_earliest is null and year_latest is null) or (year_earliest<=:year and (year_latest is null or year_latest>=:year)) or (year_earliest is null and year_latest>=:year)', year: year)
   }
+
   scope :as_of_year_eq, lambda { |year|
     where('(year_earliest<=:year and (year_latest is null or year_latest>=:year)) or (year_earliest is null and year_latest>=:year)', year: year)
   }
+
   scope :without_residents, lambda {
     joins('LEFT OUTER JOIN census_1900_records ON census_1900_records.building_id=buildings.id')
       .joins('LEFT OUTER JOIN census_1910_records ON census_1910_records.building_id=buildings.id')
@@ -48,6 +54,7 @@ class Building < ApplicationRecord
       .joins(:building_types)
       .where('census_1900_records.id IS NULL AND census_1910_records.id IS NULL AND census_1920_records.id IS NULL AND census_1930_records.id IS NULL AND census_1940_records.id IS NULL')
       .where(building_types: { name: 'residence' }) }
+
   scope :by_street_address, lambda {
     left_outer_joins(:addresses)
       .order('addresses.name asc, addresses.prefix asc, addresses.house_number asc')
@@ -158,7 +165,7 @@ class Building < ApplicationRecord
   before_validation :name_the_house
 
   def neighbors
-    lat? ? Building.near([lat, lon], 0.1).where('id<>?', id).limit(4).includes(:building_types, :addresses) : []
+    lat? ? Building.near([lat, lon], 0.1).where('id<>?', id).limit(4) : []
   end
 
   attr_writer :residents
@@ -186,5 +193,11 @@ class Building < ApplicationRecord
     elsif primary_addresses.size > 1
       errors.add(:base, 'Multiple primary addresses not allowed.')
     end
+  end
+
+  def check_locality
+    return if locality_id.present?
+
+    self.locality = Locality.first if Locality.count == 1
   end
 end

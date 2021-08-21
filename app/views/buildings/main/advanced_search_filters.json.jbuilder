@@ -1,5 +1,7 @@
 json.filters do
 
+  localities = Locality.order(:name).map { |item| [item.name, item.id] }
+  AttributeBuilder.collection json, :locality_id, klass: Building, collection: localities
   AttributeBuilder.text       json, :street_address, label: 'Street Address'
   AttributeBuilder.text       json, :name, label: 'Building Name'
 

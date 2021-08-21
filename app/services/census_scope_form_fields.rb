@@ -7,7 +7,7 @@ module CensusScopeFormFields
     with_options edit_only: true do
       divider 'Census Scope'
       input :page_number, as: :integer, min: 0, max: 10_000
-      input :page_side, as: :select, collection: %w[A B]
+      input :page_side, as: :select
       input :line_number, as: :integer, min: 0, max: 100
       input :county, hint: false
       input :city, input_html: { id: 'city' }, hint: false

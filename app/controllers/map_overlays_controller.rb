@@ -1,13 +1,14 @@
+# frozen_string_literal: true
+
+# Map overlays are the historical map layers that show on top of Google Maps. They are generally maintained
+# on a MapWarper installation at maps.historyforge.net. Here we just get their WMS url and some metadata that
+# helps us use them in context.
 class MapOverlaysController < ApplicationController
   before_action :check_administrator_role
 
   def index
-    @map_overlays = MapOverlay.all
+    @map_overlays = MapOverlay.includes(:localities)
   end
-
-  # def show
-  #   @map_overlay = MapOverlay.find params[:id]
-  # end
 
   def new
     @map_overlay = MapOverlay.new
@@ -16,7 +17,7 @@ class MapOverlaysController < ApplicationController
   def create
     @map_overlay = MapOverlay.new resource_params
     if @map_overlay.save
-      flash[:notice] = "Added the new map overlay."
+      flash[:notice] = 'Added the new map overlay.'
       redirect_to action: :index
     else
       flash[:errors] = "Sorry couldn't do it."
@@ -31,7 +32,7 @@ class MapOverlaysController < ApplicationController
   def update
     @map_overlay = MapOverlay.find params[:id]
     if @map_overlay.update resource_params
-      flash[:notice] = "Updated the map overlay."
+      flash[:notice] = 'Updated the map overlay.'
       redirect_to action: :index
     else
       flash[:errors] = "Sorry couldn't do it."
@@ -42,7 +43,7 @@ class MapOverlaysController < ApplicationController
   def destroy
     @map_overlay = MapOverlay.find params[:id]
     if @map_overlay.destroy
-      flash[:notice] = "Deleted the map overlay."
+      flash[:notice] = 'Deleted the map overlay.'
       redirect_to action: :index
     else
       flash[:errors] = "Sorry couldn't do it."

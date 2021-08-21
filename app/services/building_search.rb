@@ -47,6 +47,7 @@ class BuildingSearch < SearchQueryBuilder
     builder.limit(to.to_i - from.to_i) if from && to
 
     if expanded
+      builder.includes(:locality) if f.include?('locality')
       builder.includes(:building_types) if f.include?('building_type')
       builder.includes(:addresses) if f.include?('street_address')
       builder.includes(:lining_type) if f.include?('lining_type')
@@ -65,7 +66,7 @@ class BuildingSearch < SearchQueryBuilder
   end
 
   def all_fields
-    %w[street_address city state postal_code
+    %w[street_address city state postal_code locality
        year_earliest year_latest
        description annotations stories block_number
        building_type lining_type frame_type

@@ -6,6 +6,7 @@ FactoryBot.define do
     state { 'New York' }
     lat { 42 }
     lon { -74 }
+    locality { Locality.find_or_create_by(name: 'Town of There') }
 
     trait :reviewed do
       reviewed_at { 1.day.ago }
