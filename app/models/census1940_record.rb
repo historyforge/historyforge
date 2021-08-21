@@ -8,6 +8,7 @@ class Census1940Record < CensusRecord
 
   alias_attribute :profession, :occupation
   alias_attribute :profession_code, :occupation_code
+  alias_attribute :usual_profession, :usual_occupation
 
   validate :validate_occupation_codes
 

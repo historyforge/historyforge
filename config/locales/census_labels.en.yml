@@ -129,6 +129,7 @@ en:
         usual_industry_code: 'Usual Industry Code'
         usual_industry: 'Usual Industry'
         usual_occupation_code: 'Usual Occupation Code'
+        usual_occupation: 'Usual Occupation'
         usual_profession: 'Usual Occupation'
         usual_worker_class_code: 'Usual Worker Class Code'
         usual_worker_class: 'Usual Worker Class'

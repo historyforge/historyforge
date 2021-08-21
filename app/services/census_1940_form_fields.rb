@@ -87,7 +87,7 @@ class Census1940FormFields < CensusFormFieldConfig
     input :deduction_rate, coded: true, as: :radio_buttons
 
     divider 'Usual Employment'
-    input :usual_profession
+    input :usual_occupation
     input :usual_industry
     input :usual_worker_class, as: :radio_buttons, coded: true, collection: Census1940Record.worker_class_choices
     input :usual_occupation_code

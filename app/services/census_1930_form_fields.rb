@@ -37,9 +37,9 @@ class Census1930FormFields < CensusFormFieldConfig
   input :can_speak_english, as: :boolean
 
   divider 'Occupation, Industry, and Class of Worker'
-  input :profession
+  input :occupation
   input :industry
-  input :profession_code
+  input :occupation_code
   input :worker_class, coded: true, as: :radio_buttons
   input :worked_yesterday, as: :boolean
 

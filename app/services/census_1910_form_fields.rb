@@ -30,7 +30,7 @@ class Census1910FormFields < CensusFormFieldConfig
   input :language_spoken
 
   divider 'Occupation, Industry, Education and Employment Status'
-  input :profession
+  input :occupation
   input :industry
   input :employment, as: :radio_buttons, coded: true
   input :unemployed, as: :boolean

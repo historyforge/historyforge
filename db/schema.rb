@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_18_205926) do
+ActiveRecord::Schema.define(version: 2021_08_21_180105) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
@@ -256,7 +256,7 @@ ActiveRecord::Schema.define(version: 2021_08_18_205926) do
     t.integer "year_immigrated"
     t.string "naturalized_alien"
     t.integer "years_in_us"
-    t.string "profession", default: "None"
+    t.string "occupation", default: "None"
     t.integer "unemployed_months"
     t.boolean "attended_school_old"
     t.boolean "can_read"
@@ -326,7 +326,7 @@ ActiveRecord::Schema.define(version: 2021_08_18_205926) do
     t.string "pob_mother"
     t.integer "year_immigrated"
     t.string "naturalized_alien"
-    t.string "profession", default: "None"
+    t.string "occupation", default: "None"
     t.string "industry"
     t.string "employment"
     t.boolean "unemployed"
@@ -402,7 +402,7 @@ ActiveRecord::Schema.define(version: 2021_08_18_205926) do
     t.string "pob_mother"
     t.string "mother_tongue_mother"
     t.boolean "can_speak_english"
-    t.string "profession", default: "None"
+    t.string "occupation", default: "None"
     t.string "industry"
     t.string "employment"
     t.boolean "attended_school"
@@ -480,9 +480,9 @@ ActiveRecord::Schema.define(version: 2021_08_18_205926) do
     t.integer "year_immigrated"
     t.string "naturalized_alien"
     t.boolean "can_speak_english"
-    t.string "profession", default: "None"
+    t.string "occupation", default: "None"
     t.string "industry"
-    t.string "profession_code"
+    t.string "occupation_code"
     t.string "worker_class"
     t.boolean "worked_yesterday"
     t.string "unemployment_line"
@@ -592,7 +592,7 @@ ActiveRecord::Schema.define(version: 2021_08_18_205926) do
     t.boolean "soc_sec"
     t.boolean "deductions"
     t.string "deduction_rate"
-    t.string "usual_profession"
+    t.string "usual_occupation"
     t.string "usual_industry"
     t.string "usual_worker_class"
     t.string "usual_occupation_code"

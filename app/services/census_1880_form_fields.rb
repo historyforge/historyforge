@@ -32,7 +32,7 @@ class Census1880FormFields < CensusFormFieldConfig
   input :cannot_read, as: :boolean
   input :cannot_write, as: :boolean
 
-  divider 'Place of Birth & Citizenship'
+  divider 'Place of Birth'
   input :pob
   input :pob_father
   input :pob_mother
