@@ -3,6 +3,7 @@ class CensusRecord < ApplicationRecord
   self.abstract_class = true
 
   include AutoStripAttributes
+  include AutoUpcaseAttributes
   include DefineEnumeration
   include Moderation
   include PersonNames
