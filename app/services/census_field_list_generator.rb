@@ -31,7 +31,7 @@ class CensusFieldListGenerator
     @card = options[:label] and return if options[:as] == :divider
     return if card == 'Name' || card == 'Census Scope'
 
-    @fields << field
+    @fields << field.to_s
   end
 
   def output_header_fields

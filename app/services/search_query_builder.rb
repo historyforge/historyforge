@@ -20,9 +20,13 @@ class SearchQueryBuilder
     options&.each do |key, value|
       instance_variable_set "@#{key}", value
     end
-    @f ||= default_fields
     @s ||= {}
     @g ||= {}
+    @f ||= default_fields
+    ransack_params.keys.each do |key|
+      attr = entity_class.attribute_names.detect { |item| key.to_s.starts_with?(item) }
+      @f << attr if attr && !@f.include?(attr)
+    end
   end
 
   def active?
