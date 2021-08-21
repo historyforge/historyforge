@@ -1,5 +1,5 @@
 FactoryBot.define do
   factory(:locality) do
-    name { 'Town of Nowhereville' }
+    name { Faker::Address.community }
   end
 end

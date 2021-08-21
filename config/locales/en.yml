@@ -22,6 +22,7 @@
 en:
   census_codes:
     default:
+      ot: 'Other'
       other: 'Other'
       blank: 'Left blank'
       unk: 'Unknown'
@@ -113,6 +114,7 @@ en:
       s: 'School'
       u: 'Unable to work'
       o: 'Other'
+      ot: 'Other'
     deduction_rate:
       1: 'all'
       2: 'half or more'

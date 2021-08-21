@@ -5,6 +5,8 @@ class Census1910Record < CensusRecord
 
   self.table_name = 'census_1910_records'
 
+  alias_attribute :profession, :occupation
+
   belongs_to :locality, inverse_of: :census1910_records
 
   validates :language_spoken, vocabulary: { name: :language, allow_blank: true }
@@ -50,7 +52,7 @@ class Census1910Record < CensusRecord
     year_immigrated: 15,
     naturalized_alien: 16,
     language_spoken: 17,
-    profession: 18,
+    occupation: 18,
     industry: 19,
     employment: 20,
     unemployed: 21,

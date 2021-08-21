@@ -46,9 +46,11 @@
         .col-sm-4
           = form.input :postal_code
       .row
-        .col-sm-6
+        .col-sm-4
+          = form.input :locality_id, collection: Locality.order(:name)
+        .col-sm-4
           = form.input :lat
-        .col-sm-6
+        .col-sm-4
           = form.input :lon
 
   .card.mb-2

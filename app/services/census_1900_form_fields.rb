@@ -30,7 +30,7 @@ class Census1900FormFields < CensusFormFieldConfig
   input :naturalized_alien, as: :radio_buttons, coded: true, depends_on: :foreign_born
 
   divider 'Occupation, Industry, Employment Status'
-  input :profession
+  input :occupation
   input :industry
   input :unemployed_months, as: :integer, min: 0
 

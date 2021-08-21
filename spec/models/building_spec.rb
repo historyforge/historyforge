@@ -6,6 +6,7 @@ RSpec.describe Building do
       before do
         subject.city = 'Ithaca'
         subject.state = 'NY'
+        subject.locality = create(:locality)
       end
 
       it 'expects a primary address' do

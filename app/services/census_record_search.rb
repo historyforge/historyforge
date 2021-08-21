@@ -103,11 +103,11 @@ class CensusRecordSearch < SearchQueryBuilder
   end
 
   def default_fields
-    %w[]
+    %w{census_scope name sex race age marital_status relation_to_head occupation industry pob street_address}
   end
 
   def all_fields
-    %w[]
+    CensusFieldListGenerator.new(form_fields_config).render
   end
 
   def is_default_field?(field)

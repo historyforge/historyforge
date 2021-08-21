@@ -19,11 +19,11 @@ class CensusRecordPresenter < ApplicationPresenter
     model.locality&.name
   end
 
-  %w{foreign_born can_read can_write can_speak_english foreign_born unemployed attended_school
+  %w[foreign_born can_read can_write can_speak_english foreign_born unemployed attended_school
      blind deaf_dumb has_radio lives_on_farm can_read_write
      worked_yesterday veteran residence_1935_farm private_work public_work
-     seeking_work had_job had_unearned_income veteran_dead soc_sec deductions multi_marriage
-  }.each do |method|
+     seeking_work had_job had_unearned_income veteran_dead soc_sec deductions
+     multi_marriage].each do |method|
     define_method method do
       yes_or_blank model.send(method)
     end
@@ -40,6 +40,9 @@ class CensusRecordPresenter < ApplicationPresenter
     return public_send(field) if respond_to?(field)
     return census_code(model.public_send(field), field) if model.class.enumerations.include?(field.intern)
     return model.public_send(field) if model.respond_to?(field)
+
+    '?'
+  rescue NoMethodError
     '?'
   end
 

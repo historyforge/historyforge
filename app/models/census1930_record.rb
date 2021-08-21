@@ -4,11 +4,14 @@
 class Census1930Record < CensusRecord
   self.table_name = 'census_1930_records'
 
+  alias_attribute :profession, :occupation
+  alias_attribute :profession_code, :occupation_code
+
   belongs_to :coded_industry, class_name: 'Industry1930Code', optional: true, foreign_key: :industry1930_code_id
   belongs_to :coded_occupation, class_name: 'Occupation1930Code', optional: true, foreign_key: :occupation1930_code_id
   belongs_to :locality, inverse_of: :census1930_records
 
-  before_validation :handle_profession_code, if: :profession_code_changed?
+  before_validation :handle_occupation_code, if: :occupation_code_changed?
   validates :mother_tongue, vocabulary: { name: :language, allow_blank: true }
   validates :dwelling_number, presence: true
 
@@ -19,7 +22,8 @@ class Census1930Record < CensusRecord
   define_enumeration :name_suffix, %w[Jr Sr]
   define_enumeration :name_prefix, %w[Dr Mr Mrs]
 
-  auto_strip_attributes :industry, :profession_code, :pob_code, :worker_class
+  auto_strip_attributes :industry, :occupation_code, :pob_code
+  auto_upcase_attributes :occupation_code
 
   def year
     1930
@@ -33,23 +37,24 @@ class Census1930Record < CensusRecord
     coded_industry&.name_with_code
   end
 
-  def handle_profession_code
-    return if profession_code.blank?
-    code = profession_code.squish.split(' ').join.gsub('O', '0')
+  def handle_occupation_code
+    return if occupation_code.blank?
+
+    code = occupation_code.squish.split(' ').join.gsub('O', '0')
     ocode = if code =~ /^(8|9)/
               "#{code[0..1]} #{code[2..3]}"
             else
               code[0..1]
             end
     self.coded_occupation = Occupation1930Code.where(code: ocode).first
-    icode = code[-2..-1]
+    icode = code[-2..]
     self.coded_industry = Industry1930Code.where(code: icode).first
   end
 
   def validate_profession_code
-    if profession_code.present? && (industry1930_code_id.blank? || occupation1930_code_id.blank?)
-      errors.add :profession_code, "Invalid profession code."
-    end
+    return unless occupation_code.present? && (industry1930_code_id.blank? || occupation1930_code_id.blank?)
+
+    errors.add :occupation_code, 'Invalid profession code.'
   end
 
   COLUMNS = {
@@ -84,10 +89,10 @@ class Census1930Record < CensusRecord
     year_immigrated: 22,
     naturalized_alien: 23,
     can_speak_english: 24,
-    profession: 25,
+    occupation: 25,
     industry: 26,
     worker_class: 27,
-    profession_code: 'D',
+    occupation_code: 'D',
     worked_yesterday: 28,
     unemployment_line: 29,
     veteran: 30,

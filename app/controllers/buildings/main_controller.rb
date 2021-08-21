@@ -182,7 +182,7 @@ class Buildings::MainController < ApplicationController
   def building_params
     params.require(:building).permit :name, :description, :annotations, :stories, :block_number,
                                      :year_earliest, :year_latest, :year_latest_circa, :year_earliest_circa,
-                                     :lining_type_id, :frame_type_id,
+                                     :lining_type_id, :frame_type_id, :locality_id,
                                      :lat, :lon, :city, :state, :postal_code, :architects_list,
                                      :investigate, :investigate_reason, :notes,
                                      { building_type_ids: [],

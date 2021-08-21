@@ -25,44 +25,48 @@
     .card.mb-1
       .card-header Details
       .card-body
-        dl
-          - if @building.proper_name?
-            dt Name
-            dd= @building.name
-          dt Address
-          - @building.addresses.each do |address|
-            dd= address.address
-          dt Years
-          - if @building.year_earliest? || @building.year_latest?
-            dd
-              - if @building.year_earliest?
-                = "Built in #{@building.year_earliest}."
-              - if @building.year_latest?
-                = " Torn down in #{@building.year_latest}."
+        .row
+          .col-sm-6
+            dl
+              - if @building.proper_name?
+                dt Name
+                dd= @building.name
+              dt Address
+              - @building.addresses.each do |address|
+                dd= address.address
+              dt Years
+              - if @building.year_earliest? || @building.year_latest?
+                dd
+                  - if @building.year_earliest?
+                    = "Built in #{@building.year_earliest}."
+                  - if @building.year_latest?
+                    = " Torn down in #{@building.year_latest}."
+                  - else
+                    = " Still standing."
               - else
-                = " Still standing."
-          - else
-            dd Not known.
-          dt Architects
-          dd= @building.architects.present? ? @building.architects.map(&:name).to_sentence : 'None'
-          dt Building Type
-          dd= @building.building_type_name || 'not specified'
-          dt Construction
-          dd
-            - if @building.stories
-              => "#{@building.stories.to_i}-story"
-            - if @building.frame_type_id
-              = "#{@building.frame_type.name} structure"
-            - if @building.lining_type_id
-              = " with #{@building.lining_type.name} lining."
-            - if !@building.stories && !@building.frame_type_id && !@building.lining_type_id
-              = 'not specified'
-          - if @building.annotations.present?
-            dt Annotations
-            dd= simple_format @building.annotations
-          - if @building.block_number?
-            dt Block Number
-            dd= @building.block_number
+                dd Not known.
+              dt Architects
+              dd= @building.architects.present? ? @building.architects.map(&:name).to_sentence : 'None'
+              dt Building Type
+              dd= @building.building_type_name || 'not specified'
+          .col-sm-6
+            dl
+              dt Construction
+              dd
+                - if @building.stories
+                  => "#{@building.stories.to_i}-story"
+                - if @building.frame_type_id
+                  = "#{@building.frame_type.name} structure"
+                - if @building.lining_type_id
+                  = " with #{@building.lining_type.name} lining."
+                - if !@building.stories && !@building.frame_type_id && !@building.lining_type_id
+                  = 'not specified'
+              - if @building.annotations.present?
+                dt Annotations
+                dd= simple_format @building.annotations
+              - if @building.block_number?
+                dt Block Number
+                dd= @building.block_number
 
     - if @building.description?
       .card.mb-1

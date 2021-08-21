@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_18_205926) do
+ActiveRecord::Schema.define(version: 2021_08_21_190633) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
@@ -110,10 +110,12 @@ ActiveRecord::Schema.define(version: 2021_08_18_205926) do
     t.boolean "investigate", default: false
     t.string "investigate_reason"
     t.text "notes"
+    t.bigint "locality_id"
     t.index ["building_type_id"], name: "index_buildings_on_building_type_id"
     t.index ["created_by_id"], name: "index_buildings_on_created_by_id"
     t.index ["frame_type_id"], name: "index_buildings_on_frame_type_id"
     t.index ["lining_type_id"], name: "index_buildings_on_lining_type_id"
+    t.index ["locality_id"], name: "index_buildings_on_locality_id"
     t.index ["reviewed_by_id"], name: "index_buildings_on_reviewed_by_id"
   end
 
@@ -256,7 +258,7 @@ ActiveRecord::Schema.define(version: 2021_08_18_205926) do
     t.integer "year_immigrated"
     t.string "naturalized_alien"
     t.integer "years_in_us"
-    t.string "profession", default: "None"
+    t.string "occupation", default: "None"
     t.integer "unemployed_months"
     t.boolean "attended_school_old"
     t.boolean "can_read"
@@ -326,7 +328,7 @@ ActiveRecord::Schema.define(version: 2021_08_18_205926) do
     t.string "pob_mother"
     t.integer "year_immigrated"
     t.string "naturalized_alien"
-    t.string "profession", default: "None"
+    t.string "occupation", default: "None"
     t.string "industry"
     t.string "employment"
     t.boolean "unemployed"
@@ -402,7 +404,7 @@ ActiveRecord::Schema.define(version: 2021_08_18_205926) do
     t.string "pob_mother"
     t.string "mother_tongue_mother"
     t.boolean "can_speak_english"
-    t.string "profession", default: "None"
+    t.string "occupation", default: "None"
     t.string "industry"
     t.string "employment"
     t.boolean "attended_school"
@@ -480,9 +482,9 @@ ActiveRecord::Schema.define(version: 2021_08_18_205926) do
     t.integer "year_immigrated"
     t.string "naturalized_alien"
     t.boolean "can_speak_english"
-    t.string "profession", default: "None"
+    t.string "occupation", default: "None"
     t.string "industry"
-    t.string "profession_code"
+    t.string "occupation_code"
     t.string "worker_class"
     t.boolean "worked_yesterday"
     t.string "unemployment_line"
@@ -592,7 +594,7 @@ ActiveRecord::Schema.define(version: 2021_08_18_205926) do
     t.boolean "soc_sec"
     t.boolean "deductions"
     t.string "deduction_rate"
-    t.string "usual_profession"
+    t.string "usual_occupation"
     t.string "usual_industry"
     t.string "usual_worker_class"
     t.string "usual_occupation_code"
@@ -767,6 +769,11 @@ ActiveRecord::Schema.define(version: 2021_08_18_205926) do
     t.integer "position"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "localities_map_overlays", id: false, force: :cascade do |t|
+    t.bigint "locality_id", null: false
+    t.bigint "map_overlay_id", null: false
   end
 
   create_table "map_overlays", force: :cascade do |t|
@@ -1012,6 +1019,7 @@ ActiveRecord::Schema.define(version: 2021_08_18_205926) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "addresses", "buildings"
   add_foreign_key "buildings", "building_types"
+  add_foreign_key "buildings", "localities"
   add_foreign_key "buildings", "users", column: "created_by_id"
   add_foreign_key "buildings", "users", column: "reviewed_by_id"
   add_foreign_key "buildings_building_types", "building_types"

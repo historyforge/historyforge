@@ -14,12 +14,14 @@ class BuildingFromAddress
                             city: record.city,
                             state: record.state,
                             postal_code: AppConfig.postal_code,
+                            locality: record.locality,
                             building_types: [BuildingType.find_by(name: 'residence')]
 
     modern_address.is_primary = true
     building.addresses << modern_address
     building.addresses << original_address unless original_address.address == modern_address.address
     raise(building.errors.inspect) unless building.save
+
     building
   end
 

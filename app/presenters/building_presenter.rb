@@ -3,6 +3,10 @@ class BuildingPresenter < ApplicationPresenter
     model.building_type_name&.capitalize || 'Unknown'
   end
 
+  def locality
+    model.locality&.name || 'None'
+  end
+
   def street_address
     [model.address_house_number, model.address_street_prefix, model.address_street_name, model.address_street_suffix].join(' ')
   end

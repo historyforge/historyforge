@@ -8,6 +8,7 @@ class Census1940Record < CensusRecord
 
   alias_attribute :profession, :occupation
   alias_attribute :profession_code, :occupation_code
+  alias_attribute :usual_profession, :usual_occupation
 
   validate :validate_occupation_codes
 
@@ -21,7 +22,13 @@ class Census1940Record < CensusRecord
   define_enumeration :war_fought, %w[W S SW R]
   define_enumeration :no_work_reason, %w[H S U Ot]
   define_enumeration :deduction_rate, %w[1 2 3]
-  auto_strip_attributes :industry, :occupation_code, :worker_class
+
+  auto_strip_attributes :industry,
+                        :occupation_code, :usual_occupation_code,
+                        :usual_industry, :usual_industry_code
+
+  auto_upcase_attributes :occupation_code, :usual_occupation_code,
+                         :usual_industry_code, :worker_class_code, :usual_worker_class_code
 
   def year
     1940

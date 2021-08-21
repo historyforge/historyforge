@@ -15,7 +15,11 @@
     tbody
       - @map_overlays.each do |record|
         tr
-          td= record.name
+          td
+            = record.name
+            - if record.localities.present?
+              br
+              = record.localities.map(&:name).join(', ')
           td= record.year_depicted
           td= record.active? ? 'Yes' : 'No'
           td style="text-align:right;white-space:nowrap"

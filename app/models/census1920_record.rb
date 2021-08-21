@@ -5,6 +5,8 @@ class Census1920Record < CensusRecord
 
   self.table_name = 'census_1920_records'
 
+  alias_attribute :profession, :occupation
+
   belongs_to :locality, inverse_of: :census1920_records
 
   validates :mother_tongue, :mother_tongue_father, :mother_tongue_mother, vocabulary: { name: :language, allow_blank: true }
@@ -33,7 +35,7 @@ class Census1920Record < CensusRecord
     name_suffix: 5,
     relation_to_head: 6,
     owned_or_rented: 7,
-    mortage: 8,
+    mortgage: 8,
     sex: 9,
     race: 10,
     age: 11,
@@ -52,7 +54,7 @@ class Census1920Record < CensusRecord
     pob_mother: 23,
     mother_tongue_mother: 24,
     speaks_english: 25,
-    profession: 26,
+    occupation: 26,
     industry: 27,
     employment: 28,
     farm_schedule: 29,
