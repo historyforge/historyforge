@@ -26,18 +26,35 @@ class BuildingsOnStreet
     items = Building.left_outer_joins(:addresses)
                     .includes(:addresses)
                     .where(addresses: { name: street_name, city: city })
-                    .order('addresses.name, addresses.suffix, addresses.prefix, addresses.house_number')
+                    .order('addresses.name, addresses.suffix, addresses.prefix, addresses.house_number::int')
     items = items.where(addresses: { prefix: street_prefix }) if street_prefix.present?
     items = items.where(addresses: { suffix: street_suffix }) if street_suffix.present?
 
     # If we have a house number then let's limit to addresses matching the first digit. When searching for "5" this
     # winnows out "405" but not "5", "50", or "5090". So it doesn't quite meet the desire of "show all buildings within
     # the hundred block".
-    items = items.where('addresses.house_number LIKE ?', "#{street_house_number[0]}%") if street_house_number.present?
+    items = add_block_filter(items) if street_house_number.present?
 
     # Ensures that the record's building address is at the top of the list even if it isn't returned by the query
     items = items.to_a.unshift(Building.find(building_id)) if building_id && !items.detect { |b| b.id == building_id }
 
     items.map { |item| Row.new item.id, item.street_address.gsub("\n", ', ') }
+  end
+
+  def add_block_filter(items)
+    base_number = street_house_number.to_i
+
+    if base_number < 100
+      items.where('addresses.house_number::int < 100')
+    elsif base_number < 1_000
+      hundred_block = (base_number.to_d / 1_000.to_d) * 10
+      items.where("addresses.house_number::int BETWEEN #{hundred_block.floor}00 AND (#{hundred_block.ceil}00 - 1)")
+    elsif base_number < 10_000
+      hundred_block = (base_number.to_d / 10_000.to_d) * 100
+      items.where("addresses.house_number::int BETWEEN #{hundred_block.floor}00 AND (#{hundred_block.ceil}00 - 1)")
+    else
+      hundred_block = (base_number.to_d / 100_000.to_d) * 1000
+      items.where("addresses.house_number::int BETWEEN #{hundred_block.floor}00 AND (#{hundred_block.ceil}00 - 1)")
+    end
   end
 end

@@ -1,3 +1,7 @@
+# frozen_string_literal: true
+
+# Rails model for buildings. Census records are attached to buildings. They also have photos and some
+# metadata originally designed and provided by Historic Ithaca.
 class Building < ApplicationRecord
   include AutoStripAttributes
   include Moderation
