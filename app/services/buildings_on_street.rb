@@ -22,11 +22,13 @@ class BuildingsOnStreet
 
   private
 
+  HOUSE_SQL = "substring(house_number, '^[0-9]+')::int"
+
   def buildings_on_street
     items = Building.left_outer_joins(:addresses)
                     .includes(:addresses)
                     .where(addresses: { name: street_name, city: city })
-                    .order('addresses.name, addresses.suffix, addresses.prefix, addresses.house_number::int')
+                    .order("addresses.name, addresses.suffix, addresses.prefix, #{HOUSE_SQL}")
     items = items.where(addresses: { prefix: street_prefix }) if street_prefix.present?
     items = items.where(addresses: { suffix: street_suffix }) if street_suffix.present?
 
@@ -38,6 +40,8 @@ class BuildingsOnStreet
     # Ensures that the record's building address is at the top of the list even if it isn't returned by the query
     items = items.to_a.unshift(Building.find(building_id)) if building_id && !items.detect { |b| b.id == building_id }
 
+    items = items.to_a
+
     items.map { |item| Row.new item.id, item.street_address.gsub("\n", ', ') }
   end
 
@@ -45,16 +49,16 @@ class BuildingsOnStreet
     base_number = street_house_number.to_i
 
     if base_number < 100
-      items.where('addresses.house_number::int < 100')
+      items.where("#{HOUSE_SQL} < 100")
     elsif base_number < 1_000
       hundred_block = (base_number.to_d / 1_000.to_d) * 10
-      items.where("addresses.house_number::int BETWEEN #{hundred_block.floor}00 AND (#{hundred_block.ceil}00 - 1)")
+      items.where("#{HOUSE_SQL} BETWEEN #{hundred_block.floor}00 AND (#{hundred_block.ceil}00 - 1)")
     elsif base_number < 10_000
       hundred_block = (base_number.to_d / 10_000.to_d) * 100
-      items.where("addresses.house_number::int BETWEEN #{hundred_block.floor}00 AND (#{hundred_block.ceil}00 - 1)")
+      items.where("#{HOUSE_SQL} BETWEEN #{hundred_block.floor}00 AND (#{hundred_block.ceil}00 - 1)")
     else
       hundred_block = (base_number.to_d / 100_000.to_d) * 1000
-      items.where("addresses.house_number::int BETWEEN #{hundred_block.floor}00 AND (#{hundred_block.ceil}00 - 1)")
+      items.where("#{HOUSE_SQL} BETWEEN #{hundred_block.floor}00 AND (#{hundred_block.ceil}00 - 1)")
     end
   end
 end

@@ -8,7 +8,8 @@ class BuildingPresenter < ApplicationPresenter
   end
 
   def street_address
-    [model.address_house_number, model.address_street_prefix, model.address_street_name, model.address_street_suffix].join(' ')
+    model.primary_street_address
+    # [model.address_house_number, model.address_street_prefix, model.address_street_name, model.address_street_suffix].join(' ')
   end
 
   def year_earliest
