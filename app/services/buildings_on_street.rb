@@ -28,7 +28,7 @@ class BuildingsOnStreet
     items = Building.left_outer_joins(:addresses)
                     .includes(:addresses)
                     .where(addresses: { name: street_name, city: city })
-                    .order("addresses.name, addresses.suffix, addresses.prefix, #{HOUSE_SQL}")
+                    .order(Arel.sql("addresses.name, addresses.suffix, addresses.prefix, #{HOUSE_SQL}"))
     items = items.where(addresses: { prefix: street_prefix }) if street_prefix.present?
     items = items.where(addresses: { suffix: street_suffix }) if street_suffix.present?
 
@@ -48,17 +48,19 @@ class BuildingsOnStreet
   def add_block_filter(items)
     base_number = street_house_number.to_i
 
-    if base_number < 100
-      items.where("#{HOUSE_SQL} < 100")
-    elsif base_number < 1_000
-      hundred_block = (base_number.to_d / 1_000.to_d) * 10
-      items.where("#{HOUSE_SQL} BETWEEN #{hundred_block.floor}00 AND (#{hundred_block.ceil}00 - 1)")
-    elsif base_number < 10_000
-      hundred_block = (base_number.to_d / 10_000.to_d) * 100
-      items.where("#{HOUSE_SQL} BETWEEN #{hundred_block.floor}00 AND (#{hundred_block.ceil}00 - 1)")
-    else
-      hundred_block = (base_number.to_d / 100_000.to_d) * 1000
-      items.where("#{HOUSE_SQL} BETWEEN #{hundred_block.floor}00 AND (#{hundred_block.ceil}00 - 1)")
-    end
+    sql = if base_number < 100
+            "#{HOUSE_SQL} < 100"
+          elsif base_number < 1_000
+            hundred_block = (base_number.to_d / 1_000.to_d) * 10
+            "#{HOUSE_SQL} BETWEEN #{hundred_block.floor}00 AND (#{hundred_block.ceil}00 - 1)"
+          elsif base_number < 10_000
+            hundred_block = (base_number.to_d / 10_000.to_d) * 100
+            "#{HOUSE_SQL} BETWEEN #{hundred_block.floor}00 AND (#{hundred_block.ceil}00 - 1)"
+          else
+            hundred_block = (base_number.to_d / 100_000.to_d) * 1000
+            "#{HOUSE_SQL} BETWEEN #{hundred_block.floor}00 AND (#{hundred_block.ceil}00 - 1)"
+          end
+
+    items.where Arel.sql(sql)
   end
 end
