@@ -41,7 +41,7 @@
         .column-count-3.checkboxes#fields
           - @search.all_fields.each do |field|
             label.dropdown-item.checkbox for="f_#{field}"
-              = check_box_tag 'f[]', field, @search.f.include?(field), id: "f_#{field}", data: { default: @search.is_default_field?(field) }
+              = check_box_tag 'f[]', field, @search.f.include?(field), id: "f_#{field}", data: { default: @search.default_field?(field) }
               = translated_label resource_class, field
       .card-footer
         = form.submit 'Submit', data: { :disable_with => 'Sending...' }, :class => 'btn btn-primary mr-auto'

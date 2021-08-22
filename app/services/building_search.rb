@@ -1,41 +1,33 @@
 class BuildingSearch < SearchQueryBuilder
 
   def self.generate(params: {}, user: nil)
-    item = self.new
-    item.user = user
-    item.s = params[:s] || {}
-    item.f = params[:f] || item.default_fields
-    item.g = params[:g] || {}
-    item.c = params[:c] || 'street_address'
-    item.d = params[:d] || 'asc'
-    item.from = params[:from]
-    item.to = params[:to]
-    item.sort = params[:sort] if params[:sort]
-    item.people = params[:people] if params[:people]
-    item.people_params = params[:peopleParams] if params[:peopleParams]
-    item.scope = params[:scope] && params[:scope] != 'on' && params[:scope].intern
-    item
+    new user: user,
+        s: params[:s],
+        f: params[:f],
+        g: params[:g],
+        from: params[:from],
+        to: params[:to],
+        sort: params[:sort],
+        people: params[:people],
+        people_params: params[:peopleParams],
+        scope: params[:scope] && params[:scope] != 'on' && params[:scope].intern
   end
 
   attr_accessor :people, :expanded
 
   attr_reader :people_params
 
-  def results
-    return @results if defined?(@results)
-
-    @results = scoped.to_a
+  memoize def results
+    results = scoped.to_a
     if @residents
-      @results.each do |result|
+      results.each do |result|
         result.residents = @residents[result.id]
       end
     end
-    @results.map { |result| BuildingPresenter.new result, user }
+    results.map { |result| BuildingPresenter.new result, user }
   end
 
-  def scoped
-    return @scoped if defined?(@scoped)
-
+  memoize def scoped
     active? && builder.left_outer_joins(:addresses)
 
     builder.reviewed unless user
@@ -48,7 +40,7 @@ class BuildingSearch < SearchQueryBuilder
 
     if expanded
       builder.includes(:locality) if f.include?('locality')
-      builder.includes(:building_types) if f.include?('building_type')
+      builder.includes(:building_types, :building_types_buildings) if f.include?('building_type') || f.include?('building_type_name')
       builder.includes(:addresses) if f.include?('street_address')
       builder.includes(:lining_type) if f.include?('lining_type')
       builder.includes(:frame_type)  if f.include?('frame_type')
@@ -58,7 +50,7 @@ class BuildingSearch < SearchQueryBuilder
 
     enrich_with_residents if people.present?
 
-    @scoped = builder.scoped
+    builder.scoped
   end
 
   def default_fields
@@ -102,9 +94,7 @@ class BuildingSearch < SearchQueryBuilder
   def enrich_with_residents
     people_class = "Census#{people}Record".constantize
     people = people_class.where.not(reviewed_at: nil)
-
     people = people.ransack(people_params).result if people_params.present?
-
     return if people.blank?
 
     @residents = people.group_by(&:building_id)
@@ -115,8 +105,10 @@ class BuildingSearch < SearchQueryBuilder
     sort.present? ? add_applied_sort : add_default_sort
   end
 
+  # TODO: this doesn't work anymore since we have the new address scheme
   def street_address_order_clause(dir)
-    "address_street_name #{dir}, address_street_prefix #{dir}, address_street_suffix #{dir}, substring(address_house_number, '^[0-9]+')::int #{dir}"
+    builder.joins(:addresses)
+    "addresses.name #{dir}, addresses.prefix #{dir}, addresses.suffix #{dir}, substring(addresses.house_number, '^[0-9]+')::int #{dir}"
   end
 
   def add_applied_sort
@@ -124,18 +116,17 @@ class BuildingSearch < SearchQueryBuilder
     sort&.each do |_key, sort_unit|
       col = sort_unit['colId']
       dir = sort_unit['sort']
-      order << "#{col} #{dir}" if Building.columns.map(&:name).include?(col)
+      if Building.columns.map(&:name).include?(col)
+        order << "#{col} #{dir}"
+      elsif col == 'street_address'
+        order << street_address_order_clause(dir)
+      end
     end
     order << street_address_order_clause('asc') if order.blank?
-    builder.order(entity_class.sanitize_sql_for_order(order.join(', '))) if order
+    builder.order(Arel.sql(entity_class.sanitize_sql_for_order(order.join(', ')))) if order
   end
 
   def add_default_sort
-    @d = 'asc' unless %w[asc desc].include?(@d)
-    if @c && Building.columns.map(&:name).include?(@c)
-      builder.order Arel.sql(entity_class.send(:sanitize_sql, "#{@c} #{@d}"))
-    else
-      builder.order Arel.sql(entity_class.send(:sanitize_sql, street_address_order_clause(@d)))
-    end
+    builder.order Arel.sql(entity_class.send(:sanitize_sql, street_address_order_clause(@d)))
   end
 end

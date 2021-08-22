@@ -6,19 +6,17 @@
 # 3. Converts the hash to a CSV string
 
 class CensusRecordSearch < SearchQueryBuilder
-  attr_accessor :page, :s, :f, :fs, :g, :user, :sort, :from, :to, :scope
+  attr_accessor :page, :s, :f, :g, :user, :sort, :from, :to, :scope, :entity_class, :form_fields_config
 
   def census_scope_search?
     @s[:enum_dist_eq].present? && @s[:page_number_eq].present? && @s[:page_side_eq].present?
   end
 
-  def results
-    @results ||= scoped.to_a.map {|row| CensusRecordPresenter.new(row, user) }
+  memoize def results
+    scoped.to_a.map {|row| CensusRecordPresenter.new(row, user) }
   end
 
-  def scoped
-    return @scoped if defined?(@scoped)
-
+  memoize def scoped
     builder.includes(:locality) if f.include?('locality')
     builder.reviewed unless user
 
@@ -28,7 +26,7 @@ class CensusRecordSearch < SearchQueryBuilder
     add_scopes
     add_sorts
 
-    @scoped = builder.scoped
+    builder.scoped
   end
 
   def add_scopes
@@ -83,35 +81,26 @@ class CensusRecordSearch < SearchQueryBuilder
     "last_name #{dir}, first_name #{dir}, middle_name #{dir}"
   end
 
-  def self.generate(params: {}, user:)
-    item = self.new
-    item.user = user
-    item.s = params[:s] || {}
-    item.f = params[:f] || item.default_fields
-    item.g = params[:g] || {}
-    item.sort = params[:sort]
+  def self.generate(year:, params: {}, user:)
     scope = params[:scope]
-    item.scope = scope.to_sym if scope && scope != 'on'
-    item.from = params[:from]&.to_i
-    item.to = params[:to]&.to_i
-
-    item
-  end
-
-  def columns
-    @columns ||= f.concat(['id'])
+    new entity_class: "Census#{year}Record".constantize,
+        form_fields_config: "Census#{year}FormFields".constantize,
+        user: user,
+        s: params[:s],
+        f: params[:f],
+        g: params[:g],
+        sort: params[:sort],
+        scope: scope && scope != 'on' ? scope.to_sym : nil,
+        from: params[:from]&.to_i,
+        to: params[:to]&.to_i
   end
 
   def default_fields
-    %w{census_scope name sex race age marital_status relation_to_head occupation industry pob street_address}
+    %w[census_scope name sex race age marital_status relation_to_head occupation industry pob street_address]
   end
 
   def all_fields
     CensusFieldListGenerator.new(form_fields_config).render
-  end
-
-  def is_default_field?(field)
-    default_fields.include?(field.to_s)
   end
 
   def unhoused?
