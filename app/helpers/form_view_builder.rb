@@ -40,7 +40,7 @@ class FormViewBuilder < SimpleForm::FormBuilder
   def submit(value=nil, options={}); end
 
   def format_text(text)
-    text =~ /\n/m ? "<br>".html_safe + @template.simple_format(text) : text
+    text =~ /\n/m ? '<br>'.html_safe + @template.simple_format(text) : text
   end
 
   def content_tag(*args)
@@ -48,12 +48,12 @@ class FormViewBuilder < SimpleForm::FormBuilder
   end
 
   def card(options)
-    @template.census_card_show options
+    @template.census_card_show **options
   end
 end
 
 SimpleForm::FormBuilder.class_eval do
   def card(options)
-    @template.census_card_edit options
+    @template.census_card_edit **options
   end
 end
