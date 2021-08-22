@@ -18,12 +18,12 @@ class BuildingSerializer
   attribute :lining, &:lining_type_name
 
   attribute :photo do |object|
-    object.photos.andand.first.andand.id
+    object.photos&.first&.id
   end
 
-  attribute :latitude, &:lat
+  attribute :latitude
 
-  attribute :longitude, &:lon
+  attribute :longitude
 
   attribute :census_records do |object, _params|
     object

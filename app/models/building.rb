@@ -95,16 +95,17 @@ class Building < ApplicationRecord
     name && (address_house_number.blank? || !name.include?(address_house_number))
   end
 
-  def full_street_address
-    "#{[street_address, city, state].join(' ')} #{postal_code}"
-  end
-
   def do_the_geocode
     return if Rails.env.test?
 
     geocode
   rescue Errno::ENETUNREACH
     nil
+  end
+
+  # TODO: this presentation stuff overlaps with the BuildingPresenter. Make the Buildings::MainController use the presenter.
+  def full_street_address
+    "#{[street_address, city, state].join(' ')} #{postal_code}"
   end
 
   def architects_list
@@ -115,7 +116,8 @@ class Building < ApplicationRecord
     self.architects = value.split(',').map(&:strip).map { |item| Architect.find_or_create_by(name: item) }
   end
 
-  def building_type_name
+  # Not clear why ruby 3.0.2 sends an empty argument here, but if you remove it, expect an error.
+  def building_type_name(*_)
     building_types.map(&:name).join('/')
   end
 
