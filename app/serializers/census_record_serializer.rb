@@ -1,4 +1,5 @@
-class CensusRecordSerializer
-  include FastJsonapi::ObjectSerializer
-  attributes :id, :name, :year, :profession, :race, :sex, :age
+class CensusRecordSerializer < ApplicationSerializer
+  def serializable_attributes
+    %i[id name year profession race sex age]
+  end
 end

@@ -1,4 +1,6 @@
 class ApplicationRecord < ActiveRecord::Base
+  include Memery
+
   self.abstract_class = true
 
   def self.current_table_name

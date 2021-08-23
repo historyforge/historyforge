@@ -117,9 +117,17 @@ class Building < ApplicationRecord
   end
 
   # Not clear why ruby 3.0.2 sends an empty argument here, but if you remove it, expect an error.
-  def building_type_name(*_)
-    building_types.map(&:name).join('/')
-  end
+  # def building_type_name(*_)
+  #   building_types.map(&:name).join('/')
+  # end
+  #
+  # def frame_type_name(*_)
+  #   frame_type&.name
+  # end
+  #
+  # def lining_type_name(*_)
+  #   lining_type&.name
+  # end
 
   def address
     return @address if defined?(@address)

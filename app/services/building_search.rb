@@ -9,8 +9,14 @@ class BuildingSearch < SearchQueryBuilder
         to: params[:to],
         sort: params[:sort],
         people: params[:people],
-        people_params: params[:peopleParams],
+        people_params: params[:peopleParams] && handle_people_params(params[:peopleParams]),
         scope: params[:scope] && params[:scope] != 'on' && params[:scope].intern
+  end
+
+  def self.handle_people_params(params)
+    JSON.parse(params).each_with_object({}) do |item, hash|
+      hash[item[0].to_sym] = item[1] if item[1].present?
+    end
   end
 
   attr_accessor :people, :expanded
@@ -24,7 +30,8 @@ class BuildingSearch < SearchQueryBuilder
         result.residents = @residents[result.id]
       end
     end
-    results.map { |result| BuildingPresenter.new result, user }
+
+    results.map { |result| result.decorate }
   end
 
   memoize def scoped
@@ -53,6 +60,11 @@ class BuildingSearch < SearchQueryBuilder
     builder.scoped
   end
 
+  def active?
+    keys = ransack_params.keys
+    keys.any? && keys != [:lat_not_null]
+  end
+
   def default_fields
     %w[street_address city state building_type year_earliest]
   end
@@ -76,13 +88,6 @@ class BuildingSearch < SearchQueryBuilder
 
   def unpeopled?
     @scope == :unpeopled
-  end
-
-  def people_params=(params)
-    people_params = JSON.parse(params)
-    @people_params = people_params.each_with_object({}) do |item, hash|
-      hash[item[0].to_sym] = item[1] if item[1].present?
-    end
   end
 
   private

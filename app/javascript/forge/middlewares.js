@@ -13,7 +13,7 @@ export function loadBuildings(incomingAction, store) {
 export function loadBuilding(incomingAction, store) {
     const url = `/buildings/${incomingAction.id}.json`
     axios.get(url, {params: buildParams(incomingAction.params)}).then(json => {
-        store.dispatch({type: 'BUILDING_SELECTED', building: json.data.data})
+        store.dispatch({type: 'BUILDING_SELECTED', building: json.data})
     })
 }
 

@@ -48,18 +48,18 @@
               dt Architects
               dd= @building.architects.present? ? @building.architects.map(&:name).to_sentence : 'None'
               dt Building Type
-              dd= @building.building_type_name || 'not specified'
+              dd= @building.building_type || 'not specified'
           .col-sm-6
             dl
               dt Construction
               dd
                 - if @building.stories
                   => "#{@building.stories.to_i}-story"
-                - if @building.frame_type_id
-                  = "#{@building.frame_type.name} structure"
-                - if @building.lining_type_id
-                  = " with #{@building.lining_type.name} lining."
-                - if !@building.stories && !@building.frame_type_id && !@building.lining_type_id
+                - if @building.frame
+                  = "#{@building.frame} structure"
+                - if @building.lining
+                  = " with #{@building.lining} lining."
+                - if !@building.stories && !@building.frame && !@building.lining
                   = 'not specified'
               - if @building.annotations.present?
                 dt Annotations

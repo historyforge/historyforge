@@ -30,7 +30,7 @@ class Buildings extends React.PureComponent {
                 <h3>Nearby Buildings</h3>
                 <div className="list-group">
                     {buildings.map((building, i) => (
-                        <Building key={i} {...building.data.attributes} highlighted={highlighted} />
+                        <Building key={i} {...building} highlighted={highlighted} />
                     ))}
                 </div>
             </div>

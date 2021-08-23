@@ -5,10 +5,6 @@ import {Modal, ModalHeader, ModalBody} from 'reactstrap'
 
 class Building extends React.PureComponent {
     state = { visible: false, building_id: null }
-    get building() {
-        return this.props.attributes
-    }
-
     close() {
         this.setState({ visible: false }, () => {
             this.props.deselect(this.state.building_id)
@@ -16,9 +12,9 @@ class Building extends React.PureComponent {
     }
 
     static getDerivedStateFromProps(props, state) {
-        if (props.attributes && props.attributes.id) {
-            if (!state.building_id || (props.attributes.id !== state.building_id)) {
-                state.building_id = props.attributes.id
+        if (props.id) {
+            if (!state.building_id || (props.id !== state.building_id)) {
+                state.building_id = props.id
                 state.visible = true
             }
         } else {
@@ -36,14 +32,14 @@ class Building extends React.PureComponent {
                     Building Details
                 </ModalHeader>
                 <ModalBody>
-                    {this.building && this.renderBuilding()}
+                    {this.props.id && this.renderBuilding()}
                 </ModalBody>
             </Modal>
         )
     }
 
     renderBuilding() {
-        const {building} = this
+        const building = this.props
         return (
             <div id="building-details">
                 <h5>
@@ -65,7 +61,7 @@ class Building extends React.PureComponent {
                 {building.architects && building.architects.length && (
                     <dl className="mb-0">
                         <dt>Architects</dt>
-                        <dd>{building.architects.map(architect => architect.name).join(', ')}</dd>
+                        <dd>{building.architects}</dd>
                     </dl>
                 )}
                 <dl>

@@ -1,17 +1,8 @@
-class BuildingListingSerializer
-  include FastJsonapi::ObjectSerializer
+# frozen_string_literal: true
 
-  cache_options enabled: true
-
-  attributes :id, :year_earliest, :year_latest,
-             :street_address, :building_type_ids,
-             :latitude, :longitude, :addresses
-
-  attribute :addresses do |object|
-    object.addresses.map { |address| address.address }
-  end
-
-  attribute :name do |object|
-    object.proper_name? ? object.name : object.street_address
+class BuildingListingSerializer < ApplicationSerializer
+  def serializable_attributes
+    %i[id name year_earliest year_latest street_address
+       building_type_ids latitude longitude]
   end
 end

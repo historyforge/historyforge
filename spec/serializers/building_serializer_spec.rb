@@ -1,0 +1,20 @@
+require 'rails_helper'
+
+RSpec.describe BuildingSerializer do
+  let(:building) { create(:building).decorate }
+  subject { BuildingSerializer.new(building).as_json }
+
+  it 'has the correct fields' do
+    expect(subject['id']).to eq(building.id.to_s)
+    expect(subject['frame']).to eq(building.frame_type.name)
+    expect(subject['lining']).to eq(building.lining_type.name)
+    expect(subject['building_type_ids']).to eq(building.building_type_ids)
+    expect(subject['type']).to eq(building.building_types.map(&:name).join(', '))
+    expect(subject['stories']).to eq(building.stories)
+    expect(subject['year_earliest']).to eq(building.year_earliest)
+    expect(subject['year_latest']).to eq(building.year_latest)
+    expect(subject['street_address']).to eq(building.street_address)
+
+    expect(subject['architects']).to eq(building.architects.first.name)
+  end
+end

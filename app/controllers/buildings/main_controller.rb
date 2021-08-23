@@ -61,6 +61,7 @@ class Buildings::MainController < ApplicationController
   end
 
   def show
+    @building = @building.decorate
     respond_to do |format|
       format.html
       format.json { render json: BuildingSerializer.new(@building) }
@@ -71,6 +72,7 @@ class Buildings::MainController < ApplicationController
 
   def update
     if @building.update(building_params)
+      @building = @building.decorate
       flash[:notice] = 'Building updated.'
       respond_to do |format|
         format.json { render json: BuildingSerializer.new(@building) }
