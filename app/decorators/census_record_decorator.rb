@@ -38,7 +38,8 @@ class CensusRecordDecorator < ApplicationDecorator
   %w[race marital_status sex naturalized_alien employment worker_class
      owned_or_rented mortgage farm_or_house civil_war_vet war_fought].each do |method|
     define_method method do
-      translate_census_code object.public_send(method), method
+      code = object.public_send(method) rescue NoMethodError
+      translate_census_code code, method
     end
   end
 

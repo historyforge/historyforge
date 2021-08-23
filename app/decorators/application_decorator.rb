@@ -5,14 +5,4 @@
 # to output fields that don't exist. Instead of barfing let's just ignore the field.
 class ApplicationDecorator < Draper::Decorator
   delegate_all
-
-  def method_missing(method, *args)
-    super
-  rescue NoMethodError
-    nil
-  end
-
-  def respond_to_missing?(method, include_private = nil)
-    super
-  end
 end
