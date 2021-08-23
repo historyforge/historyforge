@@ -95,16 +95,18 @@ jQuery(document).on('click', '#search-map', function() {
 })
 
 function getBuildingList() {
+  let house = $('#census_record_street_house_number').val()
+  if (house === '') house = null
   let city = jQuery('#city').val()
   if (city === '') city = null
   let street = jQuery('#street_name').val()
   if (street === '') street = null
-  let prefix = jQuery('#street_prefix').val()
+  let prefix = jQuery('#census_record_street_prefix').val()
   if (street === '') prefix = null
   let suffix = jQuery('#street_suffix').val()
   if (street === '') suffix = null
   if (city && street) {
-    const params = {city, street, prefix, suffix}
+    const params = {city, street, prefix, suffix, house}
     jQuery.getJSON('/census/1910/building_autocomplete', params, function (json) {
       const building = jQuery('#building_id')
       const current_value = building.val() || $('#census_record_building_id').val()
@@ -119,7 +121,7 @@ function getBuildingList() {
 }
 // When the user fills address on census form, this refills the building_id dropdown
 jQuery(document)
-    .on('blur', '#city, #street_name, #street_suffix', getBuildingList)
+    .on('change', '#city, #street_name, #street_suffix, #street_prefix, #street_house_number', getBuildingList)
     .ready(function() {
       $('.census_record_building_id').each(getBuildingList);
     })
