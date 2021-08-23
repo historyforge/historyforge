@@ -51,7 +51,7 @@ NameCellRenderer.prototype.init = function(params) {
   if (value && value.name) {
     this.eGui.innerHTML = value.name;
     if (!value.reviewed) {
-      this.eGui.innerHTML += '<span class="badge badge-danger">NEW</span>';
+      this.eGui.innerHTML += '<span class="badge badge-success">NEW</span>';
     }
   } else {
     this.eGui.innerHTML = "Loading more records."
