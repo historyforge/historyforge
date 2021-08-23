@@ -21,33 +21,33 @@ class Vocabulary < ApplicationRecord
   end
 
   def fields_by_year
-    DICTIONARY[machine_name.intern]
+    DICTIONARY[machine_name.intern] || []
   end
 
   DICTIONARY = {
-      language: {
-          1880 => [],
-          1900 => ['language_spoken'],
-          1910 => ['language_spoken'],
-          1920 => ['mother_tongue', 'mother_tongue_father', 'mother_tongue_mother'],
-          1930 => ['mother_tongue'],
-          1940 => ['mother_tongue']
-      },
-      pob: {
-          1880 => ['pob', 'pob_father', 'pob_mother'],
-          1900 => ['pob', 'pob_father', 'pob_mother'],
-          1910 => ['pob', 'pob_father', 'pob_mother'],
-          1920 => ['pob', 'pob_father', 'pob_mother'],
-          1930 => ['pob', 'pob_father', 'pob_mother'],
-          1940 => ['pob', 'pob_father', 'pob_mother']
-      },
-      relation_to_head: {
-          1880 => ['relation_to_head'],
-          1900 => ['relation_to_head'],
-          1910 => ['relation_to_head'],
-          1920 => ['relation_to_head'],
-          1930 => ['relation_to_head'],
-          1940 => ['relation_to_head']
-      },
-  }
+    language: {
+      1880 => [],
+      1900 => %w[language_spoken],
+      1910 => %w[language_spoken],
+      1920 => %w[mother_tongue mother_tongue_father mother_tongue_mother],
+      1930 => %w[language_spoken],
+      1940 => %w[mother_tongue]
+    },
+    pob: {
+      1880 => %w[pob pob_father pob_mother],
+      1900 => %w[pob pob_father pob_mother],
+      1910 => %w[pob pob_father pob_mother],
+      1920 => %w[pob pob_father pob_mother],
+      1930 => %w[pob pob_father pob_mother],
+      1940 => %w[pob pob_father pob_mother]
+    },
+    relation_to_head: {
+      1880 => %w[relation_to_head],
+      1900 => %w[relation_to_head],
+      1910 => %w[relation_to_head],
+      1920 => %w[relation_to_head],
+      1930 => %w[relation_to_head],
+      1940 => %w[relation_to_head]
+    }
+  }.freeze
 end

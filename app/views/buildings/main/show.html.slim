@@ -8,15 +8,15 @@
     = render 'shared/flag_it', item: @building, item_class: 'btn btn-light'
   - if can?(:create, Photograph)
     = link_to 'Add Photo', new_building_photograph_path(@building), class: 'btn btn-right'
-  - if can?(:update, @building)
+  - if can?(:update, @building.object)
     = link_to 'Edit', [:edit, @building], class: 'btn btn-light'
-  - if can?(:review, @building) && !@building.reviewed?
+  - if can?(:review, @building.object) && !@building.reviewed?
     = link_to 'Review', [:review, @building], class: 'btn btn-light', data: { method: :put }
   = link_to 'View All', buildings_path, class: 'btn btn-light'
 
 .row
   .col-sm-8
-    - if can?(:review, @building) && @building.investigate?
+    - if can?(:review, @building.object) && @building.investigate?
       .alert.alert-danger
         | This building requires further investigation before it can be marked as reviewed.
         - if @building.investigate_reason?

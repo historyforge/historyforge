@@ -1,22 +1,24 @@
-class CensusRecordPresenter < ApplicationPresenter
+# frozen_string_literal: true
+
+class CensusRecordDecorator < ApplicationDecorator
   def name
     "#{last_name}, #{first_name} #{middle_name}".strip
   end
 
   def age
-    if model.age_months
-      if model.age.blank?
-        "#{model.age_months}mo"
+    if object.age_months
+      if object.age.blank?
+        "#{object.age_months}mo"
       else
-        "#{model.age}y #{model.age_months}mo"
+        "#{object.age}y #{object.age_months}mo"
       end
     else
-      model.age
+      object.age
     end
   end
 
   def locality
-    model.locality&.name
+    object.locality&.name
   end
 
   %w[foreign_born can_read can_write can_speak_english foreign_born unemployed attended_school
@@ -25,25 +27,22 @@ class CensusRecordPresenter < ApplicationPresenter
      seeking_work had_job had_unearned_income veteran_dead soc_sec deductions
      multi_marriage].each do |method|
     define_method method do
-      yes_or_blank model.send(method)
+      yes_or_blank object.send(method)
+    end
+  end
+
+  %w[race marital_status sex naturalized_alien employment worker_class
+     owned_or_rented mortgage farm_or_house civil_war_vet war_fought].each do |method|
+    define_method method do
+      census_code object.public_send(method), method
     end
   end
 
   def census_scope
-    str = ''
-    str << "Ward #{model.ward} " if model.ward.present?
-    str << "ED #{model.enum_dist} p. #{model.page_number}#{model.page_side} # #{model.line_number}"
-    str
-  end
-
-  def field_for(field)
-    return public_send(field) if respond_to?(field)
-    return census_code(model.public_send(field), field) if model.class.enumerations.include?(field.intern)
-    return model.public_send(field) if model.respond_to?(field)
-
-    '?'
-  rescue NoMethodError
-    '?'
+    str = []
+    str << "Ward #{object.ward} " if object.ward.present?
+    str << "ED #{object.enum_dist} p. #{object.page_number}#{object.page_side} # #{object.line_number}"
+    str.join
   end
 
   def yes_or_blank(value)

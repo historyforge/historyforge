@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-class BuildingDecorator < Draper::Decorator
-  delegate_all
-
+class BuildingDecorator < ApplicationDecorator
   def building_type
     object.building_types.map(&:name).map(&:capitalize).join('/') || 'Unknown'
   end

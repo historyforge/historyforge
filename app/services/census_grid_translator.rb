@@ -14,7 +14,7 @@ class CensusGridTranslator
     records.map do |record|
       hash = { id: record.id }
       columns.each do |column|
-        value = record.field_for(column)
+        value = record.public_send(column)
         value = { name: value, reviewed: record.reviewed? } if column == 'name'
         hash[column] = value
       end

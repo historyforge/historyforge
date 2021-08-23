@@ -14,7 +14,7 @@ module RenderCsv
       headers = @search.columns.map { |field| Translator.label(resource_class, field) }
       csv << CSV.generate_line(headers)
       @search.results.each do |row|
-        row_results = @search.columns.map { |field| row.field_for(field) }
+        row_results = @search.columns.map { |field| row.public_send(field) }
         csv << CSV.generate_line(row_results)
       end
     end

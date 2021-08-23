@@ -48,8 +48,7 @@ class Term < ApplicationRecord
 
   def each_relevant_field
     CensusYears.each do |year|
-      fields = relevant_fields_for_year(year)
-      fields&.each do |attribute|
+      relevant_fields_for_year(year).each do |attribute|
         yield year, attribute
       end
     end

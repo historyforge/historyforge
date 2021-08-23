@@ -13,7 +13,7 @@ class CensusRecordSearch < SearchQueryBuilder
   end
 
   memoize def results
-    scoped.to_a.map {|row| CensusRecordPresenter.new(row, user) }
+    scoped.to_a.map {|row| row.decorate }
   end
 
   memoize def scoped

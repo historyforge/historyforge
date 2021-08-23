@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class PhotographPresenter < ApplicationPresenter
+class PhotographDecorator < ApplicationDecorator
   def title
     model.title || 'Untitled'
   end

@@ -64,7 +64,7 @@ module CensusRecords
     def show
       @model = resource_class.find params[:id]
       authorize! :read, @model
-      @record = CensusRecordPresenter.new @model, current_user
+      @record = @model.decorate
     end
 
     def edit

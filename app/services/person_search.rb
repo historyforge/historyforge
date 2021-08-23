@@ -13,7 +13,7 @@ class PersonSearch < SearchQueryBuilder
   end
 
   memoize def results
-    scoped.to_a.map { |row| PersonPresenter.new(row, user) }
+    scoped.to_a.map { |row| row.decorate }
   end
 
   memoize def scoped

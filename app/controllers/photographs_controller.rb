@@ -40,7 +40,7 @@ class PhotographsController < ApplicationController
   def show
     @photograph = model_class.find params[:id]
     authorize! :read, @photograph
-    @photograph = PhotographPresenter.new @photograph, current_user
+    @photograph = @photograph.decorate
   end
 
   def edit

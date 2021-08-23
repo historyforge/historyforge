@@ -30,9 +30,9 @@ RSpec.describe 'buildings' do
     sign_in create(:builder)
     building = create(:building, addresses: [build(:address, house_number: '405', name: 'Cayuga', prefix: 'N', suffix: 'St')])
 
-    visit building_path(building)
-    expect(page).to have_content '405 N Cayuga St'
-    click_on 'Edit'
+    visit edit_building_path(building)
+    # expect(page).to have_content '405 N Cayuga St'
+    # click_on 'Edit'
     expect(page).to have_content building.name
     fill_in 'Year Built', with: '1867'
     fill_in 'Year Demolished', with: '1945'
