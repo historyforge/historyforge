@@ -44,6 +44,6 @@ class CensusFieldListGenerator
   end
 
   def output_footer_fields
-    @fields << 'foreign_born' << 'notes' << 'latitude' << 'longitude'
+    @fields << 'latitude' << 'longitude'
   end
 end
