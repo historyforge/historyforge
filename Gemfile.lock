@@ -151,8 +151,6 @@ GEM
     jbuilder (2.11.2)
       activesupport (>= 5.0.0)
     json (2.5.1)
-    jsonapi-serializer (2.2.0)
-      activesupport (>= 4.2)
     kaminari (1.2.1)
       activesupport (>= 4.1.0)
       kaminari-actionview (= 1.2.1)
@@ -387,7 +385,6 @@ DEPENDENCIES
   geocoder
   image_processing
   jbuilder (~> 2.0)
-  jsonapi-serializer
   kaminari
   letter_opener
   letter_opener_web
