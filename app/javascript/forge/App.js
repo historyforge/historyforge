@@ -2,17 +2,29 @@ import React from 'react'
 import Layers from "./Layers"
 import Map from './Map'
 import Search from './Search'
+import CensusSearch from "./CensusSearch";
 import Building from './Building'
 
 import { Provider } from 'react-redux'
 import * as reducers from "./reducers"
 import {forgeMiddleware} from './middlewares'
 import { buildStore } from "./store";
+// import deparam from "../js/deparam";
 
 export default class App extends React.PureComponent {
-    mapRef = React.createRef()
-    store = buildStore(reducers, forgeMiddleware)
-    state = { sidebar: true }
+    constructor(props) {
+        super(props)
+        this.mapRef = React.createRef()
+        this.store = buildStore(reducers, forgeMiddleware)
+        this.state = { sidebar: true }
+
+        const year = this.store.getState().search.params.people
+        if (year) {
+            this.store.dispatch({type: 'FORGE_SET_YEAR', year: parseInt(year)})
+        }
+        this.store.dispatch({type: 'BUILDING_LOAD'})
+    }
+
     render() {
         const { sidebar } = this.state
         return (
@@ -22,6 +34,7 @@ export default class App extends React.PureComponent {
                     <div id={'forge-right-col'} className={sidebar ? 'open' : 'closed'}>
                         <Layers />
                         <Search />
+                        <CensusSearch />
                     </div>
                     <button type="button"
                             id="forge-sidebar-toggle"

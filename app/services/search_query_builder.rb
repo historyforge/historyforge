@@ -18,7 +18,7 @@ class SearchQueryBuilder
   def initialize(*args)
     options = args.extract_options!
     options&.each do |key, value|
-      instance_variable_set "@#{key}", value
+      instance_variable_set "@#{key}", value if value.present?
     end
     @s ||= {}
     @g ||= {}

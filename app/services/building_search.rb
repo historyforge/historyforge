@@ -1,4 +1,5 @@
 class BuildingSearch < SearchQueryBuilder
+  attr_reader :num_residents
 
   def self.generate(params: {}, user: nil)
     new user: user,
@@ -98,12 +99,14 @@ class BuildingSearch < SearchQueryBuilder
 
   def enrich_with_residents
     people_class = "Census#{people}Record".constantize
-    people = people_class.where.not(reviewed_at: nil)
+    people = people_class.where.not(reviewed_at: nil).select('building_id')
     people = people.ransack(people_params).result if people_params.present?
-    return if people.blank?
 
-    @residents = people.group_by(&:building_id)
-    builder.where(id: @residents.keys)
+    # Force it to return no results if there are no people - otherwise it returns all results when
+    # looking for Chinese people in 1910 in Ithaca. Nobody <> everybody
+
+    @num_residents = people.count
+    builder.where(id: people)
   end
 
   def add_order_clause

@@ -17,4 +17,14 @@ module CensusYears
   def self.map(&block)
     YEARS.map(&block)
   end
+
+  def self.visible_to_user(user)
+    YEARS.select { |year| Setting.can_view_public?(year) || (user && Setting.can_view_private?(year)) }
+  end
+
+  def self.each_visible_to_user(user, &block)
+    visible_to_user(user).each do |year|
+      yield year
+    end
+  end
 end

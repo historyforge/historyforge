@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { FormGroup, Label, Input } from 'reactstrap'
 
 class Layer extends React.PureComponent {
     render() {
@@ -9,15 +10,17 @@ class Layer extends React.PureComponent {
 
         return (
             <div className="layer">
-                <div className="form-check" >
-                    <input type="checkbox" className="form-check-input" checked={selected} onChange={toggle} />
-                    <span className="form-check-label">{name}</span>
-                </div>
-                {selected && <input type="range"
-                                    min={0}
-                                    max={100}
-                                    value={opacity}
-                                    onChange={(e) => setOpacity(id, e.target.value)} />}
+                <FormGroup check>
+                    <Label check>
+                        <Input type="checkbox" className="form-check-input" checked={selected} onChange={toggle} />
+                        {name}
+                    </Label>
+                    {selected && <input type="range"
+                                        min={0}
+                                        max={100}
+                                        value={opacity}
+                                        onChange={(e) => setOpacity(id, e.target.value)} />}
+                </FormGroup>
             </div>
         )
     }

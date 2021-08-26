@@ -3,10 +3,17 @@ import axios from 'axios'
 let searchTimeout = null
 
 export function loadBuildings(incomingAction, store) {
+    const qs = incomingAction.params || store.getState().search.params || {}
+    console.log(incomingAction, qs, buildParams(qs))
     axios.get('/buildings.json', {
-        params: buildParams(incomingAction.params)
+        params: buildParams(qs)
     }).then(json => {
         store.dispatch({type: 'BUILDING_LOADED', ...json.data})
+        const params = $.param(qs)
+        const url = `/forge/?${params}`
+        if (url !== location.toString()) {
+            window.history.pushState(params, 'HistoryForge', url)
+        }
     })
 }
 
@@ -36,6 +43,13 @@ export function moveBuilding(incomingAction, store) {
     })
 }
 
+function loadFilters(year, store) {
+    const url = `/census/${year}/advanced_search_filters.json`
+    axios.get(url).then(json => {
+        store.dispatch({type: 'FORGE_FILTERS_LOADED', ...json.data })
+    })
+}
+
 export const forgeMiddleware = store => next => (incomingAction) => {
     if (incomingAction.type === 'BUILDING_LOAD') {
         loadBuildings(incomingAction, store);
@@ -43,9 +57,10 @@ export const forgeMiddleware = store => next => (incomingAction) => {
         loadBuilding(incomingAction, store);
     } else if (incomingAction.type === 'SEARCH') {
         searchBuildings(incomingAction, store);
-    } else {
-        next(incomingAction)
+    } else if (incomingAction.type === 'FORGE_SET_YEAR') {
+        loadFilters(incomingAction.year, store)
     }
+    next(incomingAction)
 }
 
 const buildParams = function(search) {

@@ -24,7 +24,7 @@ class Map extends BaseMap {
     }
 
     componentDidMount() {
-        this.props.load(this.props.params)
+        // this.props.load(this.props.params)
         let { map } = this.state
         if (!map) {
             map = new google.maps.Map(document.getElementById('map'), this.mapOptions)
@@ -97,7 +97,7 @@ const mapStateToProps = state => {
 }
 
 const actions = {
-    load: (params) => ({ type: 'BUILDING_LOAD', params }),
+    // load: (params) => ({ type: 'BUILDING_LOAD', params }),
     highlight: (id) => ({ type: 'BUILDING_HIGHLIGHT', id }),
     select: (id, params) => ({ type: 'BUILDING_SELECT', id, params }),
 }
