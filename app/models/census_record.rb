@@ -20,7 +20,6 @@ class CensusRecord < ApplicationRecord
   before_save :ensure_housing
   before_save :match_to_person
 
-  before_validation :clean_enum_dist
   validates :first_name, :last_name, :family_id, :relation_to_head, :profession,
             :page_number, :page_side, :line_number, :county, :city, :state, :enum_dist,
             presence: true
@@ -28,7 +27,6 @@ class CensusRecord < ApplicationRecord
   validate :dont_add_same_person, on: :create
   validates :relation_to_head, vocabulary: { allow_blank: true }
   validates :pob, :pob_father, :pob_mother, vocabulary: { name: :pob, allow_blank: true }
-  # validates :person_id, uniqueness: { allow_nil: true }
 
   after_initialize :set_defaults
 
@@ -106,10 +104,6 @@ class CensusRecord < ApplicationRecord
 
     self.pob_mother ||= AppConfig.pob
     self.pob_father ||= AppConfig.pob
-  end
-
-  def clean_enum_dist
-    write_attribute(:enum_dist, enum_dist.sub(/\A\d+?\W/, '')) if enum_dist.present?
   end
 
   def dont_add_same_person
