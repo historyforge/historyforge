@@ -1,0 +1,25 @@
+- content_for :pills do
+  = simple_form_for @search, url: url_for(), method: :get, as: :s do |form|
+    .form-inline
+      = select_tag 'facet', options_for_select([['Select a facet', nil]].concat(@search.facets.map { |f| [translated_label(resource_class, f), f]}), params[:facet]), class: 'form-control'
+      = form.submit 'Draw', class: 'btn btn-primary'
+
+- if params[:facet].present?
+  - CensusFacet.with_data_for(@search, params[:facet]) do |data|
+    h3= params[:facet].titleize
+    .row
+      .col-6
+        - data[:charts].each do |chart|
+          = public_send :"#{chart}_chart", data[:rows]
+      .col-6
+        = table do
+          tbody
+            - data[:rows].each do |row|
+              tr
+                th= row[0]
+                td= number_with_delimiter(row[1])
+                td= number_to_percentage(row[1].to_d / data[:total].to_d * 100, precision: 2)
+            tr
+              th Total
+              td= number_with_delimiter(data[:total])
+              td 100%

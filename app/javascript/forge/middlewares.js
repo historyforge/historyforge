@@ -8,6 +8,8 @@ export function loadBuildings(incomingAction, store) {
     axios.get('/buildings.json', {
         params: buildParams(qs)
     }).then(json => {
+        if (typeof json.data === 'string')
+            json.data = JSON.parse(json.data)
         store.dispatch({type: 'BUILDING_LOADED', ...json.data})
         const params = $.param(qs)
         const url = `/forge/?${params}`

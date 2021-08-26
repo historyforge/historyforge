@@ -11,6 +11,8 @@
     "activestorage": "^5.2.4-2",
     "axios": "^0.21.0",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
+    "chart.js": "^3.5.1",
+    "chartkick": "^4.0.5",
     "codemirror": "^5.52.2",
     "font-awesome": "^4.7.0",
     "include-media": "^1.4.10",

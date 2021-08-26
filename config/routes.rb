@@ -19,8 +19,9 @@ Rails.application.routes.draw do
 
   mount LetterOpenerWeb::Engine, at: '/letter_opener' if Rails.env.development?
 
-  concern :people_directory do
+  concern :census_directory do
     collection do
+      get :demographics
       get :advanced_search_filters
       get :building_autocomplete
       get :autocomplete
@@ -53,7 +54,7 @@ Rails.application.routes.draw do
   CensusYears.each do |year, words|
     resources :bulk, controller: 'census_records/bulk_updates', path: "census/#{year}/bulk", as: "census_#{year}_bulk"
     resources :"census_#{year}_records",
-              concerns: [:people_directory],
+              concerns: [:census_directory],
               controller: "census_records/#{words}",
               path: "census/#{year}",
               as: "census#{year}_records"

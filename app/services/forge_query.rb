@@ -13,7 +13,7 @@ class ForgeQuery
 
   # This serves the Forge with a raw list of building ids with lat/lng
   def to_json(*_)
-    "{\"buildings\": #{query['data']}, \"meta\": {\"info\": \"#{info}\"}}"
+    "{\"buildings\": #{query['data'] || 'null'}, \"meta\": {\"info\": \"#{info}\"}}"
   end
 
   private
@@ -23,10 +23,12 @@ class ForgeQuery
   delegate :scoped, to: :search
 
   def info
-    if @search.num_residents
+    if query['data'].nil?
+      "Found no results"
+    elsif @search.num_residents
       "Found #{pluralize_with_delimiter @search.num_residents, 'person'} in #{pluralize_with_delimiter query['meta'], 'building'}."
     else
-      "Showing #{pluralize_with_delimiter query['meta'], 'building'}."
+      "Showing #{pluralize_with_delimiter query['meta'] || 0, 'building'}."
     end
   end
 

@@ -13,7 +13,7 @@ class CensusRecordSearch < SearchQueryBuilder
   end
 
   memoize def results
-    scoped.to_a.map {|row| row.decorate }
+    scoped.to_a.map(&:decorate)
   end
 
   memoize def scoped
@@ -113,5 +113,9 @@ class CensusRecordSearch < SearchQueryBuilder
 
   def unmatched?
     @scope == :unmatched
+  end
+
+  def facets
+    form_fields_config.facets
   end
 end

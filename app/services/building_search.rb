@@ -15,6 +15,8 @@ class BuildingSearch < SearchQueryBuilder
   end
 
   def self.handle_people_params(params)
+    return if params.blank?
+
     JSON.parse(params).each_with_object({}) do |item, hash|
       hash[item[0].to_sym] = item[1] if item[1].present?
     end

@@ -14,7 +14,7 @@ class Census1900FormFields < CensusFormFieldConfig
   input :birth_month, as: :radio_buttons, collection: (1..12).map { |m| ["#{m} - #{Date::MONTHNAMES[m]}", m] }
   input :birth_year, as: :integer, min: 0
   input :age, as: :integer, min: 0, max: 130
-  input :age_months, as: :integer, min: 0, max: 12
+  input :age_months, as: :integer, min: 0, max: 12, facet: false
   input :marital_status, as: :radio_buttons, coded: true
   input :years_married, as: :integer, min: 0
   input :num_children_born, as: :integer, min: 0
@@ -44,7 +44,7 @@ class Census1900FormFields < CensusFormFieldConfig
   input :owned_or_rented, as: :radio_buttons, coded: true
   input :mortgage, as: :radio_buttons, coded: true
   input :farm_or_house, as: :radio_buttons, coded: true
-  input :farm_schedule, as: :integer
+  input :farm_schedule, as: :integer, facet: false
 
   include CensusAdditionalFormFields
 end

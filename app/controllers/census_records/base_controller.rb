@@ -48,6 +48,11 @@ module CensusRecords
       render json: results
     end
 
+    def demographics
+      load_census_records
+      @page_title = "Demographics for #{year} US Census"
+    end
+
     def create
       @record = resource_class.new resource_params
       authorize! :create, @record

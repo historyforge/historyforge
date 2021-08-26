@@ -207,7 +207,15 @@ class CensusSearch extends React.PureComponent {
                 {message && <div className="mt-2 alert alert-info">
                     {message}
                 </div>}
-                {year && <a href={this.url} className="float-right btn btn-info btn-block">VIEW CENSUS RECORDS</a>}
+                {year && (
+                    <Row>
+                        <Col md={6}>
+                            <a href={this.url} className="float-right btn btn-info btn-block">VIEW RECORDS</a>
+                        </Col>
+                        <Col md={6}>
+                            <a href={this.demographicsUrl} className="float-right btn btn-info btn-block">EAT PIE</a>                        </Col>
+                    </Row>
+                )}
                 <Modal isOpen={!!open}>
                     <ModalHeader toggle={() => this.setState({ open: null })}>
                         Search on &ldquo;{open && filters[open].label}&rdquo;
@@ -257,6 +265,16 @@ class CensusSearch extends React.PureComponent {
         if (this.props.params) {
             const {f, s} = this.props.params
             url += `?${$.param({f, s})}`
+        }
+        return url
+    }
+
+    get demographicsUrl() {
+        const {year} = this.props
+        let url = `/census/${year}/demographics`
+        if (this.props.params) {
+            const {f, s} = this.props.params
+            url += `?${$.param({f, s, facet: 'race'})}`
         }
         return url
     }

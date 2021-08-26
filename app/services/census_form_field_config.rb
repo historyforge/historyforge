@@ -31,6 +31,10 @@ class CensusFormFieldConfig
     raise error
   end
 
+  def self.facets
+    inputs.select { |_key, value| value[:as] != :divider && !value.key?(:facet) }.keys
+  end
+
   def self.census_record_class
     to_s.sub(/FormFields/, 'Record').safe_constantize
   end

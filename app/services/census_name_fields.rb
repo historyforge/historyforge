@@ -2,10 +2,10 @@ module CensusNameFields
   extend ActiveSupport::Concern
   included do
     divider 'Name'
-    input :last_name
-    input :first_name
-    input :middle_name
-    input :name_prefix
-    input :name_suffix
+    input :last_name, facet: false
+    input :first_name, facet: false
+    input :middle_name, facet: false
+    input :name_prefix, facet: false
+    input :name_suffix, facet: false
   end
 end

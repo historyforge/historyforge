@@ -16,7 +16,7 @@
 // const imagePath = (name) => images(name, true)
 
 require.context('../images', true)
-
+import 'chartkick/chart.js'
 import '../../../vendor/assets/javascripts/parallax.min'
 import '../../../vendor/assets/javascripts/jquery.mousewheel'
 import '../../../vendor/assets/javascripts/chosen.jquery'
