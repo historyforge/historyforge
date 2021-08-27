@@ -66,6 +66,7 @@ class CensusFacet
 
     attr_accessor :from, :to, :step
 
+    # Inspired by this: https://dba.stackexchange.com/questions/195664/aggregate-values-by-interval-range-given-by-parameter
     memoize def sql
       snippet = "WITH CTS AS ( SELECT generate_series(#{from}, #{to}, #{step} ) Serie )"
       from = "CTS LEFT JOIN #{search.entity_class.table_name} ON #{facet} >= CTS.Serie AND #{facet} <= CTS.Serie + #{step}"
