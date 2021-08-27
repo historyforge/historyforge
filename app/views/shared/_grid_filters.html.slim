@@ -1,6 +1,6 @@
 - content_for :pills do
   - if can?(:create, resource_class)
-    = link_to 'Add New Record', { action: :new }, class: 'btn btn-sm btn-light'
+    = link_to 'Add New Record', [:new, resource_class.model_name.singular_route_key.intern], class: 'btn btn-sm btn-light'
   - if can?(:bulk_update, resource_class) && controller.respond_to?(:year)
     = link_to 'Bulk Update', "/census/#{controller.year}/bulk", class: 'btn btn-sm btn-light'
   - if can?(:review, resource_class) && controller.respond_to?(:year) && @search.census_scope_search?
