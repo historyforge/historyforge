@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import {connect} from "react-redux";
-import {Modal, ModalBody, ModalHeader, ModalFooter, Row, Col, FormGroup, Label, Input} from "reactstrap";
+import {Modal, ModalBody, ModalHeader, ModalFooter, ButtonGroup} from "reactstrap";
 import FilterField from "./census-search/FilterField";
 import FilterListItem from "./census-search/FilterListItem";
 
@@ -47,13 +47,11 @@ class CensusSearch extends React.PureComponent {
                     {message}
                 </div>}
                 {year && (
-                    <Row>
-                        <Col md={6}>
-                            <a href={this.url} className="float-right btn btn-info btn-block">VIEW RECORDS</a>
-                        </Col>
-                        <Col md={6}>
-                            <a href={this.demographicsUrl} className="float-right btn btn-info btn-block">EAT PIE</a>                        </Col>
-                    </Row>
+                    <ButtonGroup className="btn-block">
+                        <a href={this.url} className="btn btn-sm btn-info col-4">VIEW CENSUS RECORDS</a>
+                        <a href={this.demographicsUrl} className="btn btn-sm btn-info col-4">VIEW DEMOGRAPHICS</a>
+                        <button className="btn btn-sm btn-info col-4" type="button" onClick={this.reset.bind(this)}>RESET</button>
+                    </ButtonGroup>
                 )}
                 <Modal isOpen={!!open}>
                     <ModalHeader toggle={() => this.setState({ open: null })}>
@@ -92,6 +90,10 @@ class CensusSearch extends React.PureComponent {
         this.props.load(this.props.params)
     }
 
+    reset() {
+        this.props.reset()
+    }
+
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps.year !== this.props.year) {
             this.props.load(this.props.params)
@@ -125,6 +127,7 @@ const mapStateToProps = state => {
 
 const actions = {
     load: (params) => ({type: 'BUILDING_LOAD', params}),
+    reset: () => ({type: 'FORGE_RESET'}),
     setYear: (year) => ({ type: 'FORGE_SET_YEAR', year }),
     addFilter: (filter) => ({ type: 'FORGE_ADD_FILTER', filter }),
     removeFilter: (filter) => ({ type: 'FORGE_REMOVE_FILTER', filter }),

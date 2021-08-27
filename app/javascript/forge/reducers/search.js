@@ -1,4 +1,8 @@
 export const search = function(state = window.initialState.search, action) {
+    if (action.type === 'FORGE_RESET') {
+        return {years: state.years, params: { f: [], s: [], people: null }}
+    }
+
     if (action.type === 'FORGE_SET_YEAR') {
         return forgeSetYear(state, action)
     }
