@@ -142,7 +142,8 @@ module CensusRecords
     end
 
     memoize def year
-      request.fullpath.match(/\d{4}/)[0].to_i
+      params[:year].to_i
+      # request.fullpath.match(/\d{4}/)[0].to_i
     end
     helper_method :year
 

@@ -52,15 +52,20 @@ Rails.application.routes.draw do
     resources :merges, only: %i[new create], controller: 'buildings/merges'
   end
 
-  # It would be nice not to have to do it for each year since there's one controller but this is how we
-  # translate from model name to URL without having to pass a year param explicitly.
+  resources :bulk, controller: 'census_records/bulk_updates', path: "census/:year/bulk", as: "census_bulk"
+  resources :census_records,
+            controller: 'census_records/main',
+            path: 'census/:year',
+            concerns: :census_directory
+
   CensusYears.each do |year|
     resources :bulk, controller: 'census_records/bulk_updates', path: "census/#{year}/bulk", as: "census_#{year}_bulk"
     resources :"census_#{year}_records",
               concerns: [:census_directory],
               controller: "census_records/main",
               path: "census/#{year}",
-              as: "census#{year}_records"
+              as: "census#{year}_records",
+              defaults: { year: year }
   end
 
   resources :contacts, only: %i[new create]
