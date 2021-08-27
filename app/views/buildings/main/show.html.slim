@@ -47,10 +47,11 @@
                 dd Not known.
               dt Architects
               dd= @building.architects.present? ? @building.architects : 'None'
-              dt Building Type
-              dd= @building.building_type || 'not specified'
+
           .col-sm-6
             dl
+              dt Building Type
+              dd= @building.building_type || 'not specified'
               dt Construction
               dd
                 - if @building.stories
@@ -61,19 +62,23 @@
                   = " with #{@building.lining} lining."
                 - if !@building.stories && !@building.frame && !@building.lining
                   = 'not specified'
-              - if @building.annotations.present?
-                dt Annotations
-                dd= simple_format @building.annotations
               - if @building.block_number?
                 dt Block Number
                 dd= @building.block_number
+
+    - if @building.annotations.present?
+      .card.mb-1
+        .card-header
+          | Annotations
+        .card-body
+          = simple_format @building.annotations
 
     - if @building.description?
       .card.mb-1
         .card-header
           | Description
         .card-body
-          = simple_format @building.description
+          == @building.description
 
     /- photos = can?(:review, Photo) ? @building.photos : @building.photos.reviewed
     - photos = @building.photos

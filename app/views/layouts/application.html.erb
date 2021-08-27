@@ -22,6 +22,9 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.52.2/theme/darcula.min.css" />
     <% end %>
 
+    <%= stylesheet_pack_tag 'richtext' if can?(:update, Building) %>
+    <%= javascript_pack_tag 'richtext' if can?(:update, Building) %>
+
     <%= csrf_meta_tags %>
 
     <%= yield :head %>
@@ -70,6 +73,7 @@
   <% if can?(:update, Cms::Page) %>
   <%= javascript_pack_tag 'cms' %>
   <% end %>
+
 
   <% if Rails.env.production? && ENV['GOOGLE_ANALYTICS'] %>
   <script async src="https://www.googletagmanager.com/gtag/js?id=<%= ENV['GOOGLE_ANALYTICS'] %>"></script>

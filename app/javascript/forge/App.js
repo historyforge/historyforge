@@ -10,7 +10,6 @@ import * as reducers from "./reducers"
 import {forgeMiddleware} from './middlewares'
 import { buildStore } from "./store";
 
-console.log(reducers)
 export default class App extends React.PureComponent {
     constructor(props) {
         super(props)

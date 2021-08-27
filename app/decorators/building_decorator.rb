@@ -7,6 +7,10 @@ class BuildingDecorator < ApplicationDecorator
 
   alias_method :type, :building_type
 
+  def description
+    object.description&.body
+  end
+
   def locality
     object.locality&.name || 'None'
   end
@@ -60,7 +64,9 @@ class BuildingDecorator < ApplicationDecorator
       .residents
       .group_by(&:year)
       .each_with_object({}) { |data, hash|
-        hash[data[0]] = data[1].map { |item| CensusRecordSerializer.new(item).as_json }
+        hash[data[0]] = data[1].group_by(&:family_id).each_with_object([]) { |family, arr|
+          arr << family[1].map { |item| CensusRecordSerializer.new(item).as_json }
+        }
       }
   end
 end

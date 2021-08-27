@@ -126,7 +126,6 @@ class Map extends BaseMap {
             const { bubble } = this.props
             const { currentMarker, map } = this.state
             if (bubble) {
-                console.log('lets create an infowindow', bubble, currentMarker)
                 if (this.infoWindow) this.infoWindow.close()
                 this.infoWindow = new google.maps.InfoWindow({
                     content: bubble.address
@@ -145,7 +144,6 @@ const mapStateToProps = state => {
 }
 
 const actions = {
-    // load: (params) => ({ type: 'BUILDING_LOAD', params }),
     highlight: (id) => ({ type: 'BUILDING_HIGHLIGHT', id }),
     select: (id, params) => ({ type: 'BUILDING_SELECT', id, params }),
     address: (id) => ({ type: 'BUILDING_ADDRESS', id }),

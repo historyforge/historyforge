@@ -35,6 +35,8 @@ function forgeFiltersLoaded(state, action) {
     if (state.params && state.params.s) {
         nextState.current = buildFilters(action.filters, state.params.s)
         nextState.params = buildParams(nextState, nextState.current)
+    } else if (state.year) {
+        nextState.params = { s: {}, people: state.year }
     }
     return nextState
 }

@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import {connect} from "react-redux";
 import {Modal, ModalBody, ModalHeader, ModalFooter, ButtonGroup} from "reactstrap";
-import FilterField from "./census-search/FilterField";
-import FilterListItem from "./census-search/FilterListItem";
+import FilterField from "./FilterField";
+import FilterListItem from "./FilterListItem";
 
 class CensusSearch extends React.PureComponent {
     state = { open: null, filter: '' }
@@ -13,7 +13,7 @@ class CensusSearch extends React.PureComponent {
         return (
             <div className="pt-3 pb-1">
                 <h3>Census Search</h3>
-                <div className="btn-group btn-block">
+                <ButtonGroup className="btn-group btn-block">
                     {years.map(censusYear => (
                         <button type="button"
                                 key={censusYear}
@@ -22,7 +22,7 @@ class CensusSearch extends React.PureComponent {
                             {censusYear}
                         </button>
                     ))}
-                </div>
+                </ButtonGroup>
                 { filters && (
                     <select value={filter} onChange={this.addFilter.bind(this)} className="form-control">
                         <option value={null}>Select a field to search</option>

@@ -71,7 +71,8 @@
   .card.mb-2
     .card-header Narrative
     .card-body
-      = form.input :description, input_html: { rows: 12 }
+      = form.input :description do
+        = form.input_field :description, as: :rich_text_area
 
   - if !@building.reviewed? && can?(:review, @building)
     .card.mb-2

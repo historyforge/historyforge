@@ -4,7 +4,6 @@ let searchTimeout = null
 
 export function loadBuildings(incomingAction, store) {
     const qs = incomingAction.params || store.getState().search.params || {}
-    console.log(incomingAction, qs, buildParams(qs))
     axios.get('/buildings.json', {
         params: buildParams(qs)
     }).then(json => {
@@ -38,7 +37,11 @@ export function searchBuildings(incomingAction, store) {
     const {term} = incomingAction
     searchTimeout = setTimeout(() => {
         axios.get('/search/buildings.json', {params: {term, unpaged: true}}).then(json => {
-            store.dispatch({type: 'BUILDING_LOADED', buildings: json.data})
+            store.dispatch({
+                type: 'BUILDING_LOADED',
+                buildings: json.data,
+                meta: { info: `Found ${json.data.length} building(s)` }
+            })
         })
     }, term === '' ? 1000 : 200)
 }
@@ -76,10 +79,10 @@ export const forgeMiddleware = store => next => (incomingAction) => {
 
 const buildParams = function(search) {
     const params = { s: {} }
-    if (search.buildings) {
+    if (search && search.buildings) {
         params.s = search.s
     }
-    if (search.people) {
+    if (search && search.people) {
         params.people = search.people
         params.peopleParams = search.s
     }

@@ -15,12 +15,11 @@
 // const images = require.context('../images', true)
 // const imagePath = (name) => images(name, true)
 
-import 'trix/dist/trix.css'
 import '../css/cms'
 
 require('../js/cms_admin')
-require("trix")
-require("@rails/actiontext")
+// require("trix")
+// require("@rails/actiontext")
 require("@rails/activestorage").start()
 
 window.CodeMirror = require("codemirror")

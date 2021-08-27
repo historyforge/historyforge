@@ -9,6 +9,8 @@ class Building < ApplicationRecord
   include Flaggable
   include Versioning
 
+  has_rich_text :description
+
   define_enumeration :address_street_prefix, %w[N S E W]
   define_enumeration :address_street_suffix, %w[St Rd Ave Blvd Pl Terr Ct Pk Tr Dr Hill Ln Way].sort
 
@@ -116,19 +118,6 @@ class Building < ApplicationRecord
     self.architects = value.split(',').map(&:strip).map { |item| Architect.find_or_create_by(name: item) }
   end
 
-  # Not clear why ruby 3.0.2 sends an empty argument here, but if you remove it, expect an error.
-  # def building_type_name(*_)
-  #   building_types.map(&:name).join('/')
-  # end
-  #
-  # def frame_type_name(*_)
-  #   frame_type&.name
-  # end
-  #
-  # def lining_type_name(*_)
-  #   lining_type&.name
-  # end
-
   def address
     return @address if defined?(@address)
 
@@ -190,7 +179,7 @@ class Building < ApplicationRecord
 
   CensusYears.each do |year|
     define_method("families_in_#{year}") do
-      send("census_#{year}_records").group_by(&:dwelling_number)
+      send("census_#{year}_records").group_by(&:family_id)
     end
   end
 
