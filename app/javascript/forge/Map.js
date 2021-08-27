@@ -35,9 +35,26 @@ class Map extends BaseMap {
 
     addMarkers() {
         const clusterer = this.state.clusterer || new MarkerClusterer(this.state.map, [], {
-            imagePath: 'https://cdn.rawgit.com/googlemaps/js-marker-clusterer/gh-pages/images/m',
             minimumClusterSize: 10,
             maxZoom: 20,
+            styles: [
+                {
+                    textColor: 'white',
+                    url: '/markerclusterer/m1.png',
+                    width: 53,
+                    height: 52
+                }, {
+                    textColor: 'white',
+                    url: '/markerclusterer/m2.png',
+                    width: 56,
+                    height: 55
+                }, {
+                    textColor: 'white',
+                    url: '/markerclusterer/m3.png',
+                    width: 66,
+                    height: 65
+                }
+            ]
         })
 
         clusterer.clearMarkers()
