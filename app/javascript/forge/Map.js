@@ -70,14 +70,20 @@ class Map extends BaseMap {
 
     handleMarkerMouseOver(building, marker) {
         this.props.highlight(building.id)
+        window.clearTimeout(this.infoWindowTimeout)
         this.props.address(building.id)
         this.setState({ currentMarker: marker })
     }
 
+    infoWindowTimeout = null
+
     handleMarkerMouseOut(building, marker) {
         this.props.highlight(building.id)
-        this.props.deAddress()
-        this.setState({ currentMarker: null })
+        this.infoWindowTimeout = window.setTimeout(() => {
+            this.props.deAddress()
+            this.state.infoWindow.close()
+            this.setState({ currentMarker: null, infoWindow: null })
+        }, 1000)
     }
 
     addLayers() {
@@ -113,9 +119,19 @@ class Map extends BaseMap {
 
     processUpdates(prevProps) {
         if (this.propertyChanged(prevProps, 'addressedAt')) {
-            const { address } = this.props
-            const { currentMarker, infoWindow } = this.state
-
+            const { bubble } = this.props
+            const { currentMarker, map } = this.state
+            if (bubble) {
+                console.log('lets create an infowindow', bubble, currentMarker)
+                const infoWindow = new google.maps.InfoWindow({
+                    content: bubble.address
+                })
+                infoWindow.open({
+                    anchor: currentMarker,
+                    map
+                })
+                this.setState({ infoWindow })
+            }
         }
     }
 }

@@ -7,11 +7,11 @@ export const buildings = function(state = {}, action) {
     }
 
     if (action.type === 'BUILDING_ADDRESS_LOADED') {
-        return {...state, address: action.data, addressedAt: new Date().getTime() }
+        return {...state, bubble: action.address, addressedAt: new Date().getTime() }
     }
 
     if (action.type === 'BUILDING_ADDRESS_REMOVE') {
-        return {...state, address: null, addressedAt: new Date().getTime()}
+        return {...state, bubble: null, addressedAt: new Date().getTime()}
     }
 
     if (action.type === 'BUILDING_LOADED') {

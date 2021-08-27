@@ -19,7 +19,7 @@
     => link_to 'CSV', params.permit!.merge(format: :csv), class: 'btn btn-sm btn-primary'
     - if controller.respond_to?(:year)
       => form.submit 'Map It', class: 'btn btn-sm btn-primary', id: 'search-map', data: {year: controller.year}
-      => link_to 'Feed Me Pie', { action: :demographics, facet: 'race' }, class: 'btn btn-sm btn-primary'
+      => link_to 'Demographics', send("demographics_census#{year}_records_path", facet: 'race'), class: 'btn btn-sm btn-primary'
     - elsif params[:controller] == 'buildings/main'
       => form.submit 'Map It', class: 'btn btn-sm btn-primary', id: 'search-map'
     - if @search.active?
