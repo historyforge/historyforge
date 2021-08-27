@@ -2,9 +2,10 @@
 
 # Base class for census record CRUD actions.
 module CensusRecords
-  class BaseController < ApplicationController
+  class MainController < ApplicationController
     include AdvancedRestoreSearch
     include RenderCsv
+    include Memery
 
     respond_to :json, only: :index
     respond_to :csv, only: :index
@@ -140,6 +141,10 @@ module CensusRecords
       redirect_back fallback_location: { action: :index }
     end
 
+    def year
+      params[:year]
+    end
+
     private
 
     # This is a blanket access check for whether this census year is activated for this HF instance
@@ -147,8 +152,8 @@ module CensusRecords
       permission_denied unless can_census?(year)
     end
 
-    def resource_class
-      raise 'resource_class needs a constant name!'
+    memoize def resource_class
+      "Census#{year}Record".safe_constantize
     end
     helper_method :resource_class
 
@@ -190,6 +195,12 @@ module CensusRecords
       end
     end
 
-    def census_record_search_class; end
+    memoize def census_record_search_class
+      "CensusRecord#{year}Search".safe_constantize
+    end
+
+    def page_title
+      "#{year} US Census Records"
+    end
   end
 end
