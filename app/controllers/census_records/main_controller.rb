@@ -141,8 +141,8 @@ module CensusRecords
       redirect_back fallback_location: { action: :index }
     end
 
-    def year
-      params[:year]
+    memoize def year
+      request.fullpath.match(/\d{4}/)[0].to_i
     end
 
     private

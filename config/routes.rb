@@ -51,13 +51,6 @@ Rails.application.routes.draw do
     resources :merges, only: %i[new create], controller: 'buildings/merges'
   end
 
-  resources :census_records,
-            controller: 'census_records/main',
-            path: 'census/:year',
-            concerns: :census_directory
-
-  resources :bulk, controller: 'census_records/bulk_updates', path: "census/:year/bulk", as: "census_bulk"
-
   CensusYears.each do |year, words|
     resources :bulk, controller: 'census_records/bulk_updates', path: "census/#{year}/bulk", as: "census_#{year}_bulk"
     resources :"census_#{year}_records",
