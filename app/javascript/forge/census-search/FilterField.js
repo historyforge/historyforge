@@ -1,7 +1,8 @@
-import BooleanField from "./census-search/BooleanField";
-import ListField from "./census-search/ListField";
-import NumberField from "./census-search/NumberField";
-import TextField from "./census-search/TextField";
+import React from 'react'
+import BooleanField from "./BooleanField";
+import ListField from "./ListField";
+import NumberField from "./NumberField";
+import TextField from "./TextField";
 
 export default function FilterField(props) {
     const { config: { type } } = props

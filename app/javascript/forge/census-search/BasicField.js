@@ -1,24 +1,13 @@
 import {Col, FormGroup, Input, Label, Row} from "reactstrap";
 import React from "react";
+import ScopeSelector from "./ScopeSelector";
 
 export default function BasicField(props) {
     const { type, field, predicate, criteria, scopes, handleChange } = props
     return (
         <Row>
             <Col sm={6}>
-                {Object.keys(scopes).map(scope => (
-                    <FormGroup key={scope} check>
-                        <Label check>
-                            <Input type="radio"
-                                   name="predicate"
-                                   value={scope}
-                                   checked={predicate === scope}
-                                   onChange={() => handleChange(field, scope, criteria)}
-                            />
-                            {scopes[scope]}
-                        </Label>
-                    </FormGroup>
-                ))}
+                <ScopeSelector {...this.props} />
             </Col>
             <Col sm={6}>
                 <Input type={type}

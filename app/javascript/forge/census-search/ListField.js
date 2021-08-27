@@ -1,5 +1,6 @@
 import React from "react";
 import {Col, FormGroup, Input, Label, Row} from "reactstrap";
+import ScopeSelector from "./ScopeSelector";
 
 export default class ListField extends React.PureComponent {
     choose(value) {
@@ -15,24 +16,12 @@ export default class ListField extends React.PureComponent {
     }
 
     render() {
-        const { field, predicate, config: { scopes, choices }, handleChange } = this.props
+        const { field, config: { choices } } = this.props
         const criteria = this.props.criteria || [] // to avoid changing uncontrolled to controlled component
         return (
             <Row>
                 <Col sm={6}>
-                    {Object.keys(scopes).map(scope => (
-                        <FormGroup key={scope} check>
-                            <Label check>
-                                <Input type="radio"
-                                       name="predicate"
-                                       value={scope}
-                                       checked={predicate === scope}
-                                       onChange={() => handleChange(field, scope, criteria)}
-                                />
-                                {scopes[scope]}
-                            </Label>
-                        </FormGroup>
-                    ))}
+                    <ScopeSelector {...this.props} />
                 </Col>
                 <Col sm={6}>
                     {choices.map(choice => (
