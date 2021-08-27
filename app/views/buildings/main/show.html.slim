@@ -77,7 +77,7 @@
       .card.mb-1
         .card-header
           | Description
-        .card-body
+        .card-body#building-description
           == @building.description
 
     /- photos = can?(:review, Photo) ? @building.photos : @building.photos.reviewed
@@ -85,7 +85,8 @@
     - if photos.present?
       .card.mb-1
         .card-header
-          = link_to 'See all', [@building, :photographs], class: 'btn btn-light float-right'
+          - if photos.size > 1
+            = link_to 'See all', [@building, :photographs], class: 'btn btn-light float-right'
           | Photos
         .card-body
           .row
