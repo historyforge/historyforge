@@ -6,6 +6,14 @@ export const buildings = function(state = {}, action) {
         }
     }
 
+    if (action.type === 'BUILDING_ADDRESS_LOADED') {
+        return {...state, address: action.data, addressedAt: new Date().getTime() }
+    }
+
+    if (action.type === 'BUILDING_ADDRESS_REMOVE') {
+        return {...state, address: null, addressedAt: new Date().getTime()}
+    }
+
     if (action.type === 'BUILDING_LOADED') {
         const { meta: {info}, buildings } = action
         return {...state, building: null, highlighted: null, buildings, message: info, loadedAt: new Date().getTime() }

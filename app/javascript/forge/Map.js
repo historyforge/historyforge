@@ -24,7 +24,6 @@ class Map extends BaseMap {
     }
 
     componentDidMount() {
-        // this.props.load(this.props.params)
         let { map } = this.state
         if (!map) {
             map = new google.maps.Map(document.getElementById('map'), this.mapOptions)
@@ -69,12 +68,16 @@ class Map extends BaseMap {
         this.props.select(building.id, this.props.params)
     }
 
-    handleMarkerMouseOver(building) {
+    handleMarkerMouseOver(building, marker) {
         this.props.highlight(building.id)
+        this.props.address(building.id)
+        this.setState({ currentMarker: marker })
     }
 
-    handleMarkerMouseOut(building) {
+    handleMarkerMouseOut(building, marker) {
         this.props.highlight(building.id)
+        this.props.deAddress()
+        this.setState({ currentMarker: null })
     }
 
     addLayers() {
@@ -107,6 +110,14 @@ class Map extends BaseMap {
                 layer.setOpacity(1)
         })
     }
+
+    processUpdates(prevProps) {
+        if (this.propertyChanged(prevProps, 'addressedAt')) {
+            const { address } = this.props
+            const { currentMarker, infoWindow } = this.state
+
+        }
+    }
 }
 
 const mapStateToProps = state => {
@@ -117,6 +128,8 @@ const actions = {
     // load: (params) => ({ type: 'BUILDING_LOAD', params }),
     highlight: (id) => ({ type: 'BUILDING_HIGHLIGHT', id }),
     select: (id, params) => ({ type: 'BUILDING_SELECT', id, params }),
+    address: (id) => ({ type: 'BUILDING_ADDRESS', id }),
+    deAddress: () => ({ type: 'BUILDING_ADDRESS_REMOVE' })
 }
 
 const Component = connect(mapStateToProps, actions)(Map)

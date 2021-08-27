@@ -20,7 +20,7 @@ module AdvancedRestoreSearch
 
   def reset_search
     if current_user
-      search = current_user.search_params.find_or_initialize_by(model: controller_name)
+      search = current_user.search_params.find_or_initialize_by(model: search_key)
       search&.destroy
     else
       session.delete :search
@@ -33,7 +33,7 @@ module AdvancedRestoreSearch
   def restore_for_current_user
     return unless current_user
 
-    search = current_user.search_params.find_or_initialize_by(model: controller_name)
+    search = current_user.search_params.find_or_initialize_by(model: search_key)
     if resetting_search?
       search&.destroy
       redirect_to action: params[:action]
@@ -60,7 +60,7 @@ module AdvancedRestoreSearch
       session.delete :search
     elsif actively_searching?
       session[:search] = {
-        model: controller_name,
+        model: search_key,
         params: {
           s: params[:s].dup,
           fs: params[:fs].dup,
@@ -78,5 +78,9 @@ module AdvancedRestoreSearch
 
   def actively_searching?
     params[:s] || params[:f] || params[:fs]
+  end
+
+  def search_key
+    controller_name
   end
 end

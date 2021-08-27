@@ -33,8 +33,11 @@ class BaseMap extends React.PureComponent {
         if (this.markersChanged(prevProps)) {
             this.addMarkers()
         }
-        this.doMarkerHighlighting(prevProps);
+        this.doMarkerHighlighting(prevProps)
+        this.processUpdates(prevProps)
     }
+
+    processUpdates(prevProps) {}
 
     doMarkerHighlighting(prevProps) {
         const wasHighlighted = parseInt(prevProps.highlighted)
@@ -84,8 +87,7 @@ class BaseMap extends React.PureComponent {
 
     get markers() {
         return this.props.buildings && this.props.buildings.map(item => {
-            // TODO: forge and miniforge must receive identical array of attributes
-            const building = item.data ? item.data.attributes : item;
+            const building = item.data ? item.data.attributes : item
             const lat = building.lat || building.latitude
             const lon = building.lon || building.longitude
             const marker = new google.maps.Marker({
@@ -95,13 +97,13 @@ class BaseMap extends React.PureComponent {
             })
             marker.buildingId = building.id
             google.maps.event.addListener(marker, 'click', () => {
-                this.handleMarkerClick(building)
+                this.handleMarkerClick(building, marker)
             })
             google.maps.event.addListener(marker, 'mouseover', () => {
-                this.handleMarkerMouseOver(building)
+                this.handleMarkerMouseOver(building, marker)
             })
             google.maps.event.addListener(marker, 'mouseout', () => {
-                this.handleMarkerMouseOut(building)
+                this.handleMarkerMouseOut(building, marker)
             })
             return marker
         })

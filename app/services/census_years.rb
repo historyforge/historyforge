@@ -18,6 +18,10 @@ module CensusYears
     YEARS.map(&block)
   end
 
+  def self.to_words(year)
+    YEARS_IN_WORDS[YEARS.index(year)]
+  end
+
   def self.visible_to_user(user)
     YEARS.select { |year| Setting.can_view_public?(year) || (user && Setting.can_view_private?(year)) }
   end

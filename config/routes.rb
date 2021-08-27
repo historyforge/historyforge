@@ -46,6 +46,7 @@ Rails.application.routes.draw do
     end
     member do
       put :review
+      get :address
     end
     resources :photographs
     resources :merges, only: %i[new create], controller: 'buildings/merges'

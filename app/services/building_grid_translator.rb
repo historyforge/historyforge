@@ -14,9 +14,15 @@ class BuildingGridTranslator
     records.map do |record|
       hash = { id: record.id }
       columns.each do |column|
-        value = record.public_send(column)
-        value = { name: value, reviewed: record.reviewed? } if column == 'street_address'
-        hash[column] = value
+        begin
+          value = record.public_send(column)
+          value = { name: value, reviewed: record.reviewed? } if column == 'street_address'
+          hash[column] = value
+        rescue NoMethodError
+          # sometimes people manipulate URLs to include fields that don't exist
+          # we just ignore because it's not a symptom of anything wrong here just
+          # people being clever
+        end
       end
       hash
     end.to_json.html_safe

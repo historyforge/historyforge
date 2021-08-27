@@ -48,16 +48,8 @@ class BuildingSearch < SearchQueryBuilder
     builder.offset(from) if from
     builder.limit(to.to_i - from.to_i) if from && to
 
-    if expanded
-      builder.includes(:locality) if f.include?('locality')
-      builder.includes(:building_types, :building_types_buildings) if f.include?('building_type') || f.include?('building_type_name')
-      builder.includes(:addresses) if f.include?('street_address')
-      builder.includes(:lining_type) if f.include?('lining_type')
-      builder.includes(:frame_type)  if f.include?('frame_type')
-      builder.includes(:architects)  if f.include?('architects')
-      add_order_clause
-    end
 
+    prepare_expanded_search if expanded
     enrich_with_residents if people.present?
 
     builder.scoped
@@ -95,6 +87,16 @@ class BuildingSearch < SearchQueryBuilder
 
   private
 
+  def prepare_expanded_search
+    builder.includes(:locality) if f.include?('locality')
+    builder.includes(:building_types, :building_types_buildings) if f.include?('building_type') || f.include?('building_type_name')
+    builder.includes(:addresses) if f.include?('street_address')
+    builder.includes(:lining_type) if f.include?('lining_type')
+    builder.includes(:frame_type) if f.include?('frame_type')
+    builder.includes(:architects) if f.include?('architects')
+    add_order_clause
+  end
+
   def entity_class
     Building
   end
@@ -115,7 +117,6 @@ class BuildingSearch < SearchQueryBuilder
     sort.present? ? add_applied_sort : add_default_sort
   end
 
-  # TODO: this doesn't work anymore since we have the new address scheme
   def street_address_order_clause(dir)
     builder.joins(:addresses)
     "addresses.name #{dir}, addresses.prefix #{dir}, addresses.suffix #{dir}, substring(addresses.house_number, '^[0-9]+')::int #{dir}"

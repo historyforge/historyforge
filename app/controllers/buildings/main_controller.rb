@@ -8,7 +8,7 @@ class Buildings::MainController < ApplicationController
   respond_to :html
 
   skip_before_action :verify_authenticity_token, only: :autocomplete
-  before_action :load_building, only: %i[show edit update destroy review]
+  before_action :load_building, only: %i[address show edit update destroy review]
   before_action :authorize_action
   before_action :load_buildings, only: %i[index bulk_review]
   before_action :review_building, only: %i[update review]
@@ -27,6 +27,10 @@ class Buildings::MainController < ApplicationController
         end
       end
     end
+  end
+
+  def address
+    render json: { id: @building.id, address: @building.primary_street_address }
   end
 
   def autocomplete

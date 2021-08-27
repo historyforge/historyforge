@@ -3,15 +3,15 @@
 # Base class for census record CRUD actions.
 module CensusRecords
   class MainController < ApplicationController
+    include Memery
+    before_action :check_access
+
     include AdvancedRestoreSearch
     include RenderCsv
-    include Memery
 
     respond_to :json, only: :index
     respond_to :csv, only: :index
     respond_to :html
-
-    before_action :check_access
 
     def index
       @page_title = page_title
@@ -146,6 +146,10 @@ module CensusRecords
     end
 
     private
+
+    memoize def search_key
+      CensusYears.to_words(year)
+    end
 
     # This is a blanket access check for whether this census year is activated for this HF instance
     def check_access

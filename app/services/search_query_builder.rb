@@ -51,8 +51,6 @@ class SearchQueryBuilder
     def method_missing(method, *args)
       if @scoped
         @scoped = @scoped.public_send(method, *args)
-        # Rails.logger.info @scoped.to_sql
-        # @scoped
       else
         super
       end

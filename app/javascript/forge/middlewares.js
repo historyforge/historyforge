@@ -26,6 +26,13 @@ export function loadBuilding(incomingAction, store) {
     })
 }
 
+function loadAddress(incomingAction, store) {
+    const url = `/buildings/${incomingAction.id}/address.json`
+    axios.get(url).then(json => {
+        store.dispatch({type: 'BUILDING_ADDRESS_LOADED', address: json.data})
+    })
+}
+
 export function searchBuildings(incomingAction, store) {
     clearTimeout(searchTimeout)
     const {term} = incomingAction
@@ -55,6 +62,8 @@ function loadFilters(year, store) {
 export const forgeMiddleware = store => next => (incomingAction) => {
     if (incomingAction.type === 'BUILDING_LOAD') {
         loadBuildings(incomingAction, store);
+    } else if(incomingAction.type === 'BUILDING_ADDRESS') {
+        loadAddress(incomingAction, store);
     } else if(incomingAction.type === 'BUILDING_SELECT') {
         loadBuilding(incomingAction, store);
     } else if (incomingAction.type === 'SEARCH') {

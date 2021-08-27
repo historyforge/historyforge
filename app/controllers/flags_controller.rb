@@ -1,6 +1,6 @@
 class FlagsController < ApplicationController
   def index
-    @flags = Flag.unresolved.order('created_at asc')
+    @flags = Flag.unresolved.order('created_at asc').preload(:flaggable, :flagged_by)
   end
 
   def resolved
