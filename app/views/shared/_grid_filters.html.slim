@@ -54,7 +54,7 @@
         button.float-right.close(type="button" data-toggle="collapse" data-target="#newAttributeFilter") &times;
         span Search Filters
       .card-body
-        - if controller_name =~ /teen/ && user_signed_in?
+        - if controller.respond_to?(:year) && user_signed_in?
           .row
             .col-3
               label for="s_ward_eq" Ward
