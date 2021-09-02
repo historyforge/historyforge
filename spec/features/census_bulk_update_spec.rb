@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe "Bulk updates of census records" do
-  scenario 'with 1920 US Census' do
+  scenario 'happy path' do
     user = create(:administrator)
     locality = create(:locality)
     sign_in user
