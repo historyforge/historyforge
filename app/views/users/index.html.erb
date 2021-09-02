@@ -4,7 +4,7 @@
  <%= form_tag url_for(:controller => "users"), :id=>"searchform",:name=> "searchform", :method => :get do -%>
     User Search
     <select id="field" name="field">
-      <%= options_for_select([ ["Name", "login"], ["Email", "email"] ], @field)-%>
+      <%= options_for_select([ ["Name", "login"], ["Email", "email"], ["Role", "role"] ], @field)-%>
     </select>
     for
     <%= text_field_tag 'query', @query -%>

@@ -12,13 +12,19 @@ class UsersController < ApplicationController
   def index
     @html_title = "Users"
     @query = params[:query]
-    @field = %w(login email provider).detect{|f| f == (params[:field])}
-    if @query && @query.strip.length > 0 && @field
+    @field = %w(login email provider role).detect{|f| f == (params[:field])}
+    if @query && @query.strip.length > 0 && @field != "role"
+      join = nil
       conditions = ["#{@field}  ~* ?", '(:punct:|^|)'+@query+'([^A-z]|$)']
+    elsif @query && @query.strip.length > 0 && @field
+      join = :roles
+      conditions = ["roles.name ~* ?", '(:punct:|^|)'+@query+'([^A-z]|$)']
     else
+      join = nil
       conditions = nil
-    end
-    @users = User.where(conditions).order('login asc').page(params[:page] || 1).per(30)
+  end
+    print conditions
+    @users = User.joins(join).where(conditions).order('login asc').page(params[:page] || 1).per(30)
   end
 
   def show
