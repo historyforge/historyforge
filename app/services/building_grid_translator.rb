@@ -48,6 +48,7 @@ class BuildingGridTranslator
     options[:pinned] = 'left' if %w[id street_address].include?(column)
     options[:cellRenderer] = 'actionCellRenderer' if column == 'id'
     options[:cellRenderer] = 'nameCellRenderer' if column == 'street_address'
+    options[:cellRenderer] = 'htmlCellRenderer' if column == 'description'
     options[:width] = 200 if %w[name street_address description annotations].include?(column)
     options[:sortable] = true unless column == 'id'
     options

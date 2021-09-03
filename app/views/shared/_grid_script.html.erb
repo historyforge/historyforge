@@ -10,6 +10,7 @@
         components: {
           actionCellRenderer: ActionCellRenderer,
           nameCellRenderer: NameCellRenderer,
+            htmlCellRenderer: HTMLCellRenderer
         },
         columnDefs: <%= @translator.try(:column_def) || @search.column_def.to_json.html_safe -%>,
         defaultColDef: { width: 100 },

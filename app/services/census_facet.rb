@@ -55,7 +55,7 @@ class CensusFacet
 
   class EnumerationFacet < Facet
     memoize def rows
-      query.map { |item| [item['facet'] ? Translator.option(facet, item['facet'].to_s) : 'Blank', item['value']] }
+      query.map { |item| [item['facet'].present? ? Translator.option(facet, item['facet'].to_s) : 'Blank', item['value']] }
     end
   end
 

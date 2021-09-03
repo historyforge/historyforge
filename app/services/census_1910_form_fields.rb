@@ -34,7 +34,7 @@ class Census1910FormFields < CensusFormFieldConfig
   input :industry
   input :employment, as: :radio_buttons, coded: true
   input :unemployed, as: :boolean
-  input :unemployed_weeks_1909, min: 0
+  input :unemployed_weeks_1909, min: 0, facet: false
   input :can_read, as: :boolean
   input :can_write, as: :boolean
   input :attended_school, as: :boolean
@@ -43,7 +43,7 @@ class Census1910FormFields < CensusFormFieldConfig
   input :owned_or_rented, as: :radio_buttons, coded: true
   input :mortgage, as: :radio_buttons, coded: true
   input :farm_or_house, as: :radio_buttons, coded: true
-  input :num_farm_sched, as: :integer, min: 0
+  input :num_farm_sched, as: :integer, min: 0, facet: false
 
   divider 'More Personal Data'
   input :civil_war_vet, as: :radio_buttons, coded: true

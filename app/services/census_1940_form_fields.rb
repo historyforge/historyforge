@@ -68,36 +68,36 @@ class Census1940FormFields < CensusFormFieldConfig
     divider 'Supplemental Questions', hint: 'For persons whose names appear on the line numbers requiring supplementary question responses.'
 
     divider 'Place of Birth of Father/Mother & Mother Tongue'
-    input :pob_father
-    input :pob_mother
-    input :mother_tongue
+    input :pob_father, facet: false
+    input :pob_mother, facet: false
+    input :mother_tongue, facet: false
 
     divider 'Veteran'
-    input :veteran, as: :boolean, dependents: true
-    input :veteran_dead, as: :boolean, dependents: true
+    input :veteran, as: :boolean, dependents: true, facet: false
+    input :veteran_dead, as: :boolean, dependents: true, facet: false
     input :war_fought,
           as: :radio_buttons_other,
           other_label: 'Ot - Other war or expedition',
           coded: true,
-          depends_on: :veteran
+          depends_on: :veteran, facet: false
 
     divider 'Social Security'
-    input :soc_sec, as: :boolean
-    input :deductions, as: :boolean
-    input :deduction_rate, coded: true, as: :radio_buttons
+    input :soc_sec, as: :boolean, facet: false
+    input :deductions, as: :boolean, facet: false
+    input :deduction_rate, coded: true, as: :radio_buttons, facet: false
 
     divider 'Usual Employment'
-    input :usual_occupation
-    input :usual_industry
-    input :usual_worker_class, as: :radio_buttons, coded: true, collection: Census1940Record.worker_class_choices
-    input :usual_occupation_code
-    input :usual_industry_code
-    input :usual_worker_class_code
+    input :usual_occupation, facet: false
+    input :usual_industry, facet: false
+    input :usual_worker_class, as: :radio_buttons, coded: true, collection: Census1940Record.worker_class_choices, facet: false
+    input :usual_occupation_code, facet: false
+    input :usual_industry_code, facet: false
+    input :usual_worker_class_code, facet: false
 
     divider 'Women'
-    input :multi_marriage, as: :boolean
-    input :first_marriage_age, min: 0
-    input :children_born, min: 0
+    input :multi_marriage, as: :boolean, facet: false
+    input :first_marriage_age, min: 0, facet: false
+    input :children_born, min: 0, facet: false
   end
 
   include CensusAdditionalFormFields

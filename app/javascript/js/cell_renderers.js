@@ -74,5 +74,33 @@ NameCellRenderer.prototype.refresh = function(params) {
 // gets called when the cell is removed from the grid
 NameCellRenderer.prototype.destroy = function() {};
 
+const HTMLCellRenderer = function() {}
+
+// gets called once before the renderer is used
+HTMLCellRenderer.prototype.init = function(params) {
+  const value = params.value || params.getValue();
+  this.eGui = document.createElement('div');
+  if (value) {
+    this.eGui.innerHTML = value;
+  }
+};
+
+// gets called once when grid ready to insert the element
+HTMLCellRenderer.prototype.getGui = function() {
+  return this.eGui;
+};
+
+// gets called whenever the user gets the cell to refresh
+HTMLCellRenderer.prototype.refresh = function(params) {
+  // set value into cell again
+  // this.eValue.innerHTML = params.valueFormatted ? params.valueFormatted : params.value;
+  // return true to tell the grid we refreshed successfully
+  return true;
+};
+
+// gets called when the cell is removed from the grid
+HTMLCellRenderer.prototype.destroy = function() {};
+
 window.ActionCellRenderer = ActionCellRenderer
 window.NameCellRenderer = NameCellRenderer
+window.HTMLCellRenderer = HTMLCellRenderer

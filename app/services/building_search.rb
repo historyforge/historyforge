@@ -68,7 +68,7 @@ class BuildingSearch < SearchQueryBuilder
     %w[street_address city state postal_code locality
        year_earliest year_latest
        description annotations stories block_number
-       building_type lining_type frame_type
+       building_type lining frame
        architects notes latitude longitude name
     ]
   end
