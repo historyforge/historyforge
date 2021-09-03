@@ -5,6 +5,7 @@ module CensusRecords
   class MainController < ApplicationController
     include Memery
     before_action :check_access
+    before_action :check_demographics_access, only: :demographics
 
     include AdvancedRestoreSearch
     include RenderCsv
@@ -156,6 +157,10 @@ module CensusRecords
     # This is a blanket access check for whether this census year is activated for this HF instance
     def check_access
       permission_denied unless can_census?(year)
+    end
+
+    def check_demographics_access
+      permission_denied unless can_demographics?(year)
     end
 
     memoize def resource_class

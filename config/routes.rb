@@ -7,15 +7,15 @@ Rails.application.routes.draw do
   get 'search/buildings' => 'home#search_buildings', as: 'search_buildings'
   get 'searches/saved/:what' => 'home#saved_searches'
 
-  # get '/about' => 'home#about', as: 'about'
   get '/photos/:id/:style/:device' => 'buildings/main#photo', as: 'photo'
 
   get '/forge' => 'forge#index', as: 'forge'
 
   devise_for :users,
              path: 'u',
-             skip: [ :registerable, :confirmable ],
-             controllers: { sessions: "sessions" } #, omniauth_callbacks: "omniauth_callbacks" }
+             skip: %i[registerable confirmable],
+             controllers: { sessions: 'sessions' }
+             # when we get around to login with FB: , omniauth_callbacks: "omniauth_callbacks" }
 
   mount LetterOpenerWeb::Engine, at: '/letter_opener' if Rails.env.development?
 
@@ -52,7 +52,7 @@ Rails.application.routes.draw do
     resources :merges, only: %i[new create], controller: 'buildings/merges'
   end
 
-  resources :bulk, controller: 'census_records/bulk_updates', path: "census/:year/bulk", as: "census_bulk"
+  resources :bulk, controller: 'census_records/bulk_updates', path: 'census/:year/bulk', as: 'census_bulk'
   resources :census_records,
             controller: 'census_records/main',
             path: 'census/:year',
@@ -62,7 +62,7 @@ Rails.application.routes.draw do
     resources :bulk, controller: 'census_records/bulk_updates', path: "census/#{year}/bulk", as: "census_#{year}_bulk"
     resources :"census_#{year}_records",
               concerns: [:census_directory],
-              controller: "census_records/main",
+              controller: 'census_records/main',
               path: "census/#{year}",
               as: "census#{year}_records",
               defaults: { year: year }

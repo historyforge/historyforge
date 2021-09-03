@@ -16,7 +16,7 @@ class StreetConversionsController < ApplicationController
   def create
     @street_conversion = StreetConversion.new resource_params
     if @street_conversion.save
-      flash[:notice] = "Added the new street conversion."
+      flash[:notice] = 'Added the new street conversion.'
       redirect_to action: :index
     else
       flash[:errors] = "Sorry couldn't do it."
@@ -31,7 +31,7 @@ class StreetConversionsController < ApplicationController
   def update
     @street_conversion = StreetConversion.find params[:id]
     if @street_conversion.update resource_params
-      flash[:notice] = "Updated the street conversion."
+      flash[:notice] = 'Updated the street conversion.'
       redirect_to action: :index
     else
       flash[:errors] = "Sorry couldn't do it."
@@ -42,7 +42,7 @@ class StreetConversionsController < ApplicationController
   def destroy
     @street_conversion = StreetConversion.find params[:id]
     if @street_conversion.destroy
-      flash[:notice] = "Deleted the street conversion."
+      flash[:notice] = 'Deleted the street conversion.'
       redirect_to action: :index
     else
       flash[:errors] = "Sorry couldn't do it."

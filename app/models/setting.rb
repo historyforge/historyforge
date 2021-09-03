@@ -63,6 +63,14 @@ class Setting < ApplicationRecord
     value_of "enabled_private_#{year}"
   end
 
+  def self.can_view_public_demographics?(year)
+    value_of "demographics_public_#{year}"
+  end
+
+  def self.can_view_private_demographics?(year)
+    value_of "demographics_private_#{year}"
+  end
+
   def self.can_people_public?
     value_of 'people_public'
   end
