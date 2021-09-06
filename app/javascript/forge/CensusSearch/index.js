@@ -49,7 +49,7 @@ class CensusSearch extends React.PureComponent {
                 {year && (
                     <ButtonGroup className="btn-block">
                         <a href={this.url} className="btn btn-sm btn-info col-4">VIEW CENSUS RECORDS</a>
-                        <a href={this.demographicsUrl} className="btn btn-sm btn-info col-4">VIEW DEMOGRAPHICS</a>
+                        {/*<a href={this.demographicsUrl} className="btn btn-sm btn-info col-4">VIEW DEMOGRAPHICS</a>*/}
                         <button className="btn btn-sm btn-info col-4" type="button" onClick={this.reset.bind(this)}>RESET</button>
                     </ButtonGroup>
                 )}
