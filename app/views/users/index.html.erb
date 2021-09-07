@@ -1,34 +1,30 @@
-
 <% if admin_authorized? %>
-  <%= link_to 'Create User', new_user_invitation_path, class: 'btn btn-primary float-right btn-sm' %>
- <%= form_tag url_for(:controller => "users"), :id=>"searchform",:name=> "searchform", :method => :get do -%>
-    User Search
-    <select id="field" name="field">
-      <%= options_for_select([ ["Name", "login"], ["Email", "email"], ["Role", "role"] ], @field)-%>
-    </select>
-    for
-    <%= text_field_tag 'query', @query -%>
-    <input type="submit" value=" Go " class="btn btn-primary btn-xs" />
-  <% end -%>
-<% end %>
-<h2>Users
-  <%if @query && @query.length > 0 %>&mdash; Searched for "<%=@query%>"<%end-%>
-</h2>
-
-<%= paginate @users %>
-<table class="table table-striped table-condensed">
-  <thead>
-    <tr>
-      <th>Username</th>
-      <% if admin_authorized? %>
-        <th>Email</th>
-        <th>Enabled?</th>
-        <th>Roles</th>
-      <% end -%>
-    </tr>
-  </thead>
-  <tbody>
-    <%= render :partial => "user", :collection => @users %>
-  </tbody>
-</table>
-<%= paginate @users %>
+  <div class="col">
+    <div class="row">
+      <div class="col-12">
+        <%= link_to 'Create User', new_user_invitation_path, class: 'btn btn-primary float-right btn-sm' %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-3">
+        <%= render :partial => "search_form" %>
+      </div>
+      <div class="col-9">
+        <table class="table table-striped table-condensed">
+          <thead>
+          <tr>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Enabled?</th>
+            <th>Roles</th>
+          </tr>
+          </thead>
+          <tbody>
+          <%= render :partial => "user", :collection => @users %>
+          </tbody>
+        </table>
+        <%= will_paginate @users, list_classes: %w(pagination justify-content-end) %>
+      </div>
+    </div>
+  </div>
+<%end%>
