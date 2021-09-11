@@ -64,8 +64,10 @@ class Census1940FormFields < CensusFormFieldConfig
   input :had_unearned_income, as: :boolean
   input :farm_schedule
 
-  with_options if: ->(form) { form.object&.supplemental? } do
-    divider 'Supplemental Questions', hint: 'For persons whose names appear on the line numbers requiring supplementary question responses.'
+  include CensusAdditionalFormFields
+
+  with_options if: ->(form) { form.editing? || form.object&.supplemental? } do
+    divider 'Supplemental Questions', hint: 'The rest of this form pertains to persons whose names appear on the line numbers requiring supplementary question responses.'
 
     divider 'Place of Birth of Father/Mother & Mother Tongue'
     input :pob_father, facet: false
@@ -99,6 +101,4 @@ class Census1940FormFields < CensusFormFieldConfig
     input :first_marriage_age, min: 0, facet: false
     input :children_born, min: 0, facet: false
   end
-
-  include CensusAdditionalFormFields
 end

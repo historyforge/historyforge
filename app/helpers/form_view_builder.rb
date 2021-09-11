@@ -7,10 +7,22 @@ class FormViewBuilder < SimpleForm::FormBuilder
     @default_options = { readonly: true }
   end
 
+  def editing?
+    false
+  end
+
+  def viewing?
+    true
+  end
+
   def input(attribute_name, options = {}, &block)
     options = @defaults.deep_dup.deep_merge(options) if @defaults
     options[:required] = false
     input = find_input(attribute_name, options, &block)
+    wrapper_for(input).render input
+  end
+
+  def wrapper_for(input)
     wrapper_name = case input.input_type
                    when :boolean then :horizontal_boolean
                    when :check_boxes then :horizontal_collection
@@ -20,8 +32,7 @@ class FormViewBuilder < SimpleForm::FormBuilder
                      :horizontal_form
                    end
 
-    wrapper = SimpleForm.wrapper wrapper_name
-    wrapper.render input
+    SimpleForm.wrapper wrapper_name
   end
 
   def fields_for(record_name, record_object = nil, fields_options = {}, &block)

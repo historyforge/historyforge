@@ -111,3 +111,13 @@ module ApplicationHelper
     "#{Date::MONTHNAMES[record.birth_month]} #{record.birth_year}"
   end
 end
+
+SimpleForm::FormBuilder.class_eval do
+  def editing?
+    true
+  end
+
+  def viewing?
+    false
+  end
+end
