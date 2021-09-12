@@ -47,7 +47,7 @@ class BuildingsOnStreet
 
   def add_block_filter(items)
     base_number = street_house_number.to_i
-    base_number += 1 if base_number % 10 == 0
+    base_number += 1 if (base_number % 10).zero?
     sql = if base_number < 100
             "#{HOUSE_SQL} < 100"
           elsif base_number < 1_000

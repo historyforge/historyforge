@@ -92,11 +92,14 @@ RSpec.describe BuildingsOnStreet do
                              street_name: 'Tioga',
                              street_prefix: 'N',
                              street_suffix: 'St' }
+      it 'does show the 1405 address' do
+        expect(subject.map(&:name).detect { |name| name =~ /1405/ }).to be_truthy
+      end
       it 'does not show the 1305 address' do
         expect(subject.map(&:name).detect { |name| name =~ /1305/ }).to be_falsey
       end
       it 'does not show the 105 address' do
-        expect(subject.map(&:name).detect { |name| name =~ /105/ }).to be_truthy
+        expect(subject.map(&:name).detect { |name| name =~ /105/ }).to be_falsey
       end
     end
 
