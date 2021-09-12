@@ -11,8 +11,12 @@
         <% end -%>
 
       <% end -%>
-      &nbsp;
     </td>
-    <td><%= link_to 'edit roles', user_roles_path(user) -%></td>
+    <td>
+      <span href="#" rel="tooltip" data-placement="bottom" title=" <% user.roles.each do |role, index| %> <%= role.name + (user.roles.index(role) < user.roles.length-1 ? ', ' : '') -%> <% end %>">
+        <%= user.roles.length.to_s + (user.roles.length != 1 ? ' roles' : ' role') -%>
+      </span>
+      <%= link_to 'edit', user_roles_path(user) -%>
+    </td>
   <% end -%>
 </tr>

@@ -1,10 +1,14 @@
 <% if admin_authorized? %>
   <div class="col">
     <div class="row">
-      <div class="col-12">
+      <div class="col-6">
+        <span class="h3">Search</span>
+      </div>
+      <div class="col-6">
         <%= link_to 'Create User', new_user_invitation_path, class: 'btn btn-primary float-right btn-sm' %>
       </div>
     </div>
+    <br>
     <div class="row">
       <div class="col-3">
         <%= render :partial => "search_form" %>

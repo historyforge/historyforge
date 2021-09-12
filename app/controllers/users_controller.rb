@@ -10,7 +10,7 @@ class UsersController < ApplicationController
   rescue_from ActiveRecord::RecordNotFound, with: :bad_record
 
   def index
-    @q = User.includes(:roles).joins(:roles).ransack(params[:q])
+    @q = User.includes([:permissions, :roles]).ransack(params[:q])
     @users = @q.result.page(params[:page])
   end
 
