@@ -69,6 +69,14 @@ RSpec.describe BuildingsOnStreet do
       it 'does not show the 305 address' do
         expect(subject.map(&:name).detect { |name| name =~ /305/ }).to be_falsey
       end
+      context 'with a hyphenated house number' do
+        before do
+          create(:building, addresses: [build(:address, house_number: '405-407', name: 'Tioga', prefix: 'N', suffix: 'St')])
+        end
+        it 'shows the hyphenated address' do
+          expect(subject.map(&:name).detect { |name| name =~ /405\-407/ }).to be_truthy
+        end
+      end
     end
 
     context 'for 4-digit house numbers' do
@@ -88,7 +96,7 @@ RSpec.describe BuildingsOnStreet do
         expect(subject.map(&:name).detect { |name| name =~ /1305/ }).to be_falsey
       end
       it 'does not show the 105 address' do
-        expect(subject.map(&:name).detect { |name| name =~ /105/ }).to be_falsey
+        expect(subject.map(&:name).detect { |name| name =~ /105/ }).to be_truthy
       end
     end
 
@@ -128,6 +136,32 @@ RSpec.describe BuildingsOnStreet do
                            street_suffix: 'St' }
     it 'still puts the building at the top of the list even though it is not on the street being searched' do
       expect(subject.first.id).to eq(building.id)
+    end
+  end
+
+  context 'street name and house number' do
+    let(:record) { Census1900Record.new street_house_number: '405', street_name: 'Tioga' }
+    it 'returns 405 N and S Tioga' do
+      names = subject.map(&:name)
+      expect(names.detect { |name| name =~ /405 N Tioga St/ }).to be_truthy
+      expect(names.detect { |name| name =~ /405 S Tioga St/ }).to be_truthy
+    end
+    context 'with hyphenated house number' do
+      before do
+        create(:building, addresses: [build(:address, house_number: '405-407', name: 'Tioga', prefix: 'N', suffix: 'St')])
+      end
+      it 'finds the hyphenated address' do
+        expect(subject.map(&:name).detect { |name| name =~ /405-407/ }).to be_truthy
+      end
+    end
+    context 'with exact hundred block' do
+      let(:record) { Census1900Record.new street_house_number: '400', street_name: 'Tioga' }
+      before do
+        create(:building, addresses: [build(:address, house_number: '400', name: 'Tioga', prefix: 'N', suffix: 'St')])
+      end
+      it 'finds the hyphenated address' do
+        expect(subject.map(&:name).detect { |name| name =~ /400 N Tioga/ }).to be_truthy
+      end
     end
   end
 
