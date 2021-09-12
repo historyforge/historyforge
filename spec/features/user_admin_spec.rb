@@ -26,4 +26,14 @@ RSpec.describe 'User management' do
     expect(ActionMailer::Base.deliveries).to_not be_empty
     expect(page).to have_content 'Users'
   end
+
+  scenario 'administrator uses filters on users page' do
+    # add some users with various roles and such
+    sign_in create(:administrator)
+    visit users_path
+    expect(page).to have_content('Users')
+
+    # click on the filters and then search
+    # verify that the page has a user that matches the filters and doesn't have a user that doesn't match
+  end
 end
