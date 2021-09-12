@@ -144,6 +144,12 @@ class Building < ApplicationRecord
     address&.city
   end
 
+  def street_address_for_building_id
+    base = addresses.sort_by { |b| b.is_primary? ? -1 : 1 }.map(&:address)
+    base << name if proper_name?
+    base.join(', ')
+  end
+
   def street_address
     addresses.sort_by { |b| b.is_primary? ? -1 : 1 }.map(&:address).join("\n")
   end

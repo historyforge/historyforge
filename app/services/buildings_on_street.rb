@@ -42,7 +42,7 @@ class BuildingsOnStreet
 
     items = items.to_a
 
-    items.map { |item| Row.new item.id, item.street_address.gsub("\n", ', ') }
+    items.map { |item| Row.new item.id, item.street_address_for_building_id }
   end
 
   def add_block_filter(items)
