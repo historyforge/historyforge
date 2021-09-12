@@ -7,8 +7,9 @@
 - if params[:facet].present?
   - CensusFacet.with_data_for(@search, params[:facet]) do |data|
     h3.pt-3.text-center= params[:facet].titleize
+    - chart_data = aggregate_chart_data data[:rows]
     - data[:charts].each do |chart|
-      = public_send :"#{chart}_chart", data[:rows]
+      = public_send :"#{chart}_chart", chart_data
     br
     h3.pt-6= "#{params[:facet].titleize} Data"
     = table do

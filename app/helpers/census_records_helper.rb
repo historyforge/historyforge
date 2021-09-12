@@ -70,4 +70,13 @@ module CensusRecordsHelper
   def is_1940?
     controller.year == 1940
   end
+
+  def aggregate_chart_data(data)
+    sorted = data.sort_by(&:last).reverse
+    if sorted.length < 10
+      sorted
+    else
+      sorted[0..10] << ['Other', sorted[11..].map(&:last).sum]
+    end
+  end
 end
