@@ -3,8 +3,8 @@ class DocumentsController < ApplicationController
 
   def index
     authorize! :read, Document
-    @documents = collection.group_by(&:document_category_id)
-    @categories = DocumentCategory.all
+    @documents = collection.includes(file_attachment: :blob).group_by(&:document_category_id)
+    @categories = DocumentCategory.order(:position)
     @document = Document.new
   end
 
