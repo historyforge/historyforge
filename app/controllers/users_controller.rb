@@ -10,15 +10,8 @@ class UsersController < ApplicationController
   rescue_from ActiveRecord::RecordNotFound, with: :bad_record
 
   def index
-    @html_title = "Users"
-    @query = params[:query]
-    @field = %w(login email provider).detect{|f| f == (params[:field])}
-    if @query && @query.strip.length > 0 && @field
-      conditions = ["#{@field}  ~* ?", '(:punct:|^|)'+@query+'([^A-z]|$)']
-    else
-      conditions = nil
-    end
-    @users = User.where(conditions).order('login asc').page(params[:page] || 1).per(30)
+    @q = User.includes([:permissions, :roles]).ransack(params[:q])
+    @users = @q.result.page(params[:page])
   end
 
   def show

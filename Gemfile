@@ -41,6 +41,7 @@ gem 'rubyzip', require: false
 gem 'simple_form'
 gem 'slim'
 gem 'webpacker'
+gem 'will_paginate-bootstrap4'
 
 group :development do
   gem "byebug"
