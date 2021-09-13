@@ -1,0 +1,20 @@
+- if admin_authorized?
+  .col
+    .row.mb-3
+      .col-6
+        h3 Search
+      .col-6
+        = link_to 'Create User', new_user_invitation_path, class: 'btn btn-primary float-right btn-sm'
+
+    .row
+      .col-3= render "search_form"
+      .col-9
+        = table do
+          thead
+            tr
+              th Username
+              th Email
+              th Enabled?
+              th Roles
+          tbody= render @users
+        = paginate @users

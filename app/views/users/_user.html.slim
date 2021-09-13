@@ -1,0 +1,17 @@
+tr
+  td= link_to(( h user.login), user_path(user.id))
+  - if admin_authorized?
+    td= user.email
+    td
+      = user.enabled ? 'yes' : 'no'
+      | &nbsp;
+      - unless user == current_user
+        - if user.enabled?
+          = link_to('disable', disable_user_path(user.id), method: :put)
+        - else
+          = link_to('enable', enable_user_path(user.id), :method => :put)
+    td
+      span href="#" rel="tooltip" data-placement="bottom" title=user.roles.map(&:name).to_sentence
+        = pluralize user.roles.length, 'role'
+      | &nbsp; | &nbsp;
+      = link_to 'edit', user_roles_path(user)
