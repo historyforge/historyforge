@@ -1,4 +1,4 @@
-- if can?(:merge, Building) && @neighbors
+- if can?(:merge, Building) && @building.neighbors
   - content_for :pills do
     = link_to '#mergeModal', class: 'btn btn-light', data: { toggle: 'modal' } do
       i.fa.fa-code-fork
@@ -14,6 +14,10 @@
             .modal-body
               p.lead Merge another building record into this one.
               p.lead Choose from the nearest buildings:
-              = form.input_field :merge_id, input_html: { class: 'form-control' }, as: :radio_buttons, bare: true, collection: @neighbors.map { |b| c = b.instance_variable_get(:"@resource"); [c.street_address, c.id] }
+              = form.input_field :merge_id,
+                      input_html: { class: 'form-control' },
+                      as: :radio_buttons,
+                      bare: true,
+                      collection: @building.neighbors.map { |b| [b.street_address, b.id] }
             .modal-footer
               = form.submit 'Submit', data: {:disable_with => 'Sending...'}, :class => 'btn btn-primary'
