@@ -118,7 +118,7 @@
                       td= row.age
                       td= row.relation_to_head
                       td= row.profession
-    - if @building.notes?
+    - if @building.notes? && can?(:update, @building)
       .card.mb-1
         .card-header
           | Additional Notes
