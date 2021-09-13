@@ -54,7 +54,7 @@ header
               - CensusYears.each_visible_to_user(user_signed_in?) do |year|
                 = link_to "#{year} US Census", "/census/#{year}", class: 'dropdown-item'
               = link_to 'All People', '/people', class: 'dropdown-item' if can_people?
-              = link_to 'For Transcribers', '/documents', class: 'dropdown-item' if user_signed_in?
+              = link_to 'Transcriber\'s Corner', '/documents', class: 'dropdown-item' if user_signed_in?
           - if request.subdomain.blank? || %w{www ithaca}.include?(request.subdomain)
             li.nav-item= link_to 'About', '/about', class: 'nav-link'
           li.nav-item= link_to 'Contact', '/contact', class: 'nav-link'
