@@ -13,6 +13,24 @@ RSpec.describe BuildingsOnStreet do
     create(:building, addresses: [build(:address, house_number: '405', name: 'Cayuga', prefix: 'N', suffix: 'St')])
   end
 
+  context 'with duplicates' do
+    before do
+      building = create(:building, addresses: [
+        build(:address, house_number: '306', name: 'Tioga', prefix: 'N', suffix: 'St', is_primary: true),
+        build(:address, house_number: '307', name: 'Tioga', prefix: 'N', suffix: 'St', is_primary: false)
+      ])
+
+    end
+    let(:record) {
+      Census1900Record.new street_house_number: '305',
+                           street_name: 'Tioga',
+                           street_prefix: 'N',
+                           street_suffix: 'St' }
+    it 'ignores duplicates' do
+      ids = subject.map(&:id)
+      expect(ids.length).to eq(ids.uniq.length)
+    end
+  end
   context 'limits to 100-block' do
     context 'for 1-digit house numbers' do
       before do

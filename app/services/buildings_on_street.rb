@@ -29,6 +29,7 @@ class BuildingsOnStreet
                     .includes(:addresses)
                     .where(addresses: { name: street_name, city: city })
                     .order(Arel.sql("addresses.name, addresses.suffix, addresses.prefix, #{HOUSE_SQL}"))
+
     items = items.where(addresses: { prefix: street_prefix }) if street_prefix.present?
     items = items.where(addresses: { suffix: street_suffix }) if street_suffix.present?
 
@@ -40,7 +41,7 @@ class BuildingsOnStreet
     # Ensures that the record's building address is at the top of the list even if it isn't returned by the query
     items = items.to_a.unshift(Building.find(building_id)) if building_id && !items.detect { |b| b.id == building_id }
 
-    items = items.to_a
+    items = items.to_a.uniq
 
     items.map { |item| Row.new item.id, item.street_address_for_building_id }
   end
