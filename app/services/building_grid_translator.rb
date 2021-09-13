@@ -2,6 +2,8 @@
 
 # This translates a BuildingSearch into a format digestible by AgGrid
 class BuildingGridTranslator
+  include ActionView::Helpers::TextHelper
+
   def initialize(search)
     @search = search
   end
@@ -17,6 +19,8 @@ class BuildingGridTranslator
         begin
           value = record.public_send(column)
           value = { name: value, reviewed: record.reviewed? } if column == 'street_address'
+          value = truncate(strip_tags(value.to_s), escape: false) if column == 'description'
+          value = truncate(value, escape: false) if column == 'annotations'
           hash[column] = value
         rescue NoMethodError
           # sometimes people manipulate URLs to include fields that don't exist

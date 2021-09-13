@@ -8,7 +8,7 @@
         .col-sm-6
           = form.input :name
         .col-sm-6
-          = form.input :building_type_ids, collection: BuildingType.order(:name), as: :check_boxes
+          = form.input :building_type_ids, collection: BuildingType.for_select, as: :check_boxes
       .row
         .col-sm-6
           = form.input :year_earliest
@@ -61,9 +61,9 @@
         .col-sm-3
           = form.input :stories
         .col-sm-3
-          = form.input :frame_type_id,  collection: ConstructionMaterial.order(:name)
+          = form.input :frame_type_id,  collection: ConstructionMaterial.for_select
         .col-sm-3
-          = form.input :lining_type_id, collection: ConstructionMaterial.order(:name)
+          = form.input :lining_type_id, collection: ConstructionMaterial.for_select
         .col-sm-3
           = form.input :block_number
       = form.input :annotations, input_html: { rows: 6 }

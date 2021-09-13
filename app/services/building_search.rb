@@ -34,7 +34,7 @@ class BuildingSearch < SearchQueryBuilder
       end
     end
 
-    results.map { |result| result.decorate }
+    results.map(&:decorate)
   end
 
   memoize def scoped
@@ -45,9 +45,10 @@ class BuildingSearch < SearchQueryBuilder
     builder.where(reviewed_at: nil) if unreviewed?
     builder.where(investigate: true) if uninvestigated?
 
-    builder.offset(from) if from
-    builder.limit(to.to_i - from.to_i) if from && to
-
+    if from
+      builder.offset(from) if from.positive?
+      builder.limit(to - from)
+    end
 
     prepare_expanded_search if expanded
     enrich_with_residents if people.present?
@@ -88,12 +89,10 @@ class BuildingSearch < SearchQueryBuilder
   private
 
   def prepare_expanded_search
-    builder.includes(:locality) if f.include?('locality')
-    builder.includes(:building_types, :building_types_buildings) if f.include?('building_type') || f.include?('building_type_name')
-    builder.includes(:addresses) if f.include?('street_address')
-    builder.includes(:lining_type) if f.include?('lining_type')
-    builder.includes(:frame_type) if f.include?('frame_type')
-    builder.includes(:architects) if f.include?('architects')
+    builder.preload(:locality) if f.include?('locality')
+    builder.preload(:addresses) if f.include?('street_address')
+    builder.preload(:architects) if f.include?('architects')
+    builder.preload(:rich_text_description) if f.include?('description')
     add_order_clause
   end
 

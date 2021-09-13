@@ -23,6 +23,8 @@ class SearchQueryBuilder
     @s ||= {}
     @g ||= {}
     @f ||= default_fields
+    @from = @from.to_i if @from
+    @to = @to.to_i if @to
     ransack_params.keys.each do |key|
       attr = entity_class.attribute_names.detect { |item| key.to_s.starts_with?(item) }
       @f << attr if attr && !@f.include?(attr)

@@ -16,14 +16,12 @@ json.filters do
     json.sortable 'city'
   end
 
-  building_types = BuildingType.order(:name).map { |item| [item.name.capitalize, item.id] }
+  building_types = BuildingType.for_select
   AttributeBuilder.collection json, :building_types_id, klass: Building, collection: building_types
 
-  lining_types = ConstructionMaterial.order(:name).map { |item| [item.name.capitalize, item.id] }
-  AttributeBuilder.collection json, :lining_type_id, klass: Building, collection: lining_types
-
-  frame_types = ConstructionMaterial.order(:name).map { |item| [item.name.capitalize, item.id] }
-  AttributeBuilder.collection json, :frame_type_id, klass: Building, collection: frame_types
+  construction_materials = ConstructionMaterial.for_select
+  AttributeBuilder.collection json, :lining_type_id, klass: Building, collection: construction_materials
+  AttributeBuilder.collection json, :frame_type_id, klass: Building, collection: construction_materials
   AttributeBuilder.text       json, :block_number
   json.as_of_year do
     json.type 'number'

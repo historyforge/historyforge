@@ -9,8 +9,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
   new agGrid.Grid(document.querySelector('#grid'), {
     components: {
       actionCellRenderer: ActionCellRenderer,
-      nameCellRenderer: NameCellRenderer,
-        htmlCellRenderer: HTMLCellRenderer
+      nameCellRenderer: NameCellRenderer, htmlCellRenderer: HTMLCellRenderer
     },
     columnDefs: <%= BuildingGridTranslator.new(@search).column_def -%>,
     defaultColDef: { width: 100 },

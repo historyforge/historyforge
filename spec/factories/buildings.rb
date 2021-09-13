@@ -7,7 +7,7 @@ FactoryBot.define do
     lat { 42.442376 }
     lon { -76.4907835 }
     locality { Locality.find_or_create_by(name: 'Town of There') }
-    building_types { [BuildingType.find_by(name: 'residence')] }
+    building_type_ids { [1] }
     frame_type_id { 1 }
     lining_type_id { 1 }
     architects { [Architect.find_or_create_by(name: 'William Henry Miller')] }

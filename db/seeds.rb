@@ -8,16 +8,16 @@ Role.find_or_create_by name: 'photographer'
 Role.find_or_create_by name: 'census taker'
 Role.find_or_create_by name: 'builder'
 
-BuildingType.find_or_create_by(name: 'public')
-BuildingType.find_or_create_by(name: 'residence')
-BuildingType.find_or_create_by(name: 'religious')
-BuildingType.find_or_create_by(name: 'commercial')
+# BuildingType.find_or_create_by(name: 'public')
+# BuildingType.find_or_create_by(name: 'residence')
+# BuildingType.find_or_create_by(name: 'religious')
+# BuildingType.find_or_create_by(name: 'commercial')
 
-ConstructionMaterial.find_or_create_by(name: 'wood', color: 'yellow')
-ConstructionMaterial.find_or_create_by(name: 'brick', color: 'red')
-ConstructionMaterial.find_or_create_by(name: 'stone', color: 'blue')
-ConstructionMaterial.find_or_create_by(name: 'iron', color: 'gray')
-ConstructionMaterial.find_or_create_by(name: 'adobe', color: 'green')
+# ConstructionMaterial.find_or_create_by(name: 'wood', color: 'yellow')
+# ConstructionMaterial.find_or_create_by(name: 'brick', color: 'red')
+# ConstructionMaterial.find_or_create_by(name: 'stone', color: 'blue')
+# ConstructionMaterial.find_or_create_by(name: 'iron', color: 'gray')
+# ConstructionMaterial.find_or_create_by(name: 'adobe', color: 'green')
 
 if Vocabulary.count == 0
   [

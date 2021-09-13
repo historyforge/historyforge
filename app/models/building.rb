@@ -20,9 +20,9 @@ class Building < ApplicationRecord
   accepts_nested_attributes_for :addresses, allow_destroy: true, reject_if: proc { |p| p['name'].blank? }
 
   has_and_belongs_to_many :architects
-  has_and_belongs_to_many :building_types, join_table: :buildings_building_types
-  belongs_to :frame_type, class_name: 'ConstructionMaterial', optional: true
-  belongs_to :lining_type, class_name: 'ConstructionMaterial', optional: true
+  # has_and_belongs_to_many :building_types, join_table: :buildings_building_types
+  # belongs_to :frame_type, class_name: 'ConstructionMaterial', optional: true
+  # belongs_to :lining_type, class_name: 'ConstructionMaterial', optional: true
 
   CensusYears.each do |year|
     has_many :"census_#{year}_records", dependent: :nullify, class_name: "Census#{year}Record"
@@ -62,8 +62,28 @@ class Building < ApplicationRecord
       .order('addresses.name asc, addresses.prefix asc, addresses.house_number asc')
   }
 
+  scope :building_types_id_in, lambda { |*ids|
+    if ids.empty?
+      where("building_types_mask > 0")
+    else
+      where 'building_types_mask & ? > 0', BuildingType.mask_for(ids)
+    end
+  }
+
+  scope :building_types_id_not_in, lambda { |*ids|
+    if ids.empty?
+      where("building_types_mask = 0")
+    else
+      where.not 'building_types_mask & ? > 0', BuildingType.mask_for(ids)
+    end
+  }
+
+  scope :building_types_id_null, -> { where(building_types_mask: nil) }
+  scope :building_types_id_not_null, -> { where.not(building_types_mask: nil) }
+
   def self.ransackable_scopes(_auth_object=nil)
-    %i[as_of_year without_residents as_of_year_eq]
+    %i[as_of_year without_residents as_of_year_eq
+     building_types_id_in building_types_id_not_in building_types_id_null building_types_id_not_null]
   end
 
   Geocoder.configure(
@@ -187,6 +207,26 @@ class Building < ApplicationRecord
     define_method("families_in_#{year}") do
       send("census_#{year}_records").group_by(&:family_id)
     end
+  end
+
+  memoize def frame_type
+    ConstructionMaterial.find frame_type_id
+  end
+
+  memoize def lining_type
+    ConstructionMaterial.find lining_type_id
+  end
+
+  def building_types
+    BuildingType.from_mask(building_types_mask)
+  end
+
+  def building_type_ids
+    BuildingType.ids_from_mask(building_types_mask)
+  end
+
+  def building_type_ids=(ids)
+    self.building_types_mask = BuildingType.mask_from_ids(ids)
   end
 
   private

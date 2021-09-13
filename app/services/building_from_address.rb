@@ -15,7 +15,7 @@ class BuildingFromAddress
                             state: record.state,
                             postal_code: AppConfig.postal_code,
                             locality: record.locality,
-                            building_types: [BuildingType.find_by(name: 'residence')]
+                            building_type_ids: [1]
 
     modern_address.is_primary = true
     building.addresses << modern_address

@@ -59,7 +59,7 @@ RSpec.describe 'buildings' do
     click_link 'Add New Record'
     expect(page).to have_content 'New Building'
     fill_in 'Building Name', with: 'The David Building'
-    check 'commercial'
+    check 'Commercial'
     fill_in 'Year Built', with: '1949'
     check 'Year earliest circa'
     fill_in 'City', with: 'Ithaca', name: 'building[city]'
