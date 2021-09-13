@@ -1,7 +1,7 @@
-.float-right
+- set_page_title "Edit #{@user.login}"
+- content_for :pills do
   = link_to 'View', user_path(@user), class: 'btn btn-sm btn-light'
   
-h2= "Edit #{@user.login}"
 = simple_form_for @user do |form|
   = form.input :login, label: 'Username'
   = form.input :email

@@ -16,17 +16,14 @@ class UsersController < ApplicationController
 
   def show
     @user = User.find(params[:id]) || current_user
-    @html_title = "Showing User #{@user.login.capitalize}"
   end
 
   def new
-    @html_title = 'Add New User'
     @user = User.new
     authorize! :create, @user
   end
 
   def create
-    @html_title = 'Add New User'
     @user = User.new user_params
     authorize! :create, @user
     if @user.save

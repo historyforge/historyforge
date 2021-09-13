@@ -1,11 +1,11 @@
-- if can?(:update, @user)
-  .float-right
-    = link_to 'Edit', edit_user_path(@user), class: 'btn btn-sm btn-light' if can?(:update, @user)
-    = link_to 'Impersonate', mask_user_path(@user), class: 'btn btn-sm btn-light' if can?(:manage, @user)
-    - if @user.invitation_accepted_at.blank? && !@user.enabled?
-      = link_to 'Resend Invite', resend_invitation_user_path(@user), data: { method: :put }, class: 'btn btn-sm btn-light'
+- set_page_title "Showing User #{@user.login.capitalize}"
+- content_for :pills do
+  = link_to 'View All', users_path, class: 'btn btn-sm btn-light'
+  = link_to 'Edit', edit_user_path(@user), class: 'btn btn-sm btn-light' if can?(:update, @user)
+  = link_to 'Impersonate', mask_user_path(@user), class: 'btn btn-sm btn-light' if can?(:manage, @user)
+  - if can?(:update, @user) && @user.invitation_accepted_at.blank? && !@user.enabled?
+    = link_to 'Resend Invite', resend_invitation_user_path(@user), data: { method: :put }, class: 'btn btn-sm btn-light'
 
-h1= @user.name
 .card.card-default
   .card-body
     dl
