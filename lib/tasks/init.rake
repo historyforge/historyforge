@@ -12,7 +12,7 @@ namespace :init do
       Role.find_or_create_by name: 'builder'
     end
     user = User.new
-    user.roles << admin_role
+    user.add_role admin_role
     STDOUT.puts "Generating admin user. \n"
     STDOUT.puts "\nUser name: "
     user.login = STDIN.gets.chomp

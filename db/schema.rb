@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_13_171533) do
+ActiveRecord::Schema.define(version: 2021_09_13_184616) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
@@ -1032,12 +1032,9 @@ ActiveRecord::Schema.define(version: 2021_09_13_171533) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "addresses", "buildings"
-  add_foreign_key "buildings", "building_types"
   add_foreign_key "buildings", "localities"
   add_foreign_key "buildings", "users", column: "created_by_id"
   add_foreign_key "buildings", "users", column: "reviewed_by_id"
-  add_foreign_key "buildings_building_types", "building_types"
-  add_foreign_key "buildings_building_types", "buildings"
   add_foreign_key "bulk_updated_records", "bulk_updates"
   add_foreign_key "bulk_updates", "users"
   add_foreign_key "census_1880_records", "buildings"

@@ -22,6 +22,11 @@ class BitmaskModel
     all.detect { |item| item.id == id }
   end
 
+  def self.find_by(name:)
+    name = name.titleize
+    all.detect { |item| item.name == name }
+  end
+
   def self.from_mask(mask)
     return [] if mask.blank?
 

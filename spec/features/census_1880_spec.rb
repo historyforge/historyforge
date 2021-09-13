@@ -99,7 +99,7 @@ RSpec.describe '1880 US Census' do
     # expect(page).to have_no_content 'Delete'
 
     # Upgrade the user to Reviewer
-    user.roles << Role.find_by(name: 'reviewer')
+    user.add_role Role.find_by(name: 'reviewer')
     visit census1880_record_path(record)
 
     # Now review the record

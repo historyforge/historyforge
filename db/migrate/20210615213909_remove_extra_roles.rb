@@ -4,7 +4,7 @@ class RemoveExtraRoles < ActiveRecord::Migration[6.0]
     dev_role = Role.find_by(name: 'developer')
     admin_role = Role.find_by(name: 'administrator')
     super_user.users.each do |user|
-      user.roles << admin_role unless user.has_role?('administrator')
+      user.add_role admin_role unless user.has_role?('administrator')
     end
     dev_role.destroy
     super_user.destroy

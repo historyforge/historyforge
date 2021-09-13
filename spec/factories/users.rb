@@ -11,19 +11,19 @@ FactoryBot.define do
 
     trait :with_census_taker_role do
       after(:create) do |user|
-        user.roles << Role.find_by(name: 'census taker')
+        user.add_role Role.find_by(name: 'census taker')
       end
     end
 
     trait :with_builder_role do
       after(:create) do |user|
-        user.roles << Role.find_by(name: 'builder')
+        user.add_role Role.find_by(name: 'builder')
       end
     end
 
     trait :with_administrator_role do
       after(:create) do |user|
-        user.roles << Role.find_by(name: 'administrator')
+        user.add_role Role.find_by(name: 'administrator')
       end
     end
 
