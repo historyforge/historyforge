@@ -33,12 +33,8 @@ class BuildingsOnStreet
     items = items.where(addresses: { prefix: street_prefix }) if street_prefix.present?
     items = items.where(addresses: { suffix: street_suffix }) if street_suffix.present?
 
-    # If we have a house number then let's limit to addresses matching the first digit. When searching for "5" this
-    # winnows out "405" but not "5", "50", or "5090". So it doesn't quite meet the desire of "show all buildings within
-    # the hundred block".
     items = add_block_filter(items) if street_house_number.present?
 
-    # Ensures that the record's building address is at the top of the list even if it isn't returned by the query
     items = items.to_a.unshift(Building.find(building_id)) if building_id && !items.detect { |b| b.id == building_id }
 
     items = items.to_a.uniq

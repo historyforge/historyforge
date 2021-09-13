@@ -1,12 +1,12 @@
 # This file should contain all the record creation needed to seed the database with its default values.
 # The data can then be loaded with the rake db:seed (or created alongside the db with db:setup).
 #
-Role.find_or_create_by name: 'administrator'
-Role.find_or_create_by name: 'editor'
-Role.find_or_create_by name: 'reviewer'
-Role.find_or_create_by name: 'photographer'
-Role.find_or_create_by name: 'census taker'
-Role.find_or_create_by name: 'builder'
+# Role.find_or_create_by name: 'administrator'
+# Role.find_or_create_by name: 'editor'
+# Role.find_or_create_by name: 'reviewer'
+# Role.find_or_create_by name: 'photographer'
+# Role.find_or_create_by name: 'census taker'
+# Role.find_or_create_by name: 'builder'
 
 # BuildingType.find_or_create_by(name: 'public')
 # BuildingType.find_or_create_by(name: 'residence')

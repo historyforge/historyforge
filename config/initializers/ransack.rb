@@ -1,4 +1,5 @@
 Ransack.configure do |config|
+  config.options[:sanitize_scope_args] = false
   config.add_predicate 'has_any_term',
                        arel_predicate: 'matches_any',
                        formatter: proc { |v| v.scan(/\"(.*?)\"|(\w+)/).flatten.compact },
@@ -9,9 +10,6 @@ Ransack.configure do |config|
                        formatter: proc { |v| v.scan(/\"(.*?)\"|(\w+)/).flatten.compact.map{|t| "%#{t}%"} },
                        validator: proc { |v| v.present? },
                        type: :string
-end
-
-Ransack.configure do |config|
   config.add_predicate 'has_every_term',
                        arel_predicate: 'matches_all',
                        formatter: proc { |v| v.scan(/\"(.*?)\"|(\w+)/).flatten.compact },

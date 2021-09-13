@@ -1,9 +1,6 @@
 class User < ApplicationRecord
   devise :invitable, :database_authenticatable, :recoverable, :rememberable, :trackable, :validatable
 
-  has_many :permissions, dependent: :destroy
-  has_many :roles, through: :permissions
-
   has_many :search_params, dependent: :destroy
 
   CensusYears.each do |year|
@@ -11,18 +8,60 @@ class User < ApplicationRecord
   end
 
   validates_presence_of    :login
-  validates_length_of      :login,    :within => 3..40
-  validates_uniqueness_of  :login, :scope => :email, :case_sensitive => false
+  validates_length_of      :login, within: 3..40
+  validates_uniqueness_of  :login, scope: :email, case_sensitive: false
 
   alias_attribute :active, :enabled
+
+  scope :roles_id_eq, lambda { |id|
+    if id.blank?
+      where('roles_mask > 0')
+    else
+      where 'roles_mask & ? > 0', Role.mask_for(id)
+    end
+  }
+
+  def self.ransackable_scopes(_auth_object=nil)
+    %i[roles_id_eq]
+  end
 
   def name
     login
   end
 
-  def has_role?(name)
-    @roles ||= roles.pluck('name') || []
-    @roles.include?(name)
+  def has_role?(role)
+    name = role.is_a?(String) ? role.titleize : role.name
+    role_names.include?(name)
+  end
+
+  memoize def role_names
+    roles.map(&:name)
+  end
+
+  memoize def roles
+    Role.from_mask(roles_mask)
+  end
+
+  def role_ids
+    Role.ids_from_mask(roles_mask)
+  end
+
+  def role_ids=(ids)
+    self.roles_mask = Role.mask_from_ids(ids)
+  end
+
+  def add_role(role)
+    ids = role_ids
+    ids += [role.id]
+    self.role_ids = ids.uniq
+    save
+  end
+
+  def remove_role(role)
+    ids = role_ids
+    ids -= [role.id]
+    self.role_ids = ids.uniq
+    save
   end
 
   #Called by Devise

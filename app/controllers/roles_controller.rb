@@ -10,21 +10,15 @@ class RolesController < ApplicationController
   def update
     @user = User.find(params[:user_id])
     @role = Role.find(params[:id])
-    unless @user.has_role?(@role.name)
-      @user.roles << @role
-    end
-    redirect_to :action => 'index'
+    @user.add_role @role unless @user.has_role?(@role)
+    redirect_to action: 'index'
   end
 
   def destroy
     @user = User.find(params[:user_id])
     @role = Role.find(params[:id])
-    if @user.has_role?(@role.name)
-      @user.roles.delete(@role)
-      redirect_to :action => 'index'
-    else
-      redirect_to :action => 'index'
-    end
+    @user.remove_role @role if @user.has_role?(@role)
+    redirect_to action: 'index'
 
   end
 

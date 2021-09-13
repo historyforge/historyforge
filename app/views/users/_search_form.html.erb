@@ -1,24 +1,7 @@
-<%= search_form_for @q do |f| %>
-  <div>
-    <%= f.label :login_cont %>
-    <%= f.text_field :login_cont, class: 'form-control' %>
-  </div>
-  <div>
-    <%= f.label :email_cont %>
-    <%= f.text_field :email_cont, class: 'form-control', include_blank: true %>
-  </div>
-  <div>
-    <%= f.label :role %>
-    <%= f.collection_select :roles_id_eq, Role.all, "id", "name", { include_blank: true }, { class: 'form-control' }%>
-  </div>
-
-  <%#= f.label :authentication_provider %>
-  <%#= f.collection_select :provider_id_eq, ['Facebook', 'Email'], { class: 'form-control' }%>
-
-  <div>
-    <%= f.label :enabled %>
-    <%= f.select :enabled_true, [["Enabled", 1], ["Disabled", 0]], { include_blank: true }, { class: 'form-control' }%>
-  </div>
-  <br>
-  <%= f.submit class: 'btn btn-primary' %>
+<%= search_form_for @q, builder: SimpleForm::FormBuilder do |form| %>
+  <%= form.input :login_cont, label: 'Username' %>
+  <%= form.input :email_cont, label: 'Email' %>
+  <%= form.input :roles_id_eq, label: 'Role', collection: Role.for_select, include_blank: true %>
+  <%= form.input :enabled_true, label: 'Enabled?', collection: [['Enabled', 1], ['Disabled', 0]], include_blank: true %>
+  <%= form.submit 'Search', class: 'btn btn-primary' %>
 <%end%>

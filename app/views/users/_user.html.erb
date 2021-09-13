@@ -1,5 +1,5 @@
-<tr class="<%= cycle('table0', 'table1') -%>">
-  <td><%= link_to(( h user.login), user_path(user.id), :method => :get)  -%></td>
+<tr>
+  <td><%= link_to(( h user.login), user_path(user.id))  -%></td>
   <% if admin_authorized? %>
     <td><%=h user.email -%></td>
     <td><%= user.enabled ? 'yes' : 'no' -%>&nbsp;
@@ -13,8 +13,8 @@
       <% end -%>
     </td>
     <td>
-      <span href="#" rel="tooltip" data-placement="bottom" title=" <% user.roles.each do |role, index| %> <%= role.name + (user.roles.index(role) < user.roles.length-1 ? ', ' : '') -%> <% end %>">
-        <%= user.roles.length.to_s + (user.roles.length != 1 ? ' roles' : ' role') -%>
+      <span href="#" rel="tooltip" data-placement="bottom" title="<%= user.roles.map(&:name).to_sentence %>">
+        <%= pluralize user.roles.length, 'role' -%>
       </span>
       <%= link_to 'edit', user_roles_path(user) -%>
     </td>
