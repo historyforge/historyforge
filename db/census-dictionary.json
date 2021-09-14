@@ -1,0 +1,1717 @@
+{
+  "codes": {
+    "default": {
+      "ot": "Other",
+      "other": "Other",
+      "blank": "Left blank",
+      "unk": "Unknown"
+    },
+    "birth_month": {
+      "1": "January",
+      "2": "February",
+      "3": "March",
+      "4": "April",
+      "5": "May",
+      "6": "June",
+      "7": "July",
+      "8": "August",
+      "9": "September",
+      "10": "October",
+      "11": "November",
+      "12": "December"
+    },
+    "grade_completed": {
+      "h1": "H-1 or 9",
+      "h4": "H-4 or 5",
+      "c5": "C-5 or over"
+    },
+    "owned_or_rented": {
+      "o": "Owned",
+      "r": "Rented",
+      "neither": "Neither"
+    },
+    "race": {
+      "w": "White",
+      "b": "Black",
+      "m": "Mixed/Mulatto",
+      "mu": "Mulatto",
+      "in": "Indian",
+      "ch": "Chinese",
+      "jp": "Japanese",
+      "fil": "Filipino",
+      "hin": "Hindu",
+      "kor": "Korean",
+      "neg": "Black",
+      "mex": "Mexican",
+      "ot": "Other"
+    },
+    "sex": {
+      "m": "Male",
+      "f": "Female"
+    },
+    "marital_status": {
+      "s": "Single",
+      "m": "Married",
+      "w": "Widowed",
+      "wd": "Widowed",
+      "d": "Divorced",
+      "m7": "Married spouse not present",
+      "m_or_m1": "1st marriage",
+      "m2_or_m3": "2nd or subsequent marriage"
+    },
+    "farm_or_house": {
+      "f": "Farm",
+      "h": "House"
+    },
+    "mortgage": {
+      "m": "Mortgage",
+      "f": "Free of mortgage"
+    },
+    "naturalized_alien": {
+      "al": "Alien",
+      "pa": "Papers",
+      "na": "Naturalized",
+      "amcit": "American Citizen"
+    },
+    "employment": {
+      "e": "Employer",
+      "emp": "Employer",
+      "em": "Employer",
+      "w": "Wage or salary worker",
+      "oa": "Own account"
+    },
+    "usual_worker_class": {
+      "pw": "Private wage or salary worker",
+      "gw": "Government wage or salary worker",
+      "e": "Employer",
+      "oa": "Own account",
+      "np": "Unpaid family worker"
+    },
+    "worker_class": {
+      "e": "Employer",
+      "emp": "Employer",
+      "w": "Wage or salary worker",
+      "o": "Own account",
+      "oa": "Own account",
+      "np": "Unpaid family worker",
+      "pw": "Private wage or salary worker",
+      "gw": "Government wage or salary worker"
+    },
+    "war_fought": {
+      "ww": "World War",
+      "sp": "Spanish-American War",
+      "civ": "Civil War",
+      "phil": "Philippine Insurrection",
+      "box": "Boxer Rebellion",
+      "mex": "Mexican Expedition",
+      "w": "World War",
+      "s": "Spanish-American War, Philippine Insurrection, or Boxer Rebellion",
+      "sw": "Spanish-American War and World War",
+      "r": "Regular establishment (Army, Navy, or Marine Corps) peace-time service only",
+      "ot": "Other war or expedition"
+    },
+    "civil_war_vet": {
+      "ua": "Union Army",
+      "un": "Union Navy",
+      "ca": "Confederate Army",
+      "cn": "Confederate Navy"
+    },
+    "no_work_reason": {
+      "h": "Home housework",
+      "s": "School",
+      "u": "Unable to work",
+      "o": "Other",
+      "ot": "Other"
+    },
+    "deduction_rate": {
+      "1": "all",
+      "2": "half or more",
+      "3": "less than half"
+    }
+  },
+  "fields": {
+    "street_house_number": {
+      "defaults": {
+        "label": "House No.",
+        "hint": "If the number includes a fraction leave a space between the number and the fraction. i.e. 102 ½. If the number indicates rear (as in rear apartment) enter the street number followed by a space and the word Rear, i.e. 313 Rear. If the number includes a range enter as written, i.e. 102-104. If there is no house number and there is a different dwelling number, try to verify the house number using another source such as the city directory."
+      },
+      "1880": {
+        "column": "2nd Column on the Left"
+      },
+      "1900": {
+        "column": "2nd Column on the Left"
+      },
+      "1910": {
+        "column": "2nd Column on the Left"
+      },
+      "1920": {
+        "column": 2
+      },
+      "1930": {
+        "column": 2
+      },
+      "1940": {
+        "column": 2,
+        "hint": "If the number includes a fraction leave a space between the number and the fraction. i.e. 102 ½. If the number indicates rear (as in rear apartment) enter the street number followed by a space and the word Rear, i.e. 313 Rear. If the number includes a range enter as written, i.e. 102-104."
+      }
+    },
+    "street_prefix": {
+      "defaults": {
+        "label": "Prefix",
+        "hint": "The prefix is the directional North, South, East, West preceding the street name. Exception: On occasion the street name will include North, South, East, or West in the formal name, as in South Hill Terrace.  In this case you would include South in the street address, not the prefix.  If you are unsure, check the resources on the Transcriber’s Corner or search the building database on HistoryForge for the street name to see how it has been entered before."
+      },
+      "1880": {
+        "column": "1st Column on the Left"
+      },
+      "1900": {
+        "column": "1st Column on the Left"
+      },
+      "1910": {
+        "column": "1st Column on the Left"
+      },
+      "1920": {
+        "column": 1
+      },
+      "1930": {
+        "column": 1
+      },
+      "1940": {
+        "column": 1
+      }
+    },
+    "street_name": {
+      "defaults": {
+        "label": "Street Name",
+        "hint": "The name of the street itself, i.e., Aurora. The name is written vertically down the side of the sheet. If you are unsure, check the resources on the Transcriber’s Corner or search the building database on HistoryForge for the street name to see how it has been entered before. Note: Street names can change at least once on the sheet.  These changes are often indicated by a hand-drawn line across the column separating the buildings on one street from the next."
+      },
+      "1880": {
+        "column": "1st Column on the Left"
+      },
+      "1900": {
+        "column": "1st Column on the Left"
+      },
+      "1910": {
+        "column": "1st Column on the Left"
+      },
+      "1920": {
+        "column": 1
+      },
+      "1930": {
+        "column": 1
+      },
+      "1940": {
+        "column": 1
+      }
+    },
+    "street_suffix": {
+      "defaults": {
+        "label": "Suffix",
+        "hint": "The suffix is the Avenue, Road, Street, etc, after the street name. Some areas have street names with different suffixes, for example Cascadilla St and Cascadilla Ave are two different streets. If you are unsure, check the resources on the Transcriber’s Corner or search the building database on HistoryForge for the street name to see how it has been entered before."
+      },
+      "1880": {
+        "column": "1st Column on the Left"
+      },
+      "1900": {
+        "column": "1st Column on the Left"
+      },
+      "1910": {
+        "column": "1st Column on the Left"
+      },
+      "1920": {
+        "column": 1
+      },
+      "1930": {
+        "column": 1
+      },
+      "1940": {
+        "column": 1
+      }
+    },
+    "dwelling_number": {
+      "defaults": {
+        "label": "Dwelling No.",
+        "hint": "Enter what you see on the census. If the Dwelling number is not listed on the first line of the sheet, it can be found listed with the head of that household on the previous sheet. Note: Dwelling and Family numbers are generally sequential.  If it is hard to read either number check the numbers above and below for a pattern."
+      },
+      "1880": {
+        "column": 1
+      },
+      "1900": {
+        "column": 1
+      },
+      "1910": {
+        "column": 1
+      },
+      "1920": {
+        "column": 3
+      },
+      "1930": {
+        "column": 3
+      }
+    },
+    "family_id": {
+      "defaults": {
+        "label": "Family No.",
+        "hint": "Enter what you see on the census. If the Family number is not listed on the first line of the sheet, it can be found listed with the head of that household on the previous sheet. Note: Dwelling and Family numbers are generally sequential.  If it is hard to read either number check the numbers above and below for a pattern."
+      },
+      "1880": {
+        "column": 2
+      },
+      "1900": {
+        "column": 2
+      },
+      "1910": {
+        "column": 2
+      },
+      "1920": {
+        "column": 4
+      },
+      "1930": {
+        "column": 4
+      },
+      "1940": {
+        "column": 3,
+        "label": "Household No."
+      }
+    },
+    "last_name": {
+      "defaults": {
+        "label": "Last Name",
+        "hint": "Names are listed in the following order: Last, First, Middle.  If several members of a family have the same last name, the last name will be listed in the first record only and in following records it might be replaced by a line or a blank space. If the name is hard to read, attempt to verify the spelling with the city directory where possible. Note: If you see a last name that looks crossed out because it was written over that line, enter it as the last name. Sometimes the enumerator drew the lines first for the last name of all the people in the household, and then had to write a new last name over the line to indicate a person had a different last name. These were written over the line, not crossed out."
+      },
+      "1880": {
+        "column": 3
+      },
+      "1900": {
+        "column": 3
+      },
+      "1910": {
+        "column": 3
+      },
+      "1920": {
+        "column": 5
+      },
+      "1930": {
+        "column": 5
+      },
+      "1940": {
+        "column": 7
+      }
+    },
+    "first_name": {
+      "defaults": {
+        "label": "First Name",
+        "hint": "Names are listed in the following order: Last, First, Middle.  If several members of a family have the same last name, the last name will be listed in the first record only and in following records it might be replaced by a line or a blank space. If the name is hard to read, attempt to verify the spelling with the city directory where possible. Note: If you see a last name that looks crossed out because it was written over that line, enter it as the last name. Sometimes the enumerator drew the lines first for the last name of all the people in the household, and then had to write a new last name over the line to indicate a person had a different last name. These were written over the line, not crossed out."
+      },
+      "1880": {
+        "column": 3
+      },
+      "1900": {
+        "column": 3
+      },
+      "1910": {
+        "column": 3
+      },
+      "1920": {
+        "column": 5
+      },
+      "1930": {
+        "column": 5
+      },
+      "1940": {
+        "column": 7
+      }
+    },
+    "middle_name": {
+      "defaults": {
+        "label": "Middle Name",
+        "hint": "Names are listed in the following order: Last, First, Middle.  If several members of a family have the same last name, the last name will be listed in the first record only and in following records it might be replaced by a line or a blank space. If the name is hard to read, attempt to verify the spelling with the city directory where possible. Note: If you see a last name that looks crossed out because it was written over that line, enter it as the last name. Sometimes the enumerator drew the lines first for the last name of all the people in the household, and then had to write a new last name over the line to indicate a person had a different last name. These were written over the line, not crossed out."
+      },
+      "1880": {
+        "column": 3
+      },
+      "1900": {
+        "column": 3
+      },
+      "1910": {
+        "column": 3
+      },
+      "1920": {
+        "column": 5
+      },
+      "1930": {
+        "column": 5
+      },
+      "1940": {
+        "column": 7
+      }
+    },
+    "name_prefix": {
+      "defaults": {
+        "label": "Title",
+        "hint": "Enter a title in HistoryForge only if it is entered on the census sheet."
+      },
+      "1880": {
+        "column": 3
+      },
+      "1900": {
+        "column": 3
+      },
+      "1910": {
+        "column": 3
+      },
+      "1920": {
+        "column": 5
+      },
+      "1930": {
+        "column": 5
+      },
+      "1940": {
+        "column": 7
+      }
+    },
+    "name_suffix": {
+      "defaults": {
+        "label": "Suffix",
+        "hint": "Enter a suffix in HistoryForge only if it is entered on the census sheet."
+      },
+      "1880": {
+        "column": 3
+      },
+      "1900": {
+        "column": 3
+      },
+      "1910": {
+        "column": 3
+      },
+      "1920": {
+        "column": 5
+      },
+      "1930": {
+        "column": 5
+      },
+      "1940": {
+        "column": 7
+      }
+    },
+    "relation_to_head": {
+      "defaults": {
+        "label": "Relation to Head",
+        "hint": "Enter what you see on the census. If this field is blank enter the word Blank so you can save it. <br /><b>Note:</b> This field has a controlled vocabulary. If, as you enter the term from the census, the term does not appear from the list of controlled vocabulary, enter an X in the field and enter “relation to head is ____” in the notes field."
+      },
+      "1880": {
+        "column": 8,
+        "hint": "Enter what you see on the census. If this field is blank but the person is the Head (the first person with a new dwelling and/or family number), enter the word Head. If the field is blank and the person is not the Head, enter the word Blank so you can save the record. Note: This field has a controlled vocabulary. If, as you enter the term from the census, it does not appear from the list of controlled vocabulary, enter an X in the field and enter “Relation to head is ____” in the notes field."
+      },
+      "1900": {
+        "column": 4
+      },
+      "1910": {
+        "column": 4
+      },
+      "1920": {
+        "column": 6
+      },
+      "1930": {
+        "column": 6
+      },
+      "1940": {
+        "column": 8
+      }
+    },
+    "race": {
+      "defaults": {
+        "label": "Race"
+      },
+      "1880": {
+        "column": 4
+      },
+      "1900": {
+        "column": 5
+      },
+      "1910": {
+        "column": 6
+      },
+      "1920": {
+        "column": 10
+      },
+      "1930": {
+        "column": 12
+      },
+      "1940": {
+        "column": 10
+      }
+    },
+    "sex": {
+      "defaults": {
+        "label": "Sex"
+      },
+      "1880": {
+        "column": 5
+      },
+      "1900": {
+        "column": 6
+      },
+      "1910": {
+        "column": 5
+      },
+      "1920": {
+        "column": 9
+      },
+      "1930": {
+        "column": 11
+      },
+      "1940": {
+        "column": 9
+      }
+    },
+    "birth_month": {
+      "defaults": {
+        "label": "Birth Month"
+      },
+      "1880": {
+        "column": 7
+      },
+      "1900": {
+        "column": 7
+      }
+    },
+    "age": {
+      "defaults": {
+        "label": "Age"
+      },
+      "1880": {
+        "column": 6,
+        "hint": "Enter what you see on the census. If the field is blank, leave blank. If the answer is Un (Unknown) enter 999. A child that is less than one year of age will be listed by their age in months on the census i.e., 3/12 or 11/12. If the age is entered this way on the census, enter the years in the Age field and the months in the Age (months) field on HistoryForge."
+      },
+      "1900": {
+        "column": 8,
+        "hint": "Enter what you see on the census. If the field is blank, leave blank. If the answer is Un (Unknown) enter 999. A child that is less than one year of age will be listed by their age in months on the census i.e., 3/12 or 11/12. If the age is entered this way on the census, enter the years in the Age field and the months in the Age (months) field on HistoryForge."
+      },
+      "1910": {
+        "column": 7,
+        "hint": "Enter what you see on the census. If the field is blank, leave blank. If the answer is Un (Unknown) enter 999. A child that is less than two years of age will be listed by their age in months on the census i.e., 1 and 3/12. If the age is entered this way on the census, enter the years in the Age field and the months in the Age (months) field on HistoryForge."
+      },
+      "1920": {
+        "column": 11,
+        "hint": "Enter what you see on the census. If the field is blank, leave blank. If the answer is Un (Unknown) enter 999. A child that is less than five years of age will be listed by their age in months on the census i.e., 1 and 3/12. If the age is entered this way on the census, enter the years in the Age field and the months in the Age (months) field on HistoryForge."
+      },
+      "1930": {
+        "column": 13,
+        "hint": "Enter what you see on the census. If the field is blank, leave blank. If the answer is Un (Unknown) enter 999. A child that is less than five years of age will be listed by their age in months on the census i.e., 1 and 3/12. If the age is entered this way on the census, enter the years in the Age field and the months in the Age (months) field on HistoryForge."
+      },
+      "1940": {
+        "column": 11,
+        "label": "Age at Last Birthday",
+        "hint": "Enter what you see on the census. If the field is blank, leave blank. If the answer is Un (Unknown) enter 999. A child that is less than one year of age will be listed by their age in months on the census i.e., 3/12 or 11/12. If the age is entered this way on the census, enter the years in the Age field and the months in the Age (months) field on HistoryForge."
+      }
+    },
+    "age_months": {
+      "defaults": {
+        "label": "Age (Months)"
+      },
+      "1880": {
+        "column": 6,
+        "hint": "Enter what you see on the census. If the field is blank, leave blank. If the answer is Un (Unknown) enter 999. A child that is less than one year of age will be listed by their age in months on the census i.e., 3/12 or 11/12. If the age is entered this way on the census, enter the years in the Age field and the months in the Age (months) field on HistoryForge."
+      },
+      "1900": {
+        "column": 8,
+        "hint": "Enter what you see on the census. If the field is blank, leave blank. If the answer is Un (Unknown) enter 999. A child that is less than one year of age will be listed by their age in months on the census i.e., 3/12 or 11/12. If the age is entered this way on the census, enter the years in the Age field and the months in the Age (months) field on HistoryForge."
+      },
+      "1910": {
+        "column": 7,
+        "hint": "Enter what you see on the census. If the field is blank, leave blank. If the answer is Un (Unknown) enter 999. A child that is less than two years of age will be listed by their age in months on the census i.e., 1 and 3/12. If the age is entered this way on the census, enter the years in the Age field and the months in the Age (months) field on HistoryForge."
+      },
+      "1920": {
+        "column": 11,
+        "hint": "Enter what you see on the census. If the field is blank, leave blank. If the answer is Un (Unknown) enter 999. A child that is less than five years of age will be listed by their age in months on the census i.e., 1 and 3/12. If the age is entered this way on the census, enter the years in the Age field and the months in the Age (months) field on HistoryForge."
+      },
+      "1930": {
+        "column": 13,
+        "hint": "Enter what you see on the census. If the field is blank, leave blank. If the answer is Un (Unknown) enter 999. A child that is less than five years of age will be listed by their age in months on the census i.e., 1 and 3/12. If the age is entered this way on the census, enter the years in the Age field and the months in the Age (months) field on HistoryForge."
+      },
+      "1940": {
+        "column": 11,
+        "hint": "Enter what you see on the census. If the field is blank, leave blank. If the answer is Un (Unknown) enter 999. A child that is less than one year of age will be listed by their age in months on the census i.e., 3/12 or 11/12. If the age is entered this way on the census, enter the years in the Age field and the months in the Age (months) field on HistoryForge."
+      }
+    },
+    "marital_status": {
+      "defaults": {
+        "label": "Marital Status"
+      },
+      "1880": {
+        "column": "9-11",
+        "hint": "Select the option that corresponds to the answer on the census. Enumerators used this mark (/) to indicate Married, Single, or Widowed, and used (D) for Divorced."
+      },
+      "1900": {
+        "column": 9
+      },
+      "1910": {
+        "column": 8
+      },
+      "1920": {
+        "column": 12
+      },
+      "1930": {
+        "column": 14
+      },
+      "1940": {
+        "column": 12
+      }
+    },
+    "just_married": {
+      "defaults": {
+        "label": "Married during Census Year"
+      },
+      "1880": {
+        "column": 12,
+        "hint": "Check the box if the response is yes. Enumerators often used this mark (/) for the affirmative. If the enumerator listed a month instead, check the box and enter “month of marriage ___” in the notes field."
+      }
+    },
+    "pob": {
+      "defaults": {
+        "label": "Place of Birth",
+        "hint": "Enter what you see on the census. Note: This field has a controlled vocabulary. If, as you enter the term from the census, the term does not appear from the list of controlled vocabulary, enter an X in the field and enter “Place of Birth is ____” in the notes field."
+      },
+      "1880": {
+        "column": 24
+      },
+      "1900": {
+        "column": 13
+      },
+      "1910": {
+        "column": 12
+      },
+      "1920": {
+        "column": 19
+      },
+      "1930": {
+        "column": 18
+      },
+      "1940": {
+        "column": 15
+      }
+    },
+    "pob_father": {
+      "defaults": {
+        "label": "Place of Birth - Father",
+        "hint": "Enter what you see on the census. Note: This field has a controlled vocabulary. If, as you enter the term from the census, the term does not appear from the list of controlled vocabulary, enter an X in the field and enter “Place of Birth is ____” in the notes field."
+      },
+      "1880": {
+        "column": 25
+      },
+      "1900": {
+        "column": 14
+      },
+      "1910": {
+        "column": 13
+      },
+      "1920": {
+        "column": 21
+      },
+      "1930": {
+        "column": 19
+      },
+      "1940": {
+        "column": 36
+      }
+    },
+    "pob_mother": {
+      "defaults": {
+        "label": "Place of Birth - Mother",
+        "hint": "Enter what you see on the census. Note: This field has a controlled vocabulary. If, as you enter the term from the census, the term does not appear from the list of controlled vocabulary, enter an X in the field and enter “Place of Birth is ____” in the notes field."
+      },
+      "1880": {
+        "column": 26
+      },
+      "1900": {
+        "column": 15
+      },
+      "1910": {
+        "column": 14
+      },
+      "1920": {
+        "column": 23
+      },
+      "1930": {
+        "column": 20
+      },
+      "1940": {
+        "column": 37
+      }
+    },
+    "occupation": {
+      "defaults": {
+        "label": "Occupation",
+        "hint": "Enter what you see on the census.  If the field is blank on the census, leave the default “None.” If, however, the industry is not blank or there is some other indicator of an occupation enter the word “Blank” to indicate that there was an occupation."
+      },
+      "1880": {
+        "column": 13
+      },
+      "1900": {
+        "column": 19
+      },
+      "1910": {
+        "column": 18
+      },
+      "1920": {
+        "column": 26
+      },
+      "1930": {
+        "column": 25
+      },
+      "1940": {
+        "column": 28
+      }
+    },
+    "unemployed_months": {
+      "defaults": {
+        "label": "Unemployed Months"
+      },
+      "1880": {
+        "column": 14,
+        "hint": "Enter the number of months only, do not record checks or other markings."
+      },
+      "1900": {
+        "column": 20
+      }
+    },
+    "attended_school": {
+      "defaults": {
+        "label": "Attended School"
+      },
+      "1880": {
+        "column": 21
+      },
+      "1900": {
+        "column": 21
+      },
+      "1910": {
+        "column": 25
+      },
+      "1920": {
+        "column": 16
+      },
+      "1930": {
+        "column": 16
+      },
+      "1940": {
+        "column": 13,
+        "label": "Attended School or College?"
+      }
+    },
+    "cannot_read": {
+      "defaults": {
+        "label": "Cannot Read"
+      },
+      "1880": {
+        "column": 22
+      }
+    },
+    "cannot_write": {
+      "defaults": {
+        "label": "Cannot Write"
+      },
+      "1880": {
+        "column": 23
+      }
+    },
+    "sick": {
+      "defaults": {
+        "label": "Sickness or Temporary Disability"
+      },
+      "1880": {
+        "column": 15,
+        "hint": "Enter what you see on the census. If the field is blank on the census, leave it blank on HistoryForge. If the enumerator made a mark, enter X. For difficult handwriting, a list of possible Sicknesses on Day of Enumeration is available on the Transcriber’s Corner."
+      }
+    },
+    "blind": {
+      "defaults": {
+        "label": "Blind",
+        "hint": "Check the box if the field contains a slash (/). Enumerators used this mark to indicate yes. Enter any additional information in the notes."
+      },
+      "1880": {
+        "column": 16
+      },
+      "1910": {
+        "column": 31
+      }
+    },
+    "deaf_dumb": {
+      "defaults": {
+        "label": "Deaf and Dumb"
+      },
+      "1880": {
+        "column": 17
+      }
+    },
+    "idiotic": {
+      "defaults": {
+        "label": "Idiotic"
+      },
+      "1880": {
+        "column": 18
+      }
+    },
+    "insane": {
+      "defaults": {
+        "label": "Insane"
+      },
+      "1880": {
+        "column": 19
+      }
+    },
+    "maimed": {
+      "defaults": {
+        "label": "Maimed, Crippled, Bedridden, or Otherwise Disabled"
+      },
+      "1880": {
+        "column": 20
+      }
+    },
+    "birth_year": {
+      "defaults": {
+        "label": "Birth Year"
+      },
+      "1900": {
+        "column": 7
+      }
+    },
+    "years_married": {
+      "defaults": {
+        "label": "Years of Present Marriage"
+      },
+      "1900": {
+        "column": 10
+      },
+      "1910": {
+        "column": 9
+      }
+    },
+    "num_children_born": {
+      "defaults": {
+        "label": "No. Children Born"
+      },
+      "1900": {
+        "column": 11
+      },
+      "1910": {
+        "column": 10
+      }
+    },
+    "num_children_alive": {
+      "defaults": {
+        "label": "No. Children Alive"
+      },
+      "1900": {
+        "column": 12
+      },
+      "1910": {
+        "column": 11
+      }
+    },
+    "year_immigrated": {
+      "defaults": {
+        "label": "Year Immigrated"
+      },
+      "1900": {
+        "column": 16
+      },
+      "1910": {
+        "column": 15
+      },
+      "1920": {
+        "column": 13
+      },
+      "1930": {
+        "column": 22
+      }
+    },
+    "years_in_us": {
+      "defaults": {
+        "label": "Years in US"
+      },
+      "1900": {
+        "column": 17
+      }
+    },
+    "naturalized_alien": {
+      "defaults": {
+        "label": "Naturalization"
+      },
+      "1900": {
+        "column": 18
+      },
+      "1910": {
+        "column": 16
+      },
+      "1920": {
+        "column": 14
+      },
+      "1930": {
+        "column": 23
+      },
+      "1940": {
+        "column": 16,
+        "label": "Citizenship"
+      }
+    },
+    "industry": {
+      "defaults": {
+        "label": "Industry",
+        "hint": "Enter what you see on the census. If the field is blank on the census, leave it blank on HistoryForge."
+      },
+      "1900": {
+        "column": 19
+      },
+      "1910": {
+        "column": 19,
+        "hint": "There is no industry field on this census, but sometimes it was supplied by the enumerator after the profession.  If that is the case, enter it here."
+      },
+      "1920": {
+        "column": 27
+      },
+      "1930": {
+        "column": 26
+      },
+      "1940": {
+        "column": 29
+      }
+    },
+    "can_read": {
+      "defaults": {
+        "label": "Can Read"
+      },
+      "1900": {
+        "column": 22
+      },
+      "1910": {
+        "column": 23
+      },
+      "1920": {
+        "column": 17
+      }
+    },
+    "can_write": {
+      "defaults": {
+        "label": "Can Write"
+      },
+      "1900": {
+        "column": 23
+      },
+      "1910": {
+        "column": 24
+      },
+      "1920": {
+        "column": 18
+      }
+    },
+    "can_speak_english": {
+      "defaults": {
+        "label": "Speaks English"
+      },
+      "1900": {
+        "column": 24
+      },
+      "1930": {
+        "column": 24
+      }
+    },
+    "owned_or_rented": {
+      "defaults": {
+        "label": "Owned or Rented",
+        "hint": "Select the option that corresponds to the answer on the census. Note: This information should only be entered once for the family/household."
+      },
+      "1900": {
+        "column": 25
+      },
+      "1910": {
+        "column": 26
+      },
+      "1920": {
+        "column": 7
+      },
+      "1930": {
+        "column": 7
+      },
+      "1940": {
+        "column": 4
+      }
+    },
+    "mortgage": {
+      "defaults": {
+        "label": "Mortgage",
+        "hint": "Select the option that corresponds to the answer on the census. Note: This information should only be entered once for the family/household."
+      },
+      "1900": {
+        "column": 26
+      },
+      "1910": {
+        "column": 27
+      },
+      "1920": {
+        "column": 8
+      }
+    },
+    "farm_or_house": {
+      "defaults": {
+        "label": "Farm or House",
+        "hint": "Select the option that corresponds to the answer on the census. Note: This information should only be entered once for the family/household."
+      },
+      "1900": {
+        "column": 27
+      },
+      "1910": {
+        "column": 28
+      }
+    },
+    "farm_schedule": {
+      "defaults": {
+        "label": "Farm Schedule No."
+      },
+      "1900": {
+        "column": 28
+      },
+      "1920": {
+        "column": 29,
+        "hint": "If this column contains a 1- or 2-digit number enter it here.  If it contains a 3-digit number enter it under occupation code."
+      },
+      "1930": {
+        "column": 32
+      },
+      "1940": {
+        "column": 34
+      }
+    },
+    "mother_tongue": {
+      "defaults": {
+        "label": "Mother Tongue",
+        "hint": "Generally, for foreign born only.  Enter what you see on the census. If the enumerator wrote un (see below) or don’t know enter Unknown. Note: This field has a controlled vocabulary. If, as you enter the term from the census, the term does not appear from the list of controlled vocabulary, enter an X in the field and enter “Mother Tongue is ____” in the notes field."
+      },
+      "1910": {
+        "column": 12
+      },
+      "1920": {
+        "column": 20
+      },
+      "1930": {
+        "column": 21
+      },
+      "1940": {
+        "column": 38
+      }
+    },
+    "mother_tongue_father": {
+      "defaults": {
+        "label": "Mother Tongue - Father",
+        "hint": "Generally, for foreign born only.  Enter what you see on the census. If the enumerator wrote un (see below) or don’t know enter Unknown. Note: This field has a controlled vocabulary. If, as you enter the term from the census, the term does not appear from the list of controlled vocabulary, enter an X in the field and enter “Mother Tongue is ____” in the notes field."
+      },
+      "1910": {
+        "column": 13
+      },
+      "1920": {
+        "column": 22
+      }
+    },
+    "mother_tongue_mother": {
+      "defaults": {
+        "label": "Mother Tongue - Mother",
+        "hint": "Generally, for foreign born only.  Enter what you see on the census. If the enumerator wrote un (see below) or don’t know enter Unknown. Note: This field has a controlled vocabulary. If, as you enter the term from the census, the term does not appear from the list of controlled vocabulary, enter an X in the field and enter “Mother Tongue is ____” in the notes field."
+      },
+      "1910": {
+        "column": 14
+      },
+      "1920": {
+        "column": 24
+      }
+    },
+    "language_spoken": {
+      "defaults": {
+        "label": "Language Spoken"
+      },
+      "1910": {
+        "column": 17
+      }
+    },
+    "employment": {
+      "defaults": {
+        "label": "Employment Status"
+      },
+      "1910": {
+        "column": 20
+      },
+      "1920": {
+        "column": 28
+      }
+    },
+    "unemployed": {
+      "defaults": {
+        "label": "Without Work"
+      },
+      "1910": {
+        "column": 21
+      }
+    },
+    "unemployed_weeks_1909": {
+      "defaults": {
+        "label": "Unemployed Weeks (1909)"
+      },
+      "1910": {
+        "column": 22
+      }
+    },
+    "num_farm_sched": {
+      "defaults": {
+        "label": "Farm No."
+      },
+      "1910": {
+        "column": 29
+      }
+    },
+    "civil_war_vet": {
+      "defaults": {
+        "label": "Civil War"
+      },
+      "1910": {
+        "column": 30
+      }
+    },
+    "dumb": {
+      "defaults": {
+      },
+      "1910": {
+        "column": 32
+      }
+    },
+    "year_naturalized": {
+      "defaults": {
+        "label": "Year Naturalized"
+      },
+      "1920": {
+        "column": 15
+      }
+    },
+    "speaks_english": {
+      "defaults": {
+      },
+      "1920": {
+        "column": 25
+      }
+    },
+    "employment_code": {
+      "defaults": {
+        "label": "Occupation Code"
+      },
+      "1920": {
+        "column": "Right Margin",
+        "hint": "There is no official column for occupation codes on the census, these 3-digit numbers which range from 000-999 were added in the right margin or sometimes under farm number, please enter the numbers here. If you are unsure of the code, check the resource for verifying the occupation code on the Transcriber’s Corner."
+      }
+    },
+    "home_value": {
+      "defaults": {
+        "label": "Value of Home or Monthly Payment",
+        "hint": "Enter what you see on the census. If the field is blank on the census, leave it blank on HistoryForge. Note: This information should only be entered once for the family/household."
+      },
+      "1930": {
+        "column": 8
+      },
+      "1940": {
+        "column": 5
+      }
+    },
+    "has_radio": {
+      "defaults": {
+        "label": "Radio Set",
+        "hint": "Check the box if the response is yes. Note: This information should only be entered once for the family/household."
+      },
+      "1930": {
+        "column": 9,
+        "hint": "Check the box if the response is yes or R."
+      }
+    },
+    "lives_on_farm": {
+      "defaults": {
+        "label": "Lives on Farm",
+        "hint": "Check the box if the response is yes. Note: This information should only be entered once for the family/household."
+      },
+      "1930": {
+        "column": 10
+      },
+      "1940": {
+        "column": 6
+      }
+    },
+    "age_married": {
+      "defaults": {
+        "label": "Age at First Marriage"
+      },
+      "1930": {
+        "column": 15
+      }
+    },
+    "can_read_write": {
+      "defaults": {
+        "label": "Can Read and Write"
+      },
+      "1930": {
+        "column": 17
+      }
+    },
+    "worker_class": {
+      "defaults": {
+        "label": "Worker Class"
+      },
+      "1930": {
+        "column": 27
+      },
+      "1940": {
+        "column": 30
+      }
+    },
+    "occupation_code": {
+      "defaults": {
+        "label": "Occupation Code",
+        "hint": "This is a three-digit occupation code followed by a two-figure industry code and a 1-figure worker class code. The occupation code can contain a “V” or “X” as well as numbers. The industry code can contain a “V” or “X” as well as numbers. The worker class code is a number from 1 to 6. If you are unsure, check the resource for verifying the occupation code on the Transcriber’s Corner."
+      },
+      "1930": {
+        "column": "D",
+        "hint": "This is a four-digit code, the first two digits represent the occupation, and the second two represent the industry.  Primarily numerical, this code may contain the letters “V” or “X” which should be entered as capital letters. If you are unsure of the code, check the resource for verifying the occupation code on the Transcriber’s Corner."
+      },
+      "1940": {
+        "column": "F"
+      }
+    },
+    "worked_yesterday": {
+      "defaults": {
+        "label": "At Work Yesterday"
+      },
+      "1930": {
+        "column": 28
+      }
+    },
+    "unemployment_line": {
+      "defaults": {
+        "label": "Line on Unemployment Schedule"
+      },
+      "1930": {
+        "column": 29
+      }
+    },
+    "veteran": {
+      "defaults": {
+        "label": "Veteran"
+      },
+      "1930": {
+        "column": 30
+      },
+      "1940": {
+        "column": 39,
+        "label": "Veteran or Veteran-related"
+      }
+    },
+    "war_fought": {
+      "defaults": {
+        "label": "War Fought"
+      },
+      "1930": {
+        "column": 31
+      },
+      "1940": {
+        "column": 41
+      }
+    },
+    "grade_completed": {
+      "defaults": {
+        "label": "Highest Grade of School Completed"
+      },
+      "1940": {
+        "column": 14
+      }
+    },
+    "residence_1935_town": {
+      "defaults": {
+        "filter": "[Residence April 1, 1935] Town",
+        "label": "Town"
+      },
+      "1940": {
+        "column": 17
+      }
+    },
+    "residence_1935_county": {
+      "defaults": {
+        "filter": "[Residence April 1, 1935] County",
+        "label": "County"
+      },
+      "1940": {
+        "column": 18
+      }
+    },
+    "residence_1935_state": {
+      "defaults": {
+        "filter": "[Residence April 1, 1935] State",
+        "label": "State"
+      },
+      "1940": {
+        "column": 19
+      }
+    },
+    "residence_1935_farm": {
+      "defaults": {
+        "filter": "[Residence April 1, 1935] On a Farm",
+        "label": "On a Farm"
+      },
+      "1940": {
+        "column": 20
+      }
+    },
+    "private_work": {
+      "defaults": {
+        "label": "Private/Non-emergency Government Work"
+      },
+      "1940": {
+        "column": 21
+      }
+    },
+    "public_work": {
+      "defaults": {
+        "label": "Public Emergency Work"
+      },
+      "1940": {
+        "column": 22
+      }
+    },
+    "seeking_work": {
+      "defaults": {
+        "label": "Seeking Work"
+      },
+      "1940": {
+        "column": 23
+      }
+    },
+    "had_job": {
+      "defaults": {
+        "label": "Employed but Temporarily Absent"
+      },
+      "1940": {
+        "column": 24
+      }
+    },
+    "no_work_reason": {
+      "defaults": {
+        "label": "No Work Reason"
+      },
+      "1940": {
+        "column": 25
+      }
+    },
+    "private_hours_worked": {
+      "defaults": {
+        "label": "Hours Worked Week Prior to Census",
+        "hint": "Enter what you see on the census. If the field is blank on the census or the number is crossed out, leave it blank on HistoryForge."
+      },
+      "1940": {
+        "column": 26
+      }
+    },
+    "unemployed_weeks": {
+      "defaults": {
+        "label": "Duration of Unemployment in Weeks",
+        "hint": "Enter what you see on the census. If the field is blank on the census or the number is crossed out, leave it blank on HistoryForge. Note: If the total number of weeks is crossed out and a code starting with a V is written above, enter the total number of weeks, not the code."
+      },
+      "1940": {
+        "column": 27
+      }
+    },
+    "industry_code": {
+      "defaults": {
+        "label": "Industry Code",
+        "hint": "This is a three-digit occupation code followed by a two-figure industry code and a 1-figure worker class code. The occupation code can contain a “V” or “X” as well as numbers. The industry code can contain a “V” or “X” as well as numbers. The worker class code is a number from 1 to 6. If you are unsure, check the resource for verifying the occupation code on the Transcriber’s Corner."
+      },
+      "1940": {
+        "column": "F"
+      }
+    },
+    "worker_class_code": {
+      "defaults": {
+        "label": "Worker Class Code",
+        "hint": "This is a three-digit occupation code followed by a two-figure industry code and a 1-figure worker class code. The occupation code can contain a “V” or “X” as well as numbers. The industry code can contain a “V” or “X” as well as numbers. The worker class code is a number from 1 to 6. If you are unsure, check the resource for verifying the occupation code on the Transcriber’s Corner."
+      },
+      "1940": {
+        "column": "F"
+      }
+    },
+    "full_time_weeks": {
+      "defaults": {
+        "label": "Weeks Worked in 1939",
+        "hint": "Enter what you see on the census. If the field is blank on the census, leave it blank on HistoryForge. If the field contains 0 (zero) on the census, enter the 0 (zero) on HistoryForge."
+      },
+      "1940": {
+        "column": 31
+      }
+    },
+    "income": {
+      "defaults": {
+        "label": "Income (Wages or Salary)"
+      },
+      "1940": {
+        "column": 32
+      }
+    },
+    "had_unearned_income": {
+      "defaults": {
+        "label": "Other Income Source",
+        "hint": "Check the box if the response is yes or a 1."
+      },
+      "1940": {
+        "column": 33
+      }
+    },
+    "veteran_dead": {
+      "defaults": {
+        "label": "Father is Deceased Veteran"
+      },
+      "1940": {
+        "column": 40
+      }
+    },
+    "soc_sec": {
+      "defaults": {
+        "label": "Soc Sec"
+      },
+      "1940": {
+        "column": 42
+      }
+    },
+    "deductions": {
+      "defaults": {
+        "label": "Old Age or Railroad Insurance"
+      },
+      "1940": {
+        "column": 43
+      }
+    },
+    "deduction_rate": {
+      "defaults": {
+        "label": "Deduction Rate",
+        "hint": "Select the option that corresponds to the answer on the census. If the deduction rate on the census contains a different number than HistoryForge, leave the field blank."
+      },
+      "1940": {
+        "column": 44
+      }
+    },
+    "usual_profession": {
+      "defaults": {
+        "label": "Usual Occupation"
+      },
+      "1940": {
+        "column": 45
+      }
+    },
+    "usual_industry": {
+      "defaults": {
+        "label": "Usual Industry"
+      },
+      "1940": {
+        "column": 46
+      }
+    },
+    "usual_worker_class": {
+      "defaults": {
+        "label": "Usual Worker Class"
+      },
+      "1940": {
+        "column": 47
+      }
+    },
+    "usual_occupation_code": {
+      "defaults": {
+        "label": "Usual Occupation Code"
+      },
+      "1940": {
+        "column": "J"
+      }
+    },
+    "usual_industry_code": {
+      "defaults": {
+        "label": "Usual Industry Code"
+      },
+      "1940": {
+        "column": "J"
+      }
+    },
+    "usual_worker_class_code": {
+      "defaults": {
+        "label": "Usual Worker Class Code"
+      },
+      "1940": {
+        "column": "J"
+      }
+    },
+    "multi_marriage": {
+      "defaults": {
+        "label": "Married More than Once"
+      },
+      "1940": {
+        "column": 48
+      }
+    },
+    "first_marriage_age": {
+      "defaults": {
+        "label": "Age at First Marriage"
+      },
+      "1940": {
+        "column": 49
+      }
+    },
+    "children_born": {
+      "defaults": {
+        "label": "No. Children Born"
+      },
+      "1940": {
+        "column": 50
+      }
+    },
+    "census_scope": {
+      "defaults": {
+        "label": "Census Scope"
+      }
+    },
+    "id": {
+      "defaults": {
+        "label": "ID"
+      }
+    },
+    "apartment_number": {
+      "defaults": {
+        "label": "Apt.",
+        "hint": "Enter only when applicable.  If there is no apartment number on the census, leave the field blank on HistoryForge."
+      }
+    },
+    "building_id": {
+      "defaults": {
+        "label": "Building",
+        "hint": "There is no corresponding field on the census, however, this field allows us to link the people in the census to a mapped building.  Once you have entered the address, select the building with the same address from the dropdown menu. In some cases, the building name might include multiple historical addresses. If a building with the same address does not appear: First, check to make sure that the street name is spelled correctly and that the prefix and suffix are correct. Second, if the building still does not appear, check the box for Add building with address, if available. This will add the building."
+      }
+    },
+    "city": {
+      "defaults": {
+        "label": "City"
+      }
+    },
+    "county": {
+      "defaults": {
+        "label": "County"
+      }
+    },
+    "created_at": {
+      "defaults": {
+        "label": "Created"
+      }
+    },
+    "created_by_id": {
+      "defaults": {
+        "label": "Entered By"
+      }
+    },
+    "ensure_building": {
+      "defaults": {
+        "label": "Add Building at Address"
+      }
+    },
+    "enum_dist": {
+      "defaults": {
+        "label": "Enum Dist",
+        "hint": "The Enumeration District (ED) is in the upper right corner of the sheet."
+      },
+      "1880": {
+        "hint": "The Enumeration District (ED) is in the upper left or right corner of the sheet."
+      },
+      "1930": {
+        "hint": "The Enumeration District (ED) is in the upper right corner of the sheet.  Enter only the number(s) after the (-) dash."
+      },
+      "1940": {
+        "hint": "The Enumeration District (ED) is in the upper right corner of the sheet.  Enter only the number(s) after the (-) dash."
+      }
+    },
+    "foreign_born": {
+      "defaults": {
+        "label": "This Person is Foreign Born.",
+        "hint": "There is no corresponding field on the census.  Check the box if the individual was not born in the United States and does not have the designation “Am Cit” after their place of birth."
+      },
+      "1880": {
+        "hint": "There is no corresponding field on the census.  Check the box if the individual was not born in the United States."
+      }
+    },
+    "histid": {
+      "defaults": {
+        "label": "IPUMS Hist ID"
+      }
+    },
+    "homemaker": {
+      "defaults": {
+        "label": "Home-Maker"
+      }
+    },
+    "industry1930_code_id": {
+      "defaults": {
+        "label": "Industry Code (1930)",
+        "hint": "This is a three-digit occupation code followed by a two-figure industry code and a 1-figure worker class code. The occupation code can contain a “V” or “X” as well as numbers. The industry code can contain a “V” or “X” as well as numbers. The worker class code is a number from 1 to 6. If you are unsure, check the resource for verifying the occupation code on the Transcriber’s Corner."
+      }
+    },
+    "line_number": {
+      "defaults": {
+        "label": "Line",
+        "hint": "Line numbers are located on the left and right side of each sheet."
+      }
+    },
+    "locality_id": {
+      "defaults": {
+        "label": "Locality",
+        "hint": "This field is not on the census but allows for the inclusion of multiple localities (cities, towns, villages, etc.) in one database. Select your locality from the dropdown menu."
+      }
+    },
+    "month_born": {
+      "defaults": {
+        "label": "Month Born within Census Year"
+      }
+    },
+    "notes": {
+      "defaults": {
+        "label": "Notes",
+        "hint": "<p>If you find additional or conflicting information about the person from a different source such as a different name spelling or address, include the information as written by the enumerator in the relevant field and enter the alternative information here and its source. If you checked the city directory, include the year. i.e. The address in the 1919 City Directory is _________________.</p><p><b>* Important</b> - the information in the notes field will become public."
+      }
+    },
+    "occupation1930_code_id": {
+      "defaults": {
+        "label": "Occupation Code (1930)",
+        "hint": "This is a three-digit occupation code followed by a two-figure industry code and a 1-figure worker class code. The occupation code can contain a “V” or “X” as well as numbers. The industry code can contain a “V” or “X” as well as numbers. The worker class code is a number from 1 to 6. If you are unsure, check the resource for verifying the occupation code on the Transcriber’s Corner."
+      }
+    },
+    "page_number": {
+      "defaults": {
+        "label": "Sheet",
+        "hint": "The sheet (page) number is in the upper right corner of the sheet."
+      },
+      "1880": {
+        "label": "Page",
+        "hint": "The sheet (page) number is in the upper left corner of the sheet."
+      }
+    },
+    "page_side": {
+      "defaults": {
+        "label": "Side",
+        "hint": "Each census sheet has side A and B printed next to the sheet number."
+      },
+      "1880": {
+        "hint": "Each census page has side A, B, C and D printed in the upper left or right corner of the page."
+      }
+    },
+    "person_id": {
+      "defaults": {
+        "label": "Person Record"
+      }
+    },
+    "pob_code": {
+      "defaults": {
+        "label": "Place of Birth (Code)",
+        "hint": "Place of Birth (Code)"
+      }
+    },
+    "pob_father_code": {
+      "defaults": {
+        "label": "Place of Birth - Father (Code)"
+      }
+    },
+    "pob_mother_code": {
+      "defaults": {
+        "label": "Place of Birth - Mother (Code)"
+      }
+    },
+    "profession_code": {
+      "defaults": {
+        "label": "Occupation Code",
+        "hint": "This is a three-digit occupation code followed by a two-figure industry code and a 1-figure worker class code. The occupation code can contain a “V” or “X” as well as numbers. The industry code can contain a “V” or “X” as well as numbers. The worker class code is a number from 1 to 6. If you are unsure, check the resource for verifying the occupation code on the Transcriber’s Corner."
+      }
+    },
+    "profession": {
+      "defaults": {
+        "label": "Occupation",
+        "hint": "Enter what you see on the census.  If the field is blank on the census, leave the default “None.” If, however, the industry is not blank or there is some other indicator of an occupation enter the word “Blank” to indicate that there was an occupation."
+      }
+    },
+    "provisional": {
+      "defaults": {
+        "label": "Provisional"
+      }
+    },
+    "reviewed_at": {
+      "defaults": {
+        "label": "Reviewed"
+      }
+    },
+    "reviewed_by_id": {
+      "defaults": {
+        "label": "Reviewer"
+      }
+    },
+    "state": {
+      "defaults": {
+        "label": "State"
+      }
+    },
+    "taker_error": {
+      "defaults": {
+        "label": "Census Taker Error"
+      }
+    },
+    "updated_at": {
+      "defaults": {
+        "label": "Modified"
+      }
+    },
+    "usual_occupation": {
+      "defaults": {
+        "label": "Usual Occupation"
+      }
+    },
+    "ward": {
+      "defaults": {
+        "label": "Ward",
+        "hint": "The ward is in the upper right corner of the sheet underneath the Enumeration District. Enter the ward as a number (2).  If there is no ward on the census, leave the field blank on HistoryForge."
+      },
+      "1930": {
+        "hint": "The ward is on the upper left side of the sheet. Enter the ward as a number (2). If there is no ward on the census, leave the field blank on HistoryForge."
+      },
+      "1940": {
+        "hint": "The ward is on the upper left side of the sheet. Enter the ward as a number (2). If there is no ward on the census, leave the field blank on HistoryForge."
+      }
+    },
+    "boolean": {
+      "defaults": {
+        "hint": "Check the box if the response is yes."
+      },
+      "1880": {
+        "hint": "Check the box if the field contains a slash (/). Enumerators used this mark to indicate yes. Enter any additional information in the notes."
+      }
+    },
+    "radio_buttons": {
+      "defaults": {
+        "hint": "Select the option that corresponds to the answer on the census."
+      }
+    },
+    "radio_buttons_other": {
+      "defaults": {
+        "hint": "Select the option that corresponds to the answer on the census."
+      }
+    },
+    "integer": {
+      "defaults": {
+        "hint": "Enter what you see on the census. If the field is blank on the census, leave it blank on HistoryForge. If the answer is Un (Unknown) enter 999."
+      }
+    },
+    "string": {
+      "defaults": {
+        "hint": "Enter what you see on the census. If the field is blank on the census, leave it blank on HistoryForge."
+      }
+    }
+  }
+}

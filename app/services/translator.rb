@@ -2,10 +2,12 @@
 
 class Translator
   def self.label(klass, key)
+    # DataDictionary.label key, klass.name.scan(/\d{4}/)
     translate(klass, key, 'labels')
   end
 
   def self.hint(klass, key)
+    # DataDictionary.hint key, klass.name.scan(/\d{4}/)
     translate(klass, key, 'hints')
   end
 
@@ -14,6 +16,7 @@ class Translator
   end
 
   def self.option(attribute_name, item)
+    # DataDictionary.census_code attribute_name, item
     I18n.t("#{attribute_name}.#{item.downcase.gsub(/\W/, '')}", scope: 'census_codes', default: item).presence
   end
 
