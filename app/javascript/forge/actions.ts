@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-export const highlight = id => dispatch => {
+export const highlight = (id: number) => dispatch => {
     dispatch({ type: 'BUILDING_HIGHLIGHT', id })
 }
 
@@ -29,13 +29,13 @@ export const load = (params?: object) => (dispatch, getState) => {
     })
 }
 
-export const select = (id, params) => async (dispatch) => {
+export const select = (id: number, params?: keyable) => async (dispatch) => {
     const url = `/buildings/${id}.json`
     const json = await axios.get(url, {params: buildParams(params)})
     dispatch({type: 'BUILDING_SELECTED', building: json.data})
 }
 
-export const address = id => async dispatch => {
+export const address = (id: number) => async dispatch => {
     const url = `/buildings/${id}/address.json`
     const json = await axios.get(url)
     dispatch({type: 'BUILDING_ADDRESS_LOADED', address: json.data})
