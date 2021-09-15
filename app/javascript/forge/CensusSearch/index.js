@@ -125,10 +125,12 @@ const mapStateToProps = state => {
     return {...state.search, message: state.buildings.message}
 }
 
+import { load, setYear } from '../actions'
+
 const actions = {
-    load: (params) => ({type: 'BUILDING_LOAD', params}),
+    load,
     reset: () => ({type: 'FORGE_RESET'}),
-    setYear: (year) => ({ type: 'FORGE_SET_YEAR', year }),
+    setYear,
     addFilter: (filter) => ({ type: 'FORGE_ADD_FILTER', filter }),
     removeFilter: (filter) => ({ type: 'FORGE_REMOVE_FILTER', filter }),
     setFilter: (field, predicate, criteria) => ({ type: 'FORGE_SET_FILTER', field, predicate, criteria })

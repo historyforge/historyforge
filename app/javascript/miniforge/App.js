@@ -4,12 +4,11 @@ import Map from './Map'
 import Buildings from './Buildings'
 import { Provider } from 'react-redux'
 import * as reducers from "./reducers"
-import {miniForgeMiddleware} from './middlewares'
 import { buildStore } from "../forge/store";
 
 export default class App extends React.PureComponent {
     mapRef = React.createRef()
-    store = buildStore(reducers, miniForgeMiddleware)
+    store = buildStore(reducers)
     render() {
         return (
             <Provider store={this.store}>

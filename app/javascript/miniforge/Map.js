@@ -102,9 +102,11 @@ const mapStateToProps = state => {
     return {...state.layers, ...state.buildings, ...state.search}
 }
 
+import { moveBuilding, highlight } from '../forge/actions';
+
 const actions = {
-    move: (point) => ({ type: 'BUILDING_MOVE', point }),
-    highlight: (id) => ({ type: 'BUILDING_HIGHLIGHT', id }),
+    move: moveBuilding,
+    highlight,
 }
 
 const Component = connect(mapStateToProps, actions)(Map)

@@ -1,7 +1,7 @@
 import React from 'react'
 
-class BaseMap extends React.PureComponent {
-    state = { map: null }
+class BaseMap extends React.PureComponent<MapProps> {
+    state: keyable = { map: null }
 
     iconBase = {
         path: google.maps.SymbolPath.CIRCLE,
@@ -19,7 +19,9 @@ class BaseMap extends React.PureComponent {
         fillColor: 'red',
     })
 
-    render() {}
+    render(): JSX.Element {
+        return null;
+    }
 
     componentDidMount() {}
 
@@ -109,9 +111,9 @@ class BaseMap extends React.PureComponent {
         })
     }
 
-    handleMarkerClick(building) {}
-    handleMarkerMouseOver(building) {}
-    handleMarkerMouseOut(building) {}
+    handleMarkerClick(building, marker) {}
+    handleMarkerMouseOver(building, marker) {}
+    handleMarkerMouseOut(building, marker) {}
     addLayers() {}
     doOpacity() {}
 }

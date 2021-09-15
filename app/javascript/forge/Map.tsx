@@ -2,6 +2,7 @@ import React from 'react'
 import {connect} from "react-redux";
 import BaseMap from './BaseMap'
 import loadWMS from "./wms";
+import * as actions from './actions';
 
 class Map extends BaseMap {
     mapOptions = {
@@ -27,7 +28,7 @@ class Map extends BaseMap {
         let { map } = this.state
         if (!map) {
             map = new google.maps.Map(document.getElementById('map'), this.mapOptions)
-            map.setCenter({lat: window.mapCenter[0], lng: window.mapCenter[1]})
+            map.setCenter(this.props.center) //{lat: props.center[0], lng: window.Center[1]})
             this.setState({ map }, () => this.addLayers())
         }
     }
@@ -141,13 +142,6 @@ class Map extends BaseMap {
 
 const mapStateToProps = state => {
     return {...state.layers, ...state.buildings, ...state.search}
-}
-
-const actions = {
-    highlight: (id) => ({ type: 'BUILDING_HIGHLIGHT', id }),
-    select: (id, params) => ({ type: 'BUILDING_SELECT', id, params }),
-    address: (id) => ({ type: 'BUILDING_ADDRESS', id }),
-    deAddress: () => ({ type: 'BUILDING_ADDRESS_REMOVE' })
 }
 
 const Component = connect(mapStateToProps, actions)(Map)

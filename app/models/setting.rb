@@ -1,8 +1,6 @@
 class Setting < ApplicationRecord
 
-  after_commit :expire_cache
-
-  def expire_cache
+  def self.expire_cache
     Rails.cache.delete('settings')
   end
   class_attribute :current
@@ -49,6 +47,7 @@ class Setting < ApplicationRecord
     setting.group = group
     setting.hint = hint
     setting.save
+    expire_cache
   end
 
   def self.can_add_buildings?(year)
