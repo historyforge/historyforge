@@ -12,6 +12,7 @@
 /storage
 /storage2
 *.dump
+*.dump.bz2
 
 .DS_Store
 
