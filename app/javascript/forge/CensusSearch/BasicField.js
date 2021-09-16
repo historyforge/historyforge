@@ -3,7 +3,7 @@ import React from "react";
 import ScopeSelector from "./ScopeSelector";
 
 export default function BasicField(props) {
-    const { type, field, predicate, criteria, handleChange } = props
+    const { type, field, predicate, criteria, handleChange } = props;
     return (
         <Row>
             <Col sm={6}>

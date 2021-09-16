@@ -1,4 +1,4 @@
-export const search = function(state = window.initialState.search, action) {
+export const search = function(state = {}, action) {
     if (action.type === 'FORGE_RESET') {
         return {years: state.years, params: { f: [], s: [], people: null }}
     }
@@ -51,7 +51,7 @@ function forgeAddFilter(state, action) {
 function forgeRemoveFilter(state, action) {
     const current = {...state.current}
     delete current[action.filter]
-    return {...state, current, params: buildParams(state)}
+    return {...state, current, params: buildParams(state, current)}
 }
 
 function forgeSetFilter(state, action) {

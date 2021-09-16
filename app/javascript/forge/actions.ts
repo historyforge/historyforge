@@ -10,6 +10,7 @@ export const setYear = (proposedYear?: number) => (dispatch, getState) => {
         year = parseInt(year);
         dispatch({ type: 'FORGE_SET_YEAR', year })
         dispatch(loadFilters(year))
+        dispatch(load(getState().search.params))
     }
 }
 

@@ -1,8 +1,7 @@
 import {FormGroup, Input, Label} from "reactstrap";
 import React from "react";
 
-export default function BooleanField(props) {
-    const { field, predicate, config: { scopes }, handleChange } = props
+export default function BooleanField({ field, predicate, config: { scopes }, handleChange }) {
     return Object.keys(scopes).map(scope => (
         <FormGroup key={scope} check>
             <Label check>

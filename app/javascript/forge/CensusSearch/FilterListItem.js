@@ -5,7 +5,7 @@ function getFilterText(predicate, criteria, config) {
 
     switch(type) {
         case 'boolean':
-            return criteria && <span> ({criteria})</span>
+            return criteria && <span> ({criteria ? 'Yes' : 'No'})</span>
         case 'checkboxes':
             if (!criteria) return ''
 
@@ -21,15 +21,15 @@ function getFilterText(predicate, criteria, config) {
     }
 }
 
-export default class FilterListItem extends React.PureComponent {
-    render() {
-        const { setOpen, remove, config: { label }, predicate, criteria } = this.props
-        return (
-            <div className="list-group-item" onClick={setOpen}>
-                <span className="float-right" onClick={remove}>&times;</span>
-                {label}
-                {getFilterText(predicate, criteria, this.props.config)}
-            </div>
-        )
-    }
+const FilterListItem = props => {
+    const { setOpen, remove, config: { label }, predicate, criteria } = props
+    return (
+        <div className="list-group-item" onClick={setOpen}>
+            <span className="float-right" onClick={remove}>&times;</span>
+            {label}
+            {getFilterText(predicate, criteria, props.config)}
+        </div>
+    )
 }
+
+export default FilterListItem
