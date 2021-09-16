@@ -15,6 +15,8 @@ class SettingsController < ApplicationController
 
     @settings = settings.values
 
+    Setting.expire_cache
+
     render layout: false, action: :index
   end
 end

@@ -4,11 +4,11 @@ import { connect } from 'react-redux'
 class Layers extends React.PureComponent {
     state = { layer: null }
     render() {
-        const { layers, opacity, setOpacity } = this.props
-        if (!layers || !layers.length) return null
+      const { layers, opacity, setOpacity } = this.props
+      if (!layers || !layers.length) return null
 
-        const layer = this.state.layer || layers[0]
-        return (
+      const layer = this.state.layer || layers[0]
+      return (
             <div>
                 <input type="range"
                        min={0}
@@ -19,25 +19,25 @@ class Layers extends React.PureComponent {
                     {layers.map(l => <option key={l.id} value={l.id}>{l.name}</option>)}
                 </select>
             </div>
-        )
+      )
     }
 
     handleChange(event) {
-        const value = parseInt(event.currentTarget.value)
-        const layer = this.props.layers.find(l => l.id === value)
-        this.setState({ layer }, () => {
-            this.props.toggle(layer.id)
-        })
+      const value = parseInt(event.currentTarget.value)
+      const layer = this.props.layers.find(l => l.id === value)
+      this.setState({ layer }, () => {
+        this.props.toggle(layer.id)
+      })
     }
 }
 
 const mapStateToProps = state => {
-    return {...state.layers}
+  return { ...state.layers }
 }
 
 const actions = {
-    toggle: (id) => ({ type: 'LAYER_TOGGLE', id }),
-    setOpacity: (opacity) => ({ type: 'LAYER_OPACITY', opacity }),
+  toggle: (id) => ({ type: 'LAYER_TOGGLE', id }),
+  setOpacity: (opacity) => ({ type: 'LAYER_OPACITY', opacity })
 }
 
 const Component = connect(mapStateToProps, actions)(Layers)

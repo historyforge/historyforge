@@ -1,11 +1,11 @@
-import React from "react";
-import SimpleFormat from "../SimpleFormat";
+import React from 'react'
+import SimpleFormat from '../SimpleFormat'
 
 const Details = building => (
     <React.Fragment>
         <h5>
-            <a href={`/buildings/${ building.id }`} target="_blank"
-               title="Open building record in new tab">
+            <a href={`/buildings/${building.id}`} target="_blank"
+               title="Open building record in new tab" rel="noreferrer">
                 <SimpleFormat text={building.street_address} />
             </a>
         </h5>

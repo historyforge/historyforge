@@ -3,12 +3,11 @@
 
 <script type="text/javascript">
   window.initialState = {
-      layers: { layers: <%== MapOverlay.order(:position).where(active: true).to_json %> },
+      layers: { center: {lat: <%= AppConfig.latitude %>, lng: <%= AppConfig.longitude %>}, layers: <%== MapOverlay.order(:position).where(active: true).to_json %> },
       buildings: { buildings: null },
       search: { params: <%== {f: params[:f], s: params[:s], people: params[:people]}.to_json %>, years: <%== CensusYears.visible_to_user(user_signed_in?).to_json %> }
   }
   window.googleApiKey = '<%== AppConfig.google_api_key %>'
-  window.mapCenter = [<%= AppConfig.latitude %>, <%= AppConfig.longitude %>]
   <% if ENV['AIRBRAKE_KEY'] %>
   window.airbrakeCreds = {
       app_id: '<%== ENV['AIRBRAKE_ID'] %>',

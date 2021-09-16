@@ -1,10 +1,8 @@
-import {FormGroup, Input, Label} from "reactstrap";
-import React from "react";
+import { FormGroup, Input, Label } from 'reactstrap'
+import React from 'react'
 
-export default function ScopeSelector(props) {
-    const { field, predicate, criteria, config: { scopes }, handleChange } = props
-
-    return Object.keys(scopes).map(scope => (
+export default function ScopeSelector({ field, predicate, criteria, config: { scopes }, handleChange }) {
+  return Object.keys(scopes).map(scope => (
         <FormGroup key={scope} check>
             <Label check>
                 <Input type="radio"
@@ -16,5 +14,5 @@ export default function ScopeSelector(props) {
                 {scopes[scope]}
             </Label>
         </FormGroup>
-    ))
+  ))
 }

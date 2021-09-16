@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react'
 
 const Residents = ({ residents, years }) => (
     <React.Fragment>
@@ -18,7 +18,7 @@ const Residents = ({ residents, years }) => (
                     </thead>
                     <tbody key={year}>
                     {residents[year].map(family => (
-                        family.map(person => (
+                      family.map(person => (
                             <tr key={person.id}>
                                 <td><a href={`/census/${year}/${person.id}`}>{person.name}</a></td>
                                 <td>{person.relation_to_head}</td>
@@ -27,7 +27,7 @@ const Residents = ({ residents, years }) => (
                                 <td>{person.sex}</td>
                                 <td>{person.occupation}</td>
                             </tr>
-                        ))
+                      ))
                     ))}
                     </tbody>
                 </table>

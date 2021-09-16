@@ -1,21 +1,21 @@
 import 'trix/dist/trix.css'
-
-window.Trix = require("trix");
+import Trix from 'trix'
 
 Trix.config.blockAttributes.heading2 = {
-    tagName: 'h2'
+  tagName: 'h2'
 }
 Trix.config.blockAttributes.heading3 = {
-    tagName: 'h3'
+  tagName: 'h3'
 }
 Trix.config.blockAttributes.heading4 = {
-    tagName: 'h4'
+  tagName: 'h4'
 }
 
-const {lang} = Trix.config;
+const { lang } = Trix.config
 
 Trix.config.toolbar = {
-    getDefaultHTML() { return `\
+  getDefaultHTML() {
+    return `\
 <div class="trix-button-row">
   <span class="trix-button-group trix-button-group--text-tools" data-trix-button-group="text-tools">
     <button type="button" class="trix-button trix-button--icon trix-button--icon-bold" data-trix-attribute="bold" data-trix-key="b" title="${lang.bold}" tabindex="-1">${lang.bold}</button>
@@ -51,7 +51,8 @@ Trix.config.toolbar = {
     </div>
   </div>
 </div>\
-`; }
-};
+`
+  }
+}
 
 // require("@rails/actiontext")

@@ -3,18 +3,17 @@ String.prototype.toSlug = function() { return this.strip().toLowerCase().replace
 
 // This section handles the activation of rich text editors and codemirror on the cms page form
 $(document).ready(function() {
-    $('#cms_page_title').on('change', function() {
-        if (('#cms_page_automatic_url_alias').is(':checked'))
-            $('#cms_page_url_path').val(this.value.toSlug())
-    })
+  $('#cms_page_title').on('change', function() {
+    if (('#cms_page_automatic_url_alias').is(':checked')) { $('#cms_page_url_path').val(this.value.toSlug()) }
+  })
 })
 
 // Powers the Save & Edit button
 $(document).on('click', '.save-edit', function() { $('#next').val('edit') })
 $(document).on('click', '.save-view', function() { $('#next').val('view') })
 $(document).on('submit', '#cms-page-form', function() {
-    const nextOption = $('#next').val()
-    return nextOption && nextOption !== ''
+  const nextOption = $('#next').val()
+  return nextOption && nextOption !== ''
 })
 
 $(document).on('click', '#add-picture-button', function(event) { add_cms_page_widget('picture', event) })
@@ -24,14 +23,14 @@ $(document).on('click', '#add-document-button', function(event) { add_cms_page_w
 $(document).on('click', '#add-text-button', function(event) { add_cms_page_widget('text', event) })
 
 const add_cms_page_widget = function(widget, event, callback) {
-    event.preventDefault()
-    event.stopPropagation()
-    const name = prompt("What is your administrative name for this #{widget} section?")
-    if (name) {
-        add_the_cms_widget(widget, name, callback)
-        return
-    }
-    return false
+  event.preventDefault()
+  event.stopPropagation()
+  const name = prompt('What is your administrative name for this #{widget} section?')
+  if (name) {
+    add_the_cms_widget(widget, name, callback)
+    return
+  }
+  return false
 }
 
 const add_the_cms_widget = function(widget, name, callback) {
@@ -43,12 +42,12 @@ const add_the_cms_widget = function(widget, name, callback) {
   // create the form
   let tab_pane = $(`#new_${widget}_fields`).text()
   const new_id = new Date().getTime()
-  const regexp = new RegExp("new_widgets", "g")
+  const regexp = new RegExp('new_widgets', 'g')
   tab_pane = $(tab_pane.replace(regexp, new_id))
   tab_pane.find('input.id').remove()
   tab_pane.find('input.human_name').val(name)
   tab_pane.find('input.name').val(code_name)
-  tab_pane.find('h3:first').text(name).append("<span class=\"badge badge-danger\">Not Saved</span>")
+  tab_pane.find('h3:first').text(name).append('<span class="badge badge-danger">Not Saved</span>')
   tab_pane.attr('id', code_name)
 
   // add to the dom
@@ -59,7 +58,7 @@ const add_the_cms_widget = function(widget, name, callback) {
   tab_link.tab('show')
 
   const available_tokens = []
-  $('.page-section input.name').each(function() { available_tokens.push("{{#{@value}}}") })
+  $('.page-section input.name').each(function() { available_tokens.push('{{#{@value}}}') })
   $('#available-tokens').html(available_tokens.join(', '))
 
   if (callback) callback(new_id)
