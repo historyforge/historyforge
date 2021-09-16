@@ -7,7 +7,6 @@
 // To reference this file, add <%= javascript_pack_tag 'application' %> to the appropriate
 // layout file, like app/views/layouts/application.html.erb
 
-
 // Uncomment to copy all static images under ../images to the output folder and reference
 // them with the image_pack_tag helper in views (e.g <%= image_pack_tag 'rails.png' %>)
 // or the `imagePath` JavaScript helper below.
@@ -20,14 +19,14 @@ import '../css/cms'
 require('../js/cms_admin')
 // require("trix")
 // require("@rails/actiontext")
-require("@rails/activestorage").start()
+require('@rails/activestorage').start()
 
-window.CodeMirror = require("codemirror")
-require("codemirror/mode/css/css")
-require("codemirror/mode/htmlmixed/htmlmixed")
-require("codemirror/addon/edit/closetag")
-require("codemirror/addon/edit/matchtags")
-require("codemirror/addon/edit/matchbrackets")
+window.CodeMirror = require('codemirror')
+require('codemirror/mode/css/css')
+require('codemirror/mode/htmlmixed/htmlmixed')
+require('codemirror/addon/edit/closetag')
+require('codemirror/addon/edit/matchtags')
+require('codemirror/addon/edit/matchbrackets')
 
 $(document).ready(function() {
   $('a[data-toggle="tab"]').on('shown.bs.tab', function() {
@@ -41,46 +40,45 @@ $(document).ready(function() {
       lineNumbers: true,
       theme: 'darcula',
       mode
-    });
+    })
     editor.setSize(null, 500)
   })
 })
 
-addEventListener("direct-upload:initialize", event => {
+addEventListener('direct-upload:initialize', event => {
   const { target, detail } = event
   const { id, file } = detail
-  target.insertAdjacentHTML("beforebegin", `
+  target.insertAdjacentHTML('beforebegin', `
     <div id="direct-upload-${id}" class="direct-upload direct-upload--pending">
       <div id="direct-upload-progress-${id}" class="direct-upload__progress" style="width: 0%"></div>
       <span class="direct-upload__filename"></span>
     </div>
   `)
-  target.previousElementSibling.querySelector(`.direct-upload__filename`).textContent = file.name
+  target.previousElementSibling.querySelector('.direct-upload__filename').textContent = file.name
 })
 
-addEventListener("direct-upload:start", event => {
+addEventListener('direct-upload:start', event => {
   const { id } = event.detail
   const element = document.getElementById(`direct-upload-${id}`)
-  element.classList.remove("direct-upload--pending")
+  element.classList.remove('direct-upload--pending')
 })
 
-addEventListener("direct-upload:progress", event => {
+addEventListener('direct-upload:progress', event => {
   const { id, progress } = event.detail
   const progressElement = document.getElementById(`direct-upload-progress-${id}`)
   progressElement.style.width = `${progress}%`
 })
 
-addEventListener("direct-upload:error", event => {
+addEventListener('direct-upload:error', event => {
   event.preventDefault()
   const { id, error } = event.detail
   const element = document.getElementById(`direct-upload-${id}`)
-  element.classList.add("direct-upload--error")
-  element.setAttribute("title", error)
+  element.classList.add('direct-upload--error')
+  element.setAttribute('title', error)
 })
 
-addEventListener("direct-upload:end", event => {
+addEventListener('direct-upload:end', event => {
   const { id } = event.detail
   const element = document.getElementById(`direct-upload-${id}`)
-  element.classList.add("direct-upload--complete")
+  element.classList.add('direct-upload--complete')
 })
-

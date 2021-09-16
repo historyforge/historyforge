@@ -7,7 +7,6 @@
 // To reference this file, add <%= javascript_pack_tag 'application' %> to the appropriate
 // layout file, like app/views/layouts/application.html.erb
 
-
 // Uncomment to copy all static images under ../images to the output folder and reference
 // them with the image_pack_tag helper in views (e.g <%= image_pack_tag 'rails.png' %>)
 // or the `imagePath` JavaScript helper below.
@@ -15,7 +14,6 @@
 // const images = require.context('../images', true)
 // const imagePath = (name) => images(name, true)
 
-require.context('../images', true)
 import 'chartkick/chart.js'
 import '../../../vendor/assets/javascripts/parallax.min'
 import '../../../vendor/assets/javascripts/jquery.mousewheel'
@@ -26,33 +24,33 @@ import '../css/application.scss'
 import '../js/add_child'
 import '../js/buildings'
 import '../js/cell_renderers'
-import '../js/add_child'
 import '../search/AdvancedSearch'
 import '../js/census_form'
 import '../js/home_page'
 import '../js/terms'
 
 import Rails from '@rails/ujs'
-Rails.start()
 
-import "controllers"
+import 'controllers'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import Forge from '../forge/App'
 import MiniForge from '../miniforge/App'
-import { Notifier } from '@airbrake/browser';
+import { Notifier } from '@airbrake/browser'
+require.context('../images', true)
+Rails.start()
 
 if (window.airbrakeCreds && window.env === 'production') {
   const airbrake = new Notifier({
     projectId: window.airbrakeCreds.app_id,
     projectKey: window.airbrakeCreds.api_key,
     host: window.airbrakeCreds.host
-  });
+  })
 
   window.addEventListener('error', (error) => {
     airbrake.notify({
-      error,
-    });
+      error
+    })
   })
 }
 
@@ -74,7 +72,7 @@ window.showSubmitButton = function() {
 const pageLoad = function() {
   window.alerts = window.alerts || []
   window.alertifyInit()
-  alertify.set({delay: 10000})
+  alertify.set({ delay: 10000 })
   window.alerts.forEach(function(alert) {
     alertify[alert[0]](alert[1])
   })
@@ -84,9 +82,7 @@ const pageLoad = function() {
 jQuery(document).on('click', '.dropdown-item.checkbox', function(e) { e.stopPropagation() })
 jQuery(document).on('click', '#search-map', function() {
   const $form = jQuery(this).closest('form')
-  if (document.location.toString().match(/building/))
-    $form.append(`<input type="hidden" name="buildings" value="1">`)
-  else {
+  if (document.location.toString().match(/building/)) { $form.append('<input type="hidden" name="buildings" value="1">') } else {
     const year = jQuery(this).data('year')
     $form.append(`<input type="hidden" name="people" value="${year}">`)
   }
@@ -106,7 +102,7 @@ function getBuildingList() {
   let suffix = jQuery('#street_suffix').val()
   if (street === '') suffix = null
   if (city && street) {
-    const params = {city, street, prefix, suffix, house}
+    const params = { city, street, prefix, suffix, house }
     jQuery.getJSON('/census/1910/building_autocomplete', params, function (json) {
       const building = jQuery('#building_id')
       const current_value = building.val() || $('#census_record_building_id').val()
@@ -121,10 +117,10 @@ function getBuildingList() {
 }
 // When the user fills address on census form, this refills the building_id dropdown
 jQuery(document)
-    .on('change', '#city, #street_name, #street_suffix, #street_prefix, #street_house_number', getBuildingList)
-    .ready(function() {
-      $('.census_record_building_id').each(getBuildingList);
-    })
+  .on('change', '#city, #street_name, #street_suffix, #street_prefix, #street_house_number', getBuildingList)
+  .ready(function() {
+    $('.census_record_building_id').each(getBuildingList)
+  })
 
 let buildingNamed = false
 jQuery(document).on('ready', function() {

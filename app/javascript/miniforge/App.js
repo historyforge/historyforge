@@ -1,29 +1,27 @@
-import React from 'react'
-import Layers from "./Layers"
+// eslint-disable-next-line no-use-before-define
+import React, { useEffect, useState } from 'react'
+import Layers from './Layers'
 import Map from './Map'
 import Buildings from './Buildings'
 import { Provider } from 'react-redux'
-import * as reducers from "./reducers"
-import { buildStore } from "../forge/store";
+import * as reducers from './reducers'
+import { buildStore } from '../forge/store'
 
-export default class App extends React.PureComponent {
-    mapRef = React.createRef()
-    store = buildStore(reducers)
-    render() {
-        return (
-            <Provider store={this.store}>
-                <div className={'map-wrap'}>
-                    <Map />
-                    <div id={'miniforge-controls'}>
-                        <Layers />
-                        <Buildings />
-                    </div>
-                </div>
-            </Provider>
-        )
-    }
+const App = () => {
+  const [store, setStore] = useState(null)
+  store || setStore(buildStore(reducers))
 
-    get map() {
-        return this.mapRef.current.state.map
-    }
+  return (
+    <Provider store={store}>
+      <div className={'map-wrap'}>
+        <Map />
+        <div id={'miniforge-controls'}>
+          <Layers />
+          <Buildings />
+        </div>
+      </div>
+    </Provider>
+  )
 }
+
+export default App

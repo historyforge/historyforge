@@ -1,33 +1,33 @@
 import React from 'react'
-import {connect} from "react-redux";
-import {Modal, ModalHeader, ModalBody, Row, Col} from 'reactstrap'
-import Residents from "./Residents";
-import Details from "./Details";
+import { connect } from 'react-redux'
+import { Modal, ModalHeader, ModalBody, Row, Col } from 'reactstrap'
+import Residents from './Residents'
+import Details from './Details'
 
 class Building extends React.PureComponent {
     state = { visible: false, building_id: null }
     close() {
-        this.setState({ visible: false }, () => {
-            this.props.deselect(this.state.building_id)
-        })
+      this.setState({ visible: false }, () => {
+        this.props.deselect(this.state.building_id)
+      })
     }
 
     static getDerivedStateFromProps(props, state) {
-        if (props.id) {
-            if (!state.building_id || (props.id !== state.building_id)) {
-                state.building_id = props.id
-                state.visible = true
-            }
-        } else {
-            state.building_id =  null
-            state.visible = false
+      if (props.id) {
+        if (!state.building_id || (props.id !== state.building_id)) {
+          state.building_id = props.id
+          state.visible = true
         }
-        return state
+      } else {
+        state.building_id = null
+        state.visible = false
+      }
+      return state
     }
 
     render() {
-        const { visible } = this.state
-        return (
+      const { visible } = this.state
+      return (
             <Modal size={this.hasResidents() ? 'xl' : 'md'} isOpen={visible}>
                 <ModalHeader toggle={this.close.bind(this)}>
                     Building Details
@@ -36,14 +36,14 @@ class Building extends React.PureComponent {
                     {this.props.id && this.renderBuilding()}
                 </ModalBody>
             </Modal>
-        )
+      )
     }
 
     renderBuilding() {
-        const building = this.props
+      const building = this.props
 
-        if (this.hasResidents()) {
-            return (
+      if (this.hasResidents()) {
+        return (
                 <div id="building-details">
                     <Row>
                         <Col sm={12} md={5}>
@@ -54,32 +54,32 @@ class Building extends React.PureComponent {
                         </Col>
                     </Row>
                 </div>
-            )
-        }
+        )
+      }
 
-        return (
+      return (
             <div id="building-details">
                 <Details {...building} />
             </div>
-        )
+      )
     }
 
     hasResidents() {
-        return this.props.census_records
-            && Object.keys(this.props.census_records).length
+      return this.props.census_records &&
+            Object.keys(this.props.census_records).length
     }
 }
 
 const mapStateToProps = state => {
-    if (state.buildings.building) {
-        return {...state.buildings.building, years: state.search.years}
-    } else {
-        return {}
-    }
+  if (state.buildings.building) {
+    return { ...state.buildings.building, years: state.search.years }
+  } else {
+    return {}
+  }
 }
 
 const actions = {
-    deselect: (id) => ({ type: 'BUILDING_DESELECT', id })
+  deselect: (id) => ({ type: 'BUILDING_DESELECT', id })
 }
 
 const Component = connect(mapStateToProps, actions)(Building)

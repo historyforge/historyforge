@@ -1,10 +1,10 @@
-import {Col, Input, Row} from "reactstrap";
-import React from "react";
-import ScopeSelector from "./ScopeSelector";
+import { Col, Input, Row } from 'reactstrap'
+import React from 'react'
+import ScopeSelector from './ScopeSelector'
 
 export default function BasicField(props) {
-    const { type, field, predicate, criteria, handleChange } = props;
-    return (
+  const { type, field, predicate, criteria, handleChange } = props
+  return (
         <Row>
             <Col sm={6}>
                 <ScopeSelector {...props} />
@@ -16,5 +16,5 @@ export default function BasicField(props) {
                        onChange={(e) => handleChange(field, predicate, e.target.value)} />
             </Col>
         </Row>
-    )
+  )
 }

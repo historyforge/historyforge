@@ -1,31 +1,31 @@
 import React from 'react'
-import {connect} from "react-redux";
+import { connect } from 'react-redux'
 
 class Building extends React.PureComponent {
-    render() {
-        const { id, street_address } = this.props
-        return(
+  render() {
+    const { id, street_address } = this.props
+    return (
             <div className={`list-group-item building ${this.highlighted && 'active'}`}>
                 <p>
-                    <a href={`/buildings/${ id }`}
+                    <a href={`/buildings/${id}`}
                        title="Open building record">
                         {street_address}
                     </a>
                 </p>
             </div>
-        )
-    }
+    )
+  }
 
-    get highlighted() {
-        return this.props.highlighted === this.props.id
-    }
+  get highlighted() {
+    return this.props.highlighted === this.props.id
+  }
 }
 class Buildings extends React.PureComponent {
-    render() {
-        const {buildings, highlighted} = this.props
-        if (!buildings) return
+  render() {
+    const { buildings, highlighted } = this.props
+    if (!buildings) return
 
-        return (
+    return (
             <div id="building-list">
                 <h3>Nearby Buildings</h3>
                 <div className="list-group">
@@ -34,12 +34,12 @@ class Buildings extends React.PureComponent {
                     ))}
                 </div>
             </div>
-        )
-    }
+    )
+  }
 }
 
 const mapStateToProps = state => {
-    return {...state.buildings}
+  return { ...state.buildings }
 }
 
 const actions = {

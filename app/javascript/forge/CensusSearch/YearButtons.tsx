@@ -1,7 +1,7 @@
-import {ButtonGroup} from "reactstrap";
-import React from "react";
+import { ButtonGroup } from 'reactstrap'
+import React from 'react'
 
-const YearButton = ({censusYear, displayYear, onClick}) => (
+const YearButton = ({ censusYear, displayYear, onClick }) => (
     <button type="button"
             key={censusYear}
             className={`btn btn-${censusYear === displayYear ? 'primary' : 'light'}`}
@@ -10,7 +10,7 @@ const YearButton = ({censusYear, displayYear, onClick}) => (
     </button>
 )
 
-const YearButtons = ({years, setYear, year}) => (
+const YearButtons = ({ years, setYear, year }) => (
     <ButtonGroup className="btn-group btn-block">
         {years.map(censusYear =>
             <YearButton key={censusYear}
@@ -22,4 +22,4 @@ const YearButtons = ({years, setYear, year}) => (
     </ButtonGroup>
 )
 
-export default YearButtons;
+export default YearButtons

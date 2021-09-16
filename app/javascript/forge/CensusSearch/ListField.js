@@ -1,24 +1,24 @@
-import React from "react";
-import {Col, FormGroup, Input, Label, Row} from "reactstrap";
-import ScopeSelector from "./ScopeSelector";
+import React from 'react'
+import { Col, FormGroup, Input, Label, Row } from 'reactstrap'
+import ScopeSelector from './ScopeSelector'
 
-const choose = function(props, value) {
-    const { criteria, field, predicate, handleChange } = props
-    const nextCriteria = criteria ? [...criteria] : []
-    const idx = nextCriteria.indexOf(value)
-    if (idx === -1) {
-        nextCriteria.push(value)
-    } else {
-        nextCriteria.splice(idx, 1)
-    }
-    handleChange(field, predicate, nextCriteria)
+const choose = function (props, value) {
+  const { criteria, field, predicate, handleChange } = props
+  const nextCriteria = criteria ? [...criteria] : []
+  const idx = nextCriteria.indexOf(value)
+  if (idx === -1) {
+    nextCriteria.push(value)
+  } else {
+    nextCriteria.splice(idx, 1)
+  }
+  handleChange(field, predicate, nextCriteria)
 }
 
 const ListField = (props) => {
-    const { field, config: { choices } } = props
-    const criteria = props.criteria || [] // to avoid changing uncontrolled to controlled component
+  const { field, config: { choices } } = props
+  const criteria = props.criteria || [] // to avoid changing uncontrolled to controlled component
 
-    return (
+  return (
         <Row>
             <Col sm={6}>
                 <ScopeSelector {...props} />
@@ -38,7 +38,7 @@ const ListField = (props) => {
                 ))}
             </Col>
         </Row>
-    )
+  )
 }
 
 export default ListField

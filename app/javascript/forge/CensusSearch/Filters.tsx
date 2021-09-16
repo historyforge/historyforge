@@ -1,9 +1,9 @@
-import {Modal, ModalBody, ModalFooter, ModalHeader} from "reactstrap";
-import FilterListItem from "./FilterListItem";
-import React from "react";
-import FilterField from "./FilterField";
+import { Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap'
+import FilterListItem from './FilterListItem'
+import React from 'react'
+import FilterField from './FilterField'
 
-const CurrentFilters = ({current, filters, setOpen, remove}) => (
+const CurrentFilters = ({ current, filters, setOpen, remove }) => (
     <div className="list-group">
         {Object.keys(current).map(key => (
             <FilterListItem key={key}
@@ -31,13 +31,13 @@ const FilterModal = ({ filters, current, close, open, search, setFilter }) => (
 )
 
 const Filters = (props) => {
-    if (!props.current) return null;
-    return (
+  if (!props.current) return null
+  return (
         <React.Fragment>
             <CurrentFilters {...props} />
             <FilterModal {...props} />
         </React.Fragment>
-    )
+  )
 }
 
-export default Filters;
+export default Filters
