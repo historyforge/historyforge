@@ -54,7 +54,7 @@ export function highlightMarkers(props, prevProps, markers) {
 }
 
 function tweakMarker(id, icon, zIndex, markers) {
-  const marker = markers[id] // .find(item => item.buildingId === id)
+  const marker = markers[id]
   marker.setIcon(icon)
   marker.setZIndex(zIndex)
 }

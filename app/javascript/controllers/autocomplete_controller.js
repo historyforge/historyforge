@@ -2,9 +2,9 @@ import { Controller } from 'stimulus'
 
 export default class extends Controller {
   connect() {
-    const attribute_name = this.element.dataset.attribute
+    const attributeName = this.element.dataset.attribute
     const urlParts = document.location.pathname.split('/')
-    const url = `/census/${urlParts[2]}/autocomplete?attribute=${attribute_name}`
+    const url = `/census/${urlParts[2]}/autocomplete?attribute=${attributeName}`
     $(this.element).autoComplete({
       source: function(term, response) {
         $.getJSON(url, { term }, function(json) {

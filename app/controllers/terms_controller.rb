@@ -6,7 +6,7 @@ class TermsController < ApplicationController
   def index
     params[:q] ||= {}
     params[:q][:s] ||= 'name asc'
-    @search = @vocabulary.terms.ransack(params[:q])
+    @search = @vocabulary.terms.includes(:vocabulary).ransack(params[:q])
 
     respond_to do |format|
       format.csv do

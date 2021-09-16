@@ -13,9 +13,9 @@ export default class extends Controller {
     const tempBU = $('#bulk_update_field').val()
     const isBulkUpdate = tempBU && tempBU.length
 
-    const attribute_name = isBulkUpdate ? tempBU : this.element.getAttribute('name').match(/census_record\[(\w+)]/)[1]
+    const attributeName = isBulkUpdate ? tempBU : this.element.getAttribute('name').match(/census_record\[(\w+)]/)[1]
     const urlParts = document.location.pathname.split('/')
-    const url = `/census/${urlParts[2]}/autocomplete?attribute=${attribute_name}`
+    const url = `/census/${urlParts[2]}/autocomplete?attribute=${attributeName}`
 
     $(this.element).autoComplete({
       source: function(term, response) {

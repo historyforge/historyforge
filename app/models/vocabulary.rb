@@ -30,7 +30,7 @@ class Vocabulary < ApplicationRecord
       1900 => %w[language_spoken],
       1910 => %w[language_spoken],
       1920 => %w[mother_tongue mother_tongue_father mother_tongue_mother],
-      1930 => %w[language_spoken],
+      1930 => %w[mother_tongue],
       1940 => %w[mother_tongue]
     },
     pob: {
