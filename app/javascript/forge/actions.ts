@@ -62,10 +62,9 @@ const loadFilters = year => async dispatch => {
 
 const buildParams = function(search: SearchParams) {
   const params = { s: {} } as SearchParams
-  if (search && search.buildings) {
+  if (search?.s) {
     params.s = search.s
-  }
-  if (search && search.people) {
+  } else if (search?.people) {
     params.people = search.people
     params.peopleParams = search.s
   }
