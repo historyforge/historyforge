@@ -1356,6 +1356,15 @@
         "column": 32
       }
     },
+    "income_plus": {
+      "defaults": {
+        "label": "Income has +",
+        "hint": "If the census taker put a plus sign next to the income, then check the box. Enumerators were told to enter incomes greater than $5,000 as $5,000+. Alas the plus sign is not a number."
+      },
+      "1940": {
+        "column": 32
+      }
+    },
     "had_unearned_income": {
       "defaults": {
         "label": "Other Income Source",

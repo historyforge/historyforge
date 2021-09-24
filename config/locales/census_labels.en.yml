@@ -56,6 +56,7 @@ en:
         home_value: 'Value of Home or Monthly Payment'
         idiotic: 'Idiotic'
         income: 'Income (Wages or Salary)'
+        income_plus: 'Income has +'
         industry_code: 'Industry Code'
         industry: 'Industry'
         industry1930_code_id: 'Industry Code (1930)'

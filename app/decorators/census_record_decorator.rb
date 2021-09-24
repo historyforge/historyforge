@@ -26,7 +26,7 @@ class CensusRecordDecorator < ApplicationDecorator
   # Yes/no fields should output Yes if true otherwise nothing.
   %w[foreign_born can_read can_write can_speak_english foreign_born unemployed attended_school
      blind deaf_dumb has_radio lives_on_farm can_read_write idiotic insane maimed
-     cannot_read cannot_write just_married homemaker
+     cannot_read cannot_write just_married homemaker income_plus
      worked_yesterday veteran residence_1935_farm private_work public_work
      seeking_work had_job had_unearned_income veteran_dead soc_sec deductions
      multi_marriage].each do |method|

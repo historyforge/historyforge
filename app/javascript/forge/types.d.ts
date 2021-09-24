@@ -1,5 +1,9 @@
 declare var MarkerClusterer: any;
 
+declare namespace $ {
+    let param: any;
+}
+
 declare namespace google {
     let maps: any;
 }

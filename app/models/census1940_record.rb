@@ -114,6 +114,7 @@ class Census1940Record < CensusRecord
     worker_class_code: 'F',
     full_time_weeks: 31,
     income: 32,
+    income_plus: 32,
     had_unearned_income: 33,
     farm_schedule: 34,
     pob_father: 36,

@@ -61,6 +61,7 @@ class Census1940FormFields < CensusFormFieldConfig
 
   divider 'Income in 1939 (12 months ending Dec. 31, 1939)'
   input :income, as: :integer, min: 0
+  input :income_plus, as: :boolean
   input :had_unearned_income, as: :boolean
   input :farm_schedule
 
