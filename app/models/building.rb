@@ -53,7 +53,6 @@ class Building < ApplicationRecord
       .joins('LEFT OUTER JOIN census_1920_records ON census_1920_records.building_id=buildings.id')
       .joins('LEFT OUTER JOIN census_1930_records ON census_1930_records.building_id=buildings.id')
       .joins('LEFT OUTER JOIN census_1940_records ON census_1940_records.building_id=buildings.id')
-      .joins(:building_types)
       .where('census_1900_records.id IS NULL AND census_1910_records.id IS NULL AND census_1920_records.id IS NULL AND census_1930_records.id IS NULL AND census_1940_records.id IS NULL')
       .where(building_types: { name: 'residence' }) }
 
