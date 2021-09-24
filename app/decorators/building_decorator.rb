@@ -5,7 +5,7 @@ class BuildingDecorator < ApplicationDecorator
     object.building_types.map(&:name).map(&:capitalize).join('/') || 'Unknown'
   end
 
-  alias_method :type, :building_type
+  alias type building_type
 
   def description
     object.description&.body
@@ -20,15 +20,18 @@ class BuildingDecorator < ApplicationDecorator
   end
 
   def year_earliest
-    return object.year_earliest if object.year_earliest.present?
-
-    object.year_earliest_circa.present? ? "ca. #{object.year_earliest_circa}" : ''
+    year_phrase(object.year_earliest, object.year_earliest_circa)
   end
 
   def year_latest
-    return object.year_latest if object.year_latest.present?
+    year_phrase(object.year_latest, object.year_latest_circa)
+  end
 
-    object.year_latest_circa.present? ? "ca. #{object.year_latest_circa}" : ''
+  def year_phrase(year, circa)
+    return (circa ? 'Unknown' : '') if year.blank?
+    return "#{year} (ca.)" if circa
+
+    year
   end
 
   def name

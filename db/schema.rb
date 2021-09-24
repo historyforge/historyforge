@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_15_202210) do
+ActiveRecord::Schema.define(version: 2021_09_24_193543) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
@@ -626,6 +626,7 @@ ActiveRecord::Schema.define(version: 2021_09_15_202210) do
     t.uuid "histid"
     t.integer "enum_dist"
     t.integer "ward"
+    t.boolean "income_plus"
     t.index ["building_id"], name: "index_census_1940_records_on_building_id"
     t.index ["created_by_id"], name: "index_census_1940_records_on_created_by_id"
     t.index ["locality_id"], name: "index_census_1940_records_on_locality_id"
