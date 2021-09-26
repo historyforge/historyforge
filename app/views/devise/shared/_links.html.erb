@@ -20,8 +20,9 @@
   <% end -%>
 
   <%- if devise_mapping.omniauthable? %>
+    <br>
     <%- resource_class.omniauth_providers.each do |provider| %>
-      <%= link_to t('.sign_in_with_provider', provider: OmniAuth::Utils.camelize(provider)), omniauth_authorize_path(resource_name, provider) %><br />
-    <% end -%>
+      <%= link_to image_pack_tag('media/images/socials/' + provider.to_s + '_login.png', :width => '250'), omniauth_authorize_path(resource_name, provider), method: :post %><br />
+<% end -%>
   <% end -%>
 </div>
