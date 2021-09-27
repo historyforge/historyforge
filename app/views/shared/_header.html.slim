@@ -55,7 +55,7 @@ header
                 = link_to "#{year} US Census", "/census/#{year}", class: 'dropdown-item'
               = link_to 'All People', '/people', class: 'dropdown-item' if can_people?
               = link_to 'Transcriber\'s Corner', '/documents', class: 'dropdown-item' if user_signed_in?
-              - if current_user.has_role?("photographer")
+              - if current_user&.has_role?("photographer")
                 = link_to "Photographs", photographs_path, class: 'dropdown-item'
 
           - if request.subdomain.blank? || %w{www ithaca}.include?(request.subdomain)
