@@ -25,8 +25,10 @@ class Photograph < ApplicationRecord
                       tsearch: { prefix: true, any_word: true }
                   }
 
-  def self.ransackable_scopes(auth_object=nil)
-    %i{full_text_search unreviewed}
+  scope :unreviewed_only, ->(val) { val == '1' ? unreviewed : self }
+
+  def self.ransackable_scopes(_auth_object=nil)
+    %i{full_text_search unreviewed_only}
   end
 
   def full_caption

@@ -11,7 +11,7 @@
   = search_form_for @search, as: :q, builder: SimpleForm::FormBuilder do |form|
     = form.input :full_text_search, label: 'Search'
     - if can?(:review, Photograph)
-      = form.input :unreviewed, as: :boolean, label: 'Show only unreviewed', wrapper: :inline_boolean
+      = form.input :unreviewed_only, as: :boolean, label: 'Show only unreviewed', wrapper: :inline_boolean
     .card-footer
       = form.submit 'Search', class: 'btn btn-primary'
       = link_to 'Reset', photographs_path(reset: true), class: 'btn btn-light'
