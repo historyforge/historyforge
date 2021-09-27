@@ -20,8 +20,8 @@
           = image_tag form.object.file
 
   = panel 'Caption & Description' do
-    = form.input :caption, as: :text, label: "Caption", hint: "When this photo appears with buildings and people, this text will be used. Title and description are reserved for NYHeritage metadata."
-    = form.input :description, as: :text, label: "Description", hint: "If there is a longer story to show when someone goes to the page for this media, put it here."
+    = form.input :caption, as: :text, label: "Caption", hint: "When this photo appears with buildings and people, this text will be used."
+    = form.input :description, as: :text, label: "Description", hint: "If there is additional text to show when someone goes to the page for this media, put it here."
 
   = panel 'Buildings' do
     - if form.object.building_ids.present?
