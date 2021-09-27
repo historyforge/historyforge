@@ -44,6 +44,6 @@ class CensusFieldListGenerator
   end
 
   def output_footer_fields
-    @fields << 'latitude' << 'longitude'
+    @fields.concat %w[street_house_number street_prefix street_name street_suffix latitude longitude]
   end
 end

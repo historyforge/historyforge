@@ -19,6 +19,18 @@ class DataDictionary
     instance.lookup(:column, field, year)
   end
 
+  def self.field_from_label(label, year)
+    instance.field_from_label(label, year)
+  end
+
+  def self.code_from_label(label, field)
+    instance.code_from_label(label, field)
+  end
+
+  def self.coded_attribute?(field)
+    instance.coded_attribute?(field)
+  end
+
   def self.instance
     @instance ||= new
   end
@@ -39,5 +51,29 @@ class DataDictionary
     return field.to_s.humanize unless field_config
 
     (field_config[year.to_s] || {}).reverse_merge(field_config[:defaults])[thing]
+  end
+
+  def field_from_label(label, year)
+    @dictionary[:fields].each do |key, config|
+      return key if config.dig(year.to_s, :label) == label
+      return key if config.dig(:defaults, :label) == label
+    end
+    raise ArgumentError.new("Cannot find #{label} for #{year}")
+  end
+
+  def code_from_label(label, field)
+    config = @dictionary[:codes][field]
+    return unless config
+
+    values = config.reverse_merge(@dictionary[:codes][:default])
+    values.each do |key, value|
+      return key if value == label
+    end
+
+    label
+  end
+
+  def coded_attribute?(field)
+    @dictionary[:codes][field]
   end
 end

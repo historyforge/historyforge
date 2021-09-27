@@ -2,17 +2,8 @@ namespace :init do
   task do_it: [:build, :ocodes_1920, :load_ocodes, :new_admin_user]
 
   task new_admin_user: :environment do
-    admin_role = Role.find_or_initialize_by(name: 'administrator')
-    if admin_role.new_record?
-      admin_role.save
-      Role.find_or_create_by name: 'editor'
-      Role.find_or_create_by name: 'reviewer'
-      Role.find_or_create_by name: 'photographer'
-      Role.find_or_create_by name: 'census taker'
-      Role.find_or_create_by name: 'builder'
-    end
     user = User.new
-    user.add_role admin_role
+    user.add_role Role.find_by(name: 'Administrator')
     STDOUT.puts "Generating admin user. \n"
     STDOUT.puts "\nUser name: "
     user.login = STDIN.gets.chomp
@@ -26,7 +17,7 @@ namespace :init do
     if user.save
       STDOUT.puts "A new user has been created with the email #{user.email}. The password is: \n#{pwd}"
     else
-      STDOUT.puts "Unable to create the new user. Usually this means a user by that email already exists."
+      STDOUT.puts 'Unable to create the new user. Usually this means a user by that email already exists.'
     end
   end
 
@@ -60,7 +51,7 @@ namespace :init do
   task ocodes_1930: :environment do
     # https://stevemorse.org/census/ocodes.htm
     require 'open-uri'
-    html = Nokogiri::HTML open("https://stevemorse.org/census/ocodes.htm").read
+    html = Nokogiri::HTML open('https://stevemorse.org/census/ocodes.htm').read
     occ_codes = get_codes_from_select_options html, 'occupation'
     occ_codes.each do |code|
       Occupation1930Code.where(code: code[0]).first_or_create { |model| model.name = code[1] }
@@ -89,7 +80,7 @@ namespace :init do
 
   task :ocodes_1920 => :environment do
     require 'open-uri'
-    html = Nokogiri::HTML open("https://usa.ipums.org/usa/volii/occ1920.shtml").read
+    html = Nokogiri::HTML open('https://usa.ipums.org/usa/volii/occ1920.shtml').read
     current_category = nil
     current_subcategory = nil
     html.css('tr').each do |tr|
