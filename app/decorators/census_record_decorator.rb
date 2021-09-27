@@ -23,6 +23,10 @@ class CensusRecordDecorator < ApplicationDecorator
     object.locality&.name
   end
 
+  def locality_id
+    object.locality&.name
+  end
+
   # Yes/no fields should output Yes if true otherwise nothing.
   %w[foreign_born can_read can_write can_speak_english foreign_born unemployed attended_school
      blind deaf_dumb has_radio lives_on_farm can_read_write idiotic insane maimed

@@ -24,7 +24,7 @@ class DataDictionary
   end
 
   def initialize
-    file = Rails.root.join('db', 'census-dictionary.json')
+    file = Rails.root.join('config', 'census-dictionary.json')
     data = JSON.parse(File.open(file).read)
     @dictionary = HashWithIndifferentAccess.new(data)
   end

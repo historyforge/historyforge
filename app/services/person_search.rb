@@ -12,6 +12,10 @@ class PersonSearch < SearchQueryBuilder
         sort: params[:sort]
   end
 
+  memoize def entity_class
+    Person
+  end
+
   memoize def results
     scoped.to_a.map { |row| row.decorate }
   end

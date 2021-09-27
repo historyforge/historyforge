@@ -37,7 +37,8 @@ RSpec.describe 'buildings' do
     fill_in 'Year Built', with: '1867'
     fill_in 'Year Demolished', with: '1945'
     click_on 'Save', match: :first
-    expect(page).to have_content 'Built in 1867. Torn down in 1945.'
+    expect(page).to have_content '1867'
+    expect(page).to have_content '1945'
     click_on 'Edit'
     expect(page).to have_no_content 'Delete'
   end
