@@ -10,10 +10,14 @@ namespace :import do
     csv_file = ENV['FILE']
     raise ArgumentError('You must pass in a valid file path as the FILE argument') unless File.exists?(csv_file)
 
+    rows_count = 0
+    saved_count = 0
+
+    Setting.load
+
     require 'csv'
 
     CSV.foreach(csv_file, headers: true) do |row|
-      # puts row.inspect
       record = CensusRecord.for_year(year).find_or_initialize_by(
         city: row['City'],
         ward: row['Ward'],
@@ -22,34 +26,41 @@ namespace :import do
         page_side: row['Side'],
         line_number: row['Line']
       )
-      # puts record.inspect
+
       row.each do |key, value|
         if key == 'Locality'
           record.locality = Locality.find_or_create_by(name: value)
-          next
-        end
-
-        next if value.nil? || value == ''
-
-        begin
-          attribute = DataDictionary.field_from_label(key, year)
-        rescue ArgumentError
-          next
-        end
-        next unless attribute && record.has_attribute?(attribute)
-
-        if value == 'Yes'
-          record[attribute] = true
-        elsif DataDictionary.coded_attribute?(attribute)
-          code = DataDictionary.code_from_label(key, value)
-          record[attribute] = code
-        else
-          record[attribute] = value
+        elsif !value.nil? && value != ''
+          attribute = DataDictionary.field_from_label(key, year) rescue nil
+          if attribute && record.has_attribute?(attribute) && attribute != 'person_id'
+            if value == 'Yes'
+              record[attribute] = true
+            elsif DataDictionary.coded_attribute?(attribute)
+              code = DataDictionary.code_from_label(key, value)
+              record[attribute] = code
+            else
+              record[attribute] = value
+            end
+          end
         end
       end
+
+      record.created_by = User.first
+
+      address = Address.find_by house_number: record.street_house_number,
+                                prefix: record.street_prefix,
+                                name: record.street_name,
+                                suffix: record.street_suffix,
+                                city: record.city
+
+      record.building = address&.building || BuildingFromAddress.new(record).perform
+
+      # Not going to sweat if the record doesn't save because this is just for developers to load some census records
+      rows_count += 1
+      record.save && saved_count += 1
     end
 
-    record.ensure_building = true
-    record.save!
+    puts "Managed to load #{saved_count} of #{rows_count} records.\n"
   end
+
 end

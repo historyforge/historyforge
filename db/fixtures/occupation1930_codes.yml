@@ -1,0 +1,1143 @@
+code_1:
+  id: 1
+  code: "-- --"
+  name: ''
+code_2:
+  id: 2
+  code: 80 1V
+  name: Tailors and tailoresses
+code_3:
+  id: 3
+  code: 80 64
+  name: Dressmakers' & milliners' apprentices
+code_4:
+  id: 4
+  code: 80 70
+  name: Aviators
+code_5:
+  id: 5
+  code: 80 77
+  name: Baggagemen, steam railroad
+code_6:
+  id: 6
+  code: 80 78
+  name: Baggagemen, street railroad
+code_7:
+  id: 7
+  code: 80 7V
+  name: Actors
+code_8:
+  id: 8
+  code: 80 90
+  name: Apprentices, wholesale and retail trade
+code_9:
+  id: 9
+  code: 80 91
+  name: Retail dealers candy and confectionery
+code_10:
+  id: 10
+  code: 80 93
+  name: Firemen--fire department
+code_11:
+  id: 11
+  code: 80 95
+  name: Abstractors, notaries, and justices of peace
+code_12:
+  id: 12
+  code: 80 96
+  name: Barbers, hairdressers, and manicurists
+code_13:
+  id: 13
+  code: 81 71
+  name: Street cleaning
+code_14:
+  id: 14
+  code: 81 7V
+  name: Showmen
+code_15:
+  id: 15
+  code: 81 91
+  name: Retail dealers cigars and tobacco
+code_16:
+  id: 16
+  code: 81 V1
+  name: Foresters, forest rangers, and timber cruisers
+code_17:
+  id: 17
+  code: 82 72
+  name: Express messengers
+code_18:
+  id: 18
+  code: 82 7V
+  name: Musicians and teachers of music
+code_19:
+  id: 19
+  code: 82 86
+  name: Real estate agents
+code_20:
+  id: 20
+  code: 82 89
+  name: 'Retail dealers: automobiles and accessories'
+code_21:
+  id: 21
+  code: 82 91
+  name: 'Retail dealers: coal and wood'
+code_22:
+  id: 22
+  code: 82 94
+  name: Architects
+code_23:
+  id: 23
+  code: 82 95
+  name: Apprentices to other professional persons
+code_24:
+  id: 24
+  code: 82 9V
+  name: Boarding and lodging house keepers
+code_25:
+  id: 25
+  code: 83 49
+  name: Printers' and bookbinders' apprentices
+code_26:
+  id: 26
+  code: 83 64
+  name: Dressmakers and seamstresses, not in factory
+code_27:
+  id: 27
+  code: 83 77
+  name: Freight agents steam railroad
+code_28:
+  id: 28
+  code: 83 78
+  name: Freight agents street railroad
+code_29:
+  id: 29
+  code: 83 7V
+  name: Billiard room, dance hall, skating rink, etc., keepers
+code_30:
+  id: 30
+  code: 83 80
+  name: Boatmen, canalmen, and lock keepers
+code_31:
+  id: 31
+  code: 83 90
+  name: Clerks in stores
+code_32:
+  id: 32
+  code: 83 91
+  name: Retail dealers department stores
+code_33:
+  id: 33
+  code: 83 93
+  name: Garbage men and scavengers
+code_34:
+  id: 34
+  code: 83 94
+  name: Artists, sculptors, and teachers of art
+code_35:
+  id: 35
+  code: 83 95
+  name: Chiropractors
+code_36:
+  id: 36
+  code: 83 96
+  name: Bootblacks
+code_37:
+  id: 37
+  code: 84 11
+  name: Bakers
+code_38:
+  id: 38
+  code: 84 15
+  name: Millers, flour, and grain mills.
+code_39:
+  id: 39
+  code: 84 19
+  name: Millers and other food factories
+code_40:
+  id: 40
+  code: 84 79
+  name: Telegraph messengers
+code_41:
+  id: 41
+  code: 84 7V
+  name: Directors, managers, and officials, motion picture production
+code_42:
+  id: 42
+  code: 84 91
+  name: 'Retail dealers: dry goods, clothing, boots and shoes'
+code_43:
+  id: 43
+  code: 84 94
+  name: Authors
+code_44:
+  id: 44
+  code: 84 95
+  name: Healers (Not elsewhere classified)
+code_45:
+  id: 45
+  code: 84 9V
+  name: Hotel keepers and managers
+code_46:
+  id: 46
+  code: 85 02
+  name: Glass blowers, glass factories
+code_47:
+  id: 47
+  code: 85 63
+  name: Glass blowers, electrical supply factories
+code_48:
+  id: 48
+  code: 85 77
+  name: Boiler washers and engine hostlers
+code_49:
+  id: 49
+  code: 85 7V
+  name: Keepers of pleasure resorts, race tracks, etc.
+code_50:
+  id: 50
+  code: 85 83
+  name: Bankers and bank officials
+code_51:
+  id: 51
+  code: 85 90
+  name: Decorators, drapers, and windows dressers
+code_52:
+  id: 52
+  code: 85 91
+  name: Retail dealers drugs and medicines, including druggists and pharmacists
+code_53:
+  id: 53
+  code: 85 93
+  name: Detectives
+code_54:
+  id: 54
+  code: 85 94
+  name: Editors and reporters
+code_55:
+  id: 55
+  code: 85 95
+  name: Keepers of charitable and penal institutions
+code_56:
+  id: 56
+  code: 85 96
+  name: 'Launderers and laundresses--not in laundry: 0ther domestic and personal
+    service'
+code_57:
+  id: 57
+  code: 85 9V
+  name: 'Launderers and laundresses--not in laundry: Hotels, restaurants, boarding
+    houses, etc.'
+code_58:
+  id: 58
+  code: 85 Ind
+  name: Purchasing agents (except for railroads)
+code_59:
+  id: 59
+  code: 86 11
+  name: Bakeries deliverymen
+code_60:
+  id: 60
+  code: 86 49
+  name: Electrotypers and stereotypers
+code_61:
+  id: 61
+  code: 86 64
+  name: Jewelers and watchmakers, not in factory
+code_62:
+  id: 62
+  code: 86 72
+  name: Express companies communication agents
+code_63:
+  id: 63
+  code: 86 76
+  name: Railway mail clerks
+code_64:
+  id: 64
+  code: 86 77
+  name: Brakemen --steam railroad
+code_65:
+  id: 65
+  code: 86 79
+  name: Telegraph and telephone linemen
+code_66:
+  id: 66
+  code: 86 7V
+  name: Radio announcers, directors, managers, and officials.
+code_67:
+  id: 67
+  code: 86 80
+  name: Captains, masters, mates, and pilots
+code_68:
+  id: 68
+  code: 86 83
+  name: Commercial brokers and commission men
+code_69:
+  id: 69
+  code: 86 89
+  name: Telegraph and telephone linemen
+code_70:
+  id: 70
+  code: 86 8V
+  name: Bus conductors
+code_71:
+  id: 71
+  code: 86 90
+  name: Deliverymen for stores
+code_72:
+  id: 72
+  code: 86 91
+  name: Retail dealers five and ten cent and variety stores
+code_73:
+  id: 73
+  code: 86 93
+  name: Marshals and constables
+code_74:
+  id: 74
+  code: 86 94
+  name: Clergymen
+code_75:
+  id: 75
+  code: 86 96
+  name: Midwives
+code_76:
+  id: 76
+  code: 86 97
+  name: Laundry deliverymen
+code_77:
+  id: 77
+  code: 86 V0
+  name: Fisherman and oystermen
+code_78:
+  id: 78
+  code: 86 X1
+  name: Paper hangers
+code_79:
+  id: 79
+  code: 87 49
+  name: Lithographers
+code_80:
+  id: 80
+  code: 87 77
+  name: Conductors--steam railroad
+code_81:
+  id: 81
+  code: 87 78
+  name: Conductors--street railroad
+code_82:
+  id: 82
+  code: 87 7V
+  name: Theatrical owners, managers, and officials
+code_83:
+  id: 83
+  code: 87 83
+  name: Loan brokers and pawnbrokers
+code_84:
+  id: 84
+  code: 87 91
+  name: Retail dealers flour and feed
+code_85:
+  id: 85
+  code: 87 94
+  name: College presidents and professors
+code_86:
+  id: 86
+  code: 87 95
+  name: Officials of lodges, societies, etc.
+code_87:
+  id: 87
+  code: 87 96
+  name: Nurses (Not trained)
+code_88:
+  id: 88
+  code: 87 X1
+  name: Plasterers
+code_89:
+  id: 89
+  code: 88 64
+  name: Milliners and millinery dealers
+code_90:
+  id: 90
+  code: 88 76
+  name: Mail carriers
+code_91:
+  id: 91
+  code: 88 80
+  name: Longshoremen and stevedores
+code_92:
+  id: 92
+  code: 88 85
+  name: Insurance agents
+code_93:
+  id: 93
+  code: 88 90
+  name: Newsboys
+code_94:
+  id: 94
+  code: 88 91
+  name: Retail dealers food (except groceries and huckster's good)
+code_95:
+  id: 95
+  code: 88 93
+  name: Probation and truant officers
+code_96:
+  id: 96
+  code: 88 94
+  name: Dentists
+code_97:
+  id: 97
+  code: 88 95
+  name: Religious workers
+code_98:
+  id: 98
+  code: 88 9V
+  name: Restaurant, cafe, and lunch room keepers
+code_99:
+  id: 99
+  code: 89 43
+  name: Piano and organ tuners in factories
+code_100:
+  id: 100
+  code: 89 64
+  name: Piano and organ tuners not in factories
+code_101:
+  id: 101
+  code: 89 77
+  name: Locomotive engineers
+code_102:
+  id: 102
+  code: 89 79
+  name: Telegraph operators
+code_103:
+  id: 103
+  code: 89 80
+  name: Sailors and deck hands
+code_104:
+  id: 104
+  code: 89 83
+  name: Stockbrokers
+code_105:
+  id: 105
+  code: 89 89
+  name: 'Retail dealers: gasoline and oil filling stations'
+code_106:
+  id: 106
+  code: 89 90
+  name: Employment office keepers
+code_107:
+  id: 107
+  code: 89 91
+  name: 'Retail dealers: furniture, carpets, and rugs'
+code_108:
+  id: 108
+  code: 89 93
+  name: Sheriffs
+code_109:
+  id: 109
+  code: 89 94
+  name: Inventors
+code_110:
+  id: 110
+  code: 89 95
+  name: Technicians and laboratory assistants
+code_111:
+  id: 111
+  code: 89 V1
+  name: 'Teamsters and haulers: lumbermen, raftsmen, and woodchoppers'
+code_112:
+  id: 112
+  code: 89 X1
+  name: Roofers and slaters
+code_113:
+  id: 113
+  code: 8V 91
+  name: 'Retail dealers: books, Music, News, and stationery'
+code_114:
+  id: 114
+  code: 8X 91
+  name: 'Retail dealers: buyers and shippers of livestock and other farm produce'
+code_115:
+  id: 115
+  code: 90 77
+  name: Locomotive firemen
+code_116:
+  id: 116
+  code: 90 91
+  name: 'Retail dealers: hardware, implements, and wagons'
+code_117:
+  id: 117
+  code: 90 93
+  name: Officials and inspectors--city
+code_118:
+  id: 118
+  code: 91 7V
+  name: Other recreational occupations
+code_119:
+  id: 119
+  code: 91 91
+  name: 'Retail dealers: hucksters and peddlers'
+code_120:
+  id: 120
+  code: 91 94
+  name: Osteopaths
+code_121:
+  id: 121
+  code: 91 95
+  name: Other semiprofessional occupations
+code_122:
+  id: 122
+  code: 92 7V
+  name: Attendants, pool rooms, bowling alleys, golf clubs, etc.
+code_123:
+  id: 123
+  code: 92 91
+  name: 'Retail dealers: ice'
+code_124:
+  id: 124
+  code: 92 94
+  name: Physicians and surgeons
+code_125:
+  id: 125
+  code: 92 95
+  name: Dentists' assistants and attendants
+code_126:
+  id: 126
+  code: 93 77
+  name: 'Motormen: steam railroad'
+code_127:
+  id: 127
+  code: 93 78
+  name: 'Motormen: street railroad'
+code_128:
+  id: 128
+  code: 93 90
+  name: 'Salesmen and saleswomen: auctioneers'
+code_129:
+  id: 129
+  code: 93 91
+  name: 'Retail dealers: jewelry'
+code_130:
+  id: 130
+  code: 93 93
+  name: Officials and inspectors--county
+code_131:
+  id: 131
+  code: 93 94
+  name: Teachers--athletics, dancing
+code_132:
+  id: 132
+  code: 93 95
+  name: Librarians' assistants and attendants
+code_133:
+  id: 133
+  code: 94 91
+  name: 'Retail dealers: junk and rags'
+code_134:
+  id: 134
+  code: 94 94
+  name: Teachers--school
+code_135:
+  id: 135
+  code: 94 9V
+  name: Hotel keepers and managers
+code_136:
+  id: 136
+  code: 95 90
+  name: Sales demonstrators
+code_137:
+  id: 137
+  code: 95 91
+  name: 'Retail dealers: lumber'
+code_138:
+  id: 138
+  code: 95 93
+  name: Officials and inspectors--state
+code_139:
+  id: 139
+  code: 95 94
+  name: Veterinary surgeons
+code_140:
+  id: 140
+  code: 95 95
+  name: Physicians' and surgeons' attendants
+code_141:
+  id: 141
+  code: 95 96
+  name: 'Servants: Other domestic and personal service'
+code_142:
+  id: 142
+  code: 95 9V
+  name: 'Servants: hotels, restaurants, boarding houses, etc.'
+code_143:
+  id: 143
+  code: 96 6V
+  name: Radio operators
+code_144:
+  id: 144
+  code: 96 77
+  name: Switchmen and flagmen --steam railroad
+code_145:
+  id: 145
+  code: 96 78
+  name: Switchmen and flagmen--street railroad
+code_146:
+  id: 146
+  code: 96 7V
+  name: Stage hands and circus helpers
+code_147:
+  id: 147
+  code: 96 90
+  name: Undertakers
+code_148:
+  id: 148
+  code: 96 91
+  name: 'Retail dealers: opticians'
+code_149:
+  id: 149
+  code: 96 93
+  name: Officials and inspectors United States
+code_150:
+  id: 150
+  code: 96 94
+  name: County agents, farm demonstrators etc.
+code_151:
+  id: 151
+  code: 97 7V
+  name: Theater ushers
+code_152:
+  id: 152
+  code: 97 91
+  name: 'Retail dealers: other specified dealers'
+code_153:
+  id: 153
+  code: 97 94
+  name: Librarians
+code_154:
+  id: 154
+  code: 97 96
+  name: Cemetery keepers
+code_155:
+  id: 155
+  code: 98 77
+  name: Yardmen--steam railroad
+code_156:
+  id: 156
+  code: 98 90
+  name: Fruit and vegetable graders and packers
+code_157:
+  id: 157
+  code: 98 91
+  name: 'Retail dealers: Not specified dealers'
+code_158:
+  id: 158
+  code: 98 93
+  name: Soldiers, sailors, and marines
+code_159:
+  id: 159
+  code: 98 96
+  name: Hunters, trappers, and guides
+code_160:
+  id: 160
+  code: 99 46
+  name: 'Pressmen: blank book, envelope, paper bags'
+code_161:
+  id: 161
+  code: 99 49
+  name: 'Pressmen: printing, publishing, engraving'
+code_162:
+  id: 162
+  code: 99 64
+  name: Shoemakers and cobblers, not in factory
+code_163:
+  id: 163
+  code: 99 76
+  name: Postmasters
+code_164:
+  id: 164
+  code: 99 77
+  name: 'Ticket and station agents: steam railroad'
+code_165:
+  id: 165
+  code: 99 78
+  name: 'Ticket and station agents: street railroad'
+code_166:
+  id: 166
+  code: 99 79
+  name: Telephone operators
+code_167:
+  id: 167
+  code: 99 7V
+  name: Other attendants and helpers recreation and amusement
+code_168:
+  id: 168
+  code: 99 83
+  name: Brokers not specified and promoters
+code_169:
+  id: 169
+  code: 99 90
+  name: Meat cutters
+code_170:
+  id: 170
+  code: 99 91
+  name: Wholesale dealers, importers and exporters
+code_171:
+  id: 171
+  code: 99 93
+  name: Other public service pursuits
+code_172:
+  id: 172
+  code: 99 94
+  name: Other professional occupations
+code_173:
+  id: 173
+  code: 99 95
+  name: Other attendants and helpers professional service
+code_174:
+  id: 174
+  code: 99 96
+  name: Other occupations
+code_175:
+  id: 175
+  code: 9V 91
+  name: Retail dealers:general stores
+code_176:
+  id: 176
+  code: 9X 91
+  name: Groceries
+code_177:
+  id: 177
+  code: "--"
+  name: ''
+code_178:
+  id: 178
+  code: '00'
+  name: Blacksmiths
+code_179:
+  id: 179
+  code: '01'
+  name: Forgemen, hammermen
+code_180:
+  id: 180
+  code: '02'
+  name: Boiler makers
+code_181:
+  id: 181
+  code: '03'
+  name: Brick and stone masons and tile makers
+code_182:
+  id: 182
+  code: '04'
+  name: Builders and building contractors
+code_183:
+  id: 183
+  code: '05'
+  name: Cabinetmakers
+code_184:
+  id: 184
+  code: '06'
+  name: Carpenters
+code_185:
+  id: 185
+  code: '07'
+  name: Compositors, linotypers, and typesetters
+code_186:
+  id: 186
+  code: '08'
+  name: Coopers
+code_187:
+  id: 187
+  code: '09'
+  name: Dyers
+code_188:
+  id: 188
+  code: 0V
+  name: Jewelers', watchmakers', goldsmiths' and silversmiths' apprentices
+code_189:
+  id: 189
+  code: 0X
+  name: Other apprentices in manufacturing
+code_190:
+  id: 190
+  code: '10'
+  name: Cranemen, derrickmen, hoistmen, etc.
+code_191:
+  id: 191
+  code: '11'
+  name: Engravers
+code_192:
+  id: 192
+  code: '12'
+  name: Buffers and polishers (metal)
+code_193:
+  id: 193
+  code: '13'
+  name: Filers (metal)
+code_194:
+  id: 194
+  code: '14'
+  name: Grinders (metal)
+code_195:
+  id: 195
+  code: '15'
+  name: Firemen, except locomotive and fire department
+code_196:
+  id: 196
+  code: '16'
+  name: Furnace men and smelter men and pourers (metal industries)
+code_197:
+  id: 197
+  code: '17'
+  name: Heaters (metal industries)
+code_198:
+  id: 198
+  code: '18'
+  name: Puddlers (metal industries)
+code_199:
+  id: 199
+  code: '19'
+  name: Goldsmiths and silversmiths
+code_200:
+  id: 200
+  code: 1V
+  name: Electricians
+code_201:
+  id: 201
+  code: 1X
+  name: Engineers-stationary
+code_202:
+  id: 202
+  code: '20'
+  name: Machinists
+code_203:
+  id: 203
+  code: '21'
+  name: Millwrights
+code_204:
+  id: 204
+  code: '22'
+  name: Toolmakers and die setters and sinkers
+code_205:
+  id: 205
+  code: '23'
+  name: Brass molders, founders, and casters
+code_206:
+  id: 206
+  code: '24'
+  name: Iron molders, founders, and casters
+code_207:
+  id: 207
+  code: '25'
+  name: Other metal molders, founders, and casters
+code_208:
+  id: 208
+  code: '26'
+  name: Oilers of machinery
+code_209:
+  id: 209
+  code: '27'
+  name: Enamelers, lacquerers, and japanners
+code_210:
+  id: 210
+  code: '28'
+  name: Painters, glaziers, and varnishers--building
+code_211:
+  id: 211
+  code: '29'
+  name: Painters, glaziers, and varnishers--factory
+code_212:
+  id: 212
+  code: 2V
+  name: Jewelers and lapidaries--factory
+code_213:
+  id: 213
+  code: 2X
+  name: Loom fixers
+code_214:
+  id: 214
+  code: '30'
+  name: Plumbers and gas and steam fitters
+code_215:
+  id: 215
+  code: '31'
+  name: Rollers and roll hands--metal
+code_216:
+  id: 216
+  code: '32'
+  name: Sawyers
+code_217:
+  id: 217
+  code: '33'
+  name: 'Skilled occupations, not elsewhere specified:'
+code_218:
+  id: 218
+  code: '34'
+  name: Stonecutters
+code_219:
+  id: 219
+  code: '35'
+  name: Structural iron workers--building
+code_220:
+  id: 220
+  code: '36'
+  name: Coppersmiths
+code_221:
+  id: 221
+  code: '37'
+  name: Tinsmiths and sheet metal workers
+code_222:
+  id: 222
+  code: '38'
+  name: Upholsterers
+code_223:
+  id: 223
+  code: '39'
+  name: Chauffeurs
+code_224:
+  id: 224
+  code: 3V
+  name: Pattern and model makers
+code_225:
+  id: 225
+  code: 3X
+  name: Cement finishers
+code_226:
+  id: 226
+  code: '40'
+  name: Apprentices--transportation and communication industries
+code_227:
+  id: 227
+  code: '41'
+  name: Advertising agents
+code_228:
+  id: 228
+  code: '42'
+  name: Commercial travelers
+code_229:
+  id: 229
+  code: '43'
+  name: Canvassers
+code_230:
+  id: 230
+  code: '44'
+  name: Sales agents
+code_231:
+  id: 231
+  code: '45'
+  name: Salesmen or saleswomen
+code_232:
+  id: 232
+  code: '46'
+  name: Guards, watchmen, and doorkeepers
+code_233:
+  id: 233
+  code: '47'
+  name: Policemen
+code_234:
+  id: 234
+  code: '48'
+  name: Chemists, assayers, and metallurgists
+code_235:
+  id: 235
+  code: '49'
+  name: Designers
+code_236:
+  id: 236
+  code: 4V
+  name: Draymen, teamsters, and carriage drivers
+code_237:
+  id: 237
+  code: 4X
+  name: Motor truck and tractor drivers
+code_238:
+  id: 238
+  code: '50'
+  name: Photographers
+code_239:
+  id: 239
+  code: '51'
+  name: Civil engineers and surveyors
+code_240:
+  id: 240
+  code: '52'
+  name: Electrical engineers
+code_241:
+  id: 241
+  code: '53'
+  name: Mechanical and technical engineers, not elsewhere cited
+code_242:
+  id: 242
+  code: '54'
+  name: Mining engineers
+code_243:
+  id: 243
+  code: '55'
+  name: Trained nurses
+code_244:
+  id: 244
+  code: '56'
+  name: Social and welfare workers
+code_245:
+  id: 245
+  code: '57'
+  name: Architects', designers', and draftsmen's apprentices
+code_246:
+  id: 246
+  code: '58'
+  name: Charwomen and cleaners
+code_247:
+  id: 247
+  code: '59'
+  name: Elevator tenders
+code_248:
+  id: 248
+  code: 5V
+  name: Draftsmen
+code_249:
+  id: 249
+  code: 5X
+  name: Lawyers, judges, and justices
+code_250:
+  id: 250
+  code: '60'
+  name: Cooks (except in Army or Navy)
+code_251:
+  id: 251
+  code: '61'
+  name: Waiters (except in Army or Navy)
+code_252:
+  id: 252
+  code: '62'
+  name: Agents (not elsewhere classified)
+code_253:
+  id: 253
+  code: '63'
+  name: Collectors
+code_254:
+  id: 254
+  code: '64'
+  name: Credit men
+code_255:
+  id: 255
+  code: '65'
+  name: Purchasing agents (except for railroads)
+code_256:
+  id: 256
+  code: '66'
+  name: Accountants and auditors
+code_257:
+  id: 257
+  code: '67'
+  name: Bookkeepers and cashiers
+code_258:
+  id: 258
+  code: '68'
+  name: 'Clerks: office appliance operators'
+code_259:
+  id: 259
+  code: '69'
+  name: 'Clerks: shipping'
+code_260:
+  id: 260
+  code: 6V
+  name: Housekeepers and stewards
+code_261:
+  id: 261
+  code: 6X
+  name: Janitors
+code_262:
+  id: 262
+  code: '70'
+  name: Messenger, errand, and office boys and girls
+code_263:
+  id: 263
+  code: '71'
+  name: Stenographers and typists
+code_264:
+  id: 264
+  code: '72'
+  name: Owners, operators, and proprietors (manufacturers)
+code_265:
+  id: 265
+  code: '73'
+  name: Managers and officials (superintendent, president, vice president, secretary,
+    treasurer, sales manager)
+code_266:
+  id: 266
+  code: '74'
+  name: Foremen and overseers (bosses)
+code_267:
+  id: 267
+  code: '75'
+  name: 'Inspectors: forestry, extraction of minerals, transportation, trade'
+code_268:
+  id: 268
+  code: '76'
+  name: 'Mechanics: not otherwise stated'
+code_269:
+  id: 269
+  code: '77'
+  name: Operatives
+code_270:
+  id: 270
+  code: '78'
+  name: Laborers
+code_271:
+  id: 271
+  code: '79'
+  name: Porters (except in stores)
+code_272:
+  id: 272
+  code: 7V
+  name: Weigher clerks
+code_273:
+  id: 273
+  code: 7X
+  name: Clerks (except clerks in stores)
+code_274:
+  id: 274
+  code: V2
+  name: Blacksmiths' apprentices
+code_275:
+  id: 275
+  code: V3
+  name: Boiler makers' apprentices
+code_276:
+  id: 276
+  code: V4
+  name: Carpenters' apprentices
+code_277:
+  id: 277
+  code: V5
+  name: Electricians' apprentices
+code_278:
+  id: 278
+  code: V6
+  name: Machinists' apprentices
+code_279:
+  id: 279
+  code: V7
+  name: Plumbers' apprentices
+code_280:
+  id: 280
+  code: V8
+  name: Tinsmiths' and coppersmiths' apprentices
+code_281:
+  id: 281
+  code: V9
+  name: Apprentices to other building and hand trades
+code_282:
+  id: 282
+  code: V0
+  name: Laborers (unpaid family workers)
+code_283:
+  id: 283
+  code: V1
+  name: Laborers (wage workers)
+code_284:
+  id: 284
+  code: VV
+  name: Proprietors
+code_285:
+  id: 285
+  code: VX
+  name: Foremen and overseers

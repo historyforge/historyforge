@@ -17,6 +17,7 @@ class CensusRecord < ApplicationRecord
   has_many :bulk_updates, through: :bulk_updated_records
 
   attr_accessor :ensure_building
+
   before_save :ensure_housing
   before_save :match_to_person
 

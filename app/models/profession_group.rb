@@ -1,2 +1,0 @@
-class ProfessionGroup < ApplicationRecord
-end
