@@ -56,34 +56,34 @@
 #photograph-date-type {
   .form-group { display: none; }
   &.year {
-    .photograph_photograph_date_year { display: block; }
+    .photograph_date_year { display: block; }
   }
   &.month {
-    .photograph_photograph_date_year { display: block; }
-    .photograph_photograph_date_month { display: block; }
+    .photograph_date_year { display: block; }
+    .photograph_date_month { display: block; }
   }
   &.day {
-    .photograph_photograph_date_year { display: block; }
-    .photograph_photograph_date_month { display: block; }
-    .photograph_photograph_date_day { display: block; }
+    .photograph_date_year { display: block; }
+    .photograph_date_month { display: block; }
+    .photograph_date_day { display: block; }
   }
   &.years {
-    .photograph_photograph_date_year { display: block; }
-    .photograph_photograph_date_year_end { display: block; }
+    .photograph_date_year { display: block; }
+    .photograph_date_year_end { display: block; }
   }
   &.months {
-    .photograph_photograph_date_year { display: block; }
-    .photograph_photograph_date_month { display: block; }
-    .photograph_photograph_date_year_end { display: block; }
-    .photograph_photograph_date_month_end { display: block; }
+    .photograph_date_year { display: block; }
+    .photograph_date_month { display: block; }
+    .photograph_date_year_end { display: block; }
+    .photograph_date_month_end { display: block; }
   }
   &.days {
-    .photograph_photograph_date_year { display: block; }
-    .photograph_photograph_date_month { display: block; }
-    .photograph_photograph_date_day { display: block; }
-    .photograph_photograph_date_year_end { display: block; }
-    .photograph_photograph_date_month_end { display: block; }
-    .photograph_photograph_date_day_end { display: block; }
+    .photograph_date_year { display: block; }
+    .photograph_date_month { display: block; }
+    .photograph_date_day { display: block; }
+    .photograph_date_year_end { display: block; }
+    .photograph_date_month_end { display: block; }
+    .photograph_date_day_end { display: block; }
   }
 }
 
