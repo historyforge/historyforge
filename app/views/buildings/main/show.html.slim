@@ -78,7 +78,7 @@
         .card-body
           = simple_format @building.annotations
 
-    - if @building.description?
+    - if @building.description.present?
       .card.mb-1
         .card-header
           | Description
