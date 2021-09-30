@@ -46,6 +46,9 @@ Setting.add 'google_api_key', value: ENV['GOOGLE_API_KEY'], group: 'API Keys'
 Setting.add 'geocoding_key', value: ENV['GOOGLE_GEOCODING_KEY'], group: 'API Keys'
 Setting.add 'recaptcha_site_key', value: nil, group: 'API Keys'
 Setting.add 'recaptcha_secret_key', value: nil, group: 'API Keys'
+Setting.add 'facebook_login_enabled', type: :boolean, value: ENV['FACEBOOK_LOGIN_ENABLED'] || '0', group: 'API Keys', name: 'Enable Facebook Authentication', hint: 'Allow users to signup with their Facebook account.'
+Setting.add 'facebook_login_app_id', value: ENV['FACEBOOK_LOGIN_APP_ID'] || "",  group: 'API Keys'
+Setting.add 'facebook_login_secret', value: ENV['FACEBOOK_LOGIN_SECRET'] || "", group: 'API Keys'
 
 CensusYears.each do |year|
   group = "#{year} US Census"
