@@ -96,7 +96,7 @@ function addMainMarker(map, current, editable, move) {
   if (editable) {
     google.maps.event.addListener(marker, 'dragend', (event) => {
       const point = event.latLng
-      this.props.move({ lat: point.lat(), lon: point.lng() })
+      move({ lat: point.lat(), lon: point.lng() })
     })
   }
   return marker
