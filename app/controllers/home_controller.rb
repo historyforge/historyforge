@@ -5,7 +5,7 @@ class HomeController < ApplicationController
   before_action :load_announcement, only: :index
 
   def index
-    @html_title = 'Home - History Forge'
+    @html_title = 'Home - HistoryForge'
   end
 
   def stats
