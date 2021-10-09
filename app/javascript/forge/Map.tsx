@@ -5,6 +5,7 @@ import * as actions from './actions'
 import { propertyChanged, addOpacity, generateMarkers, highlightMarkers } from './MapComponent'
 
 const google = window.google
+// @ts-ignore
 const MarkerClusterer = window.MarkerClusterer
 
 const Map = props => {

@@ -1,11 +1,11 @@
-declare var MarkerClusterer: any;
+declare let MarkerClusterer: any
 
 declare namespace $ {
-    let param: any;
+    let param: any
 }
 
 declare namespace google {
-    let maps: any;
+    let maps: any
 }
 
 interface IMap {
@@ -20,7 +20,8 @@ interface SearchParams {
     buildings?: keyable,
     s?: keyable,
     people?: number,
-    peopleParams?: keyable
+    peopleParams?: keyable,
+    year?: number,
 }
 
 interface keyable {

@@ -23,6 +23,8 @@ function getFilterText(predicate, criteria, config) {
 
 const FilterListItem = props => {
   const { setOpen, remove, config: { label }, predicate, criteria } = props
+  if (!criteria.length) return null
+
   return (
         <div className="list-group-item" onClick={setOpen}>
             <span className="float-right" onClick={remove}>&times;</span>
