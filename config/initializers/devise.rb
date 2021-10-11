@@ -241,7 +241,7 @@ Devise.setup do |config|
 
   # config.omniauth :github, APP_CONFIG["omniauth_github_key"], APP_CONFIG["omniauth_github_secret"]
 
-  config.omniauth :facebook, proc { AppConfig.facebook_login_key }, proc { AppConfig.facebook_login_secret }, token_params: { parse: :json }
+  config.omniauth :facebook, ENV["FACEBOOK_LOGIN_APP_ID"],  ENV["FACEBOOK_LOGIN_SECRET"]
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or
