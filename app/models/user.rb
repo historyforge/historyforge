@@ -7,7 +7,7 @@ class User < ApplicationRecord
     has_many :"census#{year}_records", dependent: :nullify, foreign_key: :created_by_id
   end
 
-  :login
+  validates_presence_of    :login
   validates_length_of      :login, within: 3..40
   validates_uniqueness_of  :login, scope: :email, case_sensitive: false
 
@@ -81,12 +81,9 @@ class User < ApplicationRecord
   end
 
   def self.from_omniauth(auth)
-    name_split = auth.info.name.split(" ")
-    user = User.where(email: auth.info.email).first
-    # pending additional user table info
-    # user ||= User.create!(provider: auth.provider, uid: auth.uid, last_name: name_split[0], first_name: name_split[1], email: auth.info.email, password: Devise.friendly_token[0, 20])
-    user ||= User.create!(provider: auth.provider, uid: auth.uid, email: auth.info.email, password: Devise.friendly_token[0, 20])
-
+    user = User.where(email: auth.info.email, provider: auth.provider).first
+    user ||= User.create!(provider: auth.provider, uid: auth.uid, email: auth.info.email, password: Devise.friendly_token[0, 20], login: + auth.info.email + '-' + auth.provider[0])
+    user
   end
 
 end
