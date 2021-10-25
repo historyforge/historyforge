@@ -1,12 +1,19 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
+import { searchTerm } from './actions'
 
 const Search = (props: SearchData): JSX.Element => {
   const [term, setTerm] = useState('')
-  const search = (event) => {
+
+  const change = (event) => {
     const { target: { value } } = event
     setTerm(value)
-    props.search(value)
+  }
+  const search = (event) => {
+    const { keyCode } = event
+    if (keyCode === 13) {
+      props.search(term)
+    }
   }
   return (
         <div className="pt-3 pb-1">
@@ -14,7 +21,8 @@ const Search = (props: SearchData): JSX.Element => {
             <input className="form-control"
                    type="search"
                    value={term}
-                   onChange={search} />
+                   onKeyUp={search}
+                   onChange={change} />
         </div>
   )
 }
@@ -25,7 +33,7 @@ const mapStateToProps = _state => {
 }
 
 const actions = {
-  search: (term) => ({ type: 'SEARCH', term })
+  search: (term) => searchTerm(term)
 }
 
 const Component = connect(mapStateToProps, actions)(Search)

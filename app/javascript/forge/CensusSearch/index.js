@@ -20,7 +20,7 @@ const CensusSearch = (props) => {
   const remove = (value) => {
     props.removeFilter(value)
     setOpen(null)
-    props.load(params)
+    props.load()
   }
 
   const set = (field, predicate, criteria) => {
@@ -29,12 +29,12 @@ const CensusSearch = (props) => {
 
   const search = () => {
     setOpen(null)
-    props.load(params)
+    props.load()
   }
 
   return (
         <div className="pt-3 pb-1">
-            <h3>Census Search</h3>
+            <h3>Search HistoryForge</h3>
             <YearButtons years={years} year={year} setYear={setYear} />
             <AddFilter filters={filters} addFilter={add} />
             <Filters current={current}

@@ -89,7 +89,7 @@ class UsersController < ApplicationController
         @user.send_reset_password_instructions
         flash[:notice] = 'User changed and an email sent with password reset link'
       else
-        flash[:error] = 'Sorry, there was a problem changingin this user'
+        flash[:error] = 'Sorry, there was a problem changing this user'
       end
     end
 

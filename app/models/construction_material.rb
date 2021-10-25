@@ -28,8 +28,8 @@ class ConstructionMaterial #< ApplicationRecord
   def self.find(id)
     return unless id
 
-    row = DATA[id + 1]
-    row && new(id: id + 1, name: row[0], color: row[1])
+    row = DATA[id - 1]
+    row && new(id: id - 1, name: row[0], color: row[1])
   end
 
   def initialize(id:, name:, color:)

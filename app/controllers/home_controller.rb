@@ -5,7 +5,7 @@ class HomeController < ApplicationController
   before_action :load_announcement, only: :index
 
   def index
-    @html_title = 'Home - History Forge'
+    @html_title = 'Home - HistoryForge'
   end
 
   def stats
@@ -30,7 +30,6 @@ class HomeController < ApplicationController
                                  .map(&:building)
                                  .compact
                                  .uniq
-      Rails.logger.info @names
       @buildings = @buildings.to_a.concat(@names)
     end
     render json: @buildings.map { |b| { url: url_for(b), id: b.id, name: b.full_street_address, lat: b.latitude, lon: b.longitude } }

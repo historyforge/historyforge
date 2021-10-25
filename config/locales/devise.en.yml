@@ -21,9 +21,9 @@ en:
       unconfirmed: "You have to confirm your account before continuing."
     mailer:
       confirmation_instructions:
-        subject: "Map Warper email address confirmation instructions"
+        subject: "HistoryForge email address confirmation instructions"
       reset_password_instructions:
-        subject: "Map Warper Reset password instructions"
+        subject: "HistoryForge Reset password instructions"
       unlock_instructions:
         subject: "Unlock Instructions"
     omniauth_callbacks:

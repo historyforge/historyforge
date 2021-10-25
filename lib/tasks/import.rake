@@ -47,13 +47,24 @@ namespace :import do
 
       record.created_by = User.first
 
-      address = Address.find_by house_number: record.street_house_number,
-                                prefix: record.street_prefix,
-                                name: record.street_name,
-                                suffix: record.street_suffix,
-                                city: record.city
+      address = Address.find_or_initialize_by house_number: record.street_house_number,
+                                              prefix: record.street_prefix,
+                                              name: record.street_name,
+                                              suffix: record.street_suffix,
+                                              city: record.city,
+                                              is_primary: true
 
-      record.building = address&.building || BuildingFromAddress.new(record).perform
+      record.building = address.building || Building.create(
+        name: address,
+        city: record.city,
+        state: record.state,
+        postal_code: AppConfig.postal_code,
+        locality: record.locality,
+        building_type_ids: [1],
+        lat: row['Latitude'],
+        lon: row['Longitude'],
+        addresses: [address]
+      )
 
       # Not going to sweat if the record doesn't save because this is just for developers to load some census records
       rows_count += 1

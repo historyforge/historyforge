@@ -15,7 +15,8 @@ export const buildings = function(state = {}, action) {
   }
 
   if (action.type === 'BUILDING_LOADED') {
-    const { meta: { info }, buildings } = action
+    const { buildings } = action
+    const info = action.meta ? action.meta.info : `Found ${buildings.length} results.`
     return { ...state, building: null, highlighted: null, buildings, message: info, loadedAt: new Date().getTime() }
   }
 

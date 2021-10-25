@@ -10,25 +10,35 @@ export const setYear = (proposedYear?: number) => (dispatch, getState) => {
     year = parseInt(year)
     dispatch({ type: 'FORGE_SET_YEAR', year })
     dispatch(loadFilters(year))
-    dispatch(load(getState().search.params))
+    dispatch(load())
   } else {
     dispatch(load())
   }
 }
 
-export const load = (params?: keyable) => async (dispatch, getState) => {
-  // @ts-ignore
-  const qs = params || getState().search.params || {}
+let searchTimeout
+export const searchTerm = (term) => async(dispatch) => {
+  clearTimeout(searchTimeout)
+  searchTimeout = setTimeout(() => {
+    dispatch({ type: 'FORGE_RESET' })
+    axios.get('/search/buildings.json', { params: { term, unpaged: true } }).then(json => {
+      dispatch({ type: 'BUILDING_LOADED', buildings: json.data })
+    })
+  }, term === '' ? 1000 : 200)
+}
+
+export const load = () => async (dispatch, getState) => {
+  const qs = getState().search || {}
   const json = await axios.get('/buildings.json', {
     params: buildParams(qs)
   })
   if (typeof json.data === 'string') { json.data = JSON.parse(json.data) }
   dispatch({ type: 'BUILDING_LOADED', ...json.data })
-  const params = $.param(qs)
-  const url = `/forge/?${params}`
-  if (url !== location.toString()) {
-    window.history.pushState(params, 'HistoryForge', url)
-  }
+  // const qsParams = $.param(qs)
+  // const url = `/forge/?${qsParams}`
+  // if (url !== location.toString()) {
+  //   window.history.pushState(qsParams, 'HistoryForge', url)
+  // }
 }
 
 export const select = (id: number, params?: keyable) => async (dispatch) => {
@@ -60,13 +70,14 @@ const loadFilters = year => async dispatch => {
   dispatch({ type: 'FORGE_FILTERS_LOADED', ...json.data })
 }
 
-const buildParams = function(search: SearchParams) {
-  const params = { s: {} } as SearchParams
+const buildParams = function(search: keyable) {
+  const params = { s: {} } as keyable
+  console.log(search)
   if (search?.s) {
     params.s = search.s
-  } else if (search?.people) {
-    params.people = search.people
-    params.peopleParams = search.s
+  } else if (search?.people || search?.year) {
+    params.people = search.people || search?.year
+    params.peopleParams = search.params.s
   }
   params.s.lat_not_null = 1
   return params

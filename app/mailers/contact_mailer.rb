@@ -6,6 +6,7 @@ class ContactMailer < ApplicationMailer
     @contact = contact
     mail subject: "[HISTORYFORGE] #{@contact.subject}",
          to: AppConfig.contact_email,
-         reply_to: @contact.email
+         reply_to: @contact.email,
+         from: AppConfig.mail_from
   end
 end

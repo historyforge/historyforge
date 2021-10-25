@@ -68,7 +68,7 @@
               = select_tag 's[page_number_eq]', options_for_select((1..100).map, @search.s[:page_number_eq]), include_blank: true, class: 'form-control'
             .col-3
               label for="s_page_side_eq" Side
-              = select_tag 's[page_side_eq]', options_for_select(%w[A B], @search.s[:page_side_eq]), include_blank: true, class: 'form-control'
+              = select_tag 's[page_side_eq]', options_for_select(resource_class.page_side_choices, @search.s[:page_side_eq]), include_blank: true, class: 'form-control'
           hr
 
         .row

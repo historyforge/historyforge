@@ -82,7 +82,9 @@ const pageLoad = function() {
 jQuery(document).on('click', '.dropdown-item.checkbox', function(e) { e.stopPropagation() })
 jQuery(document).on('click', '#search-map', function() {
   const $form = jQuery(this).closest('form')
-  if (document.location.toString().match(/building/)) { $form.append('<input type="hidden" name="buildings" value="1">') } else {
+  if (document.location.toString().match(/building/)) {
+    $form.append('<input type="hidden" name="buildings" value="1">')
+  } else {
     const year = jQuery(this).data('year')
     $form.append(`<input type="hidden" name="people" value="${year}">`)
   }
