@@ -39,12 +39,24 @@ class CensusRecordDecorator < ApplicationDecorator
     end
   end
 
+  def attended_school
+    return unless object.attended_school?
+
+    if object.year == 1900
+      object.attended_school == 1 ? '1 month' : "#{object.attended_school} months"
+    else
+      object.attended_school? ? 'Yes' : nil
+    end
+  end
+
   # Coded answers (enumerations) should output the full text rather than the code.
   %w[race marital_status sex naturalized_alien employment worker_class
      owned_or_rented mortgage farm_or_house civil_war_vet war_fought].each do |method|
     define_method method do
-      code = object.public_send(method) rescue NoMethodError
+      code = object.public_send(method)
       translate_census_code code, method
+    rescue NoMethodError
+      nil
     end
   end
 

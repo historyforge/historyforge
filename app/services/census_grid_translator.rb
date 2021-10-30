@@ -52,7 +52,7 @@ class CensusGridTranslator
     page_side: 50,
     line_number: 50,
     age: 50,
-    sex: 50,
+    sex: 60,
     marital_status: 130,
     id: 60,
     ward: 60,
