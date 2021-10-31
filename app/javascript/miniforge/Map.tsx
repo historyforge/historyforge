@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import loadWMS from '../forge/wms'
-import { getMainIcon, addOpacity, generateMarkers, highlightMarkers, propertyChanged } from '../forge/MapComponent'
+import { getMainIcon, generateMarkers, highlightMarkers, propertyChanged } from '../forge/MapComponent'
 import { moveBuilding, highlight } from '../forge/actions'
 
 const google = window.google
@@ -59,7 +59,7 @@ const Map = props => {
         addLayer(map, props.layer || props.layers[0])
       }
       if (propertyChanged(props, prevProps, 'opacityAt')) {
-        addOpacity(map, [props.layer || props.layers[0]])
+        addOpacity(map, props.opacity)
       }
     }
     setPrevProps(props)
@@ -79,6 +79,11 @@ function addLayer(map, layer) {
   if (layer) {
     loadWMS(map, layer, layer.name)
   }
+}
+
+export function addOpacity(map, opacity) {
+  const currentLayers = map.overlayMapTypes.getArray()
+  currentLayers[0].setOpacity(parseInt(opacity) / 100)
 }
 
 function addMarkers(map, markers) {
