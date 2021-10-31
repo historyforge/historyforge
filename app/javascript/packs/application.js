@@ -103,7 +103,7 @@ function getBuildingList() {
   if (street === '') prefix = null
   let suffix = jQuery('#street_suffix').val()
   if (street === '') suffix = null
-  if (city && street) {
+  if (city && street && house && suffix) {
     const params = { city, street, prefix, suffix, house }
     jQuery.getJSON('/census/1910/building_autocomplete', params, function (json) {
       const building = jQuery('#building_id')
@@ -113,7 +113,8 @@ function getBuildingList() {
         html += `<option value="${item.id}">${item.name}</option>`
       })
       building.html(html)
-      building.val(current_value)
+      building.val(json.length === 1 ? json[0].id : current_value)
+      $('.census_record_ensure_building').toggle(!building.val()?.length)
     })
   }
 }

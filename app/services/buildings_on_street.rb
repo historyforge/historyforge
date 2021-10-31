@@ -32,14 +32,10 @@ class BuildingsOnStreet
 
     items = items.where(addresses: { prefix: street_prefix }) if street_prefix.present?
     items = items.where(addresses: { suffix: street_suffix }) if street_suffix.present?
-
     items = add_block_filter(items) if street_house_number.present?
-
     items = items.to_a.unshift(Building.find(building_id)) if building_id && !items.detect { |b| b.id == building_id }
 
-    items = items.to_a.uniq
-
-    items.map { |item| Row.new item.id, item.street_address_for_building_id }
+    items.to_a.uniq.map { |item| Row.new item.id, item.street_address_for_building_id }
   end
 
   def add_block_filter(items)
