@@ -35,7 +35,14 @@ const Map = props => {
     if (map) {
       if (!marker) {
         setMarker(addMainMarker(map, props.current, props.editable, props.move))
-        addLayer(map, props.layer || props.layers[0])
+        if (!props.layer) {
+          const layerId = window.localStorage.getItem('miniforge-layer')
+          if (layerId) {
+            props.toggle(layerId)
+          }
+        } else {
+          addLayer(map, props.layer)
+        }
       }
       if (!markers) {
         const handlers = {
@@ -56,7 +63,7 @@ const Map = props => {
         highlightMarkers(props, prevProps, markers)
       }
       if (propertyChanged(props, prevProps, 'layeredAt')) {
-        addLayer(map, props.layer || props.layers[0])
+        addLayer(map, props.layer)
       }
       if (propertyChanged(props, prevProps, 'opacityAt')) {
         addOpacity(map, props.opacity)
@@ -71,14 +78,12 @@ const Map = props => {
 function addLayer(map, layer) {
   const currentLayers = map.overlayMapTypes.getArray()
   if (currentLayers.length) {
-    if (currentLayers[0] === layer.name) {
-      return
-    }
     map.overlayMapTypes.removeAt(0)
   }
   if (layer) {
     loadWMS(map, layer, layer.name)
   }
+  window.localStorage.setItem('miniforge-layer', layer.id)
 }
 
 export function addOpacity(map, opacity) {
@@ -112,6 +117,7 @@ const mapStateToProps = state => {
 }
 
 const actions = {
+  toggle: (id) => ({ type: 'LAYER_TOGGLE', id }),
   move: moveBuilding,
   highlight
 }

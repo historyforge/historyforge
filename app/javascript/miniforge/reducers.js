@@ -1,7 +1,8 @@
 export const layers = function(state = {}, action) {
   if (action.type === 'LAYER_TOGGLE') {
-    const layer = state.layers.find(item => item.id === action.id)
-    return { ...state, layers: [...state.layers], layer: layer, layeredAt: new Date().getTime() }
+    const layerId = parseInt(action.id)
+    const layer = state.layers.find(item => item.id === layerId)
+    return { ...state, layers: [...state.layers], layer, layeredAt: new Date().getTime() }
   }
 
   if (action.type === 'LAYER_OPACITY') {
