@@ -8,7 +8,7 @@ const google = window.google
 // @ts-ignore
 const MarkerClusterer = window.MarkerClusterer
 
-const Map = props => {
+const Map = (props: MapProps) => {
   const mapRef = useRef<HTMLDivElement>(null)
   const [map, setMap] = useState(null)
   const [markers, setMarkers] = useState(null)
@@ -21,6 +21,14 @@ const Map = props => {
       const myMap = new google.maps.Map(mapRef.current, mapOptions())
       myMap.setCenter(props.center)
       setMap(myMap)
+      google.maps.event.addListener(myMap.getStreetView(), 'visible_changed', () => {
+        const streetViewOn = myMap.getStreetView().getVisible()
+        if (streetViewOn) {
+          document.body.classList.add('streetview')
+        } else {
+          document.body.classList.remove('streetview')
+        }
+      })
     }
     if (map) {
       if (propertyChanged(props, prevProps, 'layeredAt')) {

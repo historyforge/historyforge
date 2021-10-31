@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Layers from './Layers'
 import Map from './Map'
-// import Search from './Search'
 import CensusSearch from './CensusSearch'
 import Building from './Building'
 
@@ -25,7 +24,6 @@ const App = (): JSX.Element => {
         <Map />
         <div id={'forge-right-col'} className={sidebar ? 'open' : 'closed'}>
           <Layers />
-          {/* <Search /> */}
           <CensusSearch />
         </div>
         <button type="button"

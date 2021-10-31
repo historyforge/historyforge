@@ -2,6 +2,12 @@ button.gm-ui-hover-effect {
   display: none !important;
 }
 
+body.streetview {
+  #forge-right-col, #forge-sidebar-toggle, header {
+    display: none;
+  }
+}
+
 #forge {
   #map-wrapper {
     position: absolute;
