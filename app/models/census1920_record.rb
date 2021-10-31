@@ -13,7 +13,7 @@ class Census1920Record < CensusRecord
   validates :dwelling_number, presence: true
 
   define_enumeration :employment, %w[W Em OA]
-  define_enumeration :race, %w[W B Mu In Ch Jp Fil Hin Kor Ot]
+  define_enumeration :race, %w[W B Mu In Ch Jp Fil Hin Kor]
 
   auto_strip_attributes :industry, :employment, :employment_code
 

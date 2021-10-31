@@ -15,7 +15,7 @@ class Census1910Record < CensusRecord
 
   auto_strip_attributes :industry, :employment
 
-  define_enumeration :race, %w[W B Mu Ch Jp In Ot]
+  define_enumeration :race, %w[W B Mu Ch Jp In]
   define_enumeration :marital_status, %w[S M_or_M1 M2_or_M3 Wd D]
 
   def year
