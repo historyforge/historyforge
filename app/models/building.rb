@@ -20,9 +20,6 @@ class Building < ApplicationRecord
   accepts_nested_attributes_for :addresses, allow_destroy: true, reject_if: proc { |p| p['name'].blank? }
 
   has_and_belongs_to_many :architects
-  # has_and_belongs_to_many :building_types, join_table: :buildings_building_types
-  # belongs_to :frame_type, class_name: 'ConstructionMaterial', optional: true
-  # belongs_to :lining_type, class_name: 'ConstructionMaterial', optional: true
 
   CensusYears.each do |year|
     has_many :"census_#{year}_records", dependent: :nullify, class_name: "Census#{year}Record"

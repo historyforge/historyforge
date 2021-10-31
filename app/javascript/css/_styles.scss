@@ -21,6 +21,8 @@ a {
 .pills {
   @include media('>=desktop') {
     float: right;
+    min-width: 40%;
+    text-align: right;
   }
   @include media('<=tablet') {
     display: flex;
