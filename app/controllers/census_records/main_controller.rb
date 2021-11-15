@@ -29,22 +29,22 @@ module CensusRecords
 
     # Used to populate the building_id field on census forms
     def building_autocomplete
-      buildings = Address.where(house_number: params[:house],
-                                prefix: params[:prefix],
-                                name: params[:street],
-                                suffix: params[:suffix],
-                                city: params[:city])
-                         .preload(:building)
-                         .map(&:building)
+      # buildings = Address.where(house_number: params[:house],
+      #                           prefix: params[:prefix],
+      #                           name: params[:street],
+      #                           suffix: params[:suffix],
+      #                           city: params[:city])
+      #                    .preload(:building)
+      #                    .map(&:building)
 
 
-      # record = resource_class.new street_house_number: params[:house],
-      #                             street_prefix: params[:prefix],
-      #                             street_name: params[:street],
-      #                             street_suffix: params[:suffix],
-      #                             city: params[:city]
-      # record.auto_strip_attributes
-      # buildings = BuildingsOnStreet.new(record).perform
+      record = resource_class.new street_house_number: params[:house],
+                                  street_prefix: params[:prefix],
+                                  street_name: params[:street],
+                                  street_suffix: params[:suffix],
+                                  city: params[:city]
+      record.auto_strip_attributes
+      buildings = BuildingsOnStreet.new(record).perform
       render json: buildings.to_json
     end
 
