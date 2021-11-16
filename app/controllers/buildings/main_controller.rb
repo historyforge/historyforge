@@ -186,14 +186,16 @@ class Buildings::MainController < ApplicationController
   end
 
   def building_params
-    params.require(:building).permit :name, :description, :annotations, :stories, :block_number,
+    params.require(:building).permit :name, :description, :stories, :block_number,
                                      :year_earliest, :year_latest, :year_latest_circa, :year_earliest_circa,
                                      :lining_type_id, :frame_type_id, :locality_id,
                                      :lat, :lon, :city, :state, :postal_code, :architects_list,
                                      :investigate, :investigate_reason, :notes,
                                      { building_type_ids: [],
                                        photos_attributes: %i[_destroy id photo year_taken caption],
-                                       addresses_attributes: %i[_destroy id is_primary house_number prefix name suffix city postal_code] }
+                                       addresses_attributes: %i[_destroy id is_primary house_number prefix name suffix city postal_code],
+                                       annotations_attributes: %i[_destroy id map_overlay annotation_text]
+                                     }
   end
 
   def load_buildings

@@ -1,0 +1,10 @@
+.list-group-item.nested-form-item
+  .row
+    .col-sm-3
+      = form.input_field :map_overlay, collection: MapOverlay.all, class: 'form-control'
+    .col-sm-8
+      = form.input_field :annotation_text, class: 'form-control'
+    .col-sm-1
+      button.remove.float-right.btn.btn-default
+        | &times;
+  = form.hidden_field :_destroy
