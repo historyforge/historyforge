@@ -76,7 +76,13 @@
         .card-header
           | Annotations
         .card-body
-          = simple_format @building.annotations
+          - @building.annotations.each do |annotation|
+            .row
+              .col-sm-3
+                dd= annotation.annotation_map_layer_name
+              .col-sm-9
+                dd= annotation.annotation_text
+
 
     - if @building.description.present?
       .card.mb-1
