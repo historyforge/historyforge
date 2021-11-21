@@ -1,5 +1,5 @@
 class ApplicationRecord < ActiveRecord::Base
-  include Memery
+  include FastMemoize
 
   self.abstract_class = true
 

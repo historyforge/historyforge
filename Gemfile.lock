@@ -138,6 +138,7 @@ GEM
       railties (>= 5.0.0)
     faker (2.19.0)
       i18n (>= 1.6, < 2)
+    fast_memoize (0.1.1)
     ffi (1.15.4)
     font-awesome-rails (4.7.0.7)
       railties (>= 3.2, < 7)
@@ -179,8 +180,6 @@ GEM
     mail (2.7.1)
       mini_mime (>= 0.1.1)
     marcel (1.0.1)
-    memery (1.4.1)
-      ruby2_keywords (~> 0.0.2)
     memory_profiler (1.0.0)
     method_source (1.0.0)
     mini_magick (4.11.0)
@@ -383,6 +382,7 @@ DEPENDENCIES
   draper
   factory_bot_rails
   faker
+  fast_memoize
   font-awesome-rails
   geocoder
   image_processing
@@ -391,7 +391,6 @@ DEPENDENCIES
   letter_opener
   letter_opener_web
   liquid
-  memery
   memory_profiler
   mini_magick
   non-stupid-digest-assets

@@ -12,20 +12,22 @@ class PersonSearch < SearchQueryBuilder
         sort: params[:sort]
   end
 
-  memoize def entity_class
+  def entity_class
     Person
   end
 
-  memoize def results
+  def results
     scoped.to_a.map { |row| row.decorate }
   end
+  memoize :results
 
-  memoize def scoped
+  def scoped
     builder.offset(from) if from
     builder.limit(to.to_i - from.to_i) if from && to
     add_sorts
     builder.scoped
   end
+  memoize :scoped
 
   def add_sorts
     order = []

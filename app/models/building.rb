@@ -205,13 +205,15 @@ class Building < ApplicationRecord
     end
   end
 
-  memoize def frame_type
+  def frame_type
     ConstructionMaterial.find frame_type_id
   end
+  memoize :frame_type
 
-  memoize def lining_type
+  def lining_type
     ConstructionMaterial.find lining_type_id
   end
+  memoize :lining_type
 
   def building_types
     BuildingType.from_mask(building_types_mask)

@@ -34,13 +34,15 @@ class User < ApplicationRecord
     role_names.include?(name)
   end
 
-  memoize def role_names
+  def role_names
     roles.map(&:name)
   end
+  memoize :role_names
 
-  memoize def roles
+  def roles
     Role.from_mask(roles_mask)
   end
+  memoize :roles
 
   def role_ids
     Role.ids_from_mask(roles_mask)

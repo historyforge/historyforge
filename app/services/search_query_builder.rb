@@ -5,7 +5,7 @@ class SearchQueryBuilder
   extend ActiveModel::Naming
   include ActiveModel::Conversion
   include ActiveModel::Validations
-  include Memery
+  include FastMemoize
 
   attr_accessor :page, :s, :f, :g, :user, :c, :d, :sort, :paged, :per, :scope, :from, :to
 
@@ -39,9 +39,10 @@ class SearchQueryBuilder
     default_fields.include?(field.to_s)
   end
 
-  memoize def columns
+  def columns
     f.concat(['id'])
   end
+  memoize :columns
 
   class Builder
     def initialize(entity_class, params)
@@ -65,11 +66,12 @@ class SearchQueryBuilder
 
   private
 
-  memoize def builder
+  def builder
     Builder.new entity_class, ransack_params
   end
+  memoize :builder
 
-  memoize def ransack_params
+  def ransack_params
     prepare_search_filters
     p = Hash.new
     s.each do |key, value|
@@ -87,6 +89,7 @@ class SearchQueryBuilder
     end
     p
   end
+  memoize :ransack_params
 
   def prepare_search_filters
     @s = @s.is_a?(String) ? JSON.parse(@s) : @s
