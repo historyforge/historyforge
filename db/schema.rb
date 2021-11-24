@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_30_074328) do
+ActiveRecord::Schema.define(version: 2021_11_15_012130) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
@@ -62,6 +62,16 @@ ActiveRecord::Schema.define(version: 2021_09_30_074328) do
     t.index ["building_id"], name: "index_addresses_on_building_id"
   end
 
+  create_table "annotations", force: :cascade do |t|
+    t.bigint "created_by_id"
+    t.bigint "map_overlay_id"
+    t.bigint "building_id"
+    t.text "annotation_text"
+    t.index ["building_id"], name: "index_annotations_on_building_id"
+    t.index ["created_by_id"], name: "index_annotations_on_created_by_id"
+    t.index ["map_overlay_id"], name: "index_annotations_on_map_overlay_id"
+  end
+
   create_table "architects", id: :serial, force: :cascade do |t|
     t.string "name", null: false
     t.datetime "created_at", null: false
@@ -100,7 +110,7 @@ ActiveRecord::Schema.define(version: 2021_09_30_074328) do
     t.string "address_street_name"
     t.string "address_street_suffix"
     t.float "stories"
-    t.text "annotations"
+    t.text "annotations_legacy"
     t.integer "lining_type_id"
     t.integer "frame_type_id"
     t.string "block_number"
@@ -112,6 +122,8 @@ ActiveRecord::Schema.define(version: 2021_09_30_074328) do
     t.text "notes"
     t.bigint "locality_id"
     t.integer "building_types_mask"
+    t.bigint "annotations_id"
+    t.index ["annotations_id"], name: "index_buildings_on_annotations_id"
     t.index ["building_type_id"], name: "index_buildings_on_building_type_id"
     t.index ["created_by_id"], name: "index_buildings_on_created_by_id"
     t.index ["frame_type_id"], name: "index_buildings_on_frame_type_id"
@@ -799,6 +811,8 @@ ActiveRecord::Schema.define(version: 2021_09_30_074328) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "locality_id"
+    t.bigint "annotations_id"
+    t.index ["annotations_id"], name: "index_map_overlays_on_annotations_id"
     t.index ["locality_id"], name: "index_map_overlays_on_locality_id"
   end
 
@@ -1033,6 +1047,9 @@ ActiveRecord::Schema.define(version: 2021_09_30_074328) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "addresses", "buildings"
+  add_foreign_key "annotations", "buildings"
+  add_foreign_key "annotations", "map_overlays"
+  add_foreign_key "annotations", "users", column: "created_by_id"
   add_foreign_key "buildings", "localities"
   add_foreign_key "buildings", "users", column: "created_by_id"
   add_foreign_key "buildings", "users", column: "reviewed_by_id"

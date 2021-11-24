@@ -1,8 +1,8 @@
 class FacebookAuthSettings < ActiveRecord::Migration[6.0]
   def self.up
-    Setting.add 'facebook_login_enabled', type: :boolean, value: '0', group: 'API Keys', name: 'Enable Facebook Authentication', hint: 'Allow users to signup with their Facebook account.'
-    Setting.add 'facebook_login_app_id', value: '',  group: 'API Keys'
-    Setting.add 'facebook_login_secret', value: '', group: 'API Keys'
+    Setting.add 'facebook_login_enabled', type: :boolean, value: '0', group: 'Authentication', name: 'Enable Facebook Authentication', hint: 'Allow users to signup with their Facebook account.'
+    Setting.add 'facebook_login_app_id', value: '',  group: 'Authentication'
+    Setting.add 'facebook_login_secret', value: '', group: 'Authentication'
   end
 
   def self.down
