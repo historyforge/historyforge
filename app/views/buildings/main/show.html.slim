@@ -78,10 +78,8 @@
         .card-body
           - @building.annotations.each do |annotation|
             .row
-              .col-sm-3
-                dd= annotation.annotation_map_layer_name
-              .col-sm-9
-                dd= annotation.annotation_text
+              .col-12
+                dd = annotation.annotation_layer
 
 
     - if @building.description.present?

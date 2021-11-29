@@ -1,15 +1,18 @@
 class Annotation < ApplicationRecord
-  has_one :map_overlay
-  has_one :building
-  validates_presence_of :annotation_text
+  belongs_to :map_overlay, optional: false
+  belongs_to :building, optional: false
+  validates_presence_of :annotation_text, :message => 'No annotation text.'
+  validates_uniqueness_of :annotation_text, scope: [:map_overlay, :building], :message => 'Duplicate annotations for Map Layer.'
 
-  def annotation
-    annotation_text
+  delegate :name, to: :map_overlay, prefix: true
+  delegate :name, to: :building, prefix: true
+
+  def annotation_building
+    [building_name, '-', annotation_text].compact.join(' ')
   end
 
-  # seems clunky
-  def annotation_map_layer_name
-    map = MapOverlay.find_by_id(map_overlay_id)
-    map.year_depicted.to_s + ' - ' + map.name
+  def annotation_layer
+    [map_overlay_name, '-', annotation_text].compact.join(' ')
   end
+
 end

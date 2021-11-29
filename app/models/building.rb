@@ -21,7 +21,7 @@ class Building < ApplicationRecord
 
   has_and_belongs_to_many :architects
 
-  has_many :annotations
+  has_many :annotations, dependent: :destroy
   accepts_nested_attributes_for :annotations, allow_destroy: true, reject_if: proc { |p| p['annotation_text'].blank? }
 
   CensusYears.each do |year|
