@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_24_193543) do
+ActiveRecord::Schema.define(version: 2021_12_15_194727) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
@@ -59,6 +59,8 @@ ActiveRecord::Schema.define(version: 2021_09_24_193543) do
     t.string "postal_code"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "year_earliest"
+    t.integer "year_latest"
     t.index ["building_id"], name: "index_addresses_on_building_id"
   end
 

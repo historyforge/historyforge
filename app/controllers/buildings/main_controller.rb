@@ -193,7 +193,7 @@ class Buildings::MainController < ApplicationController
                                      :investigate, :investigate_reason, :notes,
                                      { building_type_ids: [],
                                        photos_attributes: %i[_destroy id photo year_taken caption],
-                                       addresses_attributes: %i[_destroy id is_primary house_number prefix name suffix city postal_code] }
+                                       addresses_attributes: %i[_destroy id is_primary house_number prefix name suffix city postal_code year_earliest year_latest] }
   end
 
   def load_buildings

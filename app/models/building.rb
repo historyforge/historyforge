@@ -100,7 +100,9 @@ class Building < ApplicationRecord
                                                                     addresses[:house_number],
                                                                     addresses[:prefix],
                                                                     addresses[:name],
-                                                                    addresses[:suffix]
+                                                                    addresses[:suffix],
+                                                                    addresses[:year_earliest],
+                                                                    addresses[:year_latest],
                                                                    ])])
   end
 
@@ -158,6 +160,14 @@ class Building < ApplicationRecord
 
   def city
     address&.city
+  end
+
+  def address_year_earliest
+    address&.year_earliest
+  end
+
+  def address_year_latest
+    address&.year_latest
   end
 
   def street_address_for_building_id
