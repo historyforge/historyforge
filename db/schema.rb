@@ -63,10 +63,11 @@ ActiveRecord::Schema.define(version: 2021_11_15_012130) do
   end
 
   create_table "annotations", force: :cascade do |t|
-    t.bigint "created_by_id"
+    t.text "annotation_text"
     t.bigint "map_overlay_id"
     t.bigint "building_id"
-    t.text "annotation_text"
+    t.bigint "created_by_id"
+    t.index ["building_id", "map_overlay_id"], name: "index_annotations_on_building_id_and_map_overlay_id", unique: true
     t.index ["building_id"], name: "index_annotations_on_building_id"
     t.index ["created_by_id"], name: "index_annotations_on_created_by_id"
     t.index ["map_overlay_id"], name: "index_annotations_on_map_overlay_id"
