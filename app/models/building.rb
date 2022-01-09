@@ -12,7 +12,9 @@ class Building < ApplicationRecord
   has_rich_text :description
 
   define_enumeration :address_street_prefix, %w[N S E W]
-  define_enumeration :address_street_suffix, %w[St Rd Ave Blvd Pl Terr Ct Pk Tr Dr Hill Ln Way].sort
+  define_enumeration :address_street_suffix, %w[St Rd Ave Blvd Pl Terr Jct Pt Tpke Ct Pk Tr Dr Hill Cir Sq Ln Fwy Hwy Way].sort
+  # From Postal Service
+  # %w[Aly Anx Arc Ave Byu Bch Bch Bnd Blf Blfs Btn Br Brg Brk Brks Bg Bgs Byp Cp Cyn Cpe Cswy Ctr Ctrs Cir Cirs Clf Clfs Clb Cmn Cmns Cor Cors Crse Cts Cv Cvs Crk Cres Crst Xing Xrd Xrds Curv Dl Dm Dv Drs Est Ests Expyn ExtFall Fls Fry Fld Flds Flt Flts Frd Frds Frst Frg Frgs Frk Frks Ft Fwy Gdn Gdns Gtwy Gln Glns Grn Grns Grv Grvs Hbr Hbrs Hvn Hts Hwy Hl Hls How Inlt Is Iss Isle Jct Jcts Ky Kys Knl Knls Lk Lks Land Lndg Lgt Lgts Lf Lck Lcks Ldg Loop Mnr Mnrs Mdw Mdws Mew Ml Mls Msn Mtwy Mt Mtn Mtns Nck Orch Oval Opas Park Pkwy Pass Psge Path Pike Pne Pnes Pl Pln Plns Plz Pt Pts Prt Pr Radl Ramp Rnch Rpd Rpds Rst Rdg Rdgs Riv Rds Rte Row Rue Run Shl Shls Skwy Spg Spgs Spur Sq Sqs Sta Stra Strm Sts Smt Trwy Trce Trak Trfy Trl Trlr Tunl Tpke Upas Un Uns Vly Vlys Via Vw Vws Vlg Vlgs Vl Vis Walk Wl Wls].sort
 
   belongs_to :locality, optional: true
 
