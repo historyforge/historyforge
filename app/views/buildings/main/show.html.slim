@@ -71,6 +71,17 @@
                 dt Block Number
                 dd= @building.block_number
 
+
+    - if @building.annotations_legacy.present?
+      .card.mb-1
+        .card-header
+          | Annotations (Legacy)
+        .card-body
+          .row
+            .col-12
+              = annotation.annotations_legacy
+
+
     - if @building.annotations.present?
       .card.mb-1
         .card-header

@@ -66,10 +66,8 @@ ActiveRecord::Schema.define(version: 2021_11_15_012130) do
     t.text "annotation_text"
     t.bigint "map_overlay_id"
     t.bigint "building_id"
-    t.bigint "created_by_id"
     t.index ["building_id", "map_overlay_id"], name: "index_annotations_on_building_id_and_map_overlay_id", unique: true
     t.index ["building_id"], name: "index_annotations_on_building_id"
-    t.index ["created_by_id"], name: "index_annotations_on_created_by_id"
     t.index ["map_overlay_id"], name: "index_annotations_on_map_overlay_id"
   end
 
@@ -123,8 +121,6 @@ ActiveRecord::Schema.define(version: 2021_11_15_012130) do
     t.text "notes"
     t.bigint "locality_id"
     t.integer "building_types_mask"
-    t.bigint "annotations_id"
-    t.index ["annotations_id"], name: "index_buildings_on_annotations_id"
     t.index ["building_type_id"], name: "index_buildings_on_building_type_id"
     t.index ["created_by_id"], name: "index_buildings_on_created_by_id"
     t.index ["frame_type_id"], name: "index_buildings_on_frame_type_id"
@@ -812,8 +808,6 @@ ActiveRecord::Schema.define(version: 2021_11_15_012130) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "locality_id"
-    t.bigint "annotations_id"
-    t.index ["annotations_id"], name: "index_map_overlays_on_annotations_id"
     t.index ["locality_id"], name: "index_map_overlays_on_locality_id"
   end
 
@@ -1050,7 +1044,6 @@ ActiveRecord::Schema.define(version: 2021_11_15_012130) do
   add_foreign_key "addresses", "buildings"
   add_foreign_key "annotations", "buildings"
   add_foreign_key "annotations", "map_overlays"
-  add_foreign_key "annotations", "users", column: "created_by_id"
   add_foreign_key "buildings", "localities"
   add_foreign_key "buildings", "users", column: "created_by_id"
   add_foreign_key "buildings", "users", column: "reviewed_by_id"

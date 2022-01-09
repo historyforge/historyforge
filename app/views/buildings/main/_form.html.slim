@@ -70,6 +70,7 @@
   .card.mb-2
     .card-header Annotations
     .card-body
+      = form.input :annotations_legacy, as: :text, label: 'Annotations (Legacy)', hint: 'Any annotations that were entered before annotations got connected to map layers. We advise you to create a new annotations record below to connect to the correct map layer, or move this text to the description or notes fields.'
       .nested-form
         .list-group-item
           .row
