@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-  devise :invitable, :database_authenticatable, :recoverable, :rememberable, :trackable, :validatable
+  devise :invitable, :database_authenticatable, :recoverable, :rememberable, :trackable, :validatable, :omniauthable, omniauth_providers: %i[facebook]
 
   has_many :search_params, dependent: :destroy
 
@@ -81,4 +81,11 @@ class User < ApplicationRecord
     self.invitation_token = nil
     self.enabled = true
   end
+
+  def self.from_omniauth(auth)
+    user = User.where(email: auth.info.email, provider: auth.provider).first
+    user ||= User.create!(provider: auth.provider, uid: auth.uid, email: auth.info.email, password: Devise.friendly_token[0, 20], login: + auth.info.email + '-' + auth.provider[0])
+    user
+  end
+
 end
