@@ -34,6 +34,7 @@ class MapOverlaysController < ApplicationController
     if @map_overlay.update resource_params
       flash[:notice] = 'Updated the map overlay.'
       redirect_to action: :index
+
     else
       flash[:errors] = "Sorry couldn't do it."
       render action: :edit
@@ -45,10 +46,13 @@ class MapOverlaysController < ApplicationController
     if @map_overlay.destroy
       flash[:notice] = 'Deleted the map overlay.'
       redirect_to action: :index
+    elsif @map_overlay.check_for_annotations
+      flash[:errors] = 'Cannot remove with active annotations'
     else
       flash[:errors] = "Sorry couldn't do it."
-      redirect_back fallback_location: { action: :index }
     end
+    redirect_back fallback_location: { action: :index }
+
   end
 
   private
