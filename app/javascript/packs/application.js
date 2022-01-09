@@ -113,7 +113,7 @@ function getBuildingList() {
         html += `<option value="${item.id}">${item.name}</option>`
       })
       building.html(html)
-      building.val(json.length === 1 ? json[0].id : current_value)
+      building.val(current_value)
       $('.census_record_ensure_building').toggle(!building.val()?.length)
     })
   }
@@ -122,7 +122,9 @@ function getBuildingList() {
 jQuery(document)
   .on('change', '#city, #street_name, #street_suffix, #street_prefix, #street_house_number', getBuildingList)
   .ready(function() {
-    $('.census_record_building_id').each(getBuildingList)
+    $('#building_id').each(getBuildingList)
+    const building = jQuery('#building_id')
+    $('.census_record_ensure_building').toggle(!building.val()?.length)
   })
 
 let buildingNamed = false

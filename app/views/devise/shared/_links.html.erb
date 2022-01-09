@@ -19,9 +19,10 @@
     <%= link_to t('.didn_t_receive_unlock_instructions'), new_unlock_path(resource_name) %><br />
   <% end -%>
 
-  <%- if devise_mapping.omniauthable? %>
+  <%- if AppConfig.facebook_login_enabled %>
+    <br>
     <%- resource_class.omniauth_providers.each do |provider| %>
-      <%= link_to t('.sign_in_with_provider', provider: OmniAuth::Utils.camelize(provider)), omniauth_authorize_path(resource_name, provider) %><br />
-    <% end -%>
+      <%= link_to image_pack_tag('media/images/socials/' + provider.to_s + '_login.png', :width => '250', id: provider.to_s + '_button',), omniauth_authorize_path(resource_name, provider), method: :post %><br />
+<% end -%>
   <% end -%>
 </div>

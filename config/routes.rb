@@ -14,8 +14,7 @@ Rails.application.routes.draw do
   devise_for :users,
              path: 'u',
              skip: %i[registerable confirmable],
-             controllers: { sessions: 'sessions' }
-             # when we get around to login with FB: , omniauth_callbacks: "omniauth_callbacks" }
+             controllers: { sessions: 'sessions', omniauth_callbacks: 'users/omniauth_callbacks' }
 
   mount LetterOpenerWeb::Engine, at: '/letter_opener' if Rails.env.development?
 

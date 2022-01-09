@@ -12,11 +12,12 @@ class CensusRecordSearch < SearchQueryBuilder
     @s[:enum_dist_eq].present? && @s[:page_number_eq].present? && @s[:page_side_eq].present?
   end
 
-  memoize def results
+  def results
     scoped.to_a.map(&:decorate)
   end
+  memoize :results
 
-  memoize def scoped
+  def scoped
     builder.includes(:locality) if f.include?('locality')
     builder.reviewed unless user
 
@@ -28,6 +29,7 @@ class CensusRecordSearch < SearchQueryBuilder
 
     builder.scoped
   end
+  memoize :scoped
 
   def add_scopes
     builder.includes(:building) if f.include?('latitude') || f.include?('longitude')

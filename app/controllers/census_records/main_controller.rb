@@ -3,7 +3,7 @@
 # Base class for census record CRUD actions.
 module CensusRecords
   class MainController < ApplicationController
-    include Memery
+    include FastMemoize
     before_action :check_access
     before_action :check_demographics_access, only: :demographics
 
@@ -29,22 +29,22 @@ module CensusRecords
 
     # Used to populate the building_id field on census forms
     def building_autocomplete
-      buildings = Address.where(house_number: params[:house],
-                                prefix: params[:prefix],
-                                name: params[:street],
-                                suffix: params[:suffix],
-                                city: params[:city])
-                         .preload(:building)
-                         .map(&:building)
+      # buildings = Address.where(house_number: params[:house],
+      #                           prefix: params[:prefix],
+      #                           name: params[:street],
+      #                           suffix: params[:suffix],
+      #                           city: params[:city])
+      #                    .preload(:building)
+      #                    .map(&:building)
 
 
-      # record = resource_class.new street_house_number: params[:house],
-      #                             street_prefix: params[:prefix],
-      #                             street_name: params[:street],
-      #                             street_suffix: params[:suffix],
-      #                             city: params[:city]
-      # record.auto_strip_attributes
-      # buildings = BuildingsOnStreet.new(record).perform
+      record = resource_class.new street_house_number: params[:house],
+                                  street_prefix: params[:prefix],
+                                  street_name: params[:street],
+                                  street_suffix: params[:suffix],
+                                  city: params[:city]
+      record.auto_strip_attributes
+      buildings = BuildingsOnStreet.new(record).perform
       render json: buildings.to_json
     end
 
@@ -151,17 +151,19 @@ module CensusRecords
       redirect_back fallback_location: { action: :index }
     end
 
-    memoize def year
+    def year
       params[:year].to_i
       # request.fullpath.match(/\d{4}/)[0].to_i
     end
+    memoize :year
     helper_method :year
 
     private
 
-    memoize def search_key
+    def search_key
       CensusYears.to_words(year)
     end
+    memoize :search_key
 
     # This is a blanket access check for whether this census year is activated for this HF instance
     def check_access
@@ -172,9 +174,10 @@ module CensusRecords
       permission_denied unless can_demographics?(year)
     end
 
-    memoize def resource_class
+    def resource_class
       "Census#{year}Record".safe_constantize
     end
+    memoize :resource_class
     helper_method :resource_class
 
     def resource_params
@@ -215,9 +218,10 @@ module CensusRecords
       end
     end
 
-    memoize def census_record_search_class
+    def census_record_search_class
       "CensusRecord#{year}Search".safe_constantize
     end
+    memoize :census_record_search_class
 
     def page_title
       "#{year} US Census Records"
