@@ -205,7 +205,6 @@ RSpec.describe BuildingsOnStreet do
   context 'street name and prefix' do
     let(:record) { Census1900Record.new street_name: 'Tioga', street_prefix: 'N' }
     it 'finds buildings on N Tioga' do
-      # expect(subject).to have(3).things
       expect(subject.map(&:name).all? { |name| name =~ /N Tioga/ }).to be_truthy
     end
   end
@@ -213,7 +212,6 @@ RSpec.describe BuildingsOnStreet do
   context 'street name, suffix, and prefix' do
     let(:record) { Census1900Record.new street_name: 'Tioga', street_prefix: 'N', street_suffix: 'St' }
     it 'finds buildings on N Tioga St' do
-      # expect(subject).to have(3).things
       expect(subject.map(&:name).all? { |name| name =~ /N Tioga St/ }).to be_truthy
     end
   end
@@ -221,7 +219,6 @@ RSpec.describe BuildingsOnStreet do
   context 'full street address' do
     let(:record) { Census1900Record.new street_house_number: '405', street_name: 'Tioga', street_prefix: 'N', street_suffix: 'St' }
     it 'finds buildings on N Tioga St' do
-      # expect(subject).to have(2).things
       expect(subject.map(&:name).all? { |name| name =~ /N Tioga St/ }).to be_truthy
     end
   end
