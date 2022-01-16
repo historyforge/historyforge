@@ -36,6 +36,8 @@ rescue ActiveRecord::PendingMigrationError => e
   exit 1
 end
 
+require Rails.root.join('db', 'seeds')
+
 RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
   config.include DeviseRequestSpecHelpers, type: :feature
@@ -55,8 +57,8 @@ RSpec.configure do |config|
                                      )]
   end
 
-  Capybara.default_driver = :headless_chrome
-  Capybara.javascript_driver = :headless_chrome
+  Capybara.default_driver = :chrome_headless
+  Capybara.javascript_driver = :chrome_headless
 
   Capybara.default_max_wait_time = 3
 
