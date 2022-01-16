@@ -3,7 +3,7 @@
 # Base class for census record CRUD actions.
 module CensusRecords
   class MainController < ApplicationController
-    include Memery
+    include FastMemoize
     before_action :check_access
     before_action :check_demographics_access, only: :demographics
 
@@ -151,17 +151,19 @@ module CensusRecords
       redirect_back fallback_location: { action: :index }
     end
 
-    memoize def year
+    def year
       params[:year].to_i
       # request.fullpath.match(/\d{4}/)[0].to_i
     end
+    memoize :year
     helper_method :year
 
     private
 
-    memoize def search_key
+    def search_key
       CensusYears.to_words(year)
     end
+    memoize :search_key
 
     # This is a blanket access check for whether this census year is activated for this HF instance
     def check_access
@@ -172,9 +174,10 @@ module CensusRecords
       permission_denied unless can_demographics?(year)
     end
 
-    memoize def resource_class
+    def resource_class
       "Census#{year}Record".safe_constantize
     end
+    memoize :resource_class
     helper_method :resource_class
 
     def resource_params
@@ -215,9 +218,10 @@ module CensusRecords
       end
     end
 
-    memoize def census_record_search_class
+    def census_record_search_class
       "CensusRecord#{year}Search".safe_constantize
     end
+    memoize :census_record_search_class
 
     def page_title
       "#{year} US Census Records"

@@ -64,6 +64,15 @@ ActiveRecord::Schema.define(version: 2021_12_15_194727) do
     t.index ["building_id"], name: "index_addresses_on_building_id"
   end
 
+  create_table "annotations", force: :cascade do |t|
+    t.text "annotation_text"
+    t.bigint "map_overlay_id"
+    t.bigint "building_id"
+    t.index ["building_id", "map_overlay_id"], name: "index_annotations_on_building_id_and_map_overlay_id", unique: true
+    t.index ["building_id"], name: "index_annotations_on_building_id"
+    t.index ["map_overlay_id"], name: "index_annotations_on_map_overlay_id"
+  end
+
   create_table "architects", id: :serial, force: :cascade do |t|
     t.string "name", null: false
     t.datetime "created_at", null: false
@@ -102,7 +111,7 @@ ActiveRecord::Schema.define(version: 2021_12_15_194727) do
     t.string "address_street_name"
     t.string "address_street_suffix"
     t.float "stories"
-    t.text "annotations"
+    t.text "annotations_legacy"
     t.integer "lining_type_id"
     t.integer "frame_type_id"
     t.string "block_number"
@@ -1035,6 +1044,8 @@ ActiveRecord::Schema.define(version: 2021_12_15_194727) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "addresses", "buildings"
+  add_foreign_key "annotations", "buildings"
+  add_foreign_key "annotations", "map_overlays"
   add_foreign_key "buildings", "localities"
   add_foreign_key "buildings", "users", column: "created_by_id"
   add_foreign_key "buildings", "users", column: "reviewed_by_id"

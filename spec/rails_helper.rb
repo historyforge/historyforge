@@ -36,35 +36,29 @@ rescue ActiveRecord::PendingMigrationError => e
   exit 1
 end
 
+require Rails.root.join('db', 'seeds')
+
 RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
   config.include DeviseRequestSpecHelpers, type: :feature
+  config.include OmniAuthTestHelper, type: :feature
 
   Capybara.register_driver :chrome do |app|
     Capybara::Selenium::Driver.new(app, browser: :chrome)
   end
 
-  Capybara.register_driver :headless_chrome do |app|
-    opts = Selenium::WebDriver::Chrome::Options.new
-    opts.add_argument('--headless') unless ENV['UI']
-    opts.add_argument('--no-sandbox')
-    opts.add_argument('--disable-gpu')
-    opts.add_argument('--disable-dev-shm-usage')
-    opts.add_argument('--window-size=1400,1400')
-
-    # opts.add_preference(:download,
-    #                     directory_upgrade: true,
-    #                     prompt_for_download: false,
-    #                     default_directory: download_path)
-
-    opts.add_preference(:browser, set_download_behavior: { behavior: 'allow' })
+  Capybara.register_driver :chrome_headless do |app|
     Capybara::Selenium::Driver.new app,
                                    browser: :chrome,
-                                   options: opts
+                                   clear_session_storage: true,
+                                   clear_local_storage: true,
+                                   capabilities: [Selenium::WebDriver::Chrome::Options.new(
+                                     args: %w[headless disable-gpu no-sandbox window-size=1024,768],
+                                     )]
   end
 
-  Capybara.default_driver = :headless_chrome
-  Capybara.javascript_driver = :headless_chrome
+  Capybara.default_driver = :chrome_headless
+  Capybara.javascript_driver = :chrome_headless
 
   Capybara.default_max_wait_time = 3
 

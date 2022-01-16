@@ -3,7 +3,7 @@
 # The Forge page has a special query for optimization purposes. This takes the standard search object and
 # converts it into the optimized query, and serves the results to the controller.
 class ForgeQuery
-  include Memery
+  include FastMemoize
   include ActionView::Helpers::NumberHelper
   include ActionView::Helpers::TextHelper
 
@@ -36,9 +36,10 @@ class ForgeQuery
     pluralize(number_with_delimiter(count), singular, plural)
   end
 
-  memoize def query
+  def query
     sql = scoped.select("buildings.id,buildings.lat,buildings.lon").to_sql
     sql = "select array_to_json(array_agg(row_to_json(t))) as data, count(t.id) as meta from (#{sql}) t"
     ActiveRecord::Base.connection.execute(sql).first
   end
+  memoize :query
 end

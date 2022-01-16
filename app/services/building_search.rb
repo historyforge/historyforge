@@ -26,7 +26,7 @@ class BuildingSearch < SearchQueryBuilder
 
   attr_reader :people_params
 
-  memoize def results
+  def results
     results = scoped.to_a
     if @residents
       results.each do |result|
@@ -36,8 +36,9 @@ class BuildingSearch < SearchQueryBuilder
 
     results.map(&:decorate)
   end
+  memoize :results
 
-  memoize def scoped
+  def scoped
     active? && builder.left_outer_joins(:addresses)
 
     builder.reviewed unless user
@@ -55,6 +56,7 @@ class BuildingSearch < SearchQueryBuilder
 
     builder.scoped
   end
+  memoize :scoped
 
   def active?
     keys = ransack_params.keys

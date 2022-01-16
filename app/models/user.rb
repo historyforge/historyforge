@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-  devise :invitable, :database_authenticatable, :recoverable, :rememberable, :trackable, :validatable
+  devise :invitable, :database_authenticatable, :recoverable, :rememberable, :trackable, :validatable, :omniauthable, omniauth_providers: %i[facebook]
 
   has_many :search_params, dependent: :destroy
 
@@ -34,13 +34,15 @@ class User < ApplicationRecord
     role_names.include?(name)
   end
 
-  memoize def role_names
+  def role_names
     roles.map(&:name)
   end
+  memoize :role_names
 
-  memoize def roles
+  def roles
     Role.from_mask(roles_mask)
   end
+  memoize :roles
 
   def role_ids
     Role.ids_from_mask(roles_mask)
@@ -79,4 +81,11 @@ class User < ApplicationRecord
     self.invitation_token = nil
     self.enabled = true
   end
+
+  def self.from_omniauth(auth)
+    user = User.where(email: auth.info.email, provider: auth.provider).first
+    user ||= User.create!(provider: auth.provider, uid: auth.uid, email: auth.info.email, password: Devise.friendly_token[0, 20], login: + auth.info.email + '-' + auth.provider[0])
+    user
+  end
+
 end

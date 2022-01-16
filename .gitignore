@@ -8,7 +8,7 @@
 /.bundle
 
 /node_modules
-
+/static
 /storage
 /storage2
 *.dump

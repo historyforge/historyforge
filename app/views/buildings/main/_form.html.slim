@@ -68,7 +68,22 @@
           = form.input :lining_type_id, collection: ConstructionMaterial.for_select
         .col-sm-3
           = form.input :block_number
-      = form.input :annotations, input_html: { rows: 6 }
+
+  .card.mb-2
+    .card-header Annotations
+    .card-body
+      = form.input :annotations_legacy, as: :text, label: 'Annotations (Legacy)', hint: 'Any annotations that were entered before annotations got connected to map layers. We advise you to create a new annotations record below to connect to the correct map layer, or move this text to the description or notes fields.'
+      .nested-form
+        .list-group-item
+          .row
+            .col-sm-3 Map Layer
+            .col-sm-4 Annotation Text
+            .col-sm-1
+        .nested-form-items.list-group
+          = form.fields_for :annotations do |form3|
+            = render 'buildings/main/annotation', form: form3
+        p= add_child_link 'Add additional annotation for this building', form, :annotations, object: Annotation.new, partial: 'buildings/main/annotation'
+
 
   .card.mb-2
     .card-header Narrative
