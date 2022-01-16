@@ -33,19 +33,20 @@
                 dd= @building.name
               dt Address
               - @building.addresses.each do |address|
-                dd= address.address
+                dd
+                  = address.address
+                  - if address.year?
+                    = " (as of #{address.year})"
               dt Year Built
               dd
                 - if @building.year_earliest?
                   = @building.year_earliest
-                  = " (ca.)" if @building.year_earliest_circa
                 - else
                   | Unknown
               - if @building.year_latest?
                 dt Demolished
                 dd
                   = @building.year_latest
-                  = " (ca.)" if @building.year_latest_circa
               - elsif @building.year_latest_circa?
                 dt Demolished
                 dd Yes, date unknown
@@ -79,7 +80,7 @@
         .card-body
           .row
             .col-12
-              = annotation.annotations_legacy
+              = @building.annotations_legacy
 
 
     - if @building.annotations.present?

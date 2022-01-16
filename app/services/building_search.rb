@@ -115,30 +115,14 @@ class BuildingSearch < SearchQueryBuilder
   end
 
   def add_order_clause
-    sort.present? ? add_applied_sort : add_default_sort
-  end
-
-  def street_address_order_clause(dir)
-    builder.joins(:addresses)
-    "addresses.name #{dir}, addresses.prefix #{dir}, addresses.suffix #{dir}, substring(addresses.house_number, '^[0-9]+')::int #{dir}"
-  end
-
-  def add_applied_sort
-    order = []
     sort&.each do |_key, sort_unit|
       col = sort_unit['colId']
       dir = sort_unit['sort']
       if Building.columns.map(&:name).include?(col)
-        order << "#{col} #{dir}"
+        builder.order_by(col, dir)
       elsif col == 'street_address'
-        order << street_address_order_clause(dir)
+        builder.order_by_street_address(dir)
       end
-    end
-    order << street_address_order_clause('asc') if order.blank?
-    builder.order(Arel.sql(entity_class.sanitize_sql_for_order(order.join(', ')))) if order
-  end
-
-  def add_default_sort
-    builder.order Arel.sql(entity_class.send(:sanitize_sql, street_address_order_clause(@d)))
+    end || builder.order_by_street_address('asc')
   end
 end

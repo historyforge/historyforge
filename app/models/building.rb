@@ -13,8 +13,6 @@ class Building < ApplicationRecord
 
   define_enumeration :address_street_prefix, %w[N S E W]
   define_enumeration :address_street_suffix, %w[St Rd Ave Blvd Pl Terr Jct Pt Tpke Ct Pk Tr Dr Hill Cir Sq Ln Fwy Hwy Way].sort
-  # From Postal Service
-  # %w[Aly Anx Arc Ave Byu Bch Bch Bnd Blf Blfs Btn Br Brg Brk Brks Bg Bgs Byp Cp Cyn Cpe Cswy Ctr Ctrs Cir Cirs Clf Clfs Clb Cmn Cmns Cor Cors Crse Cts Cv Cvs Crk Cres Crst Xing Xrd Xrds Curv Dl Dm Dv Drs Est Ests Expyn ExtFall Fls Fry Fld Flds Flt Flts Frd Frds Frst Frg Frgs Frk Frks Ft Fwy Gdn Gdns Gtwy Gln Glns Grn Grns Grv Grvs Hbr Hbrs Hvn Hts Hwy Hl Hls How Inlt Is Iss Isle Jct Jcts Ky Kys Knl Knls Lk Lks Land Lndg Lgt Lgts Lf Lck Lcks Ldg Loop Mnr Mnrs Mdw Mdws Mew Ml Mls Msn Mtwy Mt Mtn Mtns Nck Orch Oval Opas Park Pkwy Pass Psge Path Pike Pne Pnes Pl Pln Plns Plz Pt Pts Prt Pr Radl Ramp Rnch Rpd Rpds Rst Rdg Rdgs Riv Rds Rte Row Rue Run Shl Shls Skwy Spg Spgs Spur Sq Sqs Sta Stra Strm Sts Smt Trwy Trce Trak Trfy Trl Trlr Tunl Tpke Upas Un Uns Vly Vlys Via Vw Vws Vlg Vlgs Vl Vis Walk Wl Wls].sort
 
   belongs_to :locality, optional: true
 
@@ -56,10 +54,21 @@ class Building < ApplicationRecord
       .where('census_1900_records.id IS NULL AND census_1910_records.id IS NULL AND census_1920_records.id IS NULL AND census_1930_records.id IS NULL AND census_1940_records.id IS NULL')
       .where(building_types: { name: 'residence' }) }
 
-  scope :by_street_address, lambda {
-    left_outer_joins(:addresses)
-      .order('addresses.name asc, addresses.prefix asc, addresses.house_number asc')
+  scope :order_by, lambda { |col, dir|
+    order(Arel.sql(sanitize_sql_for_order("#{col} #{dir}")))
   }
+
+  scope :order_by_street_address, lambda { |dir|
+    all
+      .joins("LEFT OUTER JOIN addresses pa ON pa.building_id=buildings.id AND pa.is_primary=TRUE")
+      .group("buildings.id, pa.id")
+      .order('pa.name' => dir)
+      .order('pa.prefix' => dir)
+      .order('pa.suffix' => dir)
+      .order(Arel.sql("substring(pa.house_number, '^[0-9]+')::int") => dir)
+  }
+
+  scope :by_street_address, lambda { order_by_street_address('asc') }
 
   scope :building_types_id_in, lambda { |*ids|
     if ids.empty?
@@ -103,9 +112,7 @@ class Building < ApplicationRecord
                                                                     addresses[:house_number],
                                                                     addresses[:prefix],
                                                                     addresses[:name],
-                                                                    addresses[:suffix],
-                                                                    addresses[:year_earliest],
-                                                                    addresses[:year_latest],
+                                                                    addresses[:suffix]
                                                                    ])])
   end
 
