@@ -107,15 +107,15 @@ function getBuildingList() {
     const params = { city, street, prefix, suffix, house }
     const year = document.location.pathname.split("/")[2]
     jQuery.getJSON(`/census/${year}/building_autocomplete`, params, function (json) {
-      const building = jQuery('#building_id')
-      const current_value = building.val() || $('#census_record_building_id').val()
+      const building = jQuery('#building_id, #census_record_building_id')
+      const current_value = building.val()
       let html = '<option value="">Select a building</option>'
       json.forEach(function (item) {
         html += `<option value="${item.id}">${item.name}</option>`
       })
       building.html(html)
       building.val(current_value)
-      $('.census_record_ensure_building').toggle(!building.val()?.length)
+      $('.census_record_ensure_building').toggle(!building.val().length)
     })
   }
 }
@@ -123,9 +123,12 @@ function getBuildingList() {
 jQuery(document)
   .on('change', '#city, #street_name, #street_suffix, #street_prefix, #street_house_number', getBuildingList)
   .ready(function() {
-    $('#building_id').each(getBuildingList)
-    const building = jQuery('#building_id')
-    $('.census_record_ensure_building').toggle(!building.val()?.length)
+    const building = jQuery('#building_id, #census_record_building_id')
+    building.each(getBuildingList)
+    $('.census_record_ensure_building').toggle(!building.val().length)
+  })
+  .on('change', '#building_id, #census_record_building_id', function() {
+      $('.census_record_ensure_building').toggle(!$(this).val().length)
   })
 
 let buildingNamed = false
