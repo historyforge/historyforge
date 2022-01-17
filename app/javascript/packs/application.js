@@ -105,7 +105,8 @@ function getBuildingList() {
   if (street === '') suffix = null
   if (city && street && house && suffix) {
     const params = { city, street, prefix, suffix, house }
-    jQuery.getJSON('/census/1910/building_autocomplete', params, function (json) {
+    const year = document.location.pathname.split("/")[2]
+    jQuery.getJSON(`/census/${year}/building_autocomplete`, params, function (json) {
       const building = jQuery('#building_id')
       const current_value = building.val() || $('#census_record_building_id').val()
       let html = '<option value="">Select a building</option>'

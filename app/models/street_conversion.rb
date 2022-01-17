@@ -24,6 +24,7 @@ class StreetConversion < ApplicationRecord
     address.street_name   = convert_attribute 'name'
     address.street_suffix = convert_attribute 'suffix'
     address.city          = convert_attribute 'city'
+    address.year          = year
     address
   end
 

@@ -10,9 +10,10 @@ class BuildingsOnStreet
     @street_name = record.street_name
     @street_suffix = record.street_suffix
     @city = record.city
+    @year = record.year
   end
 
-  attr_reader :building_id, :street_house_number, :street_name, :street_prefix, :street_suffix, :city
+  attr_reader :building_id, :street_house_number, :street_name, :street_prefix, :street_suffix, :city, :year
 
   def perform
     buildings_on_street
@@ -35,7 +36,7 @@ class BuildingsOnStreet
     items = add_block_filter(items) if street_house_number.present?
     items = items.to_a.unshift(Building.find(building_id)) if building_id && !items.detect { |b| b.id == building_id }
 
-    items.to_a.uniq.map { |item| Row.new item.id, item.street_address_for_building_id }
+    items.to_a.uniq.map { |item| Row.new item.id, item.street_address_for_building_id(year) }
   end
 
   def add_block_filter(items)

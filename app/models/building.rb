@@ -127,6 +127,9 @@ class Building < ApplicationRecord
 
   alias_attribute :latitude, :lat
   alias_attribute :longitude, :lon
+  alias_attribute :longitude, :lon
+
+  after_commit { BuildAddressHistory.new(self).perform }
 
   def proper_name?
     name && (address_house_number.blank? || !name.include?(address_house_number))
@@ -187,10 +190,15 @@ class Building < ApplicationRecord
     address&.year_latest
   end
 
-  def street_address_for_building_id
-    base = addresses.sort_by { |b| b.is_primary? ? -1 : 1 }.map(&:address)
-    base << name if proper_name?
-    base.join(', ')
+  def street_address_for_building_id(year)
+    addresses
+      .select { |a| a.year.blank? || a.year <= year }
+      .sort { |a, b| (b.year || 0) <=> (a.year || 0) }
+      .first
+      .address
+    # base = addresses.sort_by { |b| b.is_primary? ? -1 : 1 }.map(&:address)
+    # base << name if proper_name?
+    # base.join(', ')
   end
 
   def street_address
