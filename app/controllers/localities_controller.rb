@@ -3,6 +3,7 @@ class LocalitiesController < ApplicationController
 
   def index
     @localities = Locality.all
+    ActiveRecord::Precounter.new(@localities).precount(:census1880_records)
     ActiveRecord::Precounter.new(@localities).precount(:census1900_records)
     ActiveRecord::Precounter.new(@localities).precount(:census1910_records)
     ActiveRecord::Precounter.new(@localities).precount(:census1920_records)

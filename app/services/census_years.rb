@@ -31,4 +31,12 @@ module CensusYears
       yield year
     end
   end
+
+  def self.lte(year)
+    YEARS.select { |y| y <= year }
+  end
+
+  def self.gt(year)
+    YEARS.select { |y| y > year }
+  end
 end

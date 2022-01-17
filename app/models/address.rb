@@ -3,6 +3,10 @@ class Address < ApplicationRecord
 
   belongs_to :building
 
+  alias_attribute :street_name, :name
+  alias_attribute :street_prefix, :prefix
+  alias_attribute :street_suffix, :suffix
+
   auto_strip_attributes :city, :house_number, :name, :prefix, :suffix
   validates :year, numericality: { minimum: 1500, maximum: 2100, allow_nil: true }
 

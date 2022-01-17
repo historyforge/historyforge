@@ -68,7 +68,14 @@ class Building < ApplicationRecord
       .order(Arel.sql("substring(pa.house_number, '^[0-9]+')::int") => dir)
   }
 
-  scope :by_street_address, lambda { order_by_street_address('asc') }
+  scope :by_street_address, -> { order_by_street_address('asc') }
+
+  scope :with_multiple_addresses, -> {
+    all
+      .joins(:addresses)
+      .group("buildings.id, addresses.name")
+      .having("COUNT(addresses.name) > 1")
+  }
 
   scope :building_types_id_in, lambda { |*ids|
     if ids.empty?

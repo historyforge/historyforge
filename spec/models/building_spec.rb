@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Building do
-  context 'sorting' do
+  context 'scopes' do
     describe '#order_by_street_address' do
       let(:building_with_later_modern_address_and_earlier_antique_address) do
         build :building, addresses: [
@@ -25,6 +25,29 @@ RSpec.describe Building do
       it 'puts the earliest modern address before the earliest antique address' do
         expect(subject.first).to eq(building_with_earlier_modern_address_and_later_antique_address)
         expect(subject.last).to  eq(building_with_later_modern_address_and_earlier_antique_address)
+      end
+    end
+    describe '#with_multiple_addresses' do
+      let(:building_with_two_house_numbers_on_same_street) do
+        build :building, addresses: [
+          build(:address, is_primary: false, year: nil,  house_number: '17', name: 'Tioga', prefix: 'N', suffix: 'St'),
+          build(:address, is_primary: false, year: 1890, house_number: '117', name: 'Tioga', prefix: 'N', suffix: 'St'),
+        ]
+      end
+      let(:building_with_two_addresses_on_same_street_but_same_house_number) do
+        build :building, addresses: [
+          build(:address, is_primary: false, year: 1890, house_number: '705', name: 'Mill', prefix: 'E', suffix: 'St'),
+          build(:address, is_primary: true,  year: 1948, house_number: '705', name: 'Court', prefix: 'E', suffix: 'St'),
+        ]
+      end
+      before do
+        building_with_two_house_numbers_on_same_street.save validate: false
+        building_with_two_addresses_on_same_street_but_same_house_number.save validate: false
+      end
+      subject { Building.with_multiple_addresses }
+      it 'returns the correct building' do
+        expect(subject).to include(building_with_two_house_numbers_on_same_street)
+        expect(subject).not_to include(building_with_two_addresses_on_same_street_but_same_house_number)
       end
     end
   end

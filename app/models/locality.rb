@@ -5,6 +5,8 @@
 class Locality < ApplicationRecord
   validates :name, presence: true, uniqueness: true
 
+  has_many :buildings, dependent: :nullify
+
   CensusYears.each do |year|
     has_many :"census#{year}_records", inverse_of: :locality
   end

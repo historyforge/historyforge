@@ -9,10 +9,12 @@
     thead
       tr
         th Description
+        th Year
     tbody
       - @street_conversions.each do |record|
         tr
           td= record.description
+          td= record.year || 'N/A'
           td style="text-align:right;white-space:nowrap"
             = link_to 'Edit', [:edit, record], class: 'btn btn-xs btn-light'
 

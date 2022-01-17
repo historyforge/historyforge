@@ -4,6 +4,9 @@
   /= form.input :locality_id, collection: Locality.order(:position)
   = form.input :latitude
   = form.input :longitude
+  = form.input :year_street_renumber,
+          label: 'Year Streets Renumbered',
+          hint: 'If the addresses were renumbered in a specific year, put it here so we can maintain the address history of buildings.'
 
   .form-actions
     = form.submit 'Save', class: 'btn btn-primary btn-lg'

@@ -1,4 +1,6 @@
 class StreetConversion < ApplicationRecord
+  after_commit :update_address_history
+
   def description
     from = [from_house_number, from_prefix, from_name, from_suffix, from_city].select(&:present?).join(' ')
     to   = [to_house_number, to_prefix,   to_name,   to_suffix,   to_city].select(&:present?).join(' ')
@@ -38,6 +40,10 @@ class StreetConversion < ApplicationRecord
   def self.convert(address)
     converter = all.detect { |record| record.matches?(address) }
     converter ? converter.convert(address) : address
+  end
+
+  def update_address_history
+    AddressHistoryFromStreetConversion.new(self).perform
   end
 end
 

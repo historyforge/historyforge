@@ -15,6 +15,11 @@ class BuildingDecorator < ApplicationDecorator
     object.locality&.name || 'None'
   end
 
+  def addresses
+    @addresses ||= object.addresses.sort do |a, b|
+      (b.year || 0) <=> (a.year || 0)
+    end
+  end
   def street_address
     object.primary_street_address
   end

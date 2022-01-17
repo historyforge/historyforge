@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_16_212509) do
+ActiveRecord::Schema.define(version: 2022_01_17_003248) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
@@ -793,6 +793,7 @@ ActiveRecord::Schema.define(version: 2022_01_16_212509) do
     t.integer "position"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "year_street_renumber"
   end
 
   create_table "localities_map_overlays", id: false, force: :cascade do |t|
@@ -970,6 +971,7 @@ ActiveRecord::Schema.define(version: 2022_01_16_212509) do
     t.datetime "updated_at", null: false
     t.string "from_house_number"
     t.string "to_house_number"
+    t.integer "year"
   end
 
   create_table "terms", force: :cascade do |t|

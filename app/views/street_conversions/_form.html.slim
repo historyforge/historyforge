@@ -22,5 +22,7 @@
           = form.input :to_name
           = form.input :to_suffix
 
+  = form.input :year,
+          hint: 'Optional! The year that the change was made. It will be used to fill in the address history of buildings whose address matches the rule.'
   .form-actions
     = form.submit 'Save', class: 'btn btn-primary btn-lg'
