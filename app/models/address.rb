@@ -21,6 +21,10 @@ class Address < ApplicationRecord
                                                                    ])])
   end
 
+  def <=>(other)
+    (other.year || 0) <=> (year || 0)
+  end
+
   def address
     [house_number, prefix, name, suffix].join(' ')
   end

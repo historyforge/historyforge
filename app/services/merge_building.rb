@@ -4,12 +4,13 @@ class MergeBuilding
   end
 
   def perform
+    merge_census_records
     merge_addresses
     merge_building_data
-    merge_census_records
     merge_photographs
     @target.save!
     @source.destroy!
+    BuildAddressHistory.new(@target).perform
   end
 
   private
@@ -19,8 +20,7 @@ class MergeBuilding
       next if @target.addresses.any? { |addr| addr.equals?(address) }
 
       address.is_primary = false
-      address.building = @target
-      address.save
+      @target.addresses << address
     end
   end
 
@@ -34,8 +34,10 @@ class MergeBuilding
   end
 
   def merge_census_records
-    @source.residents.each do |record|
-      record.update_column :building_id, @target.id
+    CensusYears.each do |year|
+      "Census#{year}Record".constantize.where(building_id: @source.id).each do |record|
+        record.update(building_id: @target.id)
+      end
     end
   end
 

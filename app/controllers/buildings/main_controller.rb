@@ -52,9 +52,8 @@ class Buildings::MainController < ApplicationController
   end
 
   def create
-    @building = Building.new building_params
-    @building.created_by = current_user
-    if @building.save
+    @building = Buildings::Create.run(building_params, current_user)
+    if @building.persisted?
       flash[:notice] = 'Building created.'
       redirect_to @building
     else
@@ -75,7 +74,8 @@ class Buildings::MainController < ApplicationController
   def edit; end
 
   def update
-    if @building.update(building_params)
+    saved = Buildings::Update.run(@building, building_params)
+    if saved
       @building = @building.decorate
       flash[:notice] = 'Building updated.'
       respond_to do |format|

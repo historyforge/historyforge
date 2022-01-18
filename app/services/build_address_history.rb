@@ -3,7 +3,7 @@ class BuildAddressHistory
 
   def initialize(building, year: nil)
     @building = building
-    @year = @building.locality&.year_street_renumber
+    @year = year || @building.locality&.year_street_renumber
   end
 
   attr_reader :building, :year
@@ -18,7 +18,9 @@ class BuildAddressHistory
                        .map { |record| matching_address(addresses, record) }
                        .compact
                        .first
-    latest_address&.update(year: year)
+    return unless latest_address
+
+    latest_address.update(year: year)
   end
 
   def residents_of(building)
@@ -45,16 +47,12 @@ class BuildAddressHistory
   end
 
   def renumbered_addresses_for(building)
-    if building.addresses.size == 2
-      building.addresses
-    else
-      counts = {}
-      building.addresses.each do |address|
-        counts[address.name] ||= 0
-        counts[address.name] += 1
-      end
-      winner = counts.detect { |k, v| v > 1 } && counts.max_by { |k, v| v }[0]
-      winner && building.addresses.select { |address| address.name == winner }
+    counts = {}
+    building.addresses.each do |address|
+      counts[address.name] ||= 0
+      counts[address.name] += 1
     end
+    winner = counts.detect { |k, v| v > 1 } && counts.max_by { |k, v| v }[0]
+    winner && building.addresses.select { |address| address.name == winner }
   end
 end
