@@ -7,8 +7,8 @@ ENV RAILS_LOG_TO_STDOUT true
 # Curl lets us get node and yarn in the next step
 RUN apt-get update -qq && apt-get install -y curl
 
-# Install node 12 LTS and yarn
-RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
+# Install node 16 LTS and yarn
+RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
     curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
     echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
 
