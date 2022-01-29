@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe AttributeAutocomplete do
-  subject { AttributeAutocomplete.new(attribute:, term:, year:).perform }
+  subject { AttributeAutocomplete.new(attribute: attribute, term: term, year: year).perform }
   let(:year) { 1900 }
 
   context 'Attributes' do

@@ -20,7 +20,7 @@ class Setting < ApplicationRecord
   def self.value_of(key)
     return unless table_exists?
 
-    setting = current ? current[key.to_s] : find_by(key:)
+    setting = current ? current[key.to_s] : find_by(key: key)
     setting&.cast_value
   end
 

@@ -85,7 +85,7 @@ class Cms::PagesController < ApplicationController
       @page = Cms::Page.find params[:id]
     elsif params[:path]
       url_path = "/#{params[:path]}"
-      @page = Cms::Page.where(url_path:).includes(:widgets).first
+      @page = Cms::Page.where(url_path: url_path).includes(:widgets).first
     end
     render_404 if @page.blank?
   end

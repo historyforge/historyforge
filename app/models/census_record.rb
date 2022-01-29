@@ -156,7 +156,7 @@ class CensusRecord < ApplicationRecord
       options[:dwelling_number_eq] = dwelling_number
     end
 
-    @fellows = self.class.where.not(id:).ransack(options).result
+    @fellows = self.class.where.not(id: id).ransack(options).result
   end
 
   def ensure_housing

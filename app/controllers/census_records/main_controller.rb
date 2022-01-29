@@ -190,7 +190,7 @@ module CensusRecords
     def after_saved
       if params[:then].present?
         attributes = NextCensusRecordAttributes.new(@record, params[:then]).attributes
-        redirect_to send("new_census#{year}_record_path", attributes:)
+        redirect_to send("new_census#{year}_record_path", attributes: attributes)
       else
         redirect_to @record
       end

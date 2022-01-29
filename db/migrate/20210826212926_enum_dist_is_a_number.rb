@@ -13,7 +13,7 @@ class EnumDistIsANumber < ActiveRecord::Migration[6.0]
         "Census#{year}Record".constantize.where(enum_dist: dist).update_all enum_dist_tmp: dist.to_i
       end
       wards.each do |ward|
-        "Census#{year}Record".constantize.where(ward:).update_all ward_tmp: ward.to_i
+        "Census#{year}Record".constantize.where(ward: ward).update_all ward_tmp: ward.to_i
       end
       rename_column "census_#{year}_records", :enum_dist, :enum_dist_str
       rename_column "census_#{year}_records", :enum_dist_tmp, :enum_dist

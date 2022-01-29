@@ -59,11 +59,11 @@ class CensusFiltersGenerator
   end
 
   def output_header_fields
-    AttributeBuilder.collection json, :locality_id, klass:, collection: Locality.select_options
-    AttributeBuilder.text(json, :name, klass:)
+    AttributeBuilder.collection json, :locality_id, klass: klass, collection: Locality.select_options
+    AttributeBuilder.text(json, :name, klass: klass)
     AttributeBuilder.text   json, :first_name, klass: klass
     AttributeBuilder.text   json, :middle_name, klass: klass
-    AttributeBuilder.text   json, :last_name, klass:
+    AttributeBuilder.text   json, :last_name, klass: klass
     json.census_scope do
       json.label 'Census Schedule'
       json.sortable 'census_scope'
@@ -75,7 +75,7 @@ class CensusFiltersGenerator
     AttributeBuilder.text   json, :city, klass: klass
     AttributeBuilder.number json, :ward, klass: klass
     AttributeBuilder.number json, :enum_dist, klass: klass
-    AttributeBuilder.text   json, :street_address, klass:
+    AttributeBuilder.text   json, :street_address, klass: klass
     AttributeBuilder.text   json, :dwelling_number, klass: klass unless klass == Census1940Record
     AttributeBuilder.text   json, :family_id, klass: klass
   end

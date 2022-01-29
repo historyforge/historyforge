@@ -4,8 +4,8 @@ require 'rails_helper'
 
 RSpec.describe MergeBuilding do
   let(:locality) { create(:locality, year_street_renumber: 1915) }
-  let(:source_building) { create(:building, locality:) }
-  let(:target_building) { create(:building, locality:) }
+  let(:source_building) { create(:building, locality: locality) }
+  let(:target_building) { create(:building, locality: locality) }
   subject { described_class.new(source_building, target_building) }
   let(:architect) { create(:architect) }
   let(:resident) { create(:census1910_record)}
