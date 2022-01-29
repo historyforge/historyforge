@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Cms::Embed < Cms::PageWidget
 
   json_attribute :title, as: :string

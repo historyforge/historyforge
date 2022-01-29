@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ConvertBuildingDescription < ActiveRecord::Migration[6.0]
   include ActionView::Helpers::TextHelper
   def change

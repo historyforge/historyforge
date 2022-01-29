@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SimpleCheckboxInput < SimpleForm::Inputs::BooleanInput
 
   def nested_boolean_style?

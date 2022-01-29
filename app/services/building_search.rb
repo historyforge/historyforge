@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class BuildingSearch < SearchQueryBuilder
   attr_reader :num_residents
 

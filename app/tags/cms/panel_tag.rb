@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Cms
   class PanelTag < Liquid::Block
     def initialize(tag_name, markup, tokens)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory(:building) do
     addresses { [build(:address, is_primary: true)] }

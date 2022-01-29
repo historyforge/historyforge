@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DemographicsSettings < ActiveRecord::Migration[6.0]
   def change
     CensusYears.each do |year|

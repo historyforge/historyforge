@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class VocabulariesController < ApplicationController
   before_action :check_administrator_role
 

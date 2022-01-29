@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RemoveExtraRoles < ActiveRecord::Migration[6.0]
   def up
     super_user = Role.find_by(name: 'super user')

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Setting < ApplicationRecord
 
   def self.expire_cache

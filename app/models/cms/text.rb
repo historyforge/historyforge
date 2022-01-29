@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Cms
   class Text < Cms::PageWidget
     has_rich_text :html

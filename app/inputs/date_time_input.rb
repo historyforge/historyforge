@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DateTimeInput < SimpleForm::Inputs::DateTimeInput
 
   def input(wrapper_options={})

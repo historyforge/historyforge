@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ChangeHomeValueToDecimal < ActiveRecord::Migration[6.0]
   def up
     change_column :census_1930_records, :home_value, :decimal

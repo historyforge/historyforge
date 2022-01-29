@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Vocabulary < ApplicationRecord
   has_many :terms, dependent: :destroy
   validates :name, :machine_name, presence: true

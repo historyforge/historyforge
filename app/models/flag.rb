@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Flag < ApplicationRecord
   attr_reader :mark_resolved
   attr_accessor :editing_user

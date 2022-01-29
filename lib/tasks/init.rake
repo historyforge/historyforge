@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :init do
   task do_it: %i[build terms fixtures new_admin_user]
 

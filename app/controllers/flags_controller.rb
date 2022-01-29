@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FlagsController < ApplicationController
   def index
     @flags = Flag.unresolved.order('created_at asc').preload(:flaggable, :flagged_by)

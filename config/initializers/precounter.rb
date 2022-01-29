@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ActiveRecord::Precounter.class_eval do
   def precount(association_name, attr_name=nil, &block)
     attr_name ||= association_name

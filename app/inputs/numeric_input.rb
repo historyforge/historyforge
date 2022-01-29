@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class NumericInput < SimpleForm::Inputs::NumericInput
   def input(wrapper_options = nil)
     if @builder.is_a?(FormViewBuilder)

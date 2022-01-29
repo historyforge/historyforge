@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class BulkUpdate < ApplicationRecord
   attr_accessor :confirm
   belongs_to :user

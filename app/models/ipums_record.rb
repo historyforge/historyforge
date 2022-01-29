@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class IpumsRecord < ApplicationRecord
   def head?
     data['RELATE'] == '1'

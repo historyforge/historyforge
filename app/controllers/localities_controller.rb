@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class LocalitiesController < ApplicationController
   before_action :check_administrator_role
 

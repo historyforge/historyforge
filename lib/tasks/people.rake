@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :people do
 
   task build_from_1910: :environment do

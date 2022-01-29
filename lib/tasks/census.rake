@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :census do
   task format: :environment do
     [Census1900Record, Census1910Record, Census1920Record, Census1930Record, Census1940Record].each do |klass|

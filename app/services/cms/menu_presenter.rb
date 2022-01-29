@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Cms
   class MenuPresenter
     attr_accessor :model, :current_user, :template, :theme

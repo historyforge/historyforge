@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module CmsHelper
   def page_text_fields(form)
     fields = new_child_fields(form, :widgets, object: Cms::Text.new, partial: 'text')

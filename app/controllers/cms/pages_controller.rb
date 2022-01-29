@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Cms::PagesController < ApplicationController
 
   layout 'application', except: [:show]

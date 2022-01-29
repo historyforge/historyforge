@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Cms
   class Page < Cms::BaseModel
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Role < BitmaskModel
   # has_many :permissions
   # has_many :users, through: :permissions

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Moveable
   def move_to_top
     authorize! :update, resource

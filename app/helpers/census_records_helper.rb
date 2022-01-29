@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module CensusRecordsHelper
   def census_card_edit(title: nil, list: nil)
     header = title && content_tag(:div, title, class: 'card-header')

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateLocalities < ActiveRecord::Migration[6.0]
   def change
     # These are extensions that must be enabled in order to support this database

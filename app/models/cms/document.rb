@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Cms::Document < Cms::PageWidget
 
   has_one_attached :file

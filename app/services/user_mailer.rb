@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UserMailer < ActionMailer::Base
   def disabled_change_password(user)
     @user = user

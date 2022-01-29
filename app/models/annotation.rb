@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Annotation < ApplicationRecord
   belongs_to :map_overlay, optional: false
   belongs_to :building, optional: false

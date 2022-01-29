@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class StreetConversion < ApplicationRecord
   after_commit :update_address_history
 

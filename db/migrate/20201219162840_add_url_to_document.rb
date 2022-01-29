@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddUrlToDocument < ActiveRecord::Migration[6.0]
   def change
     add_column :documents, :url, :string, after: :name

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :buildings do
   task address: :environment do
     Building.find_each do |building|

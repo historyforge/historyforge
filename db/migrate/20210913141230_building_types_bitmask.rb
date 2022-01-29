@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class BuildingTypesBitmask < ActiveRecord::Migration[6.0]
   def change
     add_column :buildings, :building_types_mask, :integer

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Ransack.configure do |config|
   config.options[:sanitize_scope_args] = false
   config.add_predicate 'has_any_term',

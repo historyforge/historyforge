@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CensusRecord < ApplicationRecord
 
   self.abstract_class = true

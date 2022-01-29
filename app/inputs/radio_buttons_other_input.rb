@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RadioButtonsOtherInput < CollectionRadioButtonsInput
 
   def input(wrapper_options=nil)

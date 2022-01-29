@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AttributeBuilder
 
   def self.boolean(json, key, *args)

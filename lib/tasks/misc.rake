@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 task fixit: :environment do
   dead_terms = []
   undead_terms = []

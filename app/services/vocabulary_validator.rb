@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class VocabularyValidator < ActiveModel::EachValidator
   def validate_each(record, attribute, value)
     vocab_name = options[:with] || options[:name] || attribute

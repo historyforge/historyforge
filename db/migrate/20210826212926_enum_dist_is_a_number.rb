@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class EnumDistIsANumber < ActiveRecord::Migration[6.0]
   def up
     CensusYears.each do |year|

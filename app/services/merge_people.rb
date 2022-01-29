@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MergePeople
   def initialize(source, target)
     @source, @target = source, target

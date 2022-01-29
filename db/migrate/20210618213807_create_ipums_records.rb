@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateIpumsRecords < ActiveRecord::Migration[6.0]
   def change
     create_table :ipums_records, id: false do |t|

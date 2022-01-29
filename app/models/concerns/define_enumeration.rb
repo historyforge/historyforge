@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DefineEnumeration
   extend ActiveSupport::Concern
   included do

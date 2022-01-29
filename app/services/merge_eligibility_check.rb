@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MergeEligibilityCheck
   def initialize(source, target)
     @source, @target = source, target

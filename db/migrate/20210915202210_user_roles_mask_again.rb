@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UserRolesMaskAgain < ActiveRecord::Migration[6.0]
   def up
     role_ids = Role.all.map(&:id)

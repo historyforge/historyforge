@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 json.filters do
   json.name do
     json.type 'text'

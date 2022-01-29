@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ConvertibleAddress
   attr_accessor :house_number, :street_prefix, :street_name, :street_suffix, :city, :modern, :year
   def initialize(attrs=Census1910Record.new)

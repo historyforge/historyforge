@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MoreColumnDefaults < ActiveRecord::Migration[6.0]
   def change
     change_column_default :census_1940_records, :pob, from: 'New York', to: nil

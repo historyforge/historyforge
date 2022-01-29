@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module OmniAuthTestHelper
   def valid_facebook_login_setup
     if Rails.env.test?

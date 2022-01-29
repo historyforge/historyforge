@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Cms::PageWidget < ActiveRecord::Base
 
   include ArDocStore::Model

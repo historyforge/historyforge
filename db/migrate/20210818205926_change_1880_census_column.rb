@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Change1880CensusColumn < ActiveRecord::Migration[6.0]
   def up
     change_column :census1880_records, :sick, :string

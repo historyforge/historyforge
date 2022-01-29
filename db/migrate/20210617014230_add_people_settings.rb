@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddPeopleSettings < ActiveRecord::Migration[6.0]
   def change
     Setting.add 'people_private',

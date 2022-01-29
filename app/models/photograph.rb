@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Photograph < ApplicationRecord
   include PgSearch::Model
   include Flaggable

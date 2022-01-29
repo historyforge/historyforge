@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ReverseStreetConversion
   attr_accessor :address, :conversion
   delegate :to_prefix, :to_name, :to_suffix, :to_city, to: :address, allow_nil: true

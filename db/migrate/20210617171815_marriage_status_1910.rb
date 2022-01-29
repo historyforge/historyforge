@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MarriageStatus1910 < ActiveRecord::Migration[6.0]
   def change
     Census1910Record.where(marital_status: %w{M M1}).each do |row|

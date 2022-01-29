@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Buildings::MainController < ApplicationController
   include AdvancedRestoreSearch
   include RenderCsv

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module PersonNames
   extend ActiveSupport::Concern
   included do

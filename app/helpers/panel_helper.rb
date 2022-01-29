@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module PanelHelper
   def panel(title = nil, &block)
     heading = title ? panel_header(title) : nil

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MapOverlay < ApplicationRecord
   acts_as_list
   :name

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FacebookAuthSettings < ActiveRecord::Migration[6.0]
   def self.up
     Setting.add 'facebook_login_enabled', type: :boolean, value: '0', group: 'Authentication', name: 'Enable Facebook Authentication', hint: 'Allow users to signup with their Facebook account.'

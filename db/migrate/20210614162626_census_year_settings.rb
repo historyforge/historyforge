@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CensusYearSettings < ActiveRecord::Migration[6.0]
   def up
     [1900, 1910, 1920, 1930, 1940].each do |year|

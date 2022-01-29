@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Buildings
   class MergesController < ApplicationController
     before_action :load_and_authorize

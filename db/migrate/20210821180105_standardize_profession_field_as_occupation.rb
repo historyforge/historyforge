@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class StandardizeProfessionFieldAsOccupation < ActiveRecord::Migration[6.0]
   def change
     rename_column :census_1900_records, :profession, :occupation
