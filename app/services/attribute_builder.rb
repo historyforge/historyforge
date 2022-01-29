@@ -1,39 +1,39 @@
 class AttributeBuilder
 
   def self.boolean(json, key, *args)
-    AttributeBuilder::Boolean.new(json: json, key: key, extras: args.extract_options!).to_json
+    AttributeBuilder::Boolean.new(json:, key:, extras: args.extract_options!).to_json
   end
 
   # def self.collection(json, klass, key, choices, cols=2, sortable=true)
   def self.collection(json, key, *args)
     options = args.extract_options!
     AttributeBuilder::Collection.new(
-      json: json,
+      json:,
       klass: options[:klass],
-      key: key,
+      key:,
       columns: options[:columns],
       extras: { choices: options[:choices] || options[:collection], sortable: options[:sortable] }
     ).to_json
   end
 
   def self.enumeration(json, klass, key, cols=2)
-    AttributeBuilder::Enumeration.new(json: json, key: key, klass: klass, columns: cols).to_json
+    AttributeBuilder::Enumeration.new(json:, key:, klass:, columns: cols).to_json
   end
 
   def self.time(json, key, *args)
-    AttributeBuilder::Time.new(json: json, key: key, extras: args.extract_options!).to_json
+    AttributeBuilder::Time.new(json:, key:, extras: args.extract_options!).to_json
   end
 
   def self.age(json, key, *args)
-    AttributeBuilder::Age.new(json: json, key: key, extras: args.extract_options!).to_json
+    AttributeBuilder::Age.new(json:, key:, extras: args.extract_options!).to_json
   end
 
   def self.number(json, key, *args)
-    AttributeBuilder::Number.new(json: json, key: key, extras: args.extract_options!).to_json
+    AttributeBuilder::Number.new(json:, key:, extras: args.extract_options!).to_json
   end
 
   def self.text(json, key, *args)
-    AttributeBuilder::Text.new(json: json, key: key, extras: args.extract_options!).to_json
+    AttributeBuilder::Text.new(json:, key:, extras: args.extract_options!).to_json
   end
 
 end

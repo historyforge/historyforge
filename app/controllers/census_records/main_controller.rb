@@ -54,7 +54,7 @@ module CensusRecords
       results = AttributeAutocomplete.new(
         attribute: params[:attribute],
         term: params[:term],
-        year: year
+        year:
       ).perform
       render json: results
     end
@@ -190,7 +190,7 @@ module CensusRecords
     def after_saved
       if params[:then].present?
         attributes = NextCensusRecordAttributes.new(@record, params[:then]).attributes
-        redirect_to send("new_census#{year}_record_path", attributes: attributes)
+        redirect_to send("new_census#{year}_record_path", attributes:)
       else
         redirect_to @record
       end

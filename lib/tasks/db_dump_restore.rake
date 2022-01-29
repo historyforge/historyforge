@@ -1,7 +1,7 @@
 namespace :db do
 
   desc 'Dumps the database to db/APP_NAME.dump'
-  task :dump => :environment do
+  task dump: :environment do
     cmd = nil
     with_config do |app, host, db, user, password|
       system "PGPASSWORD=#{password} pg_dump --host #{host} --username #{user} --verbose --clean --no-owner --no-acl --format=c #{db} > #{Rails.root}/db/#{app}.dump"
@@ -9,7 +9,7 @@ namespace :db do
   end
 
   desc 'Restores the database dump at db/APP_NAME.dump. To use the backup from up to 7 days ago, pass in the days argument like so: rake db:restore days=2'
-  task :restore => :environment do
+  task restore: :environment do
     timestamp = ENV['days'] ? ENV['days'].days.ago : Time.now
     timestamp = timestamp.strftime('%Y-%m-%d')
     cmd = nil
@@ -23,7 +23,7 @@ namespace :db do
   end
 
   desc 'Performs a rolling 7 day backup when invoked via cron.'
-  task :backup => :dump do
+  task backup: :dump do
     require 'fileutils'
     basename = File.join(Rails.root, 'db', Rails.application.class.parent_name.underscore)
     timestamp = Time.now.strftime('%Y-%m-%d')

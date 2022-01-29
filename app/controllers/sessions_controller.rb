@@ -1,5 +1,5 @@
 class SessionsController < Devise::SessionsController
-  skip_before_action :verify_authenticity_token, :if => :json_request?
+  skip_before_action :verify_authenticity_token, if: :json_request?
   respond_to :html, :json
 
   def destroy

@@ -4,7 +4,7 @@ module CensusRecords
   class BulkUpdatesController < ApplicationController
     def index
       authorize! :bulk_update, BulkUpdate
-      @bulk_updates = BulkUpdate.where(year: year).page(params[:page] || 1).order('updated_at desc')
+      @bulk_updates = BulkUpdate.where(year:).page(params[:page] || 1).order('updated_at desc')
     end
 
     def new

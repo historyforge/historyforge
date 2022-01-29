@@ -18,7 +18,7 @@ class Term < ApplicationRecord
     fields = relevant_fields_for_year year
     return if fields.blank?
 
-    model_class_for_year(year).where([fields.map { |field| "#{field}=:name" }.join(' OR '), { name: name }])
+    model_class_for_year(year).where([fields.map { |field| "#{field}=:name" }.join(' OR '), { name: }])
   end
 
   def count_records_for(year)

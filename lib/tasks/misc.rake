@@ -1,4 +1,4 @@
-task :fixit => :environment do
+task fixit: :environment do
   dead_terms = []
   undead_terms = []
   [
@@ -18,7 +18,7 @@ task :fixit => :environment do
     terms_to_delete = terms - original_terms
 
     terms_to_delete.each do |name|
-      term = vocabulary.terms.find_by(name: name)
+      term = vocabulary.terms.find_by(name:)
       counts = 0
       CensusYears.each do |year|
         counts += (term.count_records_for(year) || 0)

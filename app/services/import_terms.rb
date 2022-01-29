@@ -14,7 +14,7 @@ class ImportTerms
   def run
     CSV.foreach(@file, headers: false) do |row|
       name = row[0]
-      term = @vocabulary.terms.find_or_initialize_by(name: name)
+      term = @vocabulary.terms.find_or_initialize_by(name:)
       if term.new_record?
         term.save
         @added += 1

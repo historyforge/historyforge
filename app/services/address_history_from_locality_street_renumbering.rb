@@ -9,7 +9,7 @@ class AddressHistoryFromLocalityStreetRenumbering
     return unless year
 
     buildings.each do |building|
-      BuildAddressHistory.new(building, year: year).perform
+      BuildAddressHistory.new(building, year:).perform
     end
   end
 

@@ -20,7 +20,7 @@ class BuildAddressHistory
                        .first
     return unless latest_address
 
-    latest_address.update(year: year)
+    latest_address.update(year:)
   end
 
   def residents_of(building)

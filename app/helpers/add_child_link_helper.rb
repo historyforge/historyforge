@@ -18,7 +18,7 @@ module AddChildLinkHelper
     options[:form_builder_local] ||= :form
     options[:wrapper] ||= :vertical_form
     locals = options[:locals] || {}
-    form_builder.fields_for(method, options[:object], :child_index => "new_#{method}") do |f|
+    form_builder.fields_for(method, options[:object], child_index: "new_#{method}") do |f|
       render options[:partial], locals.merge(options[:form_builder_local] => f)
     end
   end

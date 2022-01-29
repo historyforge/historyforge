@@ -64,7 +64,7 @@ Rails.application.routes.draw do
               controller: 'census_records/main',
               path: "census/#{year}",
               as: "census#{year}_records",
-              defaults: { year: year }
+              defaults: { year: }
   end
 
   resources :contacts, only: %i[new create]
