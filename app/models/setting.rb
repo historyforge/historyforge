@@ -7,6 +7,10 @@ class Setting < ApplicationRecord
   end
   class_attribute :current
 
+  def self.loaded?
+    self.current.present?
+  end
+
   def self.load
     self.current = Rails.cache.fetch('settings') do
       all.each_with_object({}) { |item, acc| acc[item.key] = item }

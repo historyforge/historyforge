@@ -14,7 +14,7 @@ Devise.setup do |config|
   # note that it will be overwritten if you use your own mailer class
   # with default "from" parameter.
   # mapwarper - this is defined by config/application_config.rb  with config/application.yml
-  config.mailer_sender = proc { AppConfig.mail_from } # ENV['MAIL_FROM']
+  config.mailer_sender = proc { AppConfig[:mail_from] } # ENV['MAIL_FROM']
 
   # Configure the class responsible to send e-mails.
   # config.mailer = 'Devise::Mailer'

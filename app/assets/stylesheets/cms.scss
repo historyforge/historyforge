@@ -19,7 +19,7 @@ a.tabledrag-handle .handle {
   margin-top: 4px;
   height: 13px;
   width: 13px;
-  background: url('draggable.png') no-repeat 0 0;
+  background: url('app/assets/stylesheets/css/draggable.png') no-repeat 0 0;
 }
 a.tabledrag-handle-hover .handle {
   background-position: 0 -20px;
@@ -31,9 +31,9 @@ div.indentation {
   padding: 0.42em 0 0.42em 0.6em; /* LTR */
   width: 20px;
 }
-div.tree-child { background:url('tree.png') no-repeat 10px 50%; }
-div.tree-child-last { background:url('tree-bottom.png') no-repeat 10px 50%; }
-div.tree-child-horizontal { background:url('tree.png') no-repeat -10px 50%; }
+div.tree-child { background:url('app/assets/stylesheets/css/tree.png') no-repeat 10px 50%; }
+div.tree-child-last { background:url('app/assets/stylesheets/css/tree-bottom.png') no-repeat 10px 50%; }
+div.tree-child-horizontal { background:url('app/assets/stylesheets/css/tree.png') no-repeat -10px 50%; }
 
 #add-section {
   button {

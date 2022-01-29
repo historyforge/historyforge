@@ -54,7 +54,7 @@ module CensusRecords
       results = AttributeAutocomplete.new(
         attribute: params[:attribute],
         term: params[:term],
-        year:
+        year: year
       ).perform
       render json: results
     end

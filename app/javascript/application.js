@@ -8,7 +8,7 @@
 // layout file, like app/views/layouts/application.html.erb
 
 // Uncomment to copy all static images under ../images to the output folder and reference
-// them with the image_pack_tag helper in views (e.g <%= image_pack_tag 'rails.png' %>)
+// them with the image_tag helper in views (e.g <%= image_tag 'rails.png' %>)
 // or the `imagePath` JavaScript helper below.
 //
 // const images = require.context('../images', true)
@@ -20,7 +20,7 @@ import '../../vendor/assets/javascripts/jquery.mousewheel'
 import '../../vendor/assets/javascripts/chosen.jquery'
 import '../../vendor/assets/javascripts/blowup'
 
-import 'css/application.scss'
+import 'app/assets/images/application.scss'
 import 'js/add_child'
 import 'js/buildings'
 import 'js/cell_renderers'

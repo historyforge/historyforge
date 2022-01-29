@@ -48,7 +48,7 @@ class CensusFormHint
 
   def image
     img = klass::IMAGES[field]
-    img && "<br />#{template.image_pack_tag(img)}"
+    img && "<br />#{template.image_tag(img)}"
   end
 
   def unknown
@@ -56,6 +56,6 @@ class CensusFormHint
     return if field =~ /name|head|house|page|line_|apartment|dwelling|family|occupation|profession|code/
     return unless %i[integer radio_buttons radio_buttons_other].include?(type) || type.blank?
 
-    "<br /><hr />The scribble for &ldquo;Unknown&rdquo; often looks like this:<br />#{template.image_pack_tag('unknown-scribble.png')}"
+    "<br /><hr />The scribble for &ldquo;Unknown&rdquo; often looks like this:<br />#{template.image_tag('unknown-scribble.png')}"
   end
 end

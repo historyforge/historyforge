@@ -15,7 +15,7 @@ class BuildingFromAddress
     building = Building.new name: modern_address.address,
                             city: record.city,
                             state: record.state,
-                            postal_code: AppConfig.postal_code,
+                            postal_code: AppConfig[:postal_code],
                             locality: record.locality,
                             building_type_ids: [3] # residence
 

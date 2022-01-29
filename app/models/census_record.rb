@@ -101,16 +101,16 @@ class CensusRecord < ApplicationRecord
   def set_defaults
     return if persisted?
 
-    self.city ||= AppConfig.city
-    self.county ||= AppConfig.county
-    self.state ||= AppConfig.state
-    self.pob ||= AppConfig.pob
+    self.city ||= AppConfig[:city]
+    self.county ||= AppConfig[:county]
+    self.state ||= AppConfig[:state]
+    self.pob ||= AppConfig[:pob]
 
     # Don't autofill these for 1940 because they are supplemental only
     return if year == 1940
 
-    self.pob_mother ||= AppConfig.pob
-    self.pob_father ||= AppConfig.pob
+    self.pob_mother ||= AppConfig[:pob]
+    self.pob_father ||= AppConfig[:pob]
   end
 
   def dont_add_same_person
