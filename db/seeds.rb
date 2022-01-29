@@ -31,15 +31,15 @@ if Vocabulary.count == 0
   end
 end
 
-Setting.add 'county', value: ENV['APP_PLACE_COUNTY'] || "Tompkins", group: 'Census Record Defaults'
-Setting.add 'city', value: ENV['APP_PLACE_CITY'] || "Ithaca", group: 'Census Record Defaults'
-Setting.add 'state', value: ENV['APP_PLACE_STATE'] || "NY", group: 'Census Record Defaults'
+Setting.add 'county', value: ENV['APP_PLACE_COUNTY'] || 'Tompkins', group: 'Census Record Defaults'
+Setting.add 'city', value: ENV['APP_PLACE_CITY'] || 'Ithaca', group: 'Census Record Defaults'
+Setting.add 'state', value: ENV['APP_PLACE_STATE'] || 'NY', group: 'Census Record Defaults'
 Setting.add 'pob', value: 'New York', group: 'Census Record Defaults'
 Setting.add 'postal_code', value: ENV['APP_PLACE_POSTAL_CODE'], group: 'Census Record Defaults'
-Setting.add 'organization', value: ENV['APP_ORG_NAME'] || "The History Center in Tompkins County", group: 'Sponsor'
-Setting.add 'url', value: ENV['APP_ORG_URL'] || "https://thehistorycenter.net", group: 'Sponsor'
-Setting.add 'contact_email', value: ENV['CONTACT_EMAIL'] || "historyforge@thehistorycenter.net", group: 'Sponsor'
-Setting.add 'mail_from', value: ENV['MAIL_FROM'] || "historyforge@thehistorycenter.net", group: 'Sponsor'
+Setting.add 'organization', value: ENV['APP_ORG_NAME'] || 'The History Center in Tompkins County', group: 'Sponsor'
+Setting.add 'url', value: ENV['APP_ORG_URL'] || 'https://thehistorycenter.net', group: 'Sponsor'
+Setting.add 'contact_email', value: ENV['CONTACT_EMAIL'] || 'historyforge@thehistorycenter.net', group: 'Sponsor'
+Setting.add 'mail_from', value: ENV['MAIL_FROM'] || 'historyforge@thehistorycenter.net', group: 'Sponsor'
 Setting.add 'latitude', value: ENV['APP_LATITUDE'] || 42.4418353, type: 'number', group: 'Default Map Center'
 Setting.add 'longitude', value: ENV['APP_LONGITUDE'] || -76.4987984, type: 'number', group: 'Default Map Center'
 Setting.add 'google_api_key', value: ENV['GOOGLE_API_KEY'], group: 'API Keys'
@@ -47,8 +47,8 @@ Setting.add 'geocoding_key', value: ENV['GOOGLE_GEOCODING_KEY'], group: 'API Key
 Setting.add 'recaptcha_site_key', value: nil, group: 'API Keys'
 Setting.add 'recaptcha_secret_key', value: nil, group: 'API Keys'
 Setting.add 'facebook_login_enabled', type: :boolean, value: ENV['FACEBOOK_LOGIN_ENABLED'] || '0', group: 'Authentication', name: 'Enable Facebook Authentication', hint: 'Allow users to signup with their Facebook account.'
-Setting.add 'facebook_login_app_id', value: ENV['FACEBOOK_LOGIN_APP_ID'] || "",  group: 'Authentication'
-Setting.add 'facebook_login_secret', value: ENV['FACEBOOK_LOGIN_SECRET'] || "", group: 'Authentication'
+Setting.add 'facebook_login_app_id', value: ENV['FACEBOOK_LOGIN_APP_ID'] || '',  group: 'Authentication'
+Setting.add 'facebook_login_secret', value: ENV['FACEBOOK_LOGIN_SECRET'] || '', group: 'Authentication'
 
 CensusYears.each do |year|
   group = "#{year} US Census"
@@ -56,4 +56,3 @@ CensusYears.each do |year|
   Setting.add "enabled_public_#{year}", type: :boolean, value: '1', group: group, name: 'Enabled Public', hint: 'This census year is available to the public for search.'
   Setting.add "add_buildings_#{year}", type: :boolean, value: '1', group: group, name: 'Add Buildings', hint: 'Allows census taker to create a new building from address.'
 end
-

@@ -16,7 +16,7 @@ class CollectionRadioButtonsInput < SimpleForm::Inputs::CollectionRadioButtonsIn
     return 'blank' if values.blank?
 
     if value.respond_to?(:map)
-      values.map { |v| option_label(v) }.select(&:present?).join("<br>").html_safe
+      values.map { |v| option_label(v) }.select(&:present?).join('<br>').html_safe
     else
       option_label(value)
     end
@@ -61,8 +61,8 @@ class CollectionRadioButtonsInput < SimpleForm::Inputs::CollectionRadioButtonsIn
   end
 
   def add_blanks(items)
-    items << [options[:unknown] || "Un - Unknown", 'unknown']
-    items.unshift ["Left blank", nil]
+    items << [options[:unknown] || 'Un - Unknown', 'unknown']
+    items.unshift ['Left blank', nil]
     items
   end
 
@@ -71,4 +71,3 @@ class CollectionRadioButtonsInput < SimpleForm::Inputs::CollectionRadioButtonsIn
     @builder.object.class.respond_to?(collection_method_name) ? @builder.object.class.send(collection_method_name) : []
   end
 end
-

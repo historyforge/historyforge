@@ -47,4 +47,3 @@ class StreetConversion < ApplicationRecord
     AddressHistoryFromStreetConversion.new(self).perform
   end
 end
-

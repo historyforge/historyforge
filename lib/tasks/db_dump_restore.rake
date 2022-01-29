@@ -1,6 +1,6 @@
 namespace :db do
 
-  desc "Dumps the database to db/APP_NAME.dump"
+  desc 'Dumps the database to db/APP_NAME.dump'
   task :dump => :environment do
     cmd = nil
     with_config do |app, host, db, user, password|
@@ -8,7 +8,7 @@ namespace :db do
     end
   end
 
-  desc "Restores the database dump at db/APP_NAME.dump. To use the backup from up to 7 days ago, pass in the days argument like so: rake db:restore days=2"
+  desc 'Restores the database dump at db/APP_NAME.dump. To use the backup from up to 7 days ago, pass in the days argument like so: rake db:restore days=2'
   task :restore => :environment do
     timestamp = ENV['days'] ? ENV['days'].days.ago : Time.now
     timestamp = timestamp.strftime('%Y-%m-%d')

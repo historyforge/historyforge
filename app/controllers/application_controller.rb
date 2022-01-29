@@ -31,7 +31,7 @@ class ApplicationController < ActionController::Base
   helper_method :can_census?, :can_demographics?, :can_people?
 
   def check_administrator_role
-    check_role("administrator")
+    check_role('administrator')
   end
 
   def check_cms_for_page
@@ -81,7 +81,7 @@ class ApplicationController < ActionController::Base
   end
 
   def permission_denied
-    flash[:errors] = "Sorry you do not have permission to do that."
+    flash[:errors] = 'Sorry you do not have permission to do that.'
     redirect_to root_path
   end
 

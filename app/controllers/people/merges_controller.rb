@@ -12,7 +12,7 @@ module People
       @check.perform
       if @check.okay?
         MergePeople.new(@source, @target).perform
-        flash[:notice] = "The merge operation has been performed."
+        flash[:notice] = 'The merge operation has been performed.'
         redirect_to @target
       else
         flash[:errors] = "You can't merge these people."

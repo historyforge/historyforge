@@ -12,7 +12,7 @@ module Cms
     json_attribute :automatic_url_alias, :boolean, default: true
 
     json_attribute :template_sections, :array
-    json_attribute :template, :string, default: "{{content}}"
+    json_attribute :template, :string, default: '{{content}}'
 
     json_attribute :title, :string
     json_attribute :show_title, :boolean, default: true

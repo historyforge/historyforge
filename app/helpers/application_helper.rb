@@ -1,5 +1,4 @@
 module ApplicationHelper
-
   def browser_title
     title = @browser_title || page_title
     "#{title ? "#{title} | " : nil}#{Rails.application.name}"

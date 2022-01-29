@@ -6,7 +6,7 @@ module PersonNames
 
     scope :by_name, -> { order(:last_name, :first_name, :middle_name) }
     scope :fuzzy_name_search, -> (name) {
-      where("searchable_name % ?", name)
+      where('searchable_name % ?', name)
     }
 
     def set_searchable_name

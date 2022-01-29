@@ -65,4 +65,3 @@ class ReverseStreetConversion
     [number, address]
   end
 end
-

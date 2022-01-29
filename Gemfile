@@ -47,13 +47,16 @@ gem 'slim'
 gem 'sprockets-rails'
 
 group :development do
-  gem "byebug"
-  gem "letter_opener"
-  gem "letter_opener_web"
-  gem "pry"
-  gem "rubocop-rails"
+  gem 'byebug'
+  gem 'letter_opener'
+  gem 'letter_opener_web'
+  gem 'pry'
+  gem 'rubocop', require: false
+  gem 'rubocop-performance', require: false
+  gem 'rubocop-rails', require: false
+  gem 'rubocop-rspec', require: false
   gem 'simplecov', require: false
-  gem "web-console" #, "~> 2.0"
+  gem 'web-console' #, "~> 2.0"
 end
 
 group :development, :test do

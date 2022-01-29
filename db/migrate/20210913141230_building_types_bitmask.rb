@@ -6,7 +6,7 @@ class BuildingTypesBitmask < ActiveRecord::Migration[6.0]
         building_type_ids = BuildingType.all.map(&:id)
         building_types = BuildingType.all.each_with_object({}) { |type, obj| obj[type.name] = type.id }
         old_building_types = ActiveRecord::Base.connection
-                                               .execute("select id, name from building_types")
+                                               .execute('select id, name from building_types')
                                                .to_a
                                                .each_with_object({}) { |type, obj| obj[type['id']] = type['name'].capitalize }
         Building.find_each do |row|

@@ -13,7 +13,7 @@ class TermsController < ApplicationController
         @terms = @search.result
         require 'csv'
         headers['Content-Disposition'] = "attachment; filename=\"#{@vocabulary.name}.csv\""
-        headers['Content-Type'] = "text/csv"
+        headers['Content-Type'] = 'text/csv'
       end
       format.html do
         @terms = @search.result.page(params[:page] || 1)
@@ -38,7 +38,7 @@ class TermsController < ApplicationController
   def create
     @term = @vocabulary.terms.new resource_params
     if @term.save
-      flash[:notice] = "Added the new term."
+      flash[:notice] = 'Added the new term.'
       redirect_to action: :index
     else
       flash[:errors] = "Sorry couldn't do it."
@@ -53,12 +53,12 @@ class TermsController < ApplicationController
   def update
     @term = @vocabulary.terms.find params[:id]
     if @term.update resource_params
-      flash[:notice] = "Updated the term."
+      flash[:notice] = 'Updated the term.'
       redirect_to action: :index
     else
       if @term.is_duplicate?
         @term.merge!
-        flash[:notice] = "Merged the term!"
+        flash[:notice] = 'Merged the term!'
         redirect_to action: :index
       else
         flash[:errors] = "Sorry couldn't do it."
@@ -70,7 +70,7 @@ class TermsController < ApplicationController
   def destroy
     @term = @vocabulary.terms.find(params[:id])
     if @term.destroy
-      flash[:notice] = "Deleted the term."
+      flash[:notice] = 'Deleted the term.'
       redirect_to action: :index
     else
       flash[:errors] = "Sorry couldn't do it."
@@ -83,7 +83,7 @@ class TermsController < ApplicationController
     service.run
     flash[:notice] = "Added #{service.added} terms to #{@vocabulary.name}. Found #{service.found} already existing."
   rescue
-    flash[:errors] = "An error got in the way. Check that your file is a CSV with a single column containing the terms you wish to import."
+    flash[:errors] = 'An error got in the way. Check that your file is a CSV with a single column containing the terms you wish to import.'
   ensure
     redirect_to action: :index
   end

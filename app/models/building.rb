@@ -60,8 +60,8 @@ class Building < ApplicationRecord
 
   scope :order_by_street_address, lambda { |dir|
     all
-      .joins("LEFT OUTER JOIN addresses pa ON pa.building_id=buildings.id AND pa.is_primary=TRUE")
-      .group("buildings.id, pa.id")
+      .joins('LEFT OUTER JOIN addresses pa ON pa.building_id=buildings.id AND pa.is_primary=TRUE')
+      .group('buildings.id, pa.id')
       .order('pa.name' => dir)
       .order('pa.prefix' => dir)
       .order('pa.suffix' => dir)
@@ -73,13 +73,13 @@ class Building < ApplicationRecord
   scope :with_multiple_addresses, -> {
     all
       .joins(:addresses)
-      .group("buildings.id, addresses.name")
-      .having("COUNT(addresses.name) > 1")
+      .group('buildings.id, addresses.name')
+      .having('COUNT(addresses.name) > 1')
   }
 
   scope :building_types_id_in, lambda { |*ids|
     if ids.empty?
-      where("building_types_mask > 0")
+      where('building_types_mask > 0')
     else
       where 'building_types_mask & ? > 0', BuildingType.mask_for(ids)
     end
@@ -87,7 +87,7 @@ class Building < ApplicationRecord
 
   scope :building_types_id_not_in, lambda { |*ids|
     if ids.empty?
-      where("building_types_mask = 0")
+      where('building_types_mask = 0')
     else
       where.not 'building_types_mask & ? > 0', BuildingType.mask_for(ids)
     end

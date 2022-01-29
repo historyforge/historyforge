@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "Bulk updates of census records" do
+RSpec.describe 'Bulk updates of census records' do
   scenario 'happy path' do
     user = create(:administrator)
     locality = create(:locality)
@@ -10,7 +10,7 @@ RSpec.describe "Bulk updates of census records" do
       create(:census1920_record, locality: locality)
     end
 
-    visit "/census/1920"
+    visit '/census/1920'
     click_on 'Bulk Update'
     expect(page).to have_content('Bulk Updates for 1920')
     expect(page).to have_content('None yet!')

@@ -9,4 +9,3 @@ class SimpleCheckboxInput < SimpleForm::Inputs::BooleanInput
   end
 
 end
-

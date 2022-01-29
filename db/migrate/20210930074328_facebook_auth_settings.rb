@@ -6,8 +6,8 @@ class FacebookAuthSettings < ActiveRecord::Migration[6.0]
   end
 
   def self.down
-    Setting.where(key: "facebook_login_enabled").delete_all
-    Setting.where(key: "facebook_login_app_id").delete_all
-    Setting.where(key: "facebook_login_secret").delete_all
+    Setting.where(key: 'facebook_login_enabled').delete_all
+    Setting.where(key: 'facebook_login_app_id').delete_all
+    Setting.where(key: 'facebook_login_secret').delete_all
   end
 end

@@ -12,8 +12,8 @@ module Moderation
 
     scope :reviewed, -> { where.not(reviewed_at_column => nil) }
     scope :unreviewed, -> { where(reviewed_at_column => nil) }
-    scope :recently_added, -> { where "created_at >= ?", 3.months.ago }
-    scope :recently_reviewed, -> { where "reviewed_at >= ?", 3.months.ago }
+    scope :recently_added, -> { where 'created_at >= ?', 3.months.ago }
+    scope :recently_reviewed, -> { where 'reviewed_at >= ?', 3.months.ago }
 
     def self.reviewed_at_column
       "#{current_table_name}.reviewed_at"

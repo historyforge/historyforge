@@ -18,7 +18,7 @@ class LocalitiesController < ApplicationController
   def create
     @locality = Locality.new resource_params
     if @locality.save
-      flash[:notice] = "Added the new locality."
+      flash[:notice] = 'Added the new locality.'
       redirect_to action: :index
     else
       flash[:errors] = "Sorry couldn't do it."
@@ -33,7 +33,7 @@ class LocalitiesController < ApplicationController
   def update
     @locality = Locality.find params[:id]
     if @locality.update resource_params
-      flash[:notice] = "Updated the locality."
+      flash[:notice] = 'Updated the locality.'
       redirect_to action: :index
     else
       flash[:errors] = "Sorry couldn't do it."
@@ -44,7 +44,7 @@ class LocalitiesController < ApplicationController
   def destroy
     @locality = Locality.find params[:id]
     if @locality.destroy
-      flash[:notice] = "Deleted the locality."
+      flash[:notice] = 'Deleted the locality.'
       redirect_to action: :index
     else
       flash[:errors] = "Sorry couldn't do it."

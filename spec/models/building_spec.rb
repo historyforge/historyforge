@@ -98,10 +98,10 @@ RSpec.describe Building do
             'suffix' => 'St'
           }, {
           'is_primary' => true,
-            'house_number' => '110',
-            'name' => 'Mill',
-            'prefix' => 'E',
-            'suffix' => 'St'
+          'house_number' => '110',
+          'name' => 'Mill',
+          'prefix' => 'E',
+          'suffix' => 'St'
           }
         ]
         subject.validate

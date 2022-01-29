@@ -80,7 +80,7 @@ class CensusFacet
                    .from(from)
                    .reorder('CTS.Serie')
                    .reselect("COALESCE(COUNT(#{facet}), 0) AS value, CONCAT(Serie, ' - ', Serie + #{step - 1}) as facet")
-                   .group("CTS.Serie")
+                   .group('CTS.Serie')
                    .where("#{facet} IS NOT NULL")
       "#{snippet} #{base.to_sql}"
     end

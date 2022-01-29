@@ -6,7 +6,7 @@ class PhotographDecorator < ApplicationDecorator
   end
 
   def creator
-    model.creator || "Photographer unknown"
+    model.creator || 'Photographer unknown'
   end
 
   def date

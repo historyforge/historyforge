@@ -37,23 +37,23 @@ class Address < ApplicationRecord
     if item.kind_of?(Building)
       item.addresses.find_or_create_by(
         house_number: item.read_attribute(:address_house_number),
-        prefix:       item.read_attribute(:address_street_prefix),
-        name:         item.read_attribute(:address_street_name),
-        suffix:       item.read_attribute(:address_street_suffix),
-        city:         item.read_attribute(:city),
-        year:         item.read_attribute(:address_year_earliest),
-        is_primary:   true
+        prefix: item.read_attribute(:address_street_prefix),
+        name: item.read_attribute(:address_street_name),
+        suffix: item.read_attribute(:address_street_suffix),
+        city: item.read_attribute(:city),
+        year: item.read_attribute(:address_year_earliest),
+        is_primary: true
       )
     elsif item.kind_of?(CensusRecord)
       return if item.building_id.blank?
 
       item.building.addresses.find_or_create_by(
         house_number: item.read_attribute(:street_house_number),
-        prefix:       item.read_attribute(:street_prefix),
-        name:         item.read_attribute(:street_name),
-        suffix:       item.read_attribute(:street_suffix),
-        city:         item.read_attribute(:city),
-        year:         item.read_attribute(:year_earliest),
+        prefix: item.read_attribute(:street_prefix),
+        name: item.read_attribute(:street_name),
+        suffix: item.read_attribute(:street_suffix),
+        city: item.read_attribute(:city),
+        year: item.read_attribute(:year_earliest),
       )
     end
   end

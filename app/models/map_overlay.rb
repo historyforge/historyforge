@@ -12,7 +12,7 @@ class MapOverlay < ApplicationRecord
 
   def check_for_annotations
     if annotations.count > 0
-      errors.add(:base, "Cannot delete map layer while annotations exist.")
+      errors.add(:base, 'Cannot delete map layer while annotations exist.')
       true
     end
   end

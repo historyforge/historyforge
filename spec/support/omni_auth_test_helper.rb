@@ -7,12 +7,12 @@ module OmniAuthTestHelper
                                  provider: 'facebook',
                                  uid: '123545',
                                  info: {
-                                   first_name: "Gaius",
-                                   last_name:  "Baltar",
-                                   email:      "test@example.com"
+                                   first_name: 'Gaius',
+                                   last_name: 'Baltar',
+                                   email: 'test@example.com'
                                  },
                                  credentials: {
-                                   token: "123456",
+                                   token: '123456',
                                    expires_at: Time.now + 1.week
                                  },
                                  extra: {

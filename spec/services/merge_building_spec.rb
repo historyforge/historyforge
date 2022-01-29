@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "rails_helper"
+require 'rails_helper'
 
 RSpec.describe MergeBuilding do
   let(:locality) { create(:locality, year_street_renumber: 1915) }
