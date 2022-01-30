@@ -15,29 +15,29 @@
 // const imagePath = (name) => images(name, true)
 
 import 'chartkick/chart.js'
-import '../../../vendor/assets/javascripts/parallax.min'
-import '../../../vendor/assets/javascripts/jquery.mousewheel'
-import '../../../vendor/assets/javascripts/chosen.jquery'
-import '../../../vendor/assets/javascripts/blowup'
+import '../../vendor/assets/javascripts/parallax.min'
+import '../../vendor/assets/javascripts/jquery.mousewheel'
+import '../../vendor/assets/javascripts/chosen.jquery'
+import '../../vendor/assets/javascripts/blowup'
 
-import '../css/application.scss'
-import '../js/add_child'
-import '../js/buildings'
-import '../js/cell_renderers'
-import '../search/AdvancedSearch'
-import '../js/census_form'
-import '../js/home_page'
-import '../js/terms'
+import 'css/application.scss'
+import 'js/add_child'
+import 'js/buildings'
+import 'js/cell_renderers'
+import 'search/AdvancedSearch'
+import 'js/census_form'
+import 'js/home_page'
+import 'js/terms'
 
 import Rails from '@rails/ujs'
 
 import 'controllers'
 import React from 'react'
 import ReactDOM from 'react-dom'
-import Forge from '../forge/App'
-import MiniForge from '../miniforge/App'
+import Forge from 'forge/App'
+import MiniForge from 'miniforge/App'
 import { Notifier } from '@airbrake/browser'
-require.context('../images', true)
+require.context('images', true)
 Rails.start()
 
 if (window.airbrakeCreds && window.env === 'production') {

@@ -9,7 +9,7 @@ gem 'ancestry'
 gem 'andand'
 gem 'ar_doc_store'
 gem 'bcrypt'
-gem 'bootsnap'
+gem 'bootsnap', require: false
 gem 'cancancan'
 gem 'chartkick'
 gem 'devise'
@@ -22,6 +22,7 @@ gem 'fast_memoize'
 gem 'font-awesome-rails'
 gem 'geocoder'
 gem 'image_processing'
+gem 'importmap-rails'
 gem 'jbuilder', '~> 2.0'
 gem 'kaminari'
 gem 'liquid'
@@ -43,7 +44,7 @@ gem 'rubyXL', require: false
 gem 'rubyzip', require: false
 gem 'simple_form'
 gem 'slim'
-gem 'webpacker'
+gem 'sprockets-rails'
 
 group :development do
   gem "byebug"
@@ -52,7 +53,6 @@ group :development do
   gem "pry"
   gem "rubocop-rails"
   gem 'simplecov', require: false
-  gem "spring"
   gem "web-console" #, "~> 2.0"
 end
 
