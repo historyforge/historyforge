@@ -1,3 +1,0 @@
-set -e
-rm -rf public/packs
-NODE_ENV=production rake assets:precompile RAILS_ENV=production DEPLOYING=true
