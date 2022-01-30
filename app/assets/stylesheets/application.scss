@@ -1,8 +1,6 @@
-@import 'include-media';
-@import "app/assets/stylesheets/csseets/css/variables";
-@import "vendor/assets/stylesheets/alertify";
-@import "app/assets/stylesheets/csseets/css/styles";
+@import "alertify";
+@import "styles";
 
-@import "app/assets/stylesheets/csseets/css/forge";
-@import "app/assets/stylesheets/csseets/css/photographs";
+@import "forge";
+@import "photographs";
 

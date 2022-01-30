@@ -30,7 +30,7 @@ class BuildingsOnStreet
                     .includes(:addresses)
                     .where(addresses: { name: street_name })
                     .order(Arel.sql("addresses.name, addresses.suffix, addresses.prefix, #{HOUSE_SQL}"))
-    items = items.where(addresses: { city: }) if city.present?
+    items = items.where(addresses: { city: city}) if city.present?
     items = items.where(addresses: { prefix: street_prefix }) if street_prefix.present?
     items = items.where(addresses: { suffix: street_suffix }) if street_suffix.present?
     items = add_block_filter(items) if street_house_number.present?

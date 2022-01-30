@@ -73,7 +73,7 @@ module Cms
     end
 
     # TODO: if we have some and they aren't saved to the page's dummy_vars, we should do that here
-    # TODO: how to update dummar_vars?
+    # TODO: how to update dummy_vars?
     # TODO: if the page has a controller and action and we aren't on it, then fill in sections from dummy_vars
     def parts_from_view_template
       sections = template.cms_page_sections

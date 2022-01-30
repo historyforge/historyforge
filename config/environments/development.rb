@@ -59,6 +59,7 @@ Rails.application.configure do
   config.active_record.verbose_query_logs = true
 
   # Suppress logger output for asset requests.
+  # config.assets.debug = true
   config.assets.quiet = true
 
   # Raises error for missing translations.

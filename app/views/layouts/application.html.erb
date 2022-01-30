@@ -23,11 +23,11 @@
     <% end %>
 
     <%= stylesheet_link_tag 'richtext' if can?(:update, Building) %>
-    <%= javascript_importmap_tag 'richtext' if can?(:update, Building) %>
 
     <%= csrf_meta_tags %>
 
     <%= yield :head %>
+    <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
   </head>
   <body>
     <% if @onload -%>
@@ -69,10 +69,9 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" type="text/javascript" crossorigin="anonymous" data-turbolinks-track="true"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/js-marker-clusterer/1.0.0/markerclusterer_compiled.js" type="text/javascript" crossorigin="anonymous" data-turbolinks-track="true"></script>
   <script src="https://unpkg.com/ag-grid-community/dist/ag-grid-community.min.noStyle.js" crossorigin="anonymous" data-turbolinks-track="true"></script>
-  <%= javascript_importmap_tag 'application' %>
-  <% if can?(:update, Cms::Page) %>
-  <%= javascript_importmap_tag 'cms' %>
-  <% end %>
+  <%= javascript_include_tag 'application' %>
+  <%= javascript_include_tag 'cms' if can?(:update, Cms::Page) %>
+  <%= javascript_include_tag 'richtext' if can?(:update, Building) %>
 
 
   <% if Rails.env.production? && ENV['GOOGLE_ANALYTICS'] %>

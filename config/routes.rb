@@ -3,6 +3,14 @@
 Rails.application.routes.draw do
   get '/check.txt', to: proc {[200, {}, ['simple_check']]}
 
+  if Rails.env.development?
+    redirector = lambda { |params, _req|
+      ApplicationController.helpers.asset_path(params[:name].split('-').first + '.map')
+    }
+    constraint = ->(request) { request.path.ends_with?('.map') }
+    get 'assets/*name', to: redirect(redirector), constraints: constraint
+  end
+
   root 'home#index'
   get 'stats' => 'home#stats'
   get 'search/people' => 'home#search_people', as: 'search_people'
@@ -66,7 +74,7 @@ Rails.application.routes.draw do
               controller: 'census_records/main',
               path: "census/#{year}",
               as: "census#{year}_records",
-              defaults: { year: }
+              defaults: { year: year }
   end
 
   resources :contacts, only: %i[new create]

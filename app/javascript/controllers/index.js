@@ -1,10 +1,22 @@
-// Load all the controllers within this directory and all subdirectories.
-// Controller files must be named *_controller.js.
-
 import { Application } from 'stimulus'
-import { definitionsFromContext } from 'stimulus/webpack-helpers'
+
+import AutoCompleteController from "./autocomplete_controller";
+import BlowupController from "./blowup_controller";
+import CensusAutoCompleteController from "./census_autocomplete_controller";
+import LoadSavedSearchController from "./load_saved_search_controller";
+import PhotoWizardController from "./photo_wizard_controller";
+import SaveSearchController from "./save_search_controller";
+import SavedSearchesController from "./saved_searches_controller";
+
+const definitions = [
+    { identifier: 'auto-complete', controllerConstructor: AutoCompleteController },
+    { identifier: 'blowup', controllerConstructor: BlowupController },
+    { identifier: 'census-autocomplete', controllerConstructor: CensusAutoCompleteController },
+    { identifier: 'load-saved-search', controllerConstructor: LoadSavedSearchController },
+    { identifier: 'photo-wizard', controllerConstructor: PhotoWizardController },
+    { identifier: 'save-search', controllerConstructor: SaveSearchController },
+    { identifier: 'saved-searches', controllerConstructor: SavedSearchesController },
+]
 
 const application = Application.start()
-const context = require.context('controllers', true, /_controller\.js$/)
-
-application.load(definitionsFromContext(context))
+application.load(definitions)

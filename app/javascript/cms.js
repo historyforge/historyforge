@@ -14,11 +14,7 @@
 // const images = require.context('../images', true)
 // const imagePath = (name) => images(name, true)
 
-import '../css/cms'
-
-require('../js/cms_admin')
-// require("trix")
-// require("@rails/actiontext")
+require('./js/cms_admin')
 require('@rails/activestorage').start()
 
 window.CodeMirror = require('codemirror')
@@ -28,7 +24,7 @@ require('codemirror/addon/edit/closetag')
 require('codemirror/addon/edit/matchtags')
 require('codemirror/addon/edit/matchbrackets')
 
-$(document).ready(function() {
+$(function() {
   $('a[data-toggle="tab"]').on('shown.bs.tab', function() {
     $('.CodeMirror').each(function() {
       this.CodeMirror.refresh()

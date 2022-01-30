@@ -1,43 +1,25 @@
 /* eslint no-console:0 */
-// This file is automatically compiled by Webpack, along with any other files
-// present in this directory. You're encouraged to place your actual application logic in
-// a relevant structure within app/javascript and only use these pack files to reference
-// that code so it'll be compiled.
-//
-// To reference this file, add <%= javascript_pack_tag 'application' %> to the appropriate
-// layout file, like app/views/layouts/application.html.erb
-
-// Uncomment to copy all static images under ../images to the output folder and reference
-// them with the image_tag helper in views (e.g <%= image_tag 'rails.png' %>)
-// or the `imagePath` JavaScript helper below.
-//
-// const images = require.context('../images', true)
-// const imagePath = (name) => images(name, true)
-
 import 'chartkick/chart.js'
 import '../../vendor/assets/javascripts/parallax.min'
 import '../../vendor/assets/javascripts/jquery.mousewheel'
 import '../../vendor/assets/javascripts/chosen.jquery'
 import '../../vendor/assets/javascripts/blowup'
 
-import 'app/assets/images/application.scss'
-import 'js/add_child'
-import 'js/buildings'
-import 'js/cell_renderers'
-import 'search/AdvancedSearch'
-import 'js/census_form'
-import 'js/home_page'
-import 'js/terms'
+import './js/add_child'
+import './js/buildings'
+import './js/cell_renderers'
+import './search/AdvancedSearch'
+import './js/census_form'
+import './js/home_page'
+import './js/terms'
 
 import Rails from '@rails/ujs'
 
-import 'controllers'
-import React from 'react'
-import ReactDOM from 'react-dom'
-import Forge from 'forge/App'
-import MiniForge from 'miniforge/App'
+import './controllers'
+import './forge'
+import './miniforge'
 import { Notifier } from '@airbrake/browser'
-require.context('images', true)
+
 Rails.start()
 
 if (window.airbrakeCreds && window.env === 'production') {
@@ -55,11 +37,6 @@ if (window.airbrakeCreds && window.env === 'production') {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  const forge = document.getElementById('forge')
-  if (forge) ReactDOM.render(<Forge />, forge)
-  const miniforge = document.getElementById('miniforge')
-  if (miniforge) ReactDOM.render(<MiniForge />, miniforge)
-
   window.alertifyInit = alertify.init
   $('[rel=tooltip]').tooltip()
   pageLoad()
