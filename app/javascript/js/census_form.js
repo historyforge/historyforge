@@ -20,7 +20,7 @@ $.fn.extend({
   }
 })
 
-$(document).ready(function() {
+$(function() {
   const $forms = $('#new_census_record, #edit_census_record')
 
   $forms.on('keypress', function (e) {

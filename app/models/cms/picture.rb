@@ -92,8 +92,9 @@ class Cms::Picture < Cms::PageWidget
       html_options[:style] = style_attr.join if style_attr.present?
       html_options[:alt] = picture.alt_text if picture.alt_text?
       html_options[:src] = picture.url
-      html_options[:class] = 'img-responsive'
-      html_options[:class] << " img-#{picture.bootstrap_class}" if picture.bootstrap_class?
+      html_options[:class] = ['img-responsive']
+      html_options[:class] << "img-#{picture.bootstrap_class}" if picture.bootstrap_class?
+      html_options[:class] = html_options[:class].join(' ')
       tag :img, html_options
     end
   end

@@ -49,7 +49,7 @@ class Cms::PagesController < ApplicationController
 
   def update
     authorize! :update, @page
-    if @page.update_attributes resource_params
+    if @page.update resource_params
       flash[:notice] = "Successfully updated page \"#{@page.title}\"!"
       if params[:next] == 'edit'
         redirect_to edit_cms_page_path(@page)
