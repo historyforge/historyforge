@@ -190,6 +190,7 @@ class Building < ApplicationRecord
 
   def street_address_for_building_id(year)
     addresses
+      .to_a
       .select { |a| a.year.blank? || a.year <= year }
       .sort
       .first
