@@ -43,7 +43,7 @@ class Cms::Picture < Cms::PageWidget
   end
 
   def url
-    file.attached? && Rails.application.routes.url_helpers.rails_blob_path(file, only_path: true)
+    file.attached? && file.url # Rails.application.routes.url_helpers.rails_blob_path(file, only_path: true)
   end
 
   class BaseRenderer
