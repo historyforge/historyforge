@@ -66,7 +66,7 @@ module Cms
       page.widgets.inject({}) { |hash, widget|
         callback = widget.access_callback
         if callback.blank? || !template.respond_to?(callback) || template.send(callback)
-          hash[widget.name] = widget.cached_html
+          hash[widget.name] = widget.render
         end
         hash
       }
@@ -94,6 +94,5 @@ module Cms
       end
       sections.stringify_keys
     end
-
   end
 end
