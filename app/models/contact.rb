@@ -1,3 +1,13 @@
+# == Schema Information
+#
+# Table name: contacts
+#
+#  id         :integer          not null, primary key
+#  data       :jsonb
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+
 # frozen_string_literal: true
 
 class Contact < ApplicationRecord

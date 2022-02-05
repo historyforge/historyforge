@@ -1,3 +1,14 @@
+# == Schema Information
+#
+# Table name: cms_menus
+#
+#  id         :integer          not null, primary key
+#  name       :string
+#  data       :json
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+
 # frozen_string_literal: true
 
 module Cms

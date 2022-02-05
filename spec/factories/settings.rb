@@ -1,3 +1,23 @@
+# == Schema Information
+#
+# Table name: settings
+#
+#  id                :integer          not null, primary key
+#  key               :string
+#  name              :string
+#  hint              :string
+#  input_type        :string
+#  group             :string
+#  value             :text
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#  settings_group_id :integer
+#
+# Indexes
+#
+#  index_settings_on_settings_group_id  (settings_group_id)
+#
+
 # frozen_string_literal: true
 
 FactoryBot.define do

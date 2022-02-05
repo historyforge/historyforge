@@ -50,6 +50,7 @@ gem 'slim'
 gem 'sprockets-rails'
 
 group :development do
+  gem 'annotate'
   gem 'byebug'
   gem 'letter_opener'
   gem 'letter_opener_web'

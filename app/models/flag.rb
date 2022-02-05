@@ -1,3 +1,26 @@
+# == Schema Information
+#
+# Table name: flags
+#
+#  id             :integer          not null, primary key
+#  flaggable_type :string
+#  flaggable_id   :integer
+#  user_id        :integer
+#  reason         :string
+#  message        :text
+#  comment        :text
+#  resolved_by_id :integer
+#  resolved_at    :datetime
+#  created_at     :datetime         not null
+#  updated_at     :datetime         not null
+#
+# Indexes
+#
+#  index_flags_on_flaggable_type_and_flaggable_id  (flaggable_type,flaggable_id)
+#  index_flags_on_resolved_by_id                   (resolved_by_id)
+#  index_flags_on_user_id                          (user_id)
+#
+
 # frozen_string_literal: true
 
 class Flag < ApplicationRecord

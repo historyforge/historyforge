@@ -1,3 +1,19 @@
+# == Schema Information
+#
+# Table name: ipums_records
+#
+#  histid     :uuid             not null, primary key
+#  serial     :integer
+#  year       :integer
+#  data       :jsonb
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+# Indexes
+#
+#  index_ipums_records_on_histid  (histid)
+#
+
 # frozen_string_literal: true
 
 class IpumsRecord < ApplicationRecord

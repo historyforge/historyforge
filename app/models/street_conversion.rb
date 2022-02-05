@@ -1,3 +1,23 @@
+# == Schema Information
+#
+# Table name: street_conversions
+#
+#  id                :integer          not null, primary key
+#  from_prefix       :string
+#  to_prefix         :string
+#  from_name         :string
+#  to_name           :string
+#  from_suffix       :string
+#  to_suffix         :string
+#  from_city         :string
+#  to_city           :string
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#  from_house_number :string
+#  to_house_number   :string
+#  year              :integer
+#
+
 # frozen_string_literal: true
 
 class StreetConversion < ApplicationRecord

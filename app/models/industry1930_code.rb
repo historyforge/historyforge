@@ -1,3 +1,14 @@
+# == Schema Information
+#
+# Table name: industry1930_codes
+#
+#  id         :integer          not null, primary key
+#  code       :string
+#  name       :string
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+
 # frozen_string_literal: true
 
 class Industry1930Code < ApplicationRecord

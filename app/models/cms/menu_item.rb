@@ -1,3 +1,26 @@
+# == Schema Information
+#
+# Table name: cms_menu_items
+#
+#  id               :integer          not null, primary key
+#  menu_id          :integer
+#  ancestry         :string
+#  title            :string
+#  url              :string
+#  is_external      :boolean
+#  show_as_expanded :boolean
+#  enabled          :boolean
+#  position         :integer
+#  data             :json
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#
+# Indexes
+#
+#  index_cms_menu_items_on_ancestry  (ancestry)
+#  index_cms_menu_items_on_menu_id   (menu_id)
+#
+
 # frozen_string_literal: true
 
 module Cms

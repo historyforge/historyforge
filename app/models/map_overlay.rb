@@ -1,3 +1,22 @@
+# == Schema Information
+#
+# Table name: map_overlays
+#
+#  id            :integer          not null, primary key
+#  name          :string
+#  year_depicted :integer
+#  url           :string
+#  active        :boolean
+#  position      :integer
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  locality_id   :integer
+#
+# Indexes
+#
+#  index_map_overlays_on_locality_id  (locality_id)
+#
+
 # frozen_string_literal: true
 
 class MapOverlay < ApplicationRecord

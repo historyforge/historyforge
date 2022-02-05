@@ -1,3 +1,34 @@
+# == Schema Information
+#
+# Table name: photographs
+#
+#  id             :integer          not null, primary key
+#  created_by_id  :integer
+#  building_id    :integer
+#  description    :text
+#  creator        :string
+#  date_text      :string
+#  date_start     :date
+#  date_end       :date
+#  location       :string
+#  identifier     :string
+#  notes          :text
+#  latitude       :decimal(, )
+#  longitude      :decimal(, )
+#  created_at     :datetime         not null
+#  updated_at     :datetime         not null
+#  reviewed_by_id :integer
+#  reviewed_at    :datetime
+#  date_type      :integer          default("0")
+#  caption        :text
+#
+# Indexes
+#
+#  index_photographs_on_building_id     (building_id)
+#  index_photographs_on_created_by_id   (created_by_id)
+#  index_photographs_on_reviewed_by_id  (reviewed_by_id)
+#
+
 # frozen_string_literal: true
 
 class Photograph < ApplicationRecord

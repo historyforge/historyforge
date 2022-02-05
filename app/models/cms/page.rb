@@ -1,3 +1,24 @@
+# == Schema Information
+#
+# Table name: cms_pages
+#
+#  id         :integer          not null, primary key
+#  type       :string           default("Cms::Page")
+#  url_path   :string
+#  controller :string
+#  action     :string
+#  published  :boolean          default("true")
+#  visible    :boolean          default("false")
+#  data       :json
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+# Indexes
+#
+#  index_cms_pages_on_controller_and_action  (controller,action)
+#  index_cms_pages_on_url_path               (url_path)
+#
+
 # frozen_string_literal: true
 
 module Cms

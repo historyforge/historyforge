@@ -1,3 +1,19 @@
+# == Schema Information
+#
+# Table name: annotations
+#
+#  id              :integer          not null, primary key
+#  annotation_text :text
+#  map_overlay_id  :integer
+#  building_id     :integer
+#
+# Indexes
+#
+#  index_annotations_on_building_id                     (building_id)
+#  index_annotations_on_building_id_and_map_overlay_id  (building_id,map_overlay_id) UNIQUE
+#  index_annotations_on_map_overlay_id                  (map_overlay_id)
+#
+
 # frozen_string_literal: true
 
 class Annotation < ApplicationRecord
