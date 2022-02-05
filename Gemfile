@@ -8,7 +8,6 @@ gem 'active_storage_validations'
 gem 'acts_as_list'
 gem 'airbrake'
 gem 'ancestry'
-gem 'andand'
 gem 'ar_doc_store'
 gem 'bcrypt'
 gem 'bootsnap', require: false

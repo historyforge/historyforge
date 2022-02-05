@@ -134,11 +134,11 @@ class CensusRecord < ApplicationRecord
   end
 
   def latitude
-    building.andand.lat
+    building&.lat
   end
 
   def longitude
-    building.andand.lon
+    building&.lon
   end
 
   def fellows

@@ -116,10 +116,9 @@ module Cms
     end
 
     def add_slash_to_url_path
-      self.url_path = url_path.andand.strip
+      self.url_path = url_path&.strip
       self.url_path = "/#{url_path}" if url_path.present? && !url_path.starts_with?('/')
-      self.title = title.andand.strip
-      true # TODO: remove this in Rails 5.1 because throw :abort covers this now
+      self.title = title&.strip
     end
 
     def set_url_path
