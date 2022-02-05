@@ -19,11 +19,13 @@ require 'rails/test_unit/railtie'
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
+require 'csv'
 
 unless ENV['DATABASE_URL']
   require 'dotenv'
   Dotenv.load('.env', ".env.#{Rails.env}")
 end
+
 
 module HistoryForge
   class Application < Rails::Application
