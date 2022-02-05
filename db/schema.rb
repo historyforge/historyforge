@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_22_173902) do
+ActiveRecord::Schema.define(version: 2022_02_05_165522) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
@@ -963,6 +963,14 @@ ActiveRecord::Schema.define(version: 2022_01_22_173902) do
     t.text "value"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.bigint "settings_group_id"
+    t.index ["settings_group_id"], name: "index_settings_on_settings_group_id"
+  end
+
+  create_table "settings_groups", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "street_conversions", force: :cascade do |t|
@@ -1104,5 +1112,6 @@ ActiveRecord::Schema.define(version: 2022_01_22_173902) do
   add_foreign_key "professions", "profession_groups"
   add_foreign_key "professions", "profession_subgroups"
   add_foreign_key "search_params", "users"
+  add_foreign_key "settings", "settings_groups"
   add_foreign_key "terms", "vocabularies"
 end

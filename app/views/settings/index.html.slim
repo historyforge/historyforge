@@ -1,4 +1,23 @@
-- set_page_title 'Your HistoryForge Settings'
-
-= form_with url: settings_path, method: :post, id: 'settings-form' do
-  = render 'fields'
+- if @groups
+  - set_page_title 'Your HistoryForge Settings'
+  .list-group
+    - @groups.each do |group|
+      .list-group-item= link_to group.name, settings_path(group_id: group.id)
+- else
+  - content_for :pills do
+    = link_to 'Back to Settings', settings_path, class: 'btn btn-sm btn-light'
+  - set_page_title @group.name
+  = form_with url: settings_path(group_id: @group.id), method: :post, id: 'settings-form', remote: false do
+    .list-group
+      - @settings.each do |setting|
+        .list-group-item
+          = simple_fields_for setting do |form|
+            - if setting.name =~ /city/
+              = form.input :value, as: :select, collection: City.all.map { |city| [city.name, city.key] }, label: setting.name, hint: setting.hint, input_html: { name: "settings[#{setting.id}][value]" }
+            - elsif setting.input_type == 'boolean'
+              = form.input :value, as: :boolean, label: setting.name, inline_label: setting.hint, input_html: { name: "settings[#{setting.id}][value]" }
+            - else
+              = form.input :value, as: setting.input_type.to_sym, label: setting.name, hint: setting.hint, input_html: { name: "settings[#{setting.id}][value]" }
+    .card-footer
+      button.btn.btn-lg.btn-primary type="submit" Submit
+      = link_to 'Cancel', settings_path, class: 'btn btn-lg btn-secondary'

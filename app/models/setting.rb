@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Setting < ApplicationRecord
+  belongs_to :group, class_name: "SettingsGroup", foreign_key: :settings_group_id
+  delegate :name, to: :group, prefix: true
 
   def self.expire_cache
     Rails.cache.delete('settings')
@@ -50,7 +52,7 @@ class Setting < ApplicationRecord
     setting.name = name || key.to_s.humanize.titleize
     setting.input_type = type
     setting.value = value.to_s
-    setting.group = group
+    setting.group = SettingsGroup.find_or_create_by(name: group)
     setting.hint = hint
     setting.save
     expire_cache
