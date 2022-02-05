@@ -55,7 +55,7 @@ class CensusRecordSearch < SearchQueryBuilder
       col = sort_unit['colId']
       dir = sort_unit['sort']
       order = order_clause_for(col, dir)
-      builder.order(entity_class.sanitize_sql_for_order(order)) if order
+      builder.order(Arel.sql(entity_class.sanitize_sql_for_order(order))) if order
     end
   end
 

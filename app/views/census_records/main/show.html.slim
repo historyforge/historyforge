@@ -38,8 +38,9 @@
 
 .card.mb-3
   .card-header
+    = link_to 'Go to Census Sheet', path_to_census_sheet(@record), class: 'float-right'
     - if @record.person_id
-      = link_to 'Go to Person Record', @record.person, class: 'float-right'
+      = link_to 'Go to Person Record', @record.person, class: 'float-right mr-4'
     | Census Scope
   .card-body.p-0
     table.table.table-bordered.table-condensed.mb-0
