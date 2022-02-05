@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class UserMailer < ActionMailer::Base
+class UserMailer < ApplicationMailer
   def disabled_change_password(user)
     @user = user
     @subject = "#{ENV['APP_NAME']} You account is disabled until you change your password"
