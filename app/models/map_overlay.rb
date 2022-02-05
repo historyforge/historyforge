@@ -8,6 +8,10 @@ class MapOverlay < ApplicationRecord
   before_destroy :check_for_annotations
   accepts_nested_attributes_for :annotations, reject_if: proc { |p| p['annotation_text'].blank? }
 
+  def can_delete?
+    annotations.count == 0
+  end
+
   def self.input_field_options
     order(:position).map { |item| [item.name, item.id] }
   end
