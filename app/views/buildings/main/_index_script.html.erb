@@ -2,8 +2,8 @@
 document.addEventListener('DOMContentLoaded', (event) => {
   $('#new_s').advancedSearch({
     url: '/buildings/advanced_search_filters.json',
-    fields: <%== @search.f.to_json.html_safe -%>,
-    filters: <%== @search.s.to_json.html_safe -%>
+    fields: <%== @search.f.to_json -%>,
+    filters: <%== @search.s.to_json -%>
   });
 
   new agGrid.Grid(document.querySelector('#grid'), {
@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
       actionCellRenderer: ActionCellRenderer,
       nameCellRenderer: NameCellRenderer, htmlCellRenderer: HTMLCellRenderer
     },
-    columnDefs: <%= BuildingGridTranslator.new(@search).column_def -%>,
+    columnDefs: <%== BuildingGridTranslator.new(@search).column_def.to_json -%>,
     defaultColDef: { width: 100 },
     rowSelection: 'single',
     rowModelType: 'infinite',

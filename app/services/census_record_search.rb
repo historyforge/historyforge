@@ -13,7 +13,7 @@ class CensusRecordSearch < SearchQueryBuilder
   end
 
   def results
-    scoped.to_a.map(&:decorate)
+    scoped.lazy.map(&:decorate)
   end
   memoize :results
 

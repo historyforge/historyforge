@@ -183,6 +183,8 @@ GEM
     font-awesome-rails (4.7.0.8)
       railties (>= 3.2, < 8.0)
     geocoder (1.7.3)
+    get_process_mem (0.2.7)
+      ffi (~> 1.0)
     globalid (1.0.0)
       activesupport (>= 5.0)
     hashie (5.0.0)
@@ -263,6 +265,7 @@ GEM
       multi_json (~> 1.3)
       multi_xml (~> 0.5)
       rack (>= 1.2, < 3)
+    oj (3.13.11)
     omniauth (2.0.4)
       hashie (>= 3.4.6)
       rack (>= 1.6.2, < 3)
@@ -469,6 +472,7 @@ DEPENDENCIES
   fast_memoize
   font-awesome-rails
   geocoder
+  get_process_mem
   image_processing
   jbuilder (~> 2.0)
   jsbundling-rails
@@ -480,6 +484,7 @@ DEPENDENCIES
   mini_magick
   net-smtp
   non-stupid-digest-assets
+  oj
   omniauth-facebook
   omniauth-rails_csrf_protection
   paper_trail
