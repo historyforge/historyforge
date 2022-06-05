@@ -6,6 +6,11 @@ class Translator
     translate(klass, key, 'labels')
   end
 
+  def self.filter(klass, key)
+    # DataDictionary.label key, klass.name.scan(/\d{4}/)
+    translate(klass, key, 'filters') || label(klass, key)
+  end
+
   def self.hint(klass, key)
     # DataDictionary.hint key, klass.name.scan(/\d{4}/)
     translate(klass, key, 'hints')

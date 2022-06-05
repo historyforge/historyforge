@@ -40,7 +40,7 @@ module CensusRecordsHelper
   end
 
   def translated_label(klass, key)
-    Translator.label(klass, key)
+    Translator.filter(klass, key)
   end
 
   def translated_option(attribute_name, item)

@@ -32,8 +32,11 @@ en:
       m: 'Mixed/Mulatto'
       mu: 'Mulatto'
       in: 'Indian'
+      ind: 'American Indian'
       ch: 'Chinese'
+      chi: 'Chinese'
       jp: 'Japanese'
+      jap: 'Japanese'
       fil: 'Filipino'
       hin: 'Hindu'
       kor: 'Korean'
@@ -52,6 +55,9 @@ en:
       m7: 'Married spouse not present'
       m_or_m1: '1st marriage'
       m2_or_m3: '2nd or subsequent marriage'
+      nev: 'Never Married'
+      mar: 'Married'
+      sep: 'Separated'
     farm_or_house:
       f: 'Farm'
       h: 'House'
@@ -63,6 +69,9 @@ en:
       pa: 'Papers'
       na: 'Naturalized'
       amcit: 'American Citizen'
+      y: 'Yes'
+      n: 'No'
+      ap: 'Born abroad of American parents'
     employment:
       e: 'Employer'
       emp: 'Employer'
@@ -84,6 +93,8 @@ en:
       np: 'Unpaid family worker'
       pw: 'Private wage or salary worker'
       gw: 'Government wage or salary worker'
+      p: 'Private employer'
+      g: 'Government'
     war_fought:
       ww: 'World War'
       sp: 'Spanish-American War'
@@ -111,3 +122,37 @@ en:
       1: 'all'
       2: 'half or more'
       3: 'less than half'
+    activity:
+      wk: 'Working'
+      h: 'Keeping House'
+      u: 'Unable to Work'
+      inmate: 'Inmate'
+    attended_school:
+      y: 'Yes'
+      n: 'No'
+      v: '30 or over'
+    wages_or_salary_self:
+      10000+: '$10,000+'
+      even: 'Even'
+      loss: 'Loss'
+    wages_or_salary_family:
+      10000+: '$10,000+'
+      even: 'Even'
+      loss: 'Loss'
+    own_business_self:
+      10000+: '$10,000+'
+      even: 'Even'
+      loss: 'Loss'
+    own_business_family:
+      10000+: '$10,000+'
+      even: 'Even'
+      loss: 'Loss'
+    unearned_income_self:
+      10000+: '$10,000+'
+      even: 'Even'
+      loss: 'Loss'
+    unearned_income_family:
+      10000+: '$10,000+'
+      even: 'Even'
+      loss: 'Loss'
+

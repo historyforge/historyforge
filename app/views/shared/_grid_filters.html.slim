@@ -40,7 +40,7 @@
         span Fields
 
       .card-body
-        .column-count-3.checkboxes#fields
+        .column-count-2.checkboxes#fields
           - @search.all_fields.each do |field|
             label.dropdown-item.checkbox for="f_#{field}"
               = check_box_tag 'f[]', field, @search.f.include?(field), id: "f_#{field}", data: { default: @search.default_field?(field) }

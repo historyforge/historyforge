@@ -2,9 +2,9 @@
 
 # Centralizes the means to iterate all census years
 module CensusYears
-  YEARS = [1880, 1900, 1910, 1920, 1930, 1940].freeze
+  YEARS = [1880, 1900, 1910, 1920, 1930, 1940, 1950].freeze
   YEARS_IN_WORDS = %w[
-    eighteen_eighty nineteen_aught nineteen_ten nineteen_twenty nineteen_thirty nineteen_forty
+    eighteen_eighty nineteen_aught nineteen_ten nineteen_twenty nineteen_thirty nineteen_forty nineteen_fifty
   ].freeze
 
   def self.each

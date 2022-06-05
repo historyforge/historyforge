@@ -6,7 +6,18 @@ en:
         residence_1935_farm: '[Residence April 1, 1935] On a Farm'
         residence_1935_state: '[Residence April 1, 1935] State'
         residence_1935_town: '[Residence April 1, 1935] Town'
-
+        same_house_1949: '[Residence 1949] Same House'
+        on_farm_1949: '[Residence 1949] On a Farm'
+        same_county_1949: '[Residence 1949] Same County'
+        county_1949: '[Residence 1949] County or Nearest Place'
+        state_1949: '[Residence 1949] State or Country'
+        wages_or_salary_self: '[This Person in 1949] Wages or Salary'
+        wages_or_salary_family: '[Family Members in 1949] Wages or Salary'
+        own_business_self: '[This Person in 1949] Own Business, Practice, or Farm'
+        own_business_family: '[Family Members in 1949] Own Business, Practice, or Farm'
+        unearned_income_self: "[This Person in 1949] Interest, Dividends, Veteran's Allowances, Pensions, Rents, Other"
+        unearned_income_family: "[Family Members in 1949] Interest, Dividends, Veteran's Allowances, Pensions, Rents, Other"
+        newlyweds: 'Married/Widowed/Divorced/Separated Less Than 1 Year'
     labels:
       census_record:
         census_scope: 'Census Scope'
@@ -61,6 +72,8 @@ en:
         industry: 'Industry'
         industry1930_code_id: 'Industry Code (1930)'
         insane: 'Insane'
+        institution_name: 'Institution Name'
+        institution_type: 'Institution Type'
         just_married: 'Married during Census Year'
         language_spoken: 'Language Spoken'
         last_name: 'Last Name'
@@ -158,5 +171,37 @@ en:
         attended_school: 'Attended School or College?'
         age: 'Age at Last Birthday'
         veteran: 'Veteran or Veteran-related'
-
-
+      census1950_record:
+        family_id: 'Serial No.'
+        lives_on_farm: 'Live on Farm'
+        lives_on_3_acres: 'Live on 3 or More Acres'
+        ag_questionnaire_no: 'Agriculture Questionnaire No.'
+        activity_last_week: 'Activity Last Week'
+        worked_last_week: 'Any Work Last Week'
+        seeking_work: 'Seeking Work'
+        employed_absent: 'Employed but Temporarily Absent'
+        hours_worked: 'Hours Worked Week Prior to Census'
+        same_house_1949: 'Same House'
+        on_farm_1949: 'On a Farm'
+        same_county_1949: 'Same County'
+        county_1949: 'County or Nearest Place'
+        state_1949: 'State or Country'
+        highest_grade: 'Highest Grade of School Attended'
+        finished_grade: 'Finished Grade'
+        weeks_seeking_work: 'Weeks Seeking Work in 1949'
+        weeks_worked: 'Weeks Worked in 1949'
+        wages_or_salary_self: 'Wages or Salary'
+        wages_or_salary_family: 'Wages or Salary'
+        own_business_self: 'Own Business, Practice, or Farm'
+        own_business_family: 'Own Business, Practice, or Farm'
+        unearned_income_self: "Interest, Dividends, Veteran's Allowances, Pensions, Rents, Other"
+        unearned_income_family: "Interest, Dividends, Veteran's Allowances, Pensions, Rents, Other"
+        veteran_ww2: 'Veteran of U.S. Armed Forces in WWII'
+        veteran_ww1: 'Veteran of U.S. Armed Forces in WWI'
+        veteran_other: 'Veteran of U.S. Armed Forces Present/Another Time'
+        item_20_entries: 'Entry in Items 20a-c'
+        last_occupation: 'Last Occupation'
+        last_industry: 'Last Industry'
+        last_worker_class: 'Last Worker Class'
+        years_married: 'Years Since (Last) Married, Widowed, Divorced, or Separated'
+        newlyweds: 'Less Than 1 Year'

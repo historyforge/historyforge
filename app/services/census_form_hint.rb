@@ -28,16 +28,20 @@ class CensusFormHint
     @column ||= formatted_column klass::COLUMNS[field]
   end
 
+  def name_for_column
+    @year == 1950 ? 'Item' : 'Column'
+  end
+
   def formatted_column(name)
     case name
     when nil
       nil
     when /-/
-      "<u>Columns #{name}</u><br />"
+      "<u>#{name_for_column}s #{name}</u><br />"
     when String
-      name.length > 1 ? "<u>#{name}</u><br />" : "<u>Column #{name}</u><br />"
+      name.length > 1 ? "<u>#{name}</u><br />" : "<u>#{name_for_column} #{name}</u><br />"
     else
-      "<u>Column #{name}</u><br />"
+      "<u>#{name_for_column} #{name}</u><br />"
     end
   end
 
