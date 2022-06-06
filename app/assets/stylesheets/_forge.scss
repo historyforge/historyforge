@@ -35,6 +35,12 @@ body.streetview {
     left: 0;
   }
   transition: 0.5s left ease;
+
+  h3 + .btn-group {
+    .btn {
+      padding: 0.375rem 0;
+    }
+  }
   .btn-group {
     margin-bottom:12px;
   }
