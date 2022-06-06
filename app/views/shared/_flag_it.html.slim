@@ -7,7 +7,7 @@
 - content_for :body_end do
   #flagModal.modal.fade
     .modal-dialog.modal-lg
-      = simple_form_for Flag.new(flaggable: item) do |form|
+      = simple_form_for Flag.new(flaggable: (item.try(:object) || item)) do |form|
         = form.hidden_field :flaggable_type
         = form.hidden_field :flaggable_id
 
