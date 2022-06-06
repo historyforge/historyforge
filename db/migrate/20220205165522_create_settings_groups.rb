@@ -17,6 +17,10 @@ class CreateSettingsGroups < ActiveRecord::Migration[7.0]
           setting.group = group
           setting.save!
         end
+
+        Setting.add 'facebook_login_enabled', type: :boolean, value: '0', group: 'Authentication', name: 'Enable Facebook Authentication', hint: 'Allow users to signup with their Facebook account.'
+        Setting.add 'facebook_login_app_id', value: '',  group: 'Authentication'
+        Setting.add 'facebook_login_secret', value: '', group: 'Authentication'
       end
     end
   end
