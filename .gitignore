@@ -71,5 +71,5 @@ yarn-debug.log*
 /.rakeTasks
 bin/deploy
 
-/app/assets/builds/*
-!/app/assets/builds/.keep
+/app/assets/builds2/*
+!/app/assets/builds2/.keep
