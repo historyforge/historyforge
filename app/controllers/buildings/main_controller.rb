@@ -203,8 +203,12 @@ class Buildings::MainController < ApplicationController
 
   def load_buildings
     authorize! :read, Building
-    @search = BuildingSearch.generate params: params,
+    @search = BuildingSearch.generate params: search_params,
                                       user: current_user
     @search.expanded = true if request.format.csv?
+  end
+
+  def search_params
+    params.permit(:f, :s, :g, :from, :to, :sort)
   end
 end

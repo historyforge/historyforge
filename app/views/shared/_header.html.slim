@@ -64,8 +64,8 @@ header
           li.nav-item= link_to 'Volunteer', '/volunteer', class: 'nav-link'
 
           - if user_signed_in?
-            li.nav-item.dropdown
-              a.nav-link.dropdown-toggle data-toggle='dropdown' href="#"
+            li.nav-item.dropleft
+              a.nav-link.dropdown-toggle data-toggle='dropdown' data-placement="left" href="#"
                 i.fa.fa-user
               .dropdown-menu
                 .dropdown-item-text= current_user.name

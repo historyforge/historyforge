@@ -40,7 +40,7 @@ class SearchQueryBuilder
   end
 
   def columns
-    f.concat(['id'])
+    f&.concat(['id']) || []
   end
   memoize :columns
 

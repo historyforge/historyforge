@@ -6,7 +6,7 @@ module People
 
     def index
       authorize! :read, Person
-      @search = PersonSearch.generate params: params, user: current_user
+      @search = PersonSearch.generate params: search_params, user: current_user
       @translator = CensusGridTranslator.new(@search)
       respond_to do |format|
         format.html
@@ -38,7 +38,6 @@ module People
     def create
       @person = Person.new resource_params
       authorize! :create, @person
-      @person.created_by = current_user
       if @person.save
         flash[:notice] = 'Person created.'
         redirect_to @person
@@ -78,6 +77,10 @@ module People
     end
 
     private
+
+    def search_params
+      params.permit(:f, :s, :g, :from, :to, :sort)
+    end
 
     def resource_class
       Person

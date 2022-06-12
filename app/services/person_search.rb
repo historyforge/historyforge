@@ -2,7 +2,7 @@
 
 class PersonSearch < SearchQueryBuilder
   def self.generate(params: {}, user: nil)
-    new user: user,
+    new user:,
         entity_class: Person,
         s: params[:s],
         f: params[:f],
