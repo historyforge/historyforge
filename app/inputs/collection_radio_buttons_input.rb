@@ -45,15 +45,16 @@ class CollectionRadioButtonsInput < SimpleForm::Inputs::CollectionRadioButtonsIn
     if options[:coded]
       code = item.downcase == item ? item.capitalize : item
       code = code.gsub('_', ' ')
-      label = translated_option item
-      code == label ? label : "#{code} - #{translated_option(item)}"
+      label = translated_option item, code: options[:coded]
+      code == label ? label : "#{code} - #{label}"
     else
       translated_option(item).titleize
     end
   end
 
-  def translated_option(item)
-    Translator.option(attribute_name, item)
+  def translated_option(item, code: false)
+    attribute = code.is_a?(Symbol) ? code : attribute_name
+    Translator.option(attribute, item)
   end
 
   def with_extra_items(items)

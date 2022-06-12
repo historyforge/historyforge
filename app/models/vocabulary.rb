@@ -48,7 +48,8 @@ class Vocabulary < ApplicationRecord
       1910 => %w[language_spoken],
       1920 => %w[mother_tongue mother_tongue_father mother_tongue_mother],
       1930 => %w[mother_tongue],
-      1940 => %w[mother_tongue]
+      1940 => %w[mother_tongue],
+      1950 => %w[]
     },
     pob: {
       1880 => %w[pob pob_father pob_mother],
@@ -56,7 +57,8 @@ class Vocabulary < ApplicationRecord
       1910 => %w[pob pob_father pob_mother],
       1920 => %w[pob pob_father pob_mother],
       1930 => %w[pob pob_father pob_mother],
-      1940 => %w[pob pob_father pob_mother]
+      1940 => %w[pob pob_father pob_mother],
+      1950 => %w[pob pob_faterh pob_mother]
     },
     relation_to_head: {
       1880 => %w[relation_to_head],
@@ -64,7 +66,8 @@ class Vocabulary < ApplicationRecord
       1910 => %w[relation_to_head],
       1920 => %w[relation_to_head],
       1930 => %w[relation_to_head],
-      1940 => %w[relation_to_head]
+      1940 => %w[relation_to_head],
+      1950 => %w[relation_to_head]
     }
   }.freeze
 end

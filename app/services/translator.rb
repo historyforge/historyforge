@@ -22,7 +22,9 @@ class Translator
 
   def self.option(attribute_name, item)
     # DataDictionary.census_code attribute_name, item
-    I18n.t("#{attribute_name}.#{item.downcase.gsub(/\W/, '')}", scope: 'census_codes', default: item).presence
+    lookup = "#{attribute_name}.#{item.downcase.gsub(/\W/, '')}"
+    Rails.logger.info lookup
+    I18n.t(lookup, scope: 'census_codes', default: item).presence
   end
 
   attr_reader :klass, :key, :namespace

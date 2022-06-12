@@ -1,6 +1,6 @@
 - set_page_title @record.name
 
-- content_for :pills do
+div.mb-3
   - if can?(:create, Flag)
     = render 'shared/flag_it', item: @model, item_class: 'btn btn-secondary'
   - if can?(:update, @model)
