@@ -93,8 +93,8 @@ class CensusRecordSearch < SearchQueryBuilder
         g: params[:g],
         sort: params[:sort],
         scope: scope && scope != 'on' ? scope.to_sym : nil,
-        from: params[:from].to_i,
-        to: params[:to].to_i
+        from: params[:from]&.to_i,
+        to: params[:to]&.to_i
   end
 
   def default_fields

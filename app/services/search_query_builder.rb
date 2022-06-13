@@ -44,6 +44,10 @@ class SearchQueryBuilder
   end
   memoize :columns
 
+  def total_records
+    scoped.count
+  end
+
   class Builder
     def initialize(entity_class, params)
       @scoped = entity_class.ransack(params).result
