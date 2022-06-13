@@ -69,7 +69,7 @@ class AttributeBuilder::BaseAttribute
   def filter_translation
     I18n.t("simple_form.filters.#{@klass ? @klass.name.underscore : nil}.#{key}", default:
       I18n.t("simple_form.filters.census_record.#{key}", default:
-        I18n.t("simple_form.filters.defaults.#{key}", default: (@klass ? @klass : CensusRecord).human_attribute_name(key))))
+        I18n.t("simple_form.filters.defaults.#{key}", default: nil)))
   end
 
   def label_translation
