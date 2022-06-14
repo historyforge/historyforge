@@ -209,6 +209,6 @@ class Buildings::MainController < ApplicationController
   end
 
   def search_params
-    params.permit(:f, :s, :g, :from, :to, :sort)
+    params.permit!.to_h
   end
 end

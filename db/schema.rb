@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_04_234821) do
+ActiveRecord::Schema.define(version: 2022_06_14_013215) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
@@ -177,7 +177,6 @@ ActiveRecord::Schema.define(version: 2022_06_04_234821) do
     t.bigint "reviewed_by_id"
     t.datetime "reviewed_at", precision: 6
     t.integer "page_number"
-    t.string "page_side", limit: 1
     t.integer "line_number"
     t.string "county"
     t.string "city"
@@ -206,7 +205,6 @@ ActiveRecord::Schema.define(version: 2022_06_04_234821) do
     t.string "race"
     t.string "sex"
     t.integer "age"
-    t.integer "age_months"
     t.string "marital_status"
     t.string "pob"
     t.boolean "foreign_born", default: false
@@ -257,6 +255,8 @@ ActiveRecord::Schema.define(version: 2022_06_04_234821) do
     t.uuid "histid"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "birth_month"
+    t.string "page_side"
     t.index ["building_id"], name: "index_census1950_records_on_building_id"
     t.index ["created_by_id"], name: "index_census1950_records_on_created_by_id"
     t.index ["locality_id"], name: "index_census1950_records_on_locality_id"

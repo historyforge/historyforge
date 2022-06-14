@@ -10,7 +10,6 @@
 #  reviewed_by_id         :integer
 #  reviewed_at            :datetime
 #  page_number            :integer
-#  page_side              :string(1)
 #  line_number            :integer
 #  county                 :string
 #  city                   :string
@@ -39,7 +38,6 @@
 #  race                   :string
 #  sex                    :string
 #  age                    :integer
-#  age_months             :integer
 #  marital_status         :string
 #  pob                    :string
 #  foreign_born           :boolean          default("false")
@@ -90,6 +88,8 @@
 #  histid                 :uuid
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
+#  birth_month            :integer
+#  page_side              :string
 #
 # Indexes
 #

@@ -16,7 +16,9 @@ class CollectionRadioButtonsInput < SimpleForm::Inputs::CollectionRadioButtonsIn
 
     return 'blank' if values.blank?
 
-    if value.respond_to?(:map)
+    if attribute_name =~ /birth_month/ && value.is_a?(Integer)
+      Date::MONTHNAMES[value]
+    elsif value.respond_to?(:map)
       values.map { |v| option_label(v) }.select(&:present?).join('<br>').html_safe
     else
       option_label(value)

@@ -37,7 +37,7 @@ RSpec.describe '1920 US Census' do
     fill_in 'Relation to Head', with: 'Head'
 
     choose 'R - Rented', name: 'census_record[owned_or_rented]'
-    choose 'F - Free of mortgage', name: 'census_record[mortgage]'
+    choose 'F - Free of Mortgage', name: 'census_record[mortgage]'
 
     choose 'W - White', name: 'census_record[race]'
     choose 'M - Male', name: 'census_record[sex]'
@@ -58,7 +58,7 @@ RSpec.describe '1920 US Census' do
 
     fill_in 'Occupation', with: 'Turnkey', match: :first
     fill_in 'Industry', with: 'Hotel'
-    choose 'W - Wage or salary worker', name: 'census_record[employment]'
+    choose 'W - Wage or Salary Worker', name: 'census_record[employment]'
     fill_in 'Occupation Code', with: 'VX70'
 
     fill_in 'Notes', with: 'Sponge Bob is a fictional cartoon character.'

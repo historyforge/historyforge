@@ -53,7 +53,7 @@ en:
       wd: 'Widowed'
       d: 'Divorced'
       m7: 'Married Spouse Not Present'
-      m_or_m1: '1st marriage'
+      m_or_m1: '1st Marriage'
       m2_or_m3: '2nd or Subsequent Marriage'
       nev: 'Never Married'
       mar: 'Married'

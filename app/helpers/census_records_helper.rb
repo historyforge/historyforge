@@ -83,6 +83,10 @@ module CensusRecordsHelper
     controller.year == 1940
   end
 
+  def is_1950?
+    controller.year == 1950
+  end
+
   def aggregate_chart_data(data)
     sorted = data.sort_by(&:last).reverse
     if sorted.length < 10

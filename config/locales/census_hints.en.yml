@@ -108,7 +108,7 @@ en:
         institution_name: 'The Institution Name is item (e) in the upper left corner of the sheet.'
         institution_type: 'The Institution Type is item (e) in the upper left corner of the sheet.'
         age: 'Enter what you see on the census. If the field is blank, leave blank. If the answer is Un (Unknown) enter 999. A child that is less than one year of age will have their birth month listed. If the age is entered this way on the census, select the corresponding birth month on HistoryForge.'
-        age_months: 'Enter what you see on the census. If the field is blank, leave blank. If the answer is Un (Unknown) enter 999. A child that is less than one year of age will have their birth month listed. If the age is entered this way on the census, select the corresponding birth month on HistoryForge.'
+        birth_month: 'Enter what you see on the census. If the field is blank, leave blank. If the answer is Un (Unknown) enter 999. A child that is less than one year of age will have their birth month listed. If the age is entered this way on the census, select the corresponding birth month on HistoryForge.'
         years_married: 'Enter the number of years on the census or check the box for less than one year.'
         children_born: 'Enter the number of children on the census. If none, leave the field blank on HistoryForge.'
         naturalized_alien: 'There is no corresponding field on the census.  Check the box if the individual was not born in the United States and does not have the designation “AP” under Naturalization.'

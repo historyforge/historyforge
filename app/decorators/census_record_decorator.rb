@@ -19,6 +19,10 @@ class CensusRecordDecorator < ApplicationDecorator
     end
   end
 
+  def birth_month
+    Date::MONTHNAMES[object.birth_month]
+  end
+
   def locality
     object.locality&.name
   end

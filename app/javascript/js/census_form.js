@@ -41,7 +41,7 @@ $(function() {
   })
 
   $forms.find('input[type=radio][value=other]').on('click', function () {
-    const $input = $(this).next().find('input[type=text]')
+    const $input = $(this).next().find('input')
     if ($(this).is(':checked')) { $input.removeAttr('disabled').focus() } else { $input.attr('disabled', true) }
   })
 

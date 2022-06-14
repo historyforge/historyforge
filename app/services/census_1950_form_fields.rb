@@ -17,7 +17,7 @@ class Census1950FormFields < CensusFormFieldConfig
   input :race, as: :radio_buttons_other, coded: true
   input :sex, as: :radio_buttons, coded: true
   input :age, as: :integer, min: 0, max: 130
-  input :age_months, as: :radio_buttons, collection: (1..12).map { |m| ["#{m} - #{Date::ABBR_MONTHNAMES[m]}", m] }
+  input :birth_month, as: :radio_buttons, collection: (1..12).map { |m| ["#{m} - #{Date::ABBR_MONTHNAMES[m]}", m] }
   input :marital_status, as: :radio_buttons, coded: true
 
   divider 'Place of Birth & Naturalization'
@@ -26,7 +26,7 @@ class Census1950FormFields < CensusFormFieldConfig
   input :naturalized_alien, as: :radio_buttons, coded: true
 
   divider 'For Persons 14 Years of Age and Over'
-  input :activity_last_week, as: :radio_buttons_other, coded: :activity
+  input :activity_last_week, as: :radio_buttons_other, coded: :activity, other_label: 'Ot - Other', other_type: :number, other_index: -1
   input :worked_last_week, as: :boolean
   input :seeking_work, as: :boolean
   input :employed_absent, as: :boolean
@@ -76,7 +76,7 @@ class Census1950FormFields < CensusFormFieldConfig
     input :veteran_ww1, as: :boolean
     input :veteran_other, as: :boolean
 
-    divider 'Additional Sample Questions', hint: 'The rest of this form pertains to person whose name appears on the last line requiring sample question responses.'
+    divider 'Additional Sample Questions', hint: 'The rest of this form pertains to the person whose name appears on the last line requiring sample question responses.'
     divider 'If This Person Worked Last Year'
     input :item_20_entries, as: :boolean
     input :last_occupation

@@ -40,7 +40,7 @@ RSpec.describe '1910 US Census' do
     choose 'M - Male', name: 'census_record[sex]'
     fill_in 'Age', with: '28'
     fill_in 'Age (Months)', with: '5'
-    choose 'M or M1 - 1st marriage', name: 'census_record[marital_status]'
+    choose 'M or M1 - 1st Marriage', name: 'census_record[marital_status]'
     fill_in 'Years of Present Marriage', with: '6'
     fill_in 'No. Children Born', with: '3'
     fill_in 'No. Children Alive', with: '1'
@@ -54,7 +54,7 @@ RSpec.describe '1910 US Census' do
 
     fill_in 'Occupation', with: 'Turnkey'
     fill_in 'Industry', with: 'Hotel'
-    choose 'W - Wage or salary worker', name: 'census_record[employment]'
+    choose 'W - Wage or Salary Worker', name: 'census_record[employment]'
     check 'Without Work'
     fill_in 'Unemployed Weeks (1909)', with: '10'
     check 'Can Read'
@@ -62,7 +62,7 @@ RSpec.describe '1910 US Census' do
     check 'Attended School'
 
     choose 'R - Rented', name: 'census_record[owned_or_rented]'
-    choose 'F - Free of mortgage', name: 'census_record[mortgage]'
+    choose 'F - Free of Mortgage', name: 'census_record[mortgage]'
     choose 'H - House', name: 'census_record[farm_or_house]'
     choose 'UA - Union Army', name: 'census_record[civil_war_vet]'
     check 'Blind'

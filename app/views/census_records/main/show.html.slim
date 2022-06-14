@@ -126,10 +126,10 @@ div.mb-3
 
 - if can?(:review, CensusRecord)
   .alert.alert-info
-    = "Entered by #{@record.created_by&.name || 'a kind soul'} on #{@record.created_at.to_s(:long)}"
+    = "Entered by #{@record.created_by&.name || 'a kind soul'} on #{@record.created_at.to_formatted_s(:long)}"
   - if @record.reviewed?
     .alert.alert-info
-      = "Reviewed by #{@record.reviewed_by&.name || 'a kind soul'} on #{@record.reviewed_at.to_s(:long)}"
+      = "Reviewed by #{@record.reviewed_by&.name || 'a kind soul'} on #{@record.reviewed_at.to_formatted_s(:long)}"
 
 = render 'shared/change_history', item: @model
 

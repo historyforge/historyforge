@@ -79,7 +79,7 @@ module People
     private
 
     def search_params
-      params.permit(:f, :s, :g, :from, :to, :sort)
+      params.permit!.to_h
     end
 
     def resource_class
