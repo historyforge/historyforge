@@ -147,6 +147,14 @@ class Buildings::MainController < ApplicationController
     redirect_to @photo.file.variant(resize_to_fit: [width, width * 3])
   end
 
+  def params
+    @_params || request.parameters
+  end
+
+  def params=(value)
+    @_params = value
+  end
+
   private
 
   def load_residents

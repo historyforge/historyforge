@@ -188,7 +188,7 @@ module CensusRecords
     end
 
     def search_params
-      params.permit(:f, :s, :g, :from, :to, :sort)
+      params.permit!.to_h #(:f, :s, :g, :from, :to, :sort)
     end
 
     def load_census_records
