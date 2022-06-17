@@ -55,7 +55,7 @@ div.mb-3
           th Line
           - unless controller.year == 1940
             th Dwelling
-          th= translated_label(Census1940Record, :family_id)
+          th= translated_label(controller.resource_class, :family_id)
       tbody
         tr
           td= controller.year

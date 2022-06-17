@@ -90,6 +90,7 @@
 #  updated_at             :datetime         not null
 #  birth_month            :integer
 #  page_side              :string
+#  attended_school_bool   :boolean          default("false")
 #
 # Indexes
 #
@@ -116,12 +117,11 @@ class Census1950Record < CensusRecord
   define_enumeration :race, %w[W Neg Ind Chi Jap Fil]
   define_enumeration :name_suffix, %w[Jr Sr]
   define_enumeration :name_prefix, %w[Dr Mr Mrs]
-  define_enumeration :activity_last_week, %w[Wk H U Inmate]
+  define_enumeration :activity_last_week, %w[Wk H U Ot Inmate]
   define_enumeration :worker_class, %w[P G O NP]
   define_enumeration :last_worker_class, %w[P G O NP]
   define_enumeration :naturalized_alien, %w[Y N AP]
   define_enumeration :highest_grade, %w[0 K S1 S2 S3 S4 S5 S6 S7 S8 S9 S10 S11 S12 C1 C2 C3 C4 C5]
-  define_enumeration :attended_school, %w[Y N V]
 
   income_enumeration = %w[10000+]
   define_enumeration :wages_or_salary_self, income_enumeration

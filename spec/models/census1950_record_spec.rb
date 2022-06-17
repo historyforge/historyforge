@@ -90,6 +90,7 @@
 #  updated_at             :datetime         not null
 #  birth_month            :integer
 #  page_side              :string
+#  attended_school_bool   :boolean          default("false")
 #
 # Indexes
 #

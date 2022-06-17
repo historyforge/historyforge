@@ -26,7 +26,7 @@ class Census1950FormFields < CensusFormFieldConfig
   input :naturalized_alien, as: :radio_buttons, coded: true
 
   divider 'For Persons 14 Years of Age and Over'
-  input :activity_last_week, as: :radio_buttons_other, coded: :activity, other_label: 'Ot - Other', other_type: :number, other_index: -1
+  input :activity_last_week, as: :radio_buttons, coded: :activity
   input :worked_last_week, as: :boolean
   input :seeking_work, as: :boolean
   input :employed_absent, as: :boolean
@@ -57,7 +57,7 @@ class Census1950FormFields < CensusFormFieldConfig
     divider 'Education'
     input :highest_grade, as: :radio_buttons, coded: true
     input :finished_grade, as: :boolean
-    input :attended_school, as: :radio_buttons, coded: true
+    input :attended_school, as: :boolean
 
     divider 'Income for this Person in 1949'
     input :weeks_seeking_work, as: :integer, min: 0, max: 52

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_14_013215) do
+ActiveRecord::Schema.define(version: 2022_06_17_012437) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
@@ -229,7 +229,6 @@ ActiveRecord::Schema.define(version: 2022_06_14_013215) do
     t.string "pob_mother"
     t.string "highest_grade"
     t.boolean "finished_grade"
-    t.string "attended_school"
     t.integer "weeks_seeking_work"
     t.integer "weeks_worked"
     t.string "wages_or_salary_self"
@@ -257,6 +256,7 @@ ActiveRecord::Schema.define(version: 2022_06_14_013215) do
     t.datetime "updated_at", precision: 6, null: false
     t.integer "birth_month"
     t.string "page_side"
+    t.boolean "attended_school", default: false
     t.index ["building_id"], name: "index_census1950_records_on_building_id"
     t.index ["created_by_id"], name: "index_census1950_records_on_created_by_id"
     t.index ["locality_id"], name: "index_census1950_records_on_locality_id"

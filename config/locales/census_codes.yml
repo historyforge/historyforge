@@ -88,7 +88,7 @@ en:
       e: 'Employer'
       emp: 'Employer'
       w: 'Wage or Salary Worker'
-      o: 'Own Account / Own Business'
+      o: 'Own Business'
       oa: 'Own Account'
       np: 'Unpaid Family Worker'
       pw: 'Private Wage or Salary Worker'
@@ -126,6 +126,7 @@ en:
       wk: 'Working'
       h: 'Keeping House'
       u: 'Unable to Work'
+      ot: 'Other'
       inmate: 'Inmate'
     attended_school:
       y: 'Yes'
