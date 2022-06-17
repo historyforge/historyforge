@@ -10,6 +10,7 @@
 #  reviewed_by_id         :integer
 #  reviewed_at            :datetime
 #  page_number            :integer
+#  page_side              :string(1)
 #  line_number            :integer
 #  county                 :string
 #  city                   :string
@@ -89,7 +90,6 @@
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #  birth_month            :integer
-#  page_side              :string
 #  attended_school_bool   :boolean          default("false")
 #
 # Indexes

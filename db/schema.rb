@@ -177,6 +177,7 @@ ActiveRecord::Schema.define(version: 2022_06_17_012437) do
     t.bigint "reviewed_by_id"
     t.datetime "reviewed_at", precision: 6
     t.integer "page_number"
+    t.string "page_side", limit: 1
     t.integer "line_number"
     t.string "county"
     t.string "city"
@@ -255,7 +256,6 @@ ActiveRecord::Schema.define(version: 2022_06_17_012437) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.integer "birth_month"
-    t.string "page_side"
     t.boolean "attended_school", default: false
     t.index ["building_id"], name: "index_census1950_records_on_building_id"
     t.index ["created_by_id"], name: "index_census1950_records_on_created_by_id"
