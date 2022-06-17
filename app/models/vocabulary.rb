@@ -58,7 +58,7 @@ class Vocabulary < ApplicationRecord
       1920 => %w[pob pob_father pob_mother],
       1930 => %w[pob pob_father pob_mother],
       1940 => %w[pob pob_father pob_mother],
-      1950 => %w[pob pob_faterh pob_mother]
+      1950 => %w[pob pob_father pob_mother]
     },
     relation_to_head: {
       1880 => %w[relation_to_head],
