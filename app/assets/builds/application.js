@@ -22,7 +22,6 @@
     return a;
   };
   var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
-  var __markAsModule = (target) => __defProp(target, "__esModule", { value: true });
   var __commonJS = (cb, mod) => function __require() {
     return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
   };
@@ -30,17 +29,15 @@
     for (var name in all)
       __defProp(target, name, { get: all[name], enumerable: true });
   };
-  var __reExport = (target, module, copyDefault, desc) => {
-    if (module && typeof module === "object" || typeof module === "function") {
-      for (let key of __getOwnPropNames(module))
-        if (!__hasOwnProp.call(target, key) && (copyDefault || key !== "default"))
-          __defProp(target, key, { get: () => module[key], enumerable: !(desc = __getOwnPropDesc(module, key)) || desc.enumerable });
+  var __copyProps = (to, from, except, desc) => {
+    if (from && typeof from === "object" || typeof from === "function") {
+      for (let key of __getOwnPropNames(from))
+        if (!__hasOwnProp.call(to, key) && key !== except)
+          __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
     }
-    return target;
+    return to;
   };
-  var __toESM = (module, isNodeMode) => {
-    return __reExport(__markAsModule(__defProp(module != null ? __create(__getProtoOf(module)) : {}, "default", !isNodeMode && module && module.__esModule ? { get: () => module.default, enumerable: true } : { value: module, enumerable: true })), module);
-  };
+  var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target, mod));
   var __publicField = (obj, key, value) => {
     __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
     return value;
@@ -2251,14 +2248,14 @@
             }
           };
           SelectParser2.prototype.escapeExpression = function(text) {
-            var map4, unsafe_chars;
+            var map3, unsafe_chars;
             if (text == null || text === false) {
               return "";
             }
             if (!/[\&\<\>\"\'\`]/.test(text)) {
               return text;
             }
-            map4 = {
+            map3 = {
               "<": "&lt;",
               ">": "&gt;",
               '"': "&quot;",
@@ -2267,7 +2264,7 @@
             };
             unsafe_chars = /&(?!\w+;)|[\<\>\"\'\`]/g;
             return text.replace(unsafe_chars, function(chr) {
-              return map4[chr] || "&amp;";
+              return map3[chr] || "&amp;";
             });
           };
           return SelectParser2;
@@ -4672,8 +4669,8 @@
               token = csrfToken();
               param = csrfParam();
               if (token != null && param != null) {
-                return $2('form input[name="' + param + '"]').forEach(function(input2) {
-                  return input2.value = token;
+                return $2('form input[name="' + param + '"]').forEach(function(input) {
+                  return input.value = token;
                 });
               }
             };
@@ -4862,26 +4859,26 @@
                 inputs = toArray(element.elements);
               }
               params = [];
-              inputs.forEach(function(input2) {
-                if (!input2.name || input2.disabled) {
+              inputs.forEach(function(input) {
+                if (!input.name || input.disabled) {
                   return;
                 }
-                if (matches(input2, "fieldset[disabled] *")) {
+                if (matches(input, "fieldset[disabled] *")) {
                   return;
                 }
-                if (matches(input2, "select")) {
-                  return toArray(input2.options).forEach(function(option) {
+                if (matches(input, "select")) {
+                  return toArray(input.options).forEach(function(option) {
                     if (option.selected) {
                       return params.push({
-                        name: input2.name,
+                        name: input.name,
                         value: option.value
                       });
                     }
                   });
-                } else if (input2.checked || ["radio", "checkbox", "submit"].indexOf(input2.type) === -1) {
+                } else if (input.checked || ["radio", "checkbox", "submit"].indexOf(input.type) === -1) {
                   return params.push({
-                    name: input2.name,
-                    value: input2.value
+                    name: input.name,
+                    value: input.value
                   });
                 }
               });
@@ -11121,9 +11118,9 @@
             }
             return true;
           }
-          function attemptReplayContinuousQueuedEventInMap(queuedEvent, key, map4) {
+          function attemptReplayContinuousQueuedEventInMap(queuedEvent, key, map3) {
             if (attemptReplayContinuousQueuedEvent(queuedEvent)) {
-              map4.delete(key);
+              map3.delete(key);
             }
           }
           function replayUnblockedEvents() {
@@ -13007,32 +13004,32 @@
               }
             }
           }
-          function getSelection(input2) {
+          function getSelection(input) {
             var selection;
-            if ("selectionStart" in input2) {
+            if ("selectionStart" in input) {
               selection = {
-                start: input2.selectionStart,
-                end: input2.selectionEnd
+                start: input.selectionStart,
+                end: input.selectionEnd
               };
             } else {
-              selection = getOffsets(input2);
+              selection = getOffsets(input);
             }
             return selection || {
               start: 0,
               end: 0
             };
           }
-          function setSelection(input2, offsets) {
+          function setSelection(input, offsets) {
             var start = offsets.start;
             var end = offsets.end;
             if (end === void 0) {
               end = start;
             }
-            if ("selectionStart" in input2) {
-              input2.selectionStart = start;
-              input2.selectionEnd = Math.min(end, input2.value.length);
+            if ("selectionStart" in input) {
+              input.selectionStart = start;
+              input.selectionEnd = Math.min(end, input.value.length);
             } else {
-              setOffsets(input2, offsets);
+              setOffsets(input, offsets);
             }
           }
           var skipSelectionChangeEvent = canUseDOM2 && "documentMode" in document && document.documentMode <= 11;
@@ -29221,27 +29218,27 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
             var upcased = method.toUpperCase();
             return methods.indexOf(upcased) > -1 ? upcased : method;
           }
-          function Request(input2, options) {
+          function Request(input, options) {
             options = options || {};
             var body = options.body;
-            if (input2 instanceof Request) {
-              if (input2.bodyUsed) {
+            if (input instanceof Request) {
+              if (input.bodyUsed) {
                 throw new TypeError("Already read");
               }
-              this.url = input2.url;
-              this.credentials = input2.credentials;
+              this.url = input.url;
+              this.credentials = input.credentials;
               if (!options.headers) {
-                this.headers = new Headers(input2.headers);
+                this.headers = new Headers(input.headers);
               }
-              this.method = input2.method;
-              this.mode = input2.mode;
-              this.signal = input2.signal;
-              if (!body && input2._bodyInit != null) {
-                body = input2._bodyInit;
-                input2.bodyUsed = true;
+              this.method = input.method;
+              this.mode = input.mode;
+              this.signal = input.signal;
+              if (!body && input._bodyInit != null) {
+                body = input._bodyInit;
+                input.bodyUsed = true;
               }
             } else {
-              this.url = String(input2);
+              this.url = String(input);
             }
             this.credentials = options.credentials || this.credentials || "same-origin";
             if (options.headers || !this.headers) {
@@ -29331,9 +29328,9 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
             exports2.DOMException.prototype = Object.create(Error.prototype);
             exports2.DOMException.prototype.constructor = exports2.DOMException;
           }
-          function fetch4(input2, init) {
+          function fetch4(input, init) {
             return new Promise(function(resolve3, reject2) {
-              var request3 = new Request(input2, init);
+              var request3 = new Request(input, init);
               if (request3.signal && request3.signal.aborted) {
                 return reject2(new exports2.DOMException("Aborted", "AbortError"));
               }
@@ -30503,7 +30500,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     },
     easeInOutBounce: (t) => t < 0.5 ? effects.easeInBounce(t * 2) * 0.5 : effects.easeOutBounce(t * 2 - 1) * 0.5 + 0.5
   };
-  var map2 = { 0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8, 9: 9, A: 10, B: 11, C: 12, D: 13, E: 14, F: 15, a: 10, b: 11, c: 12, d: 13, e: 14, f: 15 };
+  var map = { 0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8, 9: 9, A: 10, B: 11, C: 12, D: 13, E: 14, F: 15, a: 10, b: 11, c: 12, d: 13, e: 14, f: 15 };
   var hex = "0123456789ABCDEF";
   var h1 = (b) => hex[b & 15];
   var h2 = (b) => hex[(b & 240) >> 4] + hex[b & 15];
@@ -30517,17 +30514,17 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     if (str[0] === "#") {
       if (len === 4 || len === 5) {
         ret2 = {
-          r: 255 & map2[str[1]] * 17,
-          g: 255 & map2[str[2]] * 17,
-          b: 255 & map2[str[3]] * 17,
-          a: len === 5 ? map2[str[4]] * 17 : 255
+          r: 255 & map[str[1]] * 17,
+          g: 255 & map[str[2]] * 17,
+          b: 255 & map[str[3]] * 17,
+          a: len === 5 ? map[str[4]] * 17 : 255
         };
       } else if (len === 7 || len === 9) {
         ret2 = {
-          r: map2[str[1]] << 4 | map2[str[2]],
-          g: map2[str[3]] << 4 | map2[str[4]],
-          b: map2[str[5]] << 4 | map2[str[6]],
-          a: len === 9 ? map2[str[7]] << 4 | map2[str[8]] : 255
+          r: map[str[1]] << 4 | map[str[2]],
+          g: map[str[3]] << 4 | map[str[4]],
+          b: map[str[5]] << 4 | map[str[6]],
+          a: len === 9 ? map[str[7]] << 4 | map[str[8]] : 255
         };
       }
     }
@@ -30904,17 +30901,17 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   function clone(v, proto) {
     return v ? Object.assign(proto || {}, v) : v;
   }
-  function fromObject(input2) {
+  function fromObject(input) {
     var v = { r: 0, g: 0, b: 0, a: 255 };
-    if (Array.isArray(input2)) {
-      if (input2.length >= 3) {
-        v = { r: input2[0], g: input2[1], b: input2[2], a: 255 };
-        if (input2.length > 3) {
-          v.a = n2b(input2[3]);
+    if (Array.isArray(input)) {
+      if (input.length >= 3) {
+        v = { r: input[0], g: input[1], b: input[2], a: 255 };
+        if (input.length > 3) {
+          v.a = n2b(input[3]);
         }
       }
     } else {
-      v = clone(input2, { r: 0, g: 0, b: 0, a: 1 });
+      v = clone(input, { r: 0, g: 0, b: 0, a: 1 });
       v.a = n2b(v.a);
     }
     return v;
@@ -30926,16 +30923,16 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     return hueParse(str);
   }
   var Color = class {
-    constructor(input2) {
-      if (input2 instanceof Color) {
-        return input2;
+    constructor(input) {
+      if (input instanceof Color) {
+        return input;
       }
-      const type = typeof input2;
+      const type = typeof input;
       let v;
       if (type === "object") {
-        v = fromObject(input2);
+        v = fromObject(input);
       } else if (type === "string") {
-        v = hexParse(input2) || nameParse(input2) || functionParse(input2);
+        v = hexParse(input) || nameParse(input) || functionParse(input);
       }
       this._rgb = v;
       this._valid = !!v;
@@ -31032,8 +31029,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       return this;
     }
   };
-  function index_esm(input2) {
-    return new Color(input2);
+  function index_esm(input) {
+    return new Color(input);
   }
   var isPatternOrGradient = (value) => value instanceof CanvasGradient || value instanceof CanvasPattern;
   function color(value) {
@@ -40556,7 +40553,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       _indexable: false
     }
   };
-  var map3 = /* @__PURE__ */ new WeakMap();
+  var map2 = /* @__PURE__ */ new WeakMap();
   var plugin_subtitle = {
     id: "subtitle",
     start(chart, _args, options) {
@@ -40567,14 +40564,14 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       });
       layouts.configure(chart, title, options);
       layouts.addBox(chart, title);
-      map3.set(chart, title);
+      map2.set(chart, title);
     },
     stop(chart) {
-      layouts.removeBox(chart, map3.get(chart));
-      map3.delete(chart);
+      layouts.removeBox(chart, map2.get(chart));
+      map2.delete(chart);
     },
     beforeUpdate(chart, _args, options) {
-      const title = map3.get(chart);
+      const title = map2.get(chart);
       layouts.configure(chart, title, options);
       title.options = options;
     },
@@ -42457,13 +42454,13 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   function sorter(a, b) {
     return a - b;
   }
-  function parse(scale2, input2) {
-    if (isNullOrUndef(input2)) {
+  function parse(scale2, input) {
+    if (isNullOrUndef(input)) {
       return null;
     }
     const adapter = scale2._adapter;
     const { parser, round: round2, isoWeekday } = scale2._parseOpts;
-    let value = input2;
+    let value = input;
     if (typeof parser === "function") {
       value = parser(value);
     }
@@ -42514,13 +42511,13 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       ticks[timestamp] = true;
     }
   }
-  function setMajorTicks(scale2, ticks, map4, majorUnit) {
+  function setMajorTicks(scale2, ticks, map3, majorUnit) {
     const adapter = scale2._adapter;
     const first = +adapter.startOf(ticks[0].value, majorUnit);
     const last = ticks[ticks.length - 1].value;
     let major, index;
     for (major = first; major <= last; major = +adapter.add(major, 1, majorUnit)) {
-      index = map4[major];
+      index = map3[major];
       if (index >= 0) {
         ticks[index].major = true;
       }
@@ -42529,18 +42526,18 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   }
   function ticksFromTimestamps(scale2, values, majorUnit) {
     const ticks = [];
-    const map4 = {};
+    const map3 = {};
     const ilen = values.length;
     let i, value;
     for (i = 0; i < ilen; ++i) {
       value = values[i];
-      map4[value] = i;
+      map3[value] = i;
       ticks.push({
         value,
         major: false
       });
     }
-    return ilen === 0 || !majorUnit ? ticks : setMajorTicks(scale2, ticks, map4, majorUnit);
+    return ilen === 0 || !majorUnit ? ticks : setMajorTicks(scale2, ticks, map3, majorUnit);
   }
   var TimeScale = class extends Scale {
     constructor(props) {
@@ -44749,15 +44746,15 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   function isProtectedWeekYearToken(token) {
     return protectedWeekYearTokens.indexOf(token) !== -1;
   }
-  function throwProtectedError(token, format2, input2) {
+  function throwProtectedError(token, format2, input) {
     if (token === "YYYY") {
-      throw new RangeError("Use `yyyy` instead of `YYYY` (in `".concat(format2, "`) for formatting years to the input `").concat(input2, "`; see: https://git.io/fxCyr"));
+      throw new RangeError("Use `yyyy` instead of `YYYY` (in `".concat(format2, "`) for formatting years to the input `").concat(input, "`; see: https://git.io/fxCyr"));
     } else if (token === "YY") {
-      throw new RangeError("Use `yy` instead of `YY` (in `".concat(format2, "`) for formatting years to the input `").concat(input2, "`; see: https://git.io/fxCyr"));
+      throw new RangeError("Use `yy` instead of `YY` (in `".concat(format2, "`) for formatting years to the input `").concat(input, "`; see: https://git.io/fxCyr"));
     } else if (token === "D") {
-      throw new RangeError("Use `d` instead of `D` (in `".concat(format2, "`) for formatting days of the month to the input `").concat(input2, "`; see: https://git.io/fxCyr"));
+      throw new RangeError("Use `d` instead of `D` (in `".concat(format2, "`) for formatting days of the month to the input `").concat(input, "`; see: https://git.io/fxCyr"));
     } else if (token === "DD") {
-      throw new RangeError("Use `dd` instead of `DD` (in `".concat(format2, "`) for formatting days of the month to the input `").concat(input2, "`; see: https://git.io/fxCyr"));
+      throw new RangeError("Use `dd` instead of `DD` (in `".concat(format2, "`) for formatting days of the month to the input `").concat(input, "`; see: https://git.io/fxCyr"));
     }
   }
 
@@ -44834,8 +44831,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     }).join("");
     return result;
   }
-  function cleanEscapedString(input2) {
-    return input2.match(escapedStringRegExp)[1].replace(doubleQuoteRegExp, "'");
+  function cleanEscapedString(input) {
+    return input.match(escapedStringRegExp)[1].replace(doubleQuoteRegExp, "'");
   }
 
   // node_modules/date-fns/esm/_lib/assign/index.js
@@ -46288,8 +46285,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     convertedDate.setHours(date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds(), date.getUTCMilliseconds());
     return convertedDate;
   }
-  function cleanEscapedString2(input2) {
-    return input2.match(escapedStringRegExp2)[1].replace(doubleQuoteRegExp2, "'");
+  function cleanEscapedString2(input) {
+    return input.match(escapedStringRegExp2)[1].replace(doubleQuoteRegExp2, "'");
   }
 
   // node_modules/date-fns/esm/startOfHour/index.js
@@ -47139,8 +47136,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     if (config.columns) {
       valueBox.addClass("column-count-" + config.columns);
     }
-    const addInput = function(input2) {
-      appendToValueBox(input2, config.append, valueBox);
+    const addInput = function(input) {
+      appendToValueBox(input, config.append, valueBox);
     };
     const scopeName = scopeSelect.val().toString();
     switch (config.type) {
@@ -47159,11 +47156,11 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     }
   };
   function booleanInput(scopeName, addInput) {
-    const input2 = document.createElement("INPUT");
-    input2.setAttribute("name", `s[${scopeName}]`);
-    input2.setAttribute("type", "hidden");
-    input2.setAttribute("value", "1");
-    addInput(input2);
+    const input = document.createElement("INPUT");
+    input.setAttribute("name", `s[${scopeName}]`);
+    input.setAttribute("type", "hidden");
+    input.setAttribute("value", "1");
+    addInput(input);
   }
   function checkboxInput(choice, scopeName, valueBox) {
     let labelText, value;
@@ -47176,13 +47173,13 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     const id = `s_${scopeName}_${value}`;
     const checkbox = document.createElement("DIV");
     checkbox.classList.add("form-check");
-    const input2 = document.createElement("INPUT");
-    input2.classList.add("form-check-input");
-    input2.setAttribute("type", "checkbox");
-    input2.setAttribute("id", id);
-    input2.setAttribute("name", name);
-    input2.setAttribute("value", value);
-    checkbox.appendChild(input2);
+    const input = document.createElement("INPUT");
+    input.classList.add("form-check-input");
+    input.setAttribute("type", "checkbox");
+    input.setAttribute("id", id);
+    input.setAttribute("name", name);
+    input.setAttribute("value", value);
+    checkbox.appendChild(input);
     const label = document.createElement("LABEL");
     label.setAttribute("for", id);
     label.className = "form-check-label";
@@ -47203,44 +47200,44 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     valueBox.css("display", "inline");
   }
   function textInput(scopeName, addInput) {
-    const input2 = document.createElement("INPUT");
-    input2.classList.add("form-control");
-    input2.setAttribute("name", `s[${scopeName}]`);
-    input2.setAttribute("type", "text");
-    addInput(input2);
+    const input = document.createElement("INPUT");
+    input.classList.add("form-control");
+    input.setAttribute("name", `s[${scopeName}]`);
+    input.setAttribute("type", "text");
+    addInput(input);
   }
   function numberInput(scopeName, scopeSelect, addInput) {
-    const input2 = document.createElement("INPUT");
-    input2.classList.add("form-control");
-    input2.setAttribute("name", `s[${scopeName}]`);
-    input2.setAttribute("type", "number");
-    addInput(input2);
+    const input = document.createElement("INPUT");
+    input.classList.add("form-control");
+    input.setAttribute("name", `s[${scopeName}]`);
+    input.setAttribute("type", "number");
+    addInput(input);
     scopeSelect.on("change", function() {
       const val = jQuery(this).val().toString();
       if (val.match(/null/)) {
-        if (input2.getAttribute("type") === "number") {
-          input2.setAttribute("type", "hidden");
-          input2.setAttribute("value", "1");
+        if (input.getAttribute("type") === "number") {
+          input.setAttribute("type", "hidden");
+          input.setAttribute("value", "1");
         }
-      } else if (input2.getAttribute("type") === "hidden") {
-        input2.setAttribute("type", "number");
-        input2.setAttribute("value", null);
+      } else if (input.getAttribute("type") === "hidden") {
+        input.setAttribute("type", "number");
+        input.setAttribute("value", null);
       }
     });
   }
   function dropdownInput(scopeName, choices, addInput) {
-    const input2 = document.createElement("SELECT");
-    input2.classList.add("form-control");
-    input2.setAttribute("name", `s[${scopeName}]`);
+    const input = document.createElement("SELECT");
+    input.classList.add("form-control");
+    input.setAttribute("name", `s[${scopeName}]`);
     choices.forEach((choice) => {
       if (typeof choice !== "string")
         return;
       const option = document.createElement("OPTION");
       option.setAttribute("value", choice);
       option.innerText = choice;
-      input2.appendChild(option);
+      input.appendChild(option);
     });
-    addInput(input2);
+    addInput(input);
   }
   function buildScopeSelector(form, config) {
     const container = form.find(".scope-selection-container").empty().hide();
@@ -47258,18 +47255,18 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     container.append(scopeSelect).css("display", "inline");
     return scopeSelect;
   }
-  function appendToValueBox(input2, append, valueBox) {
+  function appendToValueBox(input, append, valueBox) {
     if (append) {
       const div = document.createElement("DIV");
       div.className = "input-append";
       const span = document.createElement("SPAN");
       span.className = "add-on";
       span.appendChild(document.createTextNode(append));
-      div.appendChild(input2);
+      div.appendChild(input);
       div.appendChild(span);
       valueBox.append(div);
     } else {
-      valueBox.append(input2);
+      valueBox.append(input);
     }
     valueBox.css("display", "inline");
   }
@@ -47587,8 +47584,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     };
     Object.defineProperty(Dispatcher2.prototype, "eventListeners", {
       get: function() {
-        return Array.from(this.eventListenerMaps.values()).reduce(function(listeners, map4) {
-          return listeners.concat(Array.from(map4.values()));
+        return Array.from(this.eventListenerMaps.values()).reduce(function(listeners, map3) {
+          return listeners.concat(Array.from(map3.values()));
         }, []);
       },
       enumerable: true,
@@ -48019,25 +48016,25 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   }();
 
   // node_modules/@stimulus/multimap/dist/src/set_operations.js
-  function add(map4, key, value) {
-    fetch2(map4, key).add(value);
+  function add(map3, key, value) {
+    fetch2(map3, key).add(value);
   }
-  function del(map4, key, value) {
-    fetch2(map4, key).delete(value);
-    prune(map4, key);
+  function del(map3, key, value) {
+    fetch2(map3, key).delete(value);
+    prune(map3, key);
   }
-  function fetch2(map4, key) {
-    var values = map4.get(key);
+  function fetch2(map3, key) {
+    var values = map3.get(key);
     if (!values) {
       values = /* @__PURE__ */ new Set();
-      map4.set(key, values);
+      map3.set(key, values);
     }
     return values;
   }
-  function prune(map4, key) {
-    var values = map4.get(key);
+  function prune(map3, key) {
+    var values = map3.get(key);
     if (values != null && values.size == 0) {
-      map4.delete(key);
+      map3.delete(key);
     }
   }
 
@@ -49452,8 +49449,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         if (e.keyCode === 13) {
           e.stopPropagation();
         }
-        const input2 = e.target;
-        const value = input2.value;
+        const input = e.target;
+        const value = input.value;
         if (value.length > 1) {
           $.getJSON("/people/autocomplete", { term: value }, (json) => {
             const people = [];
@@ -49465,7 +49462,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
               const id = e2.target.dataset.person;
               const name = e2.target.innerHTML;
               this.addPerson(id, name);
-              input2.value = null;
+              input.value = null;
               $("#person-results").html("");
             });
           });
@@ -49481,8 +49478,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         if (e.keyCode === 13) {
           e.stopPropagation();
         }
-        const input2 = e.target;
-        const value = input2.value;
+        const input = e.target;
+        const value = input.value;
         if (value.length > 1) {
           $.getJSON("/buildings/autocomplete", { term: value }, (json) => {
             const buildings3 = [];
@@ -49496,7 +49493,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
               const lon = e2.target.dataset.lon;
               const address2 = e2.target.innerHTML;
               this.addBuilding(id, address2, lat, lon);
-              input2.value = null;
+              input.value = null;
               $("#building-results").html("");
             });
           });
@@ -49550,24 +49547,24 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       this.mapInitialized = true;
       const startLat = document.getElementById("photograph_latitude").value;
       const startLon = document.getElementById("photograph_longitude").value;
-      const loc = startLat && startLon ? [parseFloat(startLat), parseFloat(startLon)] : eval(document.getElementById("photograph-map").dataset.center);
-      const map = new google.maps.Map(document.getElementById("photograph-map"), {
+      const loc = startLat && startLon ? [parseFloat(startLat), parseFloat(startLon)] : JSON.parse(document.getElementById("photograph-map").dataset.center);
+      const map3 = new google.maps.Map(document.getElementById("photograph-map"), {
         center: { lat: loc[0], lng: loc[1] },
         zoom: 13
       });
       const marker = new google.maps.Marker({
-        map,
+        map: map3,
         anchorPoint: new google.maps.Point(0, -29),
         draggable: true
       });
-      marker.setPosition(map.getCenter());
+      marker.setPosition(map3.getCenter());
       marker.setVisible(true);
       const input = document.getElementById("pac-input");
       const autocomplete = new google.maps.places.Autocomplete(input);
-      autocomplete.bindTo("bounds", map);
+      autocomplete.bindTo("bounds", map3);
       autocomplete.setFields(["address_components", "geometry", "icon", "name"]);
       autocomplete.addListener("place_changed", () => {
-        this.handlePlaceAutocompletion(marker, autocomplete, map);
+        this.handlePlaceAutocompletion(marker, autocomplete, map3);
       });
       marker.addListener("dragend", function() {
         const position = marker.getPosition();
@@ -49579,23 +49576,23 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         const lon = document.getElementById("photograph_longitude").value;
         const loc2 = new google.maps.LatLng(parseFloat(lat), parseFloat(lon));
         marker.setPosition(loc2);
-        map.setCenter(loc2);
+        map3.setCenter(loc2);
       });
     }
-    handlePlaceAutocompletion(marker2, autocomplete2, map4) {
-      marker2.setVisible(false);
-      const place = autocomplete2.getPlace();
+    handlePlaceAutocompletion(marker, autocomplete, map3) {
+      marker.setVisible(false);
+      const place = autocomplete.getPlace();
       if (!place.geometry) {
         window.alert("No details available for input: '" + place.name + "'");
         return;
       }
       if (place.geometry.viewport) {
-        map4.fitBounds(place.geometry.viewport);
+        map3.fitBounds(place.geometry.viewport);
       } else {
-        map4.setCenter(place.geometry.location);
-        map4.setZoom(17);
+        map3.setCenter(place.geometry.location);
+        map3.setZoom(17);
       }
-      marker2.setPosition(place.geometry.location);
+      marker.setPosition(place.geometry.location);
       document.getElementById("photograph_latitude").value = place.geometry.location.lat();
       document.getElementById("photograph_longitude").value = place.geometry.location.lng();
     }
@@ -51744,10 +51741,10 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     }
   };
   var WMSLoader = class {
-    constructor(map4, layer, position) {
+    constructor(map3, layer, position) {
       this.baseURL = layer.url.replace(/mosaics\/tile/, "mosaics/wms").replace("/{z}/{x}/{y}.png", "").split("?")[0] + "?";
       this.id = layer.id;
-      this.map = map4;
+      this.map = map3;
       this.position = position;
       this.wmsParams = [
         "REQUEST=GetMap",
@@ -51796,8 +51793,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       return overlayWMS;
     }
   };
-  function loadWMS(map4, layer, position) {
-    const loader = new WMSLoader(map4, layer, position);
+  function loadWMS(map3, layer, position) {
+    const loader = new WMSLoader(map3, layer, position);
     return loader.load();
   }
 
@@ -51893,8 +51890,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   function propertyChanged(props, prevProps, property) {
     return !prevProps[property] && props[property] || prevProps[property] !== props[property];
   }
-  function addOpacity(map4, layers3) {
-    const currentLayers = map4.overlayMapTypes.getArray();
+  function addOpacity(map3, layers3) {
+    const currentLayers = map3.overlayMapTypes.getArray();
     currentLayers.forEach((layer) => {
       const opacity = layers3.find((l) => l.id === layer.name).opacity;
       if (typeof opacity === "number") {
@@ -51911,22 +51908,22 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     items.forEach((item) => {
       const lat = item.lat || item.latitude;
       const lon = item.lon || item.longitude;
-      const marker2 = new google2.maps.Marker({
+      const marker = new google2.maps.Marker({
         position: new google2.maps.LatLng(lat, lon),
         icon: getStaticIcon(),
         zIndex: 10
       });
-      marker2.buildingId = item.id;
-      google2.maps.event.addListener(marker2, "click", () => {
+      marker.buildingId = item.id;
+      google2.maps.event.addListener(marker, "click", () => {
         handlers.onClick(item);
       });
-      google2.maps.event.addListener(marker2, "mouseover", () => {
-        handlers.onMouseOver(item, marker2);
+      google2.maps.event.addListener(marker, "mouseover", () => {
+        handlers.onMouseOver(item, marker);
       });
-      google2.maps.event.addListener(marker2, "mouseout", () => {
+      google2.maps.event.addListener(marker, "mouseout", () => {
         handlers.onMouseOut(item);
       });
-      markers[marker2.buildingId] = marker2;
+      markers[marker.buildingId] = marker;
     });
     return markers;
   }
@@ -51944,9 +51941,9 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     }
   }
   function tweakMarker(id, icon, zIndex, markers) {
-    const marker2 = markers[id];
-    marker2.setIcon(icon);
-    marker2.setZIndex(zIndex);
+    const marker = markers[id];
+    marker.setIcon(icon);
+    marker.setZIndex(zIndex);
   }
   function highlightMarker(id, markers) {
     tweakMarker(id, getHoverIcon(), 100, markers);
@@ -51985,13 +51982,13 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var MarkerClusterer = window.MarkerClusterer;
   var Map2 = (props) => {
     const mapRef = (0, import_react21.useRef)(null);
-    const [map4, setMap] = (0, import_react21.useState)(null);
+    const [map3, setMap] = (0, import_react21.useState)(null);
     const [markers, setMarkers] = (0, import_react21.useState)(null);
     const [currentMarker, setCurrentMarker] = (0, import_react21.useState)(null);
     const [clusterer, setClusterer] = (0, import_react21.useState)(null);
     const [prevProps, setPrevProps] = (0, import_react21.useState)(props);
     (0, import_react21.useEffect)(() => {
-      if (!map4 && mapRef.current) {
+      if (!map3 && mapRef.current) {
         const myMap = new google3.maps.Map(mapRef.current, mapOptions());
         myMap.setCenter(props.center);
         setMap(myMap);
@@ -52004,25 +52001,25 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           }
         });
       }
-      if (map4) {
+      if (map3) {
         if (propertyChanged(props, prevProps, "layeredAt")) {
-          addLayers(map4, props.layers);
+          addLayers(map3, props.layers);
         }
         if (propertyChanged(props, prevProps, "opacityAt")) {
-          addOpacity(map4, props.layers);
+          addOpacity(map3, props.layers);
         }
         if (propertyChanged(props, prevProps, "loadedAt")) {
           const handlers = {
             onClick(building) {
               props.select(building.id, props.params);
             },
-            onMouseOver(building, marker2) {
+            onMouseOver(building, marker) {
               props.highlight(building.id);
               window.clearTimeout(infoWindowTimeout);
               if (infoWindow) {
                 infoWindow.close();
               }
-              setCurrentMarker(marker2);
+              setCurrentMarker(marker);
               props.address(building.id);
             },
             onMouseOut(building) {
@@ -52035,7 +52032,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
             }
           };
           const nextMarkers = generateMarkers(props.buildings, handlers);
-          const nextClusterer = addClusters(map4, clusterer, nextMarkers);
+          const nextClusterer = addClusters(map3, clusterer, nextMarkers);
           setClusterer(nextClusterer);
           setMarkers(nextMarkers);
         }
@@ -52052,7 +52049,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
             });
             infoWindow.open({
               anchor: currentMarker,
-              map: map4
+              map: map3
             });
           }
         }
@@ -52084,24 +52081,24 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   }
   var infoWindowTimeout;
   var infoWindow;
-  function addLayers(map4, layers3) {
+  function addLayers(map3, layers3) {
     const selectedLayers = layers3.filter((layer) => layer.selected);
-    const currentLayers = map4.overlayMapTypes.getArray();
+    const currentLayers = map3.overlayMapTypes.getArray();
     const selectedLayerNames = selectedLayers.map((layer) => layer.name);
     const currentLayerNames = currentLayers.map((layer) => layer.name);
     currentLayerNames.forEach((name, index) => {
       if (selectedLayerNames.indexOf(name) === -1) {
-        map4.overlayMapTypes.removeAt(index);
+        map3.overlayMapTypes.removeAt(index);
       }
     });
     selectedLayerNames.forEach((name, index) => {
       if (currentLayerNames.indexOf(name) === -1) {
-        loadWMS(map4, selectedLayers[index], name);
+        loadWMS(map3, selectedLayers[index], name);
       }
     });
   }
-  function addClusters(map4, existingClusterer, markers) {
-    const clusterer = existingClusterer || new MarkerClusterer(map4, [], {
+  function addClusters(map3, existingClusterer, markers) {
+    const clusterer = existingClusterer || new MarkerClusterer(map3, [], {
       minimumClusterSize: 10,
       maxZoom: 20,
       styles: [
@@ -52831,26 +52828,26 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   }
   var Map3 = (props) => {
     const mapRef = (0, import_react39.useRef)(null);
-    const [map4, setMap] = (0, import_react39.useState)(null);
+    const [map3, setMap] = (0, import_react39.useState)(null);
     const [markers, setMarkers] = (0, import_react39.useState)(null);
-    const [marker2, setMarker] = (0, import_react39.useState)(null);
+    const [marker, setMarker] = (0, import_react39.useState)(null);
     const [prevProps, setPrevProps] = (0, import_react39.useState)(props);
     (0, import_react39.useEffect)(() => {
-      if (!map4 && mapRef.current) {
+      if (!map3 && mapRef.current) {
         const myMap = new google4.maps.Map(mapRef.current, mapOptions2());
         myMap.setCenter(props.center);
         setMap(myMap);
       }
-      if (map4) {
-        if (!marker2) {
-          setMarker(addMainMarker(map4, props.current, props.editable, props.move));
+      if (map3) {
+        if (!marker) {
+          setMarker(addMainMarker(map3, props.current, props.editable, props.move));
           if (!props.layer) {
             const layerId = window.localStorage.getItem("miniforge-layer");
             if (layerId) {
               props.toggle(layerId);
             }
           } else {
-            addLayer(map4, props.layer);
+            addLayer(map3, props.layer);
           }
         }
         if (!markers) {
@@ -52866,16 +52863,16 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
             }
           };
           const nextMarkers = generateMarkers(props.buildings, handlers);
-          addMarkers(map4, Object.values(nextMarkers));
+          addMarkers(map3, Object.values(nextMarkers));
           setMarkers(nextMarkers);
         } else {
           highlightMarkers(props, prevProps, markers);
         }
         if (propertyChanged(props, prevProps, "layeredAt")) {
-          addLayer(map4, props.layer);
+          addLayer(map3, props.layer);
         }
         if (propertyChanged(props, prevProps, "opacityAt")) {
-          addOpacity2(map4, props.opacity);
+          addOpacity2(map3, props.opacity);
         }
       }
       setPrevProps(props);
@@ -52885,38 +52882,38 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       ref: mapRef
     });
   };
-  function addLayer(map4, layer) {
-    const currentLayers = map4.overlayMapTypes.getArray();
+  function addLayer(map3, layer) {
+    const currentLayers = map3.overlayMapTypes.getArray();
     if (currentLayers.length) {
-      map4.overlayMapTypes.removeAt(0);
+      map3.overlayMapTypes.removeAt(0);
     }
     if (layer) {
-      loadWMS(map4, layer, layer.name);
+      loadWMS(map3, layer, layer.name);
     }
     window.localStorage.setItem("miniforge-layer", layer.id);
   }
-  function addOpacity2(map4, opacity) {
-    const currentLayers = map4.overlayMapTypes.getArray();
+  function addOpacity2(map3, opacity) {
+    const currentLayers = map3.overlayMapTypes.getArray();
     currentLayers[0].setOpacity(parseInt(opacity) / 100);
   }
-  function addMarkers(map4, markers) {
-    markers.forEach((marker2) => marker2.setMap(map4));
+  function addMarkers(map3, markers) {
+    markers.forEach((marker) => marker.setMap(map3));
   }
-  function addMainMarker(map4, current, editable, move) {
-    const marker2 = new google4.maps.Marker({
+  function addMainMarker(map3, current, editable, move) {
+    const marker = new google4.maps.Marker({
       position: new google4.maps.LatLng(current.object.lat, current.object.lon),
       icon: getMainIcon(),
       zIndex: 12,
-      map: map4,
+      map: map3,
       draggable: editable
     });
     if (editable) {
-      google4.maps.event.addListener(marker2, "dragend", (event) => {
+      google4.maps.event.addListener(marker, "dragend", (event) => {
         const point = event.latLng;
         move({ lat: point.lat(), lon: point.lng() });
       });
     }
-    return marker2;
+    return marker;
   }
   var mapStateToProps6 = (state) => {
     return __spreadValues(__spreadValues(__spreadValues({}, state.layers), state.buildings), state.search);
