@@ -107,17 +107,17 @@ class Building < ApplicationRecord
 
   scope :order_by_street_address, lambda { |dir|
     all
-      .joins('LEFT OUTER JOIN addresses pa ON pa.building_id=buildings.id AND pa.is_primary=TRUE')
-      .group('buildings.id, pa.id')
-      .order('pa.name' => dir)
-      .order('pa.prefix' => dir)
-      .order('pa.suffix' => dir)
-      .order(Arel.sql("substring(pa.house_number, '^[0-9]+')::int") => dir)
+      .joins('LEFT OUTER JOIN addresses ON addresses.building_id=buildings.id AND addresses.is_primary=TRUE')
+      .group('buildings.id, addresses.id')
+      .order('addresses.name' => dir)
+      .order('addresses.prefix' => dir)
+      .order('addresses.suffix' => dir)
+      .order(Arel.sql("substring(addresses.house_number, '^[0-9]+')::int") => dir)
   }
 
   scope :by_street_address, -> { order_by_street_address('asc') }
 
-  scope :with_multiple_addresses, -> {
+  scope :with_multiple_addresses, lambda {
     all
       .joins(:addresses)
       .group('buildings.id, addresses.name')
