@@ -48,7 +48,7 @@
           = form.input :postal_code
       .row
         .col-sm-4
-          = form.input :locality_id, collection: Locality.order(:name)
+          = form.input :locality_id, collection: Locality.order(:position)
         .col-sm-4
           = form.input :lat
         .col-sm-4
