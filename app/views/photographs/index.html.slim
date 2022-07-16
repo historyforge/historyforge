@@ -25,7 +25,8 @@
       .row
         .col-xl-2.col-lg-3.col-md-3.col-sm-12.col-xs-12
           - if photo.file.attached?
-            = thumb_for photo
+            = link_to photo do
+              = thumb_for photo
           - else
             .alert.alert-danger No Photo!
         .col-xl-7.col-lg-6.col-sm-12.col-xs-12.col-md-6.widest

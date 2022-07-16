@@ -6,7 +6,7 @@
   - content_for :body_end do
     .modal.fade id="mergeModal"
       .modal-dialog.modal-lg
-        = form_with method: :get, url: new_building_merge_path(@building), builder: SimpleForm::FormBuilder, html: { data: { remote: false } } do |form|
+        = form_with method: :get, url: new_building_merge_path(@building.object), builder: SimpleForm::FormBuilder, html: { data: { remote: false } } do |form|
           .modal-content
             .modal-header
               h5.modal-title Merge Building Record
