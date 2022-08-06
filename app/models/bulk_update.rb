@@ -1,3 +1,23 @@
+# == Schema Information
+#
+# Table name: bulk_updates
+#
+#  id         :integer          not null, primary key
+#  year       :integer
+#  field      :string
+#  value_from :string
+#  value_to   :string
+#  user_id    :integer          not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+# Indexes
+#
+#  index_bulk_updates_on_user_id  (user_id)
+#
+
+# frozen_string_literal: true
+
 class BulkUpdate < ApplicationRecord
   attr_accessor :confirm
   belongs_to :user

@@ -24,7 +24,7 @@ class ForgeQuery
 
   def info
     if query['data'].nil?
-      "Found no results"
+      'Found no results'
     elsif @search.num_residents
       "Found #{pluralize_with_delimiter @search.num_residents, 'person'} in #{pluralize_with_delimiter query['meta'], 'building'}."
     else
@@ -37,7 +37,7 @@ class ForgeQuery
   end
 
   def query
-    sql = scoped.select("buildings.id,buildings.lat,buildings.lon").to_sql
+    sql = scoped.select('buildings.id,buildings.lat,buildings.lon').to_sql
     sql = "select array_to_json(array_agg(row_to_json(t))) as data, count(t.id) as meta from (#{sql}) t"
     ActiveRecord::Base.connection.execute(sql).first
   end

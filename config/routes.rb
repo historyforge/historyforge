@@ -1,5 +1,15 @@
+# frozen_string_literal: true
+
 Rails.application.routes.draw do
   get '/check.txt', to: proc {[200, {}, ['simple_check']]}
+
+  if Rails.env.development?
+    redirector = lambda { |params, _req|
+      ApplicationController.helpers.asset_path(params[:name].split('-').first + '.map')
+    }
+    constraint = ->(request) { request.path.ends_with?('.map') }
+    get 'assets/*name', to: redirect(redirector), constraints: constraint
+  end
 
   root 'home#index'
   get 'stats' => 'home#stats'

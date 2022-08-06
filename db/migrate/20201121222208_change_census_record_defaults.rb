@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ChangeCensusRecordDefaults < ActiveRecord::Migration[6.0]
   def change
     change_column_default :census_1900_records, :county, from: 'Tompkins', to: nil

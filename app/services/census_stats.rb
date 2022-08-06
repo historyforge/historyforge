@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CensusStats
   def census_summaries
     @census_summaries ||= [

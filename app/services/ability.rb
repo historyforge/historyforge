@@ -1,30 +1,16 @@
+# frozen_string_literal: true
+
 class Ability
   include CanCan::Ability
 
   def initialize(user)
-    # Define abilities for the passed in user here. For example:
-    #
-    user ||= User.new # guest user (not logged in)
-
-    if user.new_record?
+    if user.blank?
       # a guest user can only do this stuff
       can :read, Building do |building| building.reviewed?; end
       can :read, Architect
       can :read, CensusRecord do |record| record.reviewed?; end
       can :read, Photograph do |record| record.reviewed?; end
     else
-      # any logged in user can do this stuff
-      can :update, User, id: user.id
-      can :read, CensusRecord
-      can :read, Building
-      can :read, Photograph
-      can :create, Flag
-      can :read, Document
-
-      # User generated photographs?
-      can :create, Photograph
-      can :update, Photograph, created_by_id: user.id
-
       # A user can have multiple roles so we only grant the things that apply to that role
 
       if user.has_role?('administrator')
@@ -58,6 +44,18 @@ class Ability
         can :update, Building #, created_by_id: user.id
       end
 
+      # any logged in user can do the following things:
+
+      can :update, User, id: user.id
+      can :read, CensusRecord
+      can :read, Building
+      can :read, Photograph
+      can :create, Flag
+      can :read, Document
+
+      # User generated photographs?
+      can :create, Photograph
+      can :update, Photograph, created_by_id: user.id
     end
   end
 end

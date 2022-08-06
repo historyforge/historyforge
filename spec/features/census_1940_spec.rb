@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe '1940 US Census' do
@@ -59,7 +61,7 @@ RSpec.describe '1940 US Census' do
 
     fill_in 'Occupation', with: 'Turnkey', match: :first
     fill_in 'Industry', with: 'Hotel'
-    choose 'PW - Private wage or salary worker', name: 'census_record[worker_class]'
+    choose 'PW - Private Wage or Salary Worker', name: 'census_record[worker_class]'
     fill_in 'Occupation Code', with: 'VX70'
     fill_in 'Industry Code', with: 'VX70'
     fill_in 'Worker Class Code', with: '3'

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 json.filters do
 
   localities = Locality.order(:name).map { |item| [item.name, item.id] }

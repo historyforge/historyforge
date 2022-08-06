@@ -88,7 +88,7 @@
         .col-sm-8.col-xs-12
           p.alert.alert-info You only need to do this if latitude and longitude are empty, or the marker is in the wrong place.
           input.form-control.mb-3#pac-input type="text" placeholder="Enter a location to find on map"
-          #photograph-map.mb-3 data-center="[#{form.object.latitude || AppConfig.latitude},#{form.object.longitude || AppConfig.longitude}]"
+          #photograph-map.mb-3 data-center="[#{form.object.latitude || AppConfig[:latitude]},#{form.object.longitude || AppConfig[:longitude]}]"
           .row
             .col-6= form.input :latitude
             .col-6= form.input :longitude
@@ -153,4 +153,4 @@
 
 p.clearfix.lead.text-center You can click Previous and Next buttons at any time.
 
-script async="async" defer="defer" src="https://maps.googleapis.com/maps/api/js?key=#{AppConfig.google_api_key}&libraries=places"
+script async="async" defer="defer" src="https://maps.googleapis.com/maps/api/js?key=#{AppConfig[:google_api_key]}&libraries=places"

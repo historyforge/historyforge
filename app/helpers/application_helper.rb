@@ -1,5 +1,6 @@
-module ApplicationHelper
+# frozen_string_literal: true
 
+module ApplicationHelper
   def browser_title
     title = @browser_title || page_title
     "#{title ? "#{title} | " : nil}#{Rails.application.name}"

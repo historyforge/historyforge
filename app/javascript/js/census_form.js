@@ -20,7 +20,7 @@ $.fn.extend({
   }
 })
 
-$(document).ready(function() {
+$(function() {
   const $forms = $('#new_census_record, #edit_census_record')
 
   $forms.on('keypress', function (e) {
@@ -41,7 +41,7 @@ $(document).ready(function() {
   })
 
   $forms.find('input[type=radio][value=other]').on('click', function () {
-    const $input = $(this).next().find('input[type=text]')
+    const $input = $(this).next().find('input')
     if ($(this).is(':checked')) { $input.removeAttr('disabled').focus() } else { $input.attr('disabled', true) }
   })
 

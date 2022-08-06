@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # We use the Rails form builder system to show the "detail page" view as well.
 # This form builder helps format the form correctly and not let any editable
 # stuff leak through.

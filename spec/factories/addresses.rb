@@ -1,3 +1,27 @@
+# == Schema Information
+#
+# Table name: addresses
+#
+#  id           :integer          not null, primary key
+#  building_id  :integer          not null
+#  is_primary   :boolean          default("false")
+#  house_number :string
+#  prefix       :string
+#  name         :string
+#  suffix       :string
+#  city         :string
+#  postal_code  :string
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#  year         :integer
+#
+# Indexes
+#
+#  index_addresses_on_building_id  (building_id)
+#
+
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory(:address) do
     is_primary { true }

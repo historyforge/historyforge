@@ -30,14 +30,13 @@ const FilterModal = ({ filters, current, close, open, search, setFilter }) => (
     </Modal>
 )
 
-const Filters = (props) => {
-  if (!props.current) return null
-  return (
-        <React.Fragment>
+const Filters = (props) => (
+    props.current ? (
+        <>
             <CurrentFilters {...props} />
             <FilterModal {...props} />
-        </React.Fragment>
+        </>
+    ) : null
   )
-}
 
 export default Filters

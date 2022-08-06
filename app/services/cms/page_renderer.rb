@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Cms
   class PageRenderer
 
@@ -64,14 +66,14 @@ module Cms
       page.widgets.inject({}) { |hash, widget|
         callback = widget.access_callback
         if callback.blank? || !template.respond_to?(callback) || template.send(callback)
-          hash[widget.name] = widget.cached_html
+          hash[widget.name] = widget.render
         end
         hash
       }
     end
 
     # TODO: if we have some and they aren't saved to the page's dummy_vars, we should do that here
-    # TODO: how to update dummar_vars?
+    # TODO: how to update dummy_vars?
     # TODO: if the page has a controller and action and we aren't on it, then fill in sections from dummy_vars
     def parts_from_view_template
       sections = template.cms_page_sections
@@ -92,6 +94,5 @@ module Cms
       end
       sections.stringify_keys
     end
-
   end
 end

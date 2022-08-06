@@ -5,8 +5,8 @@ class ContactMailer < ApplicationMailer
   def contact_email(contact)
     @contact = contact
     mail subject: "[HISTORYFORGE] #{@contact.subject}",
-         to: AppConfig.contact_email,
+         to: AppConfig[:contact_email],
          reply_to: @contact.email,
-         from: AppConfig.mail_from
+         from: AppConfig[:mail_from]
   end
 end

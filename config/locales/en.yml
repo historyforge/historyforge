@@ -20,6 +20,40 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
+  activerecord:
+    errors:
+      messages:
+        inclusion: "isn't allowed"
+    attributes:
+      census1880_record:
+        page_number: 'Sheet'
+        page_side: 'Side'
+        enum_dist: 'Enumeration District'
+      census1900_record:
+        page_number: 'Sheet'
+        page_side: 'Side'
+        enum_dist: 'Enumeration District'
+      census1910_record:
+        page_number: 'Sheet'
+        page_side: 'Side'
+        enum_dist: 'Enumeration District'
+      census1920_record:
+        page_number: 'Sheet'
+        page_side: 'Side'
+        enum_dist: 'Enumeration District'
+      census1930_record:
+        page_number: 'Sheet'
+        page_side: 'Side'
+        enum_dist: 'Enumeration District'
+      census1940_record:
+        page_number: 'Sheet'
+        page_side: 'Side'
+        enum_dist: 'Enumeration District'
+        family_id: 'Household No.'
+      census1950_record:
+        page_number: 'Sheet'
+        family_id: 'Serial No.'
+        enum_dist: 'Enumeration District'
   simple_form:
     labels:
       building:

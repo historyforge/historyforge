@@ -1,3 +1,22 @@
+# == Schema Information
+#
+# Table name: terms
+#
+#  id            :integer          not null, primary key
+#  vocabulary_id :integer
+#  name          :string
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  ipums         :integer
+#
+# Indexes
+#
+#  index_terms_on_name           (name)
+#  index_terms_on_vocabulary_id  (vocabulary_id)
+#
+
+# frozen_string_literal: true
+
 class Term < ApplicationRecord
   belongs_to :vocabulary
   validates :name, presence: true

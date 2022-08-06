@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PhotographsController < ApplicationController
   include RestoreSearch
   before_action :load_parent, except: :review

@@ -1,33 +1,34 @@
-module CmsHelper
+# frozen_string_literal: true
 
+module CmsHelper
   def page_text_fields(form)
     fields = new_child_fields(form, :widgets, object: Cms::Text.new, partial: 'text')
-    content_for(:body_end) { content_tag(:script, fields, type: 'text/html', id: "new_text_fields") }
+    content_for(:body_end) { content_tag(:script, fields, type: 'text/html', id: 'new_text_fields') }
   end
 
   def page_audio_fields(form)
     fields = new_child_fields(form, :widgets, object: Cms::Audio.new, partial: 'audio')
-    content_for(:body_end) { content_tag(:script, fields, type: 'text/html', id: "new_audio_fields") }
+    content_for(:body_end) { content_tag(:script, fields, type: 'text/html', id: 'new_audio_fields') }
   end
 
   def page_embed_fields(form)
     fields = new_child_fields(form, :widgets, object: Cms::Embed.new, partial: 'embed')
-    content_for(:body_end) { content_tag(:script, fields, type: 'text/html', id: "new_embed_fields") }
+    content_for(:body_end) { content_tag(:script, fields, type: 'text/html', id: 'new_embed_fields') }
   end
 
   def page_picture_fields(form)
     fields = new_child_fields(form, :widgets, object: Cms::Picture.new, partial: 'picture')
-    content_for(:body_end) { content_tag(:script, fields, type: 'text/html', id: "new_picture_fields") }
+    content_for(:body_end) { content_tag(:script, fields, type: 'text/html', id: 'new_picture_fields') }
   end
 
   def page_document_fields(form)
     fields = new_child_fields(form, :widgets, object: Cms::Document.new, partial: 'document')
-    content_for(:body_end) { content_tag(:script, fields, type: 'text/html', id: "new_document_fields") }
+    content_for(:body_end) { content_tag(:script, fields, type: 'text/html', id: 'new_document_fields') }
   end
 
   def page_testimonial_fields(form)
     fields = new_child_fields(form, :widgets, object: Cms::Testimonial.new, partial: 'testimonial')
-    content_for(:body_end) { content_tag(:script, fields, type: 'text/html', id: "new_testimonial_fields") }
+    content_for(:body_end) { content_tag(:script, fields, type: 'text/html', id: 'new_testimonial_fields') }
   end
 
   def cms_link

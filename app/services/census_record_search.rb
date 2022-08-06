@@ -9,11 +9,11 @@ class CensusRecordSearch < SearchQueryBuilder
   attr_accessor :page, :s, :f, :g, :user, :sort, :from, :to, :scope, :entity_class, :form_fields_config
 
   def census_scope_search?
-    @s[:enum_dist_eq].present? && @s[:page_number_eq].present? && @s[:page_side_eq].present?
+    @s[:enum_dist_eq].present? && @s[:page_number_eq].present? && (entity_class == Census1950Record || @s[:page_side_eq].present?)
   end
 
   def results
-    scoped.to_a.map(&:decorate)
+    scoped.lazy.map(&:decorate)
   end
   memoize :results
 
@@ -55,7 +55,7 @@ class CensusRecordSearch < SearchQueryBuilder
       col = sort_unit['colId']
       dir = sort_unit['sort']
       order = order_clause_for(col, dir)
-      builder.order(entity_class.sanitize_sql_for_order(order)) if order
+      builder.order(Arel.sql(entity_class.sanitize_sql_for_order(order))) if order
     end
   end
 

@@ -15,15 +15,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-autocomplete/1.0.7/jquery.auto-complete.min.css" integrity="sha512-TfnGOYsHIBHwx3Yg6u6jCWhqz79osu5accjEmw8KYID9zfWChaGyjDCmJIdy9fJjpvl9zXxZamkLam0kc5p/YQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <%= stylesheet_pack_tag    'application', media: 'all' %>
+    <%= stylesheet_link_tag    'application', media: 'all' %>
     <% if can?(:update, Cms::Page) %>
-      <%= stylesheet_pack_tag 'cms' %>
+      <%= stylesheet_link_tag 'cms' %>
     <%= stylesheet_link_tag "https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.min.css", 'data-turbolinks-track' => true %>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.52.2/theme/darcula.min.css" />
     <% end %>
 
-    <%= stylesheet_pack_tag 'richtext' if can?(:update, Building) %>
-    <%= javascript_pack_tag 'richtext' if can?(:update, Building) %>
+    <%#= stylesheet_link_tag 'richtext' if can?(:update, Building) %>
 
     <%= csrf_meta_tags %>
 
@@ -69,10 +68,9 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" type="text/javascript" crossorigin="anonymous" data-turbolinks-track="true"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/js-marker-clusterer/1.0.0/markerclusterer_compiled.js" type="text/javascript" crossorigin="anonymous" data-turbolinks-track="true"></script>
   <script src="https://unpkg.com/ag-grid-community/dist/ag-grid-community.min.noStyle.js" crossorigin="anonymous" data-turbolinks-track="true"></script>
-  <%= javascript_pack_tag 'application' %>
-  <% if can?(:update, Cms::Page) %>
-  <%= javascript_pack_tag 'cms' %>
-  <% end %>
+  <%= javascript_include_tag 'application' %>
+  <%= javascript_include_tag 'cms' if can?(:update, Cms::Page) %>
+  <%= javascript_include_tag 'richtext' if can?(:update, Building) %>
 
 
   <% if Rails.env.production? && ENV['GOOGLE_ANALYTICS'] %>

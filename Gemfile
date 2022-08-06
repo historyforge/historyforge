@@ -1,15 +1,16 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
-ruby '3.1.0'
+ruby '3.1.2'
 
 gem 'activerecord-precounter'
 gem 'active_storage_validations'
 gem 'acts_as_list'
 gem 'airbrake'
 gem 'ancestry'
-gem 'andand'
 gem 'ar_doc_store'
 gem 'bcrypt'
-gem 'bootsnap'
+gem 'bootsnap', require: false
 gem 'cancancan'
 gem 'chartkick'
 gem 'devise'
@@ -17,43 +18,49 @@ gem 'devise-bootstrap-views', '~> 1.0'
 gem 'devise-encryptable'
 gem 'devise_invitable'
 gem 'dotenv-rails'
-gem 'draper'
 gem 'fast_memoize'
 gem 'font-awesome-rails'
 gem 'geocoder'
 gem 'image_processing'
 gem 'jbuilder', '~> 2.0'
+gem 'jsbundling-rails'
 gem 'kaminari'
 gem 'liquid'
 gem 'memory_profiler'
 gem 'mini_magick'
 gem 'net-smtp', require: false
 gem 'non-stupid-digest-assets'
+gem 'oj'
 gem 'omniauth-facebook'
 gem 'omniauth-rails_csrf_protection'
 gem 'paper_trail'
 gem 'pg'
 gem 'pg_search'
 gem 'puma'
-gem 'rails', '~>6.1'
+gem 'rails'
 gem 'ransack'
 gem 'recaptcha'
 gem 'ruby-vips'
 gem 'rubyXL', require: false
 gem 'rubyzip', require: false
+gem 'sassc'
 gem 'simple_form'
 gem 'slim'
-gem 'webpacker'
+gem 'sprockets-rails'
 
 group :development do
-  gem "byebug"
-  gem "letter_opener"
-  gem "letter_opener_web"
-  gem "pry"
-  gem "rubocop-rails"
+  gem 'annotate'
+  gem 'byebug'
+  gem 'get_process_mem'
+  gem 'letter_opener'
+  gem 'letter_opener_web'
+  gem 'pry'
+  gem 'rubocop', require: false
+  gem 'rubocop-performance', require: false
+  gem 'rubocop-rails', require: false
+  gem 'rubocop-rspec', require: false
   gem 'simplecov', require: false
-  gem "spring"
-  gem "web-console" #, "~> 2.0"
+  gem 'web-console' #, "~> 2.0"
 end
 
 group :development, :test do

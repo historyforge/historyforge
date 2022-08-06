@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DefineEnumeration
   extend ActiveSupport::Concern
   included do
@@ -5,7 +7,8 @@ module DefineEnumeration
 
     # Defines an enumerated list for use by the model. Most such lists are of census codes, such as M or F, B and W.
     # Strict means only allow values on the list for this attribute.
-    def self.define_enumeration(name, values, strict: false)
+    def self.define_enumeration(name, values, **kwargs)
+      strict = kwargs[:strict]
       self.enumerations ||= []
 
       class_eval "def self.#{name}_choices; #{values.inspect}; end", __FILE__, __LINE__
@@ -14,7 +17,7 @@ module DefineEnumeration
         _replace_inclusion_validator(name, values) if strict
       else
         self.enumerations << name
-        class_eval "validates_inclusion_of :#{name}, in: #{name}_choices", __FILE__, __LINE__ if strict
+        class_eval "validates_inclusion_of :#{name}, in: #{name}_choices#{kwargs[:if] ? ", if: :#{kwargs[:if]}" : ""}", __FILE__, __LINE__ if strict
       end
     end
 

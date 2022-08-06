@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :ipums do
   task load_1910: :environment do
     filename = '/' + File.join('mnt', 'c', 'Users', 'owner', 'Downloads', 'usa_00004.csv')

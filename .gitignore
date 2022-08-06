@@ -70,3 +70,6 @@ yarn-debug.log*
 /.generators
 /.rakeTasks
 bin/deploy
+
+/app/assets/builds2/*
+!/app/assets/builds2/.keep

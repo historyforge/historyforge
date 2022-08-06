@@ -1,3 +1,50 @@
+# == Schema Information
+#
+# Table name: buildings
+#
+#  id                    :integer          not null, primary key
+#  name                  :string           not null
+#  city                  :string           not null
+#  state                 :string           not null
+#  postal_code           :string
+#  year_earliest         :integer
+#  year_latest           :integer
+#  building_type_id      :integer
+#  description           :text
+#  lat                   :decimal(15, 10)
+#  lon                   :decimal(15, 10)
+#  created_at            :datetime         not null
+#  updated_at            :datetime         not null
+#  year_earliest_circa   :boolean          default("false")
+#  year_latest_circa     :boolean          default("false")
+#  address_house_number  :string
+#  address_street_prefix :string
+#  address_street_name   :string
+#  address_street_suffix :string
+#  stories               :float
+#  annotations_legacy    :text
+#  lining_type_id        :integer
+#  frame_type_id         :integer
+#  block_number          :string
+#  created_by_id         :integer
+#  reviewed_by_id        :integer
+#  reviewed_at           :datetime
+#  investigate           :boolean          default("false")
+#  investigate_reason    :string
+#  notes                 :text
+#  locality_id           :integer
+#  building_types_mask   :integer
+#
+# Indexes
+#
+#  index_buildings_on_building_type_id  (building_type_id)
+#  index_buildings_on_created_by_id     (created_by_id)
+#  index_buildings_on_frame_type_id     (frame_type_id)
+#  index_buildings_on_lining_type_id    (lining_type_id)
+#  index_buildings_on_locality_id       (locality_id)
+#  index_buildings_on_reviewed_by_id    (reviewed_by_id)
+#
+
 # frozen_string_literal: true
 
 # Rails model for buildings. Census records are attached to buildings. They also have photos and some
@@ -11,8 +58,8 @@ class Building < ApplicationRecord
 
   has_rich_text :description
 
-  define_enumeration :address_street_prefix, %w[N S E W]
-  define_enumeration :address_street_suffix, %w[St Rd Ave Blvd Pl Terr Jct Pt Tpke Ct Pk Tr Dr Hill Cir Sq Ln Fwy Hwy Way].sort
+  define_enumeration :address_street_prefix, STREET_PREFIXES
+  define_enumeration :address_street_suffix, STREET_SUFFIXES
 
   belongs_to :locality, optional: true
 
@@ -60,26 +107,26 @@ class Building < ApplicationRecord
 
   scope :order_by_street_address, lambda { |dir|
     all
-      .joins("LEFT OUTER JOIN addresses pa ON pa.building_id=buildings.id AND pa.is_primary=TRUE")
-      .group("buildings.id, pa.id")
-      .order('pa.name' => dir)
-      .order('pa.prefix' => dir)
-      .order('pa.suffix' => dir)
-      .order(Arel.sql("substring(pa.house_number, '^[0-9]+')::int") => dir)
+      .joins('LEFT OUTER JOIN addresses ON addresses.building_id=buildings.id AND addresses.is_primary=TRUE')
+      .group('buildings.id, addresses.id')
+      .order('addresses.name' => dir)
+      .order('addresses.prefix' => dir)
+      .order('addresses.suffix' => dir)
+      .order(Arel.sql("substring(addresses.house_number, '^[0-9]+')::int") => dir)
   }
 
   scope :by_street_address, -> { order_by_street_address('asc') }
 
-  scope :with_multiple_addresses, -> {
+  scope :with_multiple_addresses, lambda {
     all
       .joins(:addresses)
-      .group("buildings.id, addresses.name")
-      .having("COUNT(addresses.name) > 1")
+      .group('buildings.id, addresses.name')
+      .having('COUNT(addresses.name) > 1')
   }
 
   scope :building_types_id_in, lambda { |*ids|
     if ids.empty?
-      where("building_types_mask > 0")
+      where('building_types_mask > 0')
     else
       where 'building_types_mask & ? > 0', BuildingType.mask_for(ids)
     end
@@ -87,7 +134,7 @@ class Building < ApplicationRecord
 
   scope :building_types_id_not_in, lambda { |*ids|
     if ids.empty?
-      where("building_types_mask = 0")
+      where('building_types_mask = 0')
     else
       where.not 'building_types_mask & ? > 0', BuildingType.mask_for(ids)
     end
@@ -105,7 +152,7 @@ class Building < ApplicationRecord
     timeout: 2,
     use_https: true,
     lookup: :google,
-    api_key: AppConfig.geocoding_key
+    api_key: AppConfig[:geocoding_key]
   )
 
   geocoded_by :full_street_address, latitude: :lat, longitude: :lon
@@ -190,10 +237,7 @@ class Building < ApplicationRecord
 
   def street_address_for_building_id(year)
     addresses
-      .select { |a| a.year.blank? || a.year <= year }
-      .sort
-      .first
-      .address
+      .to_a.select { |a| a.year.blank? || a.year <= year }.min&.address
   end
 
   def street_address

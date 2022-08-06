@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 module Cms
   class SliderTag < Liquid::Block
 
     def initialize(tag_name, markup, tokens)
-      @slider_options = "{selector: \".slides > .cms-slide\""
+      @slider_options = '{selector: ".slides > .cms-slide"'
       if markup.present?
         options = markup.split(' ')
         @css_id = options.shift
@@ -12,7 +14,7 @@ module Cms
       else
         @css_id = 'slider'
       end
-      @slider_options << "}"
+      @slider_options << '}'
       super
     end
 

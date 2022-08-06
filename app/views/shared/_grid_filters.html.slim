@@ -16,7 +16,7 @@
 = simple_form_for @search, url: url_for(), method: :get, as: :s do |form|
   .float-right
     = form.submit 'Submit', style: 'display: none'
-    => link_to 'CSV', params.permit!.merge(format: :csv), class: 'btn btn-sm btn-primary'
+    => link_to 'CSV', (params.try(:permit!) || params).merge(format: :csv), class: 'btn btn-sm btn-primary'
     - if controller.respond_to?(:year)
       => form.submit 'Map It', class: 'btn btn-sm btn-primary', id: 'search-map', data: {year: controller.year}
       - if can_demographics?(controller.year)
@@ -40,7 +40,7 @@
         span Fields
 
       .card-body
-        .column-count-3.checkboxes#fields
+        .column-count-2.checkboxes#fields
           - @search.all_fields.each do |field|
             label.dropdown-item.checkbox for="f_#{field}"
               = check_box_tag 'f[]', field, @search.f.include?(field), id: "f_#{field}", data: { default: @search.default_field?(field) }
@@ -66,9 +66,10 @@
             .col-3
               label for="s_page_number_eq" Sheet
               = select_tag 's[page_number_eq]', options_for_select((1..100).map, @search.s[:page_number_eq]), include_blank: true, class: 'form-control'
-            .col-3
-              label for="s_page_side_eq" Side
-              = select_tag 's[page_side_eq]', options_for_select(resource_class.page_side_choices, @search.s[:page_side_eq]), include_blank: true, class: 'form-control'
+            - if controller.year < 1950
+              .col-3
+                label for="s_page_side_eq" Side
+                = select_tag 's[page_side_eq]', options_for_select(resource_class.page_side_choices, @search.s[:page_side_eq]), include_blank: true, class: 'form-control'
           hr
 
         .row

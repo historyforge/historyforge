@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FixWorkerClass1940 < ActiveRecord::Migration[6.0]
   def change
     Census1940Record.where(worker_class: 'Gw').each do |row|

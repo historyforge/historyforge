@@ -12,7 +12,7 @@
           nameCellRenderer: NameCellRenderer,
             htmlCellRenderer: HTMLCellRenderer
         },
-        columnDefs: <%= @translator.try(:column_def) || @search.column_def.to_json.html_safe -%>,
+        columnDefs: <%== (@translator.try(:column_def) || @search.column_def).to_json -%>,
         defaultColDef: { width: 100 },
         rowSelection: 'single',
         rowModelType: 'infinite',

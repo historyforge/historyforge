@@ -1,6 +1,6 @@
 - set_page_title @record.name
 
-- content_for :pills do
+div.mb-3
   - if can?(:create, Flag)
     = render 'shared/flag_it', item: @model, item_class: 'btn btn-secondary'
   - if can?(:update, @model)
@@ -38,8 +38,9 @@
 
 .card.mb-3
   .card-header
+    = link_to 'Go to Census Sheet', path_to_census_sheet(@record), class: 'float-right'
     - if @record.person_id
-      = link_to 'Go to Person Record', @record.person, class: 'float-right'
+      = link_to 'Go to Person Record', @record.person, class: 'float-right mr-4'
     | Census Scope
   .card-body.p-0
     table.table.table-bordered.table-condensed.mb-0
@@ -54,7 +55,7 @@
           th Line
           - unless controller.year == 1940
             th Dwelling
-          th= translated_label(Census1940Record, :family_id)
+          th= translated_label(controller.resource_class, :family_id)
       tbody
         tr
           td= controller.year
@@ -125,10 +126,10 @@
 
 - if can?(:review, CensusRecord)
   .alert.alert-info
-    = "Entered by #{@record.created_by.andand.name || 'a kind soul'} on #{@record.created_at.to_s(:long)}"
+    = "Entered by #{@record.created_by&.name || 'a kind soul'} on #{@record.created_at.to_formatted_s(:long)}"
   - if @record.reviewed?
     .alert.alert-info
-      = "Reviewed by #{@record.reviewed_by.andand.name || 'a kind soul'} on #{@record.reviewed_at.to_s(:long)}"
+      = "Reviewed by #{@record.reviewed_by&.name || 'a kind soul'} on #{@record.reviewed_at.to_formatted_s(:long)}"
 
 = render 'shared/change_history', item: @model
 

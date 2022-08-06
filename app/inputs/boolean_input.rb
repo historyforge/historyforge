@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class BooleanInput < SimpleForm::Inputs::BooleanInput
   def input(wrapper_options={})
     if @builder.is_a?(FormViewBuilder)

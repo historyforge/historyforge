@@ -2,8 +2,8 @@ header
   nav.navbar.navbar-light.navbar-expand-lg.navbar-fixed.top role="navigation"
     .container
       = link_to root_path, class: 'navbar-brand' do
-        = image_pack_tag 'media/images/logo-hf.png'
-        = image_pack_tag 'media/images/logo-text.png'
+        = image_tag 'logo-hf.png'
+        = image_tag 'logo-text.png'
 
       button.navbar-toggler type="button" data-toggle="collapse" data-target="#navbar-nav"
         span.navbar-toggler-icon
@@ -64,8 +64,8 @@ header
           li.nav-item= link_to 'Volunteer', '/volunteer', class: 'nav-link'
 
           - if user_signed_in?
-            li.nav-item.dropdown
-              a.nav-link.dropdown-toggle data-toggle='dropdown' href="#"
+            li.nav-item.dropleft
+              a.nav-link.dropdown-toggle data-toggle='dropdown' data-placement="left" href="#"
                 i.fa.fa-user
               .dropdown-menu
                 .dropdown-item-text= current_user.name

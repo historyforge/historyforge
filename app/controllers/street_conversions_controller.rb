@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class StreetConversionsController < ApplicationController
   before_action :check_administrator_role
 

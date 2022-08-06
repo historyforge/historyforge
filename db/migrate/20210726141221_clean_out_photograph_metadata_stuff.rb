@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CleanOutPhotographMetadataStuff < ActiveRecord::Migration[6.0]
   def up
     remove_column :photographs, :rights_statement_id

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :dictionary do
   task build: :environment do
     dict = {

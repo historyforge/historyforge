@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class BuildingColumnDefaults < ActiveRecord::Migration[6.0]
   def change
     change_column_default :buildings, :city, from: 'Ithaca', to: nil

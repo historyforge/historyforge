@@ -15,10 +15,11 @@
         th 1920
         th 1930
         th 1940
+        th 1950
         th
     tbody
       - @localities.each do |record|
-        tr
+        tr.draggable
           td= record.name
           td= number_with_delimiter record.census1880_records_count
           td= number_with_delimiter record.census1900_records_count
@@ -26,6 +27,7 @@
           td= number_with_delimiter record.census1920_records_count
           td= number_with_delimiter record.census1930_records_count
           td= number_with_delimiter record.census1940_records_count
+          td= number_with_delimiter record.census1950_records_count
           td style="text-align:right;white-space:nowrap"
             = link_to 'Edit', [:edit, record], class: 'btn btn-xs btn-light'
 

@@ -57,3 +57,10 @@ dl
           .person-photo.col-sm-4 data-href=person_photograph_path(@person, photo)
             = picture_tag photo: photo, style: 'quarter', img_class: 'img-thumbnail'
             = simple_format photo.full_caption
+
+- if @person.notes? && can?(:update, @person)
+  .card.mb-1
+    .card-header
+      | Additional Notes
+    .card-body
+      = simple_format @person.notes

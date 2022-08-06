@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class BuildAddressHistory
   include FastMemoize
 
@@ -19,6 +21,7 @@ class BuildAddressHistory
                        .compact
                        .first
     return unless latest_address
+    return if latest_address.year
 
     latest_address.update(year: year)
   end
@@ -52,7 +55,7 @@ class BuildAddressHistory
       counts[address.name] ||= 0
       counts[address.name] += 1
     end
-    winner = counts.detect { |k, v| v > 1 } && counts.max_by { |k, v| v }[0]
+    winner = counts.detect { |k, v| v > 1 } && counts.max_by { |_k, v| v }[0]
     winner && building.addresses.select { |address| address.name == winner }
   end
 end

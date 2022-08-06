@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FixBuildingDescriptions < ActiveRecord::Migration[6.0]
   def up
     Building.find_each do |row|

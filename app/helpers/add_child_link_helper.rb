@@ -1,5 +1,6 @@
-module AddChildLinkHelper
+# frozen_string_literal: true
 
+module AddChildLinkHelper
   ################################################################################
   #  Parent form
   # .nested-form
@@ -19,7 +20,7 @@ module AddChildLinkHelper
     options[:form_builder_local] ||= :form
     options[:wrapper] ||= :vertical_form
     locals = options[:locals] || {}
-    form_builder.fields_for(method, options[:object], :child_index => "new_#{method}") do |f|
+    form_builder.fields_for(method, options[:object], child_index: "new_#{method}") do |f|
       render options[:partial], locals.merge(options[:form_builder_local] => f)
     end
   end
@@ -28,6 +29,6 @@ module AddChildLinkHelper
     options = args.extract_options!
     fields = new_child_fields(f, method, options)
     content_for(:body_end) { content_tag(:script, fields, type: 'text/html', id: "#{method}_#{f.object_id}_fields") }
-    content_tag(:button, name, 'data-form-selector' => options[:selector], 'data-insert-fields' => "#{method}_#{f.object_id}", class: "btn btn-primary add-child-button", type: 'button')
+    content_tag(:button, name, 'data-form-selector' => options[:selector], 'data-insert-fields' => "#{method}_#{f.object_id}", class: 'btn btn-primary add-child-button', type: 'button')
   end
 end

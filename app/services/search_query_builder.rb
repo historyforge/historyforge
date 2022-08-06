@@ -40,9 +40,13 @@ class SearchQueryBuilder
   end
 
   def columns
-    f.concat(['id'])
+    f&.concat(['id']) || []
   end
   memoize :columns
+
+  def total_records
+    scoped.count
+  end
 
   class Builder
     def initialize(entity_class, params)

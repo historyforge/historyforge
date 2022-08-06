@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Use this hook to configure devise mailer, warden hooks and so forth.
 # Many of these configuration options can be set straight in your model.
 Devise.setup do |config|
@@ -12,7 +14,7 @@ Devise.setup do |config|
   # note that it will be overwritten if you use your own mailer class
   # with default "from" parameter.
   # mapwarper - this is defined by config/application_config.rb  with config/application.yml
-  config.mailer_sender = proc { AppConfig.mail_from } # ENV['MAIL_FROM']
+  config.mailer_sender = proc { AppConfig[:mail_from] } # ENV['MAIL_FROM']
 
   # Configure the class responsible to send e-mails.
   # config.mailer = 'Devise::Mailer'
@@ -241,7 +243,7 @@ Devise.setup do |config|
 
   # config.omniauth :github, APP_CONFIG["omniauth_github_key"], APP_CONFIG["omniauth_github_secret"]
 
-  config.omniauth :facebook, ENV["FACEBOOK_LOGIN_APP_ID"],  ENV["FACEBOOK_LOGIN_SECRET"]
+  config.omniauth :facebook, ENV['FACEBOOK_LOGIN_APP_ID'],  ENV['FACEBOOK_LOGIN_SECRET']
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or

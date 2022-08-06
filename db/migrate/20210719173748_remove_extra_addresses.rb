@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RemoveExtraAddresses < ActiveRecord::Migration[6.0]
   def change
     Address.where(name: nil).each do |address|

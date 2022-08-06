@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Buildings::MainController < ApplicationController
   include AdvancedRestoreSearch
   include RenderCsv
@@ -201,8 +203,12 @@ class Buildings::MainController < ApplicationController
 
   def load_buildings
     authorize! :read, Building
-    @search = BuildingSearch.generate params: params,
+    @search = BuildingSearch.generate params: search_params,
                                       user: current_user
     @search.expanded = true if request.format.csv?
+  end
+
+  def search_params
+    params.permit!.to_h
   end
 end

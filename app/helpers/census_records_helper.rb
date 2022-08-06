@@ -1,4 +1,16 @@
+# frozen_string_literal: true
+
 module CensusRecordsHelper
+  def path_to_census_sheet(record)
+    query = {
+      ward_eq: record.ward,
+      enum_dist_eq: record.enum_dist,
+      page_number_eq: record.page_number,
+      page_side_eq: record.page_side
+    }
+    public_send "census#{record.year}_records_path", s: query
+  end
+
   def census_card_edit(title: nil, list: nil)
     header = title && content_tag(:div, title, class: 'card-header')
 
@@ -28,7 +40,7 @@ module CensusRecordsHelper
   end
 
   def translated_label(klass, key)
-    Translator.label(klass, key)
+    Translator.filter(klass, key)
   end
 
   def translated_option(attribute_name, item)
@@ -69,6 +81,10 @@ module CensusRecordsHelper
 
   def is_1940?
     controller.year == 1940
+  end
+
+  def is_1950?
+    controller.year == 1950
   end
 
   def aggregate_chart_data(data)

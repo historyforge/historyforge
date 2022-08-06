@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DataDictionary
   def self.census_code(field, code)
     instance.lookup_code(field, code)

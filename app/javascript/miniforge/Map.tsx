@@ -97,7 +97,7 @@ function addMarkers(map, markers) {
 
 function addMainMarker(map, current, editable, move) {
   const marker = new google.maps.Marker({
-    position: new google.maps.LatLng(current.lat, current.lon),
+    position: new google.maps.LatLng(current.object.lat, current.object.lon),
     icon: getMainIcon(),
     zIndex: 12,
     map,

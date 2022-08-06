@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddressHistoryFromStreetConversion
   def initialize(street_conversion)
     @street_conversion = street_conversion

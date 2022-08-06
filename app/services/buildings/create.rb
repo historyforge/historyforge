@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Buildings
   module Create
     def self.run(params, user)

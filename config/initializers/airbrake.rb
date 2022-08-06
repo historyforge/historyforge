@@ -1,85 +1,90 @@
-if defined?(Airbrake) && ENV['AIRBRAKE_ID']
-  Airbrake.configure do |config|
-    config.project_id = ENV['AIRBRAKE_ID'] || 1
-    config.project_key = ENV['AIRBRAKE_KEY']
-    config.host = ENV['AIRBRAKE_URL']
-    config.environment = Rails.env
-    config.ignore_environments = %w[development test]
-  end
+# frozen_string_literal: true
 
-  IGNORED_ERRORS = %w[
-    ActionController::InvalidAuthenticityToken
-    ActiveRecord::RecordNotFound
-    AbstractController::ActionNotFound
-    SIGTERM
-    SIGQUIT
-  ].freeze
-  Airbrake.add_filter do |notice|
-    notice.ignore! if notice[:errors].any? { |error| IGNORED_ERRORS.include? error[:type] }
-  end
+# This needs to happen before configuring Airbrake.
+Rails.application.config.filter_parameters += [
+  :passw, :secret, :token, :_key, :crypt, :salt, :certificate, :otp, :ssn
+]
 
-  if Airbrake.const_defined?('SENSITIVE_RACK_VARS')
-    %w[
-      SENSITIVE_RACK_VARS
-      RACK_VARS_CONTAINING_INSTANCES
-      SENSITIVE_ENV_VARS
-      FILTERED_RACK_VARS].each do |name|
-      Airbrake.send :remove_const, name.to_sym
-    end
-  end
+# Airbrake is an online tool that provides robust exception tracking in your
+# Rails applications. In doing so, it allows you to easily review errors, tie an
+# error to an individual piece of code, and trace the cause back to recent
+# changes. Airbrake enables for easy categorization, searching, and
+# prioritization of exceptions so that when errors occur, your team can quickly
+# determine the root cause.
+#
+# Configuration details:
+# https://github.com/airbrake/airbrake-ruby#configuration
+Airbrake.configure do |c|
+  # You must set both project_id & project_key. To find your project_id and
+  # project_key navigate to your project's General Settings and copy the
+  # values from the right sidebar.
+  # https://github.com/airbrake/airbrake-ruby#project_id--project_key
+  c.project_id = ENV['AIRBRAKE_ID']
+  c.project_key = ENV['AIRBRAKE_KEY']
 
-  module Airbrake
-    SENSITIVE_RACK_VARS = %w[
-      HTTP_X_CSRF_TOKEN
-      HTTP_COOKIE
+  c.host = ENV['AIRBRAKE_URL']
 
-      action_dispatch.request.unsigned_session_cookie
-      action_dispatch.cookies
-      action_dispatch.unsigned_session_cookie
-      action_dispatch.secret_key_base
-      action_dispatch.signed_cookie_salt
-      action_dispatch.encrypted_cookie_salt
-      action_dispatch.encrypted_signed_cookie_salt
-      action_dispatch.http_auth_salt
-      action_dispatch.secret_token
+  # Configures the root directory of your project. Expects a String or a
+  # Pathname, which represents the path to your project. Providing this option
+  # helps us to filter out repetitive data from backtrace frames and link to
+  # GitHub files from our dashboard.
+  # https://github.com/airbrake/airbrake-ruby#root_directory
+  c.root_directory = Rails.root
 
-      rack.request.cookie_hash
-      rack.request.cookie_string
-      rack.request.form_vars
+  # By default, Airbrake Ruby outputs to STDOUT. In Rails apps it makes sense
+  # to use the Rails' logger.
+  # https://github.com/airbrake/airbrake-ruby#logger
+  c.logger = Airbrake::Rails.logger
 
-      rack.session
-      rack.session.options
-  ].freeze
+  # Configures the environment the application is running in. Helps the
+  # Airbrake dashboard to distinguish between exceptions occurring in
+  # different environments.
+  # NOTE: This option must be set in order to make the 'ignore_environments'
+  # option work.
+  # https://github.com/airbrake/airbrake-ruby#environment
+  c.environment = Rails.env
 
-    RACK_VARS_CONTAINING_INSTANCES = %w[
-      action_controller.instance
+  # Setting this option allows Airbrake to filter exceptions occurring in
+  # unwanted environments such as :test.  NOTE: This option *does not* work if
+  # you don't set the 'environment' option.
+  # https://github.com/airbrake/airbrake-ruby#ignore_environments
+  c.ignore_environments = %w[test development]
 
-      action_dispatch.backtrace_cleaner
-      action_dispatch.routes
-      action_dispatch.logger
-      action_dispatch.key_generator
+  # A list of parameters that should be filtered out of what is sent to
+  # Airbrake. By default, all "password" attributes will have their contents
+  # replaced.
+  # https://github.com/airbrake/airbrake-ruby#blocklist_keys
+  c.blocklist_keys = [/password/i, /authorization/i]
 
-      rack-cache.storage
+  # Alternatively, you can integrate with Rails' filter_parameters.
+  # Read more: https://goo.gl/gqQ1xS
+  # c.blocklist_keys = Rails.application.config.filter_parameters
+end
 
-      rack.errors
-      rack.input
-  ].freeze
+# A filter that collects request body information. Enable it if you are sure you
+# don't send sensitive information to Airbrake in your body (such as passwords).
+# https://github.com/airbrake/airbrake#requestbodyfilter
+# Airbrake.add_filter(Airbrake::Rack::RequestBodyFilter.new)
 
-    SENSITIVE_ENV_VARS = [
-        /database_url/i,
-        /encryption_key/i,
-        /pepper/i,
-        /aws/i,
-        /twilio/i,
-        /secret/i,
-        /password/i,
-        /twitter/i,
-        /token/i,
-        /api/i
-    ].freeze
+# Attaches thread & fiber local variables along with general thread information.
+# Airbrake.add_filter(Airbrake::Filters::ThreadFilter.new)
 
-    FILTERED_RACK_VARS = SENSITIVE_RACK_VARS + SENSITIVE_ENV_VARS + RACK_VARS_CONTAINING_INSTANCES
-  end
+# Attaches loaded dependencies to the notice object
+# (under context/versions/dependencies).
+# Airbrake.add_filter(Airbrake::Filters::DependencyFilter.new)
 
+# If you want to convert your log messages to Airbrake errors, we offer an
+# integration with the Logger class from stdlib.
+# https://github.com/airbrake/airbrake#logger
+# Rails.logger = Airbrake::AirbrakeLogger.new(Rails.logger)
 
+ignored_errors = %w[
+  ActionController::InvalidAuthenticityToken
+  ActiveRecord::RecordNotFound
+  AbstractController::ActionNotFound
+  SIGTERM
+  SIGQUIT
+].freeze
+Airbrake.add_filter do |notice|
+  notice.ignore! if ignored_errors.include?(notice[:error_class])
 end

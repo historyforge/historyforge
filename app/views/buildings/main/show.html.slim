@@ -5,9 +5,9 @@
 
 - content_for :pills do
   - if can?(:create, Flag)
-    = render 'shared/flag_it', item: @building, item_class: 'btn btn-light'
+    = render 'shared/flag_it', item: @building.object, item_class: 'btn btn-light'
   - if can?(:create, Photograph)
-    = link_to 'Add Photo', new_building_photograph_path(@building), class: 'btn btn-right'
+    = link_to 'Add Photo', new_building_photograph_path(@building.object), class: 'btn btn-right'
   - if can?(:update, @building.object)
     = link_to 'Edit', [:edit, @building], class: 'btn btn-light'
   - if can?(:review, @building.object) && !@building.reviewed?
@@ -61,7 +61,7 @@
               dt Construction
               dd
                 - if @building.stories
-                  => "#{@building.stories.to_i}-story"
+                  => "#{@building.stories} story"
                 - if @building.frame
                   = "#{@building.frame} structure"
                 - if @building.lining
@@ -80,7 +80,7 @@
         .card-body
           .row
             .col-12
-              = @building.annotations_legacy
+              = simple_format @building.annotations_legacy
 
 
     - if @building.annotations.present?
@@ -89,9 +89,8 @@
           | Annotations
         .card-body
           - @building.annotations.each do |annotation|
-            .row
-              .col-12
-                dd = annotation.annotation_layer
+            h6= annotation.map_overlay_name
+            = simple_format annotation.annotation_text
 
 
     - if @building.description.present?
@@ -112,7 +111,7 @@
         .card-body
           .row
             - photos.each do |photo|
-              .building-photo.col-sm-4 data-href=building_photograph_path(@building, photo)
+              .building-photo.col-sm-4 data-href=building_photograph_path(@building.object, photo)
                 = picture_tag photo: photo, style: 'quarter', img_class: 'img-thumbnail'
                 = simple_format photo.full_caption
 

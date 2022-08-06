@@ -1,3 +1,21 @@
+# == Schema Information
+#
+# Table name: cms_page_widgets
+#
+#  id          :integer          not null, primary key
+#  cms_page_id :integer
+#  type        :string
+#  data        :jsonb
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#
+# Indexes
+#
+#  index_cms_page_widgets_on_cms_page_id  (cms_page_id)
+#
+
+# frozen_string_literal: true
+
 class Cms::Embed < Cms::PageWidget
 
   json_attribute :title, as: :string
@@ -20,7 +38,7 @@ class Cms::Embed < Cms::PageWidget
       html_options = { class: 'cms-slide cms-embed ' }
       html_options[:class] << embed.css_class if embed.css_class?
       html_options[:id] = embed.css_id if embed.css_id
-      html_options[:style] = "padding-top:56.2%;width:100%;position:relative;"
+      html_options[:style] = 'padding-top:56.2%;width:100%;position:relative;'
       if embed.css_clear.present? && embed.css_clear != 'none'
         html_options[:style] << "clear: #{embed.css_clear};"
       end
@@ -48,11 +66,11 @@ class Cms::Embed < Cms::PageWidget
 
     def tranform_embed_url(url)
       if url =~ /youtu\.be/
-        url.sub /youtu\.be/, "www.youtube.com/embed"
+        url.sub /youtu\.be/, 'www.youtube.com/embed'
       elsif url =~ /youtube\.com\/watch\?v/
         url.sub /watch\?v=/, 'embed/'
       elsif url =~ /vimeo/
-        url.sub /vimeo\.com/, "player.vimeo.com/video"
+        url.sub /vimeo\.com/, 'player.vimeo.com/video'
       else
         url
       end

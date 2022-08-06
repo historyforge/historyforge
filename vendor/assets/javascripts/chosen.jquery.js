@@ -427,7 +427,6 @@
             this.results_hide();
           }
           return true;
-        case 9:
         case 38:
         case 40:
         case 16:

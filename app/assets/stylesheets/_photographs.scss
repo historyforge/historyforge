@@ -1,0 +1,113 @@
+@import 'include-media';
+
+#cart {
+  &::before {
+    content: "\01F6D2";
+  }
+}
+
+#photo-wizard {
+  .card {
+    background: white;
+    display: none;
+
+    @include media('<tablet') {
+      .card-body {
+        padding: 10px 15px;
+      }
+      > .float-right {
+        display: none;
+      }
+      .thumb {
+        display: none;
+      }
+    }
+    @include media('>=tablet') {
+      .card-body {
+        padding: 30px 50px;
+      }
+      > .float-right {
+        position: absolute;
+        right: 20px;
+        top: 20px;
+      }
+    }
+  }
+  .card.active {
+    z-index: 1;
+    opacity: 1;
+    display: block;
+  }
+
+  .thumb {
+    padding-top: 30px;
+  }
+}
+
+#selected-file {
+  img {
+    max-width: 100%;
+  }
+}
+
+#photograph-map {
+  width: 100%;
+  height: 300px;
+}
+
+#photograph-date-type {
+  .form-group { display: none; }
+  &.year {
+    .photograph_date_year { display: block; }
+  }
+  &.month {
+    .photograph_date_year { display: block; }
+    .photograph_date_month { display: block; }
+  }
+  &.day {
+    .photograph_date_year { display: block; }
+    .photograph_date_month { display: block; }
+    .photograph_date_day { display: block; }
+  }
+  &.years {
+    .photograph_date_year { display: block; }
+    .photograph_date_year_end { display: block; }
+  }
+  &.months {
+    .photograph_date_year { display: block; }
+    .photograph_date_month { display: block; }
+    .photograph_date_year_end { display: block; }
+    .photograph_date_month_end { display: block; }
+  }
+  &.days {
+    .photograph_date_year { display: block; }
+    .photograph_date_month { display: block; }
+    .photograph_date_day { display: block; }
+    .photograph_date_year_end { display: block; }
+    .photograph_date_month_end { display: block; }
+    .photograph_date_day_end { display: block; }
+  }
+}
+
+#photograph-page {
+  h1 {
+    //font-size: 1rem;
+    margin-bottom: 24px;
+  }
+  h2 {
+    font-style: italic;
+    font-size: 2rem;
+  }
+  h3 {
+    font-size: 1.25rem;
+  }
+  h4 {
+    font-size: 1.25rem;
+  }
+}
+
+#photographs {
+  .list-group-item .widest a {
+    display: block;
+  }
+}

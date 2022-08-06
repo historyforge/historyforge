@@ -38,11 +38,11 @@ class HomeController < ApplicationController
   private
 
   def load_announcement
-    return unless AppConfig.announcement_show
+    return unless AppConfig[:announcement_show]
 
     @announcement = {
-      text: AppConfig.announcement_text,
-      url: AppConfig.announcement_url
+      text: AppConfig[:announcement_text],
+      url: AppConfig[:announcement_url]
     }
   end
 end

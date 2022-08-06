@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 class UserRolesMaskAgain < ActiveRecord::Migration[6.0]
   def up
     role_ids = Role.all.map(&:id)
     roles = Role.all.each_with_object({}) { |type, obj| obj[type.name] = type.id }
     old_roles = ActiveRecord::Base.connection
-                                  .execute("select id, name from roles")
+                                  .execute('select id, name from roles')
                                   .to_a
                                   .each_with_object({}) { |type, obj| obj[type['id']] = type['name'].titleize }
 

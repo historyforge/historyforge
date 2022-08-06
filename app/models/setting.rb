@@ -1,9 +1,37 @@
+# == Schema Information
+#
+# Table name: settings
+#
+#  id                :integer          not null, primary key
+#  key               :string
+#  name              :string
+#  hint              :string
+#  input_type        :string
+#  group             :string
+#  value             :text
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#  settings_group_id :integer
+#
+# Indexes
+#
+#  index_settings_on_settings_group_id  (settings_group_id)
+#
+
+# frozen_string_literal: true
+
 class Setting < ApplicationRecord
+  belongs_to :group, class_name: "SettingsGroup", foreign_key: :settings_group_id
+  delegate :name, to: :group, prefix: true
 
   def self.expire_cache
     Rails.cache.delete('settings')
   end
   class_attribute :current
+
+  def self.loaded?
+    self.current.present?
+  end
 
   def self.load
     self.current = Rails.cache.fetch('settings') do
@@ -44,7 +72,7 @@ class Setting < ApplicationRecord
     setting.name = name || key.to_s.humanize.titleize
     setting.input_type = type
     setting.value = value.to_s
-    setting.group = group
+    setting.group = SettingsGroup.find_or_create_by(name: group)
     setting.hint = hint
     setting.save
     expire_cache

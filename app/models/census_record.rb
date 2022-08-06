@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CensusRecord < ApplicationRecord
 
   self.abstract_class = true
@@ -22,9 +24,10 @@ class CensusRecord < ApplicationRecord
   before_save :match_to_person
 
   validates :first_name, :last_name, :family_id, :relation_to_head, :profession,
-            :page_number, :page_side, :line_number, :county, :city, :state, :enum_dist,
+            :page_number, :line_number, :county, :city, :state, :enum_dist,
             presence: true
-  validates :age, numericality: {greater_than_or_equal_to: -1, allow_nil: true}
+  validates :page_side, presence: true, if: :has_page_side?
+  validates :age, numericality: { greater_than_or_equal_to: -1, allow_nil: true }
   validate :dont_add_same_person, on: :create
   validates :relation_to_head, vocabulary: { allow_blank: true }
   validates :pob, :pob_father, :pob_mother, vocabulary: { name: :pob, allow_blank: true }
@@ -34,9 +37,9 @@ class CensusRecord < ApplicationRecord
   auto_strip_attributes :first_name, :middle_name, :last_name, :street_house_number, :street_name,
                         :street_prefix, :street_suffix, :apartment_number, :profession, :name_prefix, :name_suffix
 
-  define_enumeration :page_side, %w[A B], strict: true
-  define_enumeration :street_prefix, %w[N S E W]
-  define_enumeration :street_suffix, %w[St Rd Ave Blvd Pl Terr Ct Pk Tr Dr Hill Ln Way].sort
+  define_enumeration :page_side, %w[A B], strict: true, if: :has_page_side?
+  define_enumeration :street_prefix, STREET_PREFIXES
+  define_enumeration :street_suffix, STREET_SUFFIXES
   define_enumeration :sex, %w[M F]
   define_enumeration :race, %w[W B M]
   define_enumeration :marital_status, %w[S M Wd D]
@@ -92,6 +95,10 @@ class CensusRecord < ApplicationRecord
     100
   end
 
+  def has_page_side?
+    true
+  end
+
   def field_for(field)
     respond_to?(field) ? public_send(field) : '?'
   end
@@ -99,20 +106,20 @@ class CensusRecord < ApplicationRecord
   def set_defaults
     return if persisted?
 
-    self.city ||= AppConfig.city
-    self.county ||= AppConfig.county
-    self.state ||= AppConfig.state
-    self.pob ||= AppConfig.pob
+    self.city ||= AppConfig[:city]
+    self.county ||= AppConfig[:county]
+    self.state ||= AppConfig[:state]
+    self.pob ||= AppConfig[:pob]
 
     # Don't autofill these for 1940 because they are supplemental only
-    return if year == 1940
+    return if year >= 1940
 
-    self.pob_mother ||= AppConfig.pob
-    self.pob_father ||= AppConfig.pob
+    self.pob_mother ||= AppConfig[:pob]
+    self.pob_father ||= AppConfig[:pob]
   end
 
   def dont_add_same_person
-    return if persisted? || !likely_matches?
+    return if persisted? || !likely_matches? || last_name.blank?
 
     errors.add :last_name, 'A person with the same street number, street name, last name, and first name is already in the system.'
   end
@@ -132,11 +139,11 @@ class CensusRecord < ApplicationRecord
   end
 
   def latitude
-    building.andand.lat
+    building&.lat
   end
 
   def longitude
-    building.andand.lon
+    building&.lon
   end
 
   def fellows

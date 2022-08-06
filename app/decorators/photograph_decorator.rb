@@ -2,18 +2,18 @@
 
 class PhotographDecorator < ApplicationDecorator
   def title
-    model.title || 'Untitled'
+    object.title || 'Untitled'
   end
 
   def creator
-    model.creator || "Photographer unknown"
+    object.creator || 'Photographer unknown'
   end
 
   def date
-    model.date_text || 'No date'
+    object.date_text || 'No date'
   end
 
   def subject
-    model.subject || 'Not specified'
+    object.subject || 'Not specified'
   end
 end

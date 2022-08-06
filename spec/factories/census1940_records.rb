@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory(:census1940_record) do
     city { 'Ithaca' }
@@ -16,6 +18,6 @@ FactoryBot.define do
     line_number { 1 }
     enum_dist { 1 }
     locality
-    mother_tongue { 'English' }
+    # mother_tongue { 'English' }
   end
 end

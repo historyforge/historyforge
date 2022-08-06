@@ -6,6 +6,11 @@ class Translator
     translate(klass, key, 'labels')
   end
 
+  def self.filter(klass, key)
+    # DataDictionary.label key, klass.name.scan(/\d{4}/)
+    translate(klass, key, 'filters') || label(klass, key)
+  end
+
   def self.hint(klass, key)
     # DataDictionary.hint key, klass.name.scan(/\d{4}/)
     translate(klass, key, 'hints')
@@ -17,7 +22,8 @@ class Translator
 
   def self.option(attribute_name, item)
     # DataDictionary.census_code attribute_name, item
-    I18n.t("#{attribute_name}.#{item.downcase.gsub(/\W/, '')}", scope: 'census_codes', default: item).presence
+    lookup = "#{attribute_name}.#{item.downcase.gsub(/\W/, '')}"
+    I18n.t(lookup, scope: 'census_codes', default: item).presence
   end
 
   attr_reader :klass, :key, :namespace

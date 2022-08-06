@@ -5,7 +5,7 @@
         buildings: { buildings: <%== mini_forge_buildings.to_json  %>, current: <%== @building.to_json %>, editable: <%== can?(:update, @building).to_json %>},
         search: { params: <%== params.to_json %> }
     }
-    window.googleApiKey = '<%== AppConfig.google_api_key %>'
+    window.googleApiKey = '<%== AppConfig[:google_api_key] %>'
     <% if ENV['AIRBRAKE_KEY'] %>
     window.airbrakeCreds = {
         app_id: '<%== ENV['AIRBRAKE_ID'] %>',
@@ -16,4 +16,4 @@
     <% end %>
 </script>
 
-<script src="https://maps.googleapis.com/maps/api/js?key=<%= AppConfig.google_api_key -%>"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=<%= AppConfig[:google_api_key] -%>"></script>

@@ -2,6 +2,7 @@
   = link_to 'Save', "javascript: $('form.edit_map_overlay').submit()", class: 'btn btn-primary'
   = link_to 'View', @map_overlay, class: 'btn btn-light'
   = link_to 'View All', street_conversions_path, class: 'btn btn-light'
-  = link_to 'Delete', @map_overlay, class: 'btn btn-danger', data: { method: :delete, confirm: 'Are you sure? There is no undo.' }
+  - if @map_overlay.can_delete?
+    = link_to 'Delete', @map_overlay, class: 'btn btn-danger', data: { method: :delete, confirm: 'Are you sure? There is no undo.' }
 h1.page-title Edit Map Overlay
 = render 'form'

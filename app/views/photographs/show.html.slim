@@ -11,7 +11,7 @@
           = link_to 'Edit', [:edit, @photograph], class: 'btn btn-light'
         - if can? :destroy, @photograph
           = link_to 'Delete', @photograph, class: 'btn btn-light', data: { confirm: 'Are you sure?', method: :delete }
-        = render 'shared/flag_it', item: @photograph.model, item_class: 'btn btn-light'
+        = render 'shared/flag_it', item: @photograph.object, item_class: 'btn btn-light'
       h1.page-title Photograph ##{@photograph.id}
       / h3 #{@photograph.creator}
       h4 #{@photograph.date}
@@ -60,4 +60,4 @@
             .col-4 Notes
             .col-8= simple_format @photograph.notes
 
-    = render 'shared/change_history', item: @photograph.model
+    = render 'shared/change_history', item: @photograph.object

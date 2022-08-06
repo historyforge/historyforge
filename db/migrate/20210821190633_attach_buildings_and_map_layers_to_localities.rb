@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AttachBuildingsAndMapLayersToLocalities < ActiveRecord::Migration[6.0]
   def change
     change_table :buildings do |t|

@@ -29,15 +29,6 @@ module CensusRecords
 
     # Used to populate the building_id field on census forms
     def building_autocomplete
-      # buildings = Address.where(house_number: params[:house],
-      #                           prefix: params[:prefix],
-      #                           name: params[:street],
-      #                           suffix: params[:suffix],
-      #                           city: params[:city])
-      #                    .preload(:building)
-      #                    .map(&:building)
-
-
       record = resource_class.new street_house_number: params[:house],
                                   street_prefix: params[:prefix],
                                   street_name: params[:street],
@@ -196,9 +187,13 @@ module CensusRecords
       end
     end
 
+    def search_params
+      params.permit!.to_h #(:f, :s, :g, :from, :to, :sort)
+    end
+
     def load_census_records
       authorize! :read, resource_class
-      @search = CensusRecordSearch.generate params: params, year: year, user: current_user
+      @search = CensusRecordSearch.generate params: search_params, year: year, user: current_user
     end
 
     def render_census_records

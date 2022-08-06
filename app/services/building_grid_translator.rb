@@ -9,7 +9,7 @@ class BuildingGridTranslator
   end
 
   def column_def
-    columns.map { |column| column_config(column) }.to_json.html_safe
+    columns.map { |column| column_config(column) }
   end
 
   def row_data
@@ -29,7 +29,7 @@ class BuildingGridTranslator
         end
       end
       hash
-    end.to_json.html_safe
+    end
   end
 
   private

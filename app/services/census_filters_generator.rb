@@ -53,8 +53,9 @@ class CensusFiltersGenerator
     options[:collection].map do |item|
       code = item.downcase == item ? item.capitalize : item
       code = code.gsub('_', ' ')
-      label = Translator.option field, item
-      code == label ? label : ["#{code} - #{Translator.option(field, item)}", code]
+      attribute = options[:coded].is_a?(Symbol) ? options[:coded] : field
+      label = Translator.option attribute, item
+      code == label ? label : ["#{code} - #{label}", code]
     end
   end
 

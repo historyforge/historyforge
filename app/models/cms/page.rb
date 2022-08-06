@@ -1,3 +1,26 @@
+# == Schema Information
+#
+# Table name: cms_pages
+#
+#  id         :integer          not null, primary key
+#  type       :string           default("Cms::Page")
+#  url_path   :string
+#  controller :string
+#  action     :string
+#  published  :boolean          default("true")
+#  visible    :boolean          default("false")
+#  data       :json
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+# Indexes
+#
+#  index_cms_pages_on_controller_and_action  (controller,action)
+#  index_cms_pages_on_url_path               (url_path)
+#
+
+# frozen_string_literal: true
+
 module Cms
   class Page < Cms::BaseModel
 
@@ -12,7 +35,7 @@ module Cms
     json_attribute :automatic_url_alias, :boolean, default: true
 
     json_attribute :template_sections, :array
-    json_attribute :template, :string, default: "{{content}}"
+    json_attribute :template, :string, default: '{{content}}'
 
     json_attribute :title, :string
     json_attribute :show_title, :boolean, default: true
@@ -93,10 +116,9 @@ module Cms
     end
 
     def add_slash_to_url_path
-      self.url_path = url_path.andand.strip
+      self.url_path = url_path&.strip
       self.url_path = "/#{url_path}" if url_path.present? && !url_path.starts_with?('/')
-      self.title = title.andand.strip
-      true # TODO: remove this in Rails 5.1 because throw :abort covers this now
+      self.title = title&.strip
     end
 
     def set_url_path

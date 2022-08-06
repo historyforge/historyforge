@@ -7,11 +7,11 @@ class CensusGridTranslator
   end
 
   def column_def
-    columns.map { |column| column_config(column) }.to_json.html_safe
+    columns.map { |column| column_config(column) }
   end
 
   def row_data
-    records.map do |record|
+    records.lazy.map do |record|
       hash = { id: record.id }
       columns.each do |column|
         value = record.public_send(column) rescue NoMethodError
@@ -19,7 +19,7 @@ class CensusGridTranslator
         hash[column] = value
       end
       hash
-    end.to_json.html_safe
+    end
   end
 
   private

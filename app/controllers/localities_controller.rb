@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class LocalitiesController < ApplicationController
   before_action :check_administrator_role
 
@@ -9,6 +11,7 @@ class LocalitiesController < ApplicationController
     ActiveRecord::Precounter.new(@localities).precount(:census1920_records)
     ActiveRecord::Precounter.new(@localities).precount(:census1930_records)
     ActiveRecord::Precounter.new(@localities).precount(:census1940_records)
+    ActiveRecord::Precounter.new(@localities).precount(:census1950_records)
   end
 
   def new
@@ -18,7 +21,7 @@ class LocalitiesController < ApplicationController
   def create
     @locality = Locality.new resource_params
     if @locality.save
-      flash[:notice] = "Added the new locality."
+      flash[:notice] = 'Added the new locality.'
       redirect_to action: :index
     else
       flash[:errors] = "Sorry couldn't do it."
@@ -33,7 +36,7 @@ class LocalitiesController < ApplicationController
   def update
     @locality = Locality.find params[:id]
     if @locality.update resource_params
-      flash[:notice] = "Updated the locality."
+      flash[:notice] = 'Updated the locality.'
       redirect_to action: :index
     else
       flash[:errors] = "Sorry couldn't do it."
@@ -44,7 +47,7 @@ class LocalitiesController < ApplicationController
   def destroy
     @locality = Locality.find params[:id]
     if @locality.destroy
-      flash[:notice] = "Deleted the locality."
+      flash[:notice] = 'Deleted the locality.'
       redirect_to action: :index
     else
       flash[:errors] = "Sorry couldn't do it."

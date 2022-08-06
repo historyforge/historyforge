@@ -1,3 +1,21 @@
+# == Schema Information
+#
+# Table name: cms_page_widgets
+#
+#  id          :integer          not null, primary key
+#  cms_page_id :integer
+#  type        :string
+#  data        :jsonb
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#
+# Indexes
+#
+#  index_cms_page_widgets_on_cms_page_id  (cms_page_id)
+#
+
+# frozen_string_literal: true
+
 class Cms::Picture < Cms::PageWidget
 
   has_one_attached :file
@@ -41,7 +59,8 @@ class Cms::Picture < Cms::PageWidget
   end
 
   def url
-    file.attached? && Rails.application.routes.url_helpers.rails_blob_path(file, only_path: true)
+    ActiveStorage::Current.url_options = { host: ENV['BASE_URL'] }
+    file.attached? && file.url # Rails.application.routes.url_helpers.rails_blob_path(file, only_path: true)
   end
 
   class BaseRenderer
@@ -65,7 +84,7 @@ class Cms::Picture < Cms::PageWidget
         html << content_tag(:p, picture.caption)
       end
 
-      html_options = { class: 'cms-image ' }
+      html_options = { class: ['cms-image '] }
       html_options[:id] = picture.css_id if picture.css_id?
       html_options[:class] << picture.css_class if picture.css_class?
       if picture.css_clear.present? && picture.css_clear != 'none'
@@ -76,7 +95,7 @@ class Cms::Picture < Cms::PageWidget
         html_options[:class] << " img-#{picture.alignment}"
         html = content_tag(:div, html) if picture.alignment == 'center'
       end
-
+      html_options[:class] = html_options[:class].join(' ')
       content_tag :div, html, html_options
     end
   end
@@ -84,14 +103,15 @@ class Cms::Picture < Cms::PageWidget
   class ImgTagRenderer < BaseRenderer
     def render_image
       html_options = {}
-      style_attr = ''
+      style_attr = []
       style_attr << "width:#{picture.width}px;" if picture.width?
       style_attr << "height:#{picture.height}px;" if picture.height?
-      html_options[:style] = style_attr if style_attr.present?
+      html_options[:style] = style_attr.join if style_attr.present?
       html_options[:alt] = picture.alt_text if picture.alt_text?
       html_options[:src] = picture.url
-      html_options[:class] = "img-responsive"
-      html_options[:class] << " img-#{picture.bootstrap_class}" if picture.bootstrap_class?
+      html_options[:class] = ['img-responsive']
+      html_options[:class] << "img-#{picture.bootstrap_class}" if picture.bootstrap_class?
+      html_options[:class] = html_options[:class].join(' ')
       tag :img, html_options
     end
   end
@@ -104,17 +124,18 @@ class Cms::Picture < Cms::PageWidget
         html = content_tag(:h1, picture.caption).html_safe
       end
 
-      html_options = { class: 'cms-slide cms-image ' }
+      html_options = { class: %w[cms-slide cms-image] }
       html_options[:id] = picture.css_id if picture.css_id?
       html_options[:class] << picture.css_class if picture.css_class?
+      html_options[:class] = html_options[:class].join(' ')
       if picture.css_clear.present? && picture.css_clear != 'none'
         html_options[:style] = "clear: #{picture.css_clear}"
       end
 
-      style_attr = ''
+      style_attr = []
       style_attr << "min-width:#{picture.width}px;" if picture.width?
       style_attr << "min-height:#{picture.height}px;" if picture.height?
-      html_options[:style] = style_attr if style_attr.present?
+      html_options[:style] = style_attr.join if style_attr.present?
       html_options['data-image-src'] = picture.url
       html_options['data-parallax'] = 'scroll'
       html_options['data-position'] = 'top'

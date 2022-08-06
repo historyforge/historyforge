@@ -1,13 +1,21 @@
+# frozen_string_literal: true
 # == Schema Information
 #
 # Table name: documents
 #
-#  id          :integer          not null, primary key
-#  file        :string
-#  name        :string
-#  description :text
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
+#  id                   :integer          not null, primary key
+#  document_category_id :integer
+#  file                 :string
+#  name                 :string
+#  description          :text
+#  position             :integer
+#  created_at           :datetime         not null
+#  updated_at           :datetime         not null
+#  url                  :string
+#
+# Indexes
+#
+#  index_documents_on_document_category_id  (document_category_id)
 #
 
 class Document < ApplicationRecord

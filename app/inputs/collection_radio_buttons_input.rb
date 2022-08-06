@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class CollectionRadioButtonsInput < SimpleForm::Inputs::CollectionRadioButtonsInput
   def input_type
     :radio_buttons
@@ -15,8 +16,10 @@ class CollectionRadioButtonsInput < SimpleForm::Inputs::CollectionRadioButtonsIn
 
     return 'blank' if values.blank?
 
-    if value.respond_to?(:map)
-      values.map { |v| option_label(v) }.select(&:present?).join("<br>").html_safe
+    if attribute_name =~ /birth_month/ && value.is_a?(Integer)
+      Date::MONTHNAMES[value]
+    elsif value.respond_to?(:map)
+      values.map { |v| option_label(v) }.select(&:present?).join('<br>').html_safe
     else
       option_label(value)
     end
@@ -44,15 +47,16 @@ class CollectionRadioButtonsInput < SimpleForm::Inputs::CollectionRadioButtonsIn
     if options[:coded]
       code = item.downcase == item ? item.capitalize : item
       code = code.gsub('_', ' ')
-      label = translated_option item
-      code == label ? label : "#{code} - #{translated_option(item)}"
+      label = translated_option item, code: options[:coded]
+      code == label ? label : "#{code} - #{label}"
     else
       translated_option(item).titleize
     end
   end
 
-  def translated_option(item)
-    Translator.option(attribute_name, item)
+  def translated_option(item, code: false)
+    attribute = code.is_a?(Symbol) ? code : attribute_name
+    Translator.option(attribute, item)
   end
 
   def with_extra_items(items)
@@ -61,8 +65,8 @@ class CollectionRadioButtonsInput < SimpleForm::Inputs::CollectionRadioButtonsIn
   end
 
   def add_blanks(items)
-    items << [options[:unknown] || "Un - Unknown", 'unknown']
-    items.unshift ["Left blank", nil]
+    items << [options[:unknown] || 'Un - Unknown', 'unknown']
+    items.unshift ['Left blank', nil]
     items
   end
 
@@ -71,4 +75,3 @@ class CollectionRadioButtonsInput < SimpleForm::Inputs::CollectionRadioButtonsIn
     @builder.object.class.respond_to?(collection_method_name) ? @builder.object.class.send(collection_method_name) : []
   end
 end
-

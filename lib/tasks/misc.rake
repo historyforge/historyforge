@@ -1,39 +1,50 @@
-task :fixit => :environment do
-  dead_terms = []
-  undead_terms = []
-  [
-    ['Language Spoken', 'language'],
-    ['Place of Birth', 'pob'],
-    ['Relation to Head', 'relation_to_head']
-  ].each do |item|
-    file = File.open(Rails.root.join('db', "#{item[0]}.csv"))
-    vocabulary = Vocabulary.find_by(name: item[0], machine_name: item[1])
-    terms = Set.new vocabulary.terms.pluck('name')
+# frozen_string_literal: true
 
-    original_terms = Set.new
-    CSV.foreach(file, headers: false) do |row|
-      original_terms << row[0]
-    end
+task migrate_annotations: :environment do
+  layer = MapOverlay.find 21 # insert the id of your default map overlay here
+  Building.find_each do |building|
+    next if building.annotations_legacy.blank?
 
-    terms_to_delete = terms - original_terms
-
-    terms_to_delete.each do |name|
-      term = vocabulary.terms.find_by(name: name)
-      counts = 0
-      CensusYears.each do |year|
-        counts += (term.count_records_for(year) || 0)
-      end
-      if counts.zero?
-        term.destroy
-        puts "Deleted #{name}"
-        dead_terms << name
-      else
-        puts "Left #{name} because #{counts} records attached"
-        undead_terms << name
-      end
-
-    end
+    Annotation.find_or_create_by! building_id: building.id,
+                                  map_overlay_id: layer.id,
+                                  annotation_text: building.annotations_legacy
   end
-  puts "#{dead_terms.length} deleted: #{dead_terms.join(', ')}"
-  puts "#{undead_terms.length} not deleted: #{undead_terms.join(', ')}"
+end
+
+def print_usage(description)
+  mb = GetProcessMem.new.mb
+  puts "#{ description } - MEMORY USAGE(MB): #{ mb.round }"
+end
+
+def print_usage_before_and_after
+  print_usage("Before")
+  yield
+  print_usage("After")
+end
+
+task perf: :environment do
+  require 'get_process_mem'
+
+  params = {
+    f: %w[ward enum_dist page_number page_side name street_address race sex age marital_status],
+    s: {
+      street_address_cont: 'Tioga'
+    },
+    c: 'name',
+    d: 'desc'
+  }
+  data = CensusRecordSearch.generate year: 1940, user: nil, params: params
+  translator = CensusGridTranslator.new data
+
+  output = translator.row_data.lazy
+
+  print_usage_before_and_after do
+    puts "-> Oj.dump"
+    Oj.dump output
+  end
+
+  print_usage_before_and_after do
+    puts "-> to_json"
+    output.to_json
+  end
 end
