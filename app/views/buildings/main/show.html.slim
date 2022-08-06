@@ -112,7 +112,7 @@
         .card-body
           .row
             - photos.each do |photo|
-              .building-photo.col-sm-4 data-href=building_photograph_path(@building, photo)
+              .building-photo.col-sm-4 data-href=building_photograph_path(@building.object, photo)
                 = picture_tag photo: photo, style: 'quarter', img_class: 'img-thumbnail'
                 = simple_format photo.full_caption
 
