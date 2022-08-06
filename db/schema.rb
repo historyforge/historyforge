@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_08_06_212151) do
+ActiveRecord::Schema[7.0].define(version: 2022_08_06_213952) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
   enable_extension "pg_trgm"
@@ -758,29 +758,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_06_212151) do
     t.index ["key"], name: "index_client_applications_on_key", unique: true
   end
 
-  create_table "cms_menu_items", force: :cascade do |t|
-    t.bigint "menu_id"
-    t.string "ancestry"
-    t.string "title"
-    t.string "url"
-    t.boolean "is_external"
-    t.boolean "show_as_expanded"
-    t.boolean "enabled"
-    t.integer "position"
-    t.json "data"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["ancestry"], name: "index_cms_menu_items_on_ancestry"
-    t.index ["menu_id"], name: "index_cms_menu_items_on_menu_id"
-  end
-
-  create_table "cms_menus", force: :cascade do |t|
-    t.string "name"
-    t.json "data"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "cms_page_widgets", force: :cascade do |t|
     t.bigint "cms_page_id"
     t.string "type"
@@ -912,29 +889,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_06_212151) do
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "locality_id"
     t.index ["locality_id"], name: "index_map_overlays_on_locality_id"
-  end
-
-  create_table "oauth_nonces", id: :serial, force: :cascade do |t|
-    t.string "nonce"
-    t.integer "timestamp"
-    t.datetime "created_at", precision: nil
-    t.datetime "updated_at", precision: nil
-    t.index ["nonce", "timestamp"], name: "index_oauth_nonces_on_nonce_and_timestamp", unique: true
-  end
-
-  create_table "oauth_tokens", id: :serial, force: :cascade do |t|
-    t.integer "user_id"
-    t.string "type", limit: 20
-    t.integer "client_application_id"
-    t.string "token", limit: 20
-    t.string "secret", limit: 40
-    t.string "callback_url"
-    t.string "verifier", limit: 20
-    t.datetime "authorized_at", precision: nil
-    t.datetime "invalidated_at", precision: nil
-    t.datetime "created_at", precision: nil
-    t.datetime "updated_at", precision: nil
-    t.index ["token"], name: "index_oauth_tokens_on_token", unique: true
   end
 
   create_table "occupation1930_codes", force: :cascade do |t|
