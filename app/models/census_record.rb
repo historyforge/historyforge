@@ -38,8 +38,8 @@ class CensusRecord < ApplicationRecord
                         :street_prefix, :street_suffix, :apartment_number, :profession, :name_prefix, :name_suffix
 
   define_enumeration :page_side, %w[A B], strict: true, if: :has_page_side?
-  define_enumeration :street_prefix, %w[N S E W]
-  define_enumeration :street_suffix, %w[St Rd Ave Blvd Pl Terr Ct Pk Tr Dr Hill Ln Way].sort
+  define_enumeration :street_prefix, STREET_PREFIXES
+  define_enumeration :street_suffix, STREET_SUFFIXES
   define_enumeration :sex, %w[M F]
   define_enumeration :race, %w[W B M]
   define_enumeration :marital_status, %w[S M Wd D]
