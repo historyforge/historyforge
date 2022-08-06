@@ -14,5 +14,4 @@ class OjEncoder
 end
 
 ActiveSupport::JSON::Encoding.json_encoder = OjEncoder
-MultiJson.use(:oj)
 Oj.mimic_JSON
