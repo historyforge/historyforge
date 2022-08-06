@@ -18,7 +18,7 @@ class CensusRecordDecorator < ApplicationDecorator
   end
 
   def birth_month
-    Date::MONTHNAMES[object.birth_month]
+    object.year == 1950 ? object.birth_month : Date::MONTHNAMES[object.birth_month]
   end
 
   def locality

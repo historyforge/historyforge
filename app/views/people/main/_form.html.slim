@@ -36,5 +36,12 @@
           = form.input :pob, input_html: {autocomplete: 'new-password'}
         .col-4
           = form.input :is_pob_estimated, as: :boolean, inline_label: 'Yes', label: 'Estimated?'
+
+  .card.mb-2
+    .card-header
+      | Additional Notes
+    .card-body
+      = form.input :notes, input_html: { rows: 12 }
+
   .form-actions
     = form.submit 'Save', class: 'btn btn-primary btn-lg'
