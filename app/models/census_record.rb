@@ -119,7 +119,7 @@ class CensusRecord < ApplicationRecord
   end
 
   def dont_add_same_person
-    return if persisted? || !likely_matches?
+    return if persisted? || !likely_matches? || last_name.blank?
 
     errors.add :last_name, 'A person with the same street number, street name, last name, and first name is already in the system.'
   end

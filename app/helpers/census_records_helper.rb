@@ -8,7 +8,7 @@ module CensusRecordsHelper
       page_number_eq: record.page_number,
       page_side_eq: record.page_side
     }
-    public_send "census#{record.year}_records_path", query
+    public_send "census#{record.year}_records_path", s: query
   end
 
   def census_card_edit(title: nil, list: nil)
