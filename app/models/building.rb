@@ -58,8 +58,8 @@ class Building < ApplicationRecord
 
   has_rich_text :description
 
-  define_enumeration :address_street_prefix, %w[N S E W]
-  define_enumeration :address_street_suffix, %w[St Rd Ave Blvd Pl Terr Jct Pt Tpke Ct Pk Tr Dr Hill Cir Sq Ln Fwy Hwy Way].sort
+  define_enumeration :address_street_prefix, STREET_PREFIXES
+  define_enumeration :address_street_suffix, STREET_SUFFIXES
 
   belongs_to :locality, optional: true
 

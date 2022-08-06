@@ -19,7 +19,7 @@
         th
     tbody
       - @localities.each do |record|
-        tr
+        tr.draggable
           td= record.name
           td= number_with_delimiter record.census1880_records_count
           td= number_with_delimiter record.census1900_records_count

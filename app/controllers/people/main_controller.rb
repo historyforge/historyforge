@@ -90,7 +90,7 @@ module People
     def resource_params
       params.require(:person).permit :first_name, :last_name, :middle_name,
                                      :sex, :race, :name_prefix, :name_suffix, :birth_year, :is_birth_year_estimated,
-                                     :pob, :is_pob_estimated
+                                     :pob, :is_pob_estimated, :notes
     end
   end
 end

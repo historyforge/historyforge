@@ -10,8 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_17_012437) do
-
+ActiveRecord::Schema[7.0].define(version: 2022_08_06_213952) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
   enable_extension "pg_trgm"
@@ -22,8 +21,8 @@ ActiveRecord::Schema.define(version: 2022_06_17_012437) do
     t.text "body"
     t.string "record_type", null: false
     t.bigint "record_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["record_type", "record_id", "name"], name: "index_action_text_rich_texts_uniqueness", unique: true
   end
 
@@ -32,7 +31,7 @@ ActiveRecord::Schema.define(version: 2022_06_17_012437) do
     t.string "record_type", null: false
     t.bigint "record_id", null: false
     t.bigint "blob_id", null: false
-    t.datetime "created_at", null: false
+    t.datetime "created_at", precision: nil, null: false
     t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
     t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
   end
@@ -44,7 +43,7 @@ ActiveRecord::Schema.define(version: 2022_06_17_012437) do
     t.text "metadata"
     t.bigint "byte_size", null: false
     t.string "checksum"
-    t.datetime "created_at", null: false
+    t.datetime "created_at", precision: nil, null: false
     t.string "service_name", null: false
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
   end
@@ -64,8 +63,8 @@ ActiveRecord::Schema.define(version: 2022_06_17_012437) do
     t.string "suffix"
     t.string "city"
     t.string "postal_code"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.integer "year"
     t.index ["building_id"], name: "index_addresses_on_building_id"
   end
@@ -81,8 +80,8 @@ ActiveRecord::Schema.define(version: 2022_06_17_012437) do
 
   create_table "architects", id: :serial, force: :cascade do |t|
     t.string "name", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "architects_buildings", id: false, force: :cascade do |t|
@@ -93,8 +92,8 @@ ActiveRecord::Schema.define(version: 2022_06_17_012437) do
 
   create_table "building_types", id: :serial, force: :cascade do |t|
     t.string "name", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "buildings", id: :serial, force: :cascade do |t|
@@ -108,8 +107,8 @@ ActiveRecord::Schema.define(version: 2022_06_17_012437) do
     t.text "description"
     t.decimal "lat", precision: 15, scale: 10
     t.decimal "lon", precision: 15, scale: 10
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.boolean "year_earliest_circa", default: false
     t.boolean "year_latest_circa", default: false
     t.string "address_house_number"
@@ -123,7 +122,7 @@ ActiveRecord::Schema.define(version: 2022_06_17_012437) do
     t.string "block_number"
     t.integer "created_by_id"
     t.integer "reviewed_by_id"
-    t.datetime "reviewed_at"
+    t.datetime "reviewed_at", precision: nil
     t.boolean "investigate", default: false
     t.string "investigate_reason"
     t.text "notes"
@@ -164,8 +163,8 @@ ActiveRecord::Schema.define(version: 2022_06_17_012437) do
     t.string "value_from"
     t.string "value_to"
     t.bigint "user_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_bulk_updates_on_user_id"
   end
 
@@ -175,7 +174,7 @@ ActiveRecord::Schema.define(version: 2022_06_17_012437) do
     t.bigint "person_id"
     t.bigint "created_by_id"
     t.bigint "reviewed_by_id"
-    t.datetime "reviewed_at", precision: 6
+    t.datetime "reviewed_at"
     t.integer "page_number"
     t.string "page_side", limit: 1
     t.integer "line_number"
@@ -253,8 +252,8 @@ ActiveRecord::Schema.define(version: 2022_06_17_012437) do
     t.boolean "provisional", default: false
     t.boolean "taker_error", default: false
     t.uuid "histid"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.integer "birth_month"
     t.boolean "attended_school", default: false
     t.index ["building_id"], name: "index_census1950_records_on_building_id"
@@ -270,7 +269,7 @@ ActiveRecord::Schema.define(version: 2022_06_17_012437) do
     t.bigint "person_id"
     t.bigint "created_by_id"
     t.bigint "reviewed_by_id"
-    t.datetime "reviewed_at"
+    t.datetime "reviewed_at", precision: nil
     t.integer "page_number"
     t.string "page_side", limit: 1
     t.integer "line_number"
@@ -320,8 +319,8 @@ ActiveRecord::Schema.define(version: 2022_06_17_012437) do
     t.integer "farm_schedule"
     t.text "searchable_name"
     t.uuid "histid"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.integer "enum_dist"
     t.integer "ward"
     t.index ["building_id"], name: "index_census_1880_records_on_building_id"
@@ -335,11 +334,11 @@ ActiveRecord::Schema.define(version: 2022_06_17_012437) do
     t.jsonb "data"
     t.integer "building_id"
     t.integer "person_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.integer "created_by_id"
     t.integer "reviewed_by_id"
-    t.datetime "reviewed_at"
+    t.datetime "reviewed_at", precision: nil
     t.integer "page_number"
     t.string "page_side", limit: 1
     t.integer "line_number"
@@ -408,12 +407,12 @@ ActiveRecord::Schema.define(version: 2022_06_17_012437) do
 
   create_table "census_1910_records", id: :serial, force: :cascade do |t|
     t.jsonb "data"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.integer "building_id"
     t.integer "created_by_id"
     t.integer "reviewed_by_id"
-    t.datetime "reviewed_at"
+    t.datetime "reviewed_at", precision: nil
     t.integer "person_id"
     t.integer "page_number"
     t.string "page_side", limit: 1
@@ -491,7 +490,7 @@ ActiveRecord::Schema.define(version: 2022_06_17_012437) do
   create_table "census_1920_records", id: :serial, force: :cascade do |t|
     t.integer "created_by_id"
     t.integer "reviewed_by_id"
-    t.datetime "reviewed_at"
+    t.datetime "reviewed_at", precision: nil
     t.integer "page_number"
     t.string "page_side", limit: 1
     t.integer "line_number"
@@ -538,8 +537,8 @@ ActiveRecord::Schema.define(version: 2022_06_17_012437) do
     t.boolean "taker_error", default: false
     t.integer "person_id"
     t.integer "building_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "name_prefix"
     t.string "name_suffix"
     t.integer "year_naturalized"
@@ -563,7 +562,7 @@ ActiveRecord::Schema.define(version: 2022_06_17_012437) do
     t.integer "person_id"
     t.integer "created_by_id"
     t.integer "reviewed_by_id"
-    t.datetime "reviewed_at"
+    t.datetime "reviewed_at", precision: nil
     t.integer "page_number"
     t.string "page_side", limit: 1
     t.integer "line_number"
@@ -616,8 +615,8 @@ ActiveRecord::Schema.define(version: 2022_06_17_012437) do
     t.boolean "provisional", default: false
     t.boolean "foreign_born", default: false
     t.boolean "taker_error", default: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "name_prefix"
     t.string "name_suffix"
     t.text "searchable_name"
@@ -654,7 +653,7 @@ ActiveRecord::Schema.define(version: 2022_06_17_012437) do
     t.bigint "person_id"
     t.bigint "created_by_id"
     t.bigint "reviewed_by_id"
-    t.datetime "reviewed_at"
+    t.datetime "reviewed_at", precision: nil
     t.integer "page_number"
     t.string "page_side", limit: 1
     t.integer "line_number"
@@ -730,8 +729,8 @@ ActiveRecord::Schema.define(version: 2022_06_17_012437) do
     t.boolean "provisional", default: false
     t.boolean "foreign_born", default: false
     t.boolean "taker_error", default: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.string "worker_class_code"
     t.string "industry_code"
     t.bigint "locality_id"
@@ -754,40 +753,17 @@ ActiveRecord::Schema.define(version: 2022_06_17_012437) do
     t.string "key", limit: 20
     t.string "secret", limit: 40
     t.integer "user_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["key"], name: "index_client_applications_on_key", unique: true
-  end
-
-  create_table "cms_menu_items", force: :cascade do |t|
-    t.bigint "menu_id"
-    t.string "ancestry"
-    t.string "title"
-    t.string "url"
-    t.boolean "is_external"
-    t.boolean "show_as_expanded"
-    t.boolean "enabled"
-    t.integer "position"
-    t.json "data"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["ancestry"], name: "index_cms_menu_items_on_ancestry"
-    t.index ["menu_id"], name: "index_cms_menu_items_on_menu_id"
-  end
-
-  create_table "cms_menus", force: :cascade do |t|
-    t.string "name"
-    t.json "data"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "cms_page_widgets", force: :cascade do |t|
     t.bigint "cms_page_id"
     t.string "type"
     t.jsonb "data"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["cms_page_id"], name: "index_cms_page_widgets_on_cms_page_id"
   end
 
@@ -799,8 +775,8 @@ ActiveRecord::Schema.define(version: 2022_06_17_012437) do
     t.boolean "published", default: true
     t.boolean "visible", default: false
     t.json "data"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["controller", "action"], name: "index_cms_pages_on_controller_and_action"
     t.index ["url_path"], name: "index_cms_pages_on_url_path"
   end
@@ -808,22 +784,22 @@ ActiveRecord::Schema.define(version: 2022_06_17_012437) do
   create_table "construction_materials", id: :serial, force: :cascade do |t|
     t.string "name"
     t.string "color"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "contacts", force: :cascade do |t|
     t.jsonb "data"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "document_categories", force: :cascade do |t|
     t.string "name"
     t.text "description"
     t.integer "position"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "documents", force: :cascade do |t|
@@ -832,8 +808,8 @@ ActiveRecord::Schema.define(version: 2022_06_17_012437) do
     t.string "name"
     t.text "description"
     t.integer "position"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.string "url"
     t.index ["document_category_id"], name: "index_documents_on_document_category_id"
   end
@@ -846,9 +822,9 @@ ActiveRecord::Schema.define(version: 2022_06_17_012437) do
     t.text "message"
     t.text "comment"
     t.bigint "resolved_by_id"
-    t.datetime "resolved_at"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "resolved_at", precision: nil
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["flaggable_type", "flaggable_id"], name: "index_flags_on_flaggable_type_and_flaggable_id"
     t.index ["resolved_by_id"], name: "index_flags_on_resolved_by_id"
     t.index ["user_id"], name: "index_flags_on_user_id"
@@ -868,23 +844,23 @@ ActiveRecord::Schema.define(version: 2022_06_17_012437) do
     t.integer "user_id"
     t.integer "file_count"
     t.integer "imported_count"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "industry1930_codes", force: :cascade do |t|
     t.string "code"
     t.string "name"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "ipums_records", primary_key: "histid", id: :uuid, default: nil, force: :cascade do |t|
     t.integer "serial"
     t.integer "year"
     t.jsonb "data"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["histid"], name: "index_ipums_records_on_histid"
   end
 
@@ -893,8 +869,8 @@ ActiveRecord::Schema.define(version: 2022_06_17_012437) do
     t.decimal "latitude"
     t.decimal "longitude"
     t.integer "position"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.integer "year_street_renumber"
   end
 
@@ -909,45 +885,22 @@ ActiveRecord::Schema.define(version: 2022_06_17_012437) do
     t.string "url"
     t.boolean "active"
     t.integer "position"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.bigint "locality_id"
     t.index ["locality_id"], name: "index_map_overlays_on_locality_id"
-  end
-
-  create_table "oauth_nonces", id: :serial, force: :cascade do |t|
-    t.string "nonce"
-    t.integer "timestamp"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.index ["nonce", "timestamp"], name: "index_oauth_nonces_on_nonce_and_timestamp", unique: true
-  end
-
-  create_table "oauth_tokens", id: :serial, force: :cascade do |t|
-    t.integer "user_id"
-    t.string "type", limit: 20
-    t.integer "client_application_id"
-    t.string "token", limit: 20
-    t.string "secret", limit: 40
-    t.string "callback_url"
-    t.string "verifier", limit: 20
-    t.datetime "authorized_at"
-    t.datetime "invalidated_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.index ["token"], name: "index_oauth_tokens_on_token", unique: true
   end
 
   create_table "occupation1930_codes", force: :cascade do |t|
     t.string "code"
     t.string "name"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "people", id: :serial, force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "last_name"
     t.string "first_name"
     t.string "middle_name"
@@ -960,6 +913,7 @@ ActiveRecord::Schema.define(version: 2022_06_17_012437) do
     t.boolean "is_birth_year_estimated", default: true
     t.string "pob"
     t.boolean "is_pob_estimated", default: true
+    t.text "notes"
     t.index ["searchable_name"], name: "people_name_trgm", opclass: :gist_trgm_ops, using: :gist
   end
 
@@ -971,16 +925,16 @@ ActiveRecord::Schema.define(version: 2022_06_17_012437) do
   create_table "permissions", id: :serial, force: :cascade do |t|
     t.integer "role_id", null: false
     t.integer "user_id", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "pg_search_documents", force: :cascade do |t|
     t.text "content"
     t.string "searchable_type"
     t.bigint "searchable_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["searchable_type", "searchable_id"], name: "index_pg_search_documents_on_searchable_type_and_searchable_id"
   end
 
@@ -997,10 +951,10 @@ ActiveRecord::Schema.define(version: 2022_06_17_012437) do
     t.text "notes"
     t.decimal "latitude"
     t.decimal "longitude"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.bigint "reviewed_by_id"
-    t.datetime "reviewed_at"
+    t.datetime "reviewed_at", precision: nil
     t.integer "date_type", default: 0
     t.text "caption"
     t.index ["building_id"], name: "index_photographs_on_building_id"
@@ -1010,15 +964,15 @@ ActiveRecord::Schema.define(version: 2022_06_17_012437) do
 
   create_table "profession_groups", force: :cascade do |t|
     t.string "name"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "profession_subgroups", force: :cascade do |t|
     t.string "name"
     t.bigint "profession_group_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["profession_group_id"], name: "index_profession_subgroups_on_profession_group_id"
   end
 
@@ -1027,8 +981,8 @@ ActiveRecord::Schema.define(version: 2022_06_17_012437) do
     t.string "name"
     t.bigint "profession_group_id"
     t.bigint "profession_subgroup_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["profession_group_id"], name: "index_professions_on_profession_group_id"
     t.index ["profession_subgroup_id"], name: "index_professions_on_profession_subgroup_id"
   end
@@ -1036,16 +990,16 @@ ActiveRecord::Schema.define(version: 2022_06_17_012437) do
   create_table "roles", id: :serial, force: :cascade do |t|
     t.string "name"
     t.integer "updated_by"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "search_params", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "model"
     t.jsonb "params"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_search_params_on_user_id"
   end
 
@@ -1056,16 +1010,16 @@ ActiveRecord::Schema.define(version: 2022_06_17_012437) do
     t.string "input_type"
     t.string "group"
     t.text "value"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.bigint "settings_group_id"
     t.index ["settings_group_id"], name: "index_settings_on_settings_group_id"
   end
 
   create_table "settings_groups", force: :cascade do |t|
     t.string "name"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "street_conversions", force: :cascade do |t|
@@ -1077,8 +1031,8 @@ ActiveRecord::Schema.define(version: 2022_06_17_012437) do
     t.string "to_suffix"
     t.string "from_city"
     t.string "to_city"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "from_house_number"
     t.string "to_house_number"
     t.integer "year"
@@ -1087,8 +1041,8 @@ ActiveRecord::Schema.define(version: 2022_06_17_012437) do
   create_table "terms", force: :cascade do |t|
     t.bigint "vocabulary_id"
     t.string "name"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.integer "ipums"
     t.index ["name"], name: "index_terms_on_name"
     t.index ["vocabulary_id"], name: "index_terms_on_vocabulary_id"
@@ -1099,30 +1053,30 @@ ActiveRecord::Schema.define(version: 2022_06_17_012437) do
     t.string "email"
     t.string "encrypted_password", limit: 128, default: "", null: false
     t.string "password_salt", default: "", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "remember_token"
-    t.datetime "remember_token_expires_at"
+    t.datetime "remember_token_expires_at", precision: nil
     t.string "confirmation_token"
-    t.datetime "confirmed_at"
+    t.datetime "confirmed_at", precision: nil
     t.string "reset_password_token"
     t.boolean "enabled", default: true
     t.integer "updated_by"
     t.text "description", default: ""
-    t.datetime "confirmation_sent_at"
-    t.datetime "remember_created_at"
+    t.datetime "confirmation_sent_at", precision: nil
+    t.datetime "remember_created_at", precision: nil
     t.integer "sign_in_count", default: 0, null: false
-    t.datetime "current_sign_in_at"
-    t.datetime "last_sign_in_at"
+    t.datetime "current_sign_in_at", precision: nil
+    t.datetime "last_sign_in_at", precision: nil
     t.string "current_sign_in_ip"
     t.string "last_sign_in_ip"
-    t.datetime "reset_password_sent_at"
+    t.datetime "reset_password_sent_at", precision: nil
     t.string "provider"
     t.string "uid"
     t.string "invitation_token"
-    t.datetime "invitation_created_at"
-    t.datetime "invitation_sent_at"
-    t.datetime "invitation_accepted_at"
+    t.datetime "invitation_created_at", precision: nil
+    t.datetime "invitation_sent_at", precision: nil
+    t.datetime "invitation_accepted_at", precision: nil
     t.integer "invitation_limit"
     t.string "invited_by_type"
     t.bigint "invited_by_id"
@@ -1139,7 +1093,7 @@ ActiveRecord::Schema.define(version: 2022_06_17_012437) do
     t.string "event", null: false
     t.string "whodunnit"
     t.text "object"
-    t.datetime "created_at"
+    t.datetime "created_at", precision: nil
     t.text "object_changes"
     t.string "comment"
     t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
@@ -1148,8 +1102,8 @@ ActiveRecord::Schema.define(version: 2022_06_17_012437) do
   create_table "vocabularies", force: :cascade do |t|
     t.string "name"
     t.string "machine_name"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["machine_name"], name: "index_vocabularies_on_machine_name"
   end
 

@@ -61,7 +61,7 @@
               dt Construction
               dd
                 - if @building.stories
-                  => "#{@building.stories.to_i}-story"
+                  => "#{@building.stories} story"
                 - if @building.frame
                   = "#{@building.frame} structure"
                 - if @building.lining
@@ -80,7 +80,7 @@
         .card-body
           .row
             .col-12
-              = @building.annotations_legacy
+              = simple_format @building.annotations_legacy
 
 
     - if @building.annotations.present?
@@ -89,9 +89,8 @@
           | Annotations
         .card-body
           - @building.annotations.each do |annotation|
-            .row
-              .col-12
-                dd = annotation.annotation_layer
+            h6= annotation.map_overlay_name
+            = simple_format annotation.annotation_text
 
 
     - if @building.description.present?

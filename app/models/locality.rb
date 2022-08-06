@@ -25,7 +25,9 @@ class Locality < ApplicationRecord
     has_many :"census#{year}_records", inverse_of: :locality
   end
 
+  default_scope -> { order(:name) }
+
   def self.select_options
-    order(:position).map { |item| [item.name, item.id] }
+    all.map { |item| [item.name, item.id] }
   end
 end

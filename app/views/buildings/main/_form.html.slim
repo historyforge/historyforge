@@ -23,7 +23,7 @@
       .nested-form
         .list-group-item
           .row
-            .col-sm Main
+            .col-sm-1 Main
             .col-sm-1 No.
             .col-sm-1 Prefix
             .col-sm-3 Street
@@ -110,6 +110,7 @@
       | Additional Notes
     .card-body
       = form.input :notes, input_html: { rows: 12 }
+      p.text-muted Private field visible only to those who can edit this record.
 
   .form-actions
     = form.submit 'Save', class: 'btn btn-primary btn-lg'

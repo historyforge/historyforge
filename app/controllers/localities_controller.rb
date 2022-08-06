@@ -11,6 +11,7 @@ class LocalitiesController < ApplicationController
     ActiveRecord::Precounter.new(@localities).precount(:census1920_records)
     ActiveRecord::Precounter.new(@localities).precount(:census1930_records)
     ActiveRecord::Precounter.new(@localities).precount(:census1940_records)
+    ActiveRecord::Precounter.new(@localities).precount(:census1950_records)
   end
 
   def new
