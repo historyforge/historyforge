@@ -29,7 +29,7 @@ module CensusScopeFormFields
             as: :boolean,
             hint: false,
             facet: false,
-            if: ->(form) { form.object.building_id.blank? && Setting.can_add_buildings?(form.object.year) }
+            if: ->(form) { Setting.can_add_buildings?(form.object.year) }
       input :locality_id, as: :select, collection: Locality.select_options, required: true, facet: false
       input :dwelling_number, if: ->(form) { form.object.year < 1940 }, facet: false
       input :family_id, facet: false
