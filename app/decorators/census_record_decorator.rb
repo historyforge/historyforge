@@ -9,13 +9,9 @@ class CensusRecordDecorator < ApplicationDecorator
 
   def age
     if object.year == 1950
-      object.age.positive? ? object.age : '<1'
+      object.age&.positive? ? object.age : '<1'
     elsif object.age_months
-      if object.age.blank?
-        "#{object.age_months}mo"
-      else
-        "#{object.age}y #{object.age_months}mo"
-      end
+      object.age.blank? ? "#{object.age_months}mo" : "#{object.age}y #{object.age_months}mo"
     else
       object.age
     end
