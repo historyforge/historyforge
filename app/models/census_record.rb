@@ -12,6 +12,7 @@ class CensusRecord < ApplicationRecord
   include PgSearch::Model
   include Flaggable
   include Versioning
+  include FastMemoize
 
   belongs_to :building, optional: true
   belongs_to :person, optional: true
@@ -145,9 +146,8 @@ class CensusRecord < ApplicationRecord
   end
 
   def fellows
-    return @fellows if defined?(@fellows)
-
     options = {
+      locality_id_eq: locality_id,
       family_id_eq: family_id,
       page_number_gteq: page_number - 1,
       page_number_lteq: page_number + 1
@@ -159,8 +159,9 @@ class CensusRecord < ApplicationRecord
       options[:dwelling_number_eq] = dwelling_number
     end
 
-    @fellows = self.class.where.not(id: id).ransack(options).result
+    self.class.where.not(id: id).ransack(options).result
   end
+  memoize :fellows
 
   def ensure_housing
     return unless (building_id.blank? && ensure_building == '1' && street_name.present? && city.present? && street_house_number.present?)

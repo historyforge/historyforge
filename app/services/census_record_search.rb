@@ -66,6 +66,8 @@ class CensusRecordSearch < SearchQueryBuilder
       street_address_order_clause(dir)
     elsif col == 'census_scope'
       census_page_order_clause(dir)
+    elsif col == 'family_id'
+      "regexp_replace(NULLIF(family_id, ''), '[^0-9]+', '', 'g')::numeric #{dir}"
     elsif entity_class.columns.map(&:name).include?(col)
       "#{col} #{dir}"
     end
