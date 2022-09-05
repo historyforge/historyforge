@@ -2,9 +2,13 @@
   - content_for :pills do
     = link_to 'Add Photo', { action: :new }, class: 'btn btn-light'
 
-- set_page_title 'Photographs'
+- set_page_title "Photographs #{@building && "of #{@building.name}"}#{@person && "of #{@person.name}"}"
 
 - content_for :pills do
+  - if @building
+    = link_to 'Building', @building, class: 'btn btn-default'
+  -if @person
+    = link_to 'Person', @person, class: 'btn btn-default'
   a.btn.btn-default type="button" data-toggle="collapse" href="#filters" Filters
 
 .collapse#filters

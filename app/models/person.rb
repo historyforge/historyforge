@@ -98,6 +98,7 @@ class Person < ApplicationRecord
       CensusRecord.for_year(year).where(person_id: nil, sex:, last_name:, first_name:)
     end.reduce(&:+)
   end
+  memoize :possible_unmatched_records
 
   # Takes a census record and returns whether this person's age is within two years of the census record's age
   def similar_in_age?(target)

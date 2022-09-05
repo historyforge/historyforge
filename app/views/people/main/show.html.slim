@@ -14,15 +14,19 @@
     = link_to @person, class: 'btn btn-light', data: { method: :delete, confirm: 'Are you sure?' } do
       i.fa.fa-trash
       | &nbsp; Delete
-dl
-  dt Person ID
-  dd= @person.id
-  dt About
-  dd
-    = "#{Translator.option(:race, @person.race)} " if @person.race
-    = "#{Translator.option(:sex, @person.sex)} " if @person.sex
-    - if @person.birth_year
-      = "born in #{@person.birth_year}"
+.list-group.mb-3
+  .list-group-item
+    .row
+      .col-6 Person ID
+      .col-6= @person.id
+  .list-group-item
+    .row
+      .col-6 About
+      .col-6
+        = "#{Translator.option(:race, @person.race)} " if @person.race
+        = "#{Translator.option(:sex, @person.sex)} " if @person.sex
+        - if @person.birth_year
+          = "born in #{@person.birth_year}"
 
 .card.mb-3
   .card-header Census Records
@@ -49,7 +53,7 @@ dl
           td= row.relation_to_head
           td= link_to 'View', row
 
-- if can?(:update, @person)
+- if can?(:update, @person) && @person.possible_unmatched_records.present?
   .card.mb-3
     .card-header Possible Census Records
     = table do
@@ -84,17 +88,20 @@ dl
 
 /- photos = can?(:review, Photo) ? @building.photos : @building.photos.reviewed
 - photos = @person.photos
-- if photos.present?
-  .card.mb-1
-    .card-header
-      = link_to 'See all', [@person, :photographs], class: 'btn btn-light float-right'
-      | Photos
-    .card-body
-      .row
-        - photos.each do |photo|
-          .person-photo.col-sm-4 data-href=person_photograph_path(@person, photo)
-            = picture_tag photo: photo, style: 'quarter', img_class: 'img-thumbnail'
-            = simple_format photo.full_caption
+/ - if photos.present?
+.card.mb-1
+  .card-header
+    - if can?(:create, Photograph)
+      = link_to 'Upload', [:new, @person, :photograph], class: 'btn btn-sm btn-light float-right'
+    | Photos
+  .card-body
+    - if photos.blank?
+      p.lead No photos have been uploaded yet!
+    .row
+      - photos.each do |photo|
+        .person-photo.col-sm-4 data-href=person_photograph_path(@person, photo)
+          = picture_tag photo: photo, style: 'quarter', img_class: 'img-thumbnail'
+          = simple_format photo.full_caption
 
 - if @person.notes? && can?(:update, @person)
   .card.mb-1
