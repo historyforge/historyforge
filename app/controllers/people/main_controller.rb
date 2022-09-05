@@ -10,7 +10,7 @@ module People
       @translator = CensusGridTranslator.new(@search)
       respond_to do |format|
         format.html
-        format.json { render plain: @translator.row_data, content_type: 'application/json' }
+        format.json { render json: @translator.row_data }
         format.csv { render_csv('people', Person) }
       end
     end
