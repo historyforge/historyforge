@@ -9,8 +9,11 @@ class PersonSearch < SearchQueryBuilder
         g: params[:g],
         from: params[:from],
         to: params[:to],
-        sort: params[:sort]
+        sort: params[:sort],
+        scope: params[:scope]
   end
+
+  attr_accessor :scope
 
   def entity_class
     Person
@@ -24,6 +27,7 @@ class PersonSearch < SearchQueryBuilder
   def scoped
     builder.offset(from) if from
     builder.limit(to.to_i - from.to_i) if from && to
+    builder.uncensused if uncensused?
     add_sorts
     builder.scoped
   end
@@ -54,5 +58,9 @@ class PersonSearch < SearchQueryBuilder
 
   def all_fields
     default_fields
+  end
+
+  def uncensused?
+    @scope == 'uncensused'
   end
 end

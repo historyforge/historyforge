@@ -20,7 +20,7 @@ class MergePeople
   end
 
   def merge_photographs
-    @source.photographs.each do |photo|
+    @source.photos.each do |photo|
       photo.people << @target
     end
   end

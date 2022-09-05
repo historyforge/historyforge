@@ -34,11 +34,13 @@ class Person < ApplicationRecord
   include DefineEnumeration
   include Versioning
 
+  attr_accessor :match_score
+
   define_enumeration :sex, %w{M F}
   define_enumeration :race, %w{W B M}
 
   CensusYears.each do |year|
-    has_one :"census_#{year}_record", dependent: :nullify, class_name: "Census#{year}Record"
+    has_one :"census#{year}_record", dependent: :nullify, class_name: "Census#{year}Record"
   end
 
   has_and_belongs_to_many :photos, class_name: 'Photograph', dependent: :nullify
@@ -47,6 +49,22 @@ class Person < ApplicationRecord
 
   before_save :estimate_birth_year
   before_save :estimate_pob
+
+  scope :uncensused, -> {
+    qry = self
+    CensusYears.each do |year|
+      qry = qry.left_outer_joins(:"census#{year}_record")
+    end
+    qry.where CensusYears.map { |year| "#{CensusRecord.for_year(year).table_name}.id IS NULL" }.join(' AND ')
+  }
+
+  scope :with_census_records, -> {
+    qry = self
+    CensusYears.each do |year|
+      qry = qry.includes(:"census#{year}_record")
+    end
+    qry
+  }
 
   pg_search_scope :last_name_search,
                   against: :last_name,
@@ -65,41 +83,9 @@ class Person < ApplicationRecord
       matches = where(sex: record.sex, last_name: record.last_name).order(:first_name, :middle_name)
     end
     CensusYears.each do |year|
-      matches = matches.includes(:"census_#{year}_record")
+      matches = matches.includes(:"census#{year}_record")
     end
     matches.select { |match| match.census_records.blank? || match.similar_in_age?(record) }
-  end
-
-  # TODO: Move to service object
-  def self.probable_match_for(record)
-    matches = where(sex: record.sex, last_name: record.last_name, first_name: record.first_name).order(:first_name, :middle_name)
-    probables = []
-    if matches.present?
-      matches.each do |match|
-        probables << match if match.similar_in_age?(record)
-      end
-      if probables.any?
-        return probables.first if probables.size == 1
-        probables.each do |match|
-          next if match.census_records.blank?
-          match.census_records.each do |match_record|
-            score = 0
-            score += 1 if match_record.street_address == record.street_address
-            score += 1 if match_record.relation_to_head == record.relation_to_head
-            score += 1 if match_record.profession == record.profession
-            match_record.fellows.each do |match_record_fellow|
-              record.fellows.each do |fellow|
-                if fellow.first_name == match_record_fellow.first_name && fellow.relation_to_head == match_record_fellow.relation_to_head
-                  score += 1
-                end
-              end
-            end
-            return match if score >= 1
-          end
-        end
-      end
-    end
-    nil
   end
 
   # Takes a census record and returns whether this person's age is within two years of the census record's age
@@ -122,7 +108,7 @@ class Person < ApplicationRecord
   end
 
   def census_records
-    @census_records ||= CensusYears.map { |year| send("census_#{year}_record")}.compact
+    @census_records ||= CensusYears.map { |year| send("census#{year}_record")}.compact
   end
 
   def relation_to_head
@@ -157,5 +143,9 @@ class Person < ApplicationRecord
 
     pobs = census_records.map(&:pob).compact.uniq
     self.pob = pobs.first if pobs.present?
+  end
+
+  def unattached?
+    census_records.blank? && photos.blank?
   end
 end

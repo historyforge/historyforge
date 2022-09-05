@@ -179,6 +179,7 @@ module CensusRecords
     end
 
     def after_saved
+      MatchCensusToPersonRecordJob.perform_later(year, @record.id)
       if params[:then].present?
         attributes = NextCensusRecordAttributes.new(@record, params[:then]).attributes
         redirect_to send("new_census#{year}_record_path", attributes: attributes)

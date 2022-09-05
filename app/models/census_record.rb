@@ -20,11 +20,9 @@ class CensusRecord < ApplicationRecord
 
   attr_accessor :ensure_building
 
-  before_save :ensure_housing
-  before_save :match_to_person
-
   validates :first_name, :last_name, :family_id, :relation_to_head, :profession,
             :page_number, :line_number, :county, :city, :state, :enum_dist,
+            :age, :race, :sex,
             presence: true
   validates :page_side, presence: true, if: :has_page_side?
   validates :age, numericality: { greater_than_or_equal_to: -1, allow_nil: true }
@@ -33,6 +31,7 @@ class CensusRecord < ApplicationRecord
   validates :pob, :pob_father, :pob_mother, vocabulary: { name: :pob, allow_blank: true }
 
   after_initialize :set_defaults
+  before_save :ensure_housing
 
   auto_strip_attributes :first_name, :middle_name, :last_name, :street_house_number, :street_name,
                         :street_prefix, :street_suffix, :apartment_number, :profession, :name_prefix, :name_suffix
@@ -174,35 +173,7 @@ class CensusRecord < ApplicationRecord
     raise 'Need a year!'
   end
 
-  def match_to_person!
-    match_to_person
-    update_column :person_id, person.id if person
-  end
-
-  def match_to_person
-    return if person_id.present?
-
-    match = Person.probable_match_for(self)
-    if match
-      self.person = match
-    else
-      generate_person_record!
-    end
-  end
-
-  def unmarried_female?
-    sex == 'F' && %w[S W D].include?(marital_status)
-  end
-
-  def generate_person_record!
-    build_person
-    person.name_prefix = name_prefix
-    person.name_suffix = name_suffix
-    person.first_name = first_name
-    person.middle_name = middle_name
-    person.last_name = last_name
-    person.sex = sex
-    person.race = race
-    person.save
+  def connect_to_person_record
+    MatchCensusToPersonRecordJob.new.perform(year, id)
   end
 end

@@ -9,12 +9,14 @@ p.lead You propose to merge person ##{@source.id} #{@source.name} into person ##
     dl
       dt Person ID
       dd= @source.id
+      dt Name
+      dd= @source.name
       dt Sex
-      dd= @source.sex
+      dd= @source.sex || 'blank'
       dt Race
-      dd= @source.race
+      dd= @source.race || 'blank'
       dt Est Birth Year
-      dd= @source.estimated_birth_year
+      dd= @source.estimated_birth_year || 'blank'
 
     - @source.census_records.each do |row|
       .card.mb-3
@@ -51,11 +53,11 @@ p.lead You propose to merge person ##{@source.id} #{@source.name} into person ##
       dt Person ID
       dd= @target.id
       dt Sex
-      dd= @target.sex
+      dd= @target.sex || 'blank'
       dt Race
-      dd= @target.race
+      dd= @target.race || 'blank'
       dt Est Birth Year
-      dd= @target.estimated_birth_year
+      dd= @target.estimated_birth_year || 'blank'
     - @target.census_records.each do |row|
       .card.mb-3
         .card-header #{row.year} Census Record

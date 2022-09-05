@@ -4,11 +4,16 @@
 - content_for :pills do
   - if can?(:create, Flag)
     = render 'shared/flag_it', item: @person, item_class: 'btn btn-light'
+  - if can_people?
+    = link_to 'View All', people_path, class: 'btn btn-light'
   - if can?(:update, @person)
     = link_to [:edit, @person], class: 'btn btn-light' do
       i.fa.fa-pencil
       | &nbsp; Edit
-
+  - if can?(:destroy, @person) && @person.census_records.blank?
+    = link_to @person, class: 'btn btn-light', data: { method: :delete, confirm: 'Are you sure?' } do
+      i.fa.fa-trash
+      | &nbsp; Delete
 dl
   dt Person ID
   dd= @person.id
