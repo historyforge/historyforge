@@ -22,7 +22,6 @@ class CensusRecord < ApplicationRecord
 
   validates :first_name, :last_name, :family_id, :relation_to_head, :profession,
             :page_number, :line_number, :county, :city, :state, :enum_dist,
-            :age, :race, :sex,
             presence: true
   validates :page_side, presence: true, if: :has_page_side?
   validates :age, numericality: { greater_than_or_equal_to: -1, allow_nil: true }
@@ -173,7 +172,14 @@ class CensusRecord < ApplicationRecord
     raise 'Need a year!'
   end
 
-  def connect_to_person_record
-    MatchCensusToPersonRecordJob.new.perform(year, id)
+  def generate_person_record
+    person = Person.new
+    %i[name_prefix name_suffix first_name middle_name last_name sex race].each do |attr|
+      person[attr] = self[attr]
+    end
+    person.save
+    update_column :person_id, person.id
+    reload
+    person
   end
 end

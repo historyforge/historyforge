@@ -87,8 +87,8 @@ p.lead You propose to merge person ##{@source.id} #{@source.name} into person ##
                 td= link_to 'View', row
 
 - if @check.okay?
-  = form_with url: person_merges_url(@source) do |form|
-    = hidden_field_tag 'merge_id', @target.id
+  = form_with url: person_merges_url(@target) do |form|
+    = hidden_field_tag 'merge_id', @source.id
     = form.submit 'Yes Please', class: 'btn btn-danger btn-lg'
 - else
   .alert.alert-danger You can't actually do merge this people because they share same-year census records in #{@check.years.to_sentence}.

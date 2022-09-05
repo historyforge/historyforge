@@ -5,6 +5,7 @@
       = checkbox_button 'All', 'on', @search.scope.blank?
       - if can?(:create, Person)
         = checkbox_button 'Uncensused', :uncensused, @search.uncensused?
+        = checkbox_button 'Photographed', :photographed, @search.photographed?
 
 #grid-filters.mb-2= render 'shared/grid_filters', resource_class: Person
 #grid.ag-theme-balham

@@ -3,9 +3,9 @@
   - content_for :filter_buttons do
     .btn-group.btn-group-toggle data-toggle="buttons"
       = checkbox_button 'All', 'on', @search.scope.blank?
-      = checkbox_button 'Unhoused', :unhoused, @search.unhoused?
-      = checkbox_button 'Unreviewed', :unreviewed, @search.unreviewed?
-      = checkbox_button 'Unmatched', :unmatched, @search.unmatched?
+      = checkbox_button 'No Building Record', :unhoused, @search.unhoused?
+      = checkbox_button 'Not Reviewed', :unreviewed, @search.unreviewed?
+      = checkbox_button 'No Person Record', :unmatched, @search.unmatched?
 
 #grid-filters= render 'shared/grid_filters'
 #grid.ag-theme-balham

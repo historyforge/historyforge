@@ -8,8 +8,7 @@ class MatchCensusToPersonRecordJob < ApplicationJob
     @person_record = probable_match || generate_person_record
     return unless @person_record.persisted?
 
-    @census_record.person = @person_record
-    @census_record.save
+    @census_record.update_column :person_id, @person_record.id
   end
 
   def possible_matches

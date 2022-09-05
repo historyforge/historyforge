@@ -15,14 +15,6 @@ class CultivatePersonRecords < ActiveRecord::Migration[7.0]
               AND census_1940_records.id IS NULL AND census1950_records.id IS NULL
           )
     SQL
-
-    CensusYears.each do |year|
-      say_with_time "Connecting person records for #{year}..." do
-        CensusRecord.for_year(year).ids.each do |id|
-          MatchCensusToPersonRecordJob.perform_later(year, id)
-        end
-      end
-    end
   end
 
   def down

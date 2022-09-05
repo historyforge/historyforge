@@ -28,6 +28,7 @@ class PersonSearch < SearchQueryBuilder
     builder.offset(from) if from
     builder.limit(to.to_i - from.to_i) if from && to
     builder.uncensused if uncensused?
+    builder.photographed if photographed?
     add_sorts
     builder.scoped
   end
@@ -62,5 +63,9 @@ class PersonSearch < SearchQueryBuilder
 
   def uncensused?
     @scope == 'uncensused'
+  end
+
+  def photographed?
+    @scope == 'photographed'
   end
 end

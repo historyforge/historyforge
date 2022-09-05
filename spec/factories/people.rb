@@ -32,5 +32,9 @@ FactoryBot.define do
     last_name { Faker::Name.last_name }
     sex { 'M' }
     race { 'W' }
+
+    after(:create) do |person|
+      person.remove_instance_variable :@census_records
+    end
   end
 end

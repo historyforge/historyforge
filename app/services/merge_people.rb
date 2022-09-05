@@ -2,20 +2,24 @@
 
 class MergePeople
   def initialize(source, target)
-    @source, @target = source, target
+    @source = source
+    @target = target
   end
 
   def perform
     merge_census_records
     merge_photographs
+    @source.reset_census_records
+    @source.destroy
+    @target.reload
   end
 
   private
 
   def merge_census_records
-    @source.census_records.each do |record|
-      record.person = @target
-      record.save
+    CensusYears.each do |year|
+      CensusRecord.for_year(year).where(person_id: @source.id).update_all(person_id: @target.id)
+      puts CensusRecord.for_year(year).where(person_id: @target.id).inspect
     end
   end
 

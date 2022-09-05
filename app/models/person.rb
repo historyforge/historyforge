@@ -33,6 +33,7 @@ class Person < ApplicationRecord
   include Flaggable
   include DefineEnumeration
   include Versioning
+  include FastMemoize
 
   attr_accessor :match_score
 
@@ -45,7 +46,7 @@ class Person < ApplicationRecord
 
   has_and_belongs_to_many :photos, class_name: 'Photograph', dependent: :nullify
 
-  validates :last_name, :sex, :race, presence: true
+  validates :last_name, presence: true
 
   before_save :estimate_birth_year
   before_save :estimate_pob
@@ -66,8 +67,12 @@ class Person < ApplicationRecord
     qry
   }
 
+  scope :photographed, -> {
+    joins('INNER JOIN people_photographs ON people_photographs.person_id=people.id')
+  }
+
   pg_search_scope :last_name_search,
-                  against: :last_name,
+                  against: %i[first_name last_name],
                   using: %i[dmetaphone]
 
   # To make the "Mark n Reviewed" button not show up because there is not a person review system at the moment
@@ -86,6 +91,12 @@ class Person < ApplicationRecord
       matches = matches.includes(:"census#{year}_record")
     end
     matches.select { |match| match.census_records.blank? || match.similar_in_age?(record) }
+  end
+
+  def possible_unmatched_records
+    CensusYears.map do |year|
+      CensusRecord.for_year(year).where(person_id: nil, sex:, last_name:, first_name:)
+    end.reduce(&:+)
   end
 
   # Takes a census record and returns whether this person's age is within two years of the census record's age
@@ -108,7 +119,12 @@ class Person < ApplicationRecord
   end
 
   def census_records
-    @census_records ||= CensusYears.map { |year| send("census#{year}_record")}.compact
+    CensusYears.map { |year| send("census#{year}_record")}.compact
+  end
+  memoize :census_records
+
+  def reset_census_records
+    remove_instance_variable(:@census_records) if instance_variable_defined?(:@census_records)
   end
 
   def relation_to_head
@@ -120,13 +136,13 @@ class Person < ApplicationRecord
   end
 
   def address
-    census_records.map(&:street_address).uniq.join(', ')
+    census_records.map(&:street_address).compact_blank.uniq.join(', ')
   end
 
   def estimated_birth_year
     return birth_year if birth_year.present?
 
-    records = census_records&.select { |r| r.age.present? }
+    records = census_records.select { |r| r.age.present? }
     return if records.blank?
 
     records.map { |r| r.year - r.age }.reduce(&:+) / records.size
