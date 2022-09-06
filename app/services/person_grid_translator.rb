@@ -54,7 +54,7 @@ class PersonGridTranslator
     options[:cellRenderer] = 'nameCellRenderer' if column == 'name'
     options[:cellRenderer] = 'censusLinkCellRenderer' if column =~ /census\d{4}/
     options[:width] = width_for_column(column)
-    options[:sortable] = true unless column == 'id'
+    options[:sortable] = true unless column == 'view'
     options
   end
 

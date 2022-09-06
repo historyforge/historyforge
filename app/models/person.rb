@@ -149,8 +149,6 @@ class Person < ApplicationRecord
     records.map { |r| r.year - r.age }.reduce(&:+) / records.size
   end
 
-  private
-
   def estimate_birth_year
     self.birth_year = estimated_birth_year if birth_year.blank? && is_birth_year_estimated? && census_records.present?
   end

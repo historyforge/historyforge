@@ -18,9 +18,10 @@ const ActionCellRenderer = function() {}
 ActionCellRenderer.prototype.init = function(params) {
   // create the cell
   this.eGui = document.createElement('div')
-  if (params.value) {
-    const link = document.location.toString().split('?')[0] + '/' + params.value
-    this.eGui.innerHTML = '<a href="' + link + '">View</a>'
+  const value = params.value || params.getValue()
+  if (value && value.id) {
+    const link = document.location.toString().split('?')[0] + '/' + value.id
+    this.eGui.innerHTML = `<a href="${link}" target="_blank">View</a>`
   }
 }
 
