@@ -37,8 +37,34 @@ ActionCellRenderer.prototype.refresh = function(params) {
   return true
 }
 
+const CensusLinkCellRenderer = function() {}
+
+// gets called once before the renderer is used
+CensusLinkCellRenderer.prototype.init = function(params) {
+  // create the cell
+  const value = params.value || params.getValue()
+  this.eGui = document.createElement('div')
+  if (value && value.id) {
+    const link = `/census/${value.year}/${value.id}`
+    this.eGui.innerHTML = '<a href="' + link + '" target="_blank">View</a>'
+  }
+}
+
+// gets called once when grid ready to insert the element
+CensusLinkCellRenderer.prototype.getGui = function() {
+  return this.eGui
+}
+
+// gets called whenever the user gets the cell to refresh
+CensusLinkCellRenderer.prototype.refresh = function(params) {
+  // set value into cell again
+  // this.eValue.innerHTML = params.valueFormatted ? params.valueFormatted : params.value;
+  // return true to tell the grid we refreshed successfully
+  return true
+}
+
 // gets called when the cell is removed from the grid
-ActionCellRenderer.prototype.destroy = function() {}
+CensusLinkCellRenderer.prototype.destroy = function() {}
 
 const NameCellRenderer = function() {}
 
@@ -102,4 +128,5 @@ HTMLCellRenderer.prototype.destroy = function() {}
 
 window.ActionCellRenderer = ActionCellRenderer
 window.NameCellRenderer = NameCellRenderer
+window.CensusLinkCellRenderer = CensusLinkCellRenderer
 window.HTMLCellRenderer = HTMLCellRenderer

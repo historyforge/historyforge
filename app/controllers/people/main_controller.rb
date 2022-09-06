@@ -2,12 +2,13 @@
 
 module People
   class MainController < ApplicationController
+    include AdvancedRestoreSearch
     include RenderCsv
 
     def index
       authorize! :read, Person
       @search = PersonSearch.generate params: search_params, user: current_user
-      @translator = CensusGridTranslator.new(@search)
+      @translator = PersonGridTranslator.new(@search)
       respond_to do |format|
         format.html
         format.json { render json: @translator.row_data }

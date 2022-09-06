@@ -9,11 +9,11 @@ class BuildingsOnStreet
     @street_prefix = record.street_prefix
     @street_name = record.street_name
     @street_suffix = record.street_suffix
-    @city = record.city
+    @locality_id = record.locality_id
     @year = record.year
   end
 
-  attr_reader :building_id, :street_house_number, :street_name, :street_prefix, :street_suffix, :city, :year
+  attr_reader :building_id, :street_house_number, :street_name, :street_prefix, :street_suffix, :locality_id, :year
 
   def perform
     buildings_on_street
@@ -26,11 +26,11 @@ class BuildingsOnStreet
   HOUSE_SQL = "substring(house_number, '^[0-9]+')::int"
 
   def buildings_on_street
-    items = Building.left_outer_joins(:addresses)
+    items = Building.where(locality_id:)
+                    .left_outer_joins(:addresses)
                     .includes(:addresses)
                     .where(addresses: { name: street_name })
                     .order(Arel.sql("addresses.name, addresses.suffix, addresses.prefix, #{HOUSE_SQL}"))
-    items = items.where(addresses: { city: city}) if city.present?
     items = items.where(addresses: { prefix: street_prefix }) if street_prefix.present?
     items = items.where(addresses: { suffix: street_suffix }) if street_suffix.present?
     items = add_block_filter(items) if street_house_number.present?

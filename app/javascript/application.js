@@ -72,16 +72,15 @@ jQuery(document).on('click', '#search-map', function() {
 function getBuildingList() {
   let house = $('#census_record_street_house_number').val()
   if (house === '') house = null
-  let city = jQuery('#city').val()
-  if (city === '') city = null
+  let locality_id = jQuery('#census_record_locality_id').val()
   let street = jQuery('#street_name').val()
   if (street === '') street = null
   let prefix = jQuery('#census_record_street_prefix').val()
   if (street === '') prefix = null
   let suffix = jQuery('#street_suffix').val()
   if (street === '') suffix = null
-  if (city && street && house && suffix) {
-    const params = { city, street, prefix, suffix, house }
+  if (locality_id && street && house && suffix) {
+    const params = { locality_id, street, prefix, suffix, house }
     const year = document.location.pathname.split("/")[2]
     jQuery.getJSON(`/census/${year}/building_autocomplete`, params, function (json) {
       const building = jQuery('#building_id, #census_record_building_id')

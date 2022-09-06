@@ -5,8 +5,7 @@ export default class extends Controller {
     what = null
     connect() {
       const url = document.location.toString()
-      if (url.match(/buildings/)) { this.what = 'building' } else if (url.match(/census/)) { this.what = 'census' } else if (url.match(/people/)) { this.what = 'people' }
-
+      if (url.match(/buildings/)) { this.what = 'building' } else if (url.match(/\/census/)) { this.what = 'census' } else if (url.match(/people/)) { this.what = 'people' }
       const savedSearchesClass = `${this.what}SavedSearches`
       window[savedSearchesClass] = window[savedSearchesClass] || new SavedSearches(this.what)
       this.searches = window[savedSearchesClass]

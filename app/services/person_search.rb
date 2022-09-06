@@ -29,10 +29,28 @@ class PersonSearch < SearchQueryBuilder
     builder.limit(to.to_i - from.to_i) if from && to
     builder.uncensused if uncensused?
     builder.photographed if photographed?
+    add_census_record_links
     add_sorts
     builder.scoped
   end
   memoize :scoped
+
+  def count
+    builder.uncensused if uncensused?
+    builder.photographed if photographed?
+    builder.scoped.count
+  end
+
+  def add_census_record_links
+    builder.select 'people.*'
+    CensusYears.each do |year|
+      next unless f.include?("census#{year}")
+
+      builder.left_outer_joins(:"census#{year}_record")
+      table = CensusRecord.for_year(year).table_name
+      builder.select(builder.scoped.select_values, "#{table}.id AS census#{year}")
+    end
+  end
 
   def add_sorts
     order = []
@@ -54,7 +72,7 @@ class PersonSearch < SearchQueryBuilder
   end
 
   def default_fields
-    %w[name sex race birth_year pob]
+    %w[name sex race birth_year pob census1880 census1900 census1910 census1920 census1930 census1940 census1950]
   end
 
   def all_fields

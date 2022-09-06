@@ -44,7 +44,6 @@ gem 'ruby-vips'
 gem 'rubyXL', require: false
 gem 'rubyzip', require: false
 gem 'sassc'
-gem 'sidekiq'
 gem 'simple_form'
 gem 'slim'
 gem 'sprockets-rails'

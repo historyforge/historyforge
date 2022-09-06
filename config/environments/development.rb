@@ -76,7 +76,7 @@ Rails.application.configure do
   config.logger = ActiveSupport::Logger.new(STDOUT)
   config.log_level = :debug
 
-  config.active_job.queue_adapter = :sidekiq
+  config.active_job.queue_adapter = :inline
 
   config.action_mailer.delivery_method = :letter_opener
 

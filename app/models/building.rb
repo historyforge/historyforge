@@ -99,7 +99,8 @@ class Building < ApplicationRecord
       .joins('LEFT OUTER JOIN census_1930_records ON census_1930_records.building_id=buildings.id')
       .joins('LEFT OUTER JOIN census_1940_records ON census_1940_records.building_id=buildings.id')
       .where('census_1900_records.id IS NULL AND census_1910_records.id IS NULL AND census_1920_records.id IS NULL AND census_1930_records.id IS NULL AND census_1940_records.id IS NULL')
-      .where(building_types: { name: 'residence' }) }
+      .building_types_id_in(3)
+  }
 
   scope :order_by, lambda { |col, dir|
     order(Arel.sql(sanitize_sql_for_order("#{col} #{dir}")))

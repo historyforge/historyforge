@@ -50,7 +50,7 @@ class Address < ApplicationRecord
   end
 
   def address
-    [house_number, prefix, name, suffix].join(' ')
+    [house_number, prefix, name, suffix, city].join(' ')
   end
 
   def equals?(address)

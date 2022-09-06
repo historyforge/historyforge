@@ -10,7 +10,7 @@ class SearchQueryBuilder
   attr_accessor :page, :s, :f, :g, :user, :c, :d, :sort, :paged, :per, :scope, :from, :to
 
   delegate :any?, :present?, :each, :first, :last,
-           :current_page, :total_pages, :limit_value,
+           :current_page, :total_pages, :limit_value, :count,
            to: :scoped
 
   validates :t, presence: true
@@ -45,7 +45,7 @@ class SearchQueryBuilder
   memoize :columns
 
   def total_records
-    scoped.count
+    count
   end
 
   class Builder

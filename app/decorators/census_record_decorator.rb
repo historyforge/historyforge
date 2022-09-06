@@ -18,6 +18,8 @@ class CensusRecordDecorator < ApplicationDecorator
   end
 
   def birth_month
+    return if object.birth_month.nil?
+
     object.year == 1950 ? object.birth_month : Date::MONTHNAMES[object.birth_month]
   end
 

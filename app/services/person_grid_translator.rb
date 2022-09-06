@@ -1,12 +1,14 @@
 # frozen_string_literal: true
 
 # This translates a census record search into a format digestible by AgGrid
-class CensusGridTranslator
+class PersonGridTranslator
   def initialize(search)
     @search = search
   end
 
   def column_def
+    columns = search.columns
+    columns << 'view'
     columns.map { |column| column_config(column) }
   end
 
@@ -16,7 +18,9 @@ class CensusGridTranslator
       columns.each do |column|
         value = record.public_send(column)
         value = { name: value, reviewed: record.reviewed? } if column == 'name'
+        value = { year: column[-4...].to_i, id: value } if column =~ /census\d{4}/
         hash[column] = value
+        hash['view'] = { id: record.id } if column == 'name'
       rescue NoMethodError
         # sometimes people manipulate URLs to include fields that don't exist
         # we just ignore because it's not a symptom of anything wrong here just
@@ -42,37 +46,26 @@ class CensusGridTranslator
       field: column,
       resizable: true
     }
-    options[:headerName] = 'Actions' if column == 'id'
+    options[:headerName] = 'Actions' if column == 'view'
     options[:headerName] = column[-4...] if column =~ /census\d{4}/
     options[:pinned] = 'left' if %w[id name].include?(column)
-    options[:cellRenderer] = 'actionCellRenderer' if column == 'id'
+    options[:pinned] = 'right' if column == 'view'
+    options[:cellRenderer] = 'actionCellRenderer' if column == 'view'
     options[:cellRenderer] = 'nameCellRenderer' if column == 'name'
+    options[:cellRenderer] = 'censusLinkCellRenderer' if column =~ /census\d{4}/
     options[:width] = width_for_column(column)
     options[:sortable] = true unless column == 'id'
     options
   end
 
   COLUMN_WIDTHS = {
-    page_number: 50,
-    page_side: 50,
-    line_number: 50,
     age: 50,
     sex: 60,
     marital_status: 130,
     id: 60,
-    ward: 60,
-    enum_dist: 60,
-    dwelling_number: 60,
-    family_id: 60,
+    view: 60,
     profession: 160,
-    occupation: 160,
-    industry: 130,
-    census_scope: 160,
     name: 160,
-    street_address: 160,
-    notes: 160,
-    coded_occupation_name: 250,
-    coded_industry_name: 250
   }.freeze
 
   def width_for_column(column)

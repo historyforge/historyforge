@@ -41,6 +41,7 @@ module AdvancedRestoreSearch
       redirect_to action: params[:action]
     elsif actively_searching?
       search.params = {
+        scope: params[:scope].dup,
         s: params[:s].dup,
         fs: params[:fs].dup,
         f: params[:f].dup
@@ -66,7 +67,8 @@ module AdvancedRestoreSearch
         params: {
           s: params[:s].dup,
           fs: params[:fs].dup,
-          f: params[:f].dup
+          f: params[:f].dup,
+          scope: params[:scope].dup
         }
       }
     elsif session[:search] && session[:search]['model'] == controller_name
@@ -79,10 +81,10 @@ module AdvancedRestoreSearch
   end
 
   def actively_searching?
-    params[:s] || params[:f] || params[:fs]
+    params[:s] || params[:f] || params[:fs] || (params[:scope] && params[:scope] != 'on')
   end
 
   def search_key
-    controller_name
+    self.class.name
   end
 end

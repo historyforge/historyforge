@@ -33,7 +33,7 @@ module CensusRecords
                                   street_prefix: params[:prefix],
                                   street_name: params[:street],
                                   street_suffix: params[:suffix],
-                                  city: params[:city]
+                                  locality_id: params[:locality_id]
       record.auto_strip_attributes
       buildings = BuildingsOnStreet.new(record).perform
       render json: buildings.to_json

@@ -22,6 +22,7 @@
     return a;
   };
   var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+  var __markAsModule = (target) => __defProp(target, "__esModule", { value: true });
   var __commonJS = (cb, mod) => function __require() {
     return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
   };
@@ -29,15 +30,17 @@
     for (var name in all)
       __defProp(target, name, { get: all[name], enumerable: true });
   };
-  var __copyProps = (to, from, except, desc) => {
-    if (from && typeof from === "object" || typeof from === "function") {
-      for (let key of __getOwnPropNames(from))
-        if (!__hasOwnProp.call(to, key) && key !== except)
-          __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+  var __reExport = (target, module, copyDefault, desc) => {
+    if (module && typeof module === "object" || typeof module === "function") {
+      for (let key of __getOwnPropNames(module))
+        if (!__hasOwnProp.call(target, key) && (copyDefault || key !== "default"))
+          __defProp(target, key, { get: () => module[key], enumerable: !(desc = __getOwnPropDesc(module, key)) || desc.enumerable });
     }
-    return to;
+    return target;
   };
-  var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target, mod));
+  var __toESM = (module, isNodeMode) => {
+    return __reExport(__markAsModule(__defProp(module != null ? __create(__getProtoOf(module)) : {}, "default", !isNodeMode && module && module.__esModule ? { get: () => module.default, enumerable: true } : { value: module, enumerable: true })), module);
+  };
   var __publicField = (obj, key, value) => {
     __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
     return value;
@@ -46925,7 +46928,23 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   ActionCellRenderer.prototype.refresh = function(params) {
     return true;
   };
-  ActionCellRenderer.prototype.destroy = function() {
+  var CensusLinkCellRenderer = function() {
+  };
+  CensusLinkCellRenderer.prototype.init = function(params) {
+    const value = params.value || params.getValue();
+    this.eGui = document.createElement("div");
+    if (value && value.id) {
+      const link = `/census/${value.year}/${value.id}`;
+      this.eGui.innerHTML = '<a href="' + link + '" target="_blank">View</a>';
+    }
+  };
+  CensusLinkCellRenderer.prototype.getGui = function() {
+    return this.eGui;
+  };
+  CensusLinkCellRenderer.prototype.refresh = function(params) {
+    return true;
+  };
+  CensusLinkCellRenderer.prototype.destroy = function() {
   };
   var NameCellRenderer = function() {
   };
@@ -46968,6 +46987,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   };
   window.ActionCellRenderer = ActionCellRenderer;
   window.NameCellRenderer = NameCellRenderer;
+  window.CensusLinkCellRenderer = CensusLinkCellRenderer;
   window.HTMLCellRenderer = HTMLCellRenderer;
 
   // app/javascript/search/AdvancedSearch.ts
@@ -49364,7 +49384,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       const url = document.location.toString();
       if (url.match(/buildings/)) {
         this.what = "building";
-      } else if (url.match(/census/)) {
+      } else if (url.match(/\/census/)) {
         this.what = "census";
       } else if (url.match(/people/)) {
         this.what = "people";
@@ -55242,9 +55262,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     let house = $("#census_record_street_house_number").val();
     if (house === "")
       house = null;
-    let city = jQuery("#city").val();
-    if (city === "")
-      city = null;
+    let locality_id = jQuery("#census_record_locality_id").val();
     let street = jQuery("#street_name").val();
     if (street === "")
       street = null;
@@ -55254,8 +55272,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     let suffix = jQuery("#street_suffix").val();
     if (street === "")
       suffix = null;
-    if (city && street && house && suffix) {
-      const params = { city, street, prefix, suffix, house };
+    if (locality_id && street && house && suffix) {
+      const params = { locality_id, street, prefix, suffix, house };
       const year = document.location.pathname.split("/")[2];
       jQuery.getJSON(`/census/${year}/building_autocomplete`, params, function(json) {
         const building = jQuery("#building_id, #census_record_building_id");
