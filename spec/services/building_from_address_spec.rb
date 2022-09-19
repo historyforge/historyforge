@@ -23,6 +23,6 @@ RSpec.describe BuildingFromAddress do
   end
 
   it 'has the correct primary street address' do
-    expect(subject.primary_street_address).to eq('405 N Tioga St')
+    expect(subject.primary_street_address).to eq('405 N Tioga St Ithaca')
   end
 end

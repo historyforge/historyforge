@@ -115,9 +115,9 @@ RSpec.describe '1900 US Census' do
     visit census1900_record_path(record)
 
     # Now review the record
-    expect(page).to have_css('.dropdown-item', text: 'Mark as Reviewed', visible: :hidden)
-    click_on 'Actions'
-    click_on 'Mark as Reviewed'
+    page.accept_confirm do
+      click_on 'Review'
+    end
     expect(page).to have_content "Reviewed by #{user.login} on"
   end
 end

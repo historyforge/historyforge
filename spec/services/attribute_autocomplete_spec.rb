@@ -149,12 +149,12 @@ RSpec.describe AttributeAutocomplete do
       end
       it 'has matching streets' do
         expect(subject).to have(2).things
-        expect(subject).to include('405 N Tioga St')
-        expect(subject).to include('405 N Titus Ave')
+        expect(subject).to include('405 N Tioga St Ithaca')
+        expect(subject).to include('405 N Titus Ave Ithaca')
       end
       it 'has no non-matching streets' do
-        expect(subject).not_to include('405 S Tioga St')
-        expect(subject).not_to include('405 N Cayuga St')
+        expect(subject).not_to include('405 S Tioga St Ithaca')
+        expect(subject).not_to include('405 N Cayuga St Ithaca')
       end
     end
   end

@@ -4,25 +4,27 @@ require 'rails_helper'
 
 RSpec.describe BuildingsOnStreet do
   subject { BuildingsOnStreet.new(record).perform }
+  let(:locality) { create(:locality) }
   before do
-    create(:building, addresses: [build(:address, house_number: '305', name: 'Tioga', prefix: 'N', suffix: 'St')])
-    create(:building, addresses: [build(:address, house_number: '401', name: 'Tioga', prefix: 'N', suffix: 'St')])
-    create(:building, addresses: [build(:address, house_number: '405', name: 'Tioga', prefix: 'N', suffix: 'St')])
-    create(:building, addresses: [build(:address, house_number: '405', name: 'Titus', prefix: 'N', suffix: 'Ave')])
-    create(:building, addresses: [build(:address, house_number: '405', name: 'Tioga', prefix: 'S', suffix: 'St')])
-    create(:building, addresses: [build(:address, house_number: '405', name: 'Cayuga', prefix: 'N', suffix: 'St')])
+    create(:building, locality:, addresses: [build(:address, house_number: '305', name: 'Tioga', prefix: 'N', suffix: 'St')])
+    create(:building, locality:, addresses: [build(:address, house_number: '401', name: 'Tioga', prefix: 'N', suffix: 'St')])
+    create(:building, locality:, addresses: [build(:address, house_number: '405', name: 'Tioga', prefix: 'N', suffix: 'St')])
+    create(:building, locality:, addresses: [build(:address, house_number: '405', name: 'Titus', prefix: 'N', suffix: 'Ave')])
+    create(:building, locality:, addresses: [build(:address, house_number: '405', name: 'Tioga', prefix: 'S', suffix: 'St')])
+    create(:building, locality:, addresses: [build(:address, house_number: '405', name: 'Cayuga', prefix: 'N', suffix: 'St')])
   end
 
   context 'with duplicates' do
     before do
-      building = create(:building, addresses: [
+      building = create(:building, locality:, addresses: [
         build(:address, house_number: '306', name: 'Tioga', prefix: 'N', suffix: 'St', is_primary: true),
         build(:address, house_number: '307', name: 'Tioga', prefix: 'N', suffix: 'St', is_primary: false)
       ])
 
     end
     let(:record) {
-      Census1900Record.new street_house_number: '305',
+      Census1900Record.new locality:,
+                           street_house_number: '305',
                            street_name: 'Tioga',
                            street_prefix: 'N',
                            street_suffix: 'St' }
@@ -34,14 +36,15 @@ RSpec.describe BuildingsOnStreet do
   context 'limits to 100-block' do
     context 'for 1-digit house numbers' do
       before do
-        create(:building, addresses: [build(:address, house_number: '5505', name: 'Tioga', prefix: 'N', suffix: 'St')])
-        create(:building, addresses: [build(:address, house_number: '5', name: 'Tioga', prefix: 'N', suffix: 'St')])
-        create(:building, addresses: [build(:address, house_number: '1405', name: 'Tioga', prefix: 'N', suffix: 'St')])
-        create(:building, addresses: [build(:address, house_number: '505', name: 'Tioga', prefix: 'N', suffix: 'St')])
-        create(:building, addresses: [build(:address, house_number: '25', name: 'Tioga', prefix: 'N', suffix: 'St')])
+        create(:building, locality:, addresses: [build(:address, house_number: '5505', name: 'Tioga', prefix: 'N', suffix: 'St')])
+        create(:building, locality:, addresses: [build(:address, house_number: '5', name: 'Tioga', prefix: 'N', suffix: 'St')])
+        create(:building, locality:, addresses: [build(:address, house_number: '1405', name: 'Tioga', prefix: 'N', suffix: 'St')])
+        create(:building, locality:, addresses: [build(:address, house_number: '505', name: 'Tioga', prefix: 'N', suffix: 'St')])
+        create(:building, locality:, addresses: [build(:address, house_number: '25', name: 'Tioga', prefix: 'N', suffix: 'St')])
       end
       let(:record) {
-        Census1900Record.new street_house_number: '5',
+        Census1900Record.new locality:,
+                             street_house_number: '5',
                              street_name: 'Tioga',
                              street_prefix: 'N',
                              street_suffix: 'St' }
@@ -57,14 +60,15 @@ RSpec.describe BuildingsOnStreet do
     end
     context 'for 2-digit house numbers' do
       before do
-        create(:building, addresses: [build(:address, house_number: '1305', name: 'Tioga', prefix: 'N', suffix: 'St')])
-        create(:building, addresses: [build(:address, house_number: '5', name: 'Tioga', prefix: 'N', suffix: 'St')])
-        create(:building, addresses: [build(:address, house_number: '1405', name: 'Tioga', prefix: 'N', suffix: 'St')])
-        create(:building, addresses: [build(:address, house_number: '105', name: 'Tioga', prefix: 'N', suffix: 'St')])
-        create(:building, addresses: [build(:address, house_number: '25', name: 'Tioga', prefix: 'N', suffix: 'St')])
+        create(:building, locality:, addresses: [build(:address, house_number: '1305', name: 'Tioga', prefix: 'N', suffix: 'St')])
+        create(:building, locality:, addresses: [build(:address, house_number: '5', name: 'Tioga', prefix: 'N', suffix: 'St')])
+        create(:building, locality:, addresses: [build(:address, house_number: '1405', name: 'Tioga', prefix: 'N', suffix: 'St')])
+        create(:building, locality:, addresses: [build(:address, house_number: '105', name: 'Tioga', prefix: 'N', suffix: 'St')])
+        create(:building, locality:, addresses: [build(:address, house_number: '25', name: 'Tioga', prefix: 'N', suffix: 'St')])
       end
       let(:record) {
-        Census1900Record.new street_house_number: '15',
+        Census1900Record.new locality:,
+                             street_house_number: '15',
                              street_name: 'Tioga',
                              street_prefix: 'N',
                              street_suffix: 'St' }
@@ -80,7 +84,8 @@ RSpec.describe BuildingsOnStreet do
     end
     context 'for 3-digit house numbers' do
       let(:record) {
-        Census1900Record.new street_house_number: '405',
+        Census1900Record.new locality:,
+                             street_house_number: '405',
                              street_name: 'Tioga',
                              street_prefix: 'N',
                              street_suffix: 'St' }
@@ -89,7 +94,7 @@ RSpec.describe BuildingsOnStreet do
       end
       context 'with a hyphenated house number' do
         before do
-          create(:building, addresses: [build(:address, house_number: '405-407', name: 'Tioga', prefix: 'N', suffix: 'St')])
+          create(:building, locality:, addresses: [build(:address, house_number: '405-407', name: 'Tioga', prefix: 'N', suffix: 'St')])
         end
         it 'shows the hyphenated address' do
           expect(subject.map(&:name).detect { |name| name =~ /405\-407/ }).to be_truthy
@@ -99,14 +104,15 @@ RSpec.describe BuildingsOnStreet do
 
     context 'for 4-digit house numbers' do
       before do
-        create(:building, addresses: [build(:address, house_number: '1305', name: 'Tioga', prefix: 'N', suffix: 'St')])
-        create(:building, addresses: [build(:address, house_number: '1401', name: 'Tioga', prefix: 'N', suffix: 'St')])
-        create(:building, addresses: [build(:address, house_number: '1405', name: 'Tioga', prefix: 'N', suffix: 'St')])
-        create(:building, addresses: [build(:address, house_number: '105', name: 'Tioga', prefix: 'N', suffix: 'St')])
-        create(:building, addresses: [build(:address, house_number: '1405', name: 'Tioga', prefix: 'S', suffix: 'St')])
+        create(:building, locality:, addresses: [build(:address, house_number: '1305', name: 'Tioga', prefix: 'N', suffix: 'St')])
+        create(:building, locality:, addresses: [build(:address, house_number: '1401', name: 'Tioga', prefix: 'N', suffix: 'St')])
+        create(:building, locality:, addresses: [build(:address, house_number: '1405', name: 'Tioga', prefix: 'N', suffix: 'St')])
+        create(:building, locality:, addresses: [build(:address, house_number: '105', name: 'Tioga', prefix: 'N', suffix: 'St')])
+        create(:building, locality:, addresses: [build(:address, house_number: '1405', name: 'Tioga', prefix: 'S', suffix: 'St')])
       end
       let(:record) {
-        Census1900Record.new street_house_number: '1405',
+        Census1900Record.new locality:,
+                             street_house_number: '1405',
                              street_name: 'Tioga',
                              street_prefix: 'N',
                              street_suffix: 'St' }
@@ -123,14 +129,15 @@ RSpec.describe BuildingsOnStreet do
 
     context 'for 5-digit house numbers' do
       before do
-        create(:building, addresses: [build(:address, house_number: '1305', name: 'Tioga', prefix: 'N', suffix: 'St')])
-        create(:building, addresses: [build(:address, house_number: '1401', name: 'Tioga', prefix: 'N', suffix: 'St')])
-        create(:building, addresses: [build(:address, house_number: '1405', name: 'Tioga', prefix: 'N', suffix: 'St')])
-        create(:building, addresses: [build(:address, house_number: '105', name: 'Tioga', prefix: 'N', suffix: 'St')])
-        create(:building, addresses: [build(:address, house_number: '12406', name: 'Tioga', prefix: 'N', suffix: 'St')])
+        create(:building, locality:, addresses: [build(:address, house_number: '1305', name: 'Tioga', prefix: 'N', suffix: 'St')])
+        create(:building, locality:, addresses: [build(:address, house_number: '1401', name: 'Tioga', prefix: 'N', suffix: 'St')])
+        create(:building, locality:, addresses: [build(:address, house_number: '1405', name: 'Tioga', prefix: 'N', suffix: 'St')])
+        create(:building, locality:, addresses: [build(:address, house_number: '105', name: 'Tioga', prefix: 'N', suffix: 'St')])
+        create(:building, locality:, addresses: [build(:address, house_number: '12406', name: 'Tioga', prefix: 'N', suffix: 'St')])
       end
       let(:record) {
-        Census1900Record.new street_house_number: '12405',
+        Census1900Record.new locality:,
+                             street_house_number: '12405',
                              street_name: 'Tioga',
                              street_prefix: 'N',
                              street_suffix: 'St' }
@@ -148,9 +155,10 @@ RSpec.describe BuildingsOnStreet do
 
   context 'with building_id' do
     let(:address) { build(:address, house_number: '407', name: 'Cayuga', prefix: 'N', suffix: 'St') }
-    let(:building) { create(:building, addresses: [address]) }
+    let(:building) { create(:building, locality:, addresses: [address]) }
     let(:record) {
-      Census1900Record.new building_id: building.id,
+      Census1900Record.new locality:,
+                           building_id: building.id,
                            street_house_number: '405',
                            street_name: 'Tioga',
                            street_prefix: 'N',
@@ -161,7 +169,7 @@ RSpec.describe BuildingsOnStreet do
   end
 
   context 'street name and house number' do
-    let(:record) { Census1900Record.new street_house_number: '405', street_name: 'Tioga' }
+    let(:record) { Census1900Record.new locality:, street_house_number: '405', street_name: 'Tioga' }
     it 'returns 405 N and S Tioga' do
       names = subject.map(&:name)
       expect(names.detect { |name| name =~ /405 N Tioga St/ }).to be_truthy
@@ -169,16 +177,16 @@ RSpec.describe BuildingsOnStreet do
     end
     context 'with hyphenated house number' do
       before do
-        create(:building, addresses: [build(:address, house_number: '405-407', name: 'Tioga', prefix: 'N', suffix: 'St')])
+        create(:building, locality:, addresses: [build(:address, house_number: '405-407', name: 'Tioga', prefix: 'N', suffix: 'St')])
       end
       it 'finds the hyphenated address' do
         expect(subject.map(&:name).detect { |name| name =~ /405-407/ }).to be_truthy
       end
     end
     context 'with exact hundred block' do
-      let(:record) { Census1900Record.new street_house_number: '400', street_name: 'Tioga' }
+      let(:record) { Census1900Record.new locality:, street_house_number: '400', street_name: 'Tioga' }
       before do
-        create(:building, addresses: [build(:address, house_number: '400', name: 'Tioga', prefix: 'N', suffix: 'St')])
+        create(:building, locality:, addresses: [build(:address, house_number: '400', name: 'Tioga', prefix: 'N', suffix: 'St')])
       end
       it 'finds the hyphenated address' do
         expect(subject.map(&:name).detect { |name| name =~ /400 N Tioga/ }).to be_truthy
@@ -187,7 +195,7 @@ RSpec.describe BuildingsOnStreet do
   end
 
   context 'street name only' do
-    let(:record) { Census1900Record.new street_name: 'Tioga' }
+    let(:record) { Census1900Record.new locality:, street_name: 'Tioga' }
     it 'finds buildings on Tioga' do
       expect(subject).to have(4).things
       expect(subject.map(&:name).all? { |name| name =~ /Tioga/ }).to be_truthy
@@ -195,7 +203,7 @@ RSpec.describe BuildingsOnStreet do
   end
 
   context 'street name and suffix' do
-    let(:record) { Census1900Record.new street_name: 'Tioga', street_suffix: 'St' }
+    let(:record) { Census1900Record.new locality:, street_name: 'Tioga', street_suffix: 'St' }
     it 'finds buildings on Tioga St' do
       expect(subject).to have(4).things
       expect(subject.map(&:name).all? { |name| name =~ /Tioga St/ }).to be_truthy
@@ -203,21 +211,21 @@ RSpec.describe BuildingsOnStreet do
   end
 
   context 'street name and prefix' do
-    let(:record) { Census1900Record.new street_name: 'Tioga', street_prefix: 'N' }
+    let(:record) { Census1900Record.new locality:, street_name: 'Tioga', street_prefix: 'N' }
     it 'finds buildings on N Tioga' do
       expect(subject.map(&:name).all? { |name| name =~ /N Tioga/ }).to be_truthy
     end
   end
 
   context 'street name, suffix, and prefix' do
-    let(:record) { Census1900Record.new street_name: 'Tioga', street_prefix: 'N', street_suffix: 'St' }
+    let(:record) { Census1900Record.new locality:, street_name: 'Tioga', street_prefix: 'N', street_suffix: 'St' }
     it 'finds buildings on N Tioga St' do
       expect(subject.map(&:name).all? { |name| name =~ /N Tioga St/ }).to be_truthy
     end
   end
 
   context 'full street address' do
-    let(:record) { Census1900Record.new street_house_number: '405', street_name: 'Tioga', street_prefix: 'N', street_suffix: 'St' }
+    let(:record) { Census1900Record.new locality:, street_house_number: '405', street_name: 'Tioga', street_prefix: 'N', street_suffix: 'St' }
     it 'finds buildings on N Tioga St' do
       expect(subject.map(&:name).all? { |name| name =~ /N Tioga St/ }).to be_truthy
     end

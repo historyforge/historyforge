@@ -5,9 +5,9 @@ FactoryBot.define do
     city { 'Ithaca' }
     county { 'Tompkins' }
     state { 'New York' }
-    first_name { Faker::Name.first_name }
-    middle_name { Faker::Name.first_name }
-    last_name { Faker::Name.last_name }
+    sequence(:first_name) { |n| "First#{n}" }
+    sequence(:middle_name) { |n| "Middle#{n}" }
+    sequence(:last_name) { |n| "Last#{n}" }
     sex { 'M' }
     race { 'W' }
     profession { 'None' }

@@ -48,5 +48,6 @@ module HistoryForge
     config.active_storage.service = :local
 
     config.generators.test_framework :rspec
+    config.active_record.schema_format = :sql
   end
 end

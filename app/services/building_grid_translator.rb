@@ -9,6 +9,8 @@ class BuildingGridTranslator
   end
 
   def column_def
+    columns = search.columns
+    columns << 'view'
     columns.map { |column| column_config(column) }
   end
 
@@ -16,17 +18,16 @@ class BuildingGridTranslator
     records.map do |record|
       hash = { id: record.id }
       columns.each do |column|
-        begin
-          value = record.public_send(column)
-          value = { name: value, reviewed: record.reviewed? } if column == 'street_address'
-          value = truncate(strip_tags(value.to_s), escape: false) if column == 'description'
-          value = truncate(value, escape: false) if column == 'annotations'
-          hash[column] = value
-        rescue NoMethodError
-          # sometimes people manipulate URLs to include fields that don't exist
-          # we just ignore because it's not a symptom of anything wrong here just
-          # people being clever
-        end
+        value = record.public_send(column)
+        value = { name: value, reviewed: record.reviewed? } if column == 'street_address'
+        value = truncate(strip_tags(value.to_s), escape: false) if column == 'description'
+        value = truncate(value, escape: false) if column == 'annotations'
+        hash[column] = value
+        hash['view'] = { id: record.id } if column == 'street_address'
+      rescue NoMethodError
+        # sometimes people manipulate URLs to include fields that don't exist
+        # we just ignore because it's not a symptom of anything wrong here just
+        # people being clever
       end
       hash
     end
@@ -48,13 +49,14 @@ class BuildingGridTranslator
       field: column,
       resizable: true
     }
-    options[:headerName] = 'Actions' if column == 'id'
+    options[:headerName] = 'Actions' if column == 'view'
     options[:pinned] = 'left' if %w[id street_address].include?(column)
-    options[:cellRenderer] = 'actionCellRenderer' if column == 'id'
+    options[:pinned] = 'right' if column == 'view'
+    options[:cellRenderer] = 'actionCellRenderer' if column == 'view'
     options[:cellRenderer] = 'nameCellRenderer' if column == 'street_address'
     options[:cellRenderer] = 'htmlCellRenderer' if column == 'description'
     options[:width] = 200 if %w[name street_address description annotations].include?(column)
-    options[:sortable] = true unless column == 'id'
+    options[:sortable] = true unless column == 'view'
     options
   end
 end

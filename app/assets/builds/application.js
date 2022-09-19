@@ -46918,9 +46918,9 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   ActionCellRenderer.prototype.init = function(params) {
     this.eGui = document.createElement("div");
     const value = params.value || params.getValue();
-    if (value && value.id) {
-      const link = document.location.toString().split("?")[0] + "/" + value.id;
-      this.eGui.innerHTML = `<a href="${link}" target="_blank">View</a>`;
+    if (value) {
+      const link = document.location.toString().split("?")[0] + "/" + (value.id || value);
+      this.eGui.innerHTML = `<a href="${link}">View</a>`;
     }
   };
   ActionCellRenderer.prototype.getGui = function() {

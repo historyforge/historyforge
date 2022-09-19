@@ -56,7 +56,7 @@ RSpec.configure do |config|
                                    clear_session_storage: true,
                                    clear_local_storage: true,
                                    capabilities: [Selenium::WebDriver::Chrome::Options.new(
-                                     args: %w[headless disable-gpu no-sandbox window-size=1024,768],
+                                     args: %w[headless disable-gpu no-sandbox window-size=1024,768]
                                      )]
   end
 

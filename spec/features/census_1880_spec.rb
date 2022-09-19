@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe '1880 US Census' do
-  scenario 'record life cycle' do
+  scenario 'record life cycle', :js do
     user = create(:census_taker)
     locality = create(:locality)
 
@@ -88,7 +88,6 @@ RSpec.describe '1880 US Census' do
 
     click_on 'View'
     expect(page).to have_content 'Squarepants III, Sponge Bob, Dr'
-
     click_on 'Edit'
     expect(page).to have_content 'Census Scope'
     expect(find_field('Last Name').value).to eq('Squarepants')
@@ -105,9 +104,9 @@ RSpec.describe '1880 US Census' do
     visit census1880_record_path(record)
 
     # Now review the record
-    expect(page).to have_css('.dropdown-item', text: 'Mark as Reviewed', visible: :hidden)
-    click_on 'Actions'
-    click_on 'Mark as Reviewed'
+    page.accept_confirm do
+      click_on 'Review'
+    end
     expect(page).to have_content "Reviewed by #{user.login} on"
   end
 end
