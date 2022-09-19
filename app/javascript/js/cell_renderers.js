@@ -45,9 +45,9 @@ CensusLinkCellRenderer.prototype.init = function(params) {
   // create the cell
   const value = params.value || params.getValue()
   this.eGui = document.createElement('div')
-  if (value && value.id) {
-    const link = `/census/${value.year}/${value.id}`
-    this.eGui.innerHTML = '<a href="' + link + '" target="_blank">View</a>'
+  if (value) {
+    const html = value.id.map(id => `<a href="/census/${value.year}/${id}" target="_blank">View</a>`)
+    this.eGui.innerHTML = html.join(" | ")
   }
 }
 

@@ -18,7 +18,10 @@ class PersonGridTranslator
       columns.each do |column|
         value = record.public_send(column)
         value = { name: value, reviewed: record.reviewed? } if column == 'name'
-        value = { year: column[-4...].to_i, id: value } if column =~ /census\d{4}/
+        if column =~ /census\d{4}/
+          value = value.compact
+          value = value.present? ? { year: column[-4...].to_i, id: value } : nil
+        end
         hash[column] = value
         hash['view'] = { id: record.id } if column == 'name'
       rescue NoMethodError

@@ -43,12 +43,13 @@ class PersonSearch < SearchQueryBuilder
 
   def add_census_record_links
     builder.select 'people.*'
+    builder.group 'people.id'
     CensusYears.each do |year|
       next unless f.include?("census#{year}")
 
       builder.left_outer_joins(:"census#{year}_record")
       table = CensusRecord.for_year(year).table_name
-      builder.select(builder.scoped.select_values, "#{table}.id AS census#{year}")
+      builder.select(builder.scoped.select_values, "array_agg(DISTINCT #{table}.id) AS census#{year}")
     end
   end
 
