@@ -150,11 +150,11 @@ class Person < ApplicationRecord
   end
 
   def estimate_birth_year
-    self.birth_year = estimated_birth_year if birth_year.blank? && is_birth_year_estimated? && census_records.present?
+    self.birth_year = estimated_birth_year if birth_year.blank? && census_records.present?
   end
 
   def estimate_pob
-    return if pob.present? || !is_pob_estimated? || census_records.blank?
+    return if pob.present? || census_records.blank?
 
     pobs = census_records.map(&:pob).compact.uniq
     self.pob = pobs.first if pobs.present?
