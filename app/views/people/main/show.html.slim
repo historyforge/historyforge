@@ -27,7 +27,9 @@
         = "#{Translator.option(:sex, @person.sex)} " if @person.sex
         - if @person.birth_year
           = "born in #{@person.birth_year}"
-
+  - if @person.description.present?
+    .list-group-item
+      = simple_format @person.description
 .card.mb-3
   .card-header Census Records
   = table do

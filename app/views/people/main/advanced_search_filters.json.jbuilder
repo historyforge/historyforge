@@ -45,5 +45,6 @@ json.filters do
 
   AttributeBuilder.enumeration json, Person, :sex
 
+  AttributeBuilder.text   json, :description
 
 end

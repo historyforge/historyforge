@@ -1696,7 +1696,8 @@ CREATE TABLE public.people (
     is_birth_year_estimated boolean DEFAULT true,
     pob character varying,
     is_pob_estimated boolean DEFAULT true,
-    notes text
+    notes text,
+    description text
 );
 
 
@@ -4319,6 +4320,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20220806212151'),
 ('20220806213952'),
 ('20220905173922'),
+('20220925204437'),
 ('4'),
 ('8'),
 ('9');

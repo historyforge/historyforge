@@ -39,6 +39,13 @@
 
   .card.mb-2
     .card-header
+      | Public Description
+    .card-body
+      = form.input :description, input_html: { rows: 12 }
+      p.text-muted Notes field visible to all users.
+
+  .card.mb-2
+    .card-header
       | Additional Notes
     .card-body
       = form.input :notes, input_html: { rows: 12 }

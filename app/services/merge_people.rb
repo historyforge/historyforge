@@ -7,6 +7,7 @@ class MergePeople
   end
 
   def perform
+    @target.description = [@target.description, @source.description].compact.join("\n\n")
     merge_census_records
     merge_photographs
     @source.reset_census_records
