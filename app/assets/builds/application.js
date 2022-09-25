@@ -52841,7 +52841,12 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       disableDefaultUI: true,
       gestureHandling: "cooperative",
       zoomControl: true,
-      mapTypeControl: false,
+      mapTypeControl: true,
+      mapTypeControlOptions: {
+        mapTypeIds: [google4.maps.MapTypeId.ROADMAP, google4.maps.MapTypeId.SATELLITE],
+        style: google4.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+        position: google4.maps.ControlPosition.BOTTOM_LEFT
+      },
       streetViewControl: true,
       fullscreenControl: true,
       styles: [{ featureType: "poi", elementType: "labels", stylers: [{ visibility: "off" }] }]

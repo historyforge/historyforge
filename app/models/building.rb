@@ -276,7 +276,7 @@ class Building < ApplicationRecord
 
   CensusYears.each do |year|
     define_method("families_in_#{year}") do
-      send("census_#{year}_records").group_by(&:family_id)
+      send("census_#{year}_records").in_census_order.group_by(&:family_id)
     end
   end
 

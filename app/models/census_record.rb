@@ -81,6 +81,7 @@ class CensusRecord < ApplicationRecord
 
   scope :unhoused, -> { where(building_id: nil) }
   scope :unmatched, -> { where(person_id: nil) }
+  scope :in_census_order, -> { order :ward, :enum_dist, :page_number, :page_side, :line_number }
 
   def self.for_year(year)
     "Census#{year}Record".constantize

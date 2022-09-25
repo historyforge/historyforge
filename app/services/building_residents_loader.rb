@@ -24,6 +24,7 @@ class BuildingResidentsLoader
     records = building.send("census_#{year}_records")
     records = records.reviewed if reviewed_only
     records = records.ransack(filters).result if filters
+    records = records.in_census_order
     records
   end
 

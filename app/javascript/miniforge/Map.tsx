@@ -12,7 +12,12 @@ function mapOptions() {
     disableDefaultUI: true,
     gestureHandling: 'cooperative',
     zoomControl: true,
-    mapTypeControl: false,
+    mapTypeControl: true,
+    mapTypeControlOptions: {
+      mapTypeIds: [google.maps.MapTypeId.ROADMAP, google.maps.MapTypeId.SATELLITE],
+      style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+      position: google.maps.ControlPosition.BOTTOM_LEFT
+    },
     streetViewControl: true,
     fullscreenControl: true,
     styles: [{ featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'off' }] }]
