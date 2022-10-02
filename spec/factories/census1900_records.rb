@@ -15,7 +15,7 @@ FactoryBot.define do
     relation_to_head { 'Head' }
     page_number { 1 }
     page_side { 'A' }
-    line_number { 1 }
+    sequence(:line_number) { |n| n + 1 }
     enum_dist { 1 }
     locality
     dwelling_number { 1 }
