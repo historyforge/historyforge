@@ -129,7 +129,8 @@ class CensusRecord < ApplicationRecord
   def duplicate_census_scope?
     dupe_scope = self.class
     dupe_scope = dupe_scope.where.not(id:) if persisted?
-    dupe = dupe_scope.where(ward:,
+    dupe = dupe_scope.where(locality_id:,
+                            ward:,
                             enum_dist:,
                             page_number:,
                             page_side:,
@@ -140,6 +141,7 @@ class CensusRecord < ApplicationRecord
     dupe_scope = self.class
     dupe_scope = dupe_scope.where.not(id:) if persisted?
     dupe_scope.ransack(
+      locality_id_eq: locality_id,
       street_house_number_eq: street_house_number,
       street_name_eq: street_name,
       last_name_eq: last_name,
