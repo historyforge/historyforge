@@ -90,4 +90,6 @@ Rails.application.configure do
     Bullet.rails_logger  = false
     Bullet.add_footer    = true
   end
+
+  config.hosts << 'local.test'
 end

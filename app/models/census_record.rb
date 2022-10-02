@@ -119,19 +119,17 @@ class CensusRecord < ApplicationRecord
   end
 
   def dont_add_same_person
-    return if persisted? || !likely_matches? || last_name.blank?
+    dupe_scope = self.class
+    dupe_scope = dupe_scope.where.not(id: id) if persisted?
+    dupe = dupe_scope.find_by ward: ward,
+                              enum_dist: enum_dist,
+                              page_number: page_number,
+                              page_side: page_side,
+                              line_number: line_number
 
-    errors.add :last_name, 'A person with the same street number, street name, last name, and first name is already in the system.'
-  end
+    return if dupe.blank?
 
-  def likely_matches?
-    self.class.ransack(
-      street_house_number_eq: street_house_number,
-      street_name_eq: street_name,
-      last_name_eq: last_name,
-      first_name_eq: first_name,
-      age_eq: age || 0
-    ).result.count.positive?
+    errors.add :base, 'Duplicate entry for this census sheet and line number.'
   end
 
   def street_address
