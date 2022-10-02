@@ -30,7 +30,10 @@ require 'rails_helper'
 RSpec.describe Person do
   describe '#estimated_birth_year' do
     context 'with a birth year' do
-      before { subject.birth_year = 1872 }
+      before do
+        subject.birth_year = 1872
+        subject.is_birth_year_estimated = false
+      end
       it 'returns the birth year' do
         expect(subject.estimated_birth_year).to eq(subject.birth_year)
       end
@@ -62,7 +65,10 @@ RSpec.describe Person do
   end
   describe '#age_in_year' do
     context 'with a birth year' do
-      before { subject.birth_year = 1872 }
+      before do
+        subject.birth_year = 1872
+        subject.is_birth_year_estimated = false
+      end
       it 'calculates the age based on the birth year' do
         expect(subject.age_in_year(1900)).to eq(28)
       end
