@@ -6,6 +6,7 @@ class BitmaskModel
   attr_accessor :id, :name
 
   class_attribute :data
+  class_attribute :descriptions
 
   def self.for_select
     all.map { |item| [item.name, item.id] }
@@ -49,5 +50,9 @@ class BitmaskModel
   def initialize(id:, name:)
     @name = name
     @id = id
+  end
+
+  def description
+    self.class.descriptions && self.class.descriptions[id - 1]
   end
 end

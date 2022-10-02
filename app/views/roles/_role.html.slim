@@ -1,0 +1,11 @@
+li.list-group-item
+  .row
+    .col-3
+      = role.name
+    .col-6
+      = role.description
+    .col-3
+      - if @user.has_role?(role.name)
+        = link_to "remove role", user_role_url(:id => role.id, :user_id => @user.id), :method => :delete
+      - else
+        = link_to "assign role", user_role_url(:id => role.id, :user_id => @user.id), :method => :put
