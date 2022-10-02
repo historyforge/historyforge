@@ -119,17 +119,33 @@ class CensusRecord < ApplicationRecord
   end
 
   def dont_add_same_person
+    if duplicate_census_scope?
+      errors.add :base, 'A record already exists for this census sheet, side, and line number.'
+    elsif last_name.present? && likely_matches?
+      errors.add :base, 'A person with the same street number, street name, last name, and first name already exists.'
+    end
+  end
+
+  def duplicate_census_scope?
     dupe_scope = self.class
-    dupe_scope = dupe_scope.where.not(id: id) if persisted?
-    dupe = dupe_scope.find_by ward: ward,
-                              enum_dist: enum_dist,
-                              page_number: page_number,
-                              page_side: page_side,
-                              line_number: line_number
+    dupe_scope = dupe_scope.where.not(id:) if persisted?
+    dupe = dupe_scope.where(ward:,
+                            enum_dist:,
+                            page_number:,
+                            page_side:,
+                            line_number:).count.positive?
+  end
 
-    return if dupe.blank?
-
-    errors.add :base, 'Duplicate entry for this census sheet and line number.'
+  def likely_matches?
+    dupe_scope = self.class
+    dupe_scope = dupe_scope.where.not(id:) if persisted?
+    dupe_scope.ransack(
+      street_house_number_eq: street_house_number,
+      street_name_eq: street_name,
+      last_name_eq: last_name,
+      first_name_eq: first_name,
+      age_eq: age || 0
+    ).result.count.positive?
   end
 
   def street_address
