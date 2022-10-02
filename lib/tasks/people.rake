@@ -24,14 +24,7 @@ namespace :people do
       CensusRecord.for_year(year).find_each &:save
     end
   end
-  task age: :environment do
-    Person.where(birth_year: nil).each do |person|
-      person.estimate_birth_year
-      person.save
-    end
-    Person.where(pob: nil).each do |person|
-      person.estimate_pob
-      person.save
-    end
+  task age_and_race: :environment do
+    Person.find_each &:save
   end
 end

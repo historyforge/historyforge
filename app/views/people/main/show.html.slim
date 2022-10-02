@@ -2,7 +2,7 @@
 = render 'shared/flag_resolution', item: @person
 = render 'merge_modal'
 - content_for :pills do
-  - if can_people?
+  - if can_people? || can?(:read, Person)
     = link_to 'View All', people_path, class: 'btn btn-light'
   - if can?(:create, Flag)
     = render 'shared/flag_it', item: @person, item_class: 'btn btn-light'
@@ -23,8 +23,8 @@
     .row
       .col-6 About
       .col-6
-        = "#{Translator.option(:race, @person.race)} " if @person.race
-        = "#{Translator.option(:sex, @person.sex)} " if @person.sex
+        = "#{Translator.option(:race, @person.race)} " if @person.race.present? && @person.race != 'on'
+        = "#{Translator.option(:sex, @person.sex)} " if @person.sex.present? && @person.sex != 'on'
         - if @person.birth_year
           = "born in #{@person.birth_year}"
   - if @person.description.present?

@@ -37,8 +37,8 @@ class Person < ApplicationRecord
 
   attr_accessor :match_score
 
-  define_enumeration :sex, %w{M F}
-  define_enumeration :race, %w{W B M}
+  define_enumeration :sex, %w[M F]
+  define_enumeration :race, %w[W B M Mex Neg Ind Chi Jap Fil Hin Kor]
 
   CensusYears.each do |year|
     has_one :"census#{year}_record", dependent: :nullify, class_name: "Census#{year}Record"
@@ -48,6 +48,10 @@ class Person < ApplicationRecord
 
   validates :last_name, presence: true
 
+  before_validation do
+    self.sex = nil if sex.blank? || sex == 'on'
+    self.race = nil if race.blank? || race == 'on'
+  end
   before_save :estimate_birth_year
   before_save :estimate_pob
 
@@ -141,23 +145,25 @@ class Person < ApplicationRecord
   end
 
   def estimated_birth_year
-    return birth_year if birth_year.present?
+    return if census_records.blank?
 
-    records = census_records.select { |r| r.age.present? }
-    return if records.blank?
-
-    records.map { |r| r.year - r.age }.reduce(&:+) / records.size
+    census_records.map { |r| r.year - (r.age || 0) }.reduce(&:+) / census_records.length
   end
 
   def estimate_birth_year
-    self.birth_year = estimated_birth_year if birth_year.blank? && census_records.present?
+    return unless is_birth_year_estimated?
+
+    self.birth_year = estimated_birth_year
   end
 
   def estimate_pob
-    return if pob.present? || census_records.blank?
+    return unless is_pob_estimated?
 
-    pobs = census_records.map(&:pob).compact.uniq
-    self.pob = pobs.first if pobs.present?
+    self.pob = estimated_pob
+  end
+
+  def estimated_pob
+    census_records.map(&:pob).compact.uniq.first
   end
 
   def unattached?

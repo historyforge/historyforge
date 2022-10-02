@@ -10,8 +10,7 @@ class MergePeople
     @target.description = [@target.description, @source.description].compact.join("\n\n")
     merge_census_records
     merge_photographs
-    @source.reset_census_records
-    @source.destroy
+    @source.reload.destroy
     @target.reload
   end
 

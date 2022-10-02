@@ -19,7 +19,7 @@
     .card-body
       .row
         .col-6
-          = form.input :race, as: :radio_buttons, collection: Census1900Record.race_choices, coded: true
+          = form.input :race, as: :radio_buttons, collection: Person.race_choices, coded: true
         .col-6
           = form.input :sex, as: :radio_buttons, collection: Census1900Record.sex_choices, coded: true
 
