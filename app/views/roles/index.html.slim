@@ -1,0 +1,15 @@
+.float-right
+  = link_to 'Edit User', edit_user_path(@user), class: 'btn btn-sm btn-light'
+  = link_to 'View User', user_path(@user), class: 'btn btn-sm btn-light'
+
+h2 Roles for #{@user.login.capitalize}
+
+h3 Roles assigned:
+ul.list-group
+  - @user.roles.each do |role|
+    = render 'role', role: role
+
+h3 Roles available:
+ul.list-group
+  - (@all_roles - @user.roles).each do |role|
+    = render 'role', role: role
