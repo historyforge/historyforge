@@ -19,6 +19,10 @@ class BuildingDecorator < ApplicationDecorator
     @addresses ||= object.addresses.sort
   end
 
+  def historical_addresses
+    object.addresses.reject(&:is_primary).map(&:address).join(', ')
+  end
+
   def street_address
     object.primary_street_address
   end

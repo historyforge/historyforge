@@ -54,9 +54,9 @@ class BuildingGridTranslator
     options[:pinned] = 'right' if column == 'view'
     options[:cellRenderer] = 'actionCellRenderer' if column == 'view'
     options[:cellRenderer] = 'nameCellRenderer' if column == 'street_address'
-    options[:cellRenderer] = 'htmlCellRenderer' if column == 'description'
-    options[:width] = 200 if %w[name street_address description annotations].include?(column)
-    options[:sortable] = true unless column == 'view'
+    options[:cellRenderer] = 'htmlCellRenderer' if column == 'description' || column == 'historical_addresses'
+    options[:width] = 200 if %w[name street_address historical_addresses description annotations].include?(column)
+    options[:sortable] = true unless %w{view historical_addresses description notes annotations}.include?(column)
     options
   end
 end

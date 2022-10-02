@@ -75,6 +75,7 @@ class BuildingSearch < SearchQueryBuilder
        description annotations stories block_number
        building_type lining frame
        architects notes latitude longitude name
+       historical_addresses
     ]
   end
 
@@ -94,7 +95,7 @@ class BuildingSearch < SearchQueryBuilder
 
   def prepare_expanded_search
     builder.preload(:locality) if f.include?('locality')
-    builder.preload(:addresses) if f.include?('street_address')
+    builder.preload(:addresses) if f.include?('street_address') || f.include?('historical_addresses')
     builder.preload(:architects) if f.include?('architects')
     builder.preload(:rich_text_description) if f.include?('description')
     add_order_clause
