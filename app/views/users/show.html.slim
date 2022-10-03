@@ -6,13 +6,10 @@
   - if can?(:update, @user) && @user.invitation_accepted_at.blank? && !@user.enabled?
     = link_to 'Resend Invite', resend_invitation_user_path(@user), data: { method: :put }, class: 'btn btn-sm btn-light'
 
-.card.card-default
-  .card-body
-    dl
-      dt Created on
-      dd= @user.created_at.to_s(:long)
-      - if @user.group.present?
-        dt Group
-        dd= @user.group.name
-    = render 'users/admin_tools', object: @user
+ul.list-group
+  li.list-group-item
+    .row
+      .col-4 Created on
+      .col-8= @user.created_at.to_s(:long)
+  = render 'users/admin_tools', object: @user
 
