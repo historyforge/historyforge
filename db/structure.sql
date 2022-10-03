@@ -3363,7 +3363,7 @@ CREATE INDEX index_census_1910_records_on_locality_id ON public.census_1910_reco
 -- Name: index_census_1910_records_on_person_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_census_1910_records_on_person_id ON public.census_1910_records USING btree (person_id);
+CREATE INDEX index_census_1910_records_on_person_id ON public.census_1910_records USING btree (person_id);
 
 
 --
@@ -4385,6 +4385,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20220925204437'),
 ('20221003000851'),
 ('20221003012823'),
+('20221003014844'),
 ('4'),
 ('8'),
 ('9');
