@@ -2161,7 +2161,6 @@ ALTER SEQUENCE public.terms_id_seq OWNED BY public.terms.id;
 CREATE TABLE public.user_groups (
     id bigint NOT NULL,
     name character varying,
-    roles_mask integer,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
 );
@@ -4385,6 +4384,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20220905173922'),
 ('20220925204437'),
 ('20221003000851'),
+('20221003012823'),
 ('4'),
 ('8'),
 ('9');
