@@ -132,12 +132,12 @@ div.mb-3
                   | Age: #{match.age_in_year(@model.year)} |&nbsp; #{match.relation_to_head} |&nbsp; #{match.profession}
                 p.mb-0= match.address
 
-- if can?(:review, CensusRecord)
-  .alert.alert-info
-    = "Entered by #{@record.created_by&.name || 'a kind soul'} on #{@record.created_at.to_formatted_s(:long)}"
-  - if @record.reviewed?
-    .alert.alert-info
-      = "Reviewed by #{@record.reviewed_by&.name || 'a kind soul'} on #{@record.reviewed_at.to_formatted_s(:long)}"
+    - if can?(:review, CensusRecord)
+      .alert.alert-info
+        = "Entered by #{@record.created_by&.name || 'a kind soul'} on #{@record.created_at.to_formatted_s(:long)}"
+      - if @record.reviewed?
+        .alert.alert-info
+          = "Reviewed by #{@record.reviewed_by&.name || 'a kind soul'} on #{@record.reviewed_at.to_formatted_s(:long)}"
 
-= render 'shared/change_history', item: @model
+    = render 'shared/change_history', item: @model
 

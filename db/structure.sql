@@ -2155,6 +2155,38 @@ ALTER SEQUENCE public.terms_id_seq OWNED BY public.terms.id;
 
 
 --
+-- Name: user_groups; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.user_groups (
+    id bigint NOT NULL,
+    name character varying,
+    roles_mask integer,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: user_groups_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.user_groups_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: user_groups_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.user_groups_id_seq OWNED BY public.user_groups.id;
+
+
+--
 -- Name: users; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2192,7 +2224,8 @@ CREATE TABLE public.users (
     invited_by_type character varying,
     invited_by_id bigint,
     invitations_count integer DEFAULT 0,
-    roles_mask integer
+    roles_mask integer,
+    user_group_id bigint
 );
 
 
@@ -2592,6 +2625,13 @@ ALTER TABLE ONLY public.terms ALTER COLUMN id SET DEFAULT nextval('public.terms_
 
 
 --
+-- Name: user_groups id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_groups ALTER COLUMN id SET DEFAULT nextval('public.user_groups_id_seq'::regclass);
+
+
+--
 -- Name: users id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -2978,6 +3018,14 @@ ALTER TABLE ONLY public.street_conversions
 
 ALTER TABLE ONLY public.terms
     ADD CONSTRAINT terms_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: user_groups user_groups_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_groups
+    ADD CONSTRAINT user_groups_pkey PRIMARY KEY (id);
 
 
 --
@@ -3600,6 +3648,13 @@ CREATE INDEX index_users_on_invited_by_type_and_invited_by_id ON public.users US
 
 
 --
+-- Name: index_users_on_user_group_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_users_on_user_group_id ON public.users USING btree (user_group_id);
+
+
+--
 -- Name: index_versions_on_item_type_and_item_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3769,6 +3824,14 @@ ALTER TABLE ONLY public.census_1910_records
 
 ALTER TABLE ONLY public.census_1920_records
     ADD CONSTRAINT fk_rails_5075b8d067 FOREIGN KEY (reviewed_by_id) REFERENCES public.users(id);
+
+
+--
+-- Name: users fk_rails_5241793c6a; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT fk_rails_5241793c6a FOREIGN KEY (user_group_id) REFERENCES public.user_groups(id);
 
 
 --
@@ -4321,6 +4384,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20220806213952'),
 ('20220905173922'),
 ('20220925204437'),
+('20221003000851'),
 ('4'),
 ('8'),
 ('9');

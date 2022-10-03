@@ -3,38 +3,33 @@
   .card.mb-3
     .card-header
       | Change History
-    table.table.table-condensed.table-bordered
-      thead
-        tr
-          th Metadata
-          th Changes
-      tbody
-        - item.change_history.each do |version|
-          tr
-            td
-              = version.created_at.to_s
-              br
-              = users[version.whodunnit] || 'Automated Update'
-              br
-              = version.event.titleize
-            td
-              .row
-                .col-4
-                  strong Field
-                - if version.event == 'create'
-                  .col-8
-                    strong Value
-                - else
-                  .col-4
-                    strong From
-                  .col-4
-                    strong To
-              - version.changeset.each do |key, changes|
-                - next if key == 'updated_at'
-                .row
-                  .col-4= translated_label(item.class, key)
-                  - if version.event == 'create'
-                    .col-8= changes[1].presence || 'blank'
-                  - else
-                    .col-4= changes[0].presence || 'blank'
-                    .col-4= changes[1].presence || 'blank'
+    ul.list-group
+      - item.change_history.each do |version|
+        li.list-group-item
+          h5
+            = users[version.whodunnit] || 'Automated Update'
+            | &nbsp;on &nbsp;
+            = version.created_at.strftime('%b %d %Y')
+          .row
+            - if version.event == 'create'
+              .col-6
+                strong Field
+              .col-6
+                strong Value
+            - else
+              .col-4
+                strong Field
+              .col-4
+                strong From
+              .col-4
+                strong To
+          - version.changeset.each do |key, changes|
+            - next if key == 'updated_at'
+            .row
+              - if version.event == 'create'
+                .col-6= translated_label(item.class, key)
+                .col-6= changes[1].presence || 'blank'
+              - else
+                .col-4= translated_label(item.class, key)
+                .col-4= changes[0].presence || 'blank'
+                .col-4= changes[1].presence || 'blank'

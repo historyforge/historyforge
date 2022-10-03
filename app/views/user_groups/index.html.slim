@@ -1,0 +1,24 @@
+- content_for :pills do
+  = link_to 'Add New', { action: :new }, class: 'btn btn-light btn-xs'
+- set_page_title "User Groups"
+
+- if @user_groups.blank?
+  p.alert.alert-info No records found.
+- else
+  table.table.table-condensed.table-striped
+    thead
+      tr
+        th Name
+        th Users
+        th
+    tbody
+      - @user_groups.each do |record|
+        tr.draggable
+          td= record.name
+          td
+            = number_with_delimiter record.users.count
+            | &nbsp;
+            = link_to 'view', users_path(q: { user_group_id_eq: record.id })
+          td style="text-align:right;white-space:nowrap"
+            = link_to 'Edit', [:edit, record], class: 'btn btn-xs btn-light'
+

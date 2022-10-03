@@ -133,6 +133,8 @@ Rails.application.routes.draw do
     resources :roles
   end
 
+  resources :user_groups
+
   resources :vocabularies, only: :index do
     resources :terms do
       get 'peeps/:year' => 'terms#peeps'

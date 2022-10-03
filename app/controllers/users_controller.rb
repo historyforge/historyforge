@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class UsersController < ApplicationController
+  include RestoreSearch
+
   layout 'application'
 
   before_action :authenticate_user!,
@@ -12,7 +14,7 @@ class UsersController < ApplicationController
   rescue_from ActiveRecord::RecordNotFound, with: :bad_record
 
   def index
-    @q = User.ransack(ransack_params)
+    @q = User.includes(:group).ransack(ransack_params)
     @users = @q.result.page(params[:page]).order('email asc')
   end
 
@@ -51,6 +53,7 @@ class UsersController < ApplicationController
       flash[:notice] = 'User updated'
       redirect_to user_path(@user)
     else
+      flash[:errors] = "Unable to save the user record. #{@user.errors.full_messages.join('. ')}"
       @html_title = 'Edit User Settings'
       render action: 'edit'
     end
@@ -146,7 +149,7 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.require(:user).permit(:login, :email, :password, :password_confirmation)
+    params.require(:user).permit(:login, :email, :password, :password_confirmation, :user_group_id)
   end
 
   def ransack_params

@@ -11,5 +11,8 @@
     dl
       dt Created on
       dd= @user.created_at.to_s(:long)
+      - if @user.group.present?
+        dt Group
+        dd= @user.group.name
     = render 'users/admin_tools', object: @user
 

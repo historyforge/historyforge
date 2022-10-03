@@ -2,6 +2,10 @@ tr
   td= link_to(( h user.login), user_path(user.id))
   - if admin_authorized?
     td= user.email
+  td
+    = user.group&.name || 'None'
+    | &nbsp; | &nbsp;
+    = link_to 'edit', edit_user_path(user)
     td
       = user.enabled ? 'yes' : 'no'
       | &nbsp;
@@ -10,7 +14,7 @@ tr
           = link_to('disable', disable_user_path(user.id), method: :put)
         - else
           = link_to('enable', enable_user_path(user.id), :method => :put)
-    td
+  td
       span href="#" rel="tooltip" data-placement="bottom" title=user.roles.map(&:name).to_sentence
         = pluralize user.roles.length, 'role'
       | &nbsp; | &nbsp;

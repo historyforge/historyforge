@@ -73,6 +73,10 @@ en:
         building_type: 'Building type'
         building_type_ids: 'Building type'
         street_address: 'Street Address'
+      person:
+        id: 'ID'
+        birth_year: 'Birth Year'
+        pob: 'Place of Birth'
     hints:
       building:
         address: 'Address'

@@ -1,6 +1,10 @@
 = search_form_for @q, builder: SimpleForm::FormBuilder do |form|
   = form.input :login_cont, label: 'Username'
   = form.input :email_cont, label: 'Email'
+  = form.input :user_group_id_eq, label: 'Group', collection: UserGroup.order(:name), include_blank: true
   = form.input :roles_id_eq, label: 'Role', collection: Role.for_select, include_blank: true
   = form.input :enabled_true, label: 'Enabled?', collection: [['Enabled', 1], ['Disabled', 0]], include_blank: true
   = form.submit 'Search', class: 'btn btn-primary'
+  - if params[:q].present?
+    = link_to 'Reset', users_path(reset: true), class: 'btn btn-light'
+

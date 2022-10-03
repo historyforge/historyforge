@@ -2,6 +2,10 @@
   dl
     dt Email
     dd= @user.email
+    dt Last Signed In
+    dd= @user.last_sign_in_at&.to_s(:long) || 'Never'
+    dt Current Sign In
+    dd= @user.current_sign_in_at&.to_s(:long) || 'Never'
     dt Enabled?
     dd= @user.enabled ? 'Yes' : 'No'
     dt= link_to('Delete User', user_path(@user.id), :method => :delete, :data => {:confirm => 'Are you sure'}, class: 'btn btn-light' )
