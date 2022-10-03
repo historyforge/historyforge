@@ -3,10 +3,9 @@
 class FlagsController < ApplicationController
   def index
     @flags = Flag.unresolved.order('created_at asc').preload(:flaggable, :flagged_by)
-  end
-
-  def resolved
-    # TODO: some tools for searching old flags
+    @flags.each do |flag|
+      flag.destroy unless flag.flaggable
+    end
   end
 
   def new
