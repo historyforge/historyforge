@@ -3,6 +3,7 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
+  before_action :enforce_base_url
   around_action :load_settings
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :set_paper_trail_whodunnit
@@ -70,6 +71,15 @@ class ApplicationController < ActionController::Base
   end
 
   protected
+
+  # Temporary while we migrate www.historyforge.net and historyforge.net to the historyforge.github.io website.
+  # Let's wean Ithacans from using www for tompkins.historyforge.net. Using soft redirect so we don't accidentally
+  # clobber the home page.
+  def enforce_base_url
+    return if ENV['BASE_URL'].blank? || ENV['BASE_URL'].start_with?(request.host)
+
+    redirect_to "#{request.protocol}#{ENV['BASE_URL']}#{request.fullpath}", status: 302, allow_other_host: true
+  end
 
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit :sign_up, keys: %i[login description email password password_confirmation]
