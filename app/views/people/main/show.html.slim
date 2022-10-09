@@ -87,20 +87,16 @@
                   = hidden_field_tag 'context', 'person'
                   = form.submit 'Match!', class: 'btn btn-sm btn-secondary'
 
-
-/- photos = can?(:review, Photo) ? @building.photos : @building.photos.reviewed
-- photos = @person.photos
-/ - if photos.present?
 .card.mb-1
   .card-header
     - if can?(:create, Photograph)
       = link_to 'Upload', [:new, @person, :photograph], class: 'btn btn-sm btn-light float-right'
     | Photos
   .card-body
-    - if photos.blank?
+    - if @person.photos.blank?
       p.lead No photos have been uploaded yet!
     .row
-      - photos.each do |photo|
+      - @person.photos.each do |photo|
         .person-photo.col-sm-4 data-href=person_photograph_path(@person, photo)
           = picture_tag photo: photo, style: 'quarter', img_class: 'img-thumbnail'
           = simple_format photo.full_caption

@@ -191,12 +191,11 @@ class CensusRecord < ApplicationRecord
   end
 
   def generate_person_record
-    person = Person.new
+    person = Person.new "census#{year}_record" => self
     %i[name_prefix name_suffix first_name middle_name last_name sex race].each do |attr|
       person[attr] = self[attr]
     end
     person.save
-    update_column :person_id, person.id
     reload
     person
   end
