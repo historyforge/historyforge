@@ -165,6 +165,7 @@ class CensusRecord < ApplicationRecord
   def fellows
     options = {
       locality_id_eq: locality_id,
+      enum_dist_eq: enum_dist,
       family_id_eq: family_id,
       page_number_gteq: page_number - 1,
       page_number_lteq: page_number + 1
