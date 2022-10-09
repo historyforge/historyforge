@@ -146,9 +146,13 @@ class Person < ApplicationRecord
 
   def estimated_birth_year
     return birth_year unless is_birth_year_estimated?
-    return if census_records.blank?
 
-    census_records.map { |r| r.year - (r.age || 0) }.reduce(&:+) / census_records.length
+    aged_records = census_records.reject { |r| r.age && r.age > 120 }
+    return if aged_records.blank?
+
+    aged_records
+      .map { |r| r.year - (r.age || 0) }
+      .reduce(&:+) / (census_records.length || 1)
   end
 
   def estimate_birth_year
