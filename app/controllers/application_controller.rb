@@ -76,7 +76,7 @@ class ApplicationController < ActionController::Base
   # Let's wean Ithacans from using www for tompkins.historyforge.net. Using soft redirect so we don't accidentally
   # clobber the home page.
   def enforce_base_url
-    return if ENV['BASE_URL'].blank? || ENV['BASE_URL'].start_with?(request.host)
+    return if Rails.env.test? || ENV['BASE_URL'].blank? || ENV['BASE_URL'].start_with?(request.host)
 
     redirect_to "#{request.protocol}#{ENV['BASE_URL']}#{request.fullpath}", status: 302, allow_other_host: true
   end
