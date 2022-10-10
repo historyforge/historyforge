@@ -5,6 +5,7 @@
 class BuildingsOnStreet
   def initialize(record)
     if record.is_a?(Building)
+      @is_building = true
       @building_id = record.id
       address = record.address
       @street_house_number = address.house_number
@@ -24,7 +25,7 @@ class BuildingsOnStreet
     end
   end
 
-  attr_reader :building_id, :street_house_number, :street_name, :street_prefix, :street_suffix, :locality_id, :year
+  attr_reader :building_id, :street_house_number, :street_name, :street_prefix, :street_suffix, :locality_id, :year, :is_building
 
   def perform
     buildings_on_street
@@ -42,10 +43,11 @@ class BuildingsOnStreet
                     .includes(:addresses)
                     .where(addresses: { name: street_name })
                     .order(Arel.sql("addresses.name, addresses.suffix, addresses.prefix, #{HOUSE_SQL}"))
+    items = items.where.not(id: building_id) if is_building
     items = items.where(addresses: { prefix: street_prefix }) if street_prefix.present?
     items = items.where(addresses: { suffix: street_suffix }) if street_suffix.present?
     items = add_block_filter(items) if street_house_number.present?
-    items = items.to_a.unshift(Building.find(building_id)) if building_id && !items.detect { |b| b.id == building_id }
+    items = items.to_a.unshift(Building.find(building_id)) if !is_building && building_id && !items.detect { |b| b.id == building_id }
 
     items.to_a.uniq.map { |item| Row.new item.id, item.street_address_for_building_id(year) }
   end

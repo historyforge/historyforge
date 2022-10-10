@@ -62,7 +62,6 @@ RSpec.describe 'buildings' do
     fill_in 'Building Name', with: 'The David Building'
     check 'Commercial'
     fill_in 'Year Built', with: '1949'
-    check 'Year earliest circa'
     fill_in 'City', with: 'Ithaca', name: 'building[city]'
     fill_in 'State', with: 'New York'
     fill_in 'Postal code', with: '14850'
