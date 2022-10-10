@@ -12,14 +12,19 @@
       .row
         .col-sm-6
           = form.input :year_earliest
-          = form.input :year_earliest_circa, inline_label: 'Circa: Exact building year unknown.'
+          = form.input :year_earliest_circa, inline_label: 'Circa: Exact building year unknown.', label: false
         .col-sm-6
           = form.input :year_latest
-          = form.input :year_latest_circa, inline_label: 'Circa: Exact demolition year unknown.'
+          = form.input :year_latest_circa, inline_label: 'Circa: Exact demolition year unknown.', label: false
 
   .card.mb-2
     .card-header Address
     .card-body
+      .row
+        .col-sm-6
+          = form.input :parent_id, as: :select, collection: BuildingsOnStreet.new(form.object).perform, input_html: { id: 'building_id' }
+        .col-sm-6
+          = form.input :hive_year
       .nested-form
         .list-group-item
           .row

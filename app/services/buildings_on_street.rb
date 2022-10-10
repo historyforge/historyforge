@@ -4,13 +4,24 @@
 # those buildings that start with the first number of the house number.
 class BuildingsOnStreet
   def initialize(record)
-    @building_id = record.building_id
-    @street_house_number = record.street_house_number
-    @street_prefix = record.street_prefix
-    @street_name = record.street_name
-    @street_suffix = record.street_suffix
-    @locality_id = record.locality_id
-    @year = record.year
+    if record.is_a?(Building)
+      @building_id = record.id
+      address = record.address
+      @street_house_number = address.house_number
+      @street_prefix = address.prefix
+      @street_name = address.name
+      @street_suffix = address.suffix
+      @locality_id = record.locality_id
+      @year = record.year_earliest || 1910
+    else
+      @building_id = record.building_id
+      @street_house_number = record.street_house_number
+      @street_prefix = record.street_prefix
+      @street_name = record.street_name
+      @street_suffix = record.street_suffix
+      @locality_id = record.locality_id
+      @year = record.year
+    end
   end
 
   attr_reader :building_id, :street_house_number, :street_name, :street_prefix, :street_suffix, :locality_id, :year

@@ -193,7 +193,7 @@ class Buildings::MainController < ApplicationController
                                      :lining_type_id, :frame_type_id, :locality_id,
                                      :lat, :lon, :city, :state, :postal_code, :architects_list,
                                      :investigate, :investigate_reason, :notes,
-                                     :annotations_legacy,
+                                     :annotations_legacy, :parent_id, :hive_year,
                                      { building_type_ids: [],
                                        photos_attributes: %i[_destroy id photo year_taken caption],
                                        addresses_attributes: %i[_destroy id is_primary house_number prefix name suffix city postal_code year],

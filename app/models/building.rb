@@ -63,6 +63,9 @@ class Building < ApplicationRecord
 
   belongs_to :locality, optional: true
 
+  belongs_to :parent, class_name: 'Building', optional: true
+  has_many :children, class_name: 'Building', foreign_key: :parent_id
+
   has_many :addresses, dependent: :destroy, autosave: true
   accepts_nested_attributes_for :addresses, allow_destroy: true, reject_if: proc { |p| p['name'].blank? }
 
@@ -75,8 +78,8 @@ class Building < ApplicationRecord
     has_many :"census_#{year}_records", dependent: :nullify, class_name: "Census#{year}Record"
   end
   has_and_belongs_to_many :photos, class_name: 'Photograph', dependent: :nullify
-  before_validation :check_locality
 
+  before_validation :check_locality
   validates :name, presence: true, length: { maximum: 255 }
   validates :year_earliest, :year_latest, numericality: { minimum: 1500, maximum: 2100, allow_nil: true }
   validate :validate_primary_address
@@ -276,7 +279,7 @@ class Building < ApplicationRecord
 
   CensusYears.each do |year|
     define_method("families_in_#{year}") do
-      send("census_#{year}_records").in_census_order.group_by(&:family_id)
+      BuildingResidentsLoader.new(building: self, year: year).call.group_by(&:family_id)
     end
   end
 

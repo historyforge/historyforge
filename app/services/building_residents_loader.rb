@@ -21,11 +21,15 @@ class BuildingResidentsLoader
   private
 
   def load_for_year(year)
-    records = building.send("census_#{year}_records")
+    records = building_for_year(year).send("census_#{year}_records")
     records = records.reviewed if reviewed_only
     records = records.ransack(filters).result if filters
     records = records.in_census_order
     records
+  end
+
+  def building_for_year(year)
+    building.parent_id && building.hive_year && year < building.hive_year ? building.parent : building
   end
 
   def prepare_filters(filters)

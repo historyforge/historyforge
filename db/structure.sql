@@ -375,7 +375,9 @@ CREATE TABLE public.buildings (
     investigate_reason character varying,
     notes text,
     locality_id bigint,
-    building_types_mask integer
+    building_types_mask integer,
+    parent_id bigint,
+    hive_year integer
 );
 
 
@@ -3206,6 +3208,13 @@ CREATE INDEX index_buildings_on_locality_id ON public.buildings USING btree (loc
 
 
 --
+-- Name: index_buildings_on_parent_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_buildings_on_parent_id ON public.buildings USING btree (parent_id);
+
+
+--
 -- Name: index_buildings_on_reviewed_by_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3703,6 +3712,14 @@ ALTER TABLE ONLY public.census_1940_records
 
 ALTER TABLE ONLY public.settings
     ADD CONSTRAINT fk_rails_10c1c8e1ec FOREIGN KEY (settings_group_id) REFERENCES public.settings_groups(id);
+
+
+--
+-- Name: buildings fk_rails_19450252ab; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.buildings
+    ADD CONSTRAINT fk_rails_19450252ab FOREIGN KEY (parent_id) REFERENCES public.buildings(id);
 
 
 --
@@ -4386,6 +4403,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20221003012823'),
 ('20221003014844'),
 ('20221009233017'),
+('20221010000542'),
 ('4'),
 ('8'),
 ('9');
