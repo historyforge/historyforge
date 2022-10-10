@@ -283,6 +283,18 @@ class Building < ApplicationRecord
     end
   end
 
+  def next_address
+    Address.new.tap do |address|
+      next if new_record? || addresses.blank?
+
+      last_address = addresses.last
+      address.name = last_address.name
+      address.prefix = last_address.prefix
+      address.suffix = last_address.suffix
+      address.city = last_address.city
+    end
+  end
+
   def frame_type
     ConstructionMaterial.find frame_type_id
   end

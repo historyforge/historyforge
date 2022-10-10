@@ -39,7 +39,7 @@
         .nested-form-items.list-group
           = form.fields_for :addresses do |form2|
             = render 'buildings/main/address', form: form2
-        p= add_child_link 'Add alternate, additional, or historical address for this building', form, :addresses, object: Address.new, partial: 'buildings/main/address'
+        p= add_child_link 'Add alternate, additional, or historical address for this building', form, :addresses, object: form.object.next_address, partial: 'buildings/main/address'
 
   .card.mb-2
     .card-header Geography
