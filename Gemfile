@@ -36,7 +36,7 @@ gem 'omniauth-rails_csrf_protection'
 gem 'paper_trail'
 gem 'pg'
 gem 'pg_search'
-gem 'puma'
+gem 'puma', '~>5' # pegged at 5 because of capybara issue - try again when capybara updates
 gem 'rails'
 gem 'ransack'
 gem 'recaptcha'
@@ -64,11 +64,11 @@ group :development do
 end
 
 group :development, :test do
+  gem 'bullet'
   gem 'capybara'
   gem 'factory_bot_rails'
   gem 'rspec-rails'
   gem 'webdrivers'
-  gem 'bullet'
 end
 
 group :test do
