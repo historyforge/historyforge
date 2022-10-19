@@ -177,7 +177,7 @@ class CensusRecord < ApplicationRecord
       options[:dwelling_number_eq] = dwelling_number
     end
 
-    self.class.where.not(id: id).ransack(options).result
+    self.class.where.not(id: id).in_census_order.ransack(options).result
   end
   memoize :fellows
 

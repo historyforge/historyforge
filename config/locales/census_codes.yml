@@ -115,7 +115,7 @@ en:
     no_work_reason:
       h: 'Home Housework'
       s: 'School'
-      u: 'Unable to Eork'
+      u: 'Unable to Work'
       o: 'Other'
       ot: 'Other'
     deduction_rate:
