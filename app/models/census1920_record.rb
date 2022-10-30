@@ -47,9 +47,9 @@
 #  mortgage             :string
 #  farm_or_house        :string
 #  notes                :text
-#  provisional          :boolean          default("false")
-#  foreign_born         :boolean          default("false")
-#  taker_error          :boolean          default("false")
+#  provisional          :boolean          default(FALSE)
+#  foreign_born         :boolean          default(FALSE)
+#  taker_error          :boolean          default(FALSE)
 #  person_id            :integer
 #  building_id          :integer
 #  created_at           :datetime
@@ -62,14 +62,14 @@
 #  apartment_number     :string
 #  age_months           :integer
 #  employment_code      :string
-#  locality_id          :integer
+#  locality_id          :bigint
 #  histid               :uuid
 #  enum_dist            :integer
 #  ward                 :integer
 #
 # Indexes
 #
-#  census_1920_records_name_trgm             (searchable_name)
+#  census_1920_records_name_trgm             (searchable_name) USING gist
 #  index_census_1920_records_on_building_id  (building_id)
 #  index_census_1920_records_on_locality_id  (locality_id)
 #  index_census_1920_records_on_person_id    (person_id)

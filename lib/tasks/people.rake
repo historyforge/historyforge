@@ -1,4 +1,9 @@
 namespace :people do
+  task reindex: :environment do
+    CensusYears.each do |year|
+      PgSearch::Multisearch.rebuild("Census#{year}Record".constantize)
+    end
+  end
   task cultivate: :environment do
     ActiveRecord::Base.connection.execute <<~SQL
       DELETE FROM people WHERE id IN(

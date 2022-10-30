@@ -49,12 +49,25 @@ class CensusRecord < ApplicationRecord
   define_enumeration :farm_or_house, %w[F H]
   define_enumeration :civil_war_vet, %w[UA UN CA CN]
 
-  multisearchable against: :name,
+  multisearchable against: :searchable_name,
                   using: {
                       tsearch: { prefix: true, any_word: true },
                       trigram: {}
                   },
                   if: :reviewed?
+
+  def self.rebuild_pg_search_documents
+    connection.execute <<~SQL.squish
+     INSERT INTO pg_search_documents (searchable_type, searchable_id, content, created_at, updated_at)
+       SELECT '#{name}' AS searchable_type,
+              id AS searchable_id,
+              CONCAT_WS(' ', searchable_name) AS content,
+              now() AS created_at,
+              now() AS updated_at
+       FROM #{table_name}
+       WHERE reviewed_at IS NOT NULL
+    SQL
+  end
 
   ransacker :name, formatter: proc { |v| v.mb_chars.downcase.to_s } do |parent|
     Arel::Nodes::NamedFunction.new('LOWER',

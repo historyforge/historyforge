@@ -14,12 +14,12 @@
 #  confirmation_token        :string
 #  confirmed_at              :datetime
 #  reset_password_token      :string
-#  enabled                   :boolean          default("true")
+#  enabled                   :boolean          default(TRUE)
 #  updated_by                :integer
 #  description               :text             default("")
 #  confirmation_sent_at      :datetime
 #  remember_created_at       :datetime
-#  sign_in_count             :integer          default("0"), not null
+#  sign_in_count             :integer          default(0), not null
 #  current_sign_in_at        :datetime
 #  last_sign_in_at           :datetime
 #  current_sign_in_ip        :string
@@ -33,15 +33,17 @@
 #  invitation_accepted_at    :datetime
 #  invitation_limit          :integer
 #  invited_by_type           :string
-#  invited_by_id             :integer
-#  invitations_count         :integer          default("0")
+#  invited_by_id             :bigint
+#  invitations_count         :integer          default(0)
 #  roles_mask                :integer
+#  user_group_id             :bigint
 #
 # Indexes
 #
 #  index_users_on_invitation_token                   (invitation_token) UNIQUE
 #  index_users_on_invited_by_id                      (invited_by_id)
 #  index_users_on_invited_by_type_and_invited_by_id  (invited_by_type,invited_by_id)
+#  index_users_on_user_group_id                      (user_group_id)
 #
 
 # frozen_string_literal: true

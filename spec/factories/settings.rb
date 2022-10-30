@@ -2,7 +2,7 @@
 #
 # Table name: settings
 #
-#  id                :integer          not null, primary key
+#  id                :bigint           not null, primary key
 #  key               :string
 #  name              :string
 #  hint              :string
@@ -11,7 +11,7 @@
 #  value             :text
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
-#  settings_group_id :integer
+#  settings_group_id :bigint
 #
 # Indexes
 #

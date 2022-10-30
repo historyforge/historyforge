@@ -2,7 +2,7 @@
 #
 # Table name: street_conversions
 #
-#  id                :integer          not null, primary key
+#  id                :bigint           not null, primary key
 #  from_prefix       :string
 #  to_prefix         :string
 #  from_name         :string

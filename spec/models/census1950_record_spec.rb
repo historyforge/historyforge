@@ -1,13 +1,13 @@
 # == Schema Information
 #
-# Table name: census1950_records
+# Table name: census_1950_records
 #
-#  id                     :integer          not null, primary key
-#  locality_id            :integer
-#  building_id            :integer
-#  person_id              :integer
-#  created_by_id          :integer
-#  reviewed_by_id         :integer
+#  id                     :bigint           not null, primary key
+#  locality_id            :bigint
+#  building_id            :bigint
+#  person_id              :bigint
+#  created_by_id          :bigint
+#  reviewed_by_id         :bigint
 #  reviewed_at            :datetime
 #  page_number            :integer
 #  page_side              :string(1)
@@ -41,7 +41,7 @@
 #  age                    :integer
 #  marital_status         :string
 #  pob                    :string
-#  foreign_born           :boolean          default("false")
+#  foreign_born           :boolean          default(FALSE)
 #  naturalized_alien      :string
 #  activity_last_week     :string
 #  worked_last_week       :boolean
@@ -63,7 +63,6 @@
 #  pob_mother             :string
 #  highest_grade          :string
 #  finished_grade         :boolean
-#  attended_school        :string
 #  weeks_seeking_work     :integer
 #  weeks_worked           :integer
 #  wages_or_salary_self   :string
@@ -84,21 +83,21 @@
 #  newlyweds              :boolean
 #  children_born          :integer
 #  notes                  :text
-#  provisional            :boolean          default("false")
-#  taker_error            :boolean          default("false")
+#  provisional            :boolean          default(FALSE)
+#  taker_error            :boolean          default(FALSE)
 #  histid                 :uuid
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #  birth_month            :integer
-#  attended_school_bool   :boolean          default("false")
+#  attended_school        :boolean          default(FALSE)
 #
 # Indexes
 #
-#  index_census1950_records_on_building_id     (building_id)
-#  index_census1950_records_on_created_by_id   (created_by_id)
-#  index_census1950_records_on_locality_id     (locality_id)
-#  index_census1950_records_on_person_id       (person_id)
-#  index_census1950_records_on_reviewed_by_id  (reviewed_by_id)
+#  index_census_1950_records_on_building_id     (building_id)
+#  index_census_1950_records_on_created_by_id   (created_by_id)
+#  index_census_1950_records_on_locality_id     (locality_id)
+#  index_census_1950_records_on_person_id       (person_id)
+#  index_census_1950_records_on_reviewed_by_id  (reviewed_by_id)
 #
 
 require 'rails_helper'

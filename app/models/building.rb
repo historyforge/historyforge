@@ -15,8 +15,8 @@
 #  lon                   :decimal(15, 10)
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
-#  year_earliest_circa   :boolean          default("false")
-#  year_latest_circa     :boolean          default("false")
+#  year_earliest_circa   :boolean          default(FALSE)
+#  year_latest_circa     :boolean          default(FALSE)
 #  address_house_number  :string
 #  address_street_prefix :string
 #  address_street_name   :string
@@ -29,11 +29,13 @@
 #  created_by_id         :integer
 #  reviewed_by_id        :integer
 #  reviewed_at           :datetime
-#  investigate           :boolean          default("false")
+#  investigate           :boolean          default(FALSE)
 #  investigate_reason    :string
 #  notes                 :text
-#  locality_id           :integer
+#  locality_id           :bigint
 #  building_types_mask   :integer
+#  parent_id             :bigint
+#  hive_year             :integer
 #
 # Indexes
 #
@@ -42,6 +44,7 @@
 #  index_buildings_on_frame_type_id     (frame_type_id)
 #  index_buildings_on_lining_type_id    (lining_type_id)
 #  index_buildings_on_locality_id       (locality_id)
+#  index_buildings_on_parent_id         (parent_id)
 #  index_buildings_on_reviewed_by_id    (reviewed_by_id)
 #
 

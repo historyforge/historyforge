@@ -487,121 +487,6 @@ ALTER SEQUENCE public.bulk_updates_id_seq OWNED BY public.bulk_updates.id;
 
 
 --
--- Name: census1950_records; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.census1950_records (
-    id bigint NOT NULL,
-    locality_id bigint,
-    building_id bigint,
-    person_id bigint,
-    created_by_id bigint,
-    reviewed_by_id bigint,
-    reviewed_at timestamp(6) without time zone,
-    page_number integer,
-    page_side character varying(1),
-    line_number integer,
-    county character varying,
-    city character varying,
-    state character varying,
-    ward integer,
-    enum_dist integer,
-    institution_name character varying,
-    institution_type character varying,
-    apartment_number character varying,
-    street_prefix character varying,
-    street_name character varying,
-    street_suffix character varying,
-    street_house_number character varying,
-    dwelling_number character varying,
-    family_id character varying,
-    lives_on_farm boolean,
-    lives_on_3_acres boolean,
-    ag_questionnaire_no character varying,
-    last_name character varying,
-    first_name character varying,
-    middle_name character varying,
-    name_prefix character varying,
-    name_suffix character varying,
-    searchable_name text,
-    relation_to_head character varying,
-    race character varying,
-    sex character varying,
-    age integer,
-    marital_status character varying,
-    pob character varying,
-    foreign_born boolean DEFAULT false,
-    naturalized_alien character varying,
-    activity_last_week character varying,
-    worked_last_week boolean,
-    seeking_work boolean,
-    employed_absent boolean,
-    hours_worked integer,
-    occupation character varying DEFAULT 'None'::character varying,
-    industry character varying,
-    worker_class character varying,
-    occupation_code character varying,
-    industry_code character varying,
-    worker_class_code character varying,
-    same_house_1949 boolean,
-    on_farm_1949 boolean,
-    same_county_1949 boolean,
-    county_1949 character varying,
-    state_1949 character varying,
-    pob_father character varying,
-    pob_mother character varying,
-    highest_grade character varying,
-    finished_grade boolean,
-    weeks_seeking_work integer,
-    weeks_worked integer,
-    wages_or_salary_self character varying,
-    own_business_self character varying,
-    unearned_income_self character varying,
-    wages_or_salary_family character varying,
-    own_business_family character varying,
-    unearned_income_family character varying,
-    veteran_ww2 boolean,
-    veteran_ww1 boolean,
-    veteran_other boolean,
-    item_20_entries boolean,
-    last_occupation character varying,
-    last_industry character varying,
-    last_worker_class character varying,
-    multi_marriage boolean,
-    years_married integer,
-    newlyweds boolean,
-    children_born integer,
-    notes text,
-    provisional boolean DEFAULT false,
-    taker_error boolean DEFAULT false,
-    histid uuid,
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL,
-    birth_month integer,
-    attended_school boolean DEFAULT false
-);
-
-
---
--- Name: census1950_records_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.census1950_records_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: census1950_records_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.census1950_records_id_seq OWNED BY public.census1950_records.id;
-
-
---
 -- Name: census_1880_records; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1197,6 +1082,121 @@ CREATE SEQUENCE public.census_1940_records_id_seq
 --
 
 ALTER SEQUENCE public.census_1940_records_id_seq OWNED BY public.census_1940_records.id;
+
+
+--
+-- Name: census_1950_records; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.census_1950_records (
+    id bigint NOT NULL,
+    locality_id bigint,
+    building_id bigint,
+    person_id bigint,
+    created_by_id bigint,
+    reviewed_by_id bigint,
+    reviewed_at timestamp(6) without time zone,
+    page_number integer,
+    page_side character varying(1),
+    line_number integer,
+    county character varying,
+    city character varying,
+    state character varying,
+    ward integer,
+    enum_dist integer,
+    institution_name character varying,
+    institution_type character varying,
+    apartment_number character varying,
+    street_prefix character varying,
+    street_name character varying,
+    street_suffix character varying,
+    street_house_number character varying,
+    dwelling_number character varying,
+    family_id character varying,
+    lives_on_farm boolean,
+    lives_on_3_acres boolean,
+    ag_questionnaire_no character varying,
+    last_name character varying,
+    first_name character varying,
+    middle_name character varying,
+    name_prefix character varying,
+    name_suffix character varying,
+    searchable_name text,
+    relation_to_head character varying,
+    race character varying,
+    sex character varying,
+    age integer,
+    marital_status character varying,
+    pob character varying,
+    foreign_born boolean DEFAULT false,
+    naturalized_alien character varying,
+    activity_last_week character varying,
+    worked_last_week boolean,
+    seeking_work boolean,
+    employed_absent boolean,
+    hours_worked integer,
+    occupation character varying DEFAULT 'None'::character varying,
+    industry character varying,
+    worker_class character varying,
+    occupation_code character varying,
+    industry_code character varying,
+    worker_class_code character varying,
+    same_house_1949 boolean,
+    on_farm_1949 boolean,
+    same_county_1949 boolean,
+    county_1949 character varying,
+    state_1949 character varying,
+    pob_father character varying,
+    pob_mother character varying,
+    highest_grade character varying,
+    finished_grade boolean,
+    weeks_seeking_work integer,
+    weeks_worked integer,
+    wages_or_salary_self character varying,
+    own_business_self character varying,
+    unearned_income_self character varying,
+    wages_or_salary_family character varying,
+    own_business_family character varying,
+    unearned_income_family character varying,
+    veteran_ww2 boolean,
+    veteran_ww1 boolean,
+    veteran_other boolean,
+    item_20_entries boolean,
+    last_occupation character varying,
+    last_industry character varying,
+    last_worker_class character varying,
+    multi_marriage boolean,
+    years_married integer,
+    newlyweds boolean,
+    children_born integer,
+    notes text,
+    provisional boolean DEFAULT false,
+    taker_error boolean DEFAULT false,
+    histid uuid,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL,
+    birth_month integer,
+    attended_school boolean DEFAULT false
+);
+
+
+--
+-- Name: census_1950_records_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.census_1950_records_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: census_1950_records_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.census_1950_records_id_seq OWNED BY public.census_1950_records.id;
 
 
 --
@@ -2395,13 +2395,6 @@ ALTER TABLE ONLY public.bulk_updates ALTER COLUMN id SET DEFAULT nextval('public
 
 
 --
--- Name: census1950_records id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.census1950_records ALTER COLUMN id SET DEFAULT nextval('public.census1950_records_id_seq'::regclass);
-
-
---
 -- Name: census_1880_records id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -2441,6 +2434,13 @@ ALTER TABLE ONLY public.census_1930_records ALTER COLUMN id SET DEFAULT nextval(
 --
 
 ALTER TABLE ONLY public.census_1940_records ALTER COLUMN id SET DEFAULT nextval('public.census_1940_records_id_seq'::regclass);
+
+
+--
+-- Name: census_1950_records id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.census_1950_records ALTER COLUMN id SET DEFAULT nextval('public.census_1950_records_id_seq'::regclass);
 
 
 --
@@ -2750,14 +2750,6 @@ ALTER TABLE ONLY public.bulk_updates
 
 
 --
--- Name: census1950_records census1950_records_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.census1950_records
-    ADD CONSTRAINT census1950_records_pkey PRIMARY KEY (id);
-
-
---
 -- Name: census_1880_records census_1880_records_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2803,6 +2795,14 @@ ALTER TABLE ONLY public.census_1930_records
 
 ALTER TABLE ONLY public.census_1940_records
     ADD CONSTRAINT census_1940_records_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: census_1950_records census_1950_records_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.census_1950_records
+    ADD CONSTRAINT census_1950_records_pkey PRIMARY KEY (id);
 
 
 --
@@ -3243,41 +3243,6 @@ CREATE INDEX index_bulk_updates_on_user_id ON public.bulk_updates USING btree (u
 
 
 --
--- Name: index_census1950_records_on_building_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_census1950_records_on_building_id ON public.census1950_records USING btree (building_id);
-
-
---
--- Name: index_census1950_records_on_created_by_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_census1950_records_on_created_by_id ON public.census1950_records USING btree (created_by_id);
-
-
---
--- Name: index_census1950_records_on_locality_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_census1950_records_on_locality_id ON public.census1950_records USING btree (locality_id);
-
-
---
--- Name: index_census1950_records_on_person_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_census1950_records_on_person_id ON public.census1950_records USING btree (person_id);
-
-
---
--- Name: index_census1950_records_on_reviewed_by_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_census1950_records_on_reviewed_by_id ON public.census1950_records USING btree (reviewed_by_id);
-
-
---
 -- Name: index_census_1880_records_on_building_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3485,6 +3450,41 @@ CREATE INDEX index_census_1940_records_on_person_id ON public.census_1940_record
 --
 
 CREATE INDEX index_census_1940_records_on_reviewed_by_id ON public.census_1940_records USING btree (reviewed_by_id);
+
+
+--
+-- Name: index_census_1950_records_on_building_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_census_1950_records_on_building_id ON public.census_1950_records USING btree (building_id);
+
+
+--
+-- Name: index_census_1950_records_on_created_by_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_census_1950_records_on_created_by_id ON public.census_1950_records USING btree (created_by_id);
+
+
+--
+-- Name: index_census_1950_records_on_locality_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_census_1950_records_on_locality_id ON public.census_1950_records USING btree (locality_id);
+
+
+--
+-- Name: index_census_1950_records_on_person_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_census_1950_records_on_person_id ON public.census_1950_records USING btree (person_id);
+
+
+--
+-- Name: index_census_1950_records_on_reviewed_by_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_census_1950_records_on_reviewed_by_id ON public.census_1950_records USING btree (reviewed_by_id);
 
 
 --
@@ -3731,10 +3731,10 @@ ALTER TABLE ONLY public.profession_subgroups
 
 
 --
--- Name: census1950_records fk_rails_1c7d3e9283; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: census_1950_records fk_rails_1c7d3e9283; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.census1950_records
+ALTER TABLE ONLY public.census_1950_records
     ADD CONSTRAINT fk_rails_1c7d3e9283 FOREIGN KEY (locality_id) REFERENCES public.localities(id);
 
 
@@ -3747,10 +3747,10 @@ ALTER TABLE ONLY public.bulk_updated_records
 
 
 --
--- Name: census1950_records fk_rails_2cb4e0273e; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: census_1950_records fk_rails_2cb4e0273e; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.census1950_records
+ALTER TABLE ONLY public.census_1950_records
     ADD CONSTRAINT fk_rails_2cb4e0273e FOREIGN KEY (reviewed_by_id) REFERENCES public.users(id);
 
 
@@ -3771,10 +3771,10 @@ ALTER TABLE ONLY public.bulk_updates
 
 
 --
--- Name: census1950_records fk_rails_42a272a5a7; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: census_1950_records fk_rails_42a272a5a7; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.census1950_records
+ALTER TABLE ONLY public.census_1950_records
     ADD CONSTRAINT fk_rails_42a272a5a7 FOREIGN KEY (building_id) REFERENCES public.buildings(id);
 
 
@@ -3851,10 +3851,10 @@ ALTER TABLE ONLY public.users
 
 
 --
--- Name: census1950_records fk_rails_537eccb7b7; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: census_1950_records fk_rails_537eccb7b7; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.census1950_records
+ALTER TABLE ONLY public.census_1950_records
     ADD CONSTRAINT fk_rails_537eccb7b7 FOREIGN KEY (created_by_id) REFERENCES public.users(id);
 
 
@@ -3979,10 +3979,10 @@ ALTER TABLE ONLY public.census_1930_records
 
 
 --
--- Name: census1950_records fk_rails_992e3f98c6; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: census_1950_records fk_rails_992e3f98c6; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.census1950_records
+ALTER TABLE ONLY public.census_1950_records
     ADD CONSTRAINT fk_rails_992e3f98c6 FOREIGN KEY (person_id) REFERENCES public.people(id);
 
 
@@ -4404,6 +4404,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20221003014844'),
 ('20221009233017'),
 ('20221010000542'),
+('20221030210941'),
 ('4'),
 ('8'),
 ('9');

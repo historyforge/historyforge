@@ -57,9 +57,9 @@
 #  war_fought             :string
 #  farm_schedule          :string
 #  notes                  :text
-#  provisional            :boolean          default("false")
-#  foreign_born           :boolean          default("false")
-#  taker_error            :boolean          default("false")
+#  provisional            :boolean          default(FALSE)
+#  foreign_born           :boolean          default(FALSE)
+#  taker_error            :boolean          default(FALSE)
 #  created_at             :datetime
 #  updated_at             :datetime
 #  name_prefix            :string
@@ -77,16 +77,16 @@
 #  age_months             :integer
 #  apartment_number       :string
 #  homemaker              :boolean
-#  industry1930_code_id   :integer
-#  occupation1930_code_id :integer
-#  locality_id            :integer
+#  industry1930_code_id   :bigint
+#  occupation1930_code_id :bigint
+#  locality_id            :bigint
 #  histid                 :uuid
 #  enum_dist              :integer
 #  ward                   :integer
 #
 # Indexes
 #
-#  census_1930_records_name_trgm                        (searchable_name)
+#  census_1930_records_name_trgm                        (searchable_name) USING gist
 #  index_census_1930_records_on_building_id             (building_id)
 #  index_census_1930_records_on_created_by_id           (created_by_id)
 #  index_census_1930_records_on_industry1930_code_id    (industry1930_code_id)

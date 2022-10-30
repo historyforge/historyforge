@@ -2,12 +2,12 @@
 #
 # Table name: bulk_updates
 #
-#  id         :integer          not null, primary key
+#  id         :bigint           not null, primary key
 #  year       :integer
 #  field      :string
 #  value_from :string
 #  value_to   :string
-#  user_id    :integer          not null
+#  user_id    :bigint           not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #

@@ -10,7 +10,7 @@ $(document).ready(function() {
         document.location = item.data('url')
       },
       renderItem: function (item) {
-        return `<div class="autocomplete-suggestion" data-url="${item.url}">${item.name} (${item.age})<br>${item.address}</div>`
+        return `<div class="autocomplete-suggestion" data-url="${item.url}"><div class="float-right">${item.year}</div>${item.name} (${item.age})<br>${item.address}</div>`
       }
     })
   })

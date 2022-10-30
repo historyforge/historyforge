@@ -2,7 +2,7 @@
 #
 # Table name: vocabularies
 #
-#  id           :integer          not null, primary key
+#  id           :bigint           not null, primary key
 #  name         :string
 #  machine_name :string
 #  created_at   :datetime         not null

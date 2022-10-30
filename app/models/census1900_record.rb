@@ -55,9 +55,9 @@
 #  farm_or_house       :string
 #  language_spoken     :string           default("English")
 #  notes               :text
-#  provisional         :boolean          default("false")
-#  foreign_born        :boolean          default("false")
-#  taker_error         :boolean          default("false")
+#  provisional         :boolean          default(FALSE)
+#  foreign_born        :boolean          default(FALSE)
+#  taker_error         :boolean          default(FALSE)
 #  attended_school     :integer
 #  industry            :string
 #  farm_schedule       :integer
@@ -66,16 +66,16 @@
 #  searchable_name     :text
 #  apartment_number    :string
 #  age_months          :integer
-#  locality_id         :integer
+#  locality_id         :bigint
 #  histid              :uuid
 #  enum_dist           :integer
 #  ward                :integer
 #
 # Indexes
 #
-#  census_1900_records_name_trgm             (searchable_name)
+#  census_1900_records_name_trgm             (searchable_name) USING gist
 #  index_census_1900_records_on_building_id  (building_id)
-#  index_census_1900_records_on_data         (data)
+#  index_census_1900_records_on_data         (data) USING gin
 #  index_census_1900_records_on_locality_id  (locality_id)
 #  index_census_1900_records_on_person_id    (person_id)
 #

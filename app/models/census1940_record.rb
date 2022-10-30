@@ -2,11 +2,11 @@
 #
 # Table name: census_1940_records
 #
-#  id                      :integer          not null, primary key
-#  building_id             :integer
-#  person_id               :integer
-#  created_by_id           :integer
-#  reviewed_by_id          :integer
+#  id                      :bigint           not null, primary key
+#  building_id             :bigint
+#  person_id               :bigint
+#  created_by_id           :bigint
+#  reviewed_by_id          :bigint
 #  reviewed_at             :datetime
 #  page_number             :integer
 #  page_side               :string(1)
@@ -80,14 +80,14 @@
 #  first_marriage_age      :integer
 #  children_born           :integer
 #  notes                   :text
-#  provisional             :boolean          default("false")
-#  foreign_born            :boolean          default("false")
-#  taker_error             :boolean          default("false")
+#  provisional             :boolean          default(FALSE)
+#  foreign_born            :boolean          default(FALSE)
+#  taker_error             :boolean          default(FALSE)
 #  created_at              :datetime         not null
 #  updated_at              :datetime         not null
 #  worker_class_code       :string
 #  industry_code           :string
-#  locality_id             :integer
+#  locality_id             :bigint
 #  histid                  :uuid
 #  enum_dist               :integer
 #  ward                    :integer

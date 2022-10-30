@@ -3,8 +3,8 @@
 #
 # Table name: documents
 #
-#  id                   :integer          not null, primary key
-#  document_category_id :integer
+#  id                   :bigint           not null, primary key
+#  document_category_id :bigint
 #  file                 :string
 #  name                 :string
 #  description          :text

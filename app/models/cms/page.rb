@@ -2,13 +2,13 @@
 #
 # Table name: cms_pages
 #
-#  id         :integer          not null, primary key
+#  id         :bigint           not null, primary key
 #  type       :string           default("Cms::Page")
 #  url_path   :string
 #  controller :string
 #  action     :string
-#  published  :boolean          default("true")
-#  visible    :boolean          default("false")
+#  published  :boolean          default(TRUE)
+#  visible    :boolean          default(FALSE)
 #  data       :json
 #  created_at :datetime         not null
 #  updated_at :datetime         not null

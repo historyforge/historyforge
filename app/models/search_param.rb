@@ -2,8 +2,8 @@
 #
 # Table name: search_params
 #
-#  id         :integer          not null, primary key
-#  user_id    :integer          not null
+#  id         :bigint           not null, primary key
+#  user_id    :bigint           not null
 #  model      :string
 #  params     :jsonb
 #  created_at :datetime         not null

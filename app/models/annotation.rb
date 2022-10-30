@@ -2,10 +2,10 @@
 #
 # Table name: annotations
 #
-#  id              :integer          not null, primary key
+#  id              :bigint           not null, primary key
 #  annotation_text :text
-#  map_overlay_id  :integer
-#  building_id     :integer
+#  map_overlay_id  :bigint
+#  building_id     :bigint
 #
 # Indexes
 #

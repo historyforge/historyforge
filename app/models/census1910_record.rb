@@ -56,13 +56,13 @@
 #  language_spoken       :string           default("English")
 #  unemployed_weeks_1909 :string
 #  civil_war_vet_old     :boolean
-#  blind                 :boolean          default("false")
-#  deaf_dumb             :boolean          default("false")
+#  blind                 :boolean          default(FALSE)
+#  deaf_dumb             :boolean          default(FALSE)
 #  notes                 :text
 #  civil_war_vet         :string(2)
-#  provisional           :boolean          default("false")
-#  foreign_born          :boolean          default("false")
-#  taker_error           :boolean          default("false")
+#  provisional           :boolean          default(FALSE)
+#  foreign_born          :boolean          default(FALSE)
+#  taker_error           :boolean          default(FALSE)
 #  name_prefix           :string
 #  name_suffix           :string
 #  searchable_name       :text
@@ -71,19 +71,19 @@
 #  mother_tongue         :string
 #  mother_tongue_father  :string
 #  mother_tongue_mother  :string
-#  locality_id           :integer
+#  locality_id           :bigint
 #  histid                :uuid
 #  enum_dist             :integer
 #  ward                  :integer
 #
 # Indexes
 #
-#  census_1910_records_name_trgm                (searchable_name)
+#  census_1910_records_name_trgm                (searchable_name) USING gist
 #  index_census_1910_records_on_building_id     (building_id)
 #  index_census_1910_records_on_created_by_id   (created_by_id)
-#  index_census_1910_records_on_data            (data)
+#  index_census_1910_records_on_data            (data) USING gin
 #  index_census_1910_records_on_locality_id     (locality_id)
-#  index_census_1910_records_on_person_id       (person_id) UNIQUE
+#  index_census_1910_records_on_person_id       (person_id)
 #  index_census_1910_records_on_reviewed_by_id  (reviewed_by_id)
 #
 

@@ -2,9 +2,9 @@
 #
 # Table name: photographs
 #
-#  id             :integer          not null, primary key
-#  created_by_id  :integer
-#  building_id    :integer
+#  id             :bigint           not null, primary key
+#  created_by_id  :bigint
+#  building_id    :bigint
 #  description    :text
 #  creator        :string
 #  date_text      :string
@@ -17,9 +17,9 @@
 #  longitude      :decimal(, )
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
-#  reviewed_by_id :integer
+#  reviewed_by_id :bigint
 #  reviewed_at    :datetime
-#  date_type      :integer          default("0")
+#  date_type      :integer          default("year")
 #  caption        :text
 #
 # Indexes

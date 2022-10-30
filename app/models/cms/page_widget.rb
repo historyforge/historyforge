@@ -2,8 +2,8 @@
 #
 # Table name: cms_page_widgets
 #
-#  id          :integer          not null, primary key
-#  cms_page_id :integer
+#  id          :bigint           not null, primary key
+#  cms_page_id :bigint
 #  type        :string
 #  data        :jsonb
 #  created_at  :datetime         not null

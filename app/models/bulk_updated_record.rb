@@ -2,10 +2,10 @@
 #
 # Table name: bulk_updated_records
 #
-#  id             :integer          not null, primary key
-#  bulk_update_id :integer
+#  id             :bigint           not null, primary key
+#  bulk_update_id :bigint
 #  record_type    :string
-#  record_id      :integer
+#  record_id      :bigint
 #
 # Indexes
 #

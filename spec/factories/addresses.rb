@@ -2,9 +2,9 @@
 #
 # Table name: addresses
 #
-#  id           :integer          not null, primary key
-#  building_id  :integer          not null
-#  is_primary   :boolean          default("false")
+#  id           :bigint           not null, primary key
+#  building_id  :bigint           not null
+#  is_primary   :boolean          default(FALSE)
 #  house_number :string
 #  prefix       :string
 #  name         :string

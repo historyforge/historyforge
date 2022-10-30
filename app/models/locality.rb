@@ -2,7 +2,7 @@
 #
 # Table name: localities
 #
-#  id                   :integer          not null, primary key
+#  id                   :bigint           not null, primary key
 #  name                 :string
 #  latitude             :decimal(, )
 #  longitude            :decimal(, )

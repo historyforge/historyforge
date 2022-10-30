@@ -2,12 +2,12 @@
 #
 # Table name: census_1880_records
 #
-#  id                  :integer          not null, primary key
-#  locality_id         :integer
-#  building_id         :integer
-#  person_id           :integer
-#  created_by_id       :integer
-#  reviewed_by_id      :integer
+#  id                  :bigint           not null, primary key
+#  locality_id         :bigint
+#  building_id         :bigint
+#  person_id           :bigint
+#  created_by_id       :bigint
+#  reviewed_by_id      :bigint
 #  reviewed_at         :datetime
 #  page_number         :integer
 #  page_side           :string(1)
@@ -52,9 +52,9 @@
 #  pob_father          :string
 #  pob_mother          :string
 #  notes               :text
-#  provisional         :boolean          default("false")
-#  foreign_born        :boolean          default("false")
-#  taker_error         :boolean          default("false")
+#  provisional         :boolean          default(FALSE)
+#  foreign_born        :boolean          default(FALSE)
+#  taker_error         :boolean          default(FALSE)
 #  farm_schedule       :integer
 #  searchable_name     :text
 #  histid              :uuid
