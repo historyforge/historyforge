@@ -77,7 +77,7 @@ class PersonSearch < SearchQueryBuilder
   end
 
   def all_fields
-    default_fields
+    default_fields + %w[description]
   end
 
   def uncensused?

@@ -69,6 +69,7 @@ class PersonGridTranslator
     view: 60,
     profession: 160,
     name: 160,
+    description: 250,
   }.freeze
 
   def width_for_column(column)
