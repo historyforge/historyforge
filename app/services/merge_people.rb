@@ -7,7 +7,7 @@ class MergePeople
   end
 
   def perform
-    @target.description = [@target.description, @source.description].compact.join("\n\n")
+    @target.update_column :description, [@target.description, @source.description].compact_blank.join("\n\n")
     merge_census_records
     merge_photographs
     @source.reload.destroy
@@ -19,7 +19,6 @@ class MergePeople
   def merge_census_records
     CensusYears.each do |year|
       CensusRecord.for_year(year).where(person_id: @source.id).update_all(person_id: @target.id)
-      puts CensusRecord.for_year(year).where(person_id: @target.id).inspect
     end
   end
 

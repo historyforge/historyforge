@@ -3,8 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe MergePeople do
-  let(:source) { create(:person) }
-  let(:target) { create(:person) }
+  let(:source) { create(:person, description: 'source text') }
+  let(:target) { create(:person, description: 'target text') }
   let!(:source_record) { create(:census1910_record, person: source) }
   let!(:target_record) { create(:census1920_record, person: target) }
   subject { described_class.new(source, target) }
@@ -13,5 +13,7 @@ RSpec.describe MergePeople do
     expect(source.destroyed?).to be_truthy
     expect(target.census1910_record).to eq(source_record)
     expect(target.census1920_record).to eq(target_record)
+    expect(target.description).to include('target text')
+    expect(target.description).to include('source text')
   end
 end
