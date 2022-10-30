@@ -115,3 +115,6 @@
       | Additional Notes
     .card-body
       = simple_format @person.notes
+
+- if can?(:update, @person)
+  = render 'shared/change_history', item: @person
