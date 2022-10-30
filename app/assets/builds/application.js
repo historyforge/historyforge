@@ -55294,7 +55294,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       });
     }
   }
-  jQuery(document).on("change", "#city, #street_name, #street_suffix, #street_prefix, #street_house_number", getBuildingList);
+  jQuery(document).on("change", "#census_record_locality_id, #street_name, #street_suffix, #street_prefix, #street_house_number", getBuildingList);
   jQuery(function() {
     const building = jQuery("#building_id, #census_record_building_id");
     if (building.length) {

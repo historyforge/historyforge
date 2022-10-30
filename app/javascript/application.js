@@ -97,7 +97,7 @@ function getBuildingList() {
 }
 // When the user fills address on census form, this refills the building_id dropdown
 jQuery(document)
-  .on('change', '#city, #street_name, #street_suffix, #street_prefix, #street_house_number', getBuildingList)
+  .on('change', '#census_record_locality_id, #street_name, #street_suffix, #street_prefix, #street_house_number', getBuildingList)
 
 jQuery(function() {
     const building = jQuery('#building_id, #census_record_building_id')
