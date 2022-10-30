@@ -20,7 +20,7 @@ class PersonSearch < SearchQueryBuilder
   end
 
   def results
-    scoped.to_a.map { |row| row.decorate }
+    scoped.to_a.map(&:decorate)
   end
   memoize :results
 
@@ -69,7 +69,7 @@ class PersonSearch < SearchQueryBuilder
   end
 
   def name_order_clause(dir)
-    "last_name #{dir}, first_name #{dir}, middle_name #{dir}"
+    "lower(people.last_name) #{dir}, lower(people.first_name) #{dir}, middle_name #{dir}"
   end
 
   def default_fields

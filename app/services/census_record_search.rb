@@ -82,7 +82,7 @@ class CensusRecordSearch < SearchQueryBuilder
   end
 
   def name_order_clause(dir)
-    "last_name #{dir}, first_name #{dir}, middle_name #{dir}"
+    "lower(last_name) #{dir}, lower(first_name) #{dir}, middle_name #{dir}"
   end
 
   def self.generate(year:, params: {}, user:)
