@@ -18,6 +18,6 @@ RSpec.describe MergePeople do
     expect(target.census1920_record).to eq(target_record)
     expect(target.description).to include('target text')
     expect(target.description).to include('source text')
-    expect(target.audit_logs.count).to eq(1)
+    expect(target.audit_logs.count).to eq(2)
   end
 end
