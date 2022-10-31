@@ -30,8 +30,8 @@ module CensusRecordsHelper
     content_tag(:div, header + body, class: 'card mb-3')
   end
 
-  def editing_users_for(item)
-    user_ids = item.versions.map(&:whodunnit).compact.map(&:to_i)
+  def editing_users_for(change_history)
+    user_ids = change_history.map(&:whodunnit).compact.map(&:to_i)
     User.includes(:group).where(id: user_ids).each_with_object({}) { |u, o| o[u.id.to_s] = u.group ? "#{u.login} (#{u.group.name})" : u.login }
   end
 

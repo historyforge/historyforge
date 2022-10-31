@@ -10,10 +10,14 @@ RSpec.describe MergeBuilding do
   let(:architect) { create(:architect) }
   let(:resident) { create(:census1910_record)}
   let(:resident2) { create(:census1920_record)}
+  before do
+    PaperTrail.request.whodunnit = create(:user)
+  end
 
   it 'basically works' do
     subject.perform
     expect(source_building.destroyed?).to be_truthy
+    expect(target_building.audit_logs.count).to eq(1)
   end
 
   it 'does not overwrite target attributes' do

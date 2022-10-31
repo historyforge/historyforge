@@ -309,6 +309,39 @@ ALTER SEQUENCE public.architects_id_seq OWNED BY public.architects.id;
 
 
 --
+-- Name: audit_logs; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.audit_logs (
+    id bigint NOT NULL,
+    loggable_type character varying,
+    loggable_id integer,
+    user_id bigint,
+    message character varying,
+    logged_at timestamp(6) without time zone
+);
+
+
+--
+-- Name: audit_logs_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.audit_logs_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: audit_logs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.audit_logs_id_seq OWNED BY public.audit_logs.id;
+
+
+--
 -- Name: building_types; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2367,6 +2400,13 @@ ALTER TABLE ONLY public.architects ALTER COLUMN id SET DEFAULT nextval('public.a
 
 
 --
+-- Name: audit_logs id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.audit_logs ALTER COLUMN id SET DEFAULT nextval('public.audit_logs_id_seq'::regclass);
+
+
+--
 -- Name: building_types id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -2715,6 +2755,14 @@ ALTER TABLE ONLY public.ar_internal_metadata
 
 ALTER TABLE ONLY public.architects
     ADD CONSTRAINT architects_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: audit_logs audit_logs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.audit_logs
+    ADD CONSTRAINT audit_logs_pkey PRIMARY KEY (id);
 
 
 --
@@ -3156,6 +3204,20 @@ CREATE UNIQUE INDEX index_annotations_on_building_id_and_map_overlay_id ON publi
 --
 
 CREATE INDEX index_annotations_on_map_overlay_id ON public.annotations USING btree (map_overlay_id);
+
+
+--
+-- Name: index_audit_logs_on_loggable_type_and_loggable_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_audit_logs_on_loggable_type_and_loggable_id ON public.audit_logs USING btree (loggable_type, loggable_id);
+
+
+--
+-- Name: index_audit_logs_on_user_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_audit_logs_on_user_id ON public.audit_logs USING btree (user_id);
 
 
 --
@@ -3736,6 +3798,14 @@ ALTER TABLE ONLY public.profession_subgroups
 
 ALTER TABLE ONLY public.census_1950_records
     ADD CONSTRAINT fk_rails_1c7d3e9283 FOREIGN KEY (locality_id) REFERENCES public.localities(id);
+
+
+--
+-- Name: audit_logs fk_rails_1f26bc34ae; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.audit_logs
+    ADD CONSTRAINT fk_rails_1f26bc34ae FOREIGN KEY (user_id) REFERENCES public.users(id);
 
 
 --
@@ -4405,6 +4475,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20221009233017'),
 ('20221010000542'),
 ('20221030210941'),
+('20221030214744'),
 ('4'),
 ('8'),
 ('9');

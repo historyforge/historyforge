@@ -13,6 +13,7 @@ class MergeBuilding
     @target.save!
     @source.destroy!
     BuildAddressHistory.new(@target).perform
+    @target.audit_logs.create message: "Merged ##{@source.id} - #{@source.name}"
   end
 
   private

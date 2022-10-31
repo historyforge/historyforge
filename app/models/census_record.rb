@@ -33,6 +33,8 @@ class CensusRecord < ApplicationRecord
   after_initialize :set_defaults
   before_save :ensure_housing
 
+  before_save :audit_person_connection, if: :person_id_changed?
+
   auto_strip_attributes :first_name, :middle_name, :last_name, :street_house_number, :street_name,
                         :street_prefix, :street_suffix, :apartment_number, :profession, :name_prefix, :name_suffix
 
@@ -212,5 +214,14 @@ class CensusRecord < ApplicationRecord
     person.save
     reload
     person
+  end
+
+  def audit_person_connection
+    if person_id.present?
+      Person.find(person_id)&.audit_logs.create message: "Connected to #{year} Census Record for #{name}"
+    end
+    if person_id_was.present?
+      Person.find(person_id_was)&.audit_logs.create message: "Disconnected from #{year} Census Record for #{name}"
+    end
   end
 end

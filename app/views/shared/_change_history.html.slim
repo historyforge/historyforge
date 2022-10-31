@@ -1,5 +1,5 @@
 - if user_signed_in? && item.change_history.present?
-  - users = editing_users_for(item)
+  - users = editing_users_for(item.change_history)
   .card.mb-3
     .card-header
       | Change History
@@ -11,19 +11,23 @@
             | &nbsp;on &nbsp;
             = version.created_at.strftime('%b %d %Y')
           .row
-            - if version.event == 'create'
-              .col-6
-                strong Field
-              .col-6
-                strong Value
+            - if version.is_a?(AuditLog)
+              .col-12
+                strong= version.message
             - else
-              .col-4
-                strong Field
-              .col-4
-                strong From
-              .col-4
-                strong To
-          - version.changeset.each do |key, changes|
+              - if version.event == 'create'
+                .col-6
+                  strong Field
+                .col-6
+                  strong Value
+              - else
+                .col-4
+                  strong Field
+                .col-4
+                  strong From
+                .col-4
+                  strong To
+          - version.is_a?(PaperTrail::Version) && version.changeset.each do |key, changes|
             - next if key == 'updated_at'
             .row
               - if version.event == 'create'

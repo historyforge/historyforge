@@ -12,6 +12,8 @@ class MergePeople
     merge_photographs
     @source.reload.destroy
     @target.reload
+    @target.audit_logs.create message: "Merged ##{@source.id} - #{@source.name}"
+
   end
 
   private
