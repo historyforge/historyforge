@@ -218,10 +218,14 @@ class CensusRecord < ApplicationRecord
 
   def audit_person_connection
     if person_id.present?
-      Person.find(person_id)&.audit_logs.create message: "Connected to #{year} Census Record for #{name}"
+      person = Person.find(person_id)
+      person&.audit_logs&.create message: "Connected to #{year} Census Record for #{name}"
+      person&.save
     end
     if person_id_was.present?
-      Person.find(person_id_was)&.audit_logs.create message: "Disconnected from #{year} Census Record for #{name}"
+      person = Person.find(person_id_was)
+      person&.audit_logs&.create message: "Disconnected from #{year} Census Record for #{name}"
+      person&.save
     end
   end
 end
