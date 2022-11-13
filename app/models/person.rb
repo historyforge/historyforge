@@ -30,12 +30,15 @@
 # A person record is the glue that connects multiple census records to the same individual person. A person record
 # itself is pretty sparse, mainly glue, but does not have to have census records.
 class Person < ApplicationRecord
+  include AutoStripAttributes
   include PersonNames
   include PgSearch::Model
   include Flaggable
   include DefineEnumeration
   include Versioning
   include FastMemoize
+
+  auto_strip_attributes :first_name, :middle_name, :last_name, :pob
 
   attr_accessor :match_score
 
