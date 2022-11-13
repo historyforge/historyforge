@@ -14,8 +14,8 @@ RSpec.describe MergePeople do
   it 'merges successfully' do
     subject.perform
     expect(source.destroyed?).to be_truthy
-    expect(target.census1910_record).to eq(source_record)
-    expect(target.census1920_record).to eq(target_record)
+    expect(target.census1910_records).to include(source_record)
+    expect(target.census1920_records).to include(target_record)
     expect(target.description).to include('target text')
     expect(target.description).to include('source text')
     expect(target.audit_logs.count).to eq(2)

@@ -43,7 +43,7 @@ class Person < ApplicationRecord
   define_enumeration :race, %w[W B M Mex Neg Ind Chi Jap Fil Hin Kor]
 
   CensusYears.each do |year|
-    has_one :"census#{year}_record", dependent: :nullify, class_name: "Census#{year}Record"
+    has_many :"census#{year}_records", dependent: :nullify, class_name: "Census#{year}Record"
   end
 
   has_and_belongs_to_many :photos, class_name: 'Photograph', dependent: :nullify
@@ -60,7 +60,7 @@ class Person < ApplicationRecord
   scope :uncensused, -> {
     qry = self
     CensusYears.each do |year|
-      qry = qry.left_outer_joins(:"census#{year}_record")
+      qry = qry.left_outer_joins(:"census#{year}_records")
     end
     qry.where CensusYears.map { |year| "#{CensusRecord.for_year(year).table_name}.id IS NULL" }.join(' AND ')
   }
@@ -68,7 +68,7 @@ class Person < ApplicationRecord
   scope :with_census_records, -> {
     qry = self
     CensusYears.each do |year|
-      qry = qry.includes(:"census#{year}_record")
+      qry = qry.includes(:"census#{year}_records")
     end
     qry
   }
@@ -94,7 +94,7 @@ class Person < ApplicationRecord
       matches = where(sex: record.sex, last_name: record.last_name).order(:first_name, :middle_name)
     end
     CensusYears.each do |year|
-      matches = matches.includes(:"census#{year}_record")
+      matches = matches.includes(:"census#{year}_records")
     end
     matches.select { |match| match.census_records.blank? || match.similar_in_age?(record) }
   end
@@ -126,7 +126,7 @@ class Person < ApplicationRecord
   end
 
   def census_records
-    CensusYears.map { |year| send("census#{year}_record")}.compact
+    CensusYears.map { |year| send("census#{year}_records") }.flatten.compact_blank
   end
   memoize :census_records
 

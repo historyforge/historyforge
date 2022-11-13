@@ -55,6 +55,7 @@ RSpec.describe 'buildings' do
   end
 
   scenario 'add a building' do
+    locality = create(:locality)
     sign_in create(:builder)
     visit buildings_path
     click_link 'Add New Record'
@@ -70,6 +71,7 @@ RSpec.describe 'buildings' do
     fill_in with: 'Cayuga', id: 'building_addresses_attributes_0_name'
     select 'St' #, id: 'building_addresses_attributes_0_suffix'
     fill_in with: 'Ithaca', id: 'building_addresses_attributes_0_city'
+    select locality.name
     click_on 'Save'
     expect(page).to have_content 'The David Building'
   end

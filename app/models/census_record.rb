@@ -207,7 +207,7 @@ class CensusRecord < ApplicationRecord
   end
 
   def generate_person_record
-    person = Person.new "census#{year}_record" => self
+    person = Person.new "census#{year}_records" => [self]
     %i[name_prefix name_suffix first_name middle_name last_name sex race].each do |attr|
       person[attr] = self[attr]
     end
