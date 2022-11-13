@@ -64,7 +64,7 @@ class Building < ApplicationRecord
   define_enumeration :address_street_prefix, STREET_PREFIXES
   define_enumeration :address_street_suffix, STREET_SUFFIXES
 
-  belongs_to :locality, optional: true
+  belongs_to :locality
 
   belongs_to :parent, class_name: 'Building', optional: true
   has_many :children, class_name: 'Building', foreign_key: :parent_id

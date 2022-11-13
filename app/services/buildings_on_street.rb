@@ -39,6 +39,7 @@ class BuildingsOnStreet
 
   def buildings_on_street
     items = Building.where(locality_id:)
+                    .as_of_year(year)
                     .left_outer_joins(:addresses)
                     .includes(:addresses)
                     .where(addresses: { name: street_name })
