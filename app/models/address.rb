@@ -34,8 +34,6 @@ class Address < ApplicationRecord
   auto_strip_attributes :city, :house_number, :name, :prefix, :suffix
   validates :year, numericality: { minimum: 1500, maximum: 2100, allow_nil: true }
 
-  before_destroy :validate_building_address
-
   ransacker :street_address, formatter: proc { |v| v.mb_chars.downcase.to_s } do |parent|
     Arel::Nodes::NamedFunction.new('LOWER',
                                    [Arel::Nodes::NamedFunction.new('concat_ws',
@@ -86,9 +84,5 @@ class Address < ApplicationRecord
         year: item.read_attribute(:year_earliest),
       )
     end
-  end
-
-  def validate_building_address
-    throw(:abort) if building.addresses.count == 1
   end
 end

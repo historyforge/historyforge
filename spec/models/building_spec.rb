@@ -58,8 +58,13 @@ RSpec.describe Building do
       create(:building, addresses: [build(:address, is_primary: true)])
     end
     it 'prevents the last address from being deleted' do
-      building.addresses.first.destroy
+      building.addresses_attributes = [{ id: building.addresses.first.id, _destroy: true }]
+      building.save
       expect(building.reload.addresses.length).to eq(1)
+    end
+    it 'still allows the building to be deleted' do
+      building.destroy
+      expect(building.destroyed?).to be_truthy
     end
   end
   context 'scopes' do
