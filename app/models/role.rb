@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# This used to be an ActiveRecord model from the MapWarper days. It is now a bitmask model to make storage and
+# lookup more efficient.
 class Role < BitmaskModel
   self.data = [
     'Administrator',
@@ -7,7 +9,8 @@ class Role < BitmaskModel
     'Reviewer',
     'Photographer',
     'Census Taker',
-    'Builder'
+    'Builder',
+    'Person Record Editor'
   ]
 
   self.descriptions = [
@@ -16,6 +19,7 @@ class Role < BitmaskModel
     'Reviewers can review any census record, building, or photograph.',
     'Photographers can create and edit any photograph records.',
     'Census takers can add new census records and edit the ones they created.',
-    'Builders can create and edit any building records.'
+    'Builders can create and edit any building records.',
+    'Person Record editors can edit person records.'
   ]
 end
