@@ -25,6 +25,7 @@ class Ability
       end
 
       if user.has_role?('reviewer')
+        can :review, CensusRecord
         can :review, Building
         can :review, Photograph
       end
@@ -65,3 +66,19 @@ class Ability
     end
   end
 end
+
+# can :manage, Photograph
+# can :manage, Flag
+# can :manage, Person
+# can :manage, :all
+# cannot :bulk_update, :all
+# cannot :manage, User
+# can :manage, Document
+# can :manage, DocumentCategory
+# can :manage, Building
+# can :manage, Architect
+# can :manage, CensusRecord
+# can :manage, Photograph
+# can :manage, Flag
+# can :manage, Person
+# can :manage, StreetConversion
