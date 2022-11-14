@@ -1,49 +1,38 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { highlight } from '../forge/actions'
 
-class Building extends React.PureComponent {
-  render() {
-    const { id, street_address } = this.props
-    return (
-            <div className={`list-group-item building ${this.highlighted && 'active'}`}>
-                <p>
-                    <a href={`/buildings/${id}`}
-                       title="Open building record">
-                        {street_address}
-                    </a>
-                </p>
-            </div>
-    )
-  }
+const Building = ({ id, street_address, highlight, highlighted }) => (
+    <div className={`list-group-item building ${highlighted === id && 'active'}`}
+        onMouseOver={() => highlight(id)}
+        onMouseOut={() => highlight(null)}>
+        <p>
+            <a href={`/buildings/${id}`}
+               title="Open building record">
+                {street_address}
+            </a>
+        </p>
+    </div>
+)
 
-  get highlighted() {
-    return this.props.highlighted === this.props.id
-  }
-}
-class Buildings extends React.PureComponent {
-  render() {
-    const { buildings, highlighted } = this.props
-    if (!buildings) return
 
-    return (
-            <div id="building-list">
-                <h3>Nearby Buildings</h3>
-                <div className="list-group">
-                    {buildings.map((building, i) => (
-                        <Building key={i} {...building} highlighted={highlighted} />
-                    ))}
-                </div>
-            </div>
-    )
-  }
-}
+const Buildings = ({ buildings, highlighted, highlight }) => (buildings ? (
+    <div id="building-list">
+        <h3>Nearby Buildings</h3>
+        <div className="list-group">
+            {buildings.map((building, i) => (
+                <Building key={i} {...building} highlighted={highlighted} highlight={highlight} />
+            ))}
+        </div>
+    </div>
+) : null)
+
 
 const mapStateToProps = state => {
   return { ...state.buildings }
 }
 
-const actions = {
-}
+const actions = { highlight }
 
 const Component = connect(mapStateToProps, actions)(Buildings)
 

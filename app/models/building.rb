@@ -86,6 +86,7 @@ class Building < ApplicationRecord
   validates :name, presence: true, length: { maximum: 255 }
   validates :year_earliest, :year_latest, numericality: { minimum: 1500, maximum: 2100, allow_nil: true }
   validate :validate_primary_address
+  validates :addresses, length: { minimum: 1, too_short: ' - a building must have at least one.' }
 
   delegate :name, to: :frame_type, prefix: true, allow_nil: true
   delegate :name, to: :lining_type, prefix: true, allow_nil: true
@@ -248,7 +249,7 @@ class Building < ApplicationRecord
   end
 
   def street_address
-    addresses.sort_by { |b| b.is_primary? ? -1 : 1 }.map(&:address).join("\n")
+    addresses.sort_by { |b| b.is_primary? ? -1 : 1 }.map(&:address_with_year).join("\n")
   end
 
   def primary_street_address

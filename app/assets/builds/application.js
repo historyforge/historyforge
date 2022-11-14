@@ -52954,40 +52954,28 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
 
   // app/javascript/miniforge/Buildings.jsx
   var import_react40 = __toESM(require_react());
-  var Building2 = class extends import_react40.default.PureComponent {
-    render() {
-      const { id, street_address } = this.props;
-      return /* @__PURE__ */ import_react40.default.createElement("div", {
-        className: `list-group-item building ${this.highlighted && "active"}`
-      }, /* @__PURE__ */ import_react40.default.createElement("p", null, /* @__PURE__ */ import_react40.default.createElement("a", {
-        href: `/buildings/${id}`,
-        title: "Open building record"
-      }, street_address)));
-    }
-    get highlighted() {
-      return this.props.highlighted === this.props.id;
-    }
-  };
-  var Buildings = class extends import_react40.default.PureComponent {
-    render() {
-      const { buildings: buildings3, highlighted } = this.props;
-      if (!buildings3)
-        return;
-      return /* @__PURE__ */ import_react40.default.createElement("div", {
-        id: "building-list"
-      }, /* @__PURE__ */ import_react40.default.createElement("h3", null, "Nearby Buildings"), /* @__PURE__ */ import_react40.default.createElement("div", {
-        className: "list-group"
-      }, buildings3.map((building, i) => /* @__PURE__ */ import_react40.default.createElement(Building2, __spreadProps(__spreadValues({
-        key: i
-      }, building), {
-        highlighted
-      })))));
-    }
-  };
+  var Building2 = ({ id, street_address, highlight: highlight2, highlighted }) => /* @__PURE__ */ import_react40.default.createElement("div", {
+    className: `list-group-item building ${highlighted === id && "active"}`,
+    onMouseOver: () => highlight2(id),
+    onMouseOut: () => highlight2(null)
+  }, /* @__PURE__ */ import_react40.default.createElement("p", null, /* @__PURE__ */ import_react40.default.createElement("a", {
+    href: `/buildings/${id}`,
+    title: "Open building record"
+  }, street_address)));
+  var Buildings = ({ buildings: buildings3, highlighted, highlight: highlight2 }) => buildings3 ? /* @__PURE__ */ import_react40.default.createElement("div", {
+    id: "building-list"
+  }, /* @__PURE__ */ import_react40.default.createElement("h3", null, "Nearby Buildings"), /* @__PURE__ */ import_react40.default.createElement("div", {
+    className: "list-group"
+  }, buildings3.map((building, i) => /* @__PURE__ */ import_react40.default.createElement(Building2, __spreadProps(__spreadValues({
+    key: i
+  }, building), {
+    highlighted,
+    highlight: highlight2
+  }))))) : null;
   var mapStateToProps7 = (state) => {
     return __spreadValues({}, state.buildings);
   };
-  var actions6 = {};
+  var actions6 = { highlight };
   var Component7 = connect_default(mapStateToProps7, actions6)(Buildings);
   var Buildings_default = Component7;
 

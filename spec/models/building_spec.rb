@@ -53,6 +53,15 @@
 require 'rails_helper'
 
 RSpec.describe Building do
+  context 'addresses' do
+    let(:building) do
+      create(:building, addresses: [build(:address, is_primary: true)])
+    end
+    it 'prevents the last address from being deleted' do
+      building.addresses.first.destroy
+      expect(building.reload.addresses.length).to eq(1)
+    end
+  end
   context 'scopes' do
     describe '#order_by_street_address' do
       let(:building_with_later_modern_address_and_earlier_antique_address) do
@@ -149,11 +158,11 @@ RSpec.describe Building do
             'prefix' => 'E',
             'suffix' => 'St'
           }, {
-          'is_primary' => true,
-          'house_number' => '110',
-          'name' => 'Mill',
-          'prefix' => 'E',
-          'suffix' => 'St'
+            'is_primary' => true,
+            'house_number' => '110',
+            'name' => 'Mill',
+            'prefix' => 'E',
+            'suffix' => 'St'
           }
         ]
         subject.validate
