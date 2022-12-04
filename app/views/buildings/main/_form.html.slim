@@ -22,7 +22,7 @@
     .card-body
       .row
         .col-sm-6
-          = form.input :parent_id, as: :select, collection: form.object.nearbys(0.03), input_html: { id: 'building_id' }
+          = form.input :parent_id, as: :select, collection: form.object.nearbys(0.03) || BuildingsOnStreet.new(form.object).perform, input_html: { id: 'building_id' }
         .col-sm-6
           = form.input :hive_year
       .nested-form
@@ -53,7 +53,7 @@
           = form.input :postal_code
       .row
         .col-sm-4
-          = form.input :locality_id, collection: Locality.order(:position)
+          = form.input :locality_id, collection: Locality.order(:position), required: true
         .col-sm-4
           = form.input :lat
         .col-sm-4
