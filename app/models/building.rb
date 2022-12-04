@@ -268,7 +268,7 @@ class Building < ApplicationRecord
   before_validation :name_the_house
 
   def neighbors
-    lat? ? Building.near([lat, lon], 0.1).where('id<>?', id).limit(4).includes(:addresses) : []
+    lat? ? nearbys(0.1).limit(8).includes(:addresses) : []
   end
 
   attr_writer :residents
