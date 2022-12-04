@@ -33,7 +33,7 @@ class CensusRecord < ApplicationRecord
   after_initialize :set_defaults
   before_save :ensure_housing
 
-  before_save :audit_person_connection, if: :person_id_changed?
+  after_commit :audit_person_connection, if: :saved_change_to_person_id?
 
   auto_strip_attributes :first_name, :middle_name, :last_name, :street_house_number, :street_name,
                         :street_prefix, :street_suffix, :apartment_number, :profession, :name_prefix, :name_suffix
@@ -203,28 +203,20 @@ class CensusRecord < ApplicationRecord
   end
 
   def year
-    raise 'Need a year!'
-  end
-
-  def generate_person_record
-    person = Person.new "census#{year}_records" => [self]
-    %i[name_prefix name_suffix first_name middle_name last_name sex race].each do |attr|
-      person[attr] = self[attr]
-    end
-    person.save
-    reload
-    person
+    raise NotImplementedError.new('Need a year')
   end
 
   def audit_person_connection
-    if person_id.present?
-      person = Person.find(person_id)
+    person_from, person_to = saved_change_to_person_id
+    if person_to.present?
+      person = Person.find(person_to)
+      person&.save_with_estimates
       person&.audit_logs&.create message: "Connected to #{year} Census Record for #{name}"
-      person&.save
     end
-    if person_id_was.present?
-      person = Person.find(person_id_was)
+    if person_from.present?
+      person = Person.find(person_from)
       person&.audit_logs&.create message: "Disconnected from #{year} Census Record for #{name}"
+      person&.save_with_estimates
       person&.save
     end
   end

@@ -57,8 +57,6 @@ class Person < ApplicationRecord
     self.sex = nil if sex.blank? || sex == 'on'
     self.race = nil if race.blank? || race == 'on'
   end
-  before_save :estimate_birth_year
-  before_save :estimate_pob
 
   scope :uncensused, -> {
     qry = self
@@ -152,12 +150,22 @@ class Person < ApplicationRecord
   def estimated_birth_year
     return birth_year unless is_birth_year_estimated?
 
-    aged_records = census_records.reject { |r| r.age && r.age > 120 }
+    aged_records = census_records.reject { |r| r.age&.> 120 }
     return if aged_records.blank?
 
     aged_records
       .map { |r| r.year - (r.age || 0) }
       .reduce(&:+) / (census_records.length || 1)
+  end
+
+  def save_with_estimates
+    return if @saved_with_estimates
+    self.is_birth_year_estimated = true
+    self.is_pob_estimated = true
+    estimate_birth_year
+    estimate_pob
+    @saved_with_estimates = true
+    save
   end
 
   def estimate_birth_year

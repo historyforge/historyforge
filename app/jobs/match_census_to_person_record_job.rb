@@ -58,11 +58,6 @@ class MatchCensusToPersonRecordJob < ApplicationJob
   end
 
   def generate_person_record
-    @person_record = Person.new
-    %i[name_prefix name_suffix first_name middle_name last_name sex race].each do |attr|
-      @person_record[attr] = @census_record[attr]
-    end
-    @person_record.save
-    @person_record
+    GeneratePersonFromCensusRecord.new(@census_record).perform
   end
 end
