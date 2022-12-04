@@ -43,7 +43,6 @@ class BuildingsOnStreet
                     .left_outer_joins(:addresses)
                     .includes(:addresses)
                     .where(addresses: { name: street_name })
-                    .order(Arel.sql("addresses.name, addresses.suffix, addresses.prefix, #{HOUSE_SQL}"))
     items = items.where.not(id: building_id) if is_building
     items = items.where(addresses: { prefix: street_prefix }) if street_prefix.present?
     items = items.where(addresses: { suffix: street_suffix }) if street_suffix.present?
