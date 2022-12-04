@@ -36,7 +36,9 @@ FactoryBot.define do
     race { 'W' }
 
     after(:create) do |person|
-      person.remove_instance_variable :@census_records
+      if person.instance_variable_defined?(:@census_records)
+        person.remove_instance_variable :@census_records
+      end
     end
   end
 end
