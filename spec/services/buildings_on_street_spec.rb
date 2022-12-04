@@ -163,8 +163,8 @@ RSpec.describe BuildingsOnStreet do
                            street_name: 'Tioga',
                            street_prefix: 'N',
                            street_suffix: 'St' }
-    it 'still puts the building at the top of the list even though it is not on the street being searched' do
-      expect(subject.first.id).to eq(building.id)
+    it 'still puts the building in the list even though it is not on the street being searched' do
+      expect(subject.map(&:id)).to include(building.id)
     end
   end
 
