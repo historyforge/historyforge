@@ -55266,7 +55266,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     let suffix = jQuery("#street_suffix").val();
     if (street === "")
       suffix = null;
-    if (locality_id && street && house && suffix) {
+    if (locality_id && street && house) {
       const params = { locality_id, street, prefix, suffix, house };
       const year = document.location.pathname.split("/")[2];
       jQuery.getJSON(`/census/${year}/building_autocomplete`, params, function(json) {
