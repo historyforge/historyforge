@@ -171,6 +171,7 @@ en:
         attended_school: 'Attended School or College?'
         age: 'Age at Last Birthday'
         veteran: 'Veteran or Veteran-related'
+        income_plus: 'Income > $5,000'
       census1950_record:
         family_id: 'Serial No.'
         lives_on_farm: 'Live on Farm'
@@ -206,3 +207,4 @@ en:
         last_worker_class: 'Last Worker Class'
         years_married: 'Years Since (Last) Married, Widowed, Divorced, or Separated'
         newlyweds: 'Less Than 1 Year'
+
