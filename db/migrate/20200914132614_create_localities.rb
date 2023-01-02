@@ -913,30 +913,5 @@ class CreateLocalities < ActiveRecord::Migration[6.0]
     add_foreign_key 'professions', 'profession_groups'
     add_foreign_key 'professions', 'profession_subgroups'
     add_foreign_key 'terms', 'vocabularies'
-
-    reversible do |dir|
-      dir.up do
-        Locality.create name: 'City of Ithaca', latitude: 42.4418353, longitude: -76.4987984, position: 1
-
-        file = File.open(Rails.root.join('db', 'PhysicalFormats.txt')).read
-        entries = file.split("\n\n")
-        entries.each do |row|
-          entry = row.split("\n")
-          types = entry[1].split(';').map(&:strip).map { |t| PhysicalType.where(name: t.titleize).first_or_create }
-
-          item = PhysicalFormat.find_or_initialize_by name: entry[0]
-          item.description = entry[2]
-          item.physical_types = types
-          item.save
-        end
-
-        file = File.open(Rails.root.join('db', 'RightsStatements.txt')).read
-        entries = file.split("\n\n")
-        entries.each do |row|
-          entry = row.split("\n")
-          RightsStatement.find_or_create_by name: entry[0], description: entry[1], url: entry[2]
-        end
-      end
-    end
   end
 end
