@@ -918,17 +918,6 @@ class CreateLocalities < ActiveRecord::Migration[6.0]
       dir.up do
         Locality.create name: 'City of Ithaca', latitude: 42.4418353, longitude: -76.4987984, position: 1
 
-        BuildingType.where(name: 'public').first_or_create
-        BuildingType.where(name: 'residence').first_or_create
-        BuildingType.where(name: 'religious').first_or_create
-        BuildingType.where(name: 'commercial').first_or_create
-
-        ConstructionMaterial.where(name: 'wood', color: 'yellow').first_or_create
-        ConstructionMaterial.where(name: 'brick', color: 'red').first_or_create
-        ConstructionMaterial.where(name: 'stone', color: 'blue').first_or_create
-        ConstructionMaterial.where(name: 'iron', color: 'gray').first_or_create
-        ConstructionMaterial.where(name: 'adobe', color: 'green').first_or_create
-
         file = File.open(Rails.root.join('db', 'PhysicalFormats.txt')).read
         entries = file.split("\n\n")
         entries.each do |row|
