@@ -3,23 +3,6 @@
 # This file should contain all the record creation needed to seed the database with its default values.
 # The data can then be loaded with the rake db:seed (or created alongside the db with db:setup).
 #
-# Role.find_or_create_by name: 'administrator'
-# Role.find_or_create_by name: 'editor'
-# Role.find_or_create_by name: 'reviewer'
-# Role.find_or_create_by name: 'photographer'
-# Role.find_or_create_by name: 'census taker'
-# Role.find_or_create_by name: 'builder'
-
-# BuildingType.find_or_create_by(name: 'public')
-# BuildingType.find_or_create_by(name: 'residence')
-# BuildingType.find_or_create_by(name: 'religious')
-# BuildingType.find_or_create_by(name: 'commercial')
-
-# ConstructionMaterial.find_or_create_by(name: 'wood', color: 'yellow')
-# ConstructionMaterial.find_or_create_by(name: 'brick', color: 'red')
-# ConstructionMaterial.find_or_create_by(name: 'stone', color: 'blue')
-# ConstructionMaterial.find_or_create_by(name: 'iron', color: 'gray')
-# ConstructionMaterial.find_or_create_by(name: 'adobe', color: 'green')
 
 if Vocabulary.count == 0
   [
