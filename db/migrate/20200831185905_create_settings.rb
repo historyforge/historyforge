@@ -1,16 +1,13 @@
 # frozen_string_literal: true
 
 class CreateSettings < ActiveRecord::Migration[6.0]
-  def change
-    create_table :settings do |t|
-      t.string :key
-      t.string :name
-      t.string :hint
-      t.string :input_type
-      t.string :group
-      t.text :value
+  def up
+    return if table_exists?(:settings)
 
-      t.timestamps
-    end
+    sql = File.open(Rails.root('db', 'structure.sql'))
+    execute sql
+  end
+
+  def down
   end
 end
