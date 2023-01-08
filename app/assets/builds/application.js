@@ -11977,7 +11977,7 @@
             startText = getText();
             return true;
           }
-          function reset() {
+          function reset2() {
             root = null;
             startText = null;
             fallbackText = null;
@@ -12474,7 +12474,7 @@
             if (isComposing) {
               if (domEventName === "compositionend" || !canUseCompositionEvent && isFallbackCompositionEnd(domEventName, nativeEvent)) {
                 var chars = getData();
-                reset();
+                reset2();
                 isComposing = false;
                 return chars;
               }
@@ -33854,7 +33854,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       this.updateElements(meta.data, 0, meta.data.length, mode);
     }
     updateElements(bars, start, count, mode) {
-      const reset = mode === "reset";
+      const reset2 = mode === "reset";
       const { index, _cachedMeta: { vScale } } = this;
       const base = vScale.getBasePixel();
       const horizontal = vScale.isHorizontal();
@@ -33865,7 +33865,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       this.updateSharedOptions(sharedOptions, mode, firstOpts);
       for (let i = start; i < start + count; i++) {
         const parsed = this.getParsed(i);
-        const vpixels = reset || isNullOrUndef(parsed[vScale.axis]) ? { base, head: base } : this._calculateBarValuePixels(i);
+        const vpixels = reset2 || isNullOrUndef(parsed[vScale.axis]) ? { base, head: base } : this._calculateBarValuePixels(i);
         const ipixels = this._calculateBarIndexPixels(i, ruler);
         const stack = (parsed._stacks || {})[vScale.axis];
         const properties = {
@@ -34114,7 +34114,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       this.updateElements(points, 0, points.length, mode);
     }
     updateElements(points, start, count, mode) {
-      const reset = mode === "reset";
+      const reset2 = mode === "reset";
       const { iScale, vScale } = this._cachedMeta;
       const firstOpts = this.resolveDataElementOptions(start, mode);
       const sharedOptions = this.getSharedOptions(firstOpts);
@@ -34123,14 +34123,14 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       const vAxis = vScale.axis;
       for (let i = start; i < start + count; i++) {
         const point = points[i];
-        const parsed = !reset && this.getParsed(i);
+        const parsed = !reset2 && this.getParsed(i);
         const properties = {};
-        const iPixel = properties[iAxis] = reset ? iScale.getPixelForDecimal(0.5) : iScale.getPixelForValue(parsed[iAxis]);
-        const vPixel = properties[vAxis] = reset ? vScale.getBasePixel() : vScale.getPixelForValue(parsed[vAxis]);
+        const iPixel = properties[iAxis] = reset2 ? iScale.getPixelForDecimal(0.5) : iScale.getPixelForValue(parsed[iAxis]);
+        const vPixel = properties[vAxis] = reset2 ? vScale.getBasePixel() : vScale.getPixelForValue(parsed[vAxis]);
         properties.skip = isNaN(iPixel) || isNaN(vPixel);
         if (includeOptions) {
           properties.options = this.resolveDataElementOptions(i, point.active ? "active" : mode);
-          if (reset) {
+          if (reset2) {
             properties.options.radius = 0;
           }
         }
@@ -34282,24 +34282,24 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       this.innerRadius = Math.max(this.outerRadius - radiusLength * chartWeight, 0);
       this.updateElements(arcs, 0, arcs.length, mode);
     }
-    _circumference(i, reset) {
+    _circumference(i, reset2) {
       const opts = this.options;
       const meta = this._cachedMeta;
       const circumference = this._getCircumference();
-      if (reset && opts.animation.animateRotate || !this.chart.getDataVisibility(i) || meta._parsed[i] === null || meta.data[i].hidden) {
+      if (reset2 && opts.animation.animateRotate || !this.chart.getDataVisibility(i) || meta._parsed[i] === null || meta.data[i].hidden) {
         return 0;
       }
       return this.calculateCircumference(meta._parsed[i] * circumference / TAU);
     }
     updateElements(arcs, start, count, mode) {
-      const reset = mode === "reset";
+      const reset2 = mode === "reset";
       const chart = this.chart;
       const chartArea = chart.chartArea;
       const opts = chart.options;
       const animationOpts = opts.animation;
       const centerX = (chartArea.left + chartArea.right) / 2;
       const centerY = (chartArea.top + chartArea.bottom) / 2;
-      const animateScale = reset && animationOpts.animateScale;
+      const animateScale = reset2 && animationOpts.animateScale;
       const innerRadius = animateScale ? 0 : this.innerRadius;
       const outerRadius = animateScale ? 0 : this.outerRadius;
       const firstOpts = this.resolveDataElementOptions(start, mode);
@@ -34308,10 +34308,10 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       let startAngle = this._getRotation();
       let i;
       for (i = 0; i < start; ++i) {
-        startAngle += this._circumference(i, reset);
+        startAngle += this._circumference(i, reset2);
       }
       for (i = start; i < start + count; ++i) {
-        const circumference = this._circumference(i, reset);
+        const circumference = this._circumference(i, reset2);
         const arc = arcs[i];
         const properties = {
           x: centerX + this.offsetX,
@@ -34517,7 +34517,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       this.updateElements(points, start, count, mode);
     }
     updateElements(points, start, count, mode) {
-      const reset = mode === "reset";
+      const reset2 = mode === "reset";
       const { iScale, vScale, _stacked, _dataset } = this._cachedMeta;
       const firstOpts = this.resolveDataElementOptions(start, mode);
       const sharedOptions = this.getSharedOptions(firstOpts);
@@ -34526,7 +34526,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       const vAxis = vScale.axis;
       const { spanGaps, segment } = this.options;
       const maxGapLength = isNumber(spanGaps) ? spanGaps : Number.POSITIVE_INFINITY;
-      const directUpdate = this.chart._animationsDisabled || reset || mode === "none";
+      const directUpdate = this.chart._animationsDisabled || reset2 || mode === "none";
       let prevParsed = start > 0 && this.getParsed(start - 1);
       for (let i = start; i < start + count; ++i) {
         const point = points[i];
@@ -34534,7 +34534,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         const properties = directUpdate ? point : {};
         const nullData = isNullOrUndef(parsed[vAxis]);
         const iPixel = properties[iAxis] = iScale.getPixelForValue(parsed[iAxis], i);
-        const vPixel = properties[vAxis] = reset || nullData ? vScale.getBasePixel() : vScale.getPixelForValue(_stacked ? this.applyStack(vScale, parsed, _stacked) : parsed[vAxis], i);
+        const vPixel = properties[vAxis] = reset2 || nullData ? vScale.getBasePixel() : vScale.getPixelForValue(_stacked ? this.applyStack(vScale, parsed, _stacked) : parsed[vAxis], i);
         properties.skip = isNaN(iPixel) || isNaN(vPixel) || nullData;
         properties.stop = i > 0 && parsed[iAxis] - prevParsed[iAxis] > maxGapLength;
         if (segment) {
@@ -34654,7 +34654,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       this.innerRadius = this.outerRadius - radiusLength;
     }
     updateElements(arcs, start, count, mode) {
-      const reset = mode === "reset";
+      const reset2 = mode === "reset";
       const chart = this.chart;
       const dataset = this.getDataset();
       const opts = chart.options;
@@ -34675,7 +34675,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         let endAngle = angle + this._computeAngle(i, mode, defaultAngle);
         let outerRadius = chart.getDataVisibility(i) ? scale2.getDistanceFromCenterForValue(dataset.data[i]) : 0;
         angle = endAngle;
-        if (reset) {
+        if (reset2) {
           if (animationOpts.animateScale) {
             outerRadius = 0;
           }
@@ -34826,13 +34826,13 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     updateElements(points, start, count, mode) {
       const dataset = this.getDataset();
       const scale2 = this._cachedMeta.rScale;
-      const reset = mode === "reset";
+      const reset2 = mode === "reset";
       for (let i = start; i < start + count; i++) {
         const point = points[i];
         const options = this.resolveDataElementOptions(i, point.active ? "active" : mode);
         const pointPosition = scale2.getPointPositionForValue(i, dataset.data[i]);
-        const x = reset ? scale2.xCenter : pointPosition.x;
-        const y = reset ? scale2.yCenter : pointPosition.y;
+        const x = reset2 ? scale2.xCenter : pointPosition.x;
+        const y = reset2 ? scale2.yCenter : pointPosition.y;
         const properties = {
           x,
           y,
@@ -38000,8 +38000,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       let minPadding = 0;
       for (let i = 0, ilen = this.data.datasets.length; i < ilen; i++) {
         const { controller } = this.getDatasetMeta(i);
-        const reset = !animsDisabled && newControllers.indexOf(controller) === -1;
-        controller.buildOrUpdateElements(reset);
+        const reset2 = !animsDisabled && newControllers.indexOf(controller) === -1;
+        controller.buildOrUpdateElements(reset2);
         minPadding = Math.max(+controller.getMaxOverflow(), minPadding);
       }
       minPadding = this._minPadding = options.layout.autoPadding ? minPadding : 0;
@@ -51827,6 +51827,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     highlight: () => highlight,
     load: () => load,
     moveBuilding: () => moveBuilding,
+    reset: () => reset,
     searchTerm: () => searchTerm,
     select: () => select,
     setYear: () => setYear
@@ -51866,8 +51867,14 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     }
     dispatch(__spreadValues({ type: "BUILDING_LOADED" }, json.data));
   });
+  var reset = () => (dispatch, getState) => __async(void 0, null, function* () {
+    console.log("Resetting the Forge");
+    yield dispatch({ type: "FORGE_RESET" });
+    return load()(dispatch, getState);
+  });
   var select = (id, params) => (dispatch) => __async(void 0, null, function* () {
     const url = `/buildings/${id}.json`;
+    console.log(params);
     const json = yield import_axios2.default.get(url, { params: buildParams(params) });
     dispatch({ type: "BUILDING_SELECTED", building: json.data });
   });
@@ -51895,7 +51902,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     console.log(search3);
     if (search3 == null ? void 0 : search3.s) {
       params.s = search3.s;
-    } else if ((search3 == null ? void 0 : search3.people) || (search3 == null ? void 0 : search3.year)) {
+    }
+    if ((search3 == null ? void 0 : search3.people) || (search3 == null ? void 0 : search3.year)) {
       params.people = search3.people || (search3 == null ? void 0 : search3.year);
       params.peopleParams = search3.params.s;
     }
@@ -52022,13 +52030,20 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           }
         });
       }
+    }, [map3, mapRef]);
+    const { layers: layers3, layeredAt, opacityAt, loadedAt } = props;
+    (0, import_react21.useEffect)(() => {
       if (map3) {
-        if (propertyChanged(props, prevProps, "layeredAt")) {
-          addLayers(map3, props.layers);
-        }
-        if (propertyChanged(props, prevProps, "opacityAt")) {
-          addOpacity(map3, props.layers);
-        }
+        addLayers(map3, layers3);
+      }
+    }, [map3, layeredAt]);
+    (0, import_react21.useEffect)(() => {
+      if (map3) {
+        addOpacity(map3, layers3);
+      }
+    }, [map3, opacityAt]);
+    (0, import_react21.useEffect)(() => {
+      if (map3) {
         if (propertyChanged(props, prevProps, "loadedAt")) {
           const handlers = {
             onClick(building) {
@@ -52437,7 +52452,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   };
   var actions2 = {
     load,
-    reset: () => ({ type: "FORGE_RESET" }),
+    reset,
     setYear,
     addFilter: (filter) => ({ type: "FORGE_ADD_FILTER", filter }),
     removeFilter: (filter) => ({ type: "FORGE_REMOVE_FILTER", filter }),
@@ -52451,18 +52466,45 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
 
   // app/javascript/forge/Building/Residents.jsx
   var import_react32 = __toESM(require_react());
-  var Residents = ({ residents, years }) => /* @__PURE__ */ import_react32.default.createElement(import_react32.default.Fragment, null, years.map((year) => residents[year] && /* @__PURE__ */ import_react32.default.createElement("div", {
-    key: year
-  }, /* @__PURE__ */ import_react32.default.createElement("h5", null, "Families in ", year), /* @__PURE__ */ import_react32.default.createElement("table", {
-    className: "table table-condensed"
-  }, /* @__PURE__ */ import_react32.default.createElement("thead", null, /* @__PURE__ */ import_react32.default.createElement("tr", null, /* @__PURE__ */ import_react32.default.createElement("th", null, "Name"), /* @__PURE__ */ import_react32.default.createElement("th", null, "Relation"), /* @__PURE__ */ import_react32.default.createElement("th", null, "Age"), /* @__PURE__ */ import_react32.default.createElement("th", null, "Race"), /* @__PURE__ */ import_react32.default.createElement("th", null, "Sex"), /* @__PURE__ */ import_react32.default.createElement("th", null, "Occupation"))), /* @__PURE__ */ import_react32.default.createElement("tbody", {
-    key: year
-  }, residents[year].map((family) => family.map((person) => /* @__PURE__ */ import_react32.default.createElement("tr", {
-    key: person.id
-  }, /* @__PURE__ */ import_react32.default.createElement("td", null, /* @__PURE__ */ import_react32.default.createElement("a", {
-    href: `/census/${year}/${person.id}`
-  }, person.name)), /* @__PURE__ */ import_react32.default.createElement("td", null, person.relation_to_head), /* @__PURE__ */ import_react32.default.createElement("td", null, person.age), /* @__PURE__ */ import_react32.default.createElement("td", null, person.race), /* @__PURE__ */ import_react32.default.createElement("td", null, person.sex), /* @__PURE__ */ import_react32.default.createElement("td", null, person.occupation)))))))));
+  var Residents = ({ buildingId, residents, years }) => years.map((year) => residents[year] && /* @__PURE__ */ import_react32.default.createElement("div", {
+    key: year,
+    className: "mt-4"
+  }, /* @__PURE__ */ import_react32.default.createElement("h5", {
+    className: "mb-3"
+  }, "Residents in ", year), residents[year].map((family, index) => /* @__PURE__ */ import_react32.default.createElement("div", {
+    key: `family-${index}`
+  }, family.map((person, personIndex) => /* @__PURE__ */ import_react32.default.createElement(import_react32.default.Fragment, {
+    key: `person-${buildingId}-${personIndex}`
+  }, /* @__PURE__ */ import_react32.default.createElement(Resident, {
+    person,
+    year
+  }), /* @__PURE__ */ import_react32.default.createElement("hr", null)))))));
   var Residents_default = Residents;
+  var Resident = ({ person, year }) => {
+    let occupation = person.occupation;
+    if (person.occupation === "None") {
+      occupation = null;
+    }
+    if (person.relation_to_head === person.occupation) {
+      occupation = null;
+    }
+    return /* @__PURE__ */ import_react32.default.createElement(Row_default, null, /* @__PURE__ */ import_react32.default.createElement(Col_default, {
+      size: 7,
+      sm: 6
+    }, /* @__PURE__ */ import_react32.default.createElement("a", {
+      href: `/census/${year}/${person.id}`,
+      target: "_blank"
+    }, person.name)), /* @__PURE__ */ import_react32.default.createElement(Col_default, {
+      size: 5,
+      sm: 6
+    }, person.relation_to_head), /* @__PURE__ */ import_react32.default.createElement(Col_default, {
+      size: 6,
+      sm: 6
+    }, "Age ", person.age, " - ", person.race, " - ", person.sex), occupation && /* @__PURE__ */ import_react32.default.createElement(Col_default, {
+      size: 6,
+      sm: 6
+    }, occupation));
+  };
 
   // app/javascript/forge/Building/Details.jsx
   var import_react34 = __toESM(require_react());
@@ -52512,7 +52554,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     className: "mb-0"
   }, /* @__PURE__ */ import_react34.default.createElement("dt", null, "Years"), /* @__PURE__ */ import_react34.default.createElement("dd", null, building.year_earliest && `Built in ${building.year_earliest}.`, building.year_latest ? ` Torn down in ${building.year_latest}.` : " Still standing.")), building.architects && building.architects.length && /* @__PURE__ */ import_react34.default.createElement("dl", {
     className: "mb-0"
-  }, /* @__PURE__ */ import_react34.default.createElement("dt", null, "Architects"), /* @__PURE__ */ import_react34.default.createElement("dd", null, building.architects)), /* @__PURE__ */ import_react34.default.createElement("dl", null, /* @__PURE__ */ import_react34.default.createElement("dt", null, "Type"), /* @__PURE__ */ import_react34.default.createElement("dd", null, building.type || "Not specified"), /* @__PURE__ */ import_react34.default.createElement("dt", null, "Construction"), /* @__PURE__ */ import_react34.default.createElement("dd", null, building.stories && `${building.stories}-story `, building.frame && `${building.frame} structure`, building.lining && ` with ${building.lining} lining`, !building.stories && !building.frame && !building.lining && "Not specified", ".")), building.photo && /* @__PURE__ */ import_react34.default.createElement("div", null, /* @__PURE__ */ import_react34.default.createElement("picture", null, /* @__PURE__ */ import_react34.default.createElement("source", {
+  }, /* @__PURE__ */ import_react34.default.createElement("dt", null, "Architects"), /* @__PURE__ */ import_react34.default.createElement("dd", null, building.architects)), /* @__PURE__ */ import_react34.default.createElement("dl", null, /* @__PURE__ */ import_react34.default.createElement("dt", null, "Type"), /* @__PURE__ */ import_react34.default.createElement("dd", null, building.type || "Not specified"), (building.stories || building.frame || building.lining) && /* @__PURE__ */ import_react34.default.createElement(import_react34.default.Fragment, null, /* @__PURE__ */ import_react34.default.createElement("dt", null, "Construction"), /* @__PURE__ */ import_react34.default.createElement("dd", null, building.stories && `${building.stories}-story `, building.frame && `${building.frame} structure`, building.lining && ` with ${building.lining} lining`, "."))), building.photo && /* @__PURE__ */ import_react34.default.createElement("div", null, /* @__PURE__ */ import_react34.default.createElement("picture", null, /* @__PURE__ */ import_react34.default.createElement("source", {
     srcSet: `/photos/${building.photo}/15/phone.jpg`,
     media: "(max-width:480px)"
   }), /* @__PURE__ */ import_react34.default.createElement("source", {
@@ -52566,11 +52608,12 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           id: "building-details"
         }, /* @__PURE__ */ import_react35.default.createElement(Row_default, null, /* @__PURE__ */ import_react35.default.createElement(Col_default, {
           sm: 12,
-          md: 5
+          lg: 5
         }, /* @__PURE__ */ import_react35.default.createElement(Details_default, __spreadValues({}, building))), /* @__PURE__ */ import_react35.default.createElement(Col_default, {
           sm: 12,
-          md: 7
+          lg: 7
         }, /* @__PURE__ */ import_react35.default.createElement(Residents_default, {
+          buildingId: building.id,
           residents: building.census_records,
           years: this.props.years
         }))));
@@ -52607,7 +52650,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   // app/javascript/forge/reducers/search.js
   var search = function(state = {}, action) {
     if (action.type === "FORGE_RESET") {
-      return { years: state.years, params: { f: [], s: [], people: null } };
+      return { years: state.years, params: { f: [], s: [], people: null, year: null } };
     }
     if (action.type === "FORGE_SET_YEAR") {
       return forgeSetYear(state, action);
@@ -52754,26 +52797,64 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
 
   // app/javascript/forge/App.tsx
   var App = () => {
-    const [sidebar, setSidebar] = (0, import_react36.useState)(true);
+    const [sidebarLeft, setSidebarLeft] = (0, import_react36.useState)(false);
+    const [sidebarRight, setSidebarRight] = (0, import_react36.useState)(false);
     const [store, setStore] = (0, import_react36.useState)(null);
     store || setStore(buildStore(reducers_exports));
     (0, import_react36.useEffect)(() => {
       store.dispatch(setYear());
     });
+    const closeSidebar = (e) => {
+      e.stopPropagation();
+      setSidebarRight(false);
+      setSidebarLeft(false);
+    };
     return /* @__PURE__ */ import_react36.default.createElement(Provider_default, {
       store
     }, /* @__PURE__ */ import_react36.default.createElement("div", {
       className: "map-wrap"
-    }, /* @__PURE__ */ import_react36.default.createElement(Map_default, null), /* @__PURE__ */ import_react36.default.createElement("div", {
-      id: "forge-right-col",
-      className: sidebar ? "open" : "closed"
-    }, /* @__PURE__ */ import_react36.default.createElement(Layers_default, null), /* @__PURE__ */ import_react36.default.createElement(CensusSearch_default, null)), /* @__PURE__ */ import_react36.default.createElement("button", {
+    }, /* @__PURE__ */ import_react36.default.createElement(Map_default, null), sidebarLeft && /* @__PURE__ */ import_react36.default.createElement("div", {
+      id: "forge-left-col",
+      className: "open"
+    }, /* @__PURE__ */ import_react36.default.createElement("button", {
       type: "button",
-      id: "forge-sidebar-toggle",
+      id: "forge-sidebar-left-closer",
       className: "btn btn-primary",
-      onClick: () => setSidebar(!sidebar)
+      onClick: closeSidebar
     }, /* @__PURE__ */ import_react36.default.createElement("i", {
-      className: `fa fa-chevron-${sidebar ? "left" : "right"}`
+      className: "fa fa-close"
+    })), /* @__PURE__ */ import_react36.default.createElement(Layers_default, null)), sidebarRight && /* @__PURE__ */ import_react36.default.createElement("div", {
+      id: "forge-right-col",
+      className: "open"
+    }, /* @__PURE__ */ import_react36.default.createElement("button", {
+      type: "button",
+      id: "forge-sidebar-right-closer",
+      className: "btn btn-primary",
+      onClick: closeSidebar
+    }, /* @__PURE__ */ import_react36.default.createElement("i", {
+      className: "fa fa-close"
+    })), /* @__PURE__ */ import_react36.default.createElement(CensusSearch_default, null)), !sidebarLeft && !sidebarRight && /* @__PURE__ */ import_react36.default.createElement("button", {
+      type: "button",
+      id: "forge-sidebar-left-toggle",
+      className: "btn btn-primary",
+      onClick: (e) => {
+        e.stopPropagation();
+        setSidebarLeft(true);
+        setSidebarRight(false);
+      }
+    }, /* @__PURE__ */ import_react36.default.createElement("i", {
+      className: "fa fa-map"
+    })), !sidebarRight && !sidebarLeft && /* @__PURE__ */ import_react36.default.createElement("button", {
+      type: "button",
+      id: "forge-sidebar-right-toggle",
+      className: "btn btn-primary",
+      onClick: (e) => {
+        e.stopPropagation();
+        setSidebarLeft(false);
+        setSidebarRight(true);
+      }
+    }, /* @__PURE__ */ import_react36.default.createElement("i", {
+      className: "fa fa-search"
     })), /* @__PURE__ */ import_react36.default.createElement(Building_default, null)));
   };
   var App_default = App;

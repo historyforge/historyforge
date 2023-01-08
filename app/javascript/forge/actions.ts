@@ -41,8 +41,15 @@ export const load = () => async (dispatch, getState) => {
   // }
 }
 
+export const reset = () => async (dispatch, getState) => {
+  console.log("Resetting the Forge")
+  await dispatch({ type: "FORGE_RESET" });
+  return load()(dispatch, getState);
+}
+
 export const select = (id: number, params?: keyable) => async (dispatch) => {
   const url = `/buildings/${id}.json`
+  console.log(params)
   const json = await axios.get(url, { params: buildParams(params) })
   dispatch({ type: 'BUILDING_SELECTED', building: json.data })
 }
@@ -75,7 +82,8 @@ const buildParams = function(search: keyable) {
   console.log(search)
   if (search?.s) {
     params.s = search.s
-  } else if (search?.people || search?.year) {
+  }
+  if (search?.people || search?.year) {
     params.people = search.people || search?.year
     params.peopleParams = search.params.s
   }

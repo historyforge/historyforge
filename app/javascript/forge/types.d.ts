@@ -40,6 +40,9 @@ type MapProps = {
     highlight?: (id: number) => {},
     select?: (id: number, params?: keyable) => {},
     center?: { lat: number, lng: number },
+    layeredAt?: Date;
+    opacityAt?: Date;
+    loadedAt?: Date;
 }
 
 // interface SearchFilters {

@@ -1,6 +1,6 @@
 export const search = function(state = {}, action) {
   if (action.type === 'FORGE_RESET') {
-    return { years: state.years, params: { f: [], s: [], people: null } }
+    return { years: state.years, params: { f: [], s: [], people: null, year: null } }
   }
 
   if (action.type === 'FORGE_SET_YEAR') {

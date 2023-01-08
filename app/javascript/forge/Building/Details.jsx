@@ -2,7 +2,7 @@ import React from 'react'
 import SimpleFormat from '../SimpleFormat'
 
 const Details = building => (
-    <React.Fragment>
+    <>
         <h5>
             <a href={`/buildings/${building.id}`} target="_blank"
                title="Open building record in new tab" rel="noreferrer">
@@ -28,14 +28,17 @@ const Details = building => (
         <dl>
             <dt>Type</dt>
             <dd>{building.type || 'Not specified'}</dd>
-            <dt>Construction</dt>
-            <dd>
-                {building.stories && `${building.stories}-story `}
-                {building.frame && `${building.frame} structure`}
-                {building.lining && ` with ${building.lining} lining`}
-                {!building.stories && !building.frame && !building.lining && 'Not specified'}
-                .
-            </dd>
+            {(building.stories || building.frame || building.lining) && (
+                <>
+                <dt>Construction</dt>
+                <dd>
+                    {building.stories && `${building.stories}-story `}
+                    {building.frame && `${building.frame} structure`}
+                    {building.lining && ` with ${building.lining} lining`}
+                    .
+                </dd>
+                </>
+            )}
         </dl>
         {building.photo && (
             <div>
@@ -50,7 +53,7 @@ const Details = building => (
                 </picture>
             </div>
         )}
-    </React.Fragment>
+    </>
 )
 
 export default Details

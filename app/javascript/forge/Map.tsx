@@ -30,13 +30,24 @@ const Map = (props: MapProps) => {
         }
       })
     }
+  }, [map, mapRef]);
+
+  const { layers, layeredAt, opacityAt, loadedAt } = props;
+
+  useEffect(() => {
     if (map) {
-      if (propertyChanged(props, prevProps, 'layeredAt')) {
-        addLayers(map, props.layers)
-      }
-      if (propertyChanged(props, prevProps, 'opacityAt')) {
-        addOpacity(map, props.layers)
-      }
+      addLayers(map, layers)
+    }
+  }, [map, layeredAt]);
+
+  useEffect(() => {
+    if (map) {
+      addOpacity(map, layers)
+    }
+  }, [map, opacityAt]);
+
+  useEffect(() => {
+    if (map) {
       if (propertyChanged(props, prevProps, 'loadedAt')) {
         const handlers = {
           onClick(building) {
@@ -84,7 +95,8 @@ const Map = (props: MapProps) => {
       }
     }
     setPrevProps(props)
-  })
+  });
+
   return <div id="map-wrapper">
     <div id="map" ref={mapRef}/>
   </div>

@@ -22,7 +22,8 @@ body.streetview {
   }
 }
 
-#forge-right-col {
+#forge-left-col {
+  position: absolute;
   z-index: 19;
   box-sizing: border-box;
   background-color: white;
@@ -34,7 +35,7 @@ body.streetview {
   &.open {
     left: 0;
   }
-  transition: 0.5s left ease;
+  // transition: 0.5s left ease;
 
   h3 + .btn-group {
     .btn {
@@ -52,9 +53,47 @@ body.streetview {
   }
 }
 
-#forge-sidebar-toggle {
+#forge-right-col {
+  position: absolute;
+  z-index: 19;
+  box-sizing: border-box;
+  background-color: white;
+  max-height: calc(100vh - 66px);
+  overflow-y: scroll;
+  &.closed {
+    right: -100%;
+  }
+  &.open {
+    right: 0;
+  }
+  // transition: 0.5s left ease;
+
+  h3 + .btn-group {
+    .btn {
+      padding: 0.375rem 0;
+    }
+  }
+  .btn-group {
+    margin-bottom:12px;
+  }
+}
+
+#forge-sidebar-left-toggle {
   position: absolute;
   z-index: 20;
+}
+
+#forge-sidebar-right-toggle {
+  position: absolute;
+  z-index: 20;
+}
+
+#forge-sidebar-right-closer,
+#forge-sidebar-left-closer {
+  z-index: 20;
+  position: absolute;
+  top: 6px;
+  right: 6px;
 }
 
 @include media('<tablet') {
@@ -64,14 +103,19 @@ body.streetview {
     overflow: hidden;
   }
 
-  #forge-sidebar-toggle {
+  #forge-sidebar-left-toggle {
+    top: 64px;
+    left: 6px;
+  }
+
+  #forge-sidebar-right-toggle {
     top: 64px;
     right: 6px;
   }
 
+  #forge-left-col,
   #forge-right-col {
-    position:absolute;
-    top:50px;
+    top:58px;
     width:100%;
     padding: 15px;
   }
@@ -83,17 +127,23 @@ body.streetview {
     height: 100% !important;
   }
 
-  #forge-sidebar-toggle {
+  #forge-sidebar-left-toggle {
     top: 80px;
     left: 16px;
   }
 
+  #forge-sidebar-right-toggle {
+    top: 80px;
+    right: 16px;
+  }
+
+  #forge-left-col,
   #forge-right-col {
-    position:relative;
-    top:0;
+    top:66px;
     //margin-left: calc(100% - 450px);
-    width:450px;
-    padding: 56px 15px 15px;
+    min-width:400px;
+    max-width:90%;
+    padding: 15px 15px 15px;
   }
 }
 

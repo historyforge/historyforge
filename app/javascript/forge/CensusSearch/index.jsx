@@ -5,7 +5,7 @@ import YearButtons from './YearButtons'
 import AddFilter from './AddFilter'
 import Filters from './Filters'
 
-import { load, setYear } from '../actions'
+import { load, setYear, reset } from '../actions'
 
 const CensusSearch = (props) => {
   const [open, setOpen] = useState(null)
@@ -84,7 +84,7 @@ const mapStateToProps = state => {
 
 const actions = {
   load,
-  reset: () => ({ type: 'FORGE_RESET' }),
+  reset,
   setYear,
   addFilter: (filter) => ({ type: 'FORGE_ADD_FILTER', filter }),
   removeFilter: (filter) => ({ type: 'FORGE_REMOVE_FILTER', filter }),

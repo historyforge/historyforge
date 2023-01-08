@@ -46,11 +46,11 @@ class Building extends React.PureComponent {
         return (
                 <div id="building-details">
                     <Row>
-                        <Col sm={12} md={5}>
+                        <Col sm={12} lg={5}>
                             <Details {...building} />
                         </Col>
-                        <Col sm={12} md={7}>
-                            <Residents residents={building.census_records} years={this.props.years} />
+                        <Col sm={12} lg={7}>
+                            <Residents buildingId={building.id} residents={building.census_records} years={this.props.years} />
                         </Col>
                     </Row>
                 </div>

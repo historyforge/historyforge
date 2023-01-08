@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 namespace :db do
-
   desc 'Dumps the database to db/APP_NAME.dump'
   task dump: :environment do
     cmd = nil

@@ -1,29 +1,29 @@
 - set_page_title @record.name
-
+- btn_class = 'btn btn-sm btn-secondary'
 div.mb-3
   - if can?(:create, Flag)
-    = render 'shared/flag_it', item: @model, item_class: 'btn btn-secondary'
+    = render 'shared/flag_it', item: @model, item_class: btn_class
   - if can?(:update, @model)
-    => link_to [:edit, @model], class: 'btn btn-secondary' do
+    => link_to [:edit, @model], class: btn_class do
       i.fa.fa-pencil
       | Edit
   - if !@model.reviewed? && can?(:review, @model)
-    = link_to 'Review', [:reviewed, @model], data: { method: :put, confirm: 'This will mark the record as reviewed.' }, class: 'btn btn-secondary'
+    = link_to 'Review', [:reviewed, @model], data: { method: :put, confirm: 'This will mark the record as reviewed.' }, class: btn_class
   - if can?(:destroy, @model)
-    = link_to 'Delete', @model, data: { method: :delete, confirm: 'Are you sure? There is no return short of re-entering the census record.' }, class: 'btn btn-secondary'
-  = link_to 'View All', resource_class, class: 'btn btn-secondary'
+    = link_to 'Delete', @model, data: { method: :delete, confirm: 'Are you sure? There is no return short of re-entering the census record.' }, class: btn_class
+  = link_to 'View All', resource_class, class: btn_class
   - if @model.building_id?
-    = link_to 'Building', building_path(@model.building_id), class: 'btn btn-secondary'
+    = link_to 'Building', building_path(@model.building_id), class: btn_class
 
   - if can?(:create, CensusRecord)
     .add-another-form.float-right
       = form_tag([:save_as, @model], method: :put, class: 'form-inline') do
-        = select_tag 'then', options_for_select([['In this family', 'family'], ['In this dwelling', 'dwelling'], ['On this page', 'page'], ['In this enumeration district', 'enumeration']], params[:then]), prompt: 'Select', class: 'form-control'
-        = submit_tag 'Add Record', class: 'btn btn-primary'
+        = select_tag 'then', options_for_select([['In this family', 'family'], ['In this dwelling', 'dwelling'], ['On this page', 'page'], ['In this enumeration district', 'enumeration']], params[:then]), prompt: 'Select', class: 'form-control form-control-sm', style: 'width:120px'
+        = submit_tag 'Add', class: 'btn btn-sm btn-primary'
 
   - if !@model.reviewed? && can?(:review, @model)
     | &nbsp;
-    => link_to 'Good to go!', [:reviewed, @model], class: 'btn btn-danger', data: { method: :put, confirm: 'You are about to make this census record public.' }
+    => link_to 'Good to go!', [:reviewed, @model], class: 'btn btn-sm btn-danger', data: { method: :put, confirm: 'You are about to make this census record public.' }
 
 = render 'shared/flag_resolution', item: @model
 
