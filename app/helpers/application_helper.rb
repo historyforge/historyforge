@@ -97,7 +97,7 @@ module ApplicationHelper
 
   def table(attrs={}, &block)
     attrs['data-sortable'] = true if attrs.delete(:sortable)
-    content_tag :table, capture(&block), attrs.merge(class: 'table table-striped table-condensed')
+    content_tag :table, capture(&block), attrs.merge(class: 'table table-striped table-condensed table-responsive')
   end
 
   def link_to_building(building)

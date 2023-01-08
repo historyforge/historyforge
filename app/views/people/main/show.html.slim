@@ -43,21 +43,22 @@
         th POB
         th Marriage
         th Profession
-        th Relation to Head
-        th
+        th 
+          | Relation
+          span.d-xs-none.dl-lg-inline &nbsp;to Head
     tbody
-      - @person.census_records.each do |row|
+      - @person.census_records.each do |raw_row|
+        - row = raw_row.decorate
         tr
           td= row.year
-          td= row.name
-          td= row.street_address
+          td.text-nowrap= link_to row.name, row
+          td.text-nowrap= row.street_address
           td= row.age
           td= row.race
           td= row.pob
           td= row.marital_status
           td= row.profession
           td= row.relation_to_head
-          td= link_to 'View', row
 
 - if can?(:update, @person) && @person.possible_unmatched_records.present?
   .card.mb-3
@@ -79,21 +80,19 @@
         - @person.possible_unmatched_records.each do |row|
           tr
             td= row.year
-            td= row.name
-            td= row.street_address
+            td.text-nowrap= link_to row.name, row
+            td.text-nowrap= row.street_address
             td= row.age
+            td= row.race
             td= row.pob
-            td= row.marital_status
             td= row.marital_status
             td= row.profession
             td= row.relation_to_head
             td
-              = link_to 'View', row
-              td
-                = form_for row do |form|
-                  = hidden_field_tag 'census_record[person_id]', @person.id
-                  = hidden_field_tag 'context', 'person'
-                  = form.submit 'Match!', class: 'btn btn-sm btn-secondary'
+              = form_for row do |form|
+                = hidden_field_tag 'census_record[person_id]', @person.id
+                = hidden_field_tag 'context', 'person'
+                = form.submit 'Match!', class: 'btn btn-sm btn-secondary'
 
 .card.mb-1
   .card-header
