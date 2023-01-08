@@ -28603,12 +28603,12 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         }
         return function(createStore3) {
           return function() {
-            var store = createStore3.apply(void 0, arguments);
+            var store2 = createStore3.apply(void 0, arguments);
             var _dispatch = function dispatch() {
               throw new Error(false ? formatProdErrorMessage(15) : "Dispatching while constructing your middleware is not allowed. Other middleware would not be applied to this dispatch.");
             };
             var middlewareAPI = {
-              getState: store.getState,
+              getState: store2.getState,
               dispatch: function dispatch() {
                 return _dispatch.apply(void 0, arguments);
               }
@@ -28616,8 +28616,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
             var chain = middlewares.map(function(middleware) {
               return middleware(middlewareAPI);
             });
-            _dispatch = compose.apply(void 0, chain)(store.dispatch);
-            return _objectSpread__default["default"](_objectSpread__default["default"]({}, store), {}, {
+            _dispatch = compose.apply(void 0, chain)(store2.dispatch);
+            return _objectSpread__default["default"](_objectSpread__default["default"]({}, store2), {}, {
               dispatch: _dispatch
             });
           };
@@ -49828,7 +49828,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       return [];
     }
   };
-  function createSubscription(store, parentSub) {
+  function createSubscription(store2, parentSub) {
     var unsubscribe;
     var listeners = nullListeners;
     function addNestedSub(listener) {
@@ -49848,7 +49848,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     }
     function trySubscribe() {
       if (!unsubscribe) {
-        unsubscribe = parentSub ? parentSub.addNestedSub(handleChangeWrapper) : store.subscribe(handleChangeWrapper);
+        unsubscribe = parentSub ? parentSub.addNestedSub(handleChangeWrapper) : store2.subscribe(handleChangeWrapper);
         listeners = createListenerCollection();
       }
     }
@@ -49880,22 +49880,22 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
 
   // node_modules/react-redux/es/components/Provider.js
   function Provider(_ref) {
-    var store = _ref.store, context = _ref.context, children = _ref.children;
+    var store2 = _ref.store, context = _ref.context, children = _ref.children;
     var contextValue = (0, import_react3.useMemo)(function() {
-      var subscription = createSubscription(store);
+      var subscription = createSubscription(store2);
       subscription.onStateChange = subscription.notifyNestedSubs;
       return {
-        store,
+        store: store2,
         subscription
       };
-    }, [store]);
+    }, [store2]);
     var previousState = (0, import_react3.useMemo)(function() {
-      return store.getState();
-    }, [store]);
+      return store2.getState();
+    }, [store2]);
     useIsomorphicLayoutEffect(function() {
       var subscription = contextValue.subscription;
       subscription.trySubscribe();
-      if (previousState !== store.getState()) {
+      if (previousState !== store2.getState()) {
         subscription.notifyNestedSubs();
       }
       return function() {
@@ -49986,7 +49986,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       notifyNestedSubs();
     }
   }
-  function subscribeUpdates(shouldHandleStateChanges, store, subscription, childPropsSelector, lastWrapperProps, lastChildProps, renderIsScheduled, childPropsFromStoreUpdate, notifyNestedSubs, forceComponentUpdateDispatch) {
+  function subscribeUpdates(shouldHandleStateChanges, store2, subscription, childPropsSelector, lastWrapperProps, lastChildProps, renderIsScheduled, childPropsFromStoreUpdate, notifyNestedSubs, forceComponentUpdateDispatch) {
     if (!shouldHandleStateChanges)
       return;
     var didUnsubscribe = false;
@@ -49995,7 +49995,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       if (didUnsubscribe) {
         return;
       }
-      var latestStoreState = store.getState();
+      var latestStoreState = store2.getState();
       var newChildProps, error2;
       try {
         newChildProps = childPropsSelector(latestStoreState, lastWrapperProps.current);
@@ -50075,8 +50075,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         WrappedComponent
       });
       var pure = connectOptions.pure;
-      function createChildSelector(store) {
-        return selectorFactory(store.dispatch, selectorFactoryOptions);
+      function createChildSelector(store2) {
+        return selectorFactory(store2.dispatch, selectorFactoryOptions);
       }
       var usePureOnlyMemo = pure ? import_react4.useMemo : function(callback2) {
         return callback2();
@@ -50095,17 +50095,17 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         if (!didStoreComeFromProps && !didStoreComeFromContext) {
           throw new Error('Could not find "store" in the context of ' + ('"' + displayName + '". Either wrap the root component in a <Provider>, ') + "or pass a custom React context provider to <Provider> and the corresponding " + ("React context consumer to " + displayName + " in connect options."));
         }
-        var store = didStoreComeFromProps ? props.store : contextValue.store;
+        var store2 = didStoreComeFromProps ? props.store : contextValue.store;
         var childPropsSelector = (0, import_react4.useMemo)(function() {
-          return createChildSelector(store);
-        }, [store]);
+          return createChildSelector(store2);
+        }, [store2]);
         var _useMemo2 = (0, import_react4.useMemo)(function() {
           if (!shouldHandleStateChanges)
             return NO_SUBSCRIPTION_ARRAY;
-          var subscription2 = createSubscription(store, didStoreComeFromProps ? null : contextValue.subscription);
+          var subscription2 = createSubscription(store2, didStoreComeFromProps ? null : contextValue.subscription);
           var notifyNestedSubs2 = subscription2.notifyNestedSubs.bind(subscription2);
           return [subscription2, notifyNestedSubs2];
-        }, [store, didStoreComeFromProps, contextValue]), subscription = _useMemo2[0], notifyNestedSubs = _useMemo2[1];
+        }, [store2, didStoreComeFromProps, contextValue]), subscription = _useMemo2[0], notifyNestedSubs = _useMemo2[1];
         var overriddenContextValue = (0, import_react4.useMemo)(function() {
           if (didStoreComeFromProps) {
             return contextValue;
@@ -50126,10 +50126,10 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           if (childPropsFromStoreUpdate.current && wrapperProps === lastWrapperProps.current) {
             return childPropsFromStoreUpdate.current;
           }
-          return childPropsSelector(store.getState(), wrapperProps);
-        }, [store, previousStateUpdateResult, wrapperProps]);
+          return childPropsSelector(store2.getState(), wrapperProps);
+        }, [store2, previousStateUpdateResult, wrapperProps]);
         useIsomorphicLayoutEffectWithArgs(captureWrapperProps, [lastWrapperProps, lastChildProps, renderIsScheduled, wrapperProps, actualChildProps, childPropsFromStoreUpdate, notifyNestedSubs]);
-        useIsomorphicLayoutEffectWithArgs(subscribeUpdates, [shouldHandleStateChanges, store, subscription, childPropsSelector, lastWrapperProps, lastChildProps, renderIsScheduled, childPropsFromStoreUpdate, notifyNestedSubs, forceComponentUpdateDispatch], [store, subscription, childPropsSelector]);
+        useIsomorphicLayoutEffectWithArgs(subscribeUpdates, [shouldHandleStateChanges, store2, subscription, childPropsSelector, lastWrapperProps, lastChildProps, renderIsScheduled, childPropsFromStoreUpdate, notifyNestedSubs, forceComponentUpdateDispatch], [store2, subscription, childPropsSelector]);
         var renderedWrappedComponent = (0, import_react4.useMemo)(function() {
           return /* @__PURE__ */ import_react4.default.createElement(WrappedComponent, _extends({}, actualChildProps, {
             ref: reactReduxForwardedRef
@@ -50479,6 +50479,41 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
 
   // node_modules/react-redux/es/hooks/useReduxContext.js
   var import_react5 = __toESM(require_react());
+  function useReduxContext() {
+    var contextValue = (0, import_react5.useContext)(ReactReduxContext);
+    if (!contextValue) {
+      throw new Error("could not find react-redux context value; please ensure the component is wrapped in a <Provider>");
+    }
+    return contextValue;
+  }
+
+  // node_modules/react-redux/es/hooks/useStore.js
+  function createStoreHook(context) {
+    if (context === void 0) {
+      context = ReactReduxContext;
+    }
+    var useReduxContext2 = context === ReactReduxContext ? useReduxContext : function() {
+      return (0, import_react6.useContext)(context);
+    };
+    return function useStore2() {
+      var _useReduxContext = useReduxContext2(), store2 = _useReduxContext.store;
+      return store2;
+    };
+  }
+  var useStore = /* @__PURE__ */ createStoreHook();
+
+  // node_modules/react-redux/es/hooks/useDispatch.js
+  function createDispatchHook(context) {
+    if (context === void 0) {
+      context = ReactReduxContext;
+    }
+    var useStore2 = context === ReactReduxContext ? useStore : createStoreHook(context);
+    return function useDispatch2() {
+      var store2 = useStore2();
+      return store2.dispatch;
+    };
+  }
+  var useDispatch = /* @__PURE__ */ createDispatchHook();
 
   // node_modules/react-redux/es/hooks/useSelector.js
   var import_react7 = __toESM(require_react());
@@ -51824,6 +51859,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   __export(actions_exports, {
     address: () => address,
     deAddress: () => deAddress,
+    forgeInit: () => forgeInit,
     highlight: () => highlight,
     load: () => load,
     moveBuilding: () => moveBuilding,
@@ -51836,6 +51872,10 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var highlight = (id) => (dispatch) => {
     dispatch({ type: "BUILDING_HIGHLIGHT", id });
   };
+  var forgeInit = () => (dispatch) => __async(void 0, null, function* () {
+    yield dispatch({ type: "FORGE_INIT" });
+    dispatch(setYear());
+  });
   var setYear = (proposedYear) => (dispatch, getState) => {
     let year = proposedYear || getState().search.params.people;
     if (year) {
@@ -51874,7 +51914,6 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
   var select = (id, params) => (dispatch) => __async(void 0, null, function* () {
     const url = `/buildings/${id}.json`;
-    console.log(params);
     const json = yield import_axios2.default.get(url, { params: buildParams(params) });
     dispatch({ type: "BUILDING_SELECTED", building: json.data });
   });
@@ -52639,6 +52678,70 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var Component4 = connect_default(mapStateToProps4, actions3)(Building);
   var Building_default = Component4;
 
+  // app/javascript/forge/App.tsx
+  var App = () => {
+    const [sidebarLeft, setSidebarLeft] = (0, import_react36.useState)(false);
+    const [sidebarRight, setSidebarRight] = (0, import_react36.useState)(false);
+    const dispatch = useDispatch();
+    (0, import_react36.useEffect)(() => {
+      dispatch(forgeInit());
+    }, [dispatch]);
+    const closeSidebar = (e) => {
+      e.stopPropagation();
+      setSidebarRight(false);
+      setSidebarLeft(false);
+    };
+    return /* @__PURE__ */ import_react36.default.createElement("div", {
+      className: "map-wrap"
+    }, /* @__PURE__ */ import_react36.default.createElement(Map_default, null), sidebarLeft && /* @__PURE__ */ import_react36.default.createElement("div", {
+      id: "forge-left-col",
+      className: "open"
+    }, /* @__PURE__ */ import_react36.default.createElement("button", {
+      type: "button",
+      id: "forge-sidebar-left-closer",
+      className: "btn btn-primary",
+      onClick: closeSidebar
+    }, /* @__PURE__ */ import_react36.default.createElement("i", {
+      className: "fa fa-close"
+    })), /* @__PURE__ */ import_react36.default.createElement(Layers_default, null)), sidebarRight && /* @__PURE__ */ import_react36.default.createElement("div", {
+      id: "forge-right-col",
+      className: "open"
+    }, /* @__PURE__ */ import_react36.default.createElement("button", {
+      type: "button",
+      id: "forge-sidebar-right-closer",
+      className: "btn btn-primary",
+      onClick: closeSidebar
+    }, /* @__PURE__ */ import_react36.default.createElement("i", {
+      className: "fa fa-close"
+    })), /* @__PURE__ */ import_react36.default.createElement(CensusSearch_default, null)), !sidebarLeft && !sidebarRight && /* @__PURE__ */ import_react36.default.createElement("button", {
+      type: "button",
+      id: "forge-sidebar-left-toggle",
+      className: "btn btn-primary",
+      onClick: (e) => {
+        e.stopPropagation();
+        setSidebarLeft(true);
+        setSidebarRight(false);
+      }
+    }, /* @__PURE__ */ import_react36.default.createElement("i", {
+      className: "fa fa-map"
+    })), !sidebarRight && !sidebarLeft && /* @__PURE__ */ import_react36.default.createElement("button", {
+      type: "button",
+      id: "forge-sidebar-right-toggle",
+      className: "btn btn-primary",
+      onClick: (e) => {
+        e.stopPropagation();
+        setSidebarLeft(false);
+        setSidebarRight(true);
+      }
+    }, /* @__PURE__ */ import_react36.default.createElement("i", {
+      className: "fa fa-search"
+    })), /* @__PURE__ */ import_react36.default.createElement(Building_default, null));
+  };
+  var App_default = App;
+
+  // app/javascript/forge/index.tsx
+  var import_react37 = __toESM(require_react());
+
   // app/javascript/forge/reducers/index.js
   var reducers_exports = {};
   __export(reducers_exports, {
@@ -52648,7 +52751,36 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // app/javascript/forge/reducers/search.js
+  var SearchStorage = class {
+    constructor() {
+      __publicField(this, "params", null);
+      __publicField(this, "CACHE_KEY", "forgeSearch");
+      try {
+        const rawParams = window.localStorage.getItem(this.CACHE_KEY);
+        if (rawParams) {
+          this.params = JSON.parse(rawParams);
+        }
+      } catch (error2) {
+        console.error(error2);
+      }
+    }
+    save(params) {
+      this.params = params;
+      window.localStorage.setItem(this.CACHE_KEY, JSON.stringify(this.params));
+    }
+    setYear(year) {
+      var _a;
+      if (((_a = this.params) == null ? void 0 : _a.year) === year) {
+        return;
+      }
+      this.save({ people: year, s: null });
+    }
+  };
+  var searchStorage = new SearchStorage();
   var search = function(state = {}, action) {
+    if (action.type === "FORGE_INIT") {
+      return forgeInit2(state);
+    }
     if (action.type === "FORGE_RESET") {
       return { years: state.years, params: { f: [], s: [], people: null, year: null } };
     }
@@ -52669,16 +52801,29 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     }
     return state;
   };
+  function forgeInit2(state) {
+    var _a;
+    if ((_a = state.params) == null ? void 0 : _a.people) {
+      return state;
+    }
+    const { params } = searchStorage;
+    if (params == null ? void 0 : params.people) {
+      return __spreadProps(__spreadValues({}, state), { year: params.people, params });
+    }
+    return state;
+  }
   function forgeSetYear(state, action) {
+    searchStorage.setYear(action.year);
     return __spreadProps(__spreadValues({}, state), { year: action.year, params: __spreadProps(__spreadValues({}, state.params), { people: action.year }) });
   }
   function forgeFiltersLoaded(state, action) {
     const nextState = { filters: action.filters, year: state.year, years: state.years };
-    if (state.params && state.params.s) {
+    if (state.params && state.params.s && state.params.s) {
+      console.log("resetting filters", state.params);
       nextState.current = buildFilters(action.filters, state.params.s);
       nextState.params = buildParams2(nextState, nextState.current);
     } else if (state.year) {
-      nextState.params = { s: {}, people: state.year };
+      nextState.params = { s: state.current || {}, people: state.year };
     }
     return nextState;
   }
@@ -52705,6 +52850,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       const filter = current[key];
       params.s[filter.predicate] = config.type === "boolean" ? 1 : filter.criteria;
     });
+    searchStorage.save(params);
     return params;
   }
   function buildFilters(filters, params) {
@@ -52721,10 +52867,53 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   }
 
   // app/javascript/forge/reducers/layers.js
+  var LayerStorage = class {
+    constructor() {
+      __publicField(this, "layers", /* @__PURE__ */ new Set());
+      __publicField(this, "CACHE_KEY", "forgeSelectedLayers");
+      try {
+        const rawLayers = window.localStorage.getItem(this.CACHE_KEY);
+        if (rawLayers) {
+          JSON.parse(rawLayers).forEach((layer) => this.layers.add(layer));
+        }
+        console.log("Restored layers", this.layers);
+      } catch (error2) {
+        console.error(error2);
+      }
+    }
+    add(layer) {
+      console.log(`Adding layer ${layer}`);
+      this.layers.add(layer);
+      this.save();
+    }
+    remove(layer) {
+      this.layers.remove(layer);
+      this.save();
+    }
+    isSelected(layer) {
+      return this.layers.has(layer.id);
+    }
+    save() {
+      window.localStorage.setItem(this.CACHE_KEY, JSON.stringify([...this.layers]));
+    }
+  };
+  var layerStorage = new LayerStorage();
   var layers = function(state = {}, action) {
+    if (action.type === "FORGE_INIT") {
+      const nextLayers = state.layers.map((layer) => {
+        layer.selected = layerStorage.isSelected(layer);
+        return layer;
+      });
+      return __spreadProps(__spreadValues({}, state), { layers: nextLayers, layeredAt: new Date().getTime() });
+    }
     if (action.type === "LAYER_TOGGLE") {
       const layer = state.layers.find((item) => item.id === action.id);
       layer.selected = !layer.selected;
+      if (layer.selected) {
+        layerStorage.add(layer.id);
+      } else {
+        layerStorage.remove(layer.id);
+      }
       return __spreadProps(__spreadValues({}, state), { layers: [...state.layers], layeredAt: new Date().getTime() });
     }
     if (action.type === "LAYER_OPACITY") {
@@ -52795,76 +52984,14 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     return (0, import_redux.createStore)(combinedReducers, window.initialState, appliedMiddlewares);
   };
 
-  // app/javascript/forge/App.tsx
-  var App = () => {
-    const [sidebarLeft, setSidebarLeft] = (0, import_react36.useState)(false);
-    const [sidebarRight, setSidebarRight] = (0, import_react36.useState)(false);
-    const [store, setStore] = (0, import_react36.useState)(null);
-    store || setStore(buildStore(reducers_exports));
-    (0, import_react36.useEffect)(() => {
-      store.dispatch(setYear());
-    });
-    const closeSidebar = (e) => {
-      e.stopPropagation();
-      setSidebarRight(false);
-      setSidebarLeft(false);
-    };
-    return /* @__PURE__ */ import_react36.default.createElement(Provider_default, {
-      store
-    }, /* @__PURE__ */ import_react36.default.createElement("div", {
-      className: "map-wrap"
-    }, /* @__PURE__ */ import_react36.default.createElement(Map_default, null), sidebarLeft && /* @__PURE__ */ import_react36.default.createElement("div", {
-      id: "forge-left-col",
-      className: "open"
-    }, /* @__PURE__ */ import_react36.default.createElement("button", {
-      type: "button",
-      id: "forge-sidebar-left-closer",
-      className: "btn btn-primary",
-      onClick: closeSidebar
-    }, /* @__PURE__ */ import_react36.default.createElement("i", {
-      className: "fa fa-close"
-    })), /* @__PURE__ */ import_react36.default.createElement(Layers_default, null)), sidebarRight && /* @__PURE__ */ import_react36.default.createElement("div", {
-      id: "forge-right-col",
-      className: "open"
-    }, /* @__PURE__ */ import_react36.default.createElement("button", {
-      type: "button",
-      id: "forge-sidebar-right-closer",
-      className: "btn btn-primary",
-      onClick: closeSidebar
-    }, /* @__PURE__ */ import_react36.default.createElement("i", {
-      className: "fa fa-close"
-    })), /* @__PURE__ */ import_react36.default.createElement(CensusSearch_default, null)), !sidebarLeft && !sidebarRight && /* @__PURE__ */ import_react36.default.createElement("button", {
-      type: "button",
-      id: "forge-sidebar-left-toggle",
-      className: "btn btn-primary",
-      onClick: (e) => {
-        e.stopPropagation();
-        setSidebarLeft(true);
-        setSidebarRight(false);
-      }
-    }, /* @__PURE__ */ import_react36.default.createElement("i", {
-      className: "fa fa-map"
-    })), !sidebarRight && !sidebarLeft && /* @__PURE__ */ import_react36.default.createElement("button", {
-      type: "button",
-      id: "forge-sidebar-right-toggle",
-      className: "btn btn-primary",
-      onClick: (e) => {
-        e.stopPropagation();
-        setSidebarLeft(false);
-        setSidebarRight(true);
-      }
-    }, /* @__PURE__ */ import_react36.default.createElement("i", {
-      className: "fa fa-search"
-    })), /* @__PURE__ */ import_react36.default.createElement(Building_default, null)));
-  };
-  var App_default = App;
-
   // app/javascript/forge/index.tsx
-  var import_react37 = __toESM(require_react());
+  var store = buildStore(reducers_exports);
   document.addEventListener("DOMContentLoaded", () => {
     const forge = document.getElementById("forge");
     if (forge)
-      import_react_dom3.default.render(/* @__PURE__ */ import_react37.default.createElement(App_default, null), forge);
+      import_react_dom3.default.render(/* @__PURE__ */ import_react37.default.createElement(Provider_default, {
+        store
+      }, /* @__PURE__ */ import_react37.default.createElement(App_default, null)), forge);
   });
 
   // app/javascript/miniforge/index.tsx
@@ -53105,10 +53232,10 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
 
   // app/javascript/miniforge/App.jsx
   var App2 = () => {
-    const [store, setStore] = (0, import_react41.useState)(null);
-    store || setStore(buildStore(reducers_exports2));
+    const [store2, setStore] = (0, import_react41.useState)(null);
+    store2 || setStore(buildStore(reducers_exports2));
     return /* @__PURE__ */ import_react41.default.createElement(Provider_default, {
-      store
+      store: store2
     }, /* @__PURE__ */ import_react41.default.createElement("div", {
       className: "map-wrap"
     }, /* @__PURE__ */ import_react41.default.createElement(Map_default2, null), /* @__PURE__ */ import_react41.default.createElement("div", {

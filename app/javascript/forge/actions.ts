@@ -4,6 +4,11 @@ export const highlight = (id: number) => dispatch => {
   dispatch({ type: 'BUILDING_HIGHLIGHT', id })
 }
 
+export const forgeInit = () => async dispatch => {
+  await dispatch({ type: "FORGE_INIT" });
+  dispatch(setYear());
+}
+
 export const setYear = (proposedYear?: number) => (dispatch, getState) => {
   let year = proposedYear || getState().search.params.people
   if (year) {
@@ -49,7 +54,6 @@ export const reset = () => async (dispatch, getState) => {
 
 export const select = (id: number, params?: keyable) => async (dispatch) => {
   const url = `/buildings/${id}.json`
-  console.log(params)
   const json = await axios.get(url, { params: buildParams(params) })
   dispatch({ type: 'BUILDING_SELECTED', building: json.data })
 }

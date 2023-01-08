@@ -1,4 +1,39 @@
+class SearchStorage {
+  params = null;
+  CACHE_KEY = "forgeSearch";
+
+  constructor() {
+    try {
+      const rawParams = window.localStorage.getItem(this.CACHE_KEY);
+      if (rawParams) {
+        this.params = JSON.parse(rawParams);
+      }
+    } catch(error) {
+      console.error(error)
+    }
+  }
+
+  save(params) {
+    this.params = params;
+    window.localStorage.setItem(this.CACHE_KEY, JSON.stringify(this.params));
+  }
+
+  setYear(year) {
+    if (this.params?.year === year) {
+      return;
+    }
+
+    this.save({ people: year, s: null });
+  }
+}
+
+const searchStorage = new SearchStorage();
+
 export const search = function(state = {}, action) {
+  if (action.type === "FORGE_INIT") {
+    return forgeInit(state);
+  }
+
   if (action.type === 'FORGE_RESET') {
     return { years: state.years, params: { f: [], s: [], people: null, year: null } }
   }
@@ -26,17 +61,31 @@ export const search = function(state = {}, action) {
   return state
 }
 
+function forgeInit(state) {
+  if (state.params?.people) {
+    return state; // forgeFiltersLoaded will set the filters once they've loaded
+  }
+
+  const { params } = searchStorage;
+  if (params?.people) {
+    return { ...state, year: params.people, params };
+  }
+  return state;
+}
+
 function forgeSetYear(state, action) {
+  searchStorage.setYear(action.year);
   return { ...state, year: action.year, params: { ...state.params, people: action.year } }
 }
 
 function forgeFiltersLoaded(state, action) {
   const nextState = { filters: action.filters, year: state.year, years: state.years }
-  if (state.params && state.params.s) {
+  if (state.params && state.params.s && state.params.s) {
+    console.log("resetting filters", state.params)
     nextState.current = buildFilters(action.filters, state.params.s)
     nextState.params = buildParams(nextState, nextState.current)
   } else if (state.year) {
-    nextState.params = { s: {}, people: state.year }
+    nextState.params = { s: state.current || {}, people: state.year }
   }
   return nextState
 }
@@ -45,18 +94,21 @@ function forgeAddFilter(state, action) {
   const current = state.current || {}
   const scopes = Object.keys(state.filters[action.filter].scopes)
   current[action.filter] = { field: action.filter, predicate: scopes[0], criteria: null }
+  // searchStorage.setFilters(current);
   return { ...state, current }
 }
 
 function forgeRemoveFilter(state, action) {
   const current = { ...state.current }
   delete current[action.filter]
+  // searchStorage.setFilters(current);
   return { ...state, current, params: buildParams(state, current) }
 }
 
 function forgeSetFilter(state, action) {
   const current = { ...state.current }
   current[action.field] = { field: action.field, predicate: action.predicate, criteria: action.criteria }
+  // searchStorage.setFilters(current);
   return { ...state, current, d: new Date().getTime(), params: buildParams(state, current) }
 }
 
@@ -66,7 +118,8 @@ function buildParams({ filters, year }, current) {
     const config = filters[key]
     const filter = current[key]
     params.s[filter.predicate] = config.type === 'boolean' ? 1 : filter.criteria
-  })
+  });
+  searchStorage.save(params);
   return params
 }
 
