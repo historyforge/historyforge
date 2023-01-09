@@ -1,19 +1,29 @@
 - set_page_title 'Unresolved Flags'
+- content_for :pills do
+  = search_form_for @search, url: [:flags], builder: SimpleForm::FormBuilder, html: { class: 'mb-3' } do |form|
+    .form-inline
+      = form.input :flaggable_type_eq, collection: Flag.pluck('distinct flaggable_type').map { |ft| [ft.safe_constantize.human_name, ft] }.sort_by(&:first), include_blank: "Flaggable Thing", label: false
+      = form.submit "Search", class: 'btn btn-primary'
+      - if params[:q] && params[:q][:flaggable_type_eq]
+        = link_to 'Reset', flags_path(reset: true), class: 'btn btn-light'
 
 - if @flags.blank?
-  .alert.alert-success All flags have been resolved!
+  .alert.alert-success Nothing to show here!
 - else
   = table do
     thead
       tr
         th Flagged Item
-        th Reason
+        th Type
         th Flagger
         th When
+        th Reason
+
     tbody
       - @flags.each do |flag|
         tr
           td= flag.flaggable ? link_to(flag.flaggable.name, flag.flaggable) : 'Oops a stray'
-          td= flag.display_reason
+          td= flag.flaggable_type.safe_constantize.human_name
           td= flag.flagged_by&.name
           td= flag.created_at.strftime('%-m/%-d/%y')
+          td.col-6= [flag.display_reason, flag.message].compact_blank.join("<br />").html_safe

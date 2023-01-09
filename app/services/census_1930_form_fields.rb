@@ -33,7 +33,7 @@ class Census1930FormFields < CensusFormFieldConfig
   input :mother_tongue
   input :foreign_born, as: :boolean, dependents: true
   input :year_immigrated, as: :integer, depends_on: :foreign_born, min: 0
-  input :naturalized_alien, as: :radio_buttons, coded: true, depends_on: :foreign_born, min: 0
+  input :naturalized_alien, as: :radio_buttons, coded: true, min: 0
   input :can_speak_english, as: :boolean
 
   divider 'Occupation, Industry, and Class of Worker'

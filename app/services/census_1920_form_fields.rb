@@ -10,7 +10,6 @@ class Census1920FormFields < CensusFormFieldConfig
 
   divider 'Household Data'
   input :owned_or_rented, as: :radio_buttons, coded: true
-
   input :mortgage, as: :radio_buttons, coded: true
 
   divider 'Personal Description'
@@ -23,7 +22,7 @@ class Census1920FormFields < CensusFormFieldConfig
   divider 'Citizenship'
   input :foreign_born, as: :boolean, dependents: true
   input :year_immigrated, as: :integer, depends_on: :foreign_born
-  input :naturalized_alien, as: :radio_buttons, coded: true, depends_on: :foreign_born
+  input :naturalized_alien, as: :radio_buttons, coded: true
   input :year_naturalized, as: :integer, depends_on: :foreign_born
 
   divider 'Education'

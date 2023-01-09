@@ -52146,9 +52146,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       zoomControl: true,
       mapTypeControl: true,
       mapTypeControlOptions: {
-        mapTypeIds: [google3.maps.MapTypeId.ROADMAP, google3.maps.MapTypeId.SATELLITE],
         style: google3.maps.MapTypeControlStyle.HORIZONTAL_BAR,
-        position: google3.maps.ControlPosition.BOTTOM_LEFT
+        position: google3.maps.ControlPosition.TOP_CENTER
       },
       streetViewControl: true,
       styles: [{ featureType: "poi", elementType: "labels", stylers: [{ visibility: "off" }] }]

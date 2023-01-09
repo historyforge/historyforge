@@ -77,6 +77,7 @@
 # Model class for 1880 US Census records.
 class Census1880Record < CensusRecord
   self.table_name = 'census_1880_records'
+  self.year = 1880
 
   belongs_to :locality, inverse_of: :census1880_records
 
@@ -84,10 +85,6 @@ class Census1880Record < CensusRecord
   define_enumeration :race, %w[W B Mu Ch In]
 
   alias_attribute :profession, :occupation
-
-  def year
-    1880
-  end
 
   COLUMNS = {
     street_house_number: '2nd Column on the Left',

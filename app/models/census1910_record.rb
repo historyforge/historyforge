@@ -93,6 +93,7 @@
 class Census1910Record < CensusRecord
 
   self.table_name = 'census_1910_records'
+  self.year = 1910
 
   alias_attribute :profession, :occupation
 
@@ -106,10 +107,6 @@ class Census1910Record < CensusRecord
 
   define_enumeration :race, %w[W B Mu Ch Jp In]
   define_enumeration :marital_status, %w[S M_or_M1 M2_or_M3 Wd D]
-
-  def year
-    1910
-  end
 
   COLUMNS = {
     street_house_number: '2nd Column on the Left',

@@ -9,11 +9,13 @@
   - if can?(:update, @person)
     = link_to [:edit, @person], class: 'btn btn-light' do
       i.fa.fa-pencil
-      | &nbsp; Edit
+      span.d-none.d-lg-inline
+        | &nbsp; Edit
   - if can?(:destroy, @person) && @person.census_records.blank?
     = link_to @person, class: 'btn btn-light', data: { method: :delete, confirm: 'Are you sure?' } do
       i.fa.fa-trash
-      | &nbsp; Delete
+      span.d-none.d-lg-inline
+        | &nbsp; Delete
 .list-group.mb-3
   .list-group-item
     .row
@@ -37,29 +39,55 @@
       tr
         th Year
         th Name
+        th 
+          | Relation
+          span.d-none.d-lg-inline &nbsp;to Head
         th Address
         th Age
         th Race
         th POB
         th Marriage
-        th Profession
-        th 
-          | Relation
-          span.d-xs-none.dl-lg-inline &nbsp;to Head
+        th Occupation
     tbody
       - @person.census_records.each do |raw_row|
         - row = raw_row.decorate
         tr
           td= row.year
           td.text-nowrap= link_to row.name, row
+          td= row.relation_to_head
           td.text-nowrap= row.street_address
           td= row.age
           td= row.race
           td= row.pob
           td= row.marital_status
           td= row.profession
-          td= row.relation_to_head
 
+- if @person.relatives.present?
+.card.mb-3
+  .card-header Relatives
+  = table do
+    thead
+      tr
+        th Name
+        th 
+          | Relation
+          span.d-none.d-lg-inline &nbsp;to Head
+        th Sex
+        th Race
+        th YOB
+        th Occupation
+    tbody
+      - @person.relatives.each do |raw_row|
+        - row = raw_row.decorate
+        tr
+          td.text-nowrap= link_to row.name, row
+          td= row.relation_to_head
+          td= "#{Translator.option(:race, row.race)} " if row.race.present? && row.race != 'on'
+          td= "#{Translator.option(:sex, row.sex)} " if row.sex.present? && row.sex != 'on'
+          td= row.birth_year
+          td= row.profession
+
+    
 - if can?(:update, @person) && @person.possible_unmatched_records.present?
   .card.mb-3
     .card-header Possible Census Records
@@ -68,26 +96,28 @@
         tr
           th Year
           th Name
+          th 
+            | Relation
+            span.d-none.d-lg-inline &nbsp;to Head
           th Address
           th Age
           th Race
           th POB
           th Marriage
-          th Profession
-          th Relation to Head
+          th Occupation
           th
       tbody
         - @person.possible_unmatched_records.each do |row|
           tr
             td= row.year
             td.text-nowrap= link_to row.name, row
+            td= row.relation_to_head
             td.text-nowrap= row.street_address
             td= row.age
             td= row.race
             td= row.pob
             td= row.marital_status
             td= row.profession
-            td= row.relation_to_head
             td
               = form_for row do |form|
                 = hidden_field_tag 'census_record[person_id]', @person.id

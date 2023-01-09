@@ -25,4 +25,8 @@ class ApplicationRecord < ActiveRecord::Base
   def decorate(decorator = nil)
     (decorator || self.class.decorator_class).decorate(self)
   end
+
+  def self.human_name
+    name
+  end
 end

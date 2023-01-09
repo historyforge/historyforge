@@ -44,7 +44,7 @@ div.mb-3
           th Enum Dist
           th Page
           th Line
-          - unless controller.year == 1940
+          - if controller.year < 1940
             th Dwelling
           th= translated_label(controller.resource_class, :family_id)
       tbody
@@ -56,7 +56,7 @@ div.mb-3
           td= @record.enum_dist
           td= "#{@record.page_number}#{@record.page_side}"
           td= @record.line_number
-          - unless controller.year == 1940
+          - if controller.year < 1940
             td= @record.dwelling_number
           td= @record.family_id
 

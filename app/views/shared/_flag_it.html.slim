@@ -1,8 +1,10 @@
 = link_to '#flagModal',
+        title: 'Flag',
         class: (defined?(item_class) ? item_class : nil),
         data: { toggle: :modal, container: 'body' } do
   i.fa.fa-flag
-  | &nbsp; Flag
+  span.d-none.d-lg-inline
+    | &nbsp; Flag
 
 - content_for :body_end do
   #flagModal.modal.fade

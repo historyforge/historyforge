@@ -109,11 +109,10 @@ function mapOptions() {
     gestureHandling: 'cooperative',
     zoomControl: true,
     mapTypeControl: true,
-    mapTypeControlOptions: {
-      mapTypeIds: [google.maps.MapTypeId.ROADMAP, google.maps.MapTypeId.SATELLITE],
-      style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
-      position: google.maps.ControlPosition.BOTTOM_LEFT
-    },
+      mapTypeControlOptions: {
+        style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+        position: google.maps.ControlPosition.TOP_CENTER,
+      },
     streetViewControl: true,
     styles: [{ featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'off' }] }]
   }

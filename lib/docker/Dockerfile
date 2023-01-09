@@ -5,7 +5,7 @@ ENV RAILS_SERVE_STATIC_FILES true
 ENV RAILS_LOG_TO_STDOUT true
 
 # Curl lets us get node and yarn in the next step
-RUN apt-get update -qq && apt-get install -y curl
+RUN apt-get update -qq && apt-get upgrade -y && apt-get install -y curl
 
 # Install node 16 LTS and yarn
 RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
@@ -14,7 +14,7 @@ RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
 
 # Install packages
 RUN apt-get update -qq && \
-  DEBIAN_FRONTEND=noninteractive apt-get install -y \
+  apt-get install -y \
   automake build-essential patch zlib1g-dev liblzma-dev git \
   libssl-dev libreadline-dev \
   libyaml-dev libcurl4-openssl-dev libffi-dev \

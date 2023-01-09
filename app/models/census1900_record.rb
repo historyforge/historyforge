@@ -85,6 +85,7 @@
 # Model class for 1900 US Census records.
 class Census1900Record < CensusRecord
   self.table_name = 'census_1900_records'
+  self.year = 1900
 
   alias_attribute :profession, :occupation
 
@@ -101,10 +102,6 @@ class Census1900Record < CensusRecord
   auto_strip_attributes :industry
 
   define_enumeration :race, %w[W B Ch Jp In]
-
-  def year
-    1900
-  end
 
   def birth_month=(value)
     value = 999 if value == 'unknown'

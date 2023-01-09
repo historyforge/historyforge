@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
 class FlagsController < ApplicationController
+  include RestoreSearch
   def index
-    @flags = Flag.unresolved.order('created_at asc').preload(:flaggable, :flagged_by)
+    @search = Flag.unresolved.order('created_at asc').ransack(params[:q])
+    @flags = @search.result.preload(:flaggable, :flagged_by).includes(:flaggable)
     @flags.each do |flag|
       flag.destroy unless flag.flaggable
     end

@@ -101,6 +101,7 @@
 # Model class for 1930 US Census records.
 class Census1930Record < CensusRecord
   self.table_name = 'census_1930_records'
+  self.year = 1930
 
   alias_attribute :profession, :occupation
   alias_attribute :profession_code, :occupation_code
@@ -121,10 +122,6 @@ class Census1930Record < CensusRecord
 
   auto_strip_attributes :industry, :occupation_code, :pob_code
   auto_upcase_attributes :occupation_code
-
-  def year
-    1930
-  end
 
   def coded_occupation_name
     coded_occupation&.name_with_code

@@ -14,10 +14,10 @@ body.streetview {
   #map-wrapper {
     position: absolute;
     left: 0;
-    top: 0;
+    top: 66px;
     #map {
       width: 100vw;
-      height: 100vh;
+      height: calc(100vh - 66px);
     }
   }
 }
@@ -92,15 +92,20 @@ body.streetview {
 #forge-sidebar-left-closer {
   z-index: 20;
   position: absolute;
-  top: 6px;
-  right: 6px;
+  top: 14px;
+  right: 16px;
 }
 
 @include media('<tablet') {
   #forge #map-wrapper {
     width: 100vw;
-    height: 100% !important;
     overflow: hidden;
+    top: 56px;
+    #map {
+      width: 100vw;
+      height: calc(100vh - 56px);
+    }
+
   }
 
   #forge-sidebar-left-toggle {

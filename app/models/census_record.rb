@@ -98,8 +98,14 @@ class CensusRecord < ApplicationRecord
   scope :unmatched, -> { where(person_id: nil) }
   scope :in_census_order, -> { order :ward, :enum_dist, :page_number, :page_side, :line_number }
 
+  class_attribute :year
+
   def self.for_year(year)
     "Census#{year}Record".constantize
+  end
+
+  def self.human_name
+    "#{year} Census Record"
   end
 
   def per_side

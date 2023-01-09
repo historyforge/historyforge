@@ -105,6 +105,7 @@
 # Model class for 1940 US Census record
 class Census1950Record < CensusRecord
   self.table_name = 'census_1950_records'
+  self.year = 1950
 
   belongs_to :locality, inverse_of: :census1950_records
 
@@ -136,10 +137,6 @@ class Census1950Record < CensusRecord
                         :occupation_code
 
   auto_upcase_attributes :occupation_code, :industry_code, :worker_class_code
-
-  def year
-    1950
-  end
 
   def page_side
     nil

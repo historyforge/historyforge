@@ -79,8 +79,8 @@
 
 # Model class for 1920 US Census records.
 class Census1920Record < CensusRecord
-
   self.table_name = 'census_1920_records'
+  self.year = 1920
 
   alias_attribute :profession, :occupation
 
@@ -93,10 +93,6 @@ class Census1920Record < CensusRecord
   define_enumeration :race, %w[W B Mu In Ch Jp Fil Hin Kor]
 
   auto_strip_attributes :industry, :employment, :employment_code
-
-  def year
-    1920
-  end
 
   COLUMNS = {
     street_house_number: 2,

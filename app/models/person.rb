@@ -135,6 +135,14 @@ class Person < ApplicationRecord
     remove_instance_variable(:@census_records) if instance_variable_defined?(:@census_records)
   end
 
+  def relatives
+    fellows = census_records.flat_map(&:fellows).group_by(&:person_id)
+    Person.where(id: fellows.keys).tap do |people| 
+      people.each { |person| person.instance_variable_set(:@census_records, fellows[person.id]) }
+    end
+  end
+  memoize :relatives
+
   def relation_to_head
     census_records.map(&:relation_to_head).uniq.join(', ')
   end

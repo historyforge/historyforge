@@ -218,8 +218,6 @@ GEM
     nokogiri (1.13.9)
       mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
-    non-stupid-digest-assets (1.0.9)
-      sprockets (>= 2.0)
     oauth2 (2.0.9)
       faraday (>= 0.17.3, < 3.0)
       jwt (>= 1.0, < 3.0)
@@ -450,7 +448,6 @@ DEPENDENCIES
   memory_profiler
   mini_magick
   net-smtp
-  non-stupid-digest-assets
   oj
   omniauth-facebook
   omniauth-rails_csrf_protection

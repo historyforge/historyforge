@@ -29,7 +29,6 @@ gem 'liquid'
 gem 'memory_profiler'
 gem 'mini_magick'
 gem 'net-smtp', require: false
-gem 'non-stupid-digest-assets'
 gem 'oj'
 gem 'omniauth-facebook'
 gem 'omniauth-rails_csrf_protection'
