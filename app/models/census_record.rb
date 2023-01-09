@@ -208,10 +208,6 @@ class CensusRecord < ApplicationRecord
     self.building = BuildingFromAddress.new(self).perform
   end
 
-  def year
-    raise NotImplementedError.new('Need a year')
-  end
-
   def audit_person_connection
     person_from, person_to = saved_change_to_person_id
     if person_to.present?
