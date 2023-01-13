@@ -25,6 +25,7 @@ module CensusRecords
       @record = resource_class.new
       @record.set_defaults
       @record.attributes = params.require(:attributes).permit! if params[:attributes]
+      @record.locality = Locality.first if Locality.count == 1
     end
 
     # Used to populate the building_id field on census forms
