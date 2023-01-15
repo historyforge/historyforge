@@ -52242,7 +52242,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       mapTypeControl: true,
       mapTypeControlOptions: {
         style: google3.maps.MapTypeControlStyle.HORIZONTAL_BAR,
-        position: google3.maps.ControlPosition.TOP_CENTER
+        position: google3.maps.ControlPosition.TOP_RIGHT
       },
       streetViewControl: true,
       styles: [{ featureType: "poi", elementType: "labels", stylers: [{ visibility: "off" }] }]

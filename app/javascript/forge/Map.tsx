@@ -111,7 +111,7 @@ function mapOptions() {
     mapTypeControl: true,
       mapTypeControlOptions: {
         style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
-        position: google.maps.ControlPosition.TOP_CENTER,
+        position: google.maps.ControlPosition.TOP_RIGHT,
       },
     streetViewControl: true,
     styles: [{ featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'off' }] }]
