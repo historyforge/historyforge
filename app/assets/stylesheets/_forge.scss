@@ -61,10 +61,10 @@ body.streetview {
   max-height: calc(100vh - 66px);
   overflow-y: scroll;
   &.closed {
-    right: -100%;
+    left: -100%;
   }
   &.open {
-    right: 0;
+    left: 0;
   }
   // transition: 0.5s left ease;
 
@@ -78,12 +78,7 @@ body.streetview {
   }
 }
 
-#forge-sidebar-left-toggle {
-  position: absolute;
-  z-index: 20;
-}
-
-#forge-sidebar-right-toggle {
+#button-bar {
   position: absolute;
   z-index: 20;
 }
@@ -108,14 +103,9 @@ body.streetview {
 
   }
 
-  #forge-sidebar-left-toggle {
+  #button-bar {
     top: 64px;
     left: 6px;
-  }
-
-  #forge-sidebar-right-toggle {
-    top: 64px;
-    right: 6px;
   }
 
   #forge-left-col,
@@ -132,14 +122,9 @@ body.streetview {
     height: 100% !important;
   }
 
-  #forge-sidebar-left-toggle {
+  #button-bar {
     top: 80px;
     left: 16px;
-  }
-
-  #forge-sidebar-right-toggle {
-    top: 80px;
-    right: 16px;
   }
 
   #forge-left-col,

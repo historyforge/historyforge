@@ -50517,6 +50517,101 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
 
   // node_modules/react-redux/es/hooks/useSelector.js
   var import_react7 = __toESM(require_react());
+  var refEquality = function refEquality2(a, b) {
+    return a === b;
+  };
+  function useSelectorWithStoreAndSubscription(selector, equalityFn, store2, contextSub) {
+    var _useReducer = (0, import_react7.useReducer)(function(s) {
+      return s + 1;
+    }, 0), forceRender = _useReducer[1];
+    var subscription = (0, import_react7.useMemo)(function() {
+      return createSubscription(store2, contextSub);
+    }, [store2, contextSub]);
+    var latestSubscriptionCallbackError = (0, import_react7.useRef)();
+    var latestSelector = (0, import_react7.useRef)();
+    var latestStoreState = (0, import_react7.useRef)();
+    var latestSelectedState = (0, import_react7.useRef)();
+    var storeState = store2.getState();
+    var selectedState;
+    try {
+      if (selector !== latestSelector.current || storeState !== latestStoreState.current || latestSubscriptionCallbackError.current) {
+        var newSelectedState = selector(storeState);
+        if (latestSelectedState.current === void 0 || !equalityFn(newSelectedState, latestSelectedState.current)) {
+          selectedState = newSelectedState;
+        } else {
+          selectedState = latestSelectedState.current;
+        }
+      } else {
+        selectedState = latestSelectedState.current;
+      }
+    } catch (err) {
+      if (latestSubscriptionCallbackError.current) {
+        err.message += "\nThe error may be correlated with this previous error:\n" + latestSubscriptionCallbackError.current.stack + "\n\n";
+      }
+      throw err;
+    }
+    useIsomorphicLayoutEffect(function() {
+      latestSelector.current = selector;
+      latestStoreState.current = storeState;
+      latestSelectedState.current = selectedState;
+      latestSubscriptionCallbackError.current = void 0;
+    });
+    useIsomorphicLayoutEffect(function() {
+      function checkForUpdates() {
+        try {
+          var newStoreState = store2.getState();
+          if (newStoreState === latestStoreState.current) {
+            return;
+          }
+          var _newSelectedState = latestSelector.current(newStoreState);
+          if (equalityFn(_newSelectedState, latestSelectedState.current)) {
+            return;
+          }
+          latestSelectedState.current = _newSelectedState;
+          latestStoreState.current = newStoreState;
+        } catch (err) {
+          latestSubscriptionCallbackError.current = err;
+        }
+        forceRender();
+      }
+      subscription.onStateChange = checkForUpdates;
+      subscription.trySubscribe();
+      checkForUpdates();
+      return function() {
+        return subscription.tryUnsubscribe();
+      };
+    }, [store2, subscription]);
+    return selectedState;
+  }
+  function createSelectorHook(context) {
+    if (context === void 0) {
+      context = ReactReduxContext;
+    }
+    var useReduxContext2 = context === ReactReduxContext ? useReduxContext : function() {
+      return (0, import_react7.useContext)(context);
+    };
+    return function useSelector2(selector, equalityFn) {
+      if (equalityFn === void 0) {
+        equalityFn = refEquality;
+      }
+      if (true) {
+        if (!selector) {
+          throw new Error("You must pass a selector to useSelector");
+        }
+        if (typeof selector !== "function") {
+          throw new Error("You must pass a function as a selector to useSelector");
+        }
+        if (typeof equalityFn !== "function") {
+          throw new Error("You must pass a function as an equality function to useSelector");
+        }
+      }
+      var _useReduxContext = useReduxContext2(), store2 = _useReduxContext.store, contextSub = _useReduxContext.subscription;
+      var selectedState = useSelectorWithStoreAndSubscription(selector, equalityFn, store2, contextSub);
+      (0, import_react7.useDebugValue)(selectedState);
+      return selectedState;
+    };
+  }
+  var useSelector = /* @__PURE__ */ createSelectorHook();
 
   // node_modules/react-redux/es/utils/reactBatchedUpdates.js
   var import_react_dom = __toESM(require_react_dom());
@@ -52677,14 +52772,19 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var Component4 = connect_default(mapStateToProps4, actions3)(Building);
   var Building_default = Component4;
 
+  // app/javascript/forge/hooks.ts
+  var useAppDispatch = useDispatch;
+  var useAppSelector = useSelector;
+
   // app/javascript/forge/App.tsx
   var App = () => {
     const [sidebarLeft, setSidebarLeft] = (0, import_react36.useState)(false);
     const [sidebarRight, setSidebarRight] = (0, import_react36.useState)(false);
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     (0, import_react36.useEffect)(() => {
       dispatch(forgeInit());
     }, [dispatch]);
+    const forgeActive = useAppSelector((state) => state.layers.active || state.search.current);
     const closeSidebar = (e) => {
       e.stopPropagation();
       setSidebarRight(false);
@@ -52712,7 +52812,10 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       onClick: closeSidebar
     }, /* @__PURE__ */ import_react36.default.createElement("i", {
       className: "fa fa-close"
-    })), /* @__PURE__ */ import_react36.default.createElement(CensusSearch_default, null)), !sidebarLeft && !sidebarRight && /* @__PURE__ */ import_react36.default.createElement("button", {
+    })), /* @__PURE__ */ import_react36.default.createElement(CensusSearch_default, null)), /* @__PURE__ */ import_react36.default.createElement("div", {
+      id: "button-bar",
+      className: "btn-group"
+    }, !sidebarLeft && !sidebarRight && /* @__PURE__ */ import_react36.default.createElement("button", {
       type: "button",
       id: "forge-sidebar-left-toggle",
       className: "btn btn-primary",
@@ -52734,7 +52837,11 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       }
     }, /* @__PURE__ */ import_react36.default.createElement("i", {
       className: "fa fa-search"
-    })), /* @__PURE__ */ import_react36.default.createElement(Building_default, null));
+    })), forgeActive && /* @__PURE__ */ import_react36.default.createElement("button", {
+      type: "button",
+      className: "btn btn-primary",
+      onClick: () => dispatch(reset())
+    }, "Reset")), /* @__PURE__ */ import_react36.default.createElement(Building_default, null));
   };
   var App_default = App;
 
@@ -52886,14 +52993,21 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       this.save();
     }
     remove(layer) {
-      this.layers.remove(layer);
+      this.layers.delete(layer);
       this.save();
     }
     isSelected(layer) {
       return this.layers.has(layer.id);
     }
+    get active() {
+      return this.layers.size > 0;
+    }
     save() {
       window.localStorage.setItem(this.CACHE_KEY, JSON.stringify([...this.layers]));
+    }
+    reset() {
+      this.layers = /* @__PURE__ */ new Set();
+      this.save();
     }
   };
   var layerStorage = new LayerStorage();
@@ -52903,7 +53017,11 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         layer.selected = layerStorage.isSelected(layer);
         return layer;
       });
-      return __spreadProps(__spreadValues({}, state), { layers: nextLayers, layeredAt: new Date().getTime() });
+      return __spreadProps(__spreadValues({}, state), { layers: nextLayers, active: layerStorage.active, layeredAt: new Date().getTime() });
+    }
+    if (action.type === "FORGE_RESET") {
+      layerStorage.reset();
+      return __spreadProps(__spreadValues({}, state), { active: false, layeredAt: new Date().getTime() });
     }
     if (action.type === "LAYER_TOGGLE") {
       const layer = state.layers.find((item) => item.id === action.id);
@@ -52913,7 +53031,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       } else {
         layerStorage.remove(layer.id);
       }
-      return __spreadProps(__spreadValues({}, state), { layers: [...state.layers], layeredAt: new Date().getTime() });
+      return __spreadProps(__spreadValues({}, state), { layers: [...state.layers], active: layerStorage.active, layeredAt: new Date().getTime() });
     }
     if (action.type === "LAYER_OPACITY") {
       const layer = state.layers.find((item) => item.id === action.id);

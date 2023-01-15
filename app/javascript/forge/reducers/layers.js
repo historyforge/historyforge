@@ -21,7 +21,7 @@ class LayerStorage {
   }
 
   remove(layer) {
-    this.layers.remove(layer);
+    this.layers.delete(layer);
     this.save();
   }
 
@@ -29,8 +29,17 @@ class LayerStorage {
     return this.layers.has(layer.id);
   }
 
+  get active() {
+    return this.layers.size > 0
+  }
+
   save() {
     window.localStorage.setItem(this.CACHE_KEY, JSON.stringify([...this.layers]));
+  }
+
+  reset() {
+    this.layers = new Set();
+    this.save();
   }
 }
 
@@ -42,7 +51,12 @@ export const layers = function(state = {}, action) {
       layer.selected = layerStorage.isSelected(layer);
       return layer;
     });
-    return { ...state, layers: nextLayers, layeredAt: new Date().getTime() };
+    return { ...state, layers: nextLayers, active: layerStorage.active, layeredAt: new Date().getTime() };
+  }
+
+  if (action.type === "FORGE_RESET") {
+    layerStorage.reset();
+    return { ...state, active: false, layeredAt: new Date().getTime() };
   }
 
   if (action.type === 'LAYER_TOGGLE') {
@@ -53,7 +67,7 @@ export const layers = function(state = {}, action) {
     } else {
       layerStorage.remove(layer.id);
     }
-    return { ...state, layers: [...state.layers], layeredAt: new Date().getTime() }
+    return { ...state, layers: [...state.layers], active: layerStorage.active, layeredAt: new Date().getTime() }
   }
 
   if (action.type === 'LAYER_OPACITY') {

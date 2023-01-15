@@ -3,21 +3,23 @@ import Layers from './Layers'
 import Map from './Map'
 import CensusSearch from './CensusSearch'
 import Building from './Building'
-import { useDispatch } from 'react-redux'
-import { forgeInit } from './actions'
+import { forgeInit, reset } from './actions'
+import { useAppDispatch, useAppSelector } from './hooks'
 
 const App = (): JSX.Element => {
   const [sidebarLeft, setSidebarLeft] = useState(false)
   const [sidebarRight, setSidebarRight] = useState(false);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(forgeInit());
   }, [dispatch])
 
+  const forgeActive = useAppSelector(state => state.layers.active || state.search.current);
+
   const closeSidebar = (e) => {
-    e.stopPropagation(); 
-    setSidebarRight(false); 
+    e.stopPropagation();
+    setSidebarRight(false);
     setSidebarLeft(false)
   }
 
@@ -44,7 +46,8 @@ const App = (): JSX.Element => {
         <CensusSearch />
       </div>
     )}
-      {!sidebarLeft && !sidebarRight && (
+    <div id="button-bar" className="btn-group">
+    {!sidebarLeft && !sidebarRight && (
         <button type="button"
           id="forge-sidebar-left-toggle"
           className="btn btn-primary"
@@ -60,6 +63,10 @@ const App = (): JSX.Element => {
           <i className="fa fa-search" />
         </button>
       )}
+      {forgeActive && (
+        <button type="button" className="btn btn-primary" onClick={() => dispatch(reset())}>Reset</button>
+      )}
+    </div>
       <Building />
     </div>
   )
