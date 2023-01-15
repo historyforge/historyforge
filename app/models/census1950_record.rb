@@ -150,7 +150,7 @@ class Census1950Record < CensusRecord
     80
   end
 
-  def has_page_side?
+  def page_side?
     false
   end
 
@@ -257,6 +257,6 @@ class Census1950Record < CensusRecord
     worker_class_code: '1940/occupation-codes.png',
     usual_occupation_code: '1940/occupation-codes.png',
     usual_industry_code: '1940/occupation-codes.png',
-    usual_worker_class_code: '1940/occupation-codes.png',
+    usual_worker_class_code: '1940/occupation-codes.png'
   }.freeze
 end

@@ -77,3 +77,5 @@ group :test do
   gem 'rspec-collection_matchers'
 end
 
+
+gem "active_interaction", "~> 5.2"

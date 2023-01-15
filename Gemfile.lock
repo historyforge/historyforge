@@ -46,6 +46,9 @@ GEM
       erubi (~> 1.4)
       rails-dom-testing (~> 2.0)
       rails-html-sanitizer (~> 1.1, >= 1.2.0)
+    active_interaction (5.2.0)
+      activemodel (>= 5.2, < 8)
+      activesupport (>= 5.2, < 8)
     active_storage_validations (1.0.3)
       activejob (>= 5.2.0)
       activemodel (>= 5.2.0)
@@ -421,6 +424,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  active_interaction (~> 5.2)
   active_storage_validations
   activerecord-precounter
   acts_as_list
