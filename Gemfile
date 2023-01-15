@@ -58,6 +58,7 @@ group :development do
   gem 'rubocop-performance', require: false
   gem 'rubocop-rails', require: false
   gem 'rubocop-rspec', require: false
+  gem "ruby-lsp", "~> 0.3.7"
   gem 'simplecov', require: false
   gem 'web-console' #, "~> 2.0"
 end
@@ -75,3 +76,4 @@ group :test do
   gem 'faker'
   gem 'rspec-collection_matchers'
 end
+
