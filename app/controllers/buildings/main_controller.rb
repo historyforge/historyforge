@@ -150,11 +150,12 @@ class Buildings::MainController < ApplicationController
   private
 
   def load_residents
-    @building.residents = BuildingResidentsLoader.new(
+    @building.residents = Buildings::FindResidents.run!(
       building: @building,
       year: params[:people],
-      filters: params[:peopleParams]
-    ).call
+      filters: params[:peopleParams],
+      reviewed_only: !user_signed_in?
+    )
   end
 
   AUTH_ACTIONS = {
@@ -196,9 +197,9 @@ class Buildings::MainController < ApplicationController
                                      :annotations_legacy, :parent_id, :hive_year,
                                      { building_type_ids: [],
                                        photos_attributes: %i[_destroy id photo year_taken caption],
-                                       addresses_attributes: %i[_destroy id is_primary house_number prefix name suffix city postal_code year],
-                                       annotations_attributes: %i[_destroy id map_overlay_id annotation_text]
-                                     }
+                                       addresses_attributes: %i[_destroy id is_primary house_number prefix name suffix
+                                                                city postal_code year],
+                                       annotations_attributes: %i[_destroy id map_overlay_id annotation_text] }
   end
 
   def load_buildings

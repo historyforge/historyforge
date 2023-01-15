@@ -92,11 +92,11 @@ class Building < ApplicationRecord
   delegate :name, to: :lining_type, prefix: true, allow_nil: true
 
   scope :as_of_year, lambda { |year|
-    where('(year_earliest is null and year_latest is null) or (year_earliest<=:year and (year_latest is null or year_latest>=:year)) or (year_earliest is null and year_latest>=:year)', year: year)
+    where('(year_earliest is null and year_latest is null) or (year_earliest<=:year and (year_latest is null or year_latest>=:year)) or (year_earliest is null and year_latest>=:year)', year:)
   }
 
   scope :as_of_year_eq, lambda { |year|
-    where('(year_earliest<=:year and (year_latest is null or year_latest>=:year)) or (year_earliest is null and year_latest>=:year)', year: year)
+    where('(year_earliest<=:year and (year_latest is null or year_latest>=:year)) or (year_earliest is null and year_latest>=:year)', year:)
   }
 
   scope :without_residents, lambda {
@@ -151,9 +151,9 @@ class Building < ApplicationRecord
   scope :building_types_id_null, -> { where(building_types_mask: nil) }
   scope :building_types_id_not_null, -> { where.not(building_types_mask: nil) }
 
-  def self.ransackable_scopes(_auth_object=nil)
+  def self.ransackable_scopes(_auth_object = nil)
     %i[as_of_year without_residents as_of_year_eq
-     building_types_id_in building_types_id_not_in building_types_id_null building_types_id_not_null]
+       building_types_id_in building_types_id_not_in building_types_id_null building_types_id_not_null]
   end
 
   Geocoder.configure(
@@ -174,8 +174,7 @@ class Building < ApplicationRecord
                                                                     addresses[:house_number],
                                                                     addresses[:prefix],
                                                                     addresses[:name],
-                                                                    addresses[:suffix]
-                                                                   ])])
+                                                                    addresses[:suffix]])])
   end
 
   auto_strip_attributes :name, :stories
@@ -274,16 +273,18 @@ class Building < ApplicationRecord
   attr_writer :residents
 
   def residents
-    @residents ||= BuildingResidentsLoader.new(building: self).call
+    Buildings::FindResidents.run!(building: self, reviewed_only: true)
   end
+  memoize :residents
 
-  def families
-    @families = residents&.group_by(&:dwelling_number)
+  def residents_by_year
+    residents&.group_by(&:year)
   end
+  memoize :residents_by_year
 
   CensusYears.each do |year|
     define_method("families_in_#{year}") do
-      BuildingResidentsLoader.new(building: self, year: year).call.group_by(&:family_id)
+      residents_by_year[year]&.group_by(&:family_id)
     end
   end
 

@@ -52036,12 +52036,13 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     dispatch(__spreadValues({ type: "FORGE_FILTERS_LOADED" }, json.data));
   });
   var buildParams = function(search3) {
+    var _a;
     const params = { s: {} };
     console.log(search3);
     if (search3 == null ? void 0 : search3.s) {
       params.s = search3.s;
     }
-    if ((search3 == null ? void 0 : search3.people) || (search3 == null ? void 0 : search3.year)) {
+    if (((_a = search3 == null ? void 0 : search3.people) == null ? void 0 : _a.s) || (search3 == null ? void 0 : search3.year)) {
       params.people = search3.people || (search3 == null ? void 0 : search3.year);
       params.peopleParams = search3.params.s;
     }

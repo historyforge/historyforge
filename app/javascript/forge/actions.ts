@@ -91,7 +91,7 @@ const buildParams = function(search: keyable) {
   if (search?.s) {
     params.s = search.s
   }
-  if (search?.people || search?.year) {
+  if (search?.people?.s || search?.year) {
     params.people = search.people || search?.year
     params.peopleParams = search.params.s
   }
