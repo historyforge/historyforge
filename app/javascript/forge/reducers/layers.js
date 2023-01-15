@@ -54,7 +54,7 @@ export const layers = function(state = {}, action) {
     return { ...state, layers: nextLayers, active: layerStorage.active, layeredAt: new Date().getTime() };
   }
 
-  if (action.type === "FORGE_RESET") {
+  if (action.type === "LAYERS_RESET") {
     layerStorage.reset();
     return { ...state, active: false, layeredAt: new Date().getTime() };
   }

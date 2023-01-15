@@ -3,7 +3,7 @@ import Layers from './Layers'
 import Map from './Map'
 import CensusSearch from './CensusSearch'
 import Building from './Building'
-import { forgeInit, reset } from './actions'
+import { forgeInit, reset, resetMap } from './actions'
 import { useAppDispatch, useAppSelector } from './hooks'
 
 const App = (): JSX.Element => {
@@ -17,6 +17,10 @@ const App = (): JSX.Element => {
 
   const forgeActive = useAppSelector(state => state.layers.active || state.search.current);
 
+  const resetForge = () => {
+    dispatch(reset());
+    dispatch(resetMap());
+  }
   const closeSidebar = (e) => {
     e.stopPropagation();
     setSidebarRight(false);
@@ -63,8 +67,8 @@ const App = (): JSX.Element => {
           <i className="fa fa-search" />
         </button>
       )}
-      {forgeActive && (
-        <button type="button" className="btn btn-primary" onClick={() => dispatch(reset())}>Reset</button>
+      {forgeActive && !sidebarRight && !sidebarLeft && (
+        <button type="button" className="btn btn-primary" onClick={resetForge}>Reset</button>
       )}
     </div>
       <Building />

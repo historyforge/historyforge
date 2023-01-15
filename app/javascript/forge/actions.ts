@@ -52,6 +52,10 @@ export const reset = () => async (dispatch, getState) => {
   return load()(dispatch, getState);
 }
 
+export const resetMap = () => async (dispatch) => {
+    return dispatch({ type: "LAYERS_RESET" });
+}
+
 export const select = (id: number, params?: keyable) => async (dispatch) => {
   const url = `/buildings/${id}.json`
   const json = await axios.get(url, { params: buildParams(params) })

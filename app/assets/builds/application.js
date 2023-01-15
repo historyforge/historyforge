@@ -51959,6 +51959,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     load: () => load,
     moveBuilding: () => moveBuilding,
     reset: () => reset,
+    resetMap: () => resetMap,
     searchTerm: () => searchTerm,
     select: () => select,
     setYear: () => setYear
@@ -52006,6 +52007,9 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     console.log("Resetting the Forge");
     yield dispatch({ type: "FORGE_RESET" });
     return load()(dispatch, getState);
+  });
+  var resetMap = () => (dispatch) => __async(void 0, null, function* () {
+    return dispatch({ type: "LAYERS_RESET" });
   });
   var select = (id, params) => (dispatch) => __async(void 0, null, function* () {
     const url = `/buildings/${id}.json`;
@@ -52785,6 +52789,10 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       dispatch(forgeInit());
     }, [dispatch]);
     const forgeActive = useAppSelector((state) => state.layers.active || state.search.current);
+    const resetForge = () => {
+      dispatch(reset());
+      dispatch(resetMap());
+    };
     const closeSidebar = (e) => {
       e.stopPropagation();
       setSidebarRight(false);
@@ -52837,10 +52845,10 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       }
     }, /* @__PURE__ */ import_react36.default.createElement("i", {
       className: "fa fa-search"
-    })), forgeActive && /* @__PURE__ */ import_react36.default.createElement("button", {
+    })), forgeActive && !sidebarRight && !sidebarLeft && /* @__PURE__ */ import_react36.default.createElement("button", {
       type: "button",
       className: "btn btn-primary",
-      onClick: () => dispatch(reset())
+      onClick: resetForge
     }, "Reset")), /* @__PURE__ */ import_react36.default.createElement(Building_default, null));
   };
   var App_default = App;
@@ -53019,7 +53027,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       });
       return __spreadProps(__spreadValues({}, state), { layers: nextLayers, active: layerStorage.active, layeredAt: new Date().getTime() });
     }
-    if (action.type === "FORGE_RESET") {
+    if (action.type === "LAYERS_RESET") {
       layerStorage.reset();
       return __spreadProps(__spreadValues({}, state), { active: false, layeredAt: new Date().getTime() });
     }
