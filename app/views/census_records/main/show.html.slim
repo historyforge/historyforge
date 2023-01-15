@@ -6,11 +6,13 @@ div.mb-3
   - if can?(:update, @model)
     => link_to [:edit, @model], class: btn_class do
       i.fa.fa-pencil
-      | Edit
+      | &nbsp;Edit
   - if !@model.reviewed? && can?(:review, @model)
     = link_to 'Review', [:reviewed, @model], data: { method: :put, confirm: 'This will mark the record as reviewed.' }, class: btn_class
   - if can?(:destroy, @model)
-    = link_to 'Delete', @model, data: { method: :delete, confirm: 'Are you sure? There is no return short of re-entering the census record.' }, class: btn_class
+    = link_to @model, data: { method: :delete, confirm: 'Are you sure? There is no return short of re-entering the census record.' }, class: btn_class do
+      i.fa.fa-trash
+      | &nbsp;Delete
   = link_to 'View All', resource_class, class: btn_class
   - if @model.building_id?
     = link_to 'Building', building_path(@model.building_id), class: btn_class
@@ -86,6 +88,18 @@ div.mb-3
               .form-group.row
                 .col-6.col-form-label Locality
                 .col-6= @record.locality
+            - if controller.year === 1950
+              - if @record.institution_type
+                li.list-group-item
+                  .form-group.row
+                    .col-6.col-form-label Institution Type
+                    .col-6= @record.institution_type
+              - if @record.institution_name
+                li.list-group-item
+                  .form-group.row
+                    .col-6.col-form-label Institution Name
+                    .col-6= @record.institution_name
+
         = CensusFormGenerator.generate form, census_form_renderer
 
   .col-md-12.col-lg-6

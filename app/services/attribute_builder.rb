@@ -210,6 +210,8 @@ class AttributeBuilder::Text < AttributeBuilder::BaseAttribute
     json.set! "#{key}_cont_every_term".to_sym, 'contains all of'
     json.set! "#{key}_lt".to_sym, 'comes before'
     json.set! "#{key}_gt".to_sym, 'comes after'
+    json.set! "#{key}_null".to_sym, 'is blank'
+    json.set! "#{key}_not_null", 'is not blank'
   end
 
   def extras

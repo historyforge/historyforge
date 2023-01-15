@@ -17,6 +17,12 @@ function getFilterText(predicate, criteria, config) {
       return criteria.length && <span> ({output})</span>
     case 'number':
     case 'text':
+      if (predicate.match(/not\_null/)) {
+        return <span> is not blank</span>;
+      }
+      if (predicate.match(/null$/)) {
+        return <span> is blank</span>;
+      }
       return criteria && predicate && <span> {scopes[predicate]} {criteria}</span>
   }
 }

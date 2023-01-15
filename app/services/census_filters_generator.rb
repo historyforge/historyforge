@@ -76,6 +76,10 @@ class CensusFiltersGenerator
     AttributeBuilder.text   json, :city, klass: klass
     AttributeBuilder.number json, :ward, klass: klass
     AttributeBuilder.number json, :enum_dist, klass: klass
+    if klass.year == 1950
+      AttributeBuilder.text json, :institution_name, klass: klass
+      AttributeBuilder.text json, :institution_type, klass: klass
+    end
     AttributeBuilder.text   json, :street_address, klass: klass
     AttributeBuilder.text   json, :dwelling_number, klass: klass unless klass == Census1940Record
     AttributeBuilder.text   json, :family_id, klass: klass

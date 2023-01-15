@@ -94,21 +94,19 @@ function forgeAddFilter(state, action) {
   const current = state.current || {}
   const scopes = Object.keys(state.filters[action.filter].scopes)
   current[action.filter] = { field: action.filter, predicate: scopes[0], criteria: null }
-  // searchStorage.setFilters(current);
   return { ...state, current }
 }
 
 function forgeRemoveFilter(state, action) {
   const current = { ...state.current }
   delete current[action.filter]
-  // searchStorage.setFilters(current);
   return { ...state, current, params: buildParams(state, current) }
 }
 
 function forgeSetFilter(state, action) {
   const current = { ...state.current }
-  current[action.field] = { field: action.field, predicate: action.predicate, criteria: action.criteria }
-  // searchStorage.setFilters(current);
+  const criteria = action.predicate.match(/null/) ? "1" : action.criteria;
+  current[action.field] = { field: action.field, predicate: action.predicate, criteria }
   return { ...state, current, d: new Date().getTime(), params: buildParams(state, current) }
 }
 

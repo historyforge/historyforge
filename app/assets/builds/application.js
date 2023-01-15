@@ -52366,6 +52366,12 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         return criteria.length && /* @__PURE__ */ import_react24.default.createElement("span", null, " (", output, ")");
       case "number":
       case "text":
+        if (predicate.match(/not\_null/)) {
+          return /* @__PURE__ */ import_react24.default.createElement("span", null, " is not blank");
+        }
+        if (predicate.match(/null$/)) {
+          return /* @__PURE__ */ import_react24.default.createElement("span", null, " is blank");
+        }
         return criteria && predicate && /* @__PURE__ */ import_react24.default.createElement("span", null, " ", scopes[predicate], " ", criteria);
     }
   }
@@ -52410,11 +52416,13 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   // app/javascript/forge/CensusSearch/BasicField.jsx
   function BasicField(props) {
     const { type, field, predicate, criteria, handleChange } = props;
+    console.log(predicate);
+    const hasInput = !predicate.match(/null$/);
     return /* @__PURE__ */ import_react26.default.createElement(Row_default, null, /* @__PURE__ */ import_react26.default.createElement(Col_default, {
       sm: 6
     }, /* @__PURE__ */ import_react26.default.createElement(ScopeSelector, __spreadValues({}, props))), /* @__PURE__ */ import_react26.default.createElement(Col_default, {
       sm: 6
-    }, /* @__PURE__ */ import_react26.default.createElement(Input_default, {
+    }, hasInput && /* @__PURE__ */ import_react26.default.createElement(Input_default, {
       type,
       name: field,
       value: criteria || "",
@@ -52955,7 +52963,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   }
   function forgeSetFilter(state, action) {
     const current = __spreadValues({}, state.current);
-    current[action.field] = { field: action.field, predicate: action.predicate, criteria: action.criteria };
+    const criteria = action.predicate.match(/null/) ? "1" : action.criteria;
+    current[action.field] = { field: action.field, predicate: action.predicate, criteria };
     return __spreadProps(__spreadValues({}, state), { current, d: new Date().getTime(), params: buildParams2(state, current) });
   }
   function buildParams2({ filters, year }, current) {
