@@ -53,9 +53,7 @@
 # Rails model for buildings. Census records are attached to buildings. They also have photos and some
 # metadata originally designed and provided by Historic Ithaca.
 class Building < ApplicationRecord
-  include AutoStripAttributes
   include Moderation
-  include DefineEnumeration
   include Flaggable
   include Versioning
 
@@ -176,8 +174,6 @@ class Building < ApplicationRecord
                                                                     addresses[:name],
                                                                     addresses[:suffix]])])
   end
-
-  auto_strip_attributes :name, :stories
 
   alias_attribute :latitude, :lat
   alias_attribute :longitude, :lon

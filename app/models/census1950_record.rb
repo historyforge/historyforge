@@ -133,9 +133,6 @@ class Census1950Record < CensusRecord
   define_enumeration :own_business_family, income_enumeration
   define_enumeration :unearned_income_family, income_enumeration
 
-  auto_strip_attributes :industry,
-                        :occupation_code
-
   auto_upcase_attributes :occupation_code, :industry_code, :worker_class_code
 
   def page_side

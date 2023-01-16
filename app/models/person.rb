@@ -30,15 +30,10 @@
 # A person record is the glue that connects multiple census records to the same individual person. A person record
 # itself is pretty sparse, mainly glue, but does not have to have census records.
 class Person < ApplicationRecord
-  include AutoStripAttributes
   include PersonNames
   include PgSearch::Model
   include Flaggable
-  include DefineEnumeration
   include Versioning
-  include FastMemoize
-
-  auto_strip_attributes :first_name, :middle_name, :last_name, :pob
 
   attr_accessor :match_score
 
@@ -137,7 +132,7 @@ class Person < ApplicationRecord
 
   def relatives
     fellows = census_records.flat_map(&:fellows).group_by(&:person_id)
-    Person.where(id: fellows.keys).tap do |people| 
+    Person.where(id: fellows.keys).tap do |people|
       people.each { |person| person.instance_variable_set(:@census_records, fellows[person.id]) }
     end
   end

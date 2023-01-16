@@ -92,8 +92,6 @@ class Census1920Record < CensusRecord
   define_enumeration :employment, %w[W Em OA]
   define_enumeration :race, %w[W B Mu In Ch Jp Fil Hin Kor]
 
-  auto_strip_attributes :industry, :employment, :employment_code
-
   COLUMNS = {
     street_house_number: 2,
     street_prefix: 1,

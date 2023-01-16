@@ -120,7 +120,6 @@ class Census1930Record < CensusRecord
   define_enumeration :name_suffix, %w[Jr Sr]
   define_enumeration :name_prefix, %w[Dr Mr Mrs]
 
-  auto_strip_attributes :industry, :occupation_code, :pob_code
   auto_upcase_attributes :occupation_code
 
   def coded_occupation_name

@@ -5,14 +5,10 @@ class CensusRecord < ApplicationRecord
   self.abstract_class = true
   include CensusRecords::Searchable
   include CensusRecords::Addressable
-  include AutoStripAttributes
-  include AutoUpcaseAttributes
-  include DefineEnumeration
   include Moderation
   include PersonNames
   include Flaggable
   include Versioning
-  include FastMemoize
 
   belongs_to :building, optional: true
   belongs_to :person, optional: true
@@ -34,9 +30,6 @@ class CensusRecord < ApplicationRecord
   before_save :ensure_housing
 
   after_commit :audit_person_connection, if: :saved_change_to_person_id?
-
-  auto_strip_attributes :first_name, :middle_name, :last_name, :street_house_number, :street_name,
-                        :street_prefix, :street_suffix, :apartment_number, :profession, :name_prefix, :name_suffix
 
   define_enumeration :page_side, %w[A B], strict: true, if: :page_side?
   define_enumeration :street_prefix, STREET_PREFIXES

@@ -99,8 +99,6 @@ class Census1900Record < CensusRecord
   validates :language_spoken, vocabulary: { name: :language, allow_blank: true }
   validates :dwelling_number, presence: true
 
-  auto_strip_attributes :industry
-
   define_enumeration :race, %w[W B Ch Jp In]
 
   def birth_month=(value)
