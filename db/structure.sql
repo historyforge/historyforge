@@ -2229,7 +2229,6 @@ CREATE TABLE public.users (
     login character varying,
     email character varying,
     encrypted_password character varying(128) DEFAULT ''::character varying NOT NULL,
-    password_salt character varying DEFAULT ''::character varying NOT NULL,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     remember_token character varying,
@@ -4477,6 +4476,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20221030210941'),
 ('20221030214744'),
 ('20230115211545'),
+('20230116161711'),
 ('4'),
 ('8'),
 ('9');

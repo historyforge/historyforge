@@ -4,7 +4,7 @@
 module PersonNames
   extend ActiveSupport::Concern
   included do
-    before_validation :clean_middle_name
+    before_validation :clean_name
     before_save :set_searchable_name
 
     scope :by_name, -> { order(:last_name, :first_name, :middle_name) }
@@ -21,20 +21,20 @@ module PersonNames
                                                                       parent.table[:name_suffix]])])
     end
 
-    def set_searchable_name
-      self.searchable_name = name
-    end
-
     def name
       [name_prefix, first_name, middle_name, last_name, name_suffix].select(&:present?).join(' ')
     end
 
     private
 
-    def clean_middle_name
-      return if middle_name.blank?
+    def set_searchable_name
+      self.searchable_name = name
+    end
 
-      self.middle_name = middle_name.gsub(/\W/, ' ').strip.squish
+    def clean_name
+      [name_prefix, first_name, middle_name, last_name, name_suffix].each do |attribute|
+        self[attribute].gsub(/\W/, ' ').squish if self[attribute]
+      end
     end
   end
 end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Modified version of ye old auto_strip_attributes gem, with some extra filters and some gunk removed
+# Removes empty space from string columns, and converts "" to nil.
 module AutoStripAttributes
   extend ActiveSupport::Concern
   included do

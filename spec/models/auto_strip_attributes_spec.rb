@@ -10,12 +10,6 @@ RSpec.describe AutoStripAttributes do
     expect(subject.name).to eq('foo')
   end
 
-  it 'removes periods' do
-    subject.name = 'mr. foo'
-    subject.validate
-    expect(subject.name).to eq('mr foo')
-  end
-
   it 'converts empty strings to null' do
     subject.stories = ''
     subject.validate
