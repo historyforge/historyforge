@@ -11,7 +11,7 @@ module CensusRecords
 
     def set_defaults
       set_base_defaults
-      set_pre_1940_defaults if record.year <= 1940
+      set_pre_1940_defaults if record.year < 1940
     end
 
     def set_base_defaults

@@ -6,7 +6,7 @@ class AddressHistoryFromStreetConversion
   end
 
   def perform
-    matching_addresses.each do |address|
+    matching_addresses&.each do |address|
       converted = @street_conversion.convert(address.dup)
       modern_address = matching_modern_address address.building
       modern_address.year = year
