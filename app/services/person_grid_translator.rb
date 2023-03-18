@@ -67,7 +67,7 @@ class PersonGridTranslator
     marital_status: 130,
     id: 60,
     view: 60,
-    profession: 160,
+    occupation: 160,
     name: 160,
     description: 250,
   }.freeze

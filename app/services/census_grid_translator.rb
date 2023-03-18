@@ -64,7 +64,6 @@ class CensusGridTranslator
     enum_dist: 60,
     dwelling_number: 60,
     family_id: 60,
-    profession: 160,
     occupation: 160,
     industry: 130,
     census_scope: 160,
