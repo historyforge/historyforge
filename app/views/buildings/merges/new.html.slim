@@ -76,11 +76,8 @@ p.lead You propose to merge building ##{@source.id} #{@source.name} into buildin
                 th Link
                 td= link_to 'View', row
 
-- if @check.okay?
-  .card-footer
-    = form_with url: building_merges_url(@source), data: { remote: false } do |form|
-      = hidden_field_tag 'merge_id', @target.id
-      .d-flex.justify-content-center
-        = form.submit 'Yes Please', class: 'btn btn-danger btn-lg ml-auto mr-auto'
-- else
-  .alert.alert-danger You can't actually do merge this building because they are too far apart to be sure they should be merged.
+.card-footer
+  = form_with url: building_merges_url(@source), data: { remote: false } do |form|
+    = hidden_field_tag 'merge_id', @target.id
+    .d-flex.justify-content-center
+      = form.submit 'Yes Please', class: 'btn btn-danger btn-lg ml-auto mr-auto'
