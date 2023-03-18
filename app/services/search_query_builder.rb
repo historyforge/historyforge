@@ -23,6 +23,7 @@ class SearchQueryBuilder
     @s ||= {}
     @g ||= {}
     @f ||= default_fields
+    @f = @f.values if @f.is_a?(Hash) # Shouldn't be a hash but somehow possible...
     @from = @from.to_i if @from
     @to = @to.to_i if @to
     ransack_params.keys.each do |key|
