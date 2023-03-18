@@ -65,6 +65,11 @@ class Ability
       can :update, Photograph, created_by_id: user.id
     end
   end
+
+  def can?(action, subject, attribute = nil, *extra_args)
+    subject = subject.object if subject.is_a?(ApplicationDecorator)
+    super(action, subject, attribute, *extra_args)
+  end
 end
 
 # can :manage, Photograph
