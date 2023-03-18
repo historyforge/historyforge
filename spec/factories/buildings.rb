@@ -4,8 +4,8 @@
 #
 #  id                    :integer          not null, primary key
 #  name                  :string           not null
-#  city                  :string           not null
-#  state                 :string           not null
+#  city                  :string
+#  state                 :string
 #  postal_code           :string
 #  year_earliest         :integer
 #  year_latest           :integer
@@ -54,8 +54,6 @@ FactoryBot.define do
   factory(:building) do
     addresses { [build(:address, is_primary: true)] }
     name { "The #{Faker::Name.name} Building" }
-    city { 'Ithaca' }
-    state { 'New York' }
     lat { 42.442376 }
     lon { -76.4907835 }
     locality { Locality.find_or_create_by(name: 'Town of There') }

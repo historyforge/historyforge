@@ -13,9 +13,6 @@ class BuildingFromAddress
     return modern_address.building if modern_address.persisted?
 
     building = Building.new name: modern_address.address,
-                            city: record.city,
-                            state: record.state,
-                            postal_code: AppConfig[:postal_code],
                             locality: record.locality,
                             building_type_ids: [3] # residence
 

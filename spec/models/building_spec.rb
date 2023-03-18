@@ -4,8 +4,8 @@
 #
 #  id                    :integer          not null, primary key
 #  name                  :string           not null
-#  city                  :string           not null
-#  state                 :string           not null
+#  city                  :string
+#  state                 :string
 #  postal_code           :string
 #  year_earliest         :integer
 #  year_latest           :integer
@@ -120,9 +120,7 @@ RSpec.describe Building do
   describe '#validate_primary_address' do
     context 'addresses managed via nested attributes' do
       before do
-        subject.city = 'Ithaca'
-        subject.state = 'NY'
-        subject.locality = create(:locality)
+        subject.locality = build(:locality)
       end
 
       it 'expects a primary address' do
@@ -132,7 +130,8 @@ RSpec.describe Building do
             'house_number' => '110',
             'name' => 'Court',
             'prefix' => 'E',
-            'suffix' => 'St'
+            'suffix' => 'St',
+            'city' => 'Ithaca'
           }
         ]
         expect(subject.save).to be_truthy
@@ -146,7 +145,8 @@ RSpec.describe Building do
             'house_number' => '110',
             'name' => 'Court',
             'prefix' => 'E',
-            'suffix' => 'St'
+            'suffix' => 'St',
+            'city' => 'Ithaca'
           }
         ]
         expect(subject.save).to be_falsey
@@ -161,13 +161,15 @@ RSpec.describe Building do
             'house_number' => '110',
             'name' => 'Court',
             'prefix' => 'E',
-            'suffix' => 'St'
+            'suffix' => 'St',
+            'city' => 'Ithaca'
           }, {
             'is_primary' => true,
             'house_number' => '110',
             'name' => 'Mill',
             'prefix' => 'E',
-            'suffix' => 'St'
+            'suffix' => 'St',
+            'city' => 'Ithaca'
           }
         ]
         subject.validate

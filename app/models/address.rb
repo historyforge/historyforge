@@ -30,6 +30,7 @@ class Address < ApplicationRecord
   alias_attribute :street_suffix, :suffix
 
   validates :year, numericality: { minimum: 1500, maximum: 2100, allow_nil: true }
+  validates :city, presence: true
 
   ransacker :street_address, formatter: proc { |v| v.mb_chars.downcase.to_s } do |parent|
     Arel::Nodes::NamedFunction.new('LOWER',
@@ -78,7 +79,7 @@ class Address < ApplicationRecord
         name: item.read_attribute(:street_name),
         suffix: item.read_attribute(:street_suffix),
         city: item.read_attribute(:city),
-        year: item.read_attribute(:year_earliest),
+        year: item.read_attribute(:year_earliest)
       )
     end
   end

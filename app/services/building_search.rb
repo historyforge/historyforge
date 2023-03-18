@@ -70,7 +70,7 @@ class BuildingSearch < SearchQueryBuilder
   end
 
   def all_fields
-    %w[street_address city state postal_code locality
+    %w[street_address city locality
        year_earliest year_latest
        description annotations stories block_number
        building_type lining frame

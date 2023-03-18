@@ -16,18 +16,18 @@ RSpec.describe BuildingsOnStreet do
 
   context 'with duplicates' do
     before do
-      building = create(:building, locality:, addresses: [
+      create(:building, locality:, addresses: [
         build(:address, house_number: '306', name: 'Tioga', prefix: 'N', suffix: 'St', is_primary: true),
         build(:address, house_number: '307', name: 'Tioga', prefix: 'N', suffix: 'St', is_primary: false)
       ])
 
     end
-    let(:record) {
+    let(:record) do
       Census1900Record.new locality:,
                            street_house_number: '305',
                            street_name: 'Tioga',
                            street_prefix: 'N',
-                           street_suffix: 'St' }
+                           street_suffix: 'St' end
     it 'ignores duplicates' do
       ids = subject.map(&:id)
       expect(ids.length).to eq(ids.uniq.length)
@@ -42,12 +42,12 @@ RSpec.describe BuildingsOnStreet do
         create(:building, locality:, addresses: [build(:address, house_number: '505', name: 'Tioga', prefix: 'N', suffix: 'St')])
         create(:building, locality:, addresses: [build(:address, house_number: '25', name: 'Tioga', prefix: 'N', suffix: 'St')])
       end
-      let(:record) {
+      let(:record) do
         Census1900Record.new locality:,
                              street_house_number: '5',
                              street_name: 'Tioga',
                              street_prefix: 'N',
-                             street_suffix: 'St' }
+                             street_suffix: 'St' end
       it 'does not show the 5505 address' do
         expect(subject.map(&:name).detect { |name| name =~ /5505/ }).to be_falsey
       end
@@ -66,12 +66,12 @@ RSpec.describe BuildingsOnStreet do
         create(:building, locality:, addresses: [build(:address, house_number: '105', name: 'Tioga', prefix: 'N', suffix: 'St')])
         create(:building, locality:, addresses: [build(:address, house_number: '25', name: 'Tioga', prefix: 'N', suffix: 'St')])
       end
-      let(:record) {
+      let(:record) do
         Census1900Record.new locality:,
                              street_house_number: '15',
                              street_name: 'Tioga',
                              street_prefix: 'N',
-                             street_suffix: 'St' }
+                             street_suffix: 'St' end
       it 'does not show the 1305 address' do
         expect(subject.map(&:name).detect { |name| name =~ /1305/ }).to be_falsey
       end
@@ -83,12 +83,12 @@ RSpec.describe BuildingsOnStreet do
       end
     end
     context 'for 3-digit house numbers' do
-      let(:record) {
+      let(:record) do
         Census1900Record.new locality:,
                              street_house_number: '405',
                              street_name: 'Tioga',
                              street_prefix: 'N',
-                             street_suffix: 'St' }
+                             street_suffix: 'St' end
       it 'does not show the 305 address' do
         expect(subject.map(&:name).detect { |name| name =~ /305/ }).to be_falsey
       end
@@ -110,12 +110,12 @@ RSpec.describe BuildingsOnStreet do
         create(:building, locality:, addresses: [build(:address, house_number: '105', name: 'Tioga', prefix: 'N', suffix: 'St')])
         create(:building, locality:, addresses: [build(:address, house_number: '1405', name: 'Tioga', prefix: 'S', suffix: 'St')])
       end
-      let(:record) {
+      let(:record) do
         Census1900Record.new locality:,
                              street_house_number: '1405',
                              street_name: 'Tioga',
                              street_prefix: 'N',
-                             street_suffix: 'St' }
+                             street_suffix: 'St' end
       it 'does show the 1405 address' do
         expect(subject.map(&:name).detect { |name| name =~ /1405/ }).to be_truthy
       end
@@ -135,12 +135,12 @@ RSpec.describe BuildingsOnStreet do
         create(:building, locality:, addresses: [build(:address, house_number: '105', name: 'Tioga', prefix: 'N', suffix: 'St')])
         create(:building, locality:, addresses: [build(:address, house_number: '12406', name: 'Tioga', prefix: 'N', suffix: 'St')])
       end
-      let(:record) {
+      let(:record) do
         Census1900Record.new locality:,
                              street_house_number: '12405',
                              street_name: 'Tioga',
                              street_prefix: 'N',
-                             street_suffix: 'St' }
+                             street_suffix: 'St' end
       it 'does not show the 1305 address' do
         expect(subject.map(&:name).detect { |name| name =~ /1305/ }).to be_falsey
       end
@@ -156,13 +156,13 @@ RSpec.describe BuildingsOnStreet do
   context 'with building_id' do
     let(:address) { build(:address, house_number: '407', name: 'Cayuga', prefix: 'N', suffix: 'St') }
     let(:building) { create(:building, locality:, addresses: [address]) }
-    let(:record) {
+    let(:record) do
       Census1900Record.new locality:,
                            building_id: building.id,
                            street_house_number: '405',
                            street_name: 'Tioga',
                            street_prefix: 'N',
-                           street_suffix: 'St' }
+                           street_suffix: 'St' end
     it 'still puts the building in the list even though it is not on the street being searched' do
       expect(subject.map(&:id)).to include(building.id)
     end

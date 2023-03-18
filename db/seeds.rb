@@ -20,7 +20,6 @@ Setting.add 'county', value: ENV['APP_PLACE_COUNTY'] || 'Tompkins', group: 'Cens
 Setting.add 'city', value: ENV['APP_PLACE_CITY'] || 'Ithaca', group: 'Census Record Defaults'
 Setting.add 'state', value: ENV['APP_PLACE_STATE'] || 'NY', group: 'Census Record Defaults'
 Setting.add 'pob', value: 'New York', group: 'Census Record Defaults'
-Setting.add 'postal_code', value: ENV['APP_PLACE_POSTAL_CODE'], group: 'Census Record Defaults'
 Setting.add 'organization', value: ENV['APP_ORG_NAME'] || 'The History Center in Tompkins County', group: 'Sponsor'
 Setting.add 'url', value: ENV['APP_ORG_URL'] || 'https://thehistorycenter.net', group: 'Sponsor'
 Setting.add 'contact_email', value: ENV['CONTACT_EMAIL'] || 'historyforge@thehistorycenter.net', group: 'Sponsor'

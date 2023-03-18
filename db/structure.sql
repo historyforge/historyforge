@@ -379,8 +379,8 @@ ALTER SEQUENCE public.building_types_id_seq OWNED BY public.building_types.id;
 CREATE TABLE public.buildings (
     id integer NOT NULL,
     name character varying NOT NULL,
-    city character varying NOT NULL,
-    state character varying NOT NULL,
+    city character varying,
+    state character varying,
     postal_code character varying,
     year_earliest integer,
     year_latest integer,
@@ -4477,6 +4477,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20221030214744'),
 ('20230115211545'),
 ('20230116161711'),
+('20230318221021'),
 ('4'),
 ('8'),
 ('9');

@@ -6,8 +6,8 @@
 #
 #  id                    :integer          not null, primary key
 #  name                  :string           not null
-#  city                  :string           not null
-#  state                 :string           not null
+#  city                  :string
+#  state                 :string
 #  postal_code           :string
 #  year_earliest         :integer
 #  year_latest           :integer

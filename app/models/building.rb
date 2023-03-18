@@ -4,8 +4,8 @@
 #
 #  id                    :integer          not null, primary key
 #  name                  :string           not null
-#  city                  :string           not null
-#  state                 :string           not null
+#  city                  :string
+#  state                 :string
 #  postal_code           :string
 #  year_earliest         :integer
 #  year_latest           :integer
@@ -57,6 +57,8 @@ class Building < ApplicationRecord
   include Flaggable
   include Versioning
 
+  self.ignored_columns = %i[city state postal_code]
+
   has_rich_text :description
 
   define_enumeration :address_street_prefix, STREET_PREFIXES
@@ -85,7 +87,6 @@ class Building < ApplicationRecord
   validates :year_earliest, :year_latest, numericality: { minimum: 1500, maximum: 2100, allow_nil: true }
   validate :validate_primary_address
   validates :addresses, length: { minimum: 1, too_short: ' - a building must have at least one.' }
-  validates :city, :state, presence: true
 
   delegate :name, to: :frame_type, prefix: true, allow_nil: true
   delegate :name, to: :lining_type, prefix: true, allow_nil: true
@@ -194,7 +195,7 @@ class Building < ApplicationRecord
 
   # TODO: this presentation stuff overlaps with the BuildingPresenter. Make the Buildings::MainController use the presenter.
   def full_street_address
-    "#{[street_address, city, state].join(' ')} #{postal_code}"
+    [street_address, city].join(' ')
   end
 
   def architects_list
