@@ -85,6 +85,7 @@ class Building < ApplicationRecord
   validates :year_earliest, :year_latest, numericality: { minimum: 1500, maximum: 2100, allow_nil: true }
   validate :validate_primary_address
   validates :addresses, length: { minimum: 1, too_short: ' - a building must have at least one.' }
+  validates :city, :state, presence: true
 
   delegate :name, to: :frame_type, prefix: true, allow_nil: true
   delegate :name, to: :lining_type, prefix: true, allow_nil: true
