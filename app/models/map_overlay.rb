@@ -26,7 +26,7 @@ class MapOverlay < ApplicationRecord
   has_many :annotations, dependent: :restrict_with_error
   before_destroy :check_for_annotations
   accepts_nested_attributes_for :annotations, reject_if: proc { |p| p['annotation_text'].blank? }
-
+  default_scope -> { order(:year_depicted) }
   def can_delete?
     annotations.count == 0
   end
