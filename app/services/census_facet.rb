@@ -37,7 +37,6 @@ class CensusFacet
     memoize :sql
 
     def query
-      Rails.logger.info sql.inspect
       ActiveRecord::Base.connection.exec_query sql
     end
     memoize :query

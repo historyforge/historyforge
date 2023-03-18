@@ -20,6 +20,10 @@ module CensusRecords
       render_census_records
     end
 
+    def advanced_search_filters
+      # Implicit render but let's define the action so you don't lose time searching for me here.
+    end
+
     def new
       authorize! :create, resource_class
       @record = resource_class.new
