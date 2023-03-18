@@ -10,7 +10,7 @@
             th Name
             th Address
             th Age
-            th Profession
+            th Occupation
             th
         tbody
           - @records.each do |row|
@@ -18,6 +18,6 @@
               td= row.name
               td= row.street_address
               td= row.age
-              td= row.profession
+              td= row.occupation
               td= link_to 'View', row, class: 'btn btn-sm btn-light', target: '_blank'
       = paginate @records, remote: true

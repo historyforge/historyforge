@@ -103,9 +103,6 @@ class Census1930Record < CensusRecord
   self.table_name = 'census_1930_records'
   self.year = 1930
 
-  alias_attribute :profession, :occupation
-  alias_attribute :profession_code, :occupation_code
-
   belongs_to :coded_industry, class_name: 'Industry1930Code', optional: true, foreign_key: :industry1930_code_id
   belongs_to :coded_occupation, class_name: 'Occupation1930Code', optional: true, foreign_key: :occupation1930_code_id
   belongs_to :locality, inverse_of: :census1930_records
@@ -142,12 +139,6 @@ class Census1930Record < CensusRecord
     self.coded_occupation = Occupation1930Code.where(code: ocode).first
     icode = code[-2..]
     self.coded_industry = Industry1930Code.where(code: icode).first
-  end
-
-  def validate_profession_code
-    return unless occupation_code.present? && (industry1930_code_id.blank? || occupation1930_code_id.blank?)
-
-    errors.add :occupation_code, 'Invalid profession code.'
   end
 
   COLUMNS = {

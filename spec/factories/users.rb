@@ -6,7 +6,6 @@
 #  login                     :string
 #  email                     :string
 #  encrypted_password        :string(128)      default(""), not null
-#  password_salt             :string           default(""), not null
 #  created_at                :datetime
 #  updated_at                :datetime
 #  remember_token            :string

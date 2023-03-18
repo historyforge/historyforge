@@ -8,11 +8,11 @@ RSpec.describe AttributeAutocomplete do
 
   context 'Attributes' do
     describe 'an existing attribute' do
-      let(:attribute) { 'profession' }
+      let(:attribute) { 'occupation' }
       let(:term) { 'Ba' }
       before do
-        create(:census1900_record, profession: 'Barber')
-        create(:census1900_record, profession: 'Baker')
+        create(:census1900_record, occupation: 'Barber')
+        create(:census1900_record, occupation: 'Baker')
       end
       it 'finds the barber and the baker' do
         expect(subject).to include('Barber')

@@ -82,8 +82,6 @@ class Census1920Record < CensusRecord
   self.table_name = 'census_1920_records'
   self.year = 1920
 
-  alias_attribute :profession, :occupation
-
   belongs_to :locality, inverse_of: :census1920_records
 
   validates :mother_tongue, :mother_tongue_father, :mother_tongue_mother, vocabulary: { name: :language, allow_blank: true }

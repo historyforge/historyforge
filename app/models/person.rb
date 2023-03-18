@@ -142,8 +142,8 @@ class Person < ApplicationRecord
     census_records.map(&:relation_to_head).uniq.join(', ')
   end
 
-  def profession
-    census_records.map(&:profession).uniq.join(', ')
+  def occupation
+    census_records.map(&:occupation).uniq.join(', ')
   end
 
   def address

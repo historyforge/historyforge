@@ -17,7 +17,7 @@ class CensusRecord < ApplicationRecord
 
   attr_accessor :ensure_building
 
-  validates :first_name, :last_name, :family_id, :relation_to_head, :profession,
+  validates :first_name, :last_name, :family_id, :relation_to_head, :occupation,
             :page_number, :line_number, :county, :city, :state, :enum_dist,
             presence: true
   validates :page_side, presence: true, if: :page_side?

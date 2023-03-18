@@ -84,8 +84,6 @@ class Census1880Record < CensusRecord
   define_enumeration :page_side, %w[A B C D], strict: true
   define_enumeration :race, %w[W B Mu Ch In]
 
-  alias_attribute :profession, :occupation
-
   COLUMNS = {
     street_house_number: '2nd Column on the Left',
     street_prefix: '1st Column on the Left',

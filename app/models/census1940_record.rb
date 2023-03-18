@@ -111,10 +111,6 @@ class Census1940Record < CensusRecord
 
   belongs_to :locality, inverse_of: :census1940_records
 
-  alias_attribute :profession, :occupation
-  alias_attribute :profession_code, :occupation_code
-  alias_attribute :usual_profession, :usual_occupation
-
   validate :validate_occupation_codes
 
   define_enumeration :marital_status, %w[S M (M)7 Wd D]
@@ -223,7 +219,7 @@ class Census1940Record < CensusRecord
     soc_sec: 42,
     deductions: 43,
     deduction_rate: 44,
-    usual_profession: 45,
+    usual_occupation: 45,
     usual_industry: 46,
     usual_worker_class: 47,
     usual_occupation_code: 'J',

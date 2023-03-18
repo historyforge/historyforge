@@ -112,8 +112,6 @@ en:
         pob: 'Place of Birth'
         private_hours_worked: 'Hours Worked Week Prior to Census'
         private_work: 'Private/Non-emergency Government Work'
-        profession_code: 'Occupation Code'
-        profession: 'Occupation'
         provisional: 'Provisional'
         public_work: 'Public Emergency Work'
         race: 'Race'

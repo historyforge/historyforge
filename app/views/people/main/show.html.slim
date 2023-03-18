@@ -39,7 +39,7 @@
       tr
         th Year
         th Name
-        th 
+        th
           | Relation
           span.d-none.d-lg-inline &nbsp;to Head
         th Address
@@ -60,7 +60,7 @@
           td= row.race
           td= row.pob
           td= row.marital_status
-          td= row.profession
+          td= row.occupation
 
 - if @person.relatives.present?
 .card.mb-3
@@ -69,7 +69,7 @@
     thead
       tr
         th Name
-        th 
+        th
           | Relation
           span.d-none.d-lg-inline &nbsp;to Head
         th Sex
@@ -85,9 +85,9 @@
           td= "#{Translator.option(:race, row.race)} " if row.race.present? && row.race != 'on'
           td= "#{Translator.option(:sex, row.sex)} " if row.sex.present? && row.sex != 'on'
           td= row.birth_year
-          td= row.profession
+          td= row.occupation
 
-    
+
 - if can?(:update, @person) && @person.possible_unmatched_records.present?
   .card.mb-3
     .card-header Possible Census Records
@@ -96,7 +96,7 @@
         tr
           th Year
           th Name
-          th 
+          th
             | Relation
             span.d-none.d-lg-inline &nbsp;to Head
           th Address
@@ -117,7 +117,7 @@
             td= row.race
             td= row.pob
             td= row.marital_status
-            td= row.profession
+            td= row.occupation
             td
               = form_for row do |form|
                 = hidden_field_tag 'census_record[person_id]', @person.id

@@ -109,10 +109,6 @@ class Census1950Record < CensusRecord
 
   belongs_to :locality, inverse_of: :census1950_records
 
-  alias_attribute :profession, :occupation
-  alias_attribute :profession_code, :occupation_code
-  alias_attribute :usual_profession, :usual_occupation
-
   validate :validate_occupation_codes
 
   define_enumeration :marital_status, %w[Nev Mar Wd D Sep]

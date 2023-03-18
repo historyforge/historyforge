@@ -114,7 +114,7 @@ div.mb-3
               th Sex
               th Age
               th Relation
-              th Profession
+              th Occupation
           tbody
             - @record.fellows.each do |row|
               tr
@@ -122,7 +122,7 @@ div.mb-3
                 td= row.sex
                 td= row.age
                 td= row.relation_to_head
-                td= row.profession
+                td= row.occupation
     - if @model.person_id.blank? && can?(:review, @model)
       - matches = Person.likely_matches_for(@model)
       .card.mb-2
@@ -143,7 +143,7 @@ div.mb-3
                   => match.name
                   i.fa.fa-external-link
                 p
-                  | Age: #{match.age_in_year(@model.year)} |&nbsp; #{match.relation_to_head} |&nbsp; #{match.profession}
+                  | Age: #{match.age_in_year(@model.year)} |&nbsp; #{match.relation_to_head} |&nbsp; #{match.occupation}
                 p.mb-0= match.address
 
     - if can?(:review, CensusRecord)

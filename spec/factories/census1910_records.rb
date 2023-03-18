@@ -98,7 +98,7 @@ FactoryBot.define do
     sequence(:last_name) { |n| "Last#{n}" }
     sex { 'M' }
     race { 'W' }
-    profession { 'None' }
+    occupation { 'None' }
     family_id { 1 }
     relation_to_head { 'Head' }
     page_number { 1 }

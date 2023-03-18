@@ -43,7 +43,7 @@ class MatchCensusToPersonRecordJob < ApplicationJob
         score += 1 if match_record.race == record.race
         score += 1 if match_record.building_id == record.building_id
         score += 1 if match_record.relation_to_head == record.relation_to_head
-        score += 1 if match_record.profession == record.profession
+        score += 1 if match_record.occupation == record.occupation
         match_record.fellows.each do |match_record_fellow|
           record.fellows.each do |fellow|
             if fellow.first_name == match_record_fellow.first_name && fellow.relation_to_head == match_record_fellow.relation_to_head

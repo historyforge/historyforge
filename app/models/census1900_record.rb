@@ -87,8 +87,6 @@ class Census1900Record < CensusRecord
   self.table_name = 'census_1900_records'
   self.year = 1900
 
-  alias_attribute :profession, :occupation
-
   belongs_to :locality, inverse_of: :census1900_records
 
   validates :attended_school, :years_in_us, :years_married,

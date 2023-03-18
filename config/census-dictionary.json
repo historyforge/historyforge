@@ -1407,7 +1407,7 @@
         "column": 44
       }
     },
-    "usual_profession": {
+    "usual_occupation": {
       "defaults": {
         "label": "Usual Occupation"
       },
@@ -1635,13 +1635,13 @@
         "label": "Place of Birth - Mother (Code)"
       }
     },
-    "profession_code": {
+    "occupation_code": {
       "defaults": {
         "label": "Occupation Code",
         "hint": "This is a three-digit occupation code followed by a two-figure industry code and a 1-figure worker class code. The occupation code can contain a “V” or “X” as well as numbers. The industry code can contain a “V” or “X” as well as numbers. The worker class code is a number from 1 to 6. If you are unsure, check the resource for verifying the occupation code on the Transcriber’s Corner."
       }
     },
-    "profession": {
+    "occupation": {
       "defaults": {
         "label": "Occupation",
         "hint": "Enter what you see on the census.  If the field is blank on the census, leave the default “None.” If, however, the industry is not blank or there is some other indicator of an occupation enter the word “Blank” to indicate that there was an occupation."
