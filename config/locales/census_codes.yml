@@ -91,6 +91,7 @@ en:
       o: 'Own Business'
       oa: 'Own Account'
       np: 'Unpaid Family Worker'
+      nw: 'New Worker'
       pw: 'Private Wage or Salary Worker'
       gw: 'Government Wage or Salary Worker'
       p: 'Private Employer'
