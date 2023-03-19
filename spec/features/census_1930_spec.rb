@@ -16,7 +16,7 @@ RSpec.describe '1930 US Census' do
     select 'A', from: 'Side'
     fill_in 'Line', with: '1'
     fill_in 'County', with: 'Tompkins'
-    fill_in 'City', with: 'Ithaca'
+    fill_in 'Place', with: 'Ithaca'
     fill_in 'Ward', with: '1'
     fill_in 'Enum Dist', with: '1'
     fill_in 'House No.', with: '405'
