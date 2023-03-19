@@ -75,7 +75,7 @@ RSpec.describe '1900 US Census' do
     expect(find_field('Sheet').value).to eq '1'
     expect(find_field('Side').value).to eq 'A'
     expect(find_field('County').value).to eq 'Tompkins'
-    expect(find_field('City').value).to eq 'Ithaca'
+    expect(find_field('Place').value).to eq 'Ithaca'
     expect(find_field('Ward').value).to eq '1'
     expect(find_field('Enum Dist').value).to eq '1'
     expect(find_field('Dwelling No.').value).to eq '1'
