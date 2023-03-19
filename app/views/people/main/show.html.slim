@@ -68,6 +68,7 @@
   = table do
     thead
       tr
+        th Year
         th Name
         th
           | Relation
@@ -80,6 +81,7 @@
       - @person.relatives.each do |raw_row|
         - row = raw_row.decorate
         tr
+          td= row.census_records.map(&:year).sort.join(', ')
           td.text-nowrap= link_to row.name, row
           td= row.relation_to_head
           td= "#{Translator.option(:race, row.race)} " if row.race.present? && row.race != 'on'
