@@ -582,7 +582,7 @@ CREATE TABLE public.census_1880_records (
     histid uuid,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    enum_dist integer,
+    enum_dist character varying NOT NULL,
     ward integer
 );
 
@@ -677,7 +677,7 @@ CREATE TABLE public.census_1900_records (
     age_months integer,
     locality_id bigint,
     histid uuid,
-    enum_dist integer,
+    enum_dist character varying NOT NULL,
     ward integer
 );
 
@@ -777,7 +777,7 @@ CREATE TABLE public.census_1910_records (
     mother_tongue_mother character varying,
     locality_id bigint,
     histid uuid,
-    enum_dist integer,
+    enum_dist character varying NOT NULL,
     ward integer
 );
 
@@ -868,7 +868,7 @@ CREATE TABLE public.census_1920_records (
     employment_code character varying,
     locality_id bigint,
     histid uuid,
-    enum_dist integer,
+    enum_dist character varying NOT NULL,
     ward integer
 );
 
@@ -976,7 +976,7 @@ CREATE TABLE public.census_1930_records (
     occupation1930_code_id bigint,
     locality_id bigint,
     histid uuid,
-    enum_dist integer,
+    enum_dist character varying NOT NULL,
     ward integer
 );
 
@@ -1092,7 +1092,7 @@ CREATE TABLE public.census_1940_records (
     industry_code character varying,
     locality_id bigint,
     histid uuid,
-    enum_dist integer,
+    enum_dist character varying NOT NULL,
     ward integer,
     income_plus boolean
 );
@@ -1136,7 +1136,7 @@ CREATE TABLE public.census_1950_records (
     city character varying,
     state character varying,
     ward integer,
-    enum_dist integer,
+    enum_dist character varying NOT NULL,
     institution_name character varying,
     institution_type character varying,
     apartment_number character varying,
@@ -4478,6 +4478,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20230115211545'),
 ('20230116161711'),
 ('20230318221021'),
+('20230319030813'),
 ('4'),
 ('8'),
 ('9');

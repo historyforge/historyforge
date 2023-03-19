@@ -54,6 +54,7 @@ class CensusRecordSearch < SearchQueryBuilder
     sort.each do |_key, sort_unit|
       col = sort_unit['colId']
       dir = sort_unit['sort']
+      raise ArgumentError, "Dangerous query method!" unless %w[asc desc].include?(dir)
       order = order_clause_for(col, dir)
       builder.order(Arel.sql(entity_class.sanitize_sql_for_order(order))) if order
     end
@@ -70,15 +71,17 @@ class CensusRecordSearch < SearchQueryBuilder
       "regexp_replace(NULLIF(family_id, ''), '[^0-9]+', '', 'g')::numeric #{dir}"
     elsif entity_class.columns.map(&:name).include?(col)
       "#{col} #{dir}"
+    else
+      raise ArgumentError, 'Unrecognized sort request.'
     end
   end
 
   def street_address_order_clause(dir)
-    "street_name #{dir}, street_prefix #{dir}, street_suffix #{dir}, substring(street_house_number, '^[0-9]+')::int #{dir}"
+    Arel.sql "street_name #{dir}, street_prefix #{dir}, street_suffix #{dir}, substring(street_house_number, '^[0-9]+')::int #{dir}"
   end
 
   def census_page_order_clause(dir)
-    "ward #{dir}, enum_dist #{dir}, page_number #{dir}, page_side #{dir}, line_number #{dir}"
+    Arel.sql "ward #{dir}, regexp_replace(NULLIF(enum_dist, ''), '[^0-9]+', '', 'g')::numeric #{dir}, enum_dist #{dir}, page_number #{dir}, page_side #{dir}, line_number #{dir}"
   end
 
   def name_order_clause(dir)
