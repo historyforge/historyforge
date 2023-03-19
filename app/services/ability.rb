@@ -43,11 +43,15 @@ class Ability
       if user.has_role?('builder')
         can :create, Building
         can :update, Building #, created_by_id: user.id
+        can :merge, Building
+        can :destroy, Building
       end
 
       if user.has_role?('person record editor')
         can :create, Person
         can :update, Person
+        can :merge, Person
+        can :destroy, Person
       end
 
       # any logged in user can do the following things:
