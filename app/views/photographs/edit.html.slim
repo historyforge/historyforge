@@ -20,8 +20,8 @@
           = image_tag form.object.file
 
   = panel 'Caption & Description' do
-    = form.input :caption, as: :text, label: "Caption", hint: "When this photo appears with buildings and people, this text will be used."
-    = form.input :description, as: :text, label: "Description", hint: "If there is additional text to show when someone goes to the page for this media, put it here."
+    = form.input :caption, as: :text, label: "Caption", hint: "The Caption is text that appears underneath the photo on the building record. Note that the caption should not include the date which is a separate field that will display along with the caption."
+    = form.input :description, as: :text, label: "Description", hint: "The Description is secondary text that appears when someone selects the photo to enlarge it. The Description can be standard text used to identify the collection that houses the photo in your institution, or it can be used in whichever way your institution sees fit."
 
   = panel 'Buildings' do
     - if form.object.building_ids.present?

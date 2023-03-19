@@ -25,8 +25,8 @@
     .card-body
       .row
         .col-sm-8.col-xs-12
-          = form.input :caption, as: :text, label: "Caption", hint: "When this photo appears with buildings and people, this text will be used. Title and description are reserved for NYHeritage metadata."
-          = form.input :description, as: :text, label: "Description", hint: "If there is a longer story to show when someone goes to the page for this media, put it here."
+          = form.input :caption, as: :text, label: "Caption", hint: "The Caption is text that appears underneath the photo on the building record. Note that the caption should not include the date which is a separate field that will display along with the caption."
+          = form.input :description, as: :text, label: "Description", hint: "The Description is secondary text that appears when someone selects the photo to enlarge it. The Description can be standard text used to identify the collection that houses the photo in your institution, or it can be used in whichever way your institution sees fit."
 
         .col-3.offset-1.thumb= thumb_for form.object
     .card-footer.d-flex.justify-content-center
