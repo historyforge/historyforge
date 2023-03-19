@@ -38,7 +38,7 @@ en:
         can_write: 'Can Write'
         cannot_write: 'Cannot Write'
         children_born: 'No. Children Born'
-        city: 'City'
+        city: 'Place'
         civil_war_vet: 'Civil War'
         county: 'County'
         created_at: 'Created'

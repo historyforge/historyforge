@@ -28,30 +28,37 @@ en:
       census1880_record:
         page_number: 'Sheet'
         page_side: 'Side'
+        city: 'Place'
         enum_dist: 'Enumeration District'
       census1900_record:
         page_number: 'Sheet'
         page_side: 'Side'
+        city: 'Place'
         enum_dist: 'Enumeration District'
       census1910_record:
         page_number: 'Sheet'
         page_side: 'Side'
+        city: 'Place'
         enum_dist: 'Enumeration District'
       census1920_record:
         page_number: 'Sheet'
         page_side: 'Side'
+        city: 'Place'
         enum_dist: 'Enumeration District'
       census1930_record:
         page_number: 'Sheet'
         page_side: 'Side'
+        city: 'Place'
         enum_dist: 'Enumeration District'
       census1940_record:
         page_number: 'Sheet'
         page_side: 'Side'
+        city: 'Place'
         enum_dist: 'Enumeration District'
         family_id: 'Household No.'
       census1950_record:
         page_number: 'Sheet'
+        city: 'Place'
         family_id: 'Serial No.'
         enum_dist: 'Enumeration District'
   simple_form:
