@@ -63,6 +63,8 @@ en:
         enum_dist: 'Enumeration District'
   simple_form:
     labels:
+      address:
+        city: 'Place'
       building:
         id: 'ID'
         address: 'Street address'

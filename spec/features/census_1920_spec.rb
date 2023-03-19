@@ -15,8 +15,8 @@ RSpec.describe '1920 US Census' do
     fill_in 'Sheet', with: '1'
     select 'A', from: 'Side'
     fill_in 'Line', with: '1'
-    fill_in 'County', with: 'Tompkins'
-    fill_in 'Place', with: 'Ithaca'
+    fill_in 'County', with: 'Tompkins', match: :first
+    fill_in 'Place', with: 'Ithaca', match: :first
     fill_in 'Ward', with: '1'
     fill_in 'Enum Dist', with: '1'
     fill_in 'House No.', with: '405'
@@ -78,7 +78,7 @@ RSpec.describe '1920 US Census' do
     expect(find_field('Sheet').value).to eq '1'
     expect(find_field('Side').value).to eq 'A'
     expect(find_field('County').value).to eq 'Tompkins'
-    expect(find_field('Place').value).to eq 'Ithaca'
+    expect(find_field('Place', match: :first).value).to eq 'Ithaca'
     expect(find_field('Ward').value).to eq '1'
     expect(find_field('Enum Dist').value).to eq '1'
     expect(find_field('Dwelling No.').value).to eq '1'
