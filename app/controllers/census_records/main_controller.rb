@@ -4,7 +4,7 @@
 module CensusRecords
   class MainController < ApplicationController
     include FastMemoize
-    before_action :check_access
+    before_action :check_access, except: :rebuild
     before_action :check_demographics_access, only: :demographics
 
     include AdvancedRestoreSearch
@@ -14,6 +14,14 @@ module CensusRecords
     respond_to :csv, only: :index
     respond_to :html
 
+    def rebuild
+      authorize! :manage, :all
+      CensusYears.each do |year|
+        "Census#{year}Record".constantize.rebuild_pg_search_documents
+      end
+      flash[:notice] = 'Person index rebuilt.'
+      redirect_back_or_to(root_path)
+    end
     def index
       @page_title = page_title
       load_census_records

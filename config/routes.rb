@@ -24,6 +24,8 @@ Rails.application.routes.draw do
 
   get '/forge' => 'forge#index', as: 'forge'
 
+  post '/census/rebuild', to: 'census_records/main#rebuild', as: 'rebuild_index'
+
   devise_for :users,
              path: 'u',
              skip: %i[registerable confirmable],
