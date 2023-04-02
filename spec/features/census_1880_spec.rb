@@ -87,7 +87,7 @@ RSpec.describe '1880 US Census' do
     # expect(find('span.badge.badge-success')).to have_content('NEW')
 
     click_on 'View'
-    expect(page).to have_content 'Squarepants III, Sponge Bob, Dr'
+    expect(page).to have_content 'Squarepants III, Dr Sponge Bob'
     click_on 'Edit'
     expect(page).to have_content 'Census Scope'
     expect(find_field('Last Name').value).to eq('Squarepants')
