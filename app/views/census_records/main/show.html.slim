@@ -89,16 +89,14 @@ div.mb-3
                 .col-6.col-form-label Locality
                 .col-6= @record.locality
             - if controller.year === 1950
-              - if @record.institution_type
-                li.list-group-item
-                  .form-group.row
-                    .col-6.col-form-label Institution Type
-                    .col-6= @record.institution_type
-              - if @record.institution_name
-                li.list-group-item
-                  .form-group.row
-                    .col-6.col-form-label Institution Name
-                    .col-6= @record.institution_name
+              li.list-group-item
+                .form-group.row
+                  .col-6.col-form-label Institution Type
+                  .col-6= @record.institution_type || 'blank'
+              li.list-group-item
+                .form-group.row
+                  .col-6.col-form-label Institution Name
+                  .col-6= @record.institution_name || 'blank'
 
         = CensusFormGenerator.generate form, census_form_renderer
 

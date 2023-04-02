@@ -71,7 +71,9 @@ class CensusGridTranslator
     street_address: 160,
     notes: 160,
     coded_occupation_name: 250,
-    coded_industry_name: 250
+    coded_industry_name: 250,
+    institution_name: 130,
+    institution_type: 130
   }.freeze
 
   def width_for_column(column)
