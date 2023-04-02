@@ -40,6 +40,7 @@ Rails.application.routes.draw do
       get :building_autocomplete
       get :autocomplete
       post :bulk_review
+      post :bulk_person_match
     end
     member do
       put :save_as
