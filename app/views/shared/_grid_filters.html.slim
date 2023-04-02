@@ -7,6 +7,10 @@
     - count = @search.scoped.unreviewed.count
     - if count > 0
       = link_to "Mark #{count} Reviewed", request.params.merge(action: :bulk_review, from: 1, to: 100), class: 'btn btn-sm btn-light', data: { remote: false, method: :post, confirm: "Are you sure? Undoing this action may be painful." }
+    - count = @search.scoped.unmatched.count
+    - if count > 0
+      = link_to "Make #{count} Persons", request.params.merge(action: :bulk_person_match, from: 1, to: 100), class: 'btn btn-sm btn-light', data: { remote: false, method: :post, confirm: "Are you sure? Undoing this action may be painful." }
+
   - if @search.active?
     = link_to 'Start New Search', url_for(reset: true), class: 'btn btn-sm btn-light'
   .dropdown.ml-2 data-controller="load-saved-search"

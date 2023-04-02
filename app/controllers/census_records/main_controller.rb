@@ -146,6 +146,24 @@ module CensusRecords
       redirect_back fallback_location: { action: :index }
     end
 
+    def bulk_person_match
+      authorize! :review, resource_class
+      params[:from] = 0
+      params[:to] = 100
+      load_census_records
+
+      count = 0
+      @search.scoped.to_a.each do |record|
+        next if record.person_id.present?
+
+        GeneratePersonFromCensusRecord.new(record).perform
+        count += 1
+      end
+
+      flash[:notice] = "Person records have been generated for #{count} census records."
+      redirect_back fallback_location: { action: :index }
+    end
+
     def make_person
       @record = resource_class.find params[:id]
       authorize! :create, resource_class
