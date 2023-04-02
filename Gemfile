@@ -60,6 +60,7 @@ group :development do
   gem 'rubocop-rspec', require: false
   gem "ruby-lsp", "~> 0.3.7", require: false
   gem 'simplecov', require: false
+  gem 'standard'
   gem 'web-console' #, "~> 2.0"
 end
 

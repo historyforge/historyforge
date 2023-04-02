@@ -159,6 +159,8 @@ class Census1910Record < CensusRecord
     first_name: '1910/names.png',
     middle_name: '1910/names.png',
     last_name: '1910/names.png',
+    blind: '1910/punch-card-symbols.png',
+    deaf_dumb: '1910/punch-card-symbols.png',
     civil_war_vet: '1910/punch-card-symbols.png'
   }.freeze
 end
