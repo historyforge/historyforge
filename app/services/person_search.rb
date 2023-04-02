@@ -64,12 +64,12 @@ class PersonSearch < SearchQueryBuilder
                  "#{col} #{dir}"
                end
     end
-    order << name_order_clause('asc') if sort.blank?
+    order << name_order_clause('ASC') if sort.blank?
     builder.order(entity_class.sanitize_sql_for_order(order.join(', '))) if order
   end
 
   def name_order_clause(dir)
-    "lower(people.last_name) #{dir}, lower(people.first_name) #{dir}, middle_name #{dir}"
+    "LOWER(people.last_name) #{dir}, LOWER(people.first_name) #{dir}, middle_name #{dir} NULLS FIRST"
   end
 
   def default_fields
