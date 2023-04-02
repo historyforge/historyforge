@@ -8,7 +8,7 @@ namespace :import do
     raise ArgumentError('You must pass in a YEAR argument') if year.blank?
 
     csv_file = ENV['FILE']
-    raise ArgumentError('You must pass in a valid file path as the FILE argument') unless File.exists?(csv_file)
+    raise ArgumentError('You must pass in a valid file path as the FILE argument') unless File.exist?(csv_file)
 
     rows_count = 0
     saved_count = 0
