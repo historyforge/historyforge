@@ -390,6 +390,9 @@ GEM
       actionpack (>= 5.2)
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
+    standard (1.17.0)
+      rubocop (= 1.38.0)
+      rubocop-performance (= 1.15.0)
     syntax_tree (4.3.0)
       prettier_print (>= 1.0.2)
     temple (0.8.2)
@@ -487,6 +490,7 @@ DEPENDENCIES
   simplecov
   slim
   sprockets-rails
+  standard
   web-console
   webdrivers
 

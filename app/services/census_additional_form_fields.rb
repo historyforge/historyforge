@@ -5,7 +5,7 @@ module CensusAdditionalFormFields
 
   included do
     divider 'Additional'
-    input :notes, as: :text, facet: false, hint: 'Private field visible only to those who can edit this record.'
+    input :notes, as: :text, facet: false
     input :person_id,
           facet: false,
           if: ->(form) { form.object.persisted? && form.template.can?(:review, form.object) },
