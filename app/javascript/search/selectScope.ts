@@ -3,6 +3,7 @@ const selectScope = function(): void {
     let name = `s[${scope}]`;
     const form = $(this).closest('.card-body').find('.value-input-container');
     const inputs = form.find('input, select');
+
     if (scope.match(/null$/)) {
         if (form.find('input.null-choice').length > 0) {
             inputs.filter(':checked').prop('checked', false);

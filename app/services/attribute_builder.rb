@@ -106,8 +106,8 @@ class AttributeBuilder::Enumeration < AttributeBuilder::BaseAttribute
   def scopes
     json.set! "#{key}_in".to_sym, 'is one of'
     json.set! "#{key}_not_in".to_sym, 'is not one of'
-    json.set! "#{key}_null".to_sym, 'is blank'
-    json.set! "#{key}_not_null", 'is not blank'
+    # json.set! "#{key}_null".to_sym, 'is blank'
+    # json.set! "#{key}_not_null", 'is not blank'
   end
 
   def extras
@@ -150,8 +150,8 @@ class AttributeBuilder::Number < AttributeBuilder::BaseAttribute
     json.set! "#{key}_lteq".to_sym, 'less than or equal to'
     json.set! "#{key}_gteq".to_sym, 'greater than or equal to'
     json.set! "#{key}_gt".to_sym, 'greater than'
-    json.set! "#{key}_not_null".to_sym, 'is not blank'
-    json.set! "#{key}_null".to_sym, 'is blank'
+    # json.set! "#{key}_not_null".to_sym, 'is not blank'
+    # json.set! "#{key}_null".to_sym, 'is blank'
   end
 
   def extras
@@ -167,8 +167,8 @@ class AttributeBuilder::Time < AttributeBuilder::Number
     json.set! "#{key}_lteq".to_sym, 'on or earlier than'
     json.set! "#{key}_gteq".to_sym, 'on or later than'
     json.set! "#{key}_gt".to_sym, 'later than'
-    json.set! "#{key}_not_null".to_sym, 'is not blank'
-    json.set! "#{key}_null".to_sym, 'is blank'
+    # json.set! "#{key}_not_null".to_sym, 'is not blank'
+    # json.set! "#{key}_null".to_sym, 'is blank'
   end
 
   def extras
@@ -184,8 +184,8 @@ class AttributeBuilder::Age < AttributeBuilder::Number
     json.set! "#{key}_lteq".to_sym, 'as young or younger than'
     json.set! "#{key}_gteq".to_sym, 'as old or older than'
     json.set! "#{key}_gt".to_sym, 'older than'
-    json.set! "#{key}_not_null".to_sym, 'is not blank'
-    json.set! "#{key}_null".to_sym, 'is blank'
+    # json.set! "#{key}_not_null".to_sym, 'is not blank'
+    # json.set! "#{key}_null".to_sym, 'is blank'
   end
 
   def extras
@@ -210,8 +210,8 @@ class AttributeBuilder::Text < AttributeBuilder::BaseAttribute
     json.set! "#{key}_cont_every_term".to_sym, 'contains all of'
     json.set! "#{key}_lt".to_sym, 'comes before'
     json.set! "#{key}_gt".to_sym, 'comes after'
-    json.set! "#{key}_null".to_sym, 'is blank'
-    json.set! "#{key}_not_null", 'is not blank'
+    # json.set! "#{key}_null".to_sym, 'is blank'
+    # json.set! "#{key}_not_null", 'is not blank'
   end
 
   def extras

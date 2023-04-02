@@ -10,9 +10,10 @@ class NextCensusRecordAttributes
     'page' => [],
     'enumeration' => [],
     'street' => %i[street_prefix street_suffix street_name],
-    'dwelling' => %i[dwelling_number street_house_number street_prefix street_suffix street_name apartment_number building_id],
+    'dwelling' => %i[dwelling_number street_house_number
+                     street_prefix street_suffix street_name apartment_number building_id],
     'family' => %i[dwelling_number street_house_number street_prefix street_suffix street_name apartment_number
-                   family_id building_id last_name]
+                   family_id building_id last_name institution_type institution_name]
   }.freeze
 
   def initialize(record, action)
@@ -28,7 +29,7 @@ class NextCensusRecordAttributes
 
   def prefill_attributes
     @attributes = fields.each_with_object({}) { |item, hash|
-      hash[item] = record.public_send(item)
+      hash[item] = record.public_send(item) if record.respond_to?(item)
     }
   end
 
