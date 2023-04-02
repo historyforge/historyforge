@@ -4,7 +4,13 @@
 # field on each census year should have the same name and output using the same mechanism.
 class CensusRecordDecorator < ApplicationDecorator
   def name
-    "#{[object.last_name, object.name_suffix].compact.join(' ')}, #{first_name} #{[middle_name, name_prefix].compact.join(', ')}".strip
+    name = object.last_name
+    name << ' ' << object.name_suffix if object.name_suffix
+    name << ', '
+    name << object.name_prefix << ' ' if object.name_prefix
+    name << object.first_name
+    name << ' ' << object.middle_name if object.middle_name
+    name.strip
   end
 
   def age
