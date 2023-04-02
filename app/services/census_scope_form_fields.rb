@@ -13,8 +13,8 @@ module CensusScopeFormFields
       input :city, input_html: { id: 'city' }, hint: false, facet: false
       input :ward, as: :integer, min: 0, max: 10_000, if: ->(form) { form.object.year > 1880 && form.object.year < 1950 }, facet: false
       input :enum_dist, facet: false
-      input :institution_name, as: :string, hint: false, facet: false, if: ->(form) { form.object.year === 1950 }
-      input :institution_type, as: :string, hint: false, facet: false, if: ->(form) { form.object.year === 1950 }
+      input :institution_name, as: :string, facet: false, if: ->(form) { form.object.year === 1950 }
+      input :institution_type, as: :string, facet: false, if: ->(form) { form.object.year === 1950 }
       input :locality_id, as: :select, collection: Locality.select_options, required: true, facet: false
       input :street_house_number, facet: false
       input :street_prefix, as: :select, collection: %w[N S E W], facet: false
