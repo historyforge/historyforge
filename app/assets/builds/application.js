@@ -51938,6 +51938,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       const overlayWMS = new google.maps.ImageMapType(this.overlayOptions);
       if (this.position === "top") {
         this.map.overlayMapTypes.push(overlayWMS);
+      } else if (this.position) {
+        this.map.overlayMapTypes.insertAt(this.position, overlayWMS);
       } else {
         this.map.overlayMapTypes.insertAt(0, overlayWMS);
       }
@@ -52256,19 +52258,18 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var infoWindowTimeout;
   var infoWindow;
   function addLayers(map3, layers3) {
-    const selectedLayers = layers3.filter((layer) => layer.selected);
+    const selectedLayers = layers3.filter((layer) => layer.selected).sort((a, b) => a.year_depicted > b.year_depicted ? 1 : -1);
+    const selectedLayerIds = selectedLayers.map((layer) => layer.id);
     const currentLayers = map3.overlayMapTypes.getArray();
-    const selectedLayerNames = selectedLayers.map((layer) => layer.id);
-    const currentLayerNames = currentLayers.map((layer) => layer.name);
-    currentLayerNames.forEach((name, index) => {
-      if (selectedLayerNames.indexOf(name) === -1) {
+    const currentLayerIds = currentLayers.map((layer) => layer.name);
+    currentLayerIds.forEach((name, index) => {
+      if (selectedLayerIds.indexOf(name) === -1) {
         map3.overlayMapTypes.removeAt(index);
       }
     });
-    selectedLayerNames.forEach((name, selectedIndex) => {
-      const index = currentLayerNames.indexOf(name);
-      if (index === -1) {
-        loadWMS(map3, selectedLayers[selectedIndex], name);
+    selectedLayerIds.forEach((id, selectedIndex) => {
+      if (currentLayerIds.indexOf(id) === -1) {
+        loadWMS(map3, selectedLayers[selectedIndex], selectedIndex);
       }
     });
   }

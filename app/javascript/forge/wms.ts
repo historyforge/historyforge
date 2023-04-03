@@ -122,6 +122,8 @@ class WMSLoader {
 
         if (this.position === 'top') {
             this.map.overlayMapTypes.push(overlayWMS);
+        } else if (this.position) {
+            this.map.overlayMapTypes.insertAt(this.position, overlayWMS);
         } else {
             this.map.overlayMapTypes.insertAt(0, overlayWMS);
         }

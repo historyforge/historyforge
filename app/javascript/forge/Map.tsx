@@ -122,21 +122,20 @@ let infoWindowTimeout
 let infoWindow
 
 function addLayers(map, layers) {
-  const selectedLayers = layers.filter(layer => layer.selected)
-  const currentLayers = map.overlayMapTypes.getArray()
-  const selectedLayerNames = selectedLayers.map(layer => layer.id)
-  const currentLayerNames = currentLayers.map(layer => layer.name) // Name is actually an ID here...
-  currentLayerNames.forEach((name, index) => {
-    if (selectedLayerNames.indexOf(name) === -1) {
-      map.overlayMapTypes.removeAt(index)
+  const selectedLayers = layers.filter(layer => layer.selected).sort((a, b) => a.year_depicted > b.year_depicted ? 1 : -1);
+  const selectedLayerIds = selectedLayers.map(layer => layer.id);
+  const currentLayers = map.overlayMapTypes.getArray();
+  const currentLayerIds = currentLayers.map(layer => layer.name); // Name is actually an ID here...
+  currentLayerIds.forEach((name, index) => {
+    if (selectedLayerIds.indexOf(name) === -1) {
+      map.overlayMapTypes.removeAt(index);
     }
-  })
-  selectedLayerNames.forEach((name, selectedIndex) => {
-    const index = currentLayerNames.indexOf(name);
-    if (index === -1) {
-      loadWMS(map, selectedLayers[selectedIndex], name)
+  });
+  selectedLayerIds.forEach((id, selectedIndex) => {
+    if (currentLayerIds.indexOf(id) === -1) {
+      loadWMS(map, selectedLayers[selectedIndex], selectedIndex);
     }
-  })
+  });
 }
 
 function addClusters(map, existingClusterer, markers) {
