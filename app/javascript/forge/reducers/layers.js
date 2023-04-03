@@ -21,6 +21,7 @@ class LayerStorage {
   }
 
   remove(layer) {
+    console.log(`Removing layer ${layer}`)
     this.layers.delete(layer);
     this.save();
   }
@@ -61,6 +62,7 @@ export const layers = function(state = {}, action) {
 
   if (action.type === 'LAYER_TOGGLE') {
     const layer = state.layers.find(item => item.id === action.id)
+    console.log(layer)
     layer.selected = !layer.selected
     if (layer.selected) {
       layerStorage.add(layer.id);

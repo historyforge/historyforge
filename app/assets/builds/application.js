@@ -52258,16 +52258,17 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   function addLayers(map3, layers3) {
     const selectedLayers = layers3.filter((layer) => layer.selected);
     const currentLayers = map3.overlayMapTypes.getArray();
-    const selectedLayerNames = selectedLayers.map((layer) => layer.name);
+    const selectedLayerNames = selectedLayers.map((layer) => layer.id);
     const currentLayerNames = currentLayers.map((layer) => layer.name);
     currentLayerNames.forEach((name, index) => {
       if (selectedLayerNames.indexOf(name) === -1) {
         map3.overlayMapTypes.removeAt(index);
       }
     });
-    selectedLayerNames.forEach((name, index) => {
-      if (currentLayerNames.indexOf(name) === -1) {
-        loadWMS(map3, selectedLayers[index], name);
+    selectedLayerNames.forEach((name, selectedIndex) => {
+      const index = currentLayerNames.indexOf(name);
+      if (index === -1) {
+        loadWMS(map3, selectedLayers[selectedIndex], name);
       }
     });
   }
@@ -53011,6 +53012,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       this.save();
     }
     remove(layer) {
+      console.log(`Removing layer ${layer}`);
       this.layers.delete(layer);
       this.save();
     }
@@ -53043,6 +53045,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     }
     if (action.type === "LAYER_TOGGLE") {
       const layer = state.layers.find((item) => item.id === action.id);
+      console.log(layer);
       layer.selected = !layer.selected;
       if (layer.selected) {
         layerStorage.add(layer.id);

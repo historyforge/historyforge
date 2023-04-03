@@ -124,16 +124,17 @@ let infoWindow
 function addLayers(map, layers) {
   const selectedLayers = layers.filter(layer => layer.selected)
   const currentLayers = map.overlayMapTypes.getArray()
-  const selectedLayerNames = selectedLayers.map(layer => layer.name)
-  const currentLayerNames = currentLayers.map(layer => layer.name)
+  const selectedLayerNames = selectedLayers.map(layer => layer.id)
+  const currentLayerNames = currentLayers.map(layer => layer.name) // Name is actually an ID here...
   currentLayerNames.forEach((name, index) => {
     if (selectedLayerNames.indexOf(name) === -1) {
       map.overlayMapTypes.removeAt(index)
     }
   })
-  selectedLayerNames.forEach((name, index) => {
-    if (currentLayerNames.indexOf(name) === -1) {
-      loadWMS(map, selectedLayers[index], name)
+  selectedLayerNames.forEach((name, selectedIndex) => {
+    const index = currentLayerNames.indexOf(name);
+    if (index === -1) {
+      loadWMS(map, selectedLayers[selectedIndex], name)
     }
   })
 }
