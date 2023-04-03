@@ -60,8 +60,7 @@ header
               - if current_user&.has_role?("photographer")
                 = link_to "Photographs", photographs_path, class: 'dropdown-item'
 
-          - if request.subdomain.blank? || %w{www ithaca}.include?(request.subdomain)
-            li.nav-item= link_to 'About', 'https://historyforge.github.io', class: 'nav-link', target: '_blank'
+          li.nav-item= link_to 'About', 'https://historyforge.net', class: 'nav-link', target: '_blank'
           li.nav-item= link_to 'Contact', '/contact', class: 'nav-link'
           li.nav-item= link_to 'Volunteer', '/volunteer', class: 'nav-link'
 
