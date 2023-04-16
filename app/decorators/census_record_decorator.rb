@@ -4,7 +4,7 @@
 # field on each census year should have the same name and output using the same mechanism.
 class CensusRecordDecorator < ApplicationDecorator
   def name
-    name = object.last_name
+    name = object.last_name.dup
     name << ' ' << object.name_suffix if object.name_suffix
     name << ', '
     name << object.name_prefix << ' ' if object.name_prefix

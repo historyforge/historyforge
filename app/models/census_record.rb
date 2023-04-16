@@ -101,6 +101,11 @@ class CensusRecord < ApplicationRecord
         .positive?
   end
 
+  def likely_person_matches
+    Person.likely_matches_for(self)
+  end
+  memoize :likely_person_matches
+
   def fellows
     CensusRecords::FindFamilyMembers.run!(record: self)
   end

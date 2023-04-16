@@ -122,17 +122,16 @@ div.mb-3
                 td= row.relation_to_head
                 td= row.occupation
     - if @model.person_id.blank? && can?(:review, @model)
-      - matches = Person.likely_matches_for(@model)
-      .card.mb-2
+      .card.mb-3
         .card-header
           = link_to 'Create New Person Record', [:make_person, @model], class: 'float-right', data: { method: :put, confirm: 'This will generate a new person record out of this census record.' }
           | Match Person Record
-        - if matches.blank?
+        - if @model.likely_person_matches.blank?
           .card-body
             p No matches on Last Name/First Name or Last Name.
         - else
           .list-group
-            - matches.each do |match|
+            - @model.likely_person_matches.each do |match|
               .list-group-item
                 = form_for @model, html: { class: 'float-right' } do |form|
                   = hidden_field_tag 'census_record[person_id]', match.id
