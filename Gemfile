@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 source 'https://rubygems.org'
-ruby '3.2.0'
+ruby '3.2.2'
 
 gem 'activerecord-precounter'
 gem 'active_storage_validations'
