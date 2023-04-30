@@ -9,18 +9,16 @@ module CensusRecords
     delegate :locality_id, :enum_dist, :family_id, :page_number, :building_id, :dwelling_number, :id, to: :record
 
     def execute
-      record.class.where.not(id:).in_census_order.ransack(options).result
+      record.class.where.not(id:).in_census_order.where(options)
     end
 
     def options
       {
-        locality_id_eq: locality_id,
-        enum_dist_eq: enum_dist,
-        family_id_eq: family_id,
-        # page_number_gteq: page_number - 1,
-        # page_number_lteq: page_number + 1,
-        **(building_id ? { building_id_eq: building_id } : {}),
-        **(dwelling_number ? { dwelling_number_eq: dwelling_number } : {})
+        locality_id:,
+        enum_dist:,
+        family_id:,
+        **(building_id ? { building_id: } : {}),
+        **(dwelling_number ? { dwelling_number: } : {})
       }
     end
   end
