@@ -37,6 +37,19 @@ module ApplicationHelper
     can?(:manage, User)
   end
 
+  def google_tag_manager
+    return unless Rails.env.production? && ENV['GOOGLE_ANALYTICS']
+
+    <<-HTML.strip_heredoc.html_safe
+        <!-- Google Tag Manager -->
+        <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','#{ENV['GOOGLE_ANALYTICS']}');</script>
+        <!-- End Google Tag Manager -->
+    HTML
+  end
   # Renders form using readonly, display-friendly view.
   def view_for(record, options = {}, &block)
     raise ArgumentError, 'Missing block' unless block_given?

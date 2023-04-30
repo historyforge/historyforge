@@ -1,6 +1,7 @@
 doctype 5
 html
   head
+    = google_tag_manager
     title= [page_title, 'HistoryForge'].compact.join(' | ')
     meta name='viewport' content='width=device-width, initial-scale=1'
     link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"
@@ -51,6 +52,3 @@ html
     = javascript_include_tag 'application'
     = javascript_include_tag 'cms' if can?(:update, Cms::Page)
     = javascript_include_tag 'richtext' if can?(:update, Building)
-    - if Rails.env.production? && ENV['GOOGLE_ANALYTICS']
-      = javascript_include_tag "https://www.googletagmanager.com/gtag/js?id=#{ENV['GOOGLE_ANALYTICS']}", data: { turbolinks_track: true }, async: true
-      = javascript_tag "window.dataLayer = window.dataLayer || []; dataLayer.push(\"js\", new Date()); dataLayer.push(\"config\",\"#{ENV['GOOGLE_ANALYTICS']}\");"
