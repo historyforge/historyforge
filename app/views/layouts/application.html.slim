@@ -25,20 +25,16 @@ html
 
     = yield :head
   body
-    - if @onload
-      = javascript_tag "document.body.onload=\"#{@onload}\""
     = yield :announcement
     = render 'header'
     - if @full_layout
-      == yield
+      = yield
     -else
       div class="container#{@full_layout ? '-fluid' : ''}"
         = flash_messages
-
         - if content_for? :pills
           .pills= yield :pills
-        - if page_title
-          h1= page_title
+        h1= page_title if page_title
         - if content_for?(:content)
           = yield :content
         - else
