@@ -9,7 +9,7 @@ module CensusRecords
     delegate :locality_id, :enum_dist, :family_id, :page_number, :building_id, :dwelling_number, :id, to: :record
 
     def execute
-      record.class.where.not(id:).in_census_order.where(options)
+      record.class.where(options).where.not(id:).in_census_order
     end
 
     def options
