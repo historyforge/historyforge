@@ -52,5 +52,5 @@ html
     = javascript_include_tag 'cms' if can?(:update, Cms::Page)
     = javascript_include_tag 'richtext' if can?(:update, Building)
     - if Rails.env.production? && ENV['GOOGLE_ANALYTICS']
-      script async src="https://www.googletagmanager.com/gtag/js?id=#{ENV['GOOGLE_ANALYTICS']}"
+      = javascript_include_tag "https://www.googletagmanager.com/gtag/js?id=#{ENV['GOOGLE_ANALYTICS']}", data: { turbolinks_track: true }, async: true
       = javascript_tag "window.dataLayer = window.dataLayer || []; dataLayer.push(\"js\", new Date()); dataLayer.push(\"config\",\"#{ENV['GOOGLE_ANALYTICS']}\");"
