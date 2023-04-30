@@ -49,7 +49,6 @@ class PersonGridTranslator
     options[:headerName] = 'Actions' if column == 'id'
     options[:headerName] = column[-4...] if column =~ /census\d{4}/
     options[:pinned] = 'left' if %w[id name].include?(column)
-    options[:pinned] = 'right' if column == 'view'
     options[:cellRenderer] = 'actionCellRenderer' if column == 'id'
     options[:cellRenderer] = 'nameCellRenderer' if column == 'name'
     options[:cellRenderer] = 'censusLinkCellRenderer' if column =~ /census\d{4}/

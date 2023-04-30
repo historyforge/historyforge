@@ -9,9 +9,7 @@ class BuildingGridTranslator
   end
 
   def column_def
-    columns = search.columns
-    columns << 'view'
-    columns.map { |column| column_config(column) }
+    search.columns.map(&method(:column_config))
   end
 
   def row_data
@@ -23,7 +21,6 @@ class BuildingGridTranslator
         value = truncate(strip_tags(value.to_s), escape: false) if column == 'description'
         value = truncate(value, escape: false) if column == 'annotations'
         hash[column] = value
-        hash['view'] = { id: record.id } if column == 'street_address'
       rescue NoMethodError
         # sometimes people manipulate URLs to include fields that don't exist
         # we just ignore because it's not a symptom of anything wrong here just
@@ -49,10 +46,10 @@ class BuildingGridTranslator
       field: column,
       resizable: true
     }
-    options[:headerName] = 'Actions' if column == 'view'
+    options[:headerName] = 'Actions' if column == 'id'
     options[:pinned] = 'left' if %w[id street_address].include?(column)
     options[:pinned] = 'right' if column == 'view'
-    options[:cellRenderer] = 'actionCellRenderer' if column == 'view'
+    options[:cellRenderer] = 'actionCellRenderer' if column == 'id'
     options[:cellRenderer] = 'nameCellRenderer' if column == 'street_address'
     options[:cellRenderer] = 'htmlCellRenderer' if column == 'description' || column == 'historical_addresses'
     options[:width] = 200 if %w[name street_address historical_addresses description annotations].include?(column)
