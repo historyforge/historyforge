@@ -26,7 +26,7 @@ html
     = yield :head
   body
     = yield :announcement
-    = render 'header'
+    = render 'layouts/header'
     - if @full_layout
       = yield
     -else

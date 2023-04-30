@@ -7,9 +7,7 @@ class PersonGridTranslator
   end
 
   def column_def
-    columns = search.columns
-    columns << 'view'
-    columns.map { |column| column_config(column) }
+    search.columns.map(&method(:column_config))
   end
 
   def row_data
@@ -23,7 +21,6 @@ class PersonGridTranslator
           value = value.present? ? { year: column[-4...].to_i, id: value } : nil
         end
         hash[column] = value
-        hash['view'] = { id: record.id } if column == 'name'
       rescue NoMethodError
         # sometimes people manipulate URLs to include fields that don't exist
         # we just ignore because it's not a symptom of anything wrong here just
@@ -49,11 +46,11 @@ class PersonGridTranslator
       field: column,
       resizable: true
     }
-    options[:headerName] = 'Actions' if column == 'view'
+    options[:headerName] = 'Actions' if column == 'id'
     options[:headerName] = column[-4...] if column =~ /census\d{4}/
     options[:pinned] = 'left' if %w[id name].include?(column)
     options[:pinned] = 'right' if column == 'view'
-    options[:cellRenderer] = 'actionCellRenderer' if column == 'view'
+    options[:cellRenderer] = 'actionCellRenderer' if column == 'id'
     options[:cellRenderer] = 'nameCellRenderer' if column == 'name'
     options[:cellRenderer] = 'censusLinkCellRenderer' if column =~ /census\d{4}/
     options[:width] = width_for_column(column)

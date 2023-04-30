@@ -3,15 +3,7 @@
 # All census years share this decorator even though they have different subclasses. The reasoning is simple: the same
 # field on each census year should have the same name and output using the same mechanism.
 class CensusRecordDecorator < ApplicationDecorator
-  def name
-    name = object.last_name.dup
-    name << ' ' << object.name_suffix if object.name_suffix
-    name << ', '
-    name << object.name_prefix << ' ' if object.name_prefix
-    name << object.first_name
-    name << ' ' << object.middle_name if object.middle_name
-    name.strip
-  end
+  include DecoratorFormatting
 
   def age
     if object.year == 1950
