@@ -69,6 +69,8 @@ class CensusRecordSearch < SearchQueryBuilder
       census_page_order_clause(dir)
     elsif col == 'family_id'
       "regexp_replace(NULLIF(family_id, ''), '[^0-9]+', '', 'g')::numeric #{dir}"
+    elsif col =~ /wages/
+      "regexp_replace(NULLIF(#{col}, ''), '[^0-9]+', '', 'g')::numeric #{dir}"
     elsif entity_class.columns.map(&:name).include?(col)
       "#{col} #{dir}"
     else
