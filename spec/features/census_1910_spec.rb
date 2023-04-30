@@ -105,7 +105,7 @@ RSpec.describe '1910 US Census' do
     # expect(find('span.badge.badge-success')).to have_content('NEW')
 
     click_on 'View'
-    expect(page).to have_content 'Squarepants III, Dr Sponge Bob'
+    expect(page).to have_content 'Squarepants III, Sponge Bob Dr'
 
     click_on 'Edit'
     expect(page).to have_content 'Census Scope'

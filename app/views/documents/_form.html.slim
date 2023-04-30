@@ -6,6 +6,6 @@
       = form.input :url, hint: 'Or paste a URL, but not both'
   = form.input :name, as: :string
   = form.input :description, as: :text
-  = form.input :available_to_public, as: :boolean, inline_label: 'Make this resource available to the non-logged-in general public.'
   = form.input :document_category_id, collection: DocumentCategory.all, required: true
-  = form.submit 'Upload', class: 'btn btn-primary', data: { disable_with: 'Submitting...' }
+  = form.input :available_to_public, as: :boolean, inline_label: 'Make this resource available to the non-logged-in general public.'
+  = form.submit 'Save', class: 'btn btn-primary', data: { disable_with: 'Submitting...' }

@@ -7,7 +7,7 @@ module DecoratorFormatting
     name << ', '
     name << object.first_name
     name << ' ' << object.middle_name if object.middle_name.present?
-    name << object.name_prefix << ' ' if object.name_prefix.present?
+    name << ' ' << object.name_prefix if object.name_prefix.present?
     name.strip
   end
 end

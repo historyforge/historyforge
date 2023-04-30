@@ -58,7 +58,7 @@ class DocumentsController < ApplicationController
   private
 
   def resource_params
-    params.require(:document).permit :file, :name, :description, :document_category_id, :url
+    params.require(:document).permit :file, :name, :description, :document_category_id, :url, :available_to_public
   end
 
   def collection
