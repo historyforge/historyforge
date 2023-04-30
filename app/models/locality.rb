@@ -27,7 +27,15 @@ class Locality < ApplicationRecord
 
   default_scope -> { order(:name) }
 
+  before_destroy do
+    throw(:abort) if census_record_count > 0
+  end
+
   def self.select_options
     all.map { |item| [item.name, item.id] }
+  end
+
+  def census_record_count
+    CensusYears.map { |year| self.public_send(:"census#{year}_records").count }.reduce(&:+)
   end
 end
