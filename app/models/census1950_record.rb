@@ -122,7 +122,7 @@ class Census1950Record < CensusRecord
   define_enumeration :highest_grade, %w[0 K S1 S2 S3 S4 S5 S6 S7 S8 S9 S10 S11 S12 C1 C2 C3 C4 C5]
 
   income_enumeration = %w[10000+]
-  define_enumeration :wages_or_salary_self, income_enumeration
+  define_enumeration :wages_or_salary_self, income_enumeration.dup.concat(['p6'])
   define_enumeration :own_business_self, income_enumeration
   define_enumeration :unearned_income_self, income_enumeration
   define_enumeration :wages_or_salary_family, income_enumeration

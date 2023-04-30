@@ -48,6 +48,7 @@ class CollectionRadioButtonsInput < SimpleForm::Inputs::CollectionRadioButtonsIn
       code = item.downcase == item ? item.capitalize : item
       code = code.gsub('_', ' ')
       label = translated_option item, code: options[:coded]
+      return label if %[5000+ 10000+ P6].include?(code)
       code == label ? label : "#{code} - #{label}"
     else
       translated_option(item).titleize

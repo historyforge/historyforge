@@ -111,6 +111,7 @@ class Census1940Record < CensusRecord
 
   belongs_to :locality, inverse_of: :census1940_records
 
+  before_validation :translate_income
   validate :validate_occupation_codes
 
   define_enumeration :marital_status, %w[S M (M)7 Wd D]
@@ -123,6 +124,7 @@ class Census1940Record < CensusRecord
   define_enumeration :war_fought, %w[W S SW R]
   define_enumeration :no_work_reason, %w[H S U Ot]
   define_enumeration :deduction_rate, %w[1 2 3]
+  define_enumeration :wages_or_salary, %w[5000+]
 
   auto_upcase_attributes :occupation_code, :usual_occupation_code,
                          :usual_industry_code, :worker_class_code, :usual_worker_class_code
@@ -162,6 +164,20 @@ class Census1940Record < CensusRecord
     validate_code(:usual_occupation_code)
     validate_code(:usual_industry_code)
     validate_worker_class_code(:usual_worker_class_code)
+  end
+
+  def translate_income
+    return if wages_or_salary.present? || income.blank?
+
+    self.wages_or_salary = if income == 999
+      'Un'
+    elsif income_plus?
+      '5000+'
+    elsif income.nil?
+      nil
+    else
+      income.to_s
+    end
   end
 
   COLUMNS = {

@@ -11,7 +11,7 @@
   var __propIsEnum = Object.prototype.propertyIsEnumerable;
   var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
   var __spreadValues = (a, b) => {
-    for (var prop in b || (b = {}))
+    for (var prop in b ||= {})
       if (__hasOwnProp.call(b, prop))
         __defNormalProp(a, prop, b[prop]);
     if (__getOwnPropSymbols)
@@ -22,7 +22,6 @@
     return a;
   };
   var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
-  var __markAsModule = (target) => __defProp(target, "__esModule", { value: true });
   var __commonJS = (cb, mod) => function __require() {
     return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
   };
@@ -30,17 +29,22 @@
     for (var name in all)
       __defProp(target, name, { get: all[name], enumerable: true });
   };
-  var __reExport = (target, module, copyDefault, desc) => {
-    if (module && typeof module === "object" || typeof module === "function") {
-      for (let key of __getOwnPropNames(module))
-        if (!__hasOwnProp.call(target, key) && (copyDefault || key !== "default"))
-          __defProp(target, key, { get: () => module[key], enumerable: !(desc = __getOwnPropDesc(module, key)) || desc.enumerable });
+  var __copyProps = (to, from, except, desc) => {
+    if (from && typeof from === "object" || typeof from === "function") {
+      for (let key of __getOwnPropNames(from))
+        if (!__hasOwnProp.call(to, key) && key !== except)
+          __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
     }
-    return target;
+    return to;
   };
-  var __toESM = (module, isNodeMode) => {
-    return __reExport(__markAsModule(__defProp(module != null ? __create(__getProtoOf(module)) : {}, "default", !isNodeMode && module && module.__esModule ? { get: () => module.default, enumerable: true } : { value: module, enumerable: true })), module);
-  };
+  var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+    // If the importer is in node compatibility mode or this is not an ESM
+    // file that has been converted to a CommonJS file using a Babel-
+    // compatible transform (i.e. "__esModule" has not been set), then set
+    // "default" to the CommonJS "module.exports" for node compatibility.
+    isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+    mod
+  ));
   var __publicField = (obj, key, value) => {
     __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
     return value;
@@ -1887,7 +1891,7 @@
         Chart2.prototype.refreshData = function refreshData() {
           if (typeof this.dataSource === "string") {
             var sep = this.dataSource.indexOf("?") === -1 ? "?" : "&";
-            var url = this.dataSource + sep + "_=" + new Date().getTime();
+            var url = this.dataSource + sep + "_=" + (/* @__PURE__ */ new Date()).getTime();
             fetchDataSource(this, url);
           } else if (typeof this.dataSource === "function") {
             fetchDataSource(this, this.dataSource);
@@ -3247,7 +3251,11 @@
         $.fn.extend({ blowup: function(attributes) {
           var $element = this;
           if (!$element.is("img")) {
-            console.log("%c Blowup.js Error: %cTarget element is not an image.", "background: #FCEBB6; color: #F07818; font-size: 17px; font-weight: bold;", "background: #FCEBB6; color: #F07818; font-size: 17px;");
+            console.log(
+              "%c Blowup.js Error: %cTarget element is not an image.",
+              "background: #FCEBB6; color: #F07818; font-size: 17px; font-weight: bold;",
+              "background: #FCEBB6; color: #F07818; font-size: 17px;"
+            );
             return;
           }
           var $IMAGE_URL = $element.attr("src");
@@ -3597,14 +3605,18 @@
         error2.isAxiosError = true;
         error2.toJSON = function toJSON() {
           return {
+            // Standard
             message: this.message,
             name: this.name,
+            // Microsoft
             description: this.description,
             number: this.number,
+            // Mozilla
             fileName: this.fileName,
             lineNumber: this.lineNumber,
             columnNumber: this.columnNumber,
             stack: this.stack,
+            // Axios
             config: this.config,
             code: this.code
           };
@@ -3636,7 +3648,13 @@
         if (!response.status || !validateStatus || validateStatus(response.status)) {
           resolve3(response);
         } else {
-          reject2(createError("Request failed with status code " + response.status, response.config, null, response.request, response));
+          reject2(createError(
+            "Request failed with status code " + response.status,
+            response.config,
+            null,
+            response.request,
+            response
+          ));
         }
       };
     }
@@ -3647,44 +3665,50 @@
     "node_modules/axios/lib/helpers/cookies.js"(exports, module) {
       "use strict";
       var utils = require_utils();
-      module.exports = utils.isStandardBrowserEnv() ? function standardBrowserEnv() {
-        return {
-          write: function write(name, value, expires, path, domain, secure) {
-            var cookie = [];
-            cookie.push(name + "=" + encodeURIComponent(value));
-            if (utils.isNumber(expires)) {
-              cookie.push("expires=" + new Date(expires).toGMTString());
+      module.exports = utils.isStandardBrowserEnv() ? (
+        // Standard browser envs support document.cookie
+        function standardBrowserEnv() {
+          return {
+            write: function write(name, value, expires, path, domain, secure) {
+              var cookie = [];
+              cookie.push(name + "=" + encodeURIComponent(value));
+              if (utils.isNumber(expires)) {
+                cookie.push("expires=" + new Date(expires).toGMTString());
+              }
+              if (utils.isString(path)) {
+                cookie.push("path=" + path);
+              }
+              if (utils.isString(domain)) {
+                cookie.push("domain=" + domain);
+              }
+              if (secure === true) {
+                cookie.push("secure");
+              }
+              document.cookie = cookie.join("; ");
+            },
+            read: function read(name) {
+              var match3 = document.cookie.match(new RegExp("(^|;\\s*)(" + name + ")=([^;]*)"));
+              return match3 ? decodeURIComponent(match3[3]) : null;
+            },
+            remove: function remove(name) {
+              this.write(name, "", Date.now() - 864e5);
             }
-            if (utils.isString(path)) {
-              cookie.push("path=" + path);
+          };
+        }()
+      ) : (
+        // Non standard browser env (web workers, react-native) lack needed support.
+        function nonStandardBrowserEnv() {
+          return {
+            write: function write() {
+            },
+            read: function read() {
+              return null;
+            },
+            remove: function remove() {
             }
-            if (utils.isString(domain)) {
-              cookie.push("domain=" + domain);
-            }
-            if (secure === true) {
-              cookie.push("secure");
-            }
-            document.cookie = cookie.join("; ");
-          },
-          read: function read(name) {
-            var match3 = document.cookie.match(new RegExp("(^|;\\s*)(" + name + ")=([^;]*)"));
-            return match3 ? decodeURIComponent(match3[3]) : null;
-          },
-          remove: function remove(name) {
-            this.write(name, "", Date.now() - 864e5);
-          }
-        };
-      }() : function nonStandardBrowserEnv() {
-        return {
-          write: function write() {
-          },
-          read: function read() {
-            return null;
-          },
-          remove: function remove() {
-          }
-        };
-      }();
+          };
+        }()
+      );
     }
   });
 
@@ -3780,38 +3804,45 @@
     "node_modules/axios/lib/helpers/isURLSameOrigin.js"(exports, module) {
       "use strict";
       var utils = require_utils();
-      module.exports = utils.isStandardBrowserEnv() ? function standardBrowserEnv() {
-        var msie = /(msie|trident)/i.test(navigator.userAgent);
-        var urlParsingNode = document.createElement("a");
-        var originURL;
-        function resolveURL(url) {
-          var href = url;
-          if (msie) {
+      module.exports = utils.isStandardBrowserEnv() ? (
+        // Standard browser envs have full support of the APIs needed to test
+        // whether the request URL is of the same origin as current location.
+        function standardBrowserEnv() {
+          var msie = /(msie|trident)/i.test(navigator.userAgent);
+          var urlParsingNode = document.createElement("a");
+          var originURL;
+          function resolveURL(url) {
+            var href = url;
+            if (msie) {
+              urlParsingNode.setAttribute("href", href);
+              href = urlParsingNode.href;
+            }
             urlParsingNode.setAttribute("href", href);
-            href = urlParsingNode.href;
+            return {
+              href: urlParsingNode.href,
+              protocol: urlParsingNode.protocol ? urlParsingNode.protocol.replace(/:$/, "") : "",
+              host: urlParsingNode.host,
+              search: urlParsingNode.search ? urlParsingNode.search.replace(/^\?/, "") : "",
+              hash: urlParsingNode.hash ? urlParsingNode.hash.replace(/^#/, "") : "",
+              hostname: urlParsingNode.hostname,
+              port: urlParsingNode.port,
+              pathname: urlParsingNode.pathname.charAt(0) === "/" ? urlParsingNode.pathname : "/" + urlParsingNode.pathname
+            };
           }
-          urlParsingNode.setAttribute("href", href);
-          return {
-            href: urlParsingNode.href,
-            protocol: urlParsingNode.protocol ? urlParsingNode.protocol.replace(/:$/, "") : "",
-            host: urlParsingNode.host,
-            search: urlParsingNode.search ? urlParsingNode.search.replace(/^\?/, "") : "",
-            hash: urlParsingNode.hash ? urlParsingNode.hash.replace(/^#/, "") : "",
-            hostname: urlParsingNode.hostname,
-            port: urlParsingNode.port,
-            pathname: urlParsingNode.pathname.charAt(0) === "/" ? urlParsingNode.pathname : "/" + urlParsingNode.pathname
+          originURL = resolveURL(window.location.href);
+          return function isURLSameOrigin(requestURL) {
+            var parsed = utils.isString(requestURL) ? resolveURL(requestURL) : requestURL;
+            return parsed.protocol === originURL.protocol && parsed.host === originURL.host;
           };
-        }
-        originURL = resolveURL(window.location.href);
-        return function isURLSameOrigin(requestURL) {
-          var parsed = utils.isString(requestURL) ? resolveURL(requestURL) : requestURL;
-          return parsed.protocol === originURL.protocol && parsed.host === originURL.host;
-        };
-      }() : function nonStandardBrowserEnv() {
-        return function isURLSameOrigin() {
-          return true;
-        };
-      }();
+        }()
+      ) : (
+        // Non standard browser envs (web workers, react-native) lack needed support.
+        function nonStandardBrowserEnv() {
+          return function isURLSameOrigin() {
+            return true;
+          };
+        }()
+      );
     }
   });
 
@@ -3890,7 +3921,12 @@
             if (config.timeoutErrorMessage) {
               timeoutErrorMessage = config.timeoutErrorMessage;
             }
-            reject2(createError(timeoutErrorMessage, config, config.transitional && config.transitional.clarifyTimeoutError ? "ETIMEDOUT" : "ECONNABORTED", request3));
+            reject2(createError(
+              timeoutErrorMessage,
+              config,
+              config.transitional && config.transitional.clarifyTimeoutError ? "ETIMEDOUT" : "ECONNABORTED",
+              request3
+            ));
             request3 = null;
           };
           if (utils.isStandardBrowserEnv()) {
@@ -4021,6 +4057,10 @@
           }
           return data;
         }],
+        /**
+         * A timeout in milliseconds to abort a request. If set to 0 (default) a
+         * timeout is not created.
+         */
         timeout: 0,
         xsrfCookieName: "XSRF-TOKEN",
         xsrfHeaderName: "X-XSRF-TOKEN",
@@ -4087,21 +4127,43 @@
       module.exports = function dispatchRequest(config) {
         throwIfCancellationRequested(config);
         config.headers = config.headers || {};
-        config.data = transformData.call(config, config.data, config.headers, config.transformRequest);
-        config.headers = utils.merge(config.headers.common || {}, config.headers[config.method] || {}, config.headers);
-        utils.forEach(["delete", "get", "head", "post", "put", "patch", "common"], function cleanHeaderConfig(method) {
-          delete config.headers[method];
-        });
+        config.data = transformData.call(
+          config,
+          config.data,
+          config.headers,
+          config.transformRequest
+        );
+        config.headers = utils.merge(
+          config.headers.common || {},
+          config.headers[config.method] || {},
+          config.headers
+        );
+        utils.forEach(
+          ["delete", "get", "head", "post", "put", "patch", "common"],
+          function cleanHeaderConfig(method) {
+            delete config.headers[method];
+          }
+        );
         var adapter = config.adapter || defaults2.adapter;
         return adapter(config).then(function onAdapterResolution(response) {
           throwIfCancellationRequested(config);
-          response.data = transformData.call(config, response.data, response.headers, config.transformResponse);
+          response.data = transformData.call(
+            config,
+            response.data,
+            response.headers,
+            config.transformResponse
+          );
           return response;
         }, function onAdapterRejection(reason) {
           if (!isCancel(reason)) {
             throwIfCancellationRequested(config);
             if (reason && reason.response) {
-              reason.response.data = transformData.call(config, reason.response.data, reason.response.headers, config.transformResponse);
+              reason.response.data = transformData.call(
+                config,
+                reason.response.data,
+                reason.response.headers,
+                config.transformResponse
+              );
             }
           }
           return Promise.reject(reason);
@@ -4319,7 +4381,12 @@
           }
           if (isDeprecated && !deprecatedWarnings[opt]) {
             deprecatedWarnings[opt] = true;
-            console.warn(formatMessage(opt, " has been deprecated since v" + version2 + " and will be removed in the near future"));
+            console.warn(
+              formatMessage(
+                opt,
+                " has been deprecated since v" + version2 + " and will be removed in the near future"
+              )
+            );
           }
           return validator ? validator(value, opt, opts) : true;
         };
@@ -5394,12 +5461,20 @@
             return null;
           }
           var ReactCurrentDispatcher = {
+            /**
+             * @internal
+             * @type {ReactComponent}
+             */
             current: null
           };
           var ReactCurrentBatchConfig = {
             transition: 0
           };
           var ReactCurrentOwner = {
+            /**
+             * @internal
+             * @type {ReactComponent}
+             */
             current: null
           };
           var ReactDebugCurrentFrame = {};
@@ -5436,6 +5511,7 @@
             ReactCurrentBatchConfig,
             ReactCurrentOwner,
             IsSomeRendererActing,
+            // Used by renderers to avoid bundling object-assign twice in UMD bundles:
             assign: _assign
           };
           {
@@ -5486,15 +5562,62 @@
             }
           }
           var ReactNoopUpdateQueue = {
+            /**
+             * Checks whether or not this composite component is mounted.
+             * @param {ReactClass} publicInstance The instance we want to test.
+             * @return {boolean} True if mounted, false otherwise.
+             * @protected
+             * @final
+             */
             isMounted: function(publicInstance) {
               return false;
             },
+            /**
+             * Forces an update. This should only be invoked when it is known with
+             * certainty that we are **not** in a DOM transaction.
+             *
+             * You may want to call this when you know that some deeper aspect of the
+             * component's state has changed but `setState` was not called.
+             *
+             * This will not invoke `shouldComponentUpdate`, but it will invoke
+             * `componentWillUpdate` and `componentDidUpdate`.
+             *
+             * @param {ReactClass} publicInstance The instance that should rerender.
+             * @param {?function} callback Called after component is updated.
+             * @param {?string} callerName name of the calling function in the public API.
+             * @internal
+             */
             enqueueForceUpdate: function(publicInstance, callback2, callerName) {
               warnNoop(publicInstance, "forceUpdate");
             },
+            /**
+             * Replaces all of the state. Always use this or `setState` to mutate state.
+             * You should treat `this.state` as immutable.
+             *
+             * There is no guarantee that `this.state` will be immediately updated, so
+             * accessing `this.state` after calling this method may return the old value.
+             *
+             * @param {ReactClass} publicInstance The instance that should rerender.
+             * @param {object} completeState Next state.
+             * @param {?function} callback Called after component is updated.
+             * @param {?string} callerName name of the calling function in the public API.
+             * @internal
+             */
             enqueueReplaceState: function(publicInstance, completeState, callback2, callerName) {
               warnNoop(publicInstance, "replaceState");
             },
+            /**
+             * Sets a subset of the state. This only exists because _pendingState is
+             * internal. This provides a merging strategy that is not available to deep
+             * properties which is confusing. TODO: Expose pendingState or don't use it
+             * during the merge.
+             *
+             * @param {ReactClass} publicInstance The instance that should rerender.
+             * @param {object} partialState Next partial state to be merged with state.
+             * @param {?function} callback Called after component is updated.
+             * @param {?string} Name of the calling function in the public API.
+             * @internal
+             */
             enqueueSetState: function(publicInstance, partialState, callback2, callerName) {
               warnNoop(publicInstance, "setState");
             }
@@ -5702,11 +5825,14 @@
           }
           var ReactElement = function(type, key, ref, self2, source, owner, props) {
             var element = {
+              // This tag allows us to uniquely identify this as a React Element
               $$typeof: REACT_ELEMENT_TYPE,
+              // Built-in properties that belong on the element
               type,
               key,
               ref,
               props,
+              // Record the component responsible for creating this element.
               _owner: owner
             };
             {
@@ -5911,7 +6037,16 @@
                 });
               } else if (mappedChild != null) {
                 if (isValidElement(mappedChild)) {
-                  mappedChild = cloneAndReplaceKey(mappedChild, escapedPrefix + (mappedChild.key && (!_child || _child.key !== mappedChild.key) ? escapeUserProvidedKey("" + mappedChild.key) + "/" : "") + childKey);
+                  mappedChild = cloneAndReplaceKey(
+                    mappedChild,
+                    // Keep both the (mapped) and old keys if they differ, just as
+                    // traverseAllChildren used to do for objects as children
+                    escapedPrefix + // $FlowFixMe Flow incorrectly thinks React.Portal doesn't have a key
+                    (mappedChild.key && (!_child || _child.key !== mappedChild.key) ? (
+                      // $FlowFixMe Flow incorrectly thinks existing element's key can be a number
+                      escapeUserProvidedKey("" + mappedChild.key) + "/"
+                    ) : "") + childKey
+                  );
                 }
                 array.push(mappedChild);
               }
@@ -6007,9 +6142,17 @@
             var context = {
               $$typeof: REACT_CONTEXT_TYPE,
               _calculateChangedBits: calculateChangedBits,
+              // As a workaround to support multiple concurrent renderers, we categorize
+              // some renderers as primary and others as secondary. We only expect
+              // there to be two concurrent renderers at most: React Native (primary) and
+              // Fabric (secondary); React DOM (primary) and React ART (secondary).
+              // Secondary renderers store their context values on separate fields.
               _currentValue: defaultValue,
               _currentValue2: defaultValue,
+              // Used to track how many concurrent renderers this context currently
+              // supports within in a single renderer. Such as parallel server rendering.
               _threadCount: 0,
+              // These are circular
               Provider: null,
               Consumer: null
             };
@@ -6131,6 +6274,7 @@
           }
           function lazy(ctor) {
             var payload = {
+              // We use these fields to store the result.
               _status: -1,
               _result: ctor
             };
@@ -6719,7 +6863,9 @@
               var propTypes13;
               if (typeof type === "function") {
                 propTypes13 = type.propTypes;
-              } else if (typeof type === "object" && (type.$$typeof === REACT_FORWARD_REF_TYPE || type.$$typeof === REACT_MEMO_TYPE)) {
+              } else if (typeof type === "object" && (type.$$typeof === REACT_FORWARD_REF_TYPE || // Note: Memo only checks outer props here.
+              // Inner props are checked in the reconciler.
+              type.$$typeof === REACT_MEMO_TYPE)) {
                 propTypes13 = type.propTypes;
               } else {
                 return;
@@ -6915,7 +7061,12 @@
               return localDate.now() - initialTime;
             };
           }
-          if (typeof window === "undefined" || typeof MessageChannel !== "function") {
+          if (
+            // If Scheduler runs in a non-DOM environment, it falls back to a naive
+            // implementation using setTimeout.
+            typeof window === "undefined" || // Check if MessageChannel is supported, too.
+            typeof MessageChannel !== "function"
+          ) {
             var _callback = null;
             var _timeoutID = null;
             var _flushCallback = function() {
@@ -7881,6 +8032,9 @@
           var reservedProps = [
             "children",
             "dangerouslySetInnerHTML",
+            // TODO: This prevents the assignment of defaultValue to regular
+            // elements (not just inputs). Now that ReactDOMInput assigns to the
+            // defaultValue property -- do we need this?
             "defaultValue",
             "defaultChecked",
             "innerHTML",
@@ -7889,21 +8043,71 @@
             "style"
           ];
           reservedProps.forEach(function(name) {
-            properties[name] = new PropertyInfoRecord(name, RESERVED, false, name, null, false, false);
+            properties[name] = new PropertyInfoRecord(
+              name,
+              RESERVED,
+              false,
+              // mustUseProperty
+              name,
+              // attributeName
+              null,
+              // attributeNamespace
+              false,
+              // sanitizeURL
+              false
+            );
           });
           [["acceptCharset", "accept-charset"], ["className", "class"], ["htmlFor", "for"], ["httpEquiv", "http-equiv"]].forEach(function(_ref) {
             var name = _ref[0], attributeName = _ref[1];
-            properties[name] = new PropertyInfoRecord(name, STRING, false, attributeName, null, false, false);
+            properties[name] = new PropertyInfoRecord(
+              name,
+              STRING,
+              false,
+              // mustUseProperty
+              attributeName,
+              // attributeName
+              null,
+              // attributeNamespace
+              false,
+              // sanitizeURL
+              false
+            );
           });
           ["contentEditable", "draggable", "spellCheck", "value"].forEach(function(name) {
-            properties[name] = new PropertyInfoRecord(name, BOOLEANISH_STRING, false, name.toLowerCase(), null, false, false);
+            properties[name] = new PropertyInfoRecord(
+              name,
+              BOOLEANISH_STRING,
+              false,
+              // mustUseProperty
+              name.toLowerCase(),
+              // attributeName
+              null,
+              // attributeNamespace
+              false,
+              // sanitizeURL
+              false
+            );
           });
           ["autoReverse", "externalResourcesRequired", "focusable", "preserveAlpha"].forEach(function(name) {
-            properties[name] = new PropertyInfoRecord(name, BOOLEANISH_STRING, false, name, null, false, false);
+            properties[name] = new PropertyInfoRecord(
+              name,
+              BOOLEANISH_STRING,
+              false,
+              // mustUseProperty
+              name,
+              // attributeName
+              null,
+              // attributeNamespace
+              false,
+              // sanitizeURL
+              false
+            );
           });
           [
             "allowFullScreen",
             "async",
+            // Note: there is a special case that prevents it from being written to the DOM
+            // on the client side because the browsers are inconsistent. Instead we call focus().
             "autoFocus",
             "autoPlay",
             "controls",
@@ -7924,34 +8128,106 @@
             "reversed",
             "scoped",
             "seamless",
+            // Microdata
             "itemScope"
           ].forEach(function(name) {
-            properties[name] = new PropertyInfoRecord(name, BOOLEAN, false, name.toLowerCase(), null, false, false);
+            properties[name] = new PropertyInfoRecord(
+              name,
+              BOOLEAN,
+              false,
+              // mustUseProperty
+              name.toLowerCase(),
+              // attributeName
+              null,
+              // attributeNamespace
+              false,
+              // sanitizeURL
+              false
+            );
           });
           [
             "checked",
+            // Note: `option.selected` is not updated if `select.multiple` is
+            // disabled with `removeAttribute`. We have special logic for handling this.
             "multiple",
             "muted",
             "selected"
+            // NOTE: if you add a camelCased prop to this list,
+            // you'll need to set attributeName to name.toLowerCase()
+            // instead in the assignment below.
           ].forEach(function(name) {
-            properties[name] = new PropertyInfoRecord(name, BOOLEAN, true, name, null, false, false);
+            properties[name] = new PropertyInfoRecord(
+              name,
+              BOOLEAN,
+              true,
+              // mustUseProperty
+              name,
+              // attributeName
+              null,
+              // attributeNamespace
+              false,
+              // sanitizeURL
+              false
+            );
           });
           [
             "capture",
             "download"
+            // NOTE: if you add a camelCased prop to this list,
+            // you'll need to set attributeName to name.toLowerCase()
+            // instead in the assignment below.
           ].forEach(function(name) {
-            properties[name] = new PropertyInfoRecord(name, OVERLOADED_BOOLEAN, false, name, null, false, false);
+            properties[name] = new PropertyInfoRecord(
+              name,
+              OVERLOADED_BOOLEAN,
+              false,
+              // mustUseProperty
+              name,
+              // attributeName
+              null,
+              // attributeNamespace
+              false,
+              // sanitizeURL
+              false
+            );
           });
           [
             "cols",
             "rows",
             "size",
             "span"
+            // NOTE: if you add a camelCased prop to this list,
+            // you'll need to set attributeName to name.toLowerCase()
+            // instead in the assignment below.
           ].forEach(function(name) {
-            properties[name] = new PropertyInfoRecord(name, POSITIVE_NUMERIC, false, name, null, false, false);
+            properties[name] = new PropertyInfoRecord(
+              name,
+              POSITIVE_NUMERIC,
+              false,
+              // mustUseProperty
+              name,
+              // attributeName
+              null,
+              // attributeNamespace
+              false,
+              // sanitizeURL
+              false
+            );
           });
           ["rowSpan", "start"].forEach(function(name) {
-            properties[name] = new PropertyInfoRecord(name, NUMERIC, false, name.toLowerCase(), null, false, false);
+            properties[name] = new PropertyInfoRecord(
+              name,
+              NUMERIC,
+              false,
+              // mustUseProperty
+              name.toLowerCase(),
+              // attributeName
+              null,
+              // attributeNamespace
+              false,
+              // sanitizeURL
+              false
+            );
           });
           var CAMELIZE = /[\-\:]([a-z])/g;
           var capitalize2 = function(token) {
@@ -8031,9 +8307,23 @@
             "writing-mode",
             "xmlns:xlink",
             "x-height"
+            // NOTE: if you add a camelCased prop to this list,
+            // you'll need to set attributeName to name.toLowerCase()
+            // instead in the assignment below.
           ].forEach(function(attributeName) {
             var name = attributeName.replace(CAMELIZE, capitalize2);
-            properties[name] = new PropertyInfoRecord(name, STRING, false, attributeName, null, false, false);
+            properties[name] = new PropertyInfoRecord(
+              name,
+              STRING,
+              false,
+              // mustUseProperty
+              attributeName,
+              null,
+              // attributeNamespace
+              false,
+              // sanitizeURL
+              false
+            );
           });
           [
             "xlink:actuate",
@@ -8042,25 +8332,85 @@
             "xlink:show",
             "xlink:title",
             "xlink:type"
+            // NOTE: if you add a camelCased prop to this list,
+            // you'll need to set attributeName to name.toLowerCase()
+            // instead in the assignment below.
           ].forEach(function(attributeName) {
             var name = attributeName.replace(CAMELIZE, capitalize2);
-            properties[name] = new PropertyInfoRecord(name, STRING, false, attributeName, "http://www.w3.org/1999/xlink", false, false);
+            properties[name] = new PropertyInfoRecord(
+              name,
+              STRING,
+              false,
+              // mustUseProperty
+              attributeName,
+              "http://www.w3.org/1999/xlink",
+              false,
+              // sanitizeURL
+              false
+            );
           });
           [
             "xml:base",
             "xml:lang",
             "xml:space"
+            // NOTE: if you add a camelCased prop to this list,
+            // you'll need to set attributeName to name.toLowerCase()
+            // instead in the assignment below.
           ].forEach(function(attributeName) {
             var name = attributeName.replace(CAMELIZE, capitalize2);
-            properties[name] = new PropertyInfoRecord(name, STRING, false, attributeName, "http://www.w3.org/XML/1998/namespace", false, false);
+            properties[name] = new PropertyInfoRecord(
+              name,
+              STRING,
+              false,
+              // mustUseProperty
+              attributeName,
+              "http://www.w3.org/XML/1998/namespace",
+              false,
+              // sanitizeURL
+              false
+            );
           });
           ["tabIndex", "crossOrigin"].forEach(function(attributeName) {
-            properties[attributeName] = new PropertyInfoRecord(attributeName, STRING, false, attributeName.toLowerCase(), null, false, false);
+            properties[attributeName] = new PropertyInfoRecord(
+              attributeName,
+              STRING,
+              false,
+              // mustUseProperty
+              attributeName.toLowerCase(),
+              // attributeName
+              null,
+              // attributeNamespace
+              false,
+              // sanitizeURL
+              false
+            );
           });
           var xlinkHref = "xlinkHref";
-          properties[xlinkHref] = new PropertyInfoRecord("xlinkHref", STRING, false, "xlink:href", "http://www.w3.org/1999/xlink", true, false);
+          properties[xlinkHref] = new PropertyInfoRecord(
+            "xlinkHref",
+            STRING,
+            false,
+            // mustUseProperty
+            "xlink:href",
+            "http://www.w3.org/1999/xlink",
+            true,
+            // sanitizeURL
+            false
+          );
           ["src", "href", "action", "formAction"].forEach(function(attributeName) {
-            properties[attributeName] = new PropertyInfoRecord(attributeName, STRING, false, attributeName.toLowerCase(), null, true, true);
+            properties[attributeName] = new PropertyInfoRecord(
+              attributeName,
+              STRING,
+              false,
+              // mustUseProperty
+              attributeName.toLowerCase(),
+              // attributeName
+              null,
+              // attributeNamespace
+              true,
+              // sanitizeURL
+              true
+            );
           });
           var isJavaScriptProtocol = /^[\u0000-\u001F ]*j[\r\n\t]*a[\r\n\t]*v[\r\n\t]*a[\r\n\t]*s[\r\n\t]*c[\r\n\t]*r[\r\n\t]*i[\r\n\t]*p[\r\n\t]*t[\r\n\t]*\:/i;
           var didWarn = false;
@@ -8833,7 +9183,9 @@
             var type = props.type;
             if (value != null) {
               if (type === "number") {
-                if (value === 0 && node.value === "" || node.value != value) {
+                if (value === 0 && node.value === "" || // We explicitly want to coerce to number here if possible.
+                // eslint-disable-next-line
+                node.value != value) {
                   node.value = toString(value);
                 }
               } else if (node.value !== toString(value)) {
@@ -8918,7 +9270,10 @@
             }
           }
           function setDefaultValue(node, type, value) {
-            if (type !== "number" || getActiveElement(node.ownerDocument) !== node) {
+            if (
+              // Focused number inputs synchronize on blur. See ChangeEventPlugin.js
+              type !== "number" || getActiveElement(node.ownerDocument) !== node
+            ) {
               if (value == null) {
                 node.defaultValue = toString(node._wrapperState.initialValue);
               } else if (node.defaultValue !== toString(value)) {
@@ -9337,6 +9692,7 @@
             widows: true,
             zIndex: true,
             zoom: true,
+            // SVG-related properties
             fillOpacity: true,
             floodOpacity: true,
             stopOpacity: true,
@@ -9391,7 +9747,14 @@
                 return;
               }
               warnedStyleNames[name] = true;
-              error2("Unsupported style property %s. Did you mean %s?", name, camelize(name.replace(msPattern$1, "ms-")));
+              error2(
+                "Unsupported style property %s. Did you mean %s?",
+                name,
+                // As Andi Smith suggests
+                // (http://www.andismith.com/blog/2012/02/modernizr-prefixed/), an `-ms` prefix
+                // is converted to lowercase `ms`.
+                camelize(name.replace(msPattern$1, "ms-"))
+              );
             };
             var warnBadVendoredStyleName = function(name) {
               if (warnedStyleNames.hasOwnProperty(name) && warnedStyleNames[name]) {
@@ -9532,6 +9895,7 @@
             source: true,
             track: true,
             wbr: true
+            // NOTE: menuitem's close tag should be omitted, but that causes problems.
           };
           var voidElementTags = _assign({
             menuitem: true
@@ -9590,6 +9954,7 @@
             }
           }
           var possibleStandardNames = {
+            // HTML
             accept: "accept",
             acceptcharset: "acceptCharset",
             "accept-charset": "acceptCharset",
@@ -9737,6 +10102,7 @@
             width: "width",
             wmode: "wmode",
             wrap: "wrap",
+            // SVG
             about: "about",
             accentheight: "accentHeight",
             "accent-height": "accentHeight",
@@ -10076,13 +10442,18 @@
           };
           var ariaProperties = {
             "aria-current": 0,
+            // state
             "aria-details": 0,
             "aria-disabled": 0,
+            // state
             "aria-hidden": 0,
+            // state
             "aria-invalid": 0,
+            // state
             "aria-keyshortcuts": 0,
             "aria-label": 0,
             "aria-roledescription": 0,
+            // Widget Attributes
             "aria-autocomplete": 0,
             "aria-checked": 0,
             "aria-expanded": 0,
@@ -10102,12 +10473,15 @@
             "aria-valuemin": 0,
             "aria-valuenow": 0,
             "aria-valuetext": 0,
+            // Live Region Attributes
             "aria-atomic": 0,
             "aria-busy": 0,
             "aria-live": 0,
             "aria-relevant": 0,
+            // Drag-and-Drop Attributes
             "aria-dropeffect": 0,
             "aria-grabbed": 0,
+            // Relationship Attributes
             "aria-activedescendant": 0,
             "aria-colcount": 0,
             "aria-colindex": 0,
@@ -10656,26 +11030,86 @@
           function set2(key, value) {
             key._reactInternals = value;
           }
-          var NoFlags = 0;
-          var PerformedWork = 1;
-          var Placement = 2;
-          var Update = 4;
-          var PlacementAndUpdate = 6;
-          var Deletion = 8;
-          var ContentReset = 16;
-          var Callback = 32;
-          var DidCapture = 64;
-          var Ref = 128;
-          var Snapshot = 256;
-          var Passive = 512;
-          var PassiveUnmountPendingDev = 8192;
-          var Hydrating = 1024;
-          var HydratingAndUpdate = 1028;
-          var LifecycleEffectMask = 932;
-          var HostEffectMask = 2047;
-          var Incomplete = 2048;
-          var ShouldCapture = 4096;
-          var ForceUpdateForLegacySuspense = 16384;
+          var NoFlags = (
+            /*                      */
+            0
+          );
+          var PerformedWork = (
+            /*                */
+            1
+          );
+          var Placement = (
+            /*                    */
+            2
+          );
+          var Update = (
+            /*                       */
+            4
+          );
+          var PlacementAndUpdate = (
+            /*           */
+            6
+          );
+          var Deletion = (
+            /*                     */
+            8
+          );
+          var ContentReset = (
+            /*                 */
+            16
+          );
+          var Callback = (
+            /*                     */
+            32
+          );
+          var DidCapture = (
+            /*                   */
+            64
+          );
+          var Ref = (
+            /*                          */
+            128
+          );
+          var Snapshot = (
+            /*                     */
+            256
+          );
+          var Passive = (
+            /*                      */
+            512
+          );
+          var PassiveUnmountPendingDev = (
+            /*     */
+            8192
+          );
+          var Hydrating = (
+            /*                    */
+            1024
+          );
+          var HydratingAndUpdate = (
+            /*           */
+            1028
+          );
+          var LifecycleEffectMask = (
+            /*          */
+            932
+          );
+          var HostEffectMask = (
+            /*               */
+            2047
+          );
+          var Incomplete = (
+            /*                   */
+            2048
+          );
+          var ShouldCapture = (
+            /*                */
+            4096
+          );
+          var ForceUpdateForLegacySuspense = (
+            /* */
+            16384
+          );
           var ReactCurrentOwner = ReactSharedInternals.ReactCurrentOwner;
           function getNearestMountedFiber(fiber) {
             var node = fiber;
@@ -10970,6 +11404,7 @@
             "keyup",
             "input",
             "textInput",
+            // Intentionally camelCase
             "copy",
             "cut",
             "paste",
@@ -11280,6 +11715,7 @@
             "auxClick",
             "dblclick",
             "doubleClick",
+            // Careful!
             "dragend",
             "dragEnd",
             "dragstart",
@@ -11288,8 +11724,10 @@
             "drop",
             "focusin",
             "focus",
+            // Careful!
             "focusout",
             "blur",
+            // Careful!
             "input",
             "input",
             "invalid",
@@ -11394,25 +11832,82 @@
           var OffscreenLanePriority = 1;
           var NoLanePriority = 0;
           var TotalLanes = 31;
-          var NoLanes = 0;
-          var NoLane = 0;
-          var SyncLane = 1;
-          var SyncBatchedLane = 2;
-          var InputDiscreteHydrationLane = 4;
-          var InputDiscreteLanes = 24;
-          var InputContinuousHydrationLane = 32;
-          var InputContinuousLanes = 192;
-          var DefaultHydrationLane = 256;
-          var DefaultLanes = 3584;
-          var TransitionHydrationLane = 4096;
-          var TransitionLanes = 4186112;
-          var RetryLanes = 62914560;
-          var SomeRetryLane = 33554432;
-          var SelectiveHydrationLane = 67108864;
-          var NonIdleLanes = 134217727;
-          var IdleHydrationLane = 134217728;
-          var IdleLanes = 805306368;
-          var OffscreenLane = 1073741824;
+          var NoLanes = (
+            /*                        */
+            0
+          );
+          var NoLane = (
+            /*                          */
+            0
+          );
+          var SyncLane = (
+            /*                        */
+            1
+          );
+          var SyncBatchedLane = (
+            /*                 */
+            2
+          );
+          var InputDiscreteHydrationLane = (
+            /*      */
+            4
+          );
+          var InputDiscreteLanes = (
+            /*                    */
+            24
+          );
+          var InputContinuousHydrationLane = (
+            /*           */
+            32
+          );
+          var InputContinuousLanes = (
+            /*                  */
+            192
+          );
+          var DefaultHydrationLane = (
+            /*            */
+            256
+          );
+          var DefaultLanes = (
+            /*                   */
+            3584
+          );
+          var TransitionHydrationLane = (
+            /*                */
+            4096
+          );
+          var TransitionLanes = (
+            /*                       */
+            4186112
+          );
+          var RetryLanes = (
+            /*                            */
+            62914560
+          );
+          var SomeRetryLane = (
+            /*                  */
+            33554432
+          );
+          var SelectiveHydrationLane = (
+            /*          */
+            67108864
+          );
+          var NonIdleLanes = (
+            /*                                 */
+            134217727
+          );
+          var IdleHydrationLane = (
+            /*               */
+            134217728
+          );
+          var IdleLanes = (
+            /*                             */
+            805306368
+          );
+          var OffscreenLane = (
+            /*                   */
+            1073741824
+          );
           var NoTimestamp = -1;
           function setCurrentUpdateLanePriority(newLanePriority) {
           }
@@ -11580,7 +12075,9 @@
               return NoLanes;
             }
             nextLanes = pendingLanes & getEqualOrHigherPriorityLanes(nextLanes);
-            if (wipLanes !== NoLanes && wipLanes !== nextLanes && (wipLanes & suspendedLanes) === NoLanes) {
+            if (wipLanes !== NoLanes && wipLanes !== nextLanes && // If we already suspended with a delay, then interrupting is fine. Don't
+            // bother waiting until the root is complete.
+            (wipLanes & suspendedLanes) === NoLanes) {
               getHighestPriorityLanes(wipLanes);
               var wipLanePriority = return_highestLanePriority;
               if (nextLanePriority <= wipLanePriority) {
@@ -11897,7 +12394,14 @@
               allowReplay = (eventSystemFlags & IS_CAPTURE_PHASE) === 0;
             }
             if (allowReplay && hasQueuedDiscreteEvents() && isReplayableDiscreteEvent(domEventName)) {
-              queueDiscreteEvent(null, domEventName, eventSystemFlags, targetContainer, nativeEvent);
+              queueDiscreteEvent(
+                null,
+                // Flags that we're not actually blocked on anything as far as we know.
+                domEventName,
+                eventSystemFlags,
+                targetContainer,
+                nativeEvent
+              );
               return;
             }
             var blockedOn = attemptToDispatchEvent(domEventName, eventSystemFlags, targetContainer, nativeEvent);
@@ -12092,8 +12596,18 @@
                 }
                 this.isPropagationStopped = functionThatReturnsTrue;
               },
+              /**
+               * We release all dispatched `SyntheticEvent`s after each event loop, adding
+               * them back into the pool. This allows a way to hold onto a reference that
+               * won't be added back into the pool.
+               */
               persist: function() {
               },
+              /**
+               * Checks if this event should be released back into the pool.
+               *
+               * @return {boolean} True if this should not be released, false otherwise.
+               */
               isPersistent: functionThatReturnsTrue
             });
             return SyntheticBaseEvent;
@@ -12285,6 +12799,7 @@
             repeat: 0,
             locale: 0,
             getModifierState: getEventModifierState,
+            // Legacy Interface
             charCode: function(event) {
               if (event.type === "keypress") {
                 return getEventCharCode(event);
@@ -12340,12 +12855,25 @@
           var SyntheticTransitionEvent = createSyntheticEvent(TransitionEventInterface);
           var WheelEventInterface = _assign({}, MouseEventInterface, {
             deltaX: function(event) {
-              return "deltaX" in event ? event.deltaX : "wheelDeltaX" in event ? -event.wheelDeltaX : 0;
+              return "deltaX" in event ? event.deltaX : (
+                // Fallback to `wheelDeltaX` for Webkit and normalize (right is positive).
+                "wheelDeltaX" in event ? -event.wheelDeltaX : 0
+              );
             },
             deltaY: function(event) {
-              return "deltaY" in event ? event.deltaY : "wheelDeltaY" in event ? -event.wheelDeltaY : "wheelDelta" in event ? -event.wheelDelta : 0;
+              return "deltaY" in event ? event.deltaY : (
+                // Fallback to `wheelDeltaY` for Webkit and normalize (down is positive).
+                "wheelDeltaY" in event ? -event.wheelDeltaY : (
+                  // Fallback to `wheelDelta` for IE<9 and normalize (down is positive).
+                  "wheelDelta" in event ? -event.wheelDelta : 0
+                )
+              );
             },
             deltaZ: 0,
+            // Browsers without "deltaMode" is reporting in raw wheel delta where one
+            // notch on the scroll is always +/- 120, roughly equivalent to pixels.
+            // A good approximation of DOM_DELTA_LINE (1) is 5% of viewport size or
+            // ~40 pixels, for DOM_DELTA_SCREEN (2) it is 87.5% of viewport size.
             deltaMode: 0
           });
           var SyntheticWheelEvent = createSyntheticEvent(WheelEventInterface);
@@ -12368,7 +12896,8 @@
           }
           var hasSpaceKeypress = false;
           function isKeypressCommand(nativeEvent) {
-            return (nativeEvent.ctrlKey || nativeEvent.altKey || nativeEvent.metaKey) && !(nativeEvent.ctrlKey && nativeEvent.altKey);
+            return (nativeEvent.ctrlKey || nativeEvent.altKey || nativeEvent.metaKey) && // ctrlKey && altKey is equivalent to AltGr, and is not a command.
+            !(nativeEvent.ctrlKey && nativeEvent.altKey);
           }
           function getCompositionEventType(domEventName) {
             switch (domEventName) {
@@ -13205,7 +13734,11 @@
             }
             var inCapturePhase = (eventSystemFlags & IS_CAPTURE_PHASE) !== 0;
             {
-              var accumulateTargetOnly = !inCapturePhase && domEventName === "scroll";
+              var accumulateTargetOnly = !inCapturePhase && // TODO: ideally, we'd eventually add all events from
+              // nonDelegatedEvents list in DOMPluginEventSystem.
+              // Then we can remove this special list.
+              // This is a breaking change that can wait until React 18.
+              domEventName === "scroll";
               var _listeners = accumulateSinglePhaseListeners(targetInst, reactName, nativeEvent.type, inCapturePhase, accumulateTargetOnly);
               if (_listeners.length > 0) {
                 var _event = new SyntheticEventCtor(reactName, reactEventType, null, nativeEvent, nativeEventTarget);
@@ -13561,7 +14094,13 @@
           var normalizeHTML;
           {
             warnedUnknownTags = {
+              // There are working polyfills for <dialog>. Let people use it.
               dialog: true,
+              // Electron ships a custom <webview> tag to display external web content in
+              // an isolated frame and process.
+              // This tag is not present in non Electron environments such as JSDom which
+              // is often used for testing purposes.
+              // @see https://electronjs.org/docs/api/webview-tag
               webview: true
             };
             validatePropertiesInDevelopment = function(type, props) {
@@ -14109,12 +14648,17 @@
                     listenToNonDelegatedEvent("scroll", domElement);
                   }
                 }
-              } else if (typeof isCustomComponentTag === "boolean") {
+              } else if (
+                // Convince Flow we've calculated it (it's DEV-only in this method.)
+                typeof isCustomComponentTag === "boolean"
+              ) {
                 var serverValue = void 0;
                 var propertyInfo = getPropertyInfo(propKey);
                 if (suppressHydrationWarning)
                   ;
-                else if (propKey === SUPPRESS_CONTENT_EDITABLE_WARNING || propKey === SUPPRESS_HYDRATION_WARNING || propKey === "value" || propKey === "checked" || propKey === "selected")
+                else if (propKey === SUPPRESS_CONTENT_EDITABLE_WARNING || propKey === SUPPRESS_HYDRATION_WARNING || // Controlled attributes are not validated
+                // TODO: Only ignore them on controlled tags.
+                propKey === "value" || propKey === "checked" || propKey === "selected")
                   ;
                 else if (propKey === DANGEROUSLY_SET_INNER_HTML) {
                   var serverHTML = domElement.innerHTML;
@@ -14270,6 +14814,9 @@
               "marquee",
               "object",
               "template",
+              // https://html.spec.whatwg.org/multipage/syntax.html#html-integration-point
+              // TODO: Distinguish by namespace here -- for <title>, including it here
+              // errs on the side of fewer warnings
               "foreignObject",
               "desc",
               "title"
@@ -15299,8 +15846,11 @@
           var IdlePriority$1 = 95;
           var NoPriority$1 = 90;
           var shouldYield = Scheduler_shouldYield;
-          var requestPaint = Scheduler_requestPaint !== void 0 ? Scheduler_requestPaint : function() {
-          };
+          var requestPaint = (
+            // Fall back gracefully if we're running an older version of Scheduler.
+            Scheduler_requestPaint !== void 0 ? Scheduler_requestPaint : function() {
+            }
+          );
           var syncQueue = null;
           var immediateQueueCallbackNode = null;
           var isFlushingSyncQueue = false;
@@ -15459,7 +16009,8 @@
               if (didWarnAboutUnsafeLifecycles.has(fiber.type)) {
                 return;
               }
-              if (typeof instance.componentWillMount === "function" && instance.componentWillMount.__suppressDeprecationWarning !== true) {
+              if (typeof instance.componentWillMount === "function" && // Don't warn about react-lifecycles-compat polyfilled components.
+              instance.componentWillMount.__suppressDeprecationWarning !== true) {
                 pendingComponentWillMountWarnings.push(fiber);
               }
               if (fiber.mode & StrictMode && typeof instance.UNSAFE_componentWillMount === "function") {
@@ -16055,6 +16606,9 @@
                   if (newLastBaseUpdate !== null) {
                     var _clone = {
                       eventTime: updateEventTime,
+                      // This update is going to be committed so we never want uncommit
+                      // it. Using NoLane works because 0 is a subset of all bitmasks, so
+                      // this will never be skipped by the check above.
                       lane: NoLane,
                       tag: update.tag,
                       payload: update.payload,
@@ -16379,7 +16933,10 @@
             var contextType = ctor.contextType;
             {
               if ("contextType" in ctor) {
-                var isValid2 = contextType === null || contextType !== void 0 && contextType.$$typeof === REACT_CONTEXT_TYPE && contextType._context === void 0;
+                var isValid2 = (
+                  // Allow null for conditional declaration
+                  contextType === null || contextType !== void 0 && contextType.$$typeof === REACT_CONTEXT_TYPE && contextType._context === void 0
+                );
                 if (!isValid2 && !didWarnAboutInvalidateContextType.has(ctor)) {
                   didWarnAboutInvalidateContextType.add(ctor);
                   var addendum = "";
@@ -16721,7 +17278,10 @@
             var mixedRef = element.ref;
             if (mixedRef !== null && typeof mixedRef !== "function" && typeof mixedRef !== "object") {
               {
-                if ((returnFiber.mode & StrictMode || warnAboutStringRefs) && !(element._owner && element._self && element._owner.stateNode !== element._self)) {
+                if ((returnFiber.mode & StrictMode || warnAboutStringRefs) && // We warn in ReactElement.js if owner and self are equal for string refs
+                // because these cannot be automatically converted to an arrow function
+                // using a codemod. Therefore, we don't have to warn about string refs again.
+                !(element._owner && element._self && element._owner.stateNode !== element._self)) {
                   var componentName = getComponentName(returnFiber.type) || "Component";
                   if (!didWarnAboutStringRefs[componentName]) {
                     {
@@ -16882,7 +17442,8 @@
             }
             function updateElement(returnFiber, current2, element, lanes) {
               if (current2 !== null) {
-                if (current2.elementType === element.type || isCompatibleFamilyForHotReloading(current2, element)) {
+                if (current2.elementType === element.type || // Keep this check inline so it only runs on the false path:
+                isCompatibleFamilyForHotReloading(current2, element)) {
                   var existing = useFiber(current2, element.props);
                   existing.ref = coerceRef(returnFiber, current2, element);
                   existing.return = returnFiber;
@@ -17152,7 +17713,8 @@
                 }
               }
               {
-                if (typeof Symbol === "function" && newChildrenIterable[Symbol.toStringTag] === "Generator") {
+                if (typeof Symbol === "function" && // $FlowFixMe Flow doesn't know about toStringTag
+                newChildrenIterable[Symbol.toStringTag] === "Generator") {
                   if (!didWarnAboutGenerators) {
                     error2("Using Generators as children is unsupported and will likely yield unexpected results because enumerating a generator mutates it. You may convert it to an array with `Array.from()` or the `[...spread]` operator before rendering. Keep in mind you might need to polyfill these features for older browsers.");
                   }
@@ -17293,7 +17855,8 @@
                     }
                     case Block:
                     default: {
-                      if (child.elementType === element.type || isCompatibleFamilyForHotReloading(child, element)) {
+                      if (child.elementType === element.type || // Keep this check inline so it only runs on the false path:
+                      isCompatibleFamilyForHotReloading(child, element)) {
                         deleteRemainingChildren(returnFiber, child.sibling);
                         var _existing3 = useFiber(child, element.props);
                         _existing3.ref = coerceRef(returnFiber, child, element);
@@ -17538,7 +18101,9 @@
                     return node;
                   }
                 }
-              } else if (node.tag === SuspenseListComponent && node.memoizedProps.revealOrder !== void 0) {
+              } else if (node.tag === SuspenseListComponent && // revealOrder undefined can't be trusted because it don't
+              // keep track of whether it suspended or not.
+              node.memoizedProps.revealOrder !== void 0) {
                 var didSuspend = (node.flags & DidCapture) !== NoFlags;
                 if (didSuspend) {
                   return node;
@@ -17562,10 +18127,22 @@
             }
             return null;
           }
-          var NoFlags$1 = 0;
-          var HasEffect = 1;
-          var Layout = 2;
-          var Passive$1 = 4;
+          var NoFlags$1 = (
+            /*  */
+            0
+          );
+          var HasEffect = (
+            /* */
+            1
+          );
+          var Layout = (
+            /*    */
+            2
+          );
+          var Passive$1 = (
+            /*   */
+            4
+          );
           var hydrationParentFiber = null;
           var nextHydratableInstance = null;
           var isHydrating = false;
@@ -18157,6 +18734,9 @@
                 } else {
                   if (newBaseQueueLast !== null) {
                     var _clone = {
+                      // This update is going to be committed so we never want uncommit
+                      // it. Using NoLane works because 0 is a subset of all bitmasks, so
+                      // this will never be skipped by the check above.
                       lane: NoLane,
                       action: update.action,
                       eagerReducer: update.eagerReducer,
@@ -18380,6 +18960,7 @@
               create,
               destroy,
               deps,
+              // Circular
               next: null
             };
             var componentUpdateQueue = currentlyRenderingFiber$1.updateQueue;
@@ -18441,7 +19022,7 @@
           }
           function mountEffect(create, deps) {
             {
-              if (typeof jest !== "undefined") {
+              if ("undefined" !== typeof jest) {
                 warnIfNotCurrentlyActingEffectsInDEV(currentlyRenderingFiber$1);
               }
             }
@@ -18449,7 +19030,7 @@
           }
           function updateEffect(create, deps) {
             {
-              if (typeof jest !== "undefined") {
+              if ("undefined" !== typeof jest) {
                 warnIfNotCurrentlyActingEffectsInDEV(currentlyRenderingFiber$1);
               }
             }
@@ -18734,7 +19315,7 @@
                 }
               }
               {
-                if (typeof jest !== "undefined") {
+                if ("undefined" !== typeof jest) {
                   warnIfNotScopedWithMatchingAct(fiber);
                   warnIfNotCurrentlyActingUpdatesInDev(fiber);
                 }
@@ -19554,7 +20135,13 @@
               if (workInProgress2.type !== workInProgress2.elementType) {
                 var innerPropTypes = Component8.propTypes;
                 if (innerPropTypes) {
-                  checkPropTypes(innerPropTypes, nextProps, "prop", getComponentName(Component8));
+                  checkPropTypes(
+                    innerPropTypes,
+                    nextProps,
+                    // Resolved props
+                    "prop",
+                    getComponentName(Component8)
+                  );
                 }
               }
             }
@@ -19587,7 +20174,8 @@
           function updateMemoComponent(current2, workInProgress2, Component8, nextProps, updateLanes, renderLanes2) {
             if (current2 === null) {
               var type = Component8.type;
-              if (isSimpleFunctionComponent(type) && Component8.compare === null && Component8.defaultProps === void 0) {
+              if (isSimpleFunctionComponent(type) && Component8.compare === null && // SimpleMemoComponent codepath doesn't resolve outer props either.
+              Component8.defaultProps === void 0) {
                 var resolvedType = type;
                 {
                   resolvedType = resolveFunctionForHotReloading(type);
@@ -19602,7 +20190,13 @@
               {
                 var innerPropTypes = type.propTypes;
                 if (innerPropTypes) {
-                  checkPropTypes(innerPropTypes, nextProps, "prop", getComponentName(type));
+                  checkPropTypes(
+                    innerPropTypes,
+                    nextProps,
+                    // Resolved props
+                    "prop",
+                    getComponentName(type)
+                  );
                 }
               }
               var child = createFiberFromTypeAndProps(Component8.type, null, nextProps, workInProgress2, workInProgress2.mode, renderLanes2);
@@ -19615,7 +20209,13 @@
               var _type = Component8.type;
               var _innerPropTypes = _type.propTypes;
               if (_innerPropTypes) {
-                checkPropTypes(_innerPropTypes, nextProps, "prop", getComponentName(_type));
+                checkPropTypes(
+                  _innerPropTypes,
+                  nextProps,
+                  // Resolved props
+                  "prop",
+                  getComponentName(_type)
+                );
               }
             }
             var currentChild = current2.child;
@@ -19649,14 +20249,21 @@
                   }
                   var outerPropTypes = outerMemoType && outerMemoType.propTypes;
                   if (outerPropTypes) {
-                    checkPropTypes(outerPropTypes, nextProps, "prop", getComponentName(outerMemoType));
+                    checkPropTypes(
+                      outerPropTypes,
+                      nextProps,
+                      // Resolved (SimpleMemoComponent has no defaultProps)
+                      "prop",
+                      getComponentName(outerMemoType)
+                    );
                   }
                 }
               }
             }
             if (current2 !== null) {
               var prevProps = current2.memoizedProps;
-              if (shallowEqual2(prevProps, nextProps) && current2.ref === workInProgress2.ref && workInProgress2.type === current2.type) {
+              if (shallowEqual2(prevProps, nextProps) && current2.ref === workInProgress2.ref && // Prevent bailout if the implementation changed due to hot reload.
+              workInProgress2.type === current2.type) {
                 didReceiveUpdate = false;
                 if (!includesSomeLane(renderLanes2, updateLanes)) {
                   workInProgress2.lanes = current2.lanes;
@@ -19752,7 +20359,13 @@
               if (workInProgress2.type !== workInProgress2.elementType) {
                 var innerPropTypes = Component8.propTypes;
                 if (innerPropTypes) {
-                  checkPropTypes(innerPropTypes, nextProps, "prop", getComponentName(Component8));
+                  checkPropTypes(
+                    innerPropTypes,
+                    nextProps,
+                    // Resolved props
+                    "prop",
+                    getComponentName(Component8)
+                  );
                 }
               }
             }
@@ -19790,7 +20403,13 @@
               if (workInProgress2.type !== workInProgress2.elementType) {
                 var innerPropTypes = Component8.propTypes;
                 if (innerPropTypes) {
-                  checkPropTypes(innerPropTypes, nextProps, "prop", getComponentName(Component8));
+                  checkPropTypes(
+                    innerPropTypes,
+                    nextProps,
+                    // Resolved props
+                    "prop",
+                    getComponentName(Component8)
+                  );
                 }
               }
             }
@@ -19995,11 +20614,25 @@
                   if (workInProgress2.type !== workInProgress2.elementType) {
                     var outerPropTypes = Component8.propTypes;
                     if (outerPropTypes) {
-                      checkPropTypes(outerPropTypes, resolvedProps, "prop", getComponentName(Component8));
+                      checkPropTypes(
+                        outerPropTypes,
+                        resolvedProps,
+                        // Resolved for outer only
+                        "prop",
+                        getComponentName(Component8)
+                      );
                     }
                   }
                 }
-                child = updateMemoComponent(null, workInProgress2, Component8, resolveDefaultProps(Component8.type, resolvedProps), updateLanes, renderLanes2);
+                child = updateMemoComponent(
+                  null,
+                  workInProgress2,
+                  Component8,
+                  resolveDefaultProps(Component8.type, resolvedProps),
+                  // The inner type can have defaults too
+                  updateLanes,
+                  renderLanes2
+                );
                 return child;
               }
             }
@@ -20074,7 +20707,11 @@
                 }
               }
             }
-            if (typeof value === "object" && value !== null && typeof value.render === "function" && value.$$typeof === void 0) {
+            if (
+              // Run these checks in production only if the flag is off.
+              // Eventually we'll delete this branch altogether.
+              typeof value === "object" && value !== null && typeof value.render === "function" && value.$$typeof === void 0
+            ) {
               {
                 var _componentName2 = getComponentName(Component8) || "Unknown";
                 if (!didWarnAboutModulePatternComponent[_componentName2]) {
@@ -20344,7 +20981,17 @@
               children: primaryChildren
             };
             var primaryChildFragment;
-            if ((mode & BlockingMode) === NoMode && workInProgress2.child !== currentPrimaryChildFragment) {
+            if (
+              // In legacy mode, we commit the primary tree as if it successfully
+              // completed, even though it's in an inconsistent state.
+              (mode & BlockingMode) === NoMode && // Make sure we're on the second pass, i.e. the primary child fragment was
+              // already cloned. In legacy mode, the only case where this isn't true is
+              // when DevTools forces us to display a fallback; we skip the first render
+              // pass entirely and go straight to rendering the fallback. (In Concurrent
+              // Mode, SuspenseList can also trigger this scenario, but this is a legacy-
+              // only codepath.)
+              workInProgress2.child !== currentPrimaryChildFragment
+            ) {
               var progressedPrimaryFragment = workInProgress2.child;
               primaryChildFragment = progressedPrimaryFragment;
               primaryChildFragment.childLanes = NoLanes;
@@ -20567,7 +21214,15 @@
                     tail = lastContentRow.sibling;
                     lastContentRow.sibling = null;
                   }
-                  initSuspenseListRenderState(workInProgress2, false, tail, lastContentRow, tailMode, workInProgress2.lastEffect);
+                  initSuspenseListRenderState(
+                    workInProgress2,
+                    false,
+                    // isBackwards
+                    tail,
+                    lastContentRow,
+                    tailMode,
+                    workInProgress2.lastEffect
+                  );
                   break;
                 }
                 case "backwards": {
@@ -20585,11 +21240,30 @@
                     _tail = row;
                     row = nextRow;
                   }
-                  initSuspenseListRenderState(workInProgress2, true, _tail, null, tailMode, workInProgress2.lastEffect);
+                  initSuspenseListRenderState(
+                    workInProgress2,
+                    true,
+                    // isBackwards
+                    _tail,
+                    null,
+                    // last
+                    tailMode,
+                    workInProgress2.lastEffect
+                  );
                   break;
                 }
                 case "together": {
-                  initSuspenseListRenderState(workInProgress2, false, null, null, void 0, workInProgress2.lastEffect);
+                  initSuspenseListRenderState(
+                    workInProgress2,
+                    false,
+                    // isBackwards
+                    null,
+                    // tail
+                    null,
+                    // last
+                    void 0,
+                    workInProgress2.lastEffect
+                  );
                   break;
                 }
                 default: {
@@ -20747,7 +21421,8 @@
             if (current2 !== null) {
               var oldProps = current2.memoizedProps;
               var newProps = workInProgress2.pendingProps;
-              if (oldProps !== newProps || hasContextChanged() || workInProgress2.type !== current2.type) {
+              if (oldProps !== newProps || hasContextChanged() || // Force a re-render if the implementation changed due to hot reload:
+              workInProgress2.type !== current2.type) {
                 didReceiveUpdate = true;
               } else if (!includesSomeLane(renderLanes2, updateLanes)) {
                 didReceiveUpdate = false;
@@ -20900,7 +21575,13 @@
                   if (workInProgress2.type !== workInProgress2.elementType) {
                     var outerPropTypes = _type2.propTypes;
                     if (outerPropTypes) {
-                      checkPropTypes(outerPropTypes, _resolvedProps3, "prop", getComponentName(_type2));
+                      checkPropTypes(
+                        outerPropTypes,
+                        _resolvedProps3,
+                        // Resolved for outer only
+                        "prop",
+                        getComponentName(_type2)
+                      );
                     }
                   }
                 }
@@ -21266,7 +21947,12 @@
                         }
                         return null;
                       }
-                    } else if (now() * 2 - renderState.renderingStartTime > getRenderTargetTime() && renderLanes2 !== OffscreenLane) {
+                    } else if (
+                      // The time it took to render last row is greater than the remaining
+                      // time we have to render. So rendering one more row would likely
+                      // exceed it.
+                      now() * 2 - renderState.renderingStartTime > getRenderTargetTime() && renderLanes2 !== OffscreenLane
+                    ) {
                       workInProgress2.flags |= DidCapture;
                       didSuspendAlready = true;
                       cutOffTailIfNeeded(renderState, false);
@@ -22075,7 +22761,9 @@
             var node = root2;
             while (true) {
               commitUnmount(finishedRoot, node);
-              if (node.child !== null && node.tag !== HostPortal) {
+              if (node.child !== null && // If we use mutation we drill down into portals using commitUnmount above.
+              // If we don't use mutation we drill down into portals here instead.
+              node.tag !== HostPortal) {
                 node.child.return = node;
                 node = node.child;
                 continue;
@@ -22489,14 +23177,38 @@
           }
           var ceil = Math.ceil;
           var ReactCurrentDispatcher$2 = ReactSharedInternals.ReactCurrentDispatcher, ReactCurrentOwner$2 = ReactSharedInternals.ReactCurrentOwner, IsSomeRendererActing = ReactSharedInternals.IsSomeRendererActing;
-          var NoContext = 0;
-          var BatchedContext = 1;
-          var EventContext = 2;
-          var DiscreteEventContext = 4;
-          var LegacyUnbatchedContext = 8;
-          var RenderContext = 16;
-          var CommitContext = 32;
-          var RetryAfterError = 64;
+          var NoContext = (
+            /*             */
+            0
+          );
+          var BatchedContext = (
+            /*               */
+            1
+          );
+          var EventContext = (
+            /*                 */
+            2
+          );
+          var DiscreteEventContext = (
+            /*         */
+            4
+          );
+          var LegacyUnbatchedContext = (
+            /*       */
+            8
+          );
+          var RenderContext = (
+            /*                */
+            16
+          );
+          var CommitContext = (
+            /*                */
+            32
+          );
+          var RetryAfterError = (
+            /*       */
+            64
+          );
           var RootIncomplete = 0;
           var RootFatalErrored = 1;
           var RootErrored = 2;
@@ -22581,7 +23293,10 @@
             }
             var schedulerPriority = getCurrentPriorityLevel();
             var lane;
-            if ((executionContext & DiscreteEventContext) !== NoContext && schedulerPriority === UserBlockingPriority$2) {
+            if (
+              // TODO: Temporary. We're removing the concept of discrete updates.
+              (executionContext & DiscreteEventContext) !== NoContext && schedulerPriority === UserBlockingPriority$2
+            ) {
               lane = findUpdateLane(InputDiscreteLanePriority, currentEventWipLanes);
             } else {
               var schedulerLanePriority = schedulerPriorityToLanePriority(schedulerPriority);
@@ -22620,7 +23335,11 @@
             }
             var priorityLevel = getCurrentPriorityLevel();
             if (lane === SyncLane) {
-              if ((executionContext & LegacyUnbatchedContext) !== NoContext && (executionContext & (RenderContext | CommitContext)) === NoContext) {
+              if (
+                // Check if we're inside unbatchedUpdates
+                (executionContext & LegacyUnbatchedContext) !== NoContext && // Check if we're not already rendering
+                (executionContext & (RenderContext | CommitContext)) === NoContext
+              ) {
                 schedulePendingInteractions(root2, lane);
                 performSyncWorkOnRoot(root2);
               } else {
@@ -22632,7 +23351,9 @@
                 }
               }
             } else {
-              if ((executionContext & DiscreteEventContext) !== NoContext && (priorityLevel === UserBlockingPriority$2 || priorityLevel === ImmediatePriority$1)) {
+              if ((executionContext & DiscreteEventContext) !== NoContext && // Only updates at user-blocking priority or greater are considered
+              // discrete, even inside a discrete event.
+              (priorityLevel === UserBlockingPriority$2 || priorityLevel === ImmediatePriority$1)) {
                 if (rootsWithPendingDiscreteUpdates === null) {
                   rootsWithPendingDiscreteUpdates = /* @__PURE__ */ new Set([root2]);
                 } else {
@@ -22780,7 +23501,8 @@
               }
               case RootSuspended: {
                 markRootSuspended$1(root2, lanes);
-                if (includesOnlyRetries(lanes) && !shouldForceFlushFallbacksInDEV()) {
+                if (includesOnlyRetries(lanes) && // do not delay if we're inside an act() scope
+                !shouldForceFlushFallbacksInDEV()) {
                   var msUntilTimeout = globalMostRecentFallbackTime + FALLBACK_THROTTLE_MS - now();
                   if (msUntilTimeout > 10) {
                     var nextLanes = getNextLanes(root2, NoLanes);
@@ -23220,7 +23942,8 @@
                   return;
                 }
                 resetChildLanes(completedWork);
-                if (returnFiber !== null && (returnFiber.flags & Incomplete) === NoFlags) {
+                if (returnFiber !== null && // Do not append effects to parents if a sibling failed to complete
+                (returnFiber.flags & Incomplete) === NoFlags) {
                   if (returnFiber.firstEffect === null) {
                     returnFiber.firstEffect = completedWork.firstEffect;
                   }
@@ -23275,7 +23998,11 @@
             }
           }
           function resetChildLanes(completedWork) {
-            if ((completedWork.tag === LegacyHiddenComponent || completedWork.tag === OffscreenComponent) && completedWork.memoizedState !== null && !includesSomeLane(subtreeRenderLanes, OffscreenLane) && (completedWork.mode & ConcurrentMode) !== NoLanes) {
+            if (
+              // TODO: Move this check out of the hot path by moving `resetChildLanes`
+              // to switch statement in `completeWork`.
+              (completedWork.tag === LegacyHiddenComponent || completedWork.tag === OffscreenComponent) && completedWork.memoizedState !== null && !includesSomeLane(subtreeRenderLanes, OffscreenLane) && (completedWork.mode & ConcurrentMode) !== NoLanes
+            ) {
               return;
             }
             var newChildLanes = NoLanes;
@@ -24827,6 +25554,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
             fiber.stateNode = {
               containerInfo: portal.containerInfo,
               pendingChildren: null,
+              // Used by persistent updates
               implementation: portal.implementation
             };
             return fiber;
@@ -24936,6 +25664,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           function createPortal(children, containerInfo, implementation) {
             var key = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : null;
             return {
+              // This tag allow us to uniquely identify this as a React Portal
               $$typeof: REACT_PORTAL_TYPE,
               key: key == null ? null : "" + key,
               children,
@@ -25019,7 +25748,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
             var current$1 = container.current;
             var eventTime = requestEventTime();
             {
-              if (typeof jest !== "undefined") {
+              if ("undefined" !== typeof jest) {
                 warnIfUnmockedScheduler(current$1);
                 warnIfNotScopedWithMatchingAct(current$1);
               }
@@ -25167,7 +25896,13 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
                   delete updated[oldKey];
                 }
               } else {
-                updated[oldKey] = copyWithRenameImpl(obj[oldKey], oldPath, newPath, index2 + 1);
+                updated[oldKey] = copyWithRenameImpl(
+                  // $FlowFixMe number or string is fine here
+                  obj[oldKey],
+                  oldPath,
+                  newPath,
+                  index2 + 1
+                );
               }
               return updated;
             };
@@ -25295,10 +26030,12 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
               currentDispatcherRef: ReactCurrentDispatcher2,
               findHostInstanceByFiber,
               findFiberByHostInstance: findFiberByHostInstance || emptyFindFiberByHostInstance,
+              // React Refresh
               findHostInstancesForRefresh,
               scheduleRefresh,
               scheduleRoot,
               setRefreshHandler,
+              // Enables DevTools to append owner stacks to error messages in DEV mode.
               getCurrentFiber: getCurrentFiberForDevTools
             });
           }
@@ -25573,7 +26310,9 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           setAttemptHydrationAtPriority(runWithPriority$2);
           var didWarnAboutUnstableCreatePortal = false;
           {
-            if (typeof Map !== "function" || Map.prototype == null || typeof Map.prototype.forEach !== "function" || typeof Set !== "function" || Set.prototype == null || typeof Set.prototype.clear !== "function" || typeof Set.prototype.forEach !== "function") {
+            if (typeof Map !== "function" || // $FlowIssue Flow incorrectly thinks Map has no prototype
+            Map.prototype == null || typeof Map.prototype.forEach !== "function" || typeof Set !== "function" || // $FlowIssue Flow incorrectly thinks Set has no prototype
+            Set.prototype == null || typeof Set.prototype.clear !== "function" || typeof Set.prototype.forEach !== "function") {
               error2("React depends on Map and Set built-in types. Make sure that you load a polyfill in older browsers. https://reactjs.org/link/react-polyfills");
             }
           }
@@ -25602,6 +26341,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
             return createPortal$1(children, container, key);
           }
           var Internals = {
+            // Keep in sync with ReactTestUtils.js, and ReactTestUtilsAct.js.
+            // This is an array for better minification.
             Events: [
               getInstanceFromNode,
               getNodeFromInstance,
@@ -25609,6 +26350,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
               enqueueStateRestore,
               restoreStateIfNeeded,
               flushPassiveEffects,
+              // TODO: This is related to `act`, not events. Move to separate key?
               IsThisRendererActing
             ]
           };
@@ -25684,7 +26426,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           var REACT_RESPONDER_TYPE = hasSymbol ? Symbol.for("react.responder") : 60118;
           var REACT_SCOPE_TYPE = hasSymbol ? Symbol.for("react.scope") : 60119;
           function isValidElementType2(type) {
-            return typeof type === "string" || typeof type === "function" || type === REACT_FRAGMENT_TYPE || type === REACT_CONCURRENT_MODE_TYPE || type === REACT_PROFILER_TYPE || type === REACT_STRICT_MODE_TYPE || type === REACT_SUSPENSE_TYPE || type === REACT_SUSPENSE_LIST_TYPE || typeof type === "object" && type !== null && (type.$$typeof === REACT_LAZY_TYPE || type.$$typeof === REACT_MEMO_TYPE || type.$$typeof === REACT_PROVIDER_TYPE || type.$$typeof === REACT_CONTEXT_TYPE || type.$$typeof === REACT_FORWARD_REF_TYPE || type.$$typeof === REACT_FUNDAMENTAL_TYPE || type.$$typeof === REACT_RESPONDER_TYPE || type.$$typeof === REACT_SCOPE_TYPE || type.$$typeof === REACT_BLOCK_TYPE);
+            return typeof type === "string" || typeof type === "function" || // Note: its typeof might be other than 'symbol' or 'number' if it's a polyfill.
+            type === REACT_FRAGMENT_TYPE || type === REACT_CONCURRENT_MODE_TYPE || type === REACT_PROFILER_TYPE || type === REACT_STRICT_MODE_TYPE || type === REACT_SUSPENSE_TYPE || type === REACT_SUSPENSE_LIST_TYPE || typeof type === "object" && type !== null && (type.$$typeof === REACT_LAZY_TYPE || type.$$typeof === REACT_MEMO_TYPE || type.$$typeof === REACT_PROVIDER_TYPE || type.$$typeof === REACT_CONTEXT_TYPE || type.$$typeof === REACT_FORWARD_REF_TYPE || type.$$typeof === REACT_FUNDAMENTAL_TYPE || type.$$typeof === REACT_RESPONDER_TYPE || type.$$typeof === REACT_SCOPE_TYPE || type.$$typeof === REACT_BLOCK_TYPE);
           }
           function typeOf(object) {
             if (typeof object === "object" && object !== null) {
@@ -25870,7 +26613,9 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
               var error2;
               try {
                 if (typeof typeSpecs[typeSpecName] !== "function") {
-                  var err = Error((componentName || "React class") + ": " + location2 + " type `" + typeSpecName + "` is invalid; it must be a function, usually from the `prop-types` package, but received `" + typeof typeSpecs[typeSpecName] + "`.This often happens because of typos such as `PropTypes.function` instead of `PropTypes.func`.");
+                  var err = Error(
+                    (componentName || "React class") + ": " + location2 + " type `" + typeSpecName + "` is invalid; it must be a function, usually from the `prop-types` package, but received `" + typeof typeSpecs[typeSpecName] + "`.This often happens because of typos such as `PropTypes.function` instead of `PropTypes.func`."
+                  );
                   err.name = "Invariant Violation";
                   throw err;
                 }
@@ -25879,12 +26624,16 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
                 error2 = ex;
               }
               if (error2 && !(error2 instanceof Error)) {
-                printWarning((componentName || "React class") + ": type specification of " + location2 + " `" + typeSpecName + "` is invalid; the type checker function must return `null` or an `Error` but returned a " + typeof error2 + ". You may have forgotten to pass an argument to the type checker creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and shape all require an argument).");
+                printWarning(
+                  (componentName || "React class") + ": type specification of " + location2 + " `" + typeSpecName + "` is invalid; the type checker function must return `null` or an `Error` but returned a " + typeof error2 + ". You may have forgotten to pass an argument to the type checker creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and shape all require an argument)."
+                );
               }
               if (error2 instanceof Error && !(error2.message in loggedTypeFailures)) {
                 loggedTypeFailures[error2.message] = true;
                 var stack = getStack ? getStack() : "";
-                printWarning("Failed " + location2 + " type: " + error2.message + (stack != null ? stack : ""));
+                printWarning(
+                  "Failed " + location2 + " type: " + error2.message + (stack != null ? stack : "")
+                );
               }
             }
           }
@@ -25979,13 +26728,18 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
             propFullName = propFullName || propName;
             if (secret !== ReactPropTypesSecret) {
               if (throwOnDirectAccess) {
-                var err = new Error("Calling PropTypes validators directly is not supported by the `prop-types` package. Use `PropTypes.checkPropTypes()` to call them. Read more at http://fb.me/use-check-prop-types");
+                var err = new Error(
+                  "Calling PropTypes validators directly is not supported by the `prop-types` package. Use `PropTypes.checkPropTypes()` to call them. Read more at http://fb.me/use-check-prop-types"
+                );
                 err.name = "Invariant Violation";
                 throw err;
               } else if (typeof console !== "undefined") {
                 var cacheKey = componentName + ":" + propName;
-                if (!manualPropTypeCallCache[cacheKey] && manualPropTypeWarningCount < 3) {
-                  printWarning("You are manually calling a React.PropTypes validation function for the `" + propFullName + "` prop on `" + componentName + "`. This is deprecated and will throw in the standalone `prop-types` package. You may be seeing this warning due to a third-party PropTypes library. See https://fb.me/react-warning-dont-call-proptypes for details.");
+                if (!manualPropTypeCallCache[cacheKey] && // Avoid spamming the console because they are often not actionable except for lib authors
+                manualPropTypeWarningCount < 3) {
+                  printWarning(
+                    "You are manually calling a React.PropTypes validation function for the `" + propFullName + "` prop on `" + componentName + "`. This is deprecated and will throw in the standalone `prop-types` package. You may be seeing this warning due to a third-party PropTypes library. See https://fb.me/react-warning-dont-call-proptypes for details."
+                  );
                   manualPropTypeCallCache[cacheKey] = true;
                   manualPropTypeWarningCount++;
                 }
@@ -26013,7 +26767,10 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
             var propType = getPropType(propValue);
             if (propType !== expectedType) {
               var preciseType = getPreciseType(propValue);
-              return new PropTypeError("Invalid " + location2 + " `" + propFullName + "` of type " + ("`" + preciseType + "` supplied to `" + componentName + "`, expected ") + ("`" + expectedType + "`."), { expectedType });
+              return new PropTypeError(
+                "Invalid " + location2 + " `" + propFullName + "` of type " + ("`" + preciseType + "` supplied to `" + componentName + "`, expected ") + ("`" + expectedType + "`."),
+                { expectedType }
+              );
             }
             return null;
           }
@@ -26079,7 +26836,9 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           if (!Array.isArray(expectedValues)) {
             if (true) {
               if (arguments.length > 1) {
-                printWarning("Invalid arguments supplied to oneOf, expected an array, got " + arguments.length + " arguments. A common mistake is to write oneOf(x, y, z) instead of oneOf([x, y, z]).");
+                printWarning(
+                  "Invalid arguments supplied to oneOf, expected an array, got " + arguments.length + " arguments. A common mistake is to write oneOf(x, y, z) instead of oneOf([x, y, z])."
+                );
               } else {
                 printWarning("Invalid argument supplied to oneOf, expected an array.");
               }
@@ -26134,7 +26893,9 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           for (var i = 0; i < arrayOfTypeCheckers.length; i++) {
             var checker = arrayOfTypeCheckers[i];
             if (typeof checker !== "function") {
-              printWarning("Invalid argument supplied to oneOfType. Expected an array of check functions, but received " + getPostfixForTypeWarning(checker) + " at index " + i + ".");
+              printWarning(
+                "Invalid argument supplied to oneOfType. Expected an array of check functions, but received " + getPostfixForTypeWarning(checker) + " at index " + i + "."
+              );
               return emptyFunctionThatReturnsNull;
             }
           }
@@ -26165,7 +26926,9 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           return createChainableTypeChecker(validate);
         }
         function invalidValidatorError(componentName, location2, propFullName, key, type) {
-          return new PropTypeError((componentName || "React class") + ": " + location2 + " type `" + propFullName + "." + key + "` is invalid; it must be a function, usually from the `prop-types` package, but received `" + type + "`.");
+          return new PropTypeError(
+            (componentName || "React class") + ": " + location2 + " type `" + propFullName + "." + key + "` is invalid; it must be a function, usually from the `prop-types` package, but received `" + type + "`."
+          );
         }
         function createShapeTypeChecker(shapeTypes) {
           function validate(props, propName, componentName, location2, propFullName) {
@@ -26202,7 +26965,9 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
                 return invalidValidatorError(componentName, location2, propFullName, key, getPreciseType(checker));
               }
               if (!checker) {
-                return new PropTypeError("Invalid " + location2 + " `" + propFullName + "` key `" + key + "` supplied to `" + componentName + "`.\nBad object: " + JSON.stringify(props[propName], null, "  ") + "\nValid keys: " + JSON.stringify(Object.keys(shapeTypes), null, "  "));
+                return new PropTypeError(
+                  "Invalid " + location2 + " `" + propFullName + "` key `" + key + "` supplied to `" + componentName + "`.\nBad object: " + JSON.stringify(props[propName], null, "  ") + "\nValid keys: " + JSON.stringify(Object.keys(shapeTypes), null, "  ")
+                );
               }
               var error2 = checker(propValue, key, componentName, location2, propFullName + "." + key, ReactPropTypesSecret);
               if (error2) {
@@ -26775,7 +27540,10 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           this.props = nextProps;
           this.state = nextState;
           this.__reactInternalSnapshotFlag = true;
-          this.__reactInternalSnapshot = this.getSnapshotBeforeUpdate(prevProps, prevState);
+          this.__reactInternalSnapshot = this.getSnapshotBeforeUpdate(
+            prevProps,
+            prevState
+          );
         } finally {
           this.props = prevProps;
           this.state = prevState;
@@ -26813,7 +27581,9 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         if (foundWillMountName !== null || foundWillReceivePropsName !== null || foundWillUpdateName !== null) {
           var componentName = Component8.displayName || Component8.name;
           var newApiName = typeof Component8.getDerivedStateFromProps === "function" ? "getDerivedStateFromProps()" : "getSnapshotBeforeUpdate()";
-          throw Error("Unsafe legacy lifecycles will not be called for components using new component APIs.\n\n" + componentName + " uses " + newApiName + " but also contains the following legacy lifecycles:" + (foundWillMountName !== null ? "\n  " + foundWillMountName : "") + (foundWillReceivePropsName !== null ? "\n  " + foundWillReceivePropsName : "") + (foundWillUpdateName !== null ? "\n  " + foundWillUpdateName : "") + "\n\nThe above lifecycles should be removed. Learn more about this warning here:\nhttps://fb.me/react-async-component-lifecycle-hooks");
+          throw Error(
+            "Unsafe legacy lifecycles will not be called for components using new component APIs.\n\n" + componentName + " uses " + newApiName + " but also contains the following legacy lifecycles:" + (foundWillMountName !== null ? "\n  " + foundWillMountName : "") + (foundWillReceivePropsName !== null ? "\n  " + foundWillReceivePropsName : "") + (foundWillUpdateName !== null ? "\n  " + foundWillUpdateName : "") + "\n\nThe above lifecycles should be removed. Learn more about this warning here:\nhttps://fb.me/react-async-component-lifecycle-hooks"
+          );
         }
         if (typeof Component8.getDerivedStateFromProps === "function") {
           prototype.componentWillMount = componentWillMount;
@@ -26821,7 +27591,9 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         }
         if (typeof prototype.getSnapshotBeforeUpdate === "function") {
           if (typeof prototype.componentDidUpdate !== "function") {
-            throw new Error("Cannot polyfill getSnapshotBeforeUpdate() for components that do not define componentDidUpdate() on the prototype");
+            throw new Error(
+              "Cannot polyfill getSnapshotBeforeUpdate() for components that do not define componentDidUpdate() on the prototype"
+            );
           }
           prototype.componentWillUpdate = componentWillUpdate;
           var componentDidUpdate = prototype.componentDidUpdate;
@@ -27162,21 +27934,90 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
             }, children(status, childProps));
           }
           var child = _react.default.Children.only(children);
-          return _react.default.createElement(_TransitionGroupContext.default.Provider, {
-            value: null
-          }, _react.default.cloneElement(child, childProps));
+          return (
+            // allows for nested Transitions
+            _react.default.createElement(_TransitionGroupContext.default.Provider, {
+              value: null
+            }, _react.default.cloneElement(child, childProps))
+          );
         };
         return Transition3;
       }(_react.default.Component);
       Transition2.contextType = _TransitionGroupContext.default;
       Transition2.propTypes = true ? {
+        /**
+         * A `function` child can be used instead of a React element. This function is
+         * called with the current transition status (`'entering'`, `'entered'`,
+         * `'exiting'`, `'exited'`, `'unmounted'`), which can be used to apply context
+         * specific props to a component.
+         *
+         * ```jsx
+         * <Transition in={this.state.in} timeout={150}>
+         *   {state => (
+         *     <MyComponent className={`fade fade-${state}`} />
+         *   )}
+         * </Transition>
+         * ```
+         */
         children: PropTypes15.oneOfType([PropTypes15.func.isRequired, PropTypes15.element.isRequired]).isRequired,
+        /**
+         * Show the component; triggers the enter or exit states
+         */
         in: PropTypes15.bool,
+        /**
+         * By default the child component is mounted immediately along with
+         * the parent `Transition` component. If you want to "lazy mount" the component on the
+         * first `in={true}` you can set `mountOnEnter`. After the first enter transition the component will stay
+         * mounted, even on "exited", unless you also specify `unmountOnExit`.
+         */
         mountOnEnter: PropTypes15.bool,
+        /**
+         * By default the child component stays mounted after it reaches the `'exited'` state.
+         * Set `unmountOnExit` if you'd prefer to unmount the component after it finishes exiting.
+         */
         unmountOnExit: PropTypes15.bool,
+        /**
+         * Normally a component is not transitioned if it is shown when the `<Transition>` component mounts.
+         * If you want to transition on the first mount set `appear` to `true`, and the
+         * component will transition in as soon as the `<Transition>` mounts.
+         *
+         * > Note: there are no specific "appear" states. `appear` only adds an additional `enter` transition.
+         */
         appear: PropTypes15.bool,
+        /**
+         * Enable or disable enter transitions.
+         */
         enter: PropTypes15.bool,
+        /**
+         * Enable or disable exit transitions.
+         */
         exit: PropTypes15.bool,
+        /**
+         * The duration of the transition, in milliseconds.
+         * Required unless `addEndListener` is provided.
+         *
+         * You may specify a single timeout for all transitions:
+         *
+         * ```jsx
+         * timeout={500}
+         * ```
+         *
+         * or individually:
+         *
+         * ```jsx
+         * timeout={{
+         *  appear: 500,
+         *  enter: 300,
+         *  exit: 500,
+         * }}
+         * ```
+         *
+         * - `appear` defaults to the value of `enter`
+         * - `enter` defaults to `0`
+         * - `exit` defaults to `0`
+         *
+         * @type {number | { enter?: number, exit?: number, appear?: number }}
+         */
         timeout: function timeout(props) {
           var pt = _PropTypes.timeoutsShape;
           if (!props.addEndListener)
@@ -27186,13 +28027,59 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           }
           return pt.apply(void 0, [props].concat(args));
         },
+        /**
+         * Add a custom transition end trigger. Called with the transitioning
+         * DOM node and a `done` callback. Allows for more fine grained transition end
+         * logic. **Note:** Timeouts are still used as a fallback if provided.
+         *
+         * ```jsx
+         * addEndListener={(node, done) => {
+         *   // use the css transitionend event to mark the finish of a transition
+         *   node.addEventListener('transitionend', done, false);
+         * }}
+         * ```
+         */
         addEndListener: PropTypes15.func,
+        /**
+         * Callback fired before the "entering" status is applied. An extra parameter
+         * `isAppearing` is supplied to indicate if the enter stage is occurring on the initial mount
+         *
+         * @type Function(node: HtmlElement, isAppearing: bool) -> void
+         */
         onEnter: PropTypes15.func,
+        /**
+         * Callback fired after the "entering" status is applied. An extra parameter
+         * `isAppearing` is supplied to indicate if the enter stage is occurring on the initial mount
+         *
+         * @type Function(node: HtmlElement, isAppearing: bool)
+         */
         onEntering: PropTypes15.func,
+        /**
+         * Callback fired after the "entered" status is applied. An extra parameter
+         * `isAppearing` is supplied to indicate if the enter stage is occurring on the initial mount
+         *
+         * @type Function(node: HtmlElement, isAppearing: bool) -> void
+         */
         onEntered: PropTypes15.func,
+        /**
+         * Callback fired before the "exiting" status is applied.
+         *
+         * @type Function(node: HtmlElement) -> void
+         */
         onExit: PropTypes15.func,
+        /**
+         * Callback fired after the "exiting" status is applied.
+         *
+         * @type Function(node: HtmlElement) -> void
+         */
         onExiting: PropTypes15.func,
+        /**
+         * Callback fired after the "exited" status is applied.
+         *
+         * @type Function(node: HtmlElement) -> void
+         */
         onExited: PropTypes15.func
+        // Name the function so it is clearer in the documentation
       } : {};
       function noop4() {
       }
@@ -27388,12 +28275,105 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         classNames: ""
       };
       CSSTransition.propTypes = true ? _extends2({}, _Transition.default.propTypes, {
+        /**
+         * The animation classNames applied to the component as it enters, exits or
+         * has finished the transition. A single name can be provided and it will be
+         * suffixed for each stage: e.g.
+         *
+         * `classNames="fade"` applies `fade-enter`, `fade-enter-active`,
+         * `fade-enter-done`, `fade-exit`, `fade-exit-active`, `fade-exit-done`,
+         * `fade-appear`, `fade-appear-active`, and `fade-appear-done`.
+         *
+         * **Note**: `fade-appear-done` and `fade-enter-done` will _both_ be applied.
+         * This allows you to define different behavior for when appearing is done and
+         * when regular entering is done, using selectors like
+         * `.fade-enter-done:not(.fade-appear-done)`. For example, you could apply an
+         * epic entrance animation when element first appears in the DOM using
+         * [Animate.css](https://daneden.github.io/animate.css/). Otherwise you can
+         * simply use `fade-enter-done` for defining both cases.
+         *
+         * Each individual classNames can also be specified independently like:
+         *
+         * ```js
+         * classNames={{
+         *  appear: 'my-appear',
+         *  appearActive: 'my-active-appear',
+         *  appearDone: 'my-done-appear',
+         *  enter: 'my-enter',
+         *  enterActive: 'my-active-enter',
+         *  enterDone: 'my-done-enter',
+         *  exit: 'my-exit',
+         *  exitActive: 'my-active-exit',
+         *  exitDone: 'my-done-exit',
+         * }}
+         * ```
+         *
+         * If you want to set these classes using CSS Modules:
+         *
+         * ```js
+         * import styles from './styles.css';
+         * ```
+         *
+         * you might want to use camelCase in your CSS file, that way could simply
+         * spread them instead of listing them one by one:
+         *
+         * ```js
+         * classNames={{ ...styles }}
+         * ```
+         *
+         * @type {string | {
+         *  appear?: string,
+         *  appearActive?: string,
+         *  appearDone?: string,
+         *  enter?: string,
+         *  enterActive?: string,
+         *  enterDone?: string,
+         *  exit?: string,
+         *  exitActive?: string,
+         *  exitDone?: string,
+         * }}
+         */
         classNames: _PropTypes.classNamesShape,
+        /**
+         * A `<Transition>` callback fired immediately after the 'enter' or 'appear' class is
+         * applied.
+         *
+         * @type Function(node: HtmlElement, isAppearing: bool)
+         */
         onEnter: PropTypes15.func,
+        /**
+         * A `<Transition>` callback fired immediately after the 'enter-active' or
+         * 'appear-active' class is applied.
+         *
+         * @type Function(node: HtmlElement, isAppearing: bool)
+         */
         onEntering: PropTypes15.func,
+        /**
+         * A `<Transition>` callback fired immediately after the 'enter' or
+         * 'appear' classes are **removed** and the `done` class is added to the DOM node.
+         *
+         * @type Function(node: HtmlElement, isAppearing: bool)
+         */
         onEntered: PropTypes15.func,
+        /**
+         * A `<Transition>` callback fired immediately after the 'exit' class is
+         * applied.
+         *
+         * @type Function(node: HtmlElement)
+         */
         onExit: PropTypes15.func,
+        /**
+         * A `<Transition>` callback fired immediately after the 'exit-active' is applied.
+         *
+         * @type Function(node: HtmlElement)
+         */
         onExiting: PropTypes15.func,
+        /**
+         * A `<Transition>` callback fired immediately after the 'exit' classes
+         * are **removed** and the `exit-done` class is added to the DOM node.
+         *
+         * @type Function(node: HtmlElement)
+         */
         onExited: PropTypes15.func
       }) : {};
       var _default = CSSTransition;
@@ -27572,6 +28552,20 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         childFactory: function childFactory(child) {
           return child;
         }
+        /**
+         * The `<TransitionGroup>` component manages a set of transition components
+         * (`<Transition>` and `<CSSTransition>`) in a list. Like with the transition
+         * components, `<TransitionGroup>` is a state machine for managing the mounting
+         * and unmounting of components over time.
+         *
+         * Consider the example below. As items are removed or added to the TodoList the
+         * `in` prop is toggled automatically by the `<TransitionGroup>`.
+         *
+         * Note that `<TransitionGroup>`  does not define any animation behavior!
+         * Exactly _how_ a list item animates is up to the individual transition
+         * component. This means you can mix and match animations across different list
+         * items.
+         */
       };
       var TransitionGroup = /* @__PURE__ */ function(_React$Component) {
         _inheritsLoose2(TransitionGroup2, _React$Component);
@@ -27643,11 +28637,56 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         return TransitionGroup2;
       }(_react.default.Component);
       TransitionGroup.propTypes = true ? {
+        /**
+         * `<TransitionGroup>` renders a `<div>` by default. You can change this
+         * behavior by providing a `component` prop.
+         * If you use React v16+ and would like to avoid a wrapping `<div>` element
+         * you can pass in `component={null}`. This is useful if the wrapping div
+         * borks your css styles.
+         */
         component: _propTypes.default.any,
+        /**
+         * A set of `<Transition>` components, that are toggled `in` and out as they
+         * leave. the `<TransitionGroup>` will inject specific transition props, so
+         * remember to spread them through if you are wrapping the `<Transition>` as
+         * with our `<Fade>` example.
+         *
+         * While this component is meant for multiple `Transition` or `CSSTransition`
+         * children, sometimes you may want to have a single transition child with
+         * content that you want to be transitioned out and in when you change it
+         * (e.g. routes, images etc.) In that case you can change the `key` prop of
+         * the transition child as you change its content, this will cause
+         * `TransitionGroup` to transition the child out and back in.
+         */
         children: _propTypes.default.node,
+        /**
+         * A convenience prop that enables or disables appear animations
+         * for all children. Note that specifying this will override any defaults set
+         * on individual children Transitions.
+         */
         appear: _propTypes.default.bool,
+        /**
+         * A convenience prop that enables or disables enter animations
+         * for all children. Note that specifying this will override any defaults set
+         * on individual children Transitions.
+         */
         enter: _propTypes.default.bool,
+        /**
+         * A convenience prop that enables or disables exit animations
+         * for all children. Note that specifying this will override any defaults set
+         * on individual children Transitions.
+         */
         exit: _propTypes.default.bool,
+        /**
+         * You may need to apply reactive updates to a child as it is exiting.
+         * This is generally done by using `cloneElement` however in the case of an exiting
+         * child the element has already been removed and not accessible to the consumer.
+         *
+         * If you do need to update a child as it leaves you can provide a `childFactory`
+         * to wrap every child, even the ones that are leaving.
+         *
+         * @type Function(child: ReactElement) -> ReactElement
+         */
         childFactory: _propTypes.default.func
       } : {};
       TransitionGroup.defaultProps = defaultProps12;
@@ -27806,7 +28845,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_redux_logger = __commonJS({
     "node_modules/redux-logger/dist/redux-logger.js"(exports, module) {
       !function(e, t) {
-        typeof exports == "object" && typeof module != "undefined" ? t(exports) : typeof define == "function" && define.amd ? define(["exports"], t) : t(e.reduxLogger = e.reduxLogger || {});
+        "object" == typeof exports && "undefined" != typeof module ? t(exports) : "function" == typeof define && define.amd ? define(["exports"], t) : t(e.reduxLogger = e.reduxLogger || {});
       }(exports, function(e) {
         "use strict";
         function t(e2, t2) {
@@ -27832,17 +28871,17 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           return e2.length = t2 < 0 ? e2.length + t2 : t2, e2.push.apply(e2, n2), e2;
         }
         function u(e2) {
-          var t2 = typeof e2 == "undefined" ? "undefined" : N(e2);
-          return t2 !== "object" ? t2 : e2 === Math ? "math" : e2 === null ? "null" : Array.isArray(e2) ? "array" : Object.prototype.toString.call(e2) === "[object Date]" ? "date" : typeof e2.toString == "function" && /^\/.*\//.test(e2.toString()) ? "regexp" : "object";
+          var t2 = "undefined" == typeof e2 ? "undefined" : N(e2);
+          return "object" !== t2 ? t2 : e2 === Math ? "math" : null === e2 ? "null" : Array.isArray(e2) ? "array" : "[object Date]" === Object.prototype.toString.call(e2) ? "date" : "function" == typeof e2.toString && /^\/.*\//.test(e2.toString()) ? "regexp" : "object";
         }
         function l(e2, t2, r2, c2, s2, d2, p2) {
           s2 = s2 || [], p2 = p2 || [];
           var g2 = s2.slice(0);
-          if (typeof d2 != "undefined") {
+          if ("undefined" != typeof d2) {
             if (c2) {
-              if (typeof c2 == "function" && c2(g2, d2))
+              if ("function" == typeof c2 && c2(g2, d2))
                 return;
-              if ((typeof c2 == "undefined" ? "undefined" : N(c2)) === "object") {
+              if ("object" === ("undefined" == typeof c2 ? "undefined" : N(c2))) {
                 if (c2.prefilter && c2.prefilter(g2, d2))
                   return;
                 if (c2.normalize) {
@@ -27853,17 +28892,17 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
             }
             g2.push(d2);
           }
-          u(e2) === "regexp" && u(t2) === "regexp" && (e2 = e2.toString(), t2 = t2.toString());
-          var y2 = typeof e2 == "undefined" ? "undefined" : N(e2), v2 = typeof t2 == "undefined" ? "undefined" : N(t2), b2 = y2 !== "undefined" || p2 && p2[p2.length - 1].lhs && p2[p2.length - 1].lhs.hasOwnProperty(d2), m2 = v2 !== "undefined" || p2 && p2[p2.length - 1].rhs && p2[p2.length - 1].rhs.hasOwnProperty(d2);
+          "regexp" === u(e2) && "regexp" === u(t2) && (e2 = e2.toString(), t2 = t2.toString());
+          var y2 = "undefined" == typeof e2 ? "undefined" : N(e2), v2 = "undefined" == typeof t2 ? "undefined" : N(t2), b2 = "undefined" !== y2 || p2 && p2[p2.length - 1].lhs && p2[p2.length - 1].lhs.hasOwnProperty(d2), m2 = "undefined" !== v2 || p2 && p2[p2.length - 1].rhs && p2[p2.length - 1].rhs.hasOwnProperty(d2);
           if (!b2 && m2)
             r2(new o(g2, t2));
           else if (!m2 && b2)
             r2(new i(g2, e2));
           else if (u(e2) !== u(t2))
             r2(new n(g2, e2, t2));
-          else if (u(e2) === "date" && e2 - t2 !== 0)
+          else if ("date" === u(e2) && e2 - t2 !== 0)
             r2(new n(g2, e2, t2));
-          else if (y2 === "object" && e2 !== null && t2 !== null)
+          else if ("object" === y2 && null !== e2 && null !== t2)
             if (p2.filter(function(t3) {
               return t3.lhs === e2;
             }).length)
@@ -27888,7 +28927,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
               p2.length = p2.length - 1;
             }
           else
-            e2 !== t2 && (y2 === "number" && isNaN(e2) && isNaN(t2) || r2(new n(g2, e2, t2)));
+            e2 !== t2 && ("number" === y2 && isNaN(e2) && isNaN(t2) || r2(new n(g2, e2, t2)));
         }
         function c(e2, t2, r2, n2) {
           return n2 = n2 || [], l(e2, t2, function(e3) {
@@ -27928,7 +28967,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         function d(e2, t2, r2) {
           if (e2 && t2 && r2 && r2.kind) {
             for (var n2 = e2, o2 = -1, i2 = r2.path ? r2.path.length - 1 : 0; ++o2 < i2; )
-              typeof n2[r2.path[o2]] == "undefined" && (n2[r2.path[o2]] = typeof r2.path[o2] == "number" ? [] : {}), n2 = n2[r2.path[o2]];
+              "undefined" == typeof n2[r2.path[o2]] && (n2[r2.path[o2]] = "number" == typeof r2.path[o2] ? [] : {}), n2 = n2[r2.path[o2]];
             switch (r2.kind) {
               case "A":
                 s(r2.path ? n2[r2.path[o2]] : n2, r2.index, r2.item);
@@ -27980,7 +29019,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           if (e2 && t2 && r2 && r2.kind) {
             var n2, o2, i2 = e2;
             for (o2 = r2.path.length - 1, n2 = 0; n2 < o2; n2++)
-              typeof i2[r2.path[n2]] == "undefined" && (i2[r2.path[n2]] = {}), i2 = i2[r2.path[n2]];
+              "undefined" == typeof i2[r2.path[n2]] && (i2[r2.path[n2]] = {}), i2 = i2[r2.path[n2]];
             switch (r2.kind) {
               case "A":
                 p(i2[r2.path[n2]], r2.index, r2.item);
@@ -28040,9 +29079,9 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           }
         }
         function m(e2, t2, r2, n2) {
-          switch (typeof e2 == "undefined" ? "undefined" : N(e2)) {
+          switch ("undefined" == typeof e2 ? "undefined" : N(e2)) {
             case "object":
-              return typeof e2[n2] == "function" ? e2[n2].apply(e2, P(r2)) : e2[n2];
+              return "function" == typeof e2[n2] ? e2[n2].apply(e2, P(r2)) : e2[n2];
             case "function":
               return e2(t2);
             default:
@@ -28057,11 +29096,11 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           };
         }
         function x(e2, t2) {
-          var r2 = t2.logger, n2 = t2.actionTransformer, o2 = t2.titleFormatter, i2 = o2 === void 0 ? w(t2) : o2, a2 = t2.collapsed, f2 = t2.colors, u2 = t2.level, l2 = t2.diff, c2 = typeof t2.titleFormatter == "undefined";
+          var r2 = t2.logger, n2 = t2.actionTransformer, o2 = t2.titleFormatter, i2 = void 0 === o2 ? w(t2) : o2, a2 = t2.collapsed, f2 = t2.colors, u2 = t2.level, l2 = t2.diff, c2 = "undefined" == typeof t2.titleFormatter;
           e2.forEach(function(o3, s2) {
             var d2 = o3.started, p2 = o3.startedTime, g2 = o3.action, h3 = o3.prevState, y2 = o3.error, v2 = o3.took, w2 = o3.nextState, x2 = e2[s2 + 1];
             x2 && (w2 = x2.prevState, v2 = x2.started - d2);
-            var S2 = n2(g2), k2 = typeof a2 == "function" ? a2(function() {
+            var S2 = n2(g2), k2 = "function" == typeof a2 ? a2(function() {
               return w2;
             }, g2, o3) : a2, j2 = D(p2), E2 = f2.title ? "color: " + f2.title(S2) + ";" : "", A2 = ["color: gray; font-weight: lighter;"];
             A2.push(E2), t2.timestamp && A2.push("color: gray; font-weight: lighter;"), t2.duration && A2.push("color: gray; font-weight: lighter;");
@@ -28105,8 +29144,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           });
         }
         function S() {
-          var e2 = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {}, t2 = Object.assign({}, L, e2), r2 = t2.logger, n2 = t2.stateTransformer, o2 = t2.errorTransformer, i2 = t2.predicate, a2 = t2.logErrors, f2 = t2.diffPredicate;
-          if (typeof r2 == "undefined")
+          var e2 = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : {}, t2 = Object.assign({}, L, e2), r2 = t2.logger, n2 = t2.stateTransformer, o2 = t2.errorTransformer, i2 = t2.predicate, a2 = t2.logErrors, f2 = t2.diffPredicate;
+          if ("undefined" == typeof r2)
             return function() {
               return function(e3) {
                 return function(t3) {
@@ -28127,10 +29166,10 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
             var r3 = e3.getState;
             return function(e4) {
               return function(l2) {
-                if (typeof i2 == "function" && !i2(r3, l2))
+                if ("function" == typeof i2 && !i2(r3, l2))
                   return e4(l2);
                 var c2 = {};
-                u2.push(c2), c2.started = O.now(), c2.startedTime = new Date(), c2.prevState = n2(r3()), c2.action = l2;
+                u2.push(c2), c2.started = O.now(), c2.startedTime = /* @__PURE__ */ new Date(), c2.prevState = n2(r3()), c2.action = l2;
                 var s2 = void 0;
                 if (a2)
                   try {
@@ -28141,7 +29180,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
                 else
                   s2 = e4(l2);
                 c2.took = O.now() - c2.started, c2.nextState = n2(r3());
-                var d2 = t2.diff && typeof f2 == "function" ? f2(r3, l2) : t2.diff;
+                var d2 = t2.diff && "function" == typeof f2 ? f2(r3, l2) : t2.diff;
                 if (x(u2, Object.assign({}, t2, { diff: d2 })), u2.length = 0, c2.error)
                   throw c2.error;
                 return s2;
@@ -28155,10 +29194,10 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           return E("0", t2 - e2.toString().length) + e2;
         }, D = function(e2) {
           return A(e2.getHours(), 2) + ":" + A(e2.getMinutes(), 2) + ":" + A(e2.getSeconds(), 2) + "." + A(e2.getMilliseconds(), 3);
-        }, O = typeof performance != "undefined" && performance !== null && typeof performance.now == "function" ? performance : Date, N = typeof Symbol == "function" && typeof Symbol.iterator == "symbol" ? function(e2) {
+        }, O = "undefined" != typeof performance && null !== performance && "function" == typeof performance.now ? performance : Date, N = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(e2) {
           return typeof e2;
         } : function(e2) {
-          return e2 && typeof Symbol == "function" && e2.constructor === Symbol && e2 !== Symbol.prototype ? "symbol" : typeof e2;
+          return e2 && "function" == typeof Symbol && e2.constructor === Symbol && e2 !== Symbol.prototype ? "symbol" : typeof e2;
         }, P = function(e2) {
           if (Array.isArray(e2)) {
             for (var t2 = 0, r2 = Array(e2.length); t2 < e2.length; t2++)
@@ -28167,10 +29206,10 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           }
           return Array.from(e2);
         }, C = [];
-        k = (typeof global == "undefined" ? "undefined" : N(global)) === "object" && global ? global : typeof window != "undefined" ? window : {}, j = k.DeepDiff, j && C.push(function() {
-          typeof j != "undefined" && k.DeepDiff === c && (k.DeepDiff = j, j = void 0);
+        k = "object" === ("undefined" == typeof global ? "undefined" : N(global)) && global ? global : "undefined" != typeof window ? window : {}, j = k.DeepDiff, j && C.push(function() {
+          "undefined" != typeof j && k.DeepDiff === c && (k.DeepDiff = j, j = void 0);
         }), t(n, r), t(o, r), t(i, r), t(a, r), Object.defineProperties(c, { diff: { value: c, enumerable: true }, observableDiff: { value: l, enumerable: true }, applyDiff: { value: h, enumerable: true }, applyChange: { value: d, enumerable: true }, revertChange: { value: g, enumerable: true }, isConflict: { value: function() {
-          return typeof j != "undefined";
+          return "undefined" != typeof j;
         }, enumerable: true }, noConflict: { value: function() {
           return C && (C.forEach(function(e2) {
             e2();
@@ -28193,8 +29232,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         }, error: function() {
           return "#F20404";
         } }, diff: false, diffPredicate: void 0, transformer: void 0 }, T = function() {
-          var e2 = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {}, t2 = e2.dispatch, r2 = e2.getState;
-          return typeof t2 == "function" || typeof r2 == "function" ? S()({ dispatch: t2, getState: r2 }) : void console.error("\n[redux-logger v3] BREAKING CHANGE\n[redux-logger v3] Since 3.0.0 redux-logger exports by default logger with default settings.\n[redux-logger v3] Change\n[redux-logger v3] import createLogger from 'redux-logger'\n[redux-logger v3] to\n[redux-logger v3] import { createLogger } from 'redux-logger'\n");
+          var e2 = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : {}, t2 = e2.dispatch, r2 = e2.getState;
+          return "function" == typeof t2 || "function" == typeof r2 ? S()({ dispatch: t2, getState: r2 }) : void console.error("\n[redux-logger v3] BREAKING CHANGE\n[redux-logger v3] Since 3.0.0 redux-logger exports by default logger with default settings.\n[redux-logger v3] Change\n[redux-logger v3] import createLogger from 'redux-logger'\n[redux-logger v3] to\n[redux-logger v3] import { createLogger } from 'redux-logger'\n");
         };
         e.defaults = L, e.createLogger = S, e.logger = T, e.default = T, Object.defineProperty(e, "__esModule", { value: true });
       });
@@ -28237,7 +29276,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       }
       function _objectSpread22(target) {
         for (var i = 1; i < arguments.length; i++) {
-          var source = arguments[i] != null ? arguments[i] : {};
+          var source = null != arguments[i] ? arguments[i] : {};
           i % 2 ? ownKeys3(Object(source), true).forEach(function(key) {
             defineProperty(target, key, source[key]);
           }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys3(Object(source)).forEach(function(key) {
@@ -28427,6 +29466,14 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           var _ref;
           var outerSubscribe = subscribe;
           return _ref = {
+            /**
+             * The minimal observable subscription method.
+             * @param {Object} observer Any object that can be used as an observer.
+             * The observer object should have a `next` method.
+             * @returns {subscription} An object with an `unsubscribe` method that can
+             * be used to unsubscribe the observable from the store, and prevent further
+             * emission of values from the observable.
+             */
             subscribe: function subscribe2(observer) {
               if (typeof observer !== "object" || observer === null) {
                 throw new Error(false ? formatProdErrorMessage(11) : "Expected the observer to be an object. Instead, received: '" + kindOf(observer) + "'");
@@ -28807,6 +29854,12 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         var CHROME_IE_STACK_REGEXP = /^\s*at .*(\S+:\d+|\(native\))/m;
         var SAFARI_NATIVE_CODE_REGEXP = /^(eval@)?(\[native code])?$/;
         return {
+          /**
+           * Given an Error object, extract the most information from it.
+           *
+           * @param {Error} error object
+           * @return {Array} of StackFrames
+           */
           parse: function ErrorStackParser$$parse(error2) {
             if (typeof error2.stacktrace !== "undefined" || typeof error2["opera#sourceloc"] !== "undefined") {
               return this.parseOpera(error2);
@@ -28818,6 +29871,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
               throw new Error("Cannot parse given Error object");
             }
           },
+          // Separate line and column numbers from a string of the form: (URI:Line:Column)
           extractLocation: function ErrorStackParser$$extractLocation(urlLike) {
             if (urlLike.indexOf(":") === -1) {
               return [urlLike];
@@ -28909,16 +29963,19 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
             for (var i = 0, len = lines.length; i < len; i += 2) {
               var match3 = lineRE.exec(lines[i]);
               if (match3) {
-                result.push(new StackFrame({
-                  functionName: match3[3] || void 0,
-                  fileName: match3[2],
-                  lineNumber: match3[1],
-                  source: lines[i]
-                }));
+                result.push(
+                  new StackFrame({
+                    functionName: match3[3] || void 0,
+                    fileName: match3[2],
+                    lineNumber: match3[1],
+                    source: lines[i]
+                  })
+                );
               }
             }
             return result;
           },
+          // Opera 10.65+ Error.stack very similar to FF/Safari
           parseOpera11: function ErrorStackParser$$parseOpera11(error2) {
             var filtered = error2.stack.split("\n").filter(function(line) {
               return !!line.match(FIREFOX_SAFARI_STACK_REGEXP) && !line.match(/^Error created at/);
@@ -31354,7 +32411,14 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     if (!previous) {
       return ctx.lineTo(target.x, target.y);
     }
-    ctx.bezierCurveTo(flip ? previous.cp1x : previous.cp2x, flip ? previous.cp1y : previous.cp2y, flip ? target.cp2x : target.cp1x, flip ? target.cp2y : target.cp1y, target.x, target.y);
+    ctx.bezierCurveTo(
+      flip ? previous.cp1x : previous.cp2x,
+      flip ? previous.cp1y : previous.cp2y,
+      flip ? target.cp2x : target.cp1x,
+      flip ? target.cp2y : target.cp1y,
+      target.x,
+      target.y
+    );
   }
   function renderText(ctx, text, x, y, font, opts = {}) {
     const lines = isArray(text) ? text : [text];
@@ -31632,7 +32696,11 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         return true;
       },
       get(target, prop) {
-        return _cached(target, prop, () => _resolveWithPrefixes(prop, prefixes, scopes, target));
+        return _cached(
+          target,
+          prop,
+          () => _resolveWithPrefixes(prop, prefixes, scopes, target)
+        );
       },
       getOwnPropertyDescriptor(target, prop) {
         return Reflect.getOwnPropertyDescriptor(target._scopes[0], prop);
@@ -31672,7 +32740,11 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         return true;
       },
       get(target, prop, receiver) {
-        return _cached(target, prop, () => _resolveWithContext(target, prop, receiver));
+        return _cached(
+          target,
+          prop,
+          () => _resolveWithContext(target, prop, receiver)
+        );
       },
       getOwnPropertyDescriptor(target, prop) {
         return target._descriptors.allKeys ? Reflect.has(proxy, prop) ? { enumerable: true, configurable: true } : void 0 : Reflect.getOwnPropertyDescriptor(proxy, prop);
@@ -31790,7 +32862,13 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         return false;
       }
     }
-    return _createResolver(Array.from(set2), [""], rootScopes, fallback, () => subGetTarget(resolver, prop, value));
+    return _createResolver(
+      Array.from(set2),
+      [""],
+      rootScopes,
+      fallback,
+      () => subGetTarget(resolver, prop, value)
+    );
   }
   function addScopesFromKey(set2, allScopes, key, fallback, item) {
     while (key) {
@@ -31980,7 +33058,12 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       let prev = loop ? points[points.length - 1] : points[0];
       for (i = 0, ilen = points.length; i < ilen; ++i) {
         point = points[i];
-        controlPoints = splineCurve(prev, point, points[Math.min(i + 1, ilen - (loop ? 0 : 1)) % ilen], options.tension);
+        controlPoints = splineCurve(
+          prev,
+          point,
+          points[Math.min(i + 1, ilen - (loop ? 0 : 1)) % ilen],
+          options.tension
+        );
         point.cp1x = controlPoints.previous.x;
         point.cp1y = controlPoints.previous.y;
         point.cp2x = controlPoints.next.x;
@@ -33038,14 +34121,17 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     return Object.keys(scales2).filter((key) => scales2[key].axis === axis).shift();
   }
   function createDatasetContext(parent, index) {
-    return createContext(parent, {
-      active: false,
-      dataset: void 0,
-      datasetIndex: index,
-      index,
-      mode: "default",
-      type: "dataset"
-    });
+    return createContext(
+      parent,
+      {
+        active: false,
+        dataset: void 0,
+        datasetIndex: index,
+        index,
+        mode: "default",
+        type: "dataset"
+      }
+    );
   }
   function createDataContext(parent, index, element) {
     return createContext(parent, {
@@ -34595,10 +35681,24 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       const axis = iScale.axis;
       const { min, max, minDefined, maxDefined } = iScale.getUserBounds();
       if (minDefined) {
-        start = _limitValue(Math.min(_lookupByKey(_parsed, iScale.axis, min).lo, animationsDisabled ? pointCount : _lookupByKey(points, axis, iScale.getPixelForValue(min)).lo), 0, pointCount - 1);
+        start = _limitValue(
+          Math.min(
+            _lookupByKey(_parsed, iScale.axis, min).lo,
+            animationsDisabled ? pointCount : _lookupByKey(points, axis, iScale.getPixelForValue(min)).lo
+          ),
+          0,
+          pointCount - 1
+        );
       }
       if (maxDefined) {
-        count = _limitValue(Math.max(_lookupByKey(_parsed, iScale.axis, max).hi + 1, animationsDisabled ? 0 : _lookupByKey(points, axis, iScale.getPixelForValue(max)).hi + 1), start, pointCount) - start;
+        count = _limitValue(
+          Math.max(
+            _lookupByKey(_parsed, iScale.axis, max).hi + 1,
+            animationsDisabled ? 0 : _lookupByKey(points, axis, iScale.getPixelForValue(max)).hi + 1
+          ),
+          start,
+          pointCount
+        ) - start;
       } else {
         count = pointCount - start;
       }
@@ -35275,7 +36375,11 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     for (i = 0, ilen = boxes.length, refit = 0; i < ilen; ++i) {
       layout = boxes[i];
       box = layout.box;
-      box.update(layout.width || chartArea.w, layout.height || chartArea.h, getMargins(layout.horizontal, chartArea));
+      box.update(
+        layout.width || chartArea.w,
+        layout.height || chartArea.h,
+        getMargins(layout.horizontal, chartArea)
+      );
       const { same, other } = updateDims(chartArea, params, layout, stacks);
       refit |= same && refitBoxes.length;
       changed = changed || other;
@@ -36343,7 +37447,10 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         tickWidth = maxWidth / (numTicks - (options.offset ? 0.5 : 1));
         maxHeight = this.maxHeight - getTickMarkLength(options.grid) - tickOpts.padding - getTitleHeight(options.title, this.chart.options.font);
         maxLabelDiagonal = Math.sqrt(maxLabelWidth * maxLabelWidth + maxLabelHeight * maxLabelHeight);
-        labelRotation = toDegrees(Math.min(Math.asin(_limitValue((labelSizes.highest.height + 6) / tickWidth, -1, 1)), Math.asin(_limitValue(maxHeight / maxLabelDiagonal, -1, 1)) - Math.asin(_limitValue(maxLabelHeight / maxLabelDiagonal, -1, 1))));
+        labelRotation = toDegrees(Math.min(
+          Math.asin(_limitValue((labelSizes.highest.height + 6) / tickWidth, -1, 1)),
+          Math.asin(_limitValue(maxHeight / maxLabelDiagonal, -1, 1)) - Math.asin(_limitValue(maxLabelHeight / maxLabelDiagonal, -1, 1))
+        ));
         labelRotation = Math.max(minRotation, Math.min(maxRotation, labelRotation));
       }
       this.labelRotation = labelRotation;
@@ -36969,15 +38076,23 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         for (i = 0, ilen = items.length; i < ilen; ++i) {
           const item = items[i];
           if (grid.drawOnChartArea) {
-            drawLine({ x: item.x1, y: item.y1 }, { x: item.x2, y: item.y2 }, item);
+            drawLine(
+              { x: item.x1, y: item.y1 },
+              { x: item.x2, y: item.y2 },
+              item
+            );
           }
           if (grid.drawTicks) {
-            drawLine({ x: item.tx1, y: item.ty1 }, { x: item.tx2, y: item.ty2 }, {
-              color: item.tickColor,
-              width: item.tickWidth,
-              borderDash: item.tickBorderDash,
-              borderDashOffset: item.tickBorderDashOffset
-            });
+            drawLine(
+              { x: item.tx1, y: item.ty1 },
+              { x: item.tx2, y: item.ty2 },
+              {
+                color: item.tickColor,
+                width: item.tickWidth,
+                borderDash: item.tickBorderDash,
+                borderDashOffset: item.tickBorderDashOffset
+              }
+            );
           }
         }
       }
@@ -37538,38 +38653,50 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       this._resolverCache.clear();
     }
     datasetScopeKeys(datasetType) {
-      return cachedKeys(datasetType, () => [[
-        `datasets.${datasetType}`,
-        ""
-      ]]);
-    }
-    datasetAnimationScopeKeys(datasetType, transition) {
-      return cachedKeys(`${datasetType}.transition.${transition}`, () => [
-        [
-          `datasets.${datasetType}.transitions.${transition}`,
-          `transitions.${transition}`
-        ],
-        [
+      return cachedKeys(
+        datasetType,
+        () => [[
           `datasets.${datasetType}`,
           ""
+        ]]
+      );
+    }
+    datasetAnimationScopeKeys(datasetType, transition) {
+      return cachedKeys(
+        `${datasetType}.transition.${transition}`,
+        () => [
+          [
+            `datasets.${datasetType}.transitions.${transition}`,
+            `transitions.${transition}`
+          ],
+          [
+            `datasets.${datasetType}`,
+            ""
+          ]
         ]
-      ]);
+      );
     }
     datasetElementScopeKeys(datasetType, elementType) {
-      return cachedKeys(`${datasetType}-${elementType}`, () => [[
-        `datasets.${datasetType}.elements.${elementType}`,
-        `datasets.${datasetType}`,
-        `elements.${elementType}`,
-        ""
-      ]]);
+      return cachedKeys(
+        `${datasetType}-${elementType}`,
+        () => [[
+          `datasets.${datasetType}.elements.${elementType}`,
+          `datasets.${datasetType}`,
+          `elements.${elementType}`,
+          ""
+        ]]
+      );
     }
     pluginScopeKeys(plugin) {
       const id = plugin.id;
       const type = this.type;
-      return cachedKeys(`${type}-plugin-${id}`, () => [[
-        `plugins.${id}`,
-        ...plugin.additionalOptionScopes || []
-      ]]);
+      return cachedKeys(
+        `${type}-plugin-${id}`,
+        () => [[
+          `plugins.${id}`,
+          ...plugin.additionalOptionScopes || []
+        ]]
+      );
     }
     _cachedScopes(mainScope, resetCache) {
       const _scopeCache = this._scopeCache;
@@ -37734,7 +38861,9 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       const initialCanvas = getCanvas(item);
       const existingChart = getChart(initialCanvas);
       if (existingChart) {
-        throw new Error("Canvas is already in use. Chart with ID '" + existingChart.id + "' must be destroyed before the canvas can be reused.");
+        throw new Error(
+          "Canvas is already in use. Chart with ID '" + existingChart.id + "' must be destroyed before the canvas can be reused."
+        );
       }
       const options = config.createResolver(config.chartOptionScopes(), this.getContext());
       this.platform = new (config.platform || _detectPlatform(initialCanvas))();
@@ -37868,17 +38997,19 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       }, {});
       let items = [];
       if (scaleOpts) {
-        items = items.concat(Object.keys(scaleOpts).map((id) => {
-          const scaleOptions = scaleOpts[id];
-          const axis = determineAxis(id, scaleOptions);
-          const isRadial = axis === "r";
-          const isHorizontal = axis === "x";
-          return {
-            options: scaleOptions,
-            dposition: isRadial ? "chartArea" : isHorizontal ? "bottom" : "left",
-            dtype: isRadial ? "radialLinear" : isHorizontal ? "category" : "linear"
-          };
-        }));
+        items = items.concat(
+          Object.keys(scaleOpts).map((id) => {
+            const scaleOptions = scaleOpts[id];
+            const axis = determineAxis(id, scaleOptions);
+            const isRadial = axis === "r";
+            const isHorizontal = axis === "x";
+            return {
+              options: scaleOptions,
+              dposition: isRadial ? "chartArea" : isHorizontal ? "bottom" : "left",
+              dtype: isRadial ? "radialLinear" : isHorizontal ? "category" : "linear"
+            };
+          })
+        );
       }
       each(items, (item) => {
         const scaleOptions = item.options;
@@ -38053,7 +39184,9 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       }
       this._dataChanges = [];
       const datasetCount = this.data.datasets.length;
-      const makeSet = (idx) => new Set(_dataChanges.filter((c) => c[0] === idx).map((c, i) => i + "," + c.splice(1).join(",")));
+      const makeSet = (idx) => new Set(
+        _dataChanges.filter((c) => c[0] === idx).map((c, i) => i + "," + c.splice(1).join(","))
+      );
       const changeSet = makeSet(0);
       for (let i = 1; i < datasetCount; i++) {
         if (!setsEqual(changeSet, makeSet(i))) {
@@ -39308,7 +40441,9 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       const { x: pointAx, y: pointAy } = data[a];
       maxArea = area = -1;
       for (j = rangeOffs; j < rangeTo; j++) {
-        area = 0.5 * Math.abs((pointAx - avgX) * (data[j].y - pointAy) - (pointAx - data[j].x) * (avgY - pointAy));
+        area = 0.5 * Math.abs(
+          (pointAx - avgX) * (data[j].y - pointAy) - (pointAx - data[j].x) * (avgY - pointAy)
+        );
         if (area > maxArea) {
           maxArea = area;
           maxAreaPoint = data[j];
@@ -41705,7 +42840,10 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         numSpaces = Math.ceil(numSpaces);
       }
     }
-    const decimalPlaces = Math.max(_decimalPlaces(spacing), _decimalPlaces(niceMin));
+    const decimalPlaces = Math.max(
+      _decimalPlaces(spacing),
+      _decimalPlaces(niceMin)
+    );
     factor = Math.pow(10, isNullOrUndef(precision) ? decimalPlaces : precision);
     niceMin = Math.round(niceMin * factor) / factor;
     niceMax = Math.round(niceMax * factor) / factor;
@@ -42079,7 +43217,12 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       const vLimits = determineLimits(angle, pointPosition.y, textSize.h, 90, 270);
       updateLimits(limits, orig, angleRadians, hLimits, vLimits);
     }
-    scale2.setCenterPoint(orig.l - limits.l, limits.r - orig.r, orig.t - limits.t, limits.b - orig.b);
+    scale2.setCenterPoint(
+      orig.l - limits.l,
+      limits.r - orig.r,
+      orig.t - limits.t,
+      limits.b - orig.b
+    );
     scale2._pointLabelItems = buildPointLabelItems(scale2, labelSizes, padding);
   }
   function updateLimits(limits, orig, angle, hLimits, vLimits) {
@@ -42164,11 +43307,18 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         ctx.fillStyle = backdropColor;
         ctx.fillRect(left - padding.left, top - padding.top, right - left + padding.width, bottom - top + padding.height);
       }
-      renderText(ctx, scale2._pointLabels[i], x, y + plFont.lineHeight / 2, plFont, {
-        color: optsAtIndex.color,
-        textAlign,
-        textBaseline: "middle"
-      });
+      renderText(
+        ctx,
+        scale2._pointLabels[i],
+        x,
+        y + plFont.lineHeight / 2,
+        plFont,
+        {
+          color: optsAtIndex.color,
+          textAlign,
+          textBaseline: "middle"
+        }
+      );
     }
   }
   function pathRadiusLine(scale2, radius, circular, labelCount) {
@@ -42388,7 +43538,12 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           width = ctx.measureText(tick.label).width;
           ctx.fillStyle = optsAtIndex.backdropColor;
           const padding = toPadding(optsAtIndex.backdropPadding);
-          ctx.fillRect(-width / 2 - padding.left, -offset - tickFont.size / 2 - padding.top, width + padding.width, tickFont.size + padding.height);
+          ctx.fillRect(
+            -width / 2 - padding.left,
+            -offset - tickFont.size / 2 - padding.top,
+            width + padding.width,
+            tickFont.size + padding.height
+          );
         }
         renderText(ctx, tick.label, 0, -offset, tickFont, {
           color: optsAtIndex.color
@@ -42939,7 +44094,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         console.warn("Starting with v2.0.0-beta.1 date-fns doesn't accept strings as date arguments. Please use `parseISO` to parse strings. See: https://git.io/fjule");
         console.warn(new Error().stack);
       }
-      return new Date(NaN);
+      return /* @__PURE__ */ new Date(NaN);
     }
   }
 
@@ -42949,7 +44104,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     var date = toDate(dirtyDate);
     var amount = toInteger(dirtyAmount);
     if (isNaN(amount)) {
-      return new Date(NaN);
+      return /* @__PURE__ */ new Date(NaN);
     }
     if (!amount) {
       return date;
@@ -42964,7 +44119,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     var date = toDate(dirtyDate);
     var amount = toInteger(dirtyAmount);
     if (isNaN(amount)) {
-      return new Date(NaN);
+      return /* @__PURE__ */ new Date(NaN);
     }
     if (!amount) {
       return date;
@@ -43172,6 +44327,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     trunc: function(value) {
       return value < 0 ? Math.ceil(value) : Math.floor(value);
     }
+    // Math.trunc is not supported by IE
   };
   var defaultRoundingMethod = "trunc";
   function getRoundingMethod(method) {
@@ -43308,7 +44464,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   function startOfYear(dirtyDate) {
     requiredArgs(1, arguments);
     var cleanDate = toDate(dirtyDate);
-    var date = new Date(0);
+    var date = /* @__PURE__ */ new Date(0);
     date.setFullYear(cleanDate.getFullYear(), 0, 1);
     date.setHours(0, 0, 0, 0);
     return date;
@@ -43888,11 +45044,11 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     requiredArgs(1, arguments);
     var date = toDate(dirtyDate);
     var year = date.getUTCFullYear();
-    var fourthOfJanuaryOfNextYear = new Date(0);
+    var fourthOfJanuaryOfNextYear = /* @__PURE__ */ new Date(0);
     fourthOfJanuaryOfNextYear.setUTCFullYear(year + 1, 0, 4);
     fourthOfJanuaryOfNextYear.setUTCHours(0, 0, 0, 0);
     var startOfNextYear = startOfUTCISOWeek(fourthOfJanuaryOfNextYear);
-    var fourthOfJanuaryOfThisYear = new Date(0);
+    var fourthOfJanuaryOfThisYear = /* @__PURE__ */ new Date(0);
     fourthOfJanuaryOfThisYear.setUTCFullYear(year, 0, 4);
     fourthOfJanuaryOfThisYear.setUTCHours(0, 0, 0, 0);
     var startOfThisYear = startOfUTCISOWeek(fourthOfJanuaryOfThisYear);
@@ -43909,7 +45065,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   function startOfUTCISOWeekYear(dirtyDate) {
     requiredArgs(1, arguments);
     var year = getUTCISOWeekYear(dirtyDate);
-    var fourthOfJanuary = new Date(0);
+    var fourthOfJanuary = /* @__PURE__ */ new Date(0);
     fourthOfJanuary.setUTCFullYear(year, 0, 4);
     fourthOfJanuary.setUTCHours(0, 0, 0, 0);
     var date = startOfUTCISOWeek(fourthOfJanuary);
@@ -43957,11 +45113,11 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     if (!(firstWeekContainsDate >= 1 && firstWeekContainsDate <= 7)) {
       throw new RangeError("firstWeekContainsDate must be between 1 and 7 inclusively");
     }
-    var firstWeekOfNextYear = new Date(0);
+    var firstWeekOfNextYear = /* @__PURE__ */ new Date(0);
     firstWeekOfNextYear.setUTCFullYear(year + 1, 0, firstWeekContainsDate);
     firstWeekOfNextYear.setUTCHours(0, 0, 0, 0);
     var startOfNextYear = startOfUTCWeek(firstWeekOfNextYear, dirtyOptions);
-    var firstWeekOfThisYear = new Date(0);
+    var firstWeekOfThisYear = /* @__PURE__ */ new Date(0);
     firstWeekOfThisYear.setUTCFullYear(year, 0, firstWeekContainsDate);
     firstWeekOfThisYear.setUTCHours(0, 0, 0, 0);
     var startOfThisYear = startOfUTCWeek(firstWeekOfThisYear, dirtyOptions);
@@ -43983,7 +45139,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     var defaultFirstWeekContainsDate = localeFirstWeekContainsDate == null ? 1 : toInteger(localeFirstWeekContainsDate);
     var firstWeekContainsDate = options.firstWeekContainsDate == null ? defaultFirstWeekContainsDate : toInteger(options.firstWeekContainsDate);
     var year = getUTCWeekYear(dirtyDate, dirtyOptions);
-    var firstWeek = new Date(0);
+    var firstWeek = /* @__PURE__ */ new Date(0);
     firstWeek.setUTCFullYear(year, 0, firstWeekContainsDate);
     firstWeek.setUTCHours(0, 0, 0, 0);
     var date = startOfUTCWeek(firstWeek, dirtyOptions);
@@ -44011,18 +45167,22 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
 
   // node_modules/date-fns/esm/_lib/format/lightFormatters/index.js
   var formatters2 = {
+    // Year
     y: function(date, token) {
       var signedYear = date.getUTCFullYear();
       var year = signedYear > 0 ? signedYear : 1 - signedYear;
       return addLeadingZeros(token === "yy" ? year % 100 : year, token.length);
     },
+    // Month
     M: function(date, token) {
       var month = date.getUTCMonth();
       return token === "M" ? String(month + 1) : addLeadingZeros(month + 1, 2);
     },
+    // Day of the month
     d: function(date, token) {
       return addLeadingZeros(date.getUTCDate(), token.length);
     },
+    // AM or PM
     a: function(date, token) {
       var dayPeriodEnumValue = date.getUTCHours() / 12 >= 1 ? "pm" : "am";
       switch (token) {
@@ -44038,18 +45198,23 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           return dayPeriodEnumValue === "am" ? "a.m." : "p.m.";
       }
     },
+    // Hour [1-12]
     h: function(date, token) {
       return addLeadingZeros(date.getUTCHours() % 12 || 12, token.length);
     },
+    // Hour [0-23]
     H: function(date, token) {
       return addLeadingZeros(date.getUTCHours(), token.length);
     },
+    // Minute
     m: function(date, token) {
       return addLeadingZeros(date.getUTCMinutes(), token.length);
     },
+    // Second
     s: function(date, token) {
       return addLeadingZeros(date.getUTCSeconds(), token.length);
     },
+    // Fraction of second
     S: function(date, token) {
       var numberOfDigits = token.length;
       var milliseconds = date.getUTCMilliseconds();
@@ -44071,6 +45236,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     night: "night"
   };
   var formatters3 = {
+    // Era
     G: function(date, token, localize2) {
       var era = date.getUTCFullYear() > 0 ? 1 : 0;
       switch (token) {
@@ -44091,6 +45257,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           });
       }
     },
+    // Year
     y: function(date, token, localize2) {
       if (token === "yo") {
         var signedYear = date.getUTCFullYear();
@@ -44101,6 +45268,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       }
       return lightFormatters_default.y(date, token);
     },
+    // Local week-numbering year
     Y: function(date, token, localize2, options) {
       var signedWeekYear = getUTCWeekYear(date, options);
       var weekYear = signedWeekYear > 0 ? signedWeekYear : 1 - signedWeekYear;
@@ -44115,14 +45283,25 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       }
       return addLeadingZeros(weekYear, token.length);
     },
+    // ISO week-numbering year
     R: function(date, token) {
       var isoWeekYear = getUTCISOWeekYear(date);
       return addLeadingZeros(isoWeekYear, token.length);
     },
+    // Extended year. This is a single number designating the year of this calendar system.
+    // The main difference between `y` and `u` localizers are B.C. years:
+    // | Year | `y` | `u` |
+    // |------|-----|-----|
+    // | AC 1 |   1 |   1 |
+    // | BC 1 |   1 |   0 |
+    // | BC 2 |   2 |  -1 |
+    // Also `yy` always returns the last two digits of a year,
+    // while `uu` pads single digit years to 2 characters and returns other years unchanged.
     u: function(date, token) {
       var year = date.getUTCFullYear();
       return addLeadingZeros(year, token.length);
     },
+    // Quarter
     Q: function(date, token, localize2) {
       var quarter = Math.ceil((date.getUTCMonth() + 1) / 3);
       switch (token) {
@@ -44152,6 +45331,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           });
       }
     },
+    // Stand-alone quarter
     q: function(date, token, localize2) {
       var quarter = Math.ceil((date.getUTCMonth() + 1) / 3);
       switch (token) {
@@ -44181,6 +45361,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           });
       }
     },
+    // Month
     M: function(date, token, localize2) {
       var month = date.getUTCMonth();
       switch (token) {
@@ -44209,6 +45390,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           });
       }
     },
+    // Stand-alone month
     L: function(date, token, localize2) {
       var month = date.getUTCMonth();
       switch (token) {
@@ -44238,6 +45420,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           });
       }
     },
+    // Local week of year
     w: function(date, token, localize2, options) {
       var week = getUTCWeek(date, options);
       if (token === "wo") {
@@ -44247,6 +45430,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       }
       return addLeadingZeros(week, token.length);
     },
+    // ISO week of year
     I: function(date, token, localize2) {
       var isoWeek = getUTCISOWeek(date);
       if (token === "Io") {
@@ -44256,6 +45440,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       }
       return addLeadingZeros(isoWeek, token.length);
     },
+    // Day of the month
     d: function(date, token, localize2) {
       if (token === "do") {
         return localize2.ordinalNumber(date.getUTCDate(), {
@@ -44264,6 +45449,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       }
       return lightFormatters_default.d(date, token);
     },
+    // Day of year
     D: function(date, token, localize2) {
       var dayOfYear = getUTCDayOfYear(date);
       if (token === "Do") {
@@ -44273,6 +45459,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       }
       return addLeadingZeros(dayOfYear, token.length);
     },
+    // Day of week
     E: function(date, token, localize2) {
       var dayOfWeek = date.getUTCDay();
       switch (token) {
@@ -44301,6 +45488,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           });
       }
     },
+    // Local day of week
     e: function(date, token, localize2, options) {
       var dayOfWeek = date.getUTCDay();
       var localDayOfWeek = (dayOfWeek - options.weekStartsOn + 8) % 7 || 7;
@@ -44336,6 +45524,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           });
       }
     },
+    // Stand-alone local day of week
     c: function(date, token, localize2, options) {
       var dayOfWeek = date.getUTCDay();
       var localDayOfWeek = (dayOfWeek - options.weekStartsOn + 8) % 7 || 7;
@@ -44371,6 +45560,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           });
       }
     },
+    // ISO day of week
     i: function(date, token, localize2) {
       var dayOfWeek = date.getUTCDay();
       var isoDayOfWeek = dayOfWeek === 0 ? 7 : dayOfWeek;
@@ -44406,6 +45596,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           });
       }
     },
+    // AM or PM
     a: function(date, token, localize2) {
       var hours = date.getUTCHours();
       var dayPeriodEnumValue = hours / 12 >= 1 ? "pm" : "am";
@@ -44434,6 +45625,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           });
       }
     },
+    // AM, PM, midnight, noon
     b: function(date, token, localize2) {
       var hours = date.getUTCHours();
       var dayPeriodEnumValue;
@@ -44469,6 +45661,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           });
       }
     },
+    // in the morning, in the afternoon, in the evening, at night
     B: function(date, token, localize2) {
       var hours = date.getUTCHours();
       var dayPeriodEnumValue;
@@ -44502,6 +45695,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           });
       }
     },
+    // Hour [1-12]
     h: function(date, token, localize2) {
       if (token === "ho") {
         var hours = date.getUTCHours() % 12;
@@ -44513,6 +45707,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       }
       return lightFormatters_default.h(date, token);
     },
+    // Hour [0-23]
     H: function(date, token, localize2) {
       if (token === "Ho") {
         return localize2.ordinalNumber(date.getUTCHours(), {
@@ -44521,6 +45716,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       }
       return lightFormatters_default.H(date, token);
     },
+    // Hour [0-11]
     K: function(date, token, localize2) {
       var hours = date.getUTCHours() % 12;
       if (token === "Ko") {
@@ -44530,6 +45726,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       }
       return addLeadingZeros(hours, token.length);
     },
+    // Hour [1-24]
     k: function(date, token, localize2) {
       var hours = date.getUTCHours();
       if (hours === 0)
@@ -44541,6 +45738,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       }
       return addLeadingZeros(hours, token.length);
     },
+    // Minute
     m: function(date, token, localize2) {
       if (token === "mo") {
         return localize2.ordinalNumber(date.getUTCMinutes(), {
@@ -44549,6 +45747,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       }
       return lightFormatters_default.m(date, token);
     },
+    // Second
     s: function(date, token, localize2) {
       if (token === "so") {
         return localize2.ordinalNumber(date.getUTCSeconds(), {
@@ -44557,9 +45756,11 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       }
       return lightFormatters_default.s(date, token);
     },
+    // Fraction of second
     S: function(date, token) {
       return lightFormatters_default.S(date, token);
     },
+    // Timezone (ISO-8601. If offset is 0, output is always `'Z'`)
     X: function(date, token, _localize, options) {
       var originalDate = options._originalDate || date;
       var timezoneOffset = originalDate.getTimezoneOffset();
@@ -44578,6 +45779,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           return formatTimezone(timezoneOffset, ":");
       }
     },
+    // Timezone (ISO-8601. If offset is 0, output is `'+00:00'` or equivalent)
     x: function(date, token, _localize, options) {
       var originalDate = options._originalDate || date;
       var timezoneOffset = originalDate.getTimezoneOffset();
@@ -44593,6 +45795,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           return formatTimezone(timezoneOffset, ":");
       }
     },
+    // Timezone (GMT)
     O: function(date, token, _localize, options) {
       var originalDate = options._originalDate || date;
       var timezoneOffset = originalDate.getTimezoneOffset();
@@ -44606,6 +45809,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           return "GMT" + formatTimezone(timezoneOffset, ":");
       }
     },
+    // Timezone (specific non-location)
     z: function(date, token, _localize, options) {
       var originalDate = options._originalDate || date;
       var timezoneOffset = originalDate.getTimezoneOffset();
@@ -44619,11 +45823,13 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           return "GMT" + formatTimezone(timezoneOffset, ":");
       }
     },
+    // Seconds timestamp
     t: function(date, token, _localize, options) {
       var originalDate = options._originalDate || date;
       var timestamp = Math.floor(originalDate.getTime() / 1e3);
       return addLeadingZeros(timestamp, token.length);
     },
+    // Milliseconds timestamp
     T: function(date, token, _localize, options) {
       var originalDate = options._originalDate || date;
       var timestamp = originalDate.getTime();
@@ -44916,24 +46122,42 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var MILLISECONDS_IN_SECOND = 1e3;
   var numericPatterns = {
     month: /^(1[0-2]|0?\d)/,
+    // 0 to 12
     date: /^(3[0-1]|[0-2]?\d)/,
+    // 0 to 31
     dayOfYear: /^(36[0-6]|3[0-5]\d|[0-2]?\d?\d)/,
+    // 0 to 366
     week: /^(5[0-3]|[0-4]?\d)/,
+    // 0 to 53
     hour23h: /^(2[0-3]|[0-1]?\d)/,
+    // 0 to 23
     hour24h: /^(2[0-4]|[0-1]?\d)/,
+    // 0 to 24
     hour11h: /^(1[0-1]|0?\d)/,
+    // 0 to 11
     hour12h: /^(1[0-2]|0?\d)/,
+    // 0 to 12
     minute: /^[0-5]?\d/,
+    // 0 to 59
     second: /^[0-5]?\d/,
+    // 0 to 59
     singleDigit: /^\d/,
+    // 0 to 9
     twoDigits: /^\d{1,2}/,
+    // 0 to 99
     threeDigits: /^\d{1,3}/,
+    // 0 to 999
     fourDigits: /^\d{1,4}/,
+    // 0 to 9999
     anyDigitsSigned: /^-?\d+/,
     singleDigitSigned: /^-?\d/,
+    // 0 to 9, -0 to -9
     twoDigitsSigned: /^-?\d{1,2}/,
+    // 0 to 99, -0 to -99
     threeDigitsSigned: /^-?\d{1,3}/,
+    // 0 to 999, -0 to -999
     fourDigitsSigned: /^-?\d{1,4}/
+    // 0 to 9999, -0 to -9999
   };
   var timezonePatterns = {
     basicOptionalMinutes: /^([+-])(\d{2})(\d{2})?|Z/,
@@ -45041,6 +46265,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     return year % 400 === 0 || year % 4 === 0 && year % 100 !== 0;
   }
   var parsers = {
+    // Era
     G: {
       priority: 140,
       parse: function(string, token, match3, _options) {
@@ -45076,7 +46301,16 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       },
       incompatibleTokens: ["R", "u", "t", "T"]
     },
+    // Year
     y: {
+      // From http://www.unicode.org/reports/tr35/tr35-31/tr35-dates.html#Date_Format_Patterns
+      // | Year     |     y | yy |   yyy |  yyyy | yyyyy |
+      // |----------|-------|----|-------|-------|-------|
+      // | AD 1     |     1 | 01 |   001 |  0001 | 00001 |
+      // | AD 12    |    12 | 12 |   012 |  0012 | 00012 |
+      // | AD 123   |   123 | 23 |   123 |  0123 | 00123 |
+      // | AD 1234  |  1234 | 34 |  1234 |  1234 | 01234 |
+      // | AD 12345 | 12345 | 45 | 12345 | 12345 | 12345 |
       priority: 130,
       parse: function(string, token, match3, _options) {
         var valueCallback = function(year) {
@@ -45115,6 +46349,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       },
       incompatibleTokens: ["Y", "R", "u", "w", "I", "i", "e", "c", "t", "T"]
     },
+    // Local week-numbering year
     Y: {
       priority: 130,
       parse: function(string, token, match3, _options) {
@@ -45154,6 +46389,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       },
       incompatibleTokens: ["y", "R", "u", "Q", "q", "M", "L", "I", "d", "D", "i", "t", "T"]
     },
+    // ISO week-numbering year
     R: {
       priority: 130,
       parse: function(string, token, _match, _options) {
@@ -45163,13 +46399,14 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         return parseNDigitsSigned(token.length, string);
       },
       set: function(_date, _flags, value, _options) {
-        var firstWeekOfYear = new Date(0);
+        var firstWeekOfYear = /* @__PURE__ */ new Date(0);
         firstWeekOfYear.setUTCFullYear(value, 0, 4);
         firstWeekOfYear.setUTCHours(0, 0, 0, 0);
         return startOfUTCISOWeek(firstWeekOfYear);
       },
       incompatibleTokens: ["G", "y", "Y", "u", "Q", "q", "M", "L", "w", "d", "D", "e", "c", "t", "T"]
     },
+    // Extended year
     u: {
       priority: 130,
       parse: function(string, token, _match, _options) {
@@ -45185,6 +46422,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       },
       incompatibleTokens: ["G", "y", "Y", "R", "w", "I", "i", "e", "c", "t", "T"]
     },
+    // Quarter
     Q: {
       priority: 120,
       parse: function(string, token, match3, _options) {
@@ -45233,6 +46471,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       },
       incompatibleTokens: ["Y", "R", "q", "M", "L", "w", "I", "d", "D", "i", "e", "c", "t", "T"]
     },
+    // Stand-alone quarter
     q: {
       priority: 120,
       parse: function(string, token, match3, _options) {
@@ -45281,6 +46520,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       },
       incompatibleTokens: ["Y", "R", "Q", "M", "L", "w", "I", "d", "D", "i", "e", "c", "t", "T"]
     },
+    // Month
     M: {
       priority: 110,
       parse: function(string, token, match3, _options) {
@@ -45334,6 +46574,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       },
       incompatibleTokens: ["Y", "R", "q", "Q", "L", "w", "I", "D", "i", "e", "c", "t", "T"]
     },
+    // Stand-alone month
     L: {
       priority: 110,
       parse: function(string, token, match3, _options) {
@@ -45387,6 +46628,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       },
       incompatibleTokens: ["Y", "R", "q", "Q", "M", "w", "I", "D", "i", "e", "c", "t", "T"]
     },
+    // Local week of year
     w: {
       priority: 100,
       parse: function(string, token, match3, _options) {
@@ -45409,6 +46651,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       },
       incompatibleTokens: ["y", "R", "u", "q", "Q", "M", "L", "I", "d", "D", "i", "t", "T"]
     },
+    // ISO week of year
     I: {
       priority: 100,
       parse: function(string, token, match3, _options) {
@@ -45431,6 +46674,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       },
       incompatibleTokens: ["y", "Y", "u", "q", "Q", "M", "L", "w", "d", "D", "e", "c", "t", "T"]
     },
+    // Day of the month
     d: {
       priority: 90,
       subPriority: 1,
@@ -45463,6 +46707,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       },
       incompatibleTokens: ["Y", "R", "q", "Q", "w", "I", "D", "i", "e", "c", "t", "T"]
     },
+    // Day of year
     D: {
       priority: 90,
       subPriority: 1,
@@ -45495,6 +46740,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       },
       incompatibleTokens: ["Y", "R", "q", "Q", "M", "L", "w", "I", "d", "E", "i", "e", "c", "t", "T"]
     },
+    // Day of week
     E: {
       priority: 90,
       parse: function(string, token, match3, _options) {
@@ -45552,6 +46798,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       },
       incompatibleTokens: ["D", "i", "e", "c", "t", "T"]
     },
+    // Local day of week
     e: {
       priority: 90,
       parse: function(string, token, match3, options) {
@@ -45619,6 +46866,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       },
       incompatibleTokens: ["y", "R", "u", "q", "Q", "M", "L", "I", "d", "D", "E", "i", "c", "t", "T"]
     },
+    // Stand-alone local day of week
     c: {
       priority: 90,
       parse: function(string, token, match3, options) {
@@ -45686,6 +46934,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       },
       incompatibleTokens: ["y", "R", "u", "q", "Q", "M", "L", "I", "d", "D", "E", "i", "e", "t", "T"]
     },
+    // ISO day of week
     i: {
       priority: 90,
       parse: function(string, token, match3, _options) {
@@ -45764,6 +47013,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       },
       incompatibleTokens: ["y", "Y", "u", "q", "Q", "M", "L", "w", "d", "D", "E", "e", "c", "t", "T"]
     },
+    // AM or PM
     a: {
       priority: 80,
       parse: function(string, token, match3, _options) {
@@ -45803,6 +47053,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       },
       incompatibleTokens: ["b", "B", "H", "k", "t", "T"]
     },
+    // AM, PM, midnight
     b: {
       priority: 80,
       parse: function(string, token, match3, _options) {
@@ -45842,6 +47093,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       },
       incompatibleTokens: ["a", "B", "H", "k", "t", "T"]
     },
+    // in the morning, in the afternoon, in the evening, at night
     B: {
       priority: 80,
       parse: function(string, token, match3, _options) {
@@ -45881,6 +47133,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       },
       incompatibleTokens: ["a", "b", "t", "T"]
     },
+    // Hour [1-12]
     h: {
       priority: 70,
       parse: function(string, token, match3, _options) {
@@ -45911,6 +47164,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       },
       incompatibleTokens: ["H", "K", "k", "t", "T"]
     },
+    // Hour [0-23]
     H: {
       priority: 70,
       parse: function(string, token, match3, _options) {
@@ -45934,6 +47188,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       },
       incompatibleTokens: ["a", "b", "h", "K", "k", "t", "T"]
     },
+    // Hour [0-11]
     K: {
       priority: 70,
       parse: function(string, token, match3, _options) {
@@ -45962,6 +47217,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       },
       incompatibleTokens: ["h", "H", "k", "t", "T"]
     },
+    // Hour [1-24]
     k: {
       priority: 70,
       parse: function(string, token, match3, _options) {
@@ -45986,6 +47242,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       },
       incompatibleTokens: ["a", "b", "h", "H", "K", "t", "T"]
     },
+    // Minute
     m: {
       priority: 60,
       parse: function(string, token, match3, _options) {
@@ -46009,6 +47266,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       },
       incompatibleTokens: ["t", "T"]
     },
+    // Second
     s: {
       priority: 50,
       parse: function(string, token, match3, _options) {
@@ -46032,6 +47290,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       },
       incompatibleTokens: ["t", "T"]
     },
+    // Fraction of second
     S: {
       priority: 30,
       parse: function(string, token, _match, _options) {
@@ -46046,6 +47305,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       },
       incompatibleTokens: ["t", "T"]
     },
+    // Timezone (ISO-8601. +00:00 is `'Z'`)
     X: {
       priority: 10,
       parse: function(string, token, _match, _options) {
@@ -46071,6 +47331,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       },
       incompatibleTokens: ["t", "T", "x"]
     },
+    // Timezone (ISO-8601)
     x: {
       priority: 10,
       parse: function(string, token, _match, _options) {
@@ -46096,6 +47357,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       },
       incompatibleTokens: ["t", "T", "X"]
     },
+    // Seconds timestamp
     t: {
       priority: 40,
       parse: function(string, _token, _match, _options) {
@@ -46108,6 +47370,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       },
       incompatibleTokens: "*"
     },
+    // Milliseconds timestamp
     T: {
       priority: 20,
       parse: function(string, _token, _match, _options) {
@@ -46156,7 +47419,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       if (dateString === "") {
         return toDate(dirtyReferenceDate);
       } else {
-        return new Date(NaN);
+        return /* @__PURE__ */ new Date(NaN);
       }
     }
     var subFnOptions = {
@@ -46213,7 +47476,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         });
         var parseResult = parser.parse(dateString, token, locale2.match, subFnOptions);
         if (!parseResult) {
-          return new Date(NaN);
+          return /* @__PURE__ */ new Date(NaN);
         }
         setters.push({
           priority: parser.priority,
@@ -46236,12 +47499,12 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         if (dateString.indexOf(token) === 0) {
           dateString = dateString.slice(token.length);
         } else {
-          return new Date(NaN);
+          return /* @__PURE__ */ new Date(NaN);
         }
       }
     }
     if (dateString.length > 0 && notWhitespaceRegExp.test(dateString)) {
-      return new Date(NaN);
+      return /* @__PURE__ */ new Date(NaN);
     }
     var uniquePrioritySetters = setters.map(function(setter2) {
       return setter2.priority;
@@ -46260,14 +47523,14 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     });
     var date = toDate(dirtyReferenceDate);
     if (isNaN(date)) {
-      return new Date(NaN);
+      return /* @__PURE__ */ new Date(NaN);
     }
     var utcDate = subMilliseconds(date, getTimezoneOffsetInMilliseconds(date));
     var flags = {};
     for (i = 0; i < uniquePrioritySetters.length; i++) {
       var setter = uniquePrioritySetters[i];
       if (setter.validate && !setter.validate(utcDate, setter.value, subFnOptions)) {
-        return new Date(NaN);
+        return /* @__PURE__ */ new Date(NaN);
       }
       var result = setter.set(utcDate, flags, setter.value, subFnOptions);
       if (result[0]) {
@@ -46283,7 +47546,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     if (flags.timestampIsSet) {
       return date;
     }
-    var convertedDate = new Date(0);
+    var convertedDate = /* @__PURE__ */ new Date(0);
     convertedDate.setFullYear(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
     convertedDate.setHours(date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds(), date.getUTCMilliseconds());
     return convertedDate;
@@ -46317,7 +47580,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       throw new RangeError("additionalDigits must be 0, 1 or 2");
     }
     if (!(typeof argument === "string" || Object.prototype.toString.call(argument) === "[object String]")) {
-      return new Date(NaN);
+      return /* @__PURE__ */ new Date(NaN);
     }
     var dateStrings = splitDateString(argument);
     var date;
@@ -46326,7 +47589,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       date = parseDate(parseYearResult.restDateString, parseYearResult.year);
     }
     if (!date || isNaN(date.getTime())) {
-      return new Date(NaN);
+      return /* @__PURE__ */ new Date(NaN);
     }
     var timestamp = date.getTime();
     var time = 0;
@@ -46334,17 +47597,17 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     if (dateStrings.time) {
       time = parseTime(dateStrings.time);
       if (isNaN(time)) {
-        return new Date(NaN);
+        return /* @__PURE__ */ new Date(NaN);
       }
     }
     if (dateStrings.timezone) {
       offset = parseTimezone(dateStrings.timezone);
       if (isNaN(offset)) {
-        return new Date(NaN);
+        return /* @__PURE__ */ new Date(NaN);
       }
     } else {
       var dirtyDate = new Date(timestamp + time);
-      var result = new Date(0);
+      var result = /* @__PURE__ */ new Date(0);
       result.setFullYear(dirtyDate.getUTCFullYear(), dirtyDate.getUTCMonth(), dirtyDate.getUTCDate());
       result.setHours(dirtyDate.getUTCHours(), dirtyDate.getUTCMinutes(), dirtyDate.getUTCSeconds(), dirtyDate.getUTCMilliseconds());
       return result;
@@ -46404,10 +47667,10 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   }
   function parseDate(dateString, year) {
     if (year === null)
-      return new Date(NaN);
+      return /* @__PURE__ */ new Date(NaN);
     var captures = dateString.match(dateRegex);
     if (!captures)
-      return new Date(NaN);
+      return /* @__PURE__ */ new Date(NaN);
     var isWeekDate = !!captures[4];
     var dayOfYear = parseDateUnit(captures[1]);
     var month = parseDateUnit(captures[2]) - 1;
@@ -46416,13 +47679,13 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     var dayOfWeek = parseDateUnit(captures[5]) - 1;
     if (isWeekDate) {
       if (!validateWeekDate(year, week, dayOfWeek)) {
-        return new Date(NaN);
+        return /* @__PURE__ */ new Date(NaN);
       }
       return dayOfISOWeekYear(year, week, dayOfWeek);
     } else {
-      var date = new Date(0);
+      var date = /* @__PURE__ */ new Date(0);
       if (!validateDate(year, month, day) || !validateDayOfYearDate(year, dayOfYear)) {
-        return new Date(NaN);
+        return /* @__PURE__ */ new Date(NaN);
       }
       date.setUTCFullYear(year, month, Math.max(dayOfYear, day));
       return date;
@@ -46461,7 +47724,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     return sign2 * (hours * millisecondsInHour + minutes * millisecondsInMinute);
   }
   function dayOfISOWeekYear(isoWeekYear, week, day) {
-    var date = new Date(0);
+    var date = /* @__PURE__ */ new Date(0);
     date.setUTCFullYear(isoWeekYear, 0, 4);
     var fourthOfJanuaryDay = date.getUTCDay() || 7;
     var diff = (week - 1) * 7 + day + 1 - fourthOfJanuaryDay;
@@ -46506,6 +47769,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   };
   adapters._date.override({
     _id: "date-fns",
+    // DEBUG
     formats: function() {
       return FORMATS;
     },
@@ -46518,7 +47782,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         value = toDate(value);
       } else if (type === "string") {
         if (typeof fmt === "string") {
-          value = parse2(value, fmt, new Date(), this.options);
+          value = parse2(value, fmt, /* @__PURE__ */ new Date(), this.options);
         } else {
           value = parseISO(value, this.options);
         }
@@ -46631,15 +47895,15 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   !function(t, i, e, s) {
     function o(i2, e2) {
       var h3 = this;
-      typeof e2 == "object" && (delete e2.refresh, delete e2.render, t.extend(this, e2)), this.$element = t(i2), !this.imageSrc && this.$element.is("img") && (this.imageSrc = this.$element.attr("src"));
+      "object" == typeof e2 && (delete e2.refresh, delete e2.render, t.extend(this, e2)), this.$element = t(i2), !this.imageSrc && this.$element.is("img") && (this.imageSrc = this.$element.attr("src"));
       var r = (this.position + "").toLowerCase().match(/\S+/g) || [];
-      if (r.length < 1 && r.push("center"), r.length == 1 && r.push(r[0]), r[0] != "top" && r[0] != "bottom" && r[1] != "left" && r[1] != "right" || (r = [r[1], r[0]]), this.positionX !== s && (r[0] = this.positionX.toLowerCase()), this.positionY !== s && (r[1] = this.positionY.toLowerCase()), h3.positionX = r[0], h3.positionY = r[1], this.positionX != "left" && this.positionX != "right" && (isNaN(parseInt(this.positionX)) ? this.positionX = "center" : this.positionX = parseInt(this.positionX)), this.positionY != "top" && this.positionY != "bottom" && (isNaN(parseInt(this.positionY)) ? this.positionY = "center" : this.positionY = parseInt(this.positionY)), this.position = this.positionX + (isNaN(this.positionX) ? "" : "px") + " " + this.positionY + (isNaN(this.positionY) ? "" : "px"), navigator.userAgent.match(/(iPod|iPhone|iPad)/))
+      if (r.length < 1 && r.push("center"), 1 == r.length && r.push(r[0]), "top" != r[0] && "bottom" != r[0] && "left" != r[1] && "right" != r[1] || (r = [r[1], r[0]]), this.positionX !== s && (r[0] = this.positionX.toLowerCase()), this.positionY !== s && (r[1] = this.positionY.toLowerCase()), h3.positionX = r[0], h3.positionY = r[1], "left" != this.positionX && "right" != this.positionX && (isNaN(parseInt(this.positionX)) ? this.positionX = "center" : this.positionX = parseInt(this.positionX)), "top" != this.positionY && "bottom" != this.positionY && (isNaN(parseInt(this.positionY)) ? this.positionY = "center" : this.positionY = parseInt(this.positionY)), this.position = this.positionX + (isNaN(this.positionX) ? "" : "px") + " " + this.positionY + (isNaN(this.positionY) ? "" : "px"), navigator.userAgent.match(/(iPod|iPhone|iPad)/))
         return this.imageSrc && this.iosFix && !this.$element.is("img") && this.$element.css({ backgroundImage: "url(" + this.imageSrc + ")", backgroundSize: "cover", backgroundPosition: this.position }), this;
       if (navigator.userAgent.match(/(Android)/))
         return this.imageSrc && this.androidFix && !this.$element.is("img") && this.$element.css({ backgroundImage: "url(" + this.imageSrc + ")", backgroundSize: "cover", backgroundPosition: this.position }), this;
       this.$mirror = t("<div />").prependTo(this.mirrorContainer);
       var a = this.$element.find(">.parallax-slider"), n = false;
-      a.length == 0 ? this.$slider = t("<img />").prependTo(this.$mirror) : (this.$slider = a.prependTo(this.$mirror), n = true), this.$mirror.addClass("parallax-mirror").css({ visibility: "hidden", zIndex: this.zIndex, position: "fixed", top: 0, left: 0, overflow: "hidden" }), this.$slider.addClass("parallax-slider").one("load", function() {
+      0 == a.length ? this.$slider = t("<img />").prependTo(this.$mirror) : (this.$slider = a.prependTo(this.$mirror), n = true), this.$mirror.addClass("parallax-mirror").css({ visibility: "hidden", zIndex: this.zIndex, position: "fixed", top: 0, left: 0, overflow: "hidden" }), this.$slider.addClass("parallax-slider").one("load", function() {
         h3.naturalHeight && h3.naturalWidth || (h3.naturalHeight = this.naturalHeight || this.height || 1, h3.naturalWidth = this.naturalWidth || this.width || 1), h3.aspectRatio = h3.naturalWidth / h3.naturalHeight, o.isSetup || o.setup(), o.sliders.push(h3), o.isFresh = false, o.requestRender();
       }), n || (this.$slider[0].src = this.imageSrc), (this.naturalHeight && this.naturalWidth || this.$slider[0].complete || a.length > 0) && this.$slider.trigger("load");
     }
@@ -46647,7 +47911,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       for (var t2 = 0, e2 = ["ms", "moz", "webkit", "o"], s2 = 0; s2 < e2.length && !i.requestAnimationFrame; ++s2)
         i.requestAnimationFrame = i[e2[s2] + "RequestAnimationFrame"], i.cancelAnimationFrame = i[e2[s2] + "CancelAnimationFrame"] || i[e2[s2] + "CancelRequestAnimationFrame"];
       i.requestAnimationFrame || (i.requestAnimationFrame = function(e3) {
-        var s3 = new Date().getTime(), o2 = Math.max(0, 16 - (s3 - t2)), h3 = i.setTimeout(function() {
+        var s3 = (/* @__PURE__ */ new Date()).getTime(), o2 = Math.max(0, 16 - (s3 - t2)), h3 = i.setTimeout(function() {
           e3(s3 + o2);
         }, o2);
         return t2 = s3 + o2, h3;
@@ -46657,7 +47921,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     }(), t.extend(o.prototype, { speed: 0.2, bleed: 0, zIndex: -100, iosFix: true, androidFix: true, position: "center", overScrollFix: false, mirrorContainer: "body", refresh: function() {
       this.boxWidth = this.$element.outerWidth(), this.boxHeight = this.$element.outerHeight() + 2 * this.bleed, this.boxOffsetTop = this.$element.offset().top - this.bleed, this.boxOffsetLeft = this.$element.offset().left, this.boxOffsetBottom = this.boxOffsetTop + this.boxHeight;
       var t2, i2 = o.winHeight, e2 = o.docHeight, s2 = Math.min(this.boxOffsetTop, e2 - i2), h3 = Math.max(this.boxOffsetTop + this.boxHeight - i2, 0), r = this.boxHeight + (s2 - h3) * (1 - this.speed) | 0, a = (this.boxOffsetTop - s2) * (1 - this.speed) | 0;
-      r * this.aspectRatio >= this.boxWidth ? (this.imageWidth = r * this.aspectRatio | 0, this.imageHeight = r, this.offsetBaseTop = a, t2 = this.imageWidth - this.boxWidth, this.positionX == "left" ? this.offsetLeft = 0 : this.positionX == "right" ? this.offsetLeft = -t2 : isNaN(this.positionX) ? this.offsetLeft = -t2 / 2 | 0 : this.offsetLeft = Math.max(this.positionX, -t2)) : (this.imageWidth = this.boxWidth, this.imageHeight = this.boxWidth / this.aspectRatio | 0, this.offsetLeft = 0, t2 = this.imageHeight - r, this.positionY == "top" ? this.offsetBaseTop = a : this.positionY == "bottom" ? this.offsetBaseTop = a - t2 : isNaN(this.positionY) ? this.offsetBaseTop = a - t2 / 2 | 0 : this.offsetBaseTop = a + Math.max(this.positionY, -t2));
+      r * this.aspectRatio >= this.boxWidth ? (this.imageWidth = r * this.aspectRatio | 0, this.imageHeight = r, this.offsetBaseTop = a, t2 = this.imageWidth - this.boxWidth, "left" == this.positionX ? this.offsetLeft = 0 : "right" == this.positionX ? this.offsetLeft = -t2 : isNaN(this.positionX) ? this.offsetLeft = -t2 / 2 | 0 : this.offsetLeft = Math.max(this.positionX, -t2)) : (this.imageWidth = this.boxWidth, this.imageHeight = this.boxWidth / this.aspectRatio | 0, this.offsetLeft = 0, t2 = this.imageHeight - r, "top" == this.positionY ? this.offsetBaseTop = a : "bottom" == this.positionY ? this.offsetBaseTop = a - t2 : isNaN(this.positionY) ? this.offsetBaseTop = a - t2 / 2 | 0 : this.offsetBaseTop = a + Math.max(this.positionY, -t2));
     }, render: function() {
       var t2 = o.scrollTop, i2 = o.scrollLeft, e2 = this.overScrollFix ? o.overScroll : 0, s2 = t2 + o.winHeight;
       this.boxOffsetBottom > t2 && this.boxOffsetTop <= s2 ? (this.visibility = "visible", this.mirrorTop = this.boxOffsetTop - t2, this.mirrorLeft = this.boxOffsetLeft - i2, this.offsetTop = this.offsetBaseTop - this.mirrorTop * (1 - this.speed)) : this.visibility = "hidden", this.$mirror.css({ transform: "translate3d(" + this.mirrorLeft + "px, " + (this.mirrorTop - e2) + "px, 0px)", visibility: this.visibility, height: this.boxHeight, width: this.boxWidth }), this.$slider.css({ transform: "translate3d(" + this.offsetLeft + "px, " + this.offsetTop + "px, 0px)", position: "absolute", height: this.imageHeight, width: this.imageWidth, maxWidth: "none" });
@@ -46683,7 +47947,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         s2();
       }
     }, configure: function(i2) {
-      typeof i2 == "object" && (delete i2.refresh, delete i2.render, t.extend(this.prototype, i2));
+      "object" == typeof i2 && (delete i2.refresh, delete i2.render, t.extend(this.prototype, i2));
     }, refresh: function() {
       t.each(this.sliders, function() {
         this.refresh();
@@ -46699,13 +47963,13 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var s2, h3 = t(e2).data("px.parallax");
       for (h3.$mirror.remove(), s2 = 0; s2 < this.sliders.length; s2 += 1)
         this.sliders[s2] == h3 && this.sliders.splice(s2, 1);
-      t(e2).data("px.parallax", false), this.sliders.length === 0 && (t(i).off("scroll.px.parallax resize.px.parallax load.px.parallax"), this.isReady = false, o.isSetup = false);
+      t(e2).data("px.parallax", false), 0 === this.sliders.length && (t(i).off("scroll.px.parallax resize.px.parallax load.px.parallax"), this.isReady = false, o.isSetup = false);
     } });
     var h = t.fn.parallax;
     t.fn.parallax = function(s2) {
       return this.each(function() {
-        var h3 = t(this), r = typeof s2 == "object" && s2;
-        this == i || this == e || h3.is("body") ? o.configure(r) : h3.data("px.parallax") ? typeof s2 == "object" && t.extend(h3.data("px.parallax"), r) : (r = t.extend({}, h3.data(), r), h3.data("px.parallax", new o(this, r))), typeof s2 == "string" && (s2 == "destroy" ? o.destroy(this) : o[s2]());
+        var h3 = t(this), r = "object" == typeof s2 && s2;
+        this == i || this == e || h3.is("body") ? o.configure(r) : h3.data("px.parallax") ? "object" == typeof s2 && t.extend(h3.data("px.parallax"), r) : (r = t.extend({}, h3.data(), r), h3.data("px.parallax", new o(this, r))), "string" == typeof s2 && ("destroy" == s2 ? o.destroy(this) : o[s2]());
       });
     }, t.fn.parallax.Constructor = o, t.fn.parallax.noConflict = function() {
       return t.fn.parallax = h, this;
@@ -46762,7 +48026,9 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     },
     settings: {
       adjustOldDeltas: true,
+      // see shouldAdjustOldDeltas() below
       normalizeOffset: true
+      // calls getBoundingClientRect for each event
     }
   };
   $.fn.extend({
@@ -46881,7 +48147,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     insert_fields(this, method, content, formSelector);
   });
   window.insert_fields = (link, method, content, formSelector) => {
-    const new_id = new Date().getTime();
+    const new_id = (/* @__PURE__ */ new Date()).getTime();
     method = method.split("_");
     method.pop();
     method = method.join("_");
@@ -47332,6 +48598,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         }
       });
     }
+    // filters already applied are listed as buttons with an X that removes the filter
     showCurrentFilters() {
       if (Object.entries(this.currentFilters).length) {
         $("#attribute-filters").addClass("mb-3").empty();
@@ -47343,6 +48610,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         }
       }
     }
+    // underneath any quick filters is a dropdown that lets you select a field to filter on
     showAddableFilters() {
       $("select.scope").hide();
       $(".value-input-container").empty();
@@ -47362,6 +48630,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         }
       });
     }
+    // returns the field config from a scope name
     getFieldConfigFromScope(scope) {
       for (let attribute in this.attributeFilters) {
         const value = this.attributeFilters[attribute];
@@ -47524,47 +48793,50 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var import_ujs = __toESM(require_rails_ujs());
 
   // node_modules/@stimulus/core/dist/src/event_listener.js
-  var EventListener = function() {
-    function EventListener2(eventTarget, eventName) {
-      this.eventTarget = eventTarget;
-      this.eventName = eventName;
-      this.unorderedBindings = /* @__PURE__ */ new Set();
-    }
-    EventListener2.prototype.connect = function() {
-      this.eventTarget.addEventListener(this.eventName, this, false);
-    };
-    EventListener2.prototype.disconnect = function() {
-      this.eventTarget.removeEventListener(this.eventName, this, false);
-    };
-    EventListener2.prototype.bindingConnected = function(binding) {
-      this.unorderedBindings.add(binding);
-    };
-    EventListener2.prototype.bindingDisconnected = function(binding) {
-      this.unorderedBindings.delete(binding);
-    };
-    EventListener2.prototype.handleEvent = function(event) {
-      var extendedEvent = extendEvent(event);
-      for (var _i = 0, _a = this.bindings; _i < _a.length; _i++) {
-        var binding = _a[_i];
-        if (extendedEvent.immediatePropagationStopped) {
-          break;
-        } else {
-          binding.handleEvent(extendedEvent);
-        }
+  var EventListener = (
+    /** @class */
+    function() {
+      function EventListener2(eventTarget, eventName) {
+        this.eventTarget = eventTarget;
+        this.eventName = eventName;
+        this.unorderedBindings = /* @__PURE__ */ new Set();
       }
-    };
-    Object.defineProperty(EventListener2.prototype, "bindings", {
-      get: function() {
-        return Array.from(this.unorderedBindings).sort(function(left, right) {
-          var leftIndex = left.index, rightIndex = right.index;
-          return leftIndex < rightIndex ? -1 : leftIndex > rightIndex ? 1 : 0;
-        });
-      },
-      enumerable: true,
-      configurable: true
-    });
-    return EventListener2;
-  }();
+      EventListener2.prototype.connect = function() {
+        this.eventTarget.addEventListener(this.eventName, this, false);
+      };
+      EventListener2.prototype.disconnect = function() {
+        this.eventTarget.removeEventListener(this.eventName, this, false);
+      };
+      EventListener2.prototype.bindingConnected = function(binding) {
+        this.unorderedBindings.add(binding);
+      };
+      EventListener2.prototype.bindingDisconnected = function(binding) {
+        this.unorderedBindings.delete(binding);
+      };
+      EventListener2.prototype.handleEvent = function(event) {
+        var extendedEvent = extendEvent(event);
+        for (var _i = 0, _a = this.bindings; _i < _a.length; _i++) {
+          var binding = _a[_i];
+          if (extendedEvent.immediatePropagationStopped) {
+            break;
+          } else {
+            binding.handleEvent(extendedEvent);
+          }
+        }
+      };
+      Object.defineProperty(EventListener2.prototype, "bindings", {
+        get: function() {
+          return Array.from(this.unorderedBindings).sort(function(left, right) {
+            var leftIndex = left.index, rightIndex = right.index;
+            return leftIndex < rightIndex ? -1 : leftIndex > rightIndex ? 1 : 0;
+          });
+        },
+        enumerable: true,
+        configurable: true
+      });
+      return EventListener2;
+    }()
+  );
   function extendEvent(event) {
     if ("immediatePropagationStopped" in event) {
       return event;
@@ -47581,79 +48853,82 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   }
 
   // node_modules/@stimulus/core/dist/src/dispatcher.js
-  var Dispatcher = function() {
-    function Dispatcher2(application2) {
-      this.application = application2;
-      this.eventListenerMaps = /* @__PURE__ */ new Map();
-      this.started = false;
-    }
-    Dispatcher2.prototype.start = function() {
-      if (!this.started) {
-        this.started = true;
-        this.eventListeners.forEach(function(eventListener) {
-          return eventListener.connect();
-        });
-      }
-    };
-    Dispatcher2.prototype.stop = function() {
-      if (this.started) {
+  var Dispatcher = (
+    /** @class */
+    function() {
+      function Dispatcher2(application2) {
+        this.application = application2;
+        this.eventListenerMaps = /* @__PURE__ */ new Map();
         this.started = false;
-        this.eventListeners.forEach(function(eventListener) {
-          return eventListener.disconnect();
-        });
       }
-    };
-    Object.defineProperty(Dispatcher2.prototype, "eventListeners", {
-      get: function() {
-        return Array.from(this.eventListenerMaps.values()).reduce(function(listeners, map3) {
-          return listeners.concat(Array.from(map3.values()));
-        }, []);
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Dispatcher2.prototype.bindingConnected = function(binding) {
-      this.fetchEventListenerForBinding(binding).bindingConnected(binding);
-    };
-    Dispatcher2.prototype.bindingDisconnected = function(binding) {
-      this.fetchEventListenerForBinding(binding).bindingDisconnected(binding);
-    };
-    Dispatcher2.prototype.handleError = function(error2, message, detail) {
-      if (detail === void 0) {
-        detail = {};
-      }
-      this.application.handleError(error2, "Error " + message, detail);
-    };
-    Dispatcher2.prototype.fetchEventListenerForBinding = function(binding) {
-      var eventTarget = binding.eventTarget, eventName = binding.eventName;
-      return this.fetchEventListener(eventTarget, eventName);
-    };
-    Dispatcher2.prototype.fetchEventListener = function(eventTarget, eventName) {
-      var eventListenerMap = this.fetchEventListenerMapForEventTarget(eventTarget);
-      var eventListener = eventListenerMap.get(eventName);
-      if (!eventListener) {
-        eventListener = this.createEventListener(eventTarget, eventName);
-        eventListenerMap.set(eventName, eventListener);
-      }
-      return eventListener;
-    };
-    Dispatcher2.prototype.createEventListener = function(eventTarget, eventName) {
-      var eventListener = new EventListener(eventTarget, eventName);
-      if (this.started) {
-        eventListener.connect();
-      }
-      return eventListener;
-    };
-    Dispatcher2.prototype.fetchEventListenerMapForEventTarget = function(eventTarget) {
-      var eventListenerMap = this.eventListenerMaps.get(eventTarget);
-      if (!eventListenerMap) {
-        eventListenerMap = /* @__PURE__ */ new Map();
-        this.eventListenerMaps.set(eventTarget, eventListenerMap);
-      }
-      return eventListenerMap;
-    };
-    return Dispatcher2;
-  }();
+      Dispatcher2.prototype.start = function() {
+        if (!this.started) {
+          this.started = true;
+          this.eventListeners.forEach(function(eventListener) {
+            return eventListener.connect();
+          });
+        }
+      };
+      Dispatcher2.prototype.stop = function() {
+        if (this.started) {
+          this.started = false;
+          this.eventListeners.forEach(function(eventListener) {
+            return eventListener.disconnect();
+          });
+        }
+      };
+      Object.defineProperty(Dispatcher2.prototype, "eventListeners", {
+        get: function() {
+          return Array.from(this.eventListenerMaps.values()).reduce(function(listeners, map3) {
+            return listeners.concat(Array.from(map3.values()));
+          }, []);
+        },
+        enumerable: true,
+        configurable: true
+      });
+      Dispatcher2.prototype.bindingConnected = function(binding) {
+        this.fetchEventListenerForBinding(binding).bindingConnected(binding);
+      };
+      Dispatcher2.prototype.bindingDisconnected = function(binding) {
+        this.fetchEventListenerForBinding(binding).bindingDisconnected(binding);
+      };
+      Dispatcher2.prototype.handleError = function(error2, message, detail) {
+        if (detail === void 0) {
+          detail = {};
+        }
+        this.application.handleError(error2, "Error " + message, detail);
+      };
+      Dispatcher2.prototype.fetchEventListenerForBinding = function(binding) {
+        var eventTarget = binding.eventTarget, eventName = binding.eventName;
+        return this.fetchEventListener(eventTarget, eventName);
+      };
+      Dispatcher2.prototype.fetchEventListener = function(eventTarget, eventName) {
+        var eventListenerMap = this.fetchEventListenerMapForEventTarget(eventTarget);
+        var eventListener = eventListenerMap.get(eventName);
+        if (!eventListener) {
+          eventListener = this.createEventListener(eventTarget, eventName);
+          eventListenerMap.set(eventName, eventListener);
+        }
+        return eventListener;
+      };
+      Dispatcher2.prototype.createEventListener = function(eventTarget, eventName) {
+        var eventListener = new EventListener(eventTarget, eventName);
+        if (this.started) {
+          eventListener.connect();
+        }
+        return eventListener;
+      };
+      Dispatcher2.prototype.fetchEventListenerMapForEventTarget = function(eventTarget) {
+        var eventListenerMap = this.eventListenerMaps.get(eventTarget);
+        if (!eventListenerMap) {
+          eventListenerMap = /* @__PURE__ */ new Map();
+          this.eventListenerMaps.set(eventTarget, eventListenerMap);
+        }
+        return eventListenerMap;
+      };
+      return Dispatcher2;
+    }()
+  );
 
   // node_modules/@stimulus/core/dist/src/action_descriptor.js
   var descriptorPattern = /^((.+?)(@(window|document))?->)?(.+?)(#(.+))?$/;
@@ -47683,31 +48958,34 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   }
 
   // node_modules/@stimulus/core/dist/src/action.js
-  var Action = function() {
-    function Action2(element, index, descriptor) {
-      this.element = element;
-      this.index = index;
-      this.eventTarget = descriptor.eventTarget || element;
-      this.eventName = descriptor.eventName || getDefaultEventNameForElement(element) || error("missing event name");
-      this.identifier = descriptor.identifier || error("missing identifier");
-      this.methodName = descriptor.methodName || error("missing method name");
-    }
-    Action2.forToken = function(token) {
-      return new this(token.element, token.index, parseDescriptorString(token.content));
-    };
-    Action2.prototype.toString = function() {
-      var eventNameSuffix = this.eventTargetName ? "@" + this.eventTargetName : "";
-      return "" + this.eventName + eventNameSuffix + "->" + this.identifier + "#" + this.methodName;
-    };
-    Object.defineProperty(Action2.prototype, "eventTargetName", {
-      get: function() {
-        return stringifyEventTarget(this.eventTarget);
-      },
-      enumerable: true,
-      configurable: true
-    });
-    return Action2;
-  }();
+  var Action = (
+    /** @class */
+    function() {
+      function Action2(element, index, descriptor) {
+        this.element = element;
+        this.index = index;
+        this.eventTarget = descriptor.eventTarget || element;
+        this.eventName = descriptor.eventName || getDefaultEventNameForElement(element) || error("missing event name");
+        this.identifier = descriptor.identifier || error("missing identifier");
+        this.methodName = descriptor.methodName || error("missing method name");
+      }
+      Action2.forToken = function(token) {
+        return new this(token.element, token.index, parseDescriptorString(token.content));
+      };
+      Action2.prototype.toString = function() {
+        var eventNameSuffix = this.eventTargetName ? "@" + this.eventTargetName : "";
+        return "" + this.eventName + eventNameSuffix + "->" + this.identifier + "#" + this.methodName;
+      };
+      Object.defineProperty(Action2.prototype, "eventTargetName", {
+        get: function() {
+          return stringifyEventTarget(this.eventTarget);
+        },
+        enumerable: true,
+        configurable: true
+      });
+      return Action2;
+    }()
+  );
   var defaultEventNames = {
     "a": function(e) {
       return "click";
@@ -47739,302 +49017,311 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   }
 
   // node_modules/@stimulus/core/dist/src/binding.js
-  var Binding = function() {
-    function Binding2(context, action) {
-      this.context = context;
-      this.action = action;
-    }
-    Object.defineProperty(Binding2.prototype, "index", {
-      get: function() {
-        return this.action.index;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Object.defineProperty(Binding2.prototype, "eventTarget", {
-      get: function() {
-        return this.action.eventTarget;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Object.defineProperty(Binding2.prototype, "identifier", {
-      get: function() {
-        return this.context.identifier;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Binding2.prototype.handleEvent = function(event) {
-      if (this.willBeInvokedByEvent(event)) {
-        this.invokeWithEvent(event);
+  var Binding = (
+    /** @class */
+    function() {
+      function Binding2(context, action) {
+        this.context = context;
+        this.action = action;
       }
-    };
-    Object.defineProperty(Binding2.prototype, "eventName", {
-      get: function() {
-        return this.action.eventName;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Object.defineProperty(Binding2.prototype, "method", {
-      get: function() {
-        var method = this.controller[this.methodName];
-        if (typeof method == "function") {
-          return method;
+      Object.defineProperty(Binding2.prototype, "index", {
+        get: function() {
+          return this.action.index;
+        },
+        enumerable: true,
+        configurable: true
+      });
+      Object.defineProperty(Binding2.prototype, "eventTarget", {
+        get: function() {
+          return this.action.eventTarget;
+        },
+        enumerable: true,
+        configurable: true
+      });
+      Object.defineProperty(Binding2.prototype, "identifier", {
+        get: function() {
+          return this.context.identifier;
+        },
+        enumerable: true,
+        configurable: true
+      });
+      Binding2.prototype.handleEvent = function(event) {
+        if (this.willBeInvokedByEvent(event)) {
+          this.invokeWithEvent(event);
         }
-        throw new Error('Action "' + this.action + '" references undefined method "' + this.methodName + '"');
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Binding2.prototype.invokeWithEvent = function(event) {
-      try {
-        this.method.call(this.controller, event);
-      } catch (error2) {
-        var _a = this, identifier = _a.identifier, controller = _a.controller, element = _a.element, index = _a.index;
-        var detail = { identifier, controller, element, index, event };
-        this.context.handleError(error2, 'invoking action "' + this.action + '"', detail);
-      }
-    };
-    Binding2.prototype.willBeInvokedByEvent = function(event) {
-      var eventTarget = event.target;
-      if (this.element === eventTarget) {
-        return true;
-      } else if (eventTarget instanceof Element && this.element.contains(eventTarget)) {
-        return this.scope.containsElement(eventTarget);
-      } else {
-        return true;
-      }
-    };
-    Object.defineProperty(Binding2.prototype, "controller", {
-      get: function() {
-        return this.context.controller;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Object.defineProperty(Binding2.prototype, "methodName", {
-      get: function() {
-        return this.action.methodName;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Object.defineProperty(Binding2.prototype, "element", {
-      get: function() {
-        return this.scope.element;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Object.defineProperty(Binding2.prototype, "scope", {
-      get: function() {
-        return this.context.scope;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    return Binding2;
-  }();
+      };
+      Object.defineProperty(Binding2.prototype, "eventName", {
+        get: function() {
+          return this.action.eventName;
+        },
+        enumerable: true,
+        configurable: true
+      });
+      Object.defineProperty(Binding2.prototype, "method", {
+        get: function() {
+          var method = this.controller[this.methodName];
+          if (typeof method == "function") {
+            return method;
+          }
+          throw new Error('Action "' + this.action + '" references undefined method "' + this.methodName + '"');
+        },
+        enumerable: true,
+        configurable: true
+      });
+      Binding2.prototype.invokeWithEvent = function(event) {
+        try {
+          this.method.call(this.controller, event);
+        } catch (error2) {
+          var _a = this, identifier = _a.identifier, controller = _a.controller, element = _a.element, index = _a.index;
+          var detail = { identifier, controller, element, index, event };
+          this.context.handleError(error2, 'invoking action "' + this.action + '"', detail);
+        }
+      };
+      Binding2.prototype.willBeInvokedByEvent = function(event) {
+        var eventTarget = event.target;
+        if (this.element === eventTarget) {
+          return true;
+        } else if (eventTarget instanceof Element && this.element.contains(eventTarget)) {
+          return this.scope.containsElement(eventTarget);
+        } else {
+          return true;
+        }
+      };
+      Object.defineProperty(Binding2.prototype, "controller", {
+        get: function() {
+          return this.context.controller;
+        },
+        enumerable: true,
+        configurable: true
+      });
+      Object.defineProperty(Binding2.prototype, "methodName", {
+        get: function() {
+          return this.action.methodName;
+        },
+        enumerable: true,
+        configurable: true
+      });
+      Object.defineProperty(Binding2.prototype, "element", {
+        get: function() {
+          return this.scope.element;
+        },
+        enumerable: true,
+        configurable: true
+      });
+      Object.defineProperty(Binding2.prototype, "scope", {
+        get: function() {
+          return this.context.scope;
+        },
+        enumerable: true,
+        configurable: true
+      });
+      return Binding2;
+    }()
+  );
 
   // node_modules/@stimulus/mutation-observers/dist/src/element_observer.js
-  var ElementObserver = function() {
-    function ElementObserver2(element, delegate) {
-      var _this = this;
-      this.element = element;
-      this.started = false;
-      this.delegate = delegate;
-      this.elements = /* @__PURE__ */ new Set();
-      this.mutationObserver = new MutationObserver(function(mutations) {
-        return _this.processMutations(mutations);
-      });
-    }
-    ElementObserver2.prototype.start = function() {
-      if (!this.started) {
-        this.started = true;
-        this.mutationObserver.observe(this.element, { attributes: true, childList: true, subtree: true });
-        this.refresh();
-      }
-    };
-    ElementObserver2.prototype.stop = function() {
-      if (this.started) {
-        this.mutationObserver.takeRecords();
-        this.mutationObserver.disconnect();
+  var ElementObserver = (
+    /** @class */
+    function() {
+      function ElementObserver2(element, delegate) {
+        var _this = this;
+        this.element = element;
         this.started = false;
+        this.delegate = delegate;
+        this.elements = /* @__PURE__ */ new Set();
+        this.mutationObserver = new MutationObserver(function(mutations) {
+          return _this.processMutations(mutations);
+        });
       }
-    };
-    ElementObserver2.prototype.refresh = function() {
-      if (this.started) {
-        var matches = new Set(this.matchElementsInTree());
-        for (var _i = 0, _a = Array.from(this.elements); _i < _a.length; _i++) {
-          var element = _a[_i];
-          if (!matches.has(element)) {
+      ElementObserver2.prototype.start = function() {
+        if (!this.started) {
+          this.started = true;
+          this.mutationObserver.observe(this.element, { attributes: true, childList: true, subtree: true });
+          this.refresh();
+        }
+      };
+      ElementObserver2.prototype.stop = function() {
+        if (this.started) {
+          this.mutationObserver.takeRecords();
+          this.mutationObserver.disconnect();
+          this.started = false;
+        }
+      };
+      ElementObserver2.prototype.refresh = function() {
+        if (this.started) {
+          var matches = new Set(this.matchElementsInTree());
+          for (var _i = 0, _a = Array.from(this.elements); _i < _a.length; _i++) {
+            var element = _a[_i];
+            if (!matches.has(element)) {
+              this.removeElement(element);
+            }
+          }
+          for (var _b = 0, _c = Array.from(matches); _b < _c.length; _b++) {
+            var element = _c[_b];
+            this.addElement(element);
+          }
+        }
+      };
+      ElementObserver2.prototype.processMutations = function(mutations) {
+        if (this.started) {
+          for (var _i = 0, mutations_1 = mutations; _i < mutations_1.length; _i++) {
+            var mutation = mutations_1[_i];
+            this.processMutation(mutation);
+          }
+        }
+      };
+      ElementObserver2.prototype.processMutation = function(mutation) {
+        if (mutation.type == "attributes") {
+          this.processAttributeChange(mutation.target, mutation.attributeName);
+        } else if (mutation.type == "childList") {
+          this.processRemovedNodes(mutation.removedNodes);
+          this.processAddedNodes(mutation.addedNodes);
+        }
+      };
+      ElementObserver2.prototype.processAttributeChange = function(node, attributeName) {
+        var element = node;
+        if (this.elements.has(element)) {
+          if (this.delegate.elementAttributeChanged && this.matchElement(element)) {
+            this.delegate.elementAttributeChanged(element, attributeName);
+          } else {
             this.removeElement(element);
           }
-        }
-        for (var _b = 0, _c = Array.from(matches); _b < _c.length; _b++) {
-          var element = _c[_b];
+        } else if (this.matchElement(element)) {
           this.addElement(element);
         }
-      }
-    };
-    ElementObserver2.prototype.processMutations = function(mutations) {
-      if (this.started) {
-        for (var _i = 0, mutations_1 = mutations; _i < mutations_1.length; _i++) {
-          var mutation = mutations_1[_i];
-          this.processMutation(mutation);
-        }
-      }
-    };
-    ElementObserver2.prototype.processMutation = function(mutation) {
-      if (mutation.type == "attributes") {
-        this.processAttributeChange(mutation.target, mutation.attributeName);
-      } else if (mutation.type == "childList") {
-        this.processRemovedNodes(mutation.removedNodes);
-        this.processAddedNodes(mutation.addedNodes);
-      }
-    };
-    ElementObserver2.prototype.processAttributeChange = function(node, attributeName) {
-      var element = node;
-      if (this.elements.has(element)) {
-        if (this.delegate.elementAttributeChanged && this.matchElement(element)) {
-          this.delegate.elementAttributeChanged(element, attributeName);
-        } else {
-          this.removeElement(element);
-        }
-      } else if (this.matchElement(element)) {
-        this.addElement(element);
-      }
-    };
-    ElementObserver2.prototype.processRemovedNodes = function(nodes) {
-      for (var _i = 0, _a = Array.from(nodes); _i < _a.length; _i++) {
-        var node = _a[_i];
-        var element = this.elementFromNode(node);
-        if (element) {
-          this.processTree(element, this.removeElement);
-        }
-      }
-    };
-    ElementObserver2.prototype.processAddedNodes = function(nodes) {
-      for (var _i = 0, _a = Array.from(nodes); _i < _a.length; _i++) {
-        var node = _a[_i];
-        var element = this.elementFromNode(node);
-        if (element && this.elementIsActive(element)) {
-          this.processTree(element, this.addElement);
-        }
-      }
-    };
-    ElementObserver2.prototype.matchElement = function(element) {
-      return this.delegate.matchElement(element);
-    };
-    ElementObserver2.prototype.matchElementsInTree = function(tree) {
-      if (tree === void 0) {
-        tree = this.element;
-      }
-      return this.delegate.matchElementsInTree(tree);
-    };
-    ElementObserver2.prototype.processTree = function(tree, processor) {
-      for (var _i = 0, _a = this.matchElementsInTree(tree); _i < _a.length; _i++) {
-        var element = _a[_i];
-        processor.call(this, element);
-      }
-    };
-    ElementObserver2.prototype.elementFromNode = function(node) {
-      if (node.nodeType == Node.ELEMENT_NODE) {
-        return node;
-      }
-    };
-    ElementObserver2.prototype.elementIsActive = function(element) {
-      if (element.isConnected != this.element.isConnected) {
-        return false;
-      } else {
-        return this.element.contains(element);
-      }
-    };
-    ElementObserver2.prototype.addElement = function(element) {
-      if (!this.elements.has(element)) {
-        if (this.elementIsActive(element)) {
-          this.elements.add(element);
-          if (this.delegate.elementMatched) {
-            this.delegate.elementMatched(element);
+      };
+      ElementObserver2.prototype.processRemovedNodes = function(nodes) {
+        for (var _i = 0, _a = Array.from(nodes); _i < _a.length; _i++) {
+          var node = _a[_i];
+          var element = this.elementFromNode(node);
+          if (element) {
+            this.processTree(element, this.removeElement);
           }
         }
-      }
-    };
-    ElementObserver2.prototype.removeElement = function(element) {
-      if (this.elements.has(element)) {
-        this.elements.delete(element);
-        if (this.delegate.elementUnmatched) {
-          this.delegate.elementUnmatched(element);
+      };
+      ElementObserver2.prototype.processAddedNodes = function(nodes) {
+        for (var _i = 0, _a = Array.from(nodes); _i < _a.length; _i++) {
+          var node = _a[_i];
+          var element = this.elementFromNode(node);
+          if (element && this.elementIsActive(element)) {
+            this.processTree(element, this.addElement);
+          }
         }
-      }
-    };
-    return ElementObserver2;
-  }();
+      };
+      ElementObserver2.prototype.matchElement = function(element) {
+        return this.delegate.matchElement(element);
+      };
+      ElementObserver2.prototype.matchElementsInTree = function(tree) {
+        if (tree === void 0) {
+          tree = this.element;
+        }
+        return this.delegate.matchElementsInTree(tree);
+      };
+      ElementObserver2.prototype.processTree = function(tree, processor) {
+        for (var _i = 0, _a = this.matchElementsInTree(tree); _i < _a.length; _i++) {
+          var element = _a[_i];
+          processor.call(this, element);
+        }
+      };
+      ElementObserver2.prototype.elementFromNode = function(node) {
+        if (node.nodeType == Node.ELEMENT_NODE) {
+          return node;
+        }
+      };
+      ElementObserver2.prototype.elementIsActive = function(element) {
+        if (element.isConnected != this.element.isConnected) {
+          return false;
+        } else {
+          return this.element.contains(element);
+        }
+      };
+      ElementObserver2.prototype.addElement = function(element) {
+        if (!this.elements.has(element)) {
+          if (this.elementIsActive(element)) {
+            this.elements.add(element);
+            if (this.delegate.elementMatched) {
+              this.delegate.elementMatched(element);
+            }
+          }
+        }
+      };
+      ElementObserver2.prototype.removeElement = function(element) {
+        if (this.elements.has(element)) {
+          this.elements.delete(element);
+          if (this.delegate.elementUnmatched) {
+            this.delegate.elementUnmatched(element);
+          }
+        }
+      };
+      return ElementObserver2;
+    }()
+  );
 
   // node_modules/@stimulus/mutation-observers/dist/src/attribute_observer.js
-  var AttributeObserver = function() {
-    function AttributeObserver2(element, attributeName, delegate) {
-      this.attributeName = attributeName;
-      this.delegate = delegate;
-      this.elementObserver = new ElementObserver(element, this);
-    }
-    Object.defineProperty(AttributeObserver2.prototype, "element", {
-      get: function() {
-        return this.elementObserver.element;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Object.defineProperty(AttributeObserver2.prototype, "selector", {
-      get: function() {
-        return "[" + this.attributeName + "]";
-      },
-      enumerable: true,
-      configurable: true
-    });
-    AttributeObserver2.prototype.start = function() {
-      this.elementObserver.start();
-    };
-    AttributeObserver2.prototype.stop = function() {
-      this.elementObserver.stop();
-    };
-    AttributeObserver2.prototype.refresh = function() {
-      this.elementObserver.refresh();
-    };
-    Object.defineProperty(AttributeObserver2.prototype, "started", {
-      get: function() {
-        return this.elementObserver.started;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    AttributeObserver2.prototype.matchElement = function(element) {
-      return element.hasAttribute(this.attributeName);
-    };
-    AttributeObserver2.prototype.matchElementsInTree = function(tree) {
-      var match3 = this.matchElement(tree) ? [tree] : [];
-      var matches = Array.from(tree.querySelectorAll(this.selector));
-      return match3.concat(matches);
-    };
-    AttributeObserver2.prototype.elementMatched = function(element) {
-      if (this.delegate.elementMatchedAttribute) {
-        this.delegate.elementMatchedAttribute(element, this.attributeName);
+  var AttributeObserver = (
+    /** @class */
+    function() {
+      function AttributeObserver2(element, attributeName, delegate) {
+        this.attributeName = attributeName;
+        this.delegate = delegate;
+        this.elementObserver = new ElementObserver(element, this);
       }
-    };
-    AttributeObserver2.prototype.elementUnmatched = function(element) {
-      if (this.delegate.elementUnmatchedAttribute) {
-        this.delegate.elementUnmatchedAttribute(element, this.attributeName);
-      }
-    };
-    AttributeObserver2.prototype.elementAttributeChanged = function(element, attributeName) {
-      if (this.delegate.elementAttributeValueChanged && this.attributeName == attributeName) {
-        this.delegate.elementAttributeValueChanged(element, attributeName);
-      }
-    };
-    return AttributeObserver2;
-  }();
+      Object.defineProperty(AttributeObserver2.prototype, "element", {
+        get: function() {
+          return this.elementObserver.element;
+        },
+        enumerable: true,
+        configurable: true
+      });
+      Object.defineProperty(AttributeObserver2.prototype, "selector", {
+        get: function() {
+          return "[" + this.attributeName + "]";
+        },
+        enumerable: true,
+        configurable: true
+      });
+      AttributeObserver2.prototype.start = function() {
+        this.elementObserver.start();
+      };
+      AttributeObserver2.prototype.stop = function() {
+        this.elementObserver.stop();
+      };
+      AttributeObserver2.prototype.refresh = function() {
+        this.elementObserver.refresh();
+      };
+      Object.defineProperty(AttributeObserver2.prototype, "started", {
+        get: function() {
+          return this.elementObserver.started;
+        },
+        enumerable: true,
+        configurable: true
+      });
+      AttributeObserver2.prototype.matchElement = function(element) {
+        return element.hasAttribute(this.attributeName);
+      };
+      AttributeObserver2.prototype.matchElementsInTree = function(tree) {
+        var match3 = this.matchElement(tree) ? [tree] : [];
+        var matches = Array.from(tree.querySelectorAll(this.selector));
+        return match3.concat(matches);
+      };
+      AttributeObserver2.prototype.elementMatched = function(element) {
+        if (this.delegate.elementMatchedAttribute) {
+          this.delegate.elementMatchedAttribute(element, this.attributeName);
+        }
+      };
+      AttributeObserver2.prototype.elementUnmatched = function(element) {
+        if (this.delegate.elementUnmatchedAttribute) {
+          this.delegate.elementUnmatchedAttribute(element, this.attributeName);
+        }
+      };
+      AttributeObserver2.prototype.elementAttributeChanged = function(element, attributeName) {
+        if (this.delegate.elementAttributeValueChanged && this.attributeName == attributeName) {
+          this.delegate.elementAttributeValueChanged(element, attributeName);
+        }
+      };
+      return AttributeObserver2;
+    }()
+  );
 
   // node_modules/@stimulus/multimap/dist/src/set_operations.js
   function add(map3, key, value) {
@@ -48060,64 +49347,67 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   }
 
   // node_modules/@stimulus/multimap/dist/src/multimap.js
-  var Multimap = function() {
-    function Multimap2() {
-      this.valuesByKey = /* @__PURE__ */ new Map();
-    }
-    Object.defineProperty(Multimap2.prototype, "values", {
-      get: function() {
-        var sets = Array.from(this.valuesByKey.values());
-        return sets.reduce(function(values, set2) {
-          return values.concat(Array.from(set2));
-        }, []);
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Object.defineProperty(Multimap2.prototype, "size", {
-      get: function() {
-        var sets = Array.from(this.valuesByKey.values());
-        return sets.reduce(function(size, set2) {
-          return size + set2.size;
-        }, 0);
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Multimap2.prototype.add = function(key, value) {
-      add(this.valuesByKey, key, value);
-    };
-    Multimap2.prototype.delete = function(key, value) {
-      del(this.valuesByKey, key, value);
-    };
-    Multimap2.prototype.has = function(key, value) {
-      var values = this.valuesByKey.get(key);
-      return values != null && values.has(value);
-    };
-    Multimap2.prototype.hasKey = function(key) {
-      return this.valuesByKey.has(key);
-    };
-    Multimap2.prototype.hasValue = function(value) {
-      var sets = Array.from(this.valuesByKey.values());
-      return sets.some(function(set2) {
-        return set2.has(value);
+  var Multimap = (
+    /** @class */
+    function() {
+      function Multimap2() {
+        this.valuesByKey = /* @__PURE__ */ new Map();
+      }
+      Object.defineProperty(Multimap2.prototype, "values", {
+        get: function() {
+          var sets = Array.from(this.valuesByKey.values());
+          return sets.reduce(function(values, set2) {
+            return values.concat(Array.from(set2));
+          }, []);
+        },
+        enumerable: true,
+        configurable: true
       });
-    };
-    Multimap2.prototype.getValuesForKey = function(key) {
-      var values = this.valuesByKey.get(key);
-      return values ? Array.from(values) : [];
-    };
-    Multimap2.prototype.getKeysForValue = function(value) {
-      return Array.from(this.valuesByKey).filter(function(_a) {
-        var key = _a[0], values = _a[1];
-        return values.has(value);
-      }).map(function(_a) {
-        var key = _a[0], values = _a[1];
-        return key;
+      Object.defineProperty(Multimap2.prototype, "size", {
+        get: function() {
+          var sets = Array.from(this.valuesByKey.values());
+          return sets.reduce(function(size, set2) {
+            return size + set2.size;
+          }, 0);
+        },
+        enumerable: true,
+        configurable: true
       });
-    };
-    return Multimap2;
-  }();
+      Multimap2.prototype.add = function(key, value) {
+        add(this.valuesByKey, key, value);
+      };
+      Multimap2.prototype.delete = function(key, value) {
+        del(this.valuesByKey, key, value);
+      };
+      Multimap2.prototype.has = function(key, value) {
+        var values = this.valuesByKey.get(key);
+        return values != null && values.has(value);
+      };
+      Multimap2.prototype.hasKey = function(key) {
+        return this.valuesByKey.has(key);
+      };
+      Multimap2.prototype.hasValue = function(value) {
+        var sets = Array.from(this.valuesByKey.values());
+        return sets.some(function(set2) {
+          return set2.has(value);
+        });
+      };
+      Multimap2.prototype.getValuesForKey = function(key) {
+        var values = this.valuesByKey.get(key);
+        return values ? Array.from(values) : [];
+      };
+      Multimap2.prototype.getKeysForValue = function(value) {
+        return Array.from(this.valuesByKey).filter(function(_a) {
+          var key = _a[0], values = _a[1];
+          return values.has(value);
+        }).map(function(_a) {
+          var key = _a[0], values = _a[1];
+          return key;
+        });
+      };
+      return Multimap2;
+    }()
+  );
 
   // node_modules/@stimulus/multimap/dist/src/indexed_multimap.js
   var __extends = function() {
@@ -48136,126 +49426,132 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
   }();
-  var IndexedMultimap = function(_super) {
-    __extends(IndexedMultimap2, _super);
-    function IndexedMultimap2() {
-      var _this = _super.call(this) || this;
-      _this.keysByValue = /* @__PURE__ */ new Map();
-      return _this;
-    }
-    Object.defineProperty(IndexedMultimap2.prototype, "values", {
-      get: function() {
-        return Array.from(this.keysByValue.keys());
-      },
-      enumerable: true,
-      configurable: true
-    });
-    IndexedMultimap2.prototype.add = function(key, value) {
-      _super.prototype.add.call(this, key, value);
-      add(this.keysByValue, value, key);
-    };
-    IndexedMultimap2.prototype.delete = function(key, value) {
-      _super.prototype.delete.call(this, key, value);
-      del(this.keysByValue, value, key);
-    };
-    IndexedMultimap2.prototype.hasValue = function(value) {
-      return this.keysByValue.has(value);
-    };
-    IndexedMultimap2.prototype.getKeysForValue = function(value) {
-      var set2 = this.keysByValue.get(value);
-      return set2 ? Array.from(set2) : [];
-    };
-    return IndexedMultimap2;
-  }(Multimap);
+  var IndexedMultimap = (
+    /** @class */
+    function(_super) {
+      __extends(IndexedMultimap2, _super);
+      function IndexedMultimap2() {
+        var _this = _super.call(this) || this;
+        _this.keysByValue = /* @__PURE__ */ new Map();
+        return _this;
+      }
+      Object.defineProperty(IndexedMultimap2.prototype, "values", {
+        get: function() {
+          return Array.from(this.keysByValue.keys());
+        },
+        enumerable: true,
+        configurable: true
+      });
+      IndexedMultimap2.prototype.add = function(key, value) {
+        _super.prototype.add.call(this, key, value);
+        add(this.keysByValue, value, key);
+      };
+      IndexedMultimap2.prototype.delete = function(key, value) {
+        _super.prototype.delete.call(this, key, value);
+        del(this.keysByValue, value, key);
+      };
+      IndexedMultimap2.prototype.hasValue = function(value) {
+        return this.keysByValue.has(value);
+      };
+      IndexedMultimap2.prototype.getKeysForValue = function(value) {
+        var set2 = this.keysByValue.get(value);
+        return set2 ? Array.from(set2) : [];
+      };
+      return IndexedMultimap2;
+    }(Multimap)
+  );
 
   // node_modules/@stimulus/mutation-observers/dist/src/token_list_observer.js
-  var TokenListObserver = function() {
-    function TokenListObserver2(element, attributeName, delegate) {
-      this.attributeObserver = new AttributeObserver(element, attributeName, this);
-      this.delegate = delegate;
-      this.tokensByElement = new Multimap();
-    }
-    Object.defineProperty(TokenListObserver2.prototype, "started", {
-      get: function() {
-        return this.attributeObserver.started;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    TokenListObserver2.prototype.start = function() {
-      this.attributeObserver.start();
-    };
-    TokenListObserver2.prototype.stop = function() {
-      this.attributeObserver.stop();
-    };
-    TokenListObserver2.prototype.refresh = function() {
-      this.attributeObserver.refresh();
-    };
-    Object.defineProperty(TokenListObserver2.prototype, "element", {
-      get: function() {
-        return this.attributeObserver.element;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Object.defineProperty(TokenListObserver2.prototype, "attributeName", {
-      get: function() {
-        return this.attributeObserver.attributeName;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    TokenListObserver2.prototype.elementMatchedAttribute = function(element) {
-      this.tokensMatched(this.readTokensForElement(element));
-    };
-    TokenListObserver2.prototype.elementAttributeValueChanged = function(element) {
-      var _a = this.refreshTokensForElement(element), unmatchedTokens = _a[0], matchedTokens = _a[1];
-      this.tokensUnmatched(unmatchedTokens);
-      this.tokensMatched(matchedTokens);
-    };
-    TokenListObserver2.prototype.elementUnmatchedAttribute = function(element) {
-      this.tokensUnmatched(this.tokensByElement.getValuesForKey(element));
-    };
-    TokenListObserver2.prototype.tokensMatched = function(tokens) {
-      var _this = this;
-      tokens.forEach(function(token) {
-        return _this.tokenMatched(token);
-      });
-    };
-    TokenListObserver2.prototype.tokensUnmatched = function(tokens) {
-      var _this = this;
-      tokens.forEach(function(token) {
-        return _this.tokenUnmatched(token);
-      });
-    };
-    TokenListObserver2.prototype.tokenMatched = function(token) {
-      this.delegate.tokenMatched(token);
-      this.tokensByElement.add(token.element, token);
-    };
-    TokenListObserver2.prototype.tokenUnmatched = function(token) {
-      this.delegate.tokenUnmatched(token);
-      this.tokensByElement.delete(token.element, token);
-    };
-    TokenListObserver2.prototype.refreshTokensForElement = function(element) {
-      var previousTokens = this.tokensByElement.getValuesForKey(element);
-      var currentTokens = this.readTokensForElement(element);
-      var firstDifferingIndex = zip(previousTokens, currentTokens).findIndex(function(_a) {
-        var previousToken = _a[0], currentToken = _a[1];
-        return !tokensAreEqual(previousToken, currentToken);
-      });
-      if (firstDifferingIndex == -1) {
-        return [[], []];
-      } else {
-        return [previousTokens.slice(firstDifferingIndex), currentTokens.slice(firstDifferingIndex)];
+  var TokenListObserver = (
+    /** @class */
+    function() {
+      function TokenListObserver2(element, attributeName, delegate) {
+        this.attributeObserver = new AttributeObserver(element, attributeName, this);
+        this.delegate = delegate;
+        this.tokensByElement = new Multimap();
       }
-    };
-    TokenListObserver2.prototype.readTokensForElement = function(element) {
-      var attributeName = this.attributeName;
-      var tokenString = element.getAttribute(attributeName) || "";
-      return parseTokenString(tokenString, element, attributeName);
-    };
-    return TokenListObserver2;
-  }();
+      Object.defineProperty(TokenListObserver2.prototype, "started", {
+        get: function() {
+          return this.attributeObserver.started;
+        },
+        enumerable: true,
+        configurable: true
+      });
+      TokenListObserver2.prototype.start = function() {
+        this.attributeObserver.start();
+      };
+      TokenListObserver2.prototype.stop = function() {
+        this.attributeObserver.stop();
+      };
+      TokenListObserver2.prototype.refresh = function() {
+        this.attributeObserver.refresh();
+      };
+      Object.defineProperty(TokenListObserver2.prototype, "element", {
+        get: function() {
+          return this.attributeObserver.element;
+        },
+        enumerable: true,
+        configurable: true
+      });
+      Object.defineProperty(TokenListObserver2.prototype, "attributeName", {
+        get: function() {
+          return this.attributeObserver.attributeName;
+        },
+        enumerable: true,
+        configurable: true
+      });
+      TokenListObserver2.prototype.elementMatchedAttribute = function(element) {
+        this.tokensMatched(this.readTokensForElement(element));
+      };
+      TokenListObserver2.prototype.elementAttributeValueChanged = function(element) {
+        var _a = this.refreshTokensForElement(element), unmatchedTokens = _a[0], matchedTokens = _a[1];
+        this.tokensUnmatched(unmatchedTokens);
+        this.tokensMatched(matchedTokens);
+      };
+      TokenListObserver2.prototype.elementUnmatchedAttribute = function(element) {
+        this.tokensUnmatched(this.tokensByElement.getValuesForKey(element));
+      };
+      TokenListObserver2.prototype.tokensMatched = function(tokens) {
+        var _this = this;
+        tokens.forEach(function(token) {
+          return _this.tokenMatched(token);
+        });
+      };
+      TokenListObserver2.prototype.tokensUnmatched = function(tokens) {
+        var _this = this;
+        tokens.forEach(function(token) {
+          return _this.tokenUnmatched(token);
+        });
+      };
+      TokenListObserver2.prototype.tokenMatched = function(token) {
+        this.delegate.tokenMatched(token);
+        this.tokensByElement.add(token.element, token);
+      };
+      TokenListObserver2.prototype.tokenUnmatched = function(token) {
+        this.delegate.tokenUnmatched(token);
+        this.tokensByElement.delete(token.element, token);
+      };
+      TokenListObserver2.prototype.refreshTokensForElement = function(element) {
+        var previousTokens = this.tokensByElement.getValuesForKey(element);
+        var currentTokens = this.readTokensForElement(element);
+        var firstDifferingIndex = zip(previousTokens, currentTokens).findIndex(function(_a) {
+          var previousToken = _a[0], currentToken = _a[1];
+          return !tokensAreEqual(previousToken, currentToken);
+        });
+        if (firstDifferingIndex == -1) {
+          return [[], []];
+        } else {
+          return [previousTokens.slice(firstDifferingIndex), currentTokens.slice(firstDifferingIndex)];
+        }
+      };
+      TokenListObserver2.prototype.readTokensForElement = function(element) {
+        var attributeName = this.attributeName;
+        var tokenString = element.getAttribute(attributeName) || "";
+        return parseTokenString(tokenString, element, attributeName);
+      };
+      return TokenListObserver2;
+    }()
+  );
   function parseTokenString(tokenString, element, attributeName) {
     return tokenString.trim().split(/\s+/).filter(function(content) {
       return content.length;
@@ -48274,256 +49570,265 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   }
 
   // node_modules/@stimulus/mutation-observers/dist/src/value_list_observer.js
-  var ValueListObserver = function() {
-    function ValueListObserver2(element, attributeName, delegate) {
-      this.tokenListObserver = new TokenListObserver(element, attributeName, this);
-      this.delegate = delegate;
-      this.parseResultsByToken = /* @__PURE__ */ new WeakMap();
-      this.valuesByTokenByElement = /* @__PURE__ */ new WeakMap();
-    }
-    Object.defineProperty(ValueListObserver2.prototype, "started", {
-      get: function() {
-        return this.tokenListObserver.started;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    ValueListObserver2.prototype.start = function() {
-      this.tokenListObserver.start();
-    };
-    ValueListObserver2.prototype.stop = function() {
-      this.tokenListObserver.stop();
-    };
-    ValueListObserver2.prototype.refresh = function() {
-      this.tokenListObserver.refresh();
-    };
-    Object.defineProperty(ValueListObserver2.prototype, "element", {
-      get: function() {
-        return this.tokenListObserver.element;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Object.defineProperty(ValueListObserver2.prototype, "attributeName", {
-      get: function() {
-        return this.tokenListObserver.attributeName;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    ValueListObserver2.prototype.tokenMatched = function(token) {
-      var element = token.element;
-      var value = this.fetchParseResultForToken(token).value;
-      if (value) {
-        this.fetchValuesByTokenForElement(element).set(token, value);
-        this.delegate.elementMatchedValue(element, value);
+  var ValueListObserver = (
+    /** @class */
+    function() {
+      function ValueListObserver2(element, attributeName, delegate) {
+        this.tokenListObserver = new TokenListObserver(element, attributeName, this);
+        this.delegate = delegate;
+        this.parseResultsByToken = /* @__PURE__ */ new WeakMap();
+        this.valuesByTokenByElement = /* @__PURE__ */ new WeakMap();
       }
-    };
-    ValueListObserver2.prototype.tokenUnmatched = function(token) {
-      var element = token.element;
-      var value = this.fetchParseResultForToken(token).value;
-      if (value) {
-        this.fetchValuesByTokenForElement(element).delete(token);
-        this.delegate.elementUnmatchedValue(element, value);
-      }
-    };
-    ValueListObserver2.prototype.fetchParseResultForToken = function(token) {
-      var parseResult = this.parseResultsByToken.get(token);
-      if (!parseResult) {
-        parseResult = this.parseToken(token);
-        this.parseResultsByToken.set(token, parseResult);
-      }
-      return parseResult;
-    };
-    ValueListObserver2.prototype.fetchValuesByTokenForElement = function(element) {
-      var valuesByToken = this.valuesByTokenByElement.get(element);
-      if (!valuesByToken) {
-        valuesByToken = /* @__PURE__ */ new Map();
-        this.valuesByTokenByElement.set(element, valuesByToken);
-      }
-      return valuesByToken;
-    };
-    ValueListObserver2.prototype.parseToken = function(token) {
-      try {
-        var value = this.delegate.parseValueForToken(token);
-        return { value };
-      } catch (error2) {
-        return { error: error2 };
-      }
-    };
-    return ValueListObserver2;
-  }();
+      Object.defineProperty(ValueListObserver2.prototype, "started", {
+        get: function() {
+          return this.tokenListObserver.started;
+        },
+        enumerable: true,
+        configurable: true
+      });
+      ValueListObserver2.prototype.start = function() {
+        this.tokenListObserver.start();
+      };
+      ValueListObserver2.prototype.stop = function() {
+        this.tokenListObserver.stop();
+      };
+      ValueListObserver2.prototype.refresh = function() {
+        this.tokenListObserver.refresh();
+      };
+      Object.defineProperty(ValueListObserver2.prototype, "element", {
+        get: function() {
+          return this.tokenListObserver.element;
+        },
+        enumerable: true,
+        configurable: true
+      });
+      Object.defineProperty(ValueListObserver2.prototype, "attributeName", {
+        get: function() {
+          return this.tokenListObserver.attributeName;
+        },
+        enumerable: true,
+        configurable: true
+      });
+      ValueListObserver2.prototype.tokenMatched = function(token) {
+        var element = token.element;
+        var value = this.fetchParseResultForToken(token).value;
+        if (value) {
+          this.fetchValuesByTokenForElement(element).set(token, value);
+          this.delegate.elementMatchedValue(element, value);
+        }
+      };
+      ValueListObserver2.prototype.tokenUnmatched = function(token) {
+        var element = token.element;
+        var value = this.fetchParseResultForToken(token).value;
+        if (value) {
+          this.fetchValuesByTokenForElement(element).delete(token);
+          this.delegate.elementUnmatchedValue(element, value);
+        }
+      };
+      ValueListObserver2.prototype.fetchParseResultForToken = function(token) {
+        var parseResult = this.parseResultsByToken.get(token);
+        if (!parseResult) {
+          parseResult = this.parseToken(token);
+          this.parseResultsByToken.set(token, parseResult);
+        }
+        return parseResult;
+      };
+      ValueListObserver2.prototype.fetchValuesByTokenForElement = function(element) {
+        var valuesByToken = this.valuesByTokenByElement.get(element);
+        if (!valuesByToken) {
+          valuesByToken = /* @__PURE__ */ new Map();
+          this.valuesByTokenByElement.set(element, valuesByToken);
+        }
+        return valuesByToken;
+      };
+      ValueListObserver2.prototype.parseToken = function(token) {
+        try {
+          var value = this.delegate.parseValueForToken(token);
+          return { value };
+        } catch (error2) {
+          return { error: error2 };
+        }
+      };
+      return ValueListObserver2;
+    }()
+  );
 
   // node_modules/@stimulus/core/dist/src/binding_observer.js
-  var BindingObserver = function() {
-    function BindingObserver2(context, delegate) {
-      this.context = context;
-      this.delegate = delegate;
-      this.bindingsByAction = /* @__PURE__ */ new Map();
-    }
-    BindingObserver2.prototype.start = function() {
-      if (!this.valueListObserver) {
-        this.valueListObserver = new ValueListObserver(this.element, this.actionAttribute, this);
-        this.valueListObserver.start();
+  var BindingObserver = (
+    /** @class */
+    function() {
+      function BindingObserver2(context, delegate) {
+        this.context = context;
+        this.delegate = delegate;
+        this.bindingsByAction = /* @__PURE__ */ new Map();
       }
-    };
-    BindingObserver2.prototype.stop = function() {
-      if (this.valueListObserver) {
-        this.valueListObserver.stop();
-        delete this.valueListObserver;
-        this.disconnectAllActions();
-      }
-    };
-    Object.defineProperty(BindingObserver2.prototype, "element", {
-      get: function() {
-        return this.context.element;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Object.defineProperty(BindingObserver2.prototype, "identifier", {
-      get: function() {
-        return this.context.identifier;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Object.defineProperty(BindingObserver2.prototype, "actionAttribute", {
-      get: function() {
-        return this.schema.actionAttribute;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Object.defineProperty(BindingObserver2.prototype, "schema", {
-      get: function() {
-        return this.context.schema;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Object.defineProperty(BindingObserver2.prototype, "bindings", {
-      get: function() {
-        return Array.from(this.bindingsByAction.values());
-      },
-      enumerable: true,
-      configurable: true
-    });
-    BindingObserver2.prototype.connectAction = function(action) {
-      var binding = new Binding(this.context, action);
-      this.bindingsByAction.set(action, binding);
-      this.delegate.bindingConnected(binding);
-    };
-    BindingObserver2.prototype.disconnectAction = function(action) {
-      var binding = this.bindingsByAction.get(action);
-      if (binding) {
-        this.bindingsByAction.delete(action);
-        this.delegate.bindingDisconnected(binding);
-      }
-    };
-    BindingObserver2.prototype.disconnectAllActions = function() {
-      var _this = this;
-      this.bindings.forEach(function(binding) {
-        return _this.delegate.bindingDisconnected(binding);
+      BindingObserver2.prototype.start = function() {
+        if (!this.valueListObserver) {
+          this.valueListObserver = new ValueListObserver(this.element, this.actionAttribute, this);
+          this.valueListObserver.start();
+        }
+      };
+      BindingObserver2.prototype.stop = function() {
+        if (this.valueListObserver) {
+          this.valueListObserver.stop();
+          delete this.valueListObserver;
+          this.disconnectAllActions();
+        }
+      };
+      Object.defineProperty(BindingObserver2.prototype, "element", {
+        get: function() {
+          return this.context.element;
+        },
+        enumerable: true,
+        configurable: true
       });
-      this.bindingsByAction.clear();
-    };
-    BindingObserver2.prototype.parseValueForToken = function(token) {
-      var action = Action.forToken(token);
-      if (action.identifier == this.identifier) {
-        return action;
-      }
-    };
-    BindingObserver2.prototype.elementMatchedValue = function(element, action) {
-      this.connectAction(action);
-    };
-    BindingObserver2.prototype.elementUnmatchedValue = function(element, action) {
-      this.disconnectAction(action);
-    };
-    return BindingObserver2;
-  }();
+      Object.defineProperty(BindingObserver2.prototype, "identifier", {
+        get: function() {
+          return this.context.identifier;
+        },
+        enumerable: true,
+        configurable: true
+      });
+      Object.defineProperty(BindingObserver2.prototype, "actionAttribute", {
+        get: function() {
+          return this.schema.actionAttribute;
+        },
+        enumerable: true,
+        configurable: true
+      });
+      Object.defineProperty(BindingObserver2.prototype, "schema", {
+        get: function() {
+          return this.context.schema;
+        },
+        enumerable: true,
+        configurable: true
+      });
+      Object.defineProperty(BindingObserver2.prototype, "bindings", {
+        get: function() {
+          return Array.from(this.bindingsByAction.values());
+        },
+        enumerable: true,
+        configurable: true
+      });
+      BindingObserver2.prototype.connectAction = function(action) {
+        var binding = new Binding(this.context, action);
+        this.bindingsByAction.set(action, binding);
+        this.delegate.bindingConnected(binding);
+      };
+      BindingObserver2.prototype.disconnectAction = function(action) {
+        var binding = this.bindingsByAction.get(action);
+        if (binding) {
+          this.bindingsByAction.delete(action);
+          this.delegate.bindingDisconnected(binding);
+        }
+      };
+      BindingObserver2.prototype.disconnectAllActions = function() {
+        var _this = this;
+        this.bindings.forEach(function(binding) {
+          return _this.delegate.bindingDisconnected(binding);
+        });
+        this.bindingsByAction.clear();
+      };
+      BindingObserver2.prototype.parseValueForToken = function(token) {
+        var action = Action.forToken(token);
+        if (action.identifier == this.identifier) {
+          return action;
+        }
+      };
+      BindingObserver2.prototype.elementMatchedValue = function(element, action) {
+        this.connectAction(action);
+      };
+      BindingObserver2.prototype.elementUnmatchedValue = function(element, action) {
+        this.disconnectAction(action);
+      };
+      return BindingObserver2;
+    }()
+  );
 
   // node_modules/@stimulus/core/dist/src/context.js
-  var Context = function() {
-    function Context2(module, scope) {
-      this.module = module;
-      this.scope = scope;
-      this.controller = new module.controllerConstructor(this);
-      this.bindingObserver = new BindingObserver(this, this.dispatcher);
-      try {
-        this.controller.initialize();
-      } catch (error2) {
-        this.handleError(error2, "initializing controller");
+  var Context = (
+    /** @class */
+    function() {
+      function Context2(module, scope) {
+        this.module = module;
+        this.scope = scope;
+        this.controller = new module.controllerConstructor(this);
+        this.bindingObserver = new BindingObserver(this, this.dispatcher);
+        try {
+          this.controller.initialize();
+        } catch (error2) {
+          this.handleError(error2, "initializing controller");
+        }
       }
-    }
-    Context2.prototype.connect = function() {
-      this.bindingObserver.start();
-      try {
-        this.controller.connect();
-      } catch (error2) {
-        this.handleError(error2, "connecting controller");
-      }
-    };
-    Context2.prototype.disconnect = function() {
-      try {
-        this.controller.disconnect();
-      } catch (error2) {
-        this.handleError(error2, "disconnecting controller");
-      }
-      this.bindingObserver.stop();
-    };
-    Object.defineProperty(Context2.prototype, "application", {
-      get: function() {
-        return this.module.application;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Object.defineProperty(Context2.prototype, "identifier", {
-      get: function() {
-        return this.module.identifier;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Object.defineProperty(Context2.prototype, "schema", {
-      get: function() {
-        return this.application.schema;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Object.defineProperty(Context2.prototype, "dispatcher", {
-      get: function() {
-        return this.application.dispatcher;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Object.defineProperty(Context2.prototype, "element", {
-      get: function() {
-        return this.scope.element;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Object.defineProperty(Context2.prototype, "parentElement", {
-      get: function() {
-        return this.element.parentElement;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Context2.prototype.handleError = function(error2, message, detail) {
-      if (detail === void 0) {
-        detail = {};
-      }
-      var _a = this, identifier = _a.identifier, controller = _a.controller, element = _a.element;
-      detail = Object.assign({ identifier, controller, element }, detail);
-      this.application.handleError(error2, "Error " + message, detail);
-    };
-    return Context2;
-  }();
+      Context2.prototype.connect = function() {
+        this.bindingObserver.start();
+        try {
+          this.controller.connect();
+        } catch (error2) {
+          this.handleError(error2, "connecting controller");
+        }
+      };
+      Context2.prototype.disconnect = function() {
+        try {
+          this.controller.disconnect();
+        } catch (error2) {
+          this.handleError(error2, "disconnecting controller");
+        }
+        this.bindingObserver.stop();
+      };
+      Object.defineProperty(Context2.prototype, "application", {
+        get: function() {
+          return this.module.application;
+        },
+        enumerable: true,
+        configurable: true
+      });
+      Object.defineProperty(Context2.prototype, "identifier", {
+        get: function() {
+          return this.module.identifier;
+        },
+        enumerable: true,
+        configurable: true
+      });
+      Object.defineProperty(Context2.prototype, "schema", {
+        get: function() {
+          return this.application.schema;
+        },
+        enumerable: true,
+        configurable: true
+      });
+      Object.defineProperty(Context2.prototype, "dispatcher", {
+        get: function() {
+          return this.application.dispatcher;
+        },
+        enumerable: true,
+        configurable: true
+      });
+      Object.defineProperty(Context2.prototype, "element", {
+        get: function() {
+          return this.scope.element;
+        },
+        enumerable: true,
+        configurable: true
+      });
+      Object.defineProperty(Context2.prototype, "parentElement", {
+        get: function() {
+          return this.element.parentElement;
+        },
+        enumerable: true,
+        configurable: true
+      });
+      Context2.prototype.handleError = function(error2, message, detail) {
+        if (detail === void 0) {
+          detail = {};
+        }
+        var _a = this, identifier = _a.identifier, controller = _a.controller, element = _a.element;
+        detail = Object.assign({ identifier, controller, element }, detail);
+        this.application.handleError(error2, "Error " + message, detail);
+      };
+      return Context2;
+    }()
+  );
 
   // node_modules/@stimulus/core/dist/src/definition.js
   var __extends2 = function() {
@@ -48579,115 +49884,124 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       return extendWithReflect;
     } catch (error2) {
       return function(constructor) {
-        return function(_super) {
-          __extends2(Controller2, _super);
-          function Controller2() {
-            return _super !== null && _super.apply(this, arguments) || this;
-          }
-          return Controller2;
-        }(constructor);
+        return (
+          /** @class */
+          function(_super) {
+            __extends2(Controller2, _super);
+            function Controller2() {
+              return _super !== null && _super.apply(this, arguments) || this;
+            }
+            return Controller2;
+          }(constructor)
+        );
       };
     }
   }();
 
   // node_modules/@stimulus/core/dist/src/module.js
-  var Module = function() {
-    function Module2(application2, definition) {
-      this.application = application2;
-      this.definition = blessDefinition(definition);
-      this.contextsByScope = /* @__PURE__ */ new WeakMap();
-      this.connectedContexts = /* @__PURE__ */ new Set();
-    }
-    Object.defineProperty(Module2.prototype, "identifier", {
-      get: function() {
-        return this.definition.identifier;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Object.defineProperty(Module2.prototype, "controllerConstructor", {
-      get: function() {
-        return this.definition.controllerConstructor;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Object.defineProperty(Module2.prototype, "contexts", {
-      get: function() {
-        return Array.from(this.connectedContexts);
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Module2.prototype.connectContextForScope = function(scope) {
-      var context = this.fetchContextForScope(scope);
-      this.connectedContexts.add(context);
-      context.connect();
-    };
-    Module2.prototype.disconnectContextForScope = function(scope) {
-      var context = this.contextsByScope.get(scope);
-      if (context) {
-        this.connectedContexts.delete(context);
-        context.disconnect();
+  var Module = (
+    /** @class */
+    function() {
+      function Module2(application2, definition) {
+        this.application = application2;
+        this.definition = blessDefinition(definition);
+        this.contextsByScope = /* @__PURE__ */ new WeakMap();
+        this.connectedContexts = /* @__PURE__ */ new Set();
       }
-    };
-    Module2.prototype.fetchContextForScope = function(scope) {
-      var context = this.contextsByScope.get(scope);
-      if (!context) {
-        context = new Context(this, scope);
-        this.contextsByScope.set(scope, context);
-      }
-      return context;
-    };
-    return Module2;
-  }();
+      Object.defineProperty(Module2.prototype, "identifier", {
+        get: function() {
+          return this.definition.identifier;
+        },
+        enumerable: true,
+        configurable: true
+      });
+      Object.defineProperty(Module2.prototype, "controllerConstructor", {
+        get: function() {
+          return this.definition.controllerConstructor;
+        },
+        enumerable: true,
+        configurable: true
+      });
+      Object.defineProperty(Module2.prototype, "contexts", {
+        get: function() {
+          return Array.from(this.connectedContexts);
+        },
+        enumerable: true,
+        configurable: true
+      });
+      Module2.prototype.connectContextForScope = function(scope) {
+        var context = this.fetchContextForScope(scope);
+        this.connectedContexts.add(context);
+        context.connect();
+      };
+      Module2.prototype.disconnectContextForScope = function(scope) {
+        var context = this.contextsByScope.get(scope);
+        if (context) {
+          this.connectedContexts.delete(context);
+          context.disconnect();
+        }
+      };
+      Module2.prototype.fetchContextForScope = function(scope) {
+        var context = this.contextsByScope.get(scope);
+        if (!context) {
+          context = new Context(this, scope);
+          this.contextsByScope.set(scope, context);
+        }
+        return context;
+      };
+      return Module2;
+    }()
+  );
 
   // node_modules/@stimulus/core/dist/src/data_map.js
-  var DataMap = function() {
-    function DataMap2(scope) {
-      this.scope = scope;
-    }
-    Object.defineProperty(DataMap2.prototype, "element", {
-      get: function() {
-        return this.scope.element;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Object.defineProperty(DataMap2.prototype, "identifier", {
-      get: function() {
-        return this.scope.identifier;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    DataMap2.prototype.get = function(key) {
-      key = this.getFormattedKey(key);
-      return this.element.getAttribute(key);
-    };
-    DataMap2.prototype.set = function(key, value) {
-      key = this.getFormattedKey(key);
-      this.element.setAttribute(key, value);
-      return this.get(key);
-    };
-    DataMap2.prototype.has = function(key) {
-      key = this.getFormattedKey(key);
-      return this.element.hasAttribute(key);
-    };
-    DataMap2.prototype.delete = function(key) {
-      if (this.has(key)) {
-        key = this.getFormattedKey(key);
-        this.element.removeAttribute(key);
-        return true;
-      } else {
-        return false;
+  var DataMap = (
+    /** @class */
+    function() {
+      function DataMap2(scope) {
+        this.scope = scope;
       }
-    };
-    DataMap2.prototype.getFormattedKey = function(key) {
-      return "data-" + this.identifier + "-" + dasherize(key);
-    };
-    return DataMap2;
-  }();
+      Object.defineProperty(DataMap2.prototype, "element", {
+        get: function() {
+          return this.scope.element;
+        },
+        enumerable: true,
+        configurable: true
+      });
+      Object.defineProperty(DataMap2.prototype, "identifier", {
+        get: function() {
+          return this.scope.identifier;
+        },
+        enumerable: true,
+        configurable: true
+      });
+      DataMap2.prototype.get = function(key) {
+        key = this.getFormattedKey(key);
+        return this.element.getAttribute(key);
+      };
+      DataMap2.prototype.set = function(key, value) {
+        key = this.getFormattedKey(key);
+        this.element.setAttribute(key, value);
+        return this.get(key);
+      };
+      DataMap2.prototype.has = function(key) {
+        key = this.getFormattedKey(key);
+        return this.element.hasAttribute(key);
+      };
+      DataMap2.prototype.delete = function(key) {
+        if (this.has(key)) {
+          key = this.getFormattedKey(key);
+          this.element.removeAttribute(key);
+          return true;
+        } else {
+          return false;
+        }
+      };
+      DataMap2.prototype.getFormattedKey = function(key) {
+        return "data-" + this.identifier + "-" + dasherize(key);
+      };
+      return DataMap2;
+    }()
+  );
   function dasherize(value) {
     return value.replace(/([A-Z])/g, function(_, char) {
       return "-" + char.toLowerCase();
@@ -48700,262 +50014,274 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   }
 
   // node_modules/@stimulus/core/dist/src/target_set.js
-  var TargetSet = function() {
-    function TargetSet2(scope) {
-      this.scope = scope;
-    }
-    Object.defineProperty(TargetSet2.prototype, "element", {
-      get: function() {
-        return this.scope.element;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Object.defineProperty(TargetSet2.prototype, "identifier", {
-      get: function() {
-        return this.scope.identifier;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Object.defineProperty(TargetSet2.prototype, "schema", {
-      get: function() {
-        return this.scope.schema;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    TargetSet2.prototype.has = function(targetName) {
-      return this.find(targetName) != null;
-    };
-    TargetSet2.prototype.find = function() {
-      var targetNames = [];
-      for (var _i = 0; _i < arguments.length; _i++) {
-        targetNames[_i] = arguments[_i];
+  var TargetSet = (
+    /** @class */
+    function() {
+      function TargetSet2(scope) {
+        this.scope = scope;
       }
-      var selector = this.getSelectorForTargetNames(targetNames);
-      return this.scope.findElement(selector);
-    };
-    TargetSet2.prototype.findAll = function() {
-      var targetNames = [];
-      for (var _i = 0; _i < arguments.length; _i++) {
-        targetNames[_i] = arguments[_i];
-      }
-      var selector = this.getSelectorForTargetNames(targetNames);
-      return this.scope.findAllElements(selector);
-    };
-    TargetSet2.prototype.getSelectorForTargetNames = function(targetNames) {
-      var _this = this;
-      return targetNames.map(function(targetName) {
-        return _this.getSelectorForTargetName(targetName);
-      }).join(", ");
-    };
-    TargetSet2.prototype.getSelectorForTargetName = function(targetName) {
-      var targetDescriptor = this.identifier + "." + targetName;
-      return attributeValueContainsToken(this.schema.targetAttribute, targetDescriptor);
-    };
-    return TargetSet2;
-  }();
+      Object.defineProperty(TargetSet2.prototype, "element", {
+        get: function() {
+          return this.scope.element;
+        },
+        enumerable: true,
+        configurable: true
+      });
+      Object.defineProperty(TargetSet2.prototype, "identifier", {
+        get: function() {
+          return this.scope.identifier;
+        },
+        enumerable: true,
+        configurable: true
+      });
+      Object.defineProperty(TargetSet2.prototype, "schema", {
+        get: function() {
+          return this.scope.schema;
+        },
+        enumerable: true,
+        configurable: true
+      });
+      TargetSet2.prototype.has = function(targetName) {
+        return this.find(targetName) != null;
+      };
+      TargetSet2.prototype.find = function() {
+        var targetNames = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+          targetNames[_i] = arguments[_i];
+        }
+        var selector = this.getSelectorForTargetNames(targetNames);
+        return this.scope.findElement(selector);
+      };
+      TargetSet2.prototype.findAll = function() {
+        var targetNames = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+          targetNames[_i] = arguments[_i];
+        }
+        var selector = this.getSelectorForTargetNames(targetNames);
+        return this.scope.findAllElements(selector);
+      };
+      TargetSet2.prototype.getSelectorForTargetNames = function(targetNames) {
+        var _this = this;
+        return targetNames.map(function(targetName) {
+          return _this.getSelectorForTargetName(targetName);
+        }).join(", ");
+      };
+      TargetSet2.prototype.getSelectorForTargetName = function(targetName) {
+        var targetDescriptor = this.identifier + "." + targetName;
+        return attributeValueContainsToken(this.schema.targetAttribute, targetDescriptor);
+      };
+      return TargetSet2;
+    }()
+  );
 
   // node_modules/@stimulus/core/dist/src/scope.js
-  var Scope = function() {
-    function Scope3(schema, identifier, element) {
-      this.schema = schema;
-      this.identifier = identifier;
-      this.element = element;
-      this.targets = new TargetSet(this);
-      this.data = new DataMap(this);
-    }
-    Scope3.prototype.findElement = function(selector) {
-      return this.findAllElements(selector)[0];
-    };
-    Scope3.prototype.findAllElements = function(selector) {
-      var head = this.element.matches(selector) ? [this.element] : [];
-      var tail = this.filterElements(Array.from(this.element.querySelectorAll(selector)));
-      return head.concat(tail);
-    };
-    Scope3.prototype.filterElements = function(elements2) {
-      var _this = this;
-      return elements2.filter(function(element) {
-        return _this.containsElement(element);
+  var Scope = (
+    /** @class */
+    function() {
+      function Scope3(schema, identifier, element) {
+        this.schema = schema;
+        this.identifier = identifier;
+        this.element = element;
+        this.targets = new TargetSet(this);
+        this.data = new DataMap(this);
+      }
+      Scope3.prototype.findElement = function(selector) {
+        return this.findAllElements(selector)[0];
+      };
+      Scope3.prototype.findAllElements = function(selector) {
+        var head = this.element.matches(selector) ? [this.element] : [];
+        var tail = this.filterElements(Array.from(this.element.querySelectorAll(selector)));
+        return head.concat(tail);
+      };
+      Scope3.prototype.filterElements = function(elements2) {
+        var _this = this;
+        return elements2.filter(function(element) {
+          return _this.containsElement(element);
+        });
+      };
+      Scope3.prototype.containsElement = function(element) {
+        return element.closest(this.controllerSelector) === this.element;
+      };
+      Object.defineProperty(Scope3.prototype, "controllerSelector", {
+        get: function() {
+          return attributeValueContainsToken(this.schema.controllerAttribute, this.identifier);
+        },
+        enumerable: true,
+        configurable: true
       });
-    };
-    Scope3.prototype.containsElement = function(element) {
-      return element.closest(this.controllerSelector) === this.element;
-    };
-    Object.defineProperty(Scope3.prototype, "controllerSelector", {
-      get: function() {
-        return attributeValueContainsToken(this.schema.controllerAttribute, this.identifier);
-      },
-      enumerable: true,
-      configurable: true
-    });
-    return Scope3;
-  }();
+      return Scope3;
+    }()
+  );
 
   // node_modules/@stimulus/core/dist/src/scope_observer.js
-  var ScopeObserver = function() {
-    function ScopeObserver2(element, schema, delegate) {
-      this.element = element;
-      this.schema = schema;
-      this.delegate = delegate;
-      this.valueListObserver = new ValueListObserver(this.element, this.controllerAttribute, this);
-      this.scopesByIdentifierByElement = /* @__PURE__ */ new WeakMap();
-      this.scopeReferenceCounts = /* @__PURE__ */ new WeakMap();
-    }
-    ScopeObserver2.prototype.start = function() {
-      this.valueListObserver.start();
-    };
-    ScopeObserver2.prototype.stop = function() {
-      this.valueListObserver.stop();
-    };
-    Object.defineProperty(ScopeObserver2.prototype, "controllerAttribute", {
-      get: function() {
-        return this.schema.controllerAttribute;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    ScopeObserver2.prototype.parseValueForToken = function(token) {
-      var element = token.element, identifier = token.content;
-      var scopesByIdentifier = this.fetchScopesByIdentifierForElement(element);
-      var scope = scopesByIdentifier.get(identifier);
-      if (!scope) {
-        scope = new Scope(this.schema, identifier, element);
-        scopesByIdentifier.set(identifier, scope);
+  var ScopeObserver = (
+    /** @class */
+    function() {
+      function ScopeObserver2(element, schema, delegate) {
+        this.element = element;
+        this.schema = schema;
+        this.delegate = delegate;
+        this.valueListObserver = new ValueListObserver(this.element, this.controllerAttribute, this);
+        this.scopesByIdentifierByElement = /* @__PURE__ */ new WeakMap();
+        this.scopeReferenceCounts = /* @__PURE__ */ new WeakMap();
       }
-      return scope;
-    };
-    ScopeObserver2.prototype.elementMatchedValue = function(element, value) {
-      var referenceCount = (this.scopeReferenceCounts.get(value) || 0) + 1;
-      this.scopeReferenceCounts.set(value, referenceCount);
-      if (referenceCount == 1) {
-        this.delegate.scopeConnected(value);
-      }
-    };
-    ScopeObserver2.prototype.elementUnmatchedValue = function(element, value) {
-      var referenceCount = this.scopeReferenceCounts.get(value);
-      if (referenceCount) {
-        this.scopeReferenceCounts.set(value, referenceCount - 1);
-        if (referenceCount == 1) {
-          this.delegate.scopeDisconnected(value);
+      ScopeObserver2.prototype.start = function() {
+        this.valueListObserver.start();
+      };
+      ScopeObserver2.prototype.stop = function() {
+        this.valueListObserver.stop();
+      };
+      Object.defineProperty(ScopeObserver2.prototype, "controllerAttribute", {
+        get: function() {
+          return this.schema.controllerAttribute;
+        },
+        enumerable: true,
+        configurable: true
+      });
+      ScopeObserver2.prototype.parseValueForToken = function(token) {
+        var element = token.element, identifier = token.content;
+        var scopesByIdentifier = this.fetchScopesByIdentifierForElement(element);
+        var scope = scopesByIdentifier.get(identifier);
+        if (!scope) {
+          scope = new Scope(this.schema, identifier, element);
+          scopesByIdentifier.set(identifier, scope);
         }
-      }
-    };
-    ScopeObserver2.prototype.fetchScopesByIdentifierForElement = function(element) {
-      var scopesByIdentifier = this.scopesByIdentifierByElement.get(element);
-      if (!scopesByIdentifier) {
-        scopesByIdentifier = /* @__PURE__ */ new Map();
-        this.scopesByIdentifierByElement.set(element, scopesByIdentifier);
-      }
-      return scopesByIdentifier;
-    };
-    return ScopeObserver2;
-  }();
+        return scope;
+      };
+      ScopeObserver2.prototype.elementMatchedValue = function(element, value) {
+        var referenceCount = (this.scopeReferenceCounts.get(value) || 0) + 1;
+        this.scopeReferenceCounts.set(value, referenceCount);
+        if (referenceCount == 1) {
+          this.delegate.scopeConnected(value);
+        }
+      };
+      ScopeObserver2.prototype.elementUnmatchedValue = function(element, value) {
+        var referenceCount = this.scopeReferenceCounts.get(value);
+        if (referenceCount) {
+          this.scopeReferenceCounts.set(value, referenceCount - 1);
+          if (referenceCount == 1) {
+            this.delegate.scopeDisconnected(value);
+          }
+        }
+      };
+      ScopeObserver2.prototype.fetchScopesByIdentifierForElement = function(element) {
+        var scopesByIdentifier = this.scopesByIdentifierByElement.get(element);
+        if (!scopesByIdentifier) {
+          scopesByIdentifier = /* @__PURE__ */ new Map();
+          this.scopesByIdentifierByElement.set(element, scopesByIdentifier);
+        }
+        return scopesByIdentifier;
+      };
+      return ScopeObserver2;
+    }()
+  );
 
   // node_modules/@stimulus/core/dist/src/router.js
-  var Router = function() {
-    function Router2(application2) {
-      this.application = application2;
-      this.scopeObserver = new ScopeObserver(this.element, this.schema, this);
-      this.scopesByIdentifier = new Multimap();
-      this.modulesByIdentifier = /* @__PURE__ */ new Map();
-    }
-    Object.defineProperty(Router2.prototype, "element", {
-      get: function() {
-        return this.application.element;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Object.defineProperty(Router2.prototype, "schema", {
-      get: function() {
-        return this.application.schema;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Object.defineProperty(Router2.prototype, "controllerAttribute", {
-      get: function() {
-        return this.schema.controllerAttribute;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Object.defineProperty(Router2.prototype, "modules", {
-      get: function() {
-        return Array.from(this.modulesByIdentifier.values());
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Object.defineProperty(Router2.prototype, "contexts", {
-      get: function() {
-        return this.modules.reduce(function(contexts, module) {
-          return contexts.concat(module.contexts);
-        }, []);
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Router2.prototype.start = function() {
-      this.scopeObserver.start();
-    };
-    Router2.prototype.stop = function() {
-      this.scopeObserver.stop();
-    };
-    Router2.prototype.loadDefinition = function(definition) {
-      this.unloadIdentifier(definition.identifier);
-      var module = new Module(this.application, definition);
-      this.connectModule(module);
-    };
-    Router2.prototype.unloadIdentifier = function(identifier) {
-      var module = this.modulesByIdentifier.get(identifier);
-      if (module) {
-        this.disconnectModule(module);
+  var Router = (
+    /** @class */
+    function() {
+      function Router2(application2) {
+        this.application = application2;
+        this.scopeObserver = new ScopeObserver(this.element, this.schema, this);
+        this.scopesByIdentifier = new Multimap();
+        this.modulesByIdentifier = /* @__PURE__ */ new Map();
       }
-    };
-    Router2.prototype.getContextForElementAndIdentifier = function(element, identifier) {
-      var module = this.modulesByIdentifier.get(identifier);
-      if (module) {
-        return module.contexts.find(function(context) {
-          return context.element == element;
+      Object.defineProperty(Router2.prototype, "element", {
+        get: function() {
+          return this.application.element;
+        },
+        enumerable: true,
+        configurable: true
+      });
+      Object.defineProperty(Router2.prototype, "schema", {
+        get: function() {
+          return this.application.schema;
+        },
+        enumerable: true,
+        configurable: true
+      });
+      Object.defineProperty(Router2.prototype, "controllerAttribute", {
+        get: function() {
+          return this.schema.controllerAttribute;
+        },
+        enumerable: true,
+        configurable: true
+      });
+      Object.defineProperty(Router2.prototype, "modules", {
+        get: function() {
+          return Array.from(this.modulesByIdentifier.values());
+        },
+        enumerable: true,
+        configurable: true
+      });
+      Object.defineProperty(Router2.prototype, "contexts", {
+        get: function() {
+          return this.modules.reduce(function(contexts, module) {
+            return contexts.concat(module.contexts);
+          }, []);
+        },
+        enumerable: true,
+        configurable: true
+      });
+      Router2.prototype.start = function() {
+        this.scopeObserver.start();
+      };
+      Router2.prototype.stop = function() {
+        this.scopeObserver.stop();
+      };
+      Router2.prototype.loadDefinition = function(definition) {
+        this.unloadIdentifier(definition.identifier);
+        var module = new Module(this.application, definition);
+        this.connectModule(module);
+      };
+      Router2.prototype.unloadIdentifier = function(identifier) {
+        var module = this.modulesByIdentifier.get(identifier);
+        if (module) {
+          this.disconnectModule(module);
+        }
+      };
+      Router2.prototype.getContextForElementAndIdentifier = function(element, identifier) {
+        var module = this.modulesByIdentifier.get(identifier);
+        if (module) {
+          return module.contexts.find(function(context) {
+            return context.element == element;
+          });
+        }
+      };
+      Router2.prototype.handleError = function(error2, message, detail) {
+        this.application.handleError(error2, message, detail);
+      };
+      Router2.prototype.scopeConnected = function(scope) {
+        this.scopesByIdentifier.add(scope.identifier, scope);
+        var module = this.modulesByIdentifier.get(scope.identifier);
+        if (module) {
+          module.connectContextForScope(scope);
+        }
+      };
+      Router2.prototype.scopeDisconnected = function(scope) {
+        this.scopesByIdentifier.delete(scope.identifier, scope);
+        var module = this.modulesByIdentifier.get(scope.identifier);
+        if (module) {
+          module.disconnectContextForScope(scope);
+        }
+      };
+      Router2.prototype.connectModule = function(module) {
+        this.modulesByIdentifier.set(module.identifier, module);
+        var scopes = this.scopesByIdentifier.getValuesForKey(module.identifier);
+        scopes.forEach(function(scope) {
+          return module.connectContextForScope(scope);
         });
-      }
-    };
-    Router2.prototype.handleError = function(error2, message, detail) {
-      this.application.handleError(error2, message, detail);
-    };
-    Router2.prototype.scopeConnected = function(scope) {
-      this.scopesByIdentifier.add(scope.identifier, scope);
-      var module = this.modulesByIdentifier.get(scope.identifier);
-      if (module) {
-        module.connectContextForScope(scope);
-      }
-    };
-    Router2.prototype.scopeDisconnected = function(scope) {
-      this.scopesByIdentifier.delete(scope.identifier, scope);
-      var module = this.modulesByIdentifier.get(scope.identifier);
-      if (module) {
-        module.disconnectContextForScope(scope);
-      }
-    };
-    Router2.prototype.connectModule = function(module) {
-      this.modulesByIdentifier.set(module.identifier, module);
-      var scopes = this.scopesByIdentifier.getValuesForKey(module.identifier);
-      scopes.forEach(function(scope) {
-        return module.connectContextForScope(scope);
-      });
-    };
-    Router2.prototype.disconnectModule = function(module) {
-      this.modulesByIdentifier.delete(module.identifier);
-      var scopes = this.scopesByIdentifier.getValuesForKey(module.identifier);
-      scopes.forEach(function(scope) {
-        return module.disconnectContextForScope(scope);
-      });
-    };
-    return Router2;
-  }();
+      };
+      Router2.prototype.disconnectModule = function(module) {
+        this.modulesByIdentifier.delete(module.identifier);
+        var scopes = this.scopesByIdentifier.getValuesForKey(module.identifier);
+        scopes.forEach(function(scope) {
+          return module.disconnectContextForScope(scope);
+        });
+      };
+      return Router2;
+    }()
+  );
 
   // node_modules/@stimulus/core/dist/src/schema.js
   var defaultSchema = {
@@ -49065,86 +50391,93 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       return { value: op[0] ? op[1] : void 0, done: true };
     }
   };
-  var Application = function() {
-    function Application2(element, schema) {
-      if (element === void 0) {
-        element = document.documentElement;
+  var Application = (
+    /** @class */
+    function() {
+      function Application2(element, schema) {
+        if (element === void 0) {
+          element = document.documentElement;
+        }
+        if (schema === void 0) {
+          schema = defaultSchema;
+        }
+        this.element = element;
+        this.schema = schema;
+        this.dispatcher = new Dispatcher(this);
+        this.router = new Router(this);
       }
-      if (schema === void 0) {
-        schema = defaultSchema;
-      }
-      this.element = element;
-      this.schema = schema;
-      this.dispatcher = new Dispatcher(this);
-      this.router = new Router(this);
-    }
-    Application2.start = function(element, schema) {
-      var application2 = new Application2(element, schema);
-      application2.start();
-      return application2;
-    };
-    Application2.prototype.start = function() {
-      return __awaiter(this, void 0, void 0, function() {
-        return __generator(this, function(_a) {
-          switch (_a.label) {
-            case 0:
-              return [4, domReady()];
-            case 1:
-              _a.sent();
-              this.router.start();
-              this.dispatcher.start();
-              return [2];
-          }
+      Application2.start = function(element, schema) {
+        var application2 = new Application2(element, schema);
+        application2.start();
+        return application2;
+      };
+      Application2.prototype.start = function() {
+        return __awaiter(this, void 0, void 0, function() {
+          return __generator(this, function(_a) {
+            switch (_a.label) {
+              case 0:
+                return [4, domReady()];
+              case 1:
+                _a.sent();
+                this.router.start();
+                this.dispatcher.start();
+                return [
+                  2
+                  /*return*/
+                ];
+            }
+          });
         });
-      });
-    };
-    Application2.prototype.stop = function() {
-      this.router.stop();
-      this.dispatcher.stop();
-    };
-    Application2.prototype.register = function(identifier, controllerConstructor) {
-      this.load({ identifier, controllerConstructor });
-    };
-    Application2.prototype.load = function(head) {
-      var _this = this;
-      var rest = [];
-      for (var _i = 1; _i < arguments.length; _i++) {
-        rest[_i - 1] = arguments[_i];
-      }
-      var definitions2 = Array.isArray(head) ? head : [head].concat(rest);
-      definitions2.forEach(function(definition) {
-        return _this.router.loadDefinition(definition);
-      });
-    };
-    Application2.prototype.unload = function(head) {
-      var _this = this;
-      var rest = [];
-      for (var _i = 1; _i < arguments.length; _i++) {
-        rest[_i - 1] = arguments[_i];
-      }
-      var identifiers = Array.isArray(head) ? head : [head].concat(rest);
-      identifiers.forEach(function(identifier) {
-        return _this.router.unloadIdentifier(identifier);
-      });
-    };
-    Object.defineProperty(Application2.prototype, "controllers", {
-      get: function() {
-        return this.router.contexts.map(function(context) {
-          return context.controller;
+      };
+      Application2.prototype.stop = function() {
+        this.router.stop();
+        this.dispatcher.stop();
+      };
+      Application2.prototype.register = function(identifier, controllerConstructor) {
+        this.load({ identifier, controllerConstructor });
+      };
+      Application2.prototype.load = function(head) {
+        var _this = this;
+        var rest = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+          rest[_i - 1] = arguments[_i];
+        }
+        var definitions2 = Array.isArray(head) ? head : [head].concat(rest);
+        definitions2.forEach(function(definition) {
+          return _this.router.loadDefinition(definition);
         });
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Application2.prototype.getControllerForElementAndIdentifier = function(element, identifier) {
-      var context = this.router.getContextForElementAndIdentifier(element, identifier);
-      return context ? context.controller : null;
-    };
-    Application2.prototype.handleError = function(error2, message, detail) {
-      console.error("%s\n\n%o\n\n%o", message, error2, detail);
-    };
-    return Application2;
-  }();
+      };
+      Application2.prototype.unload = function(head) {
+        var _this = this;
+        var rest = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+          rest[_i - 1] = arguments[_i];
+        }
+        var identifiers = Array.isArray(head) ? head : [head].concat(rest);
+        identifiers.forEach(function(identifier) {
+          return _this.router.unloadIdentifier(identifier);
+        });
+      };
+      Object.defineProperty(Application2.prototype, "controllers", {
+        // Controllers
+        get: function() {
+          return this.router.contexts.map(function(context) {
+            return context.controller;
+          });
+        },
+        enumerable: true,
+        configurable: true
+      });
+      Application2.prototype.getControllerForElementAndIdentifier = function(element, identifier) {
+        var context = this.router.getContextForElementAndIdentifier(element, identifier);
+        return context ? context.controller : null;
+      };
+      Application2.prototype.handleError = function(error2, message, detail) {
+        console.error("%s\n\n%o\n\n%o", message, error2, detail);
+      };
+      return Application2;
+    }()
+  );
   function domReady() {
     return new Promise(function(resolve3) {
       if (document.readyState == "loading") {
@@ -49215,64 +50548,67 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   }
 
   // node_modules/@stimulus/core/dist/src/controller.js
-  var Controller = function() {
-    function Controller2(context) {
-      this.context = context;
-    }
-    Controller2.bless = function() {
-      defineTargetProperties(this);
-    };
-    Object.defineProperty(Controller2.prototype, "application", {
-      get: function() {
-        return this.context.application;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Object.defineProperty(Controller2.prototype, "scope", {
-      get: function() {
-        return this.context.scope;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Object.defineProperty(Controller2.prototype, "element", {
-      get: function() {
-        return this.scope.element;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Object.defineProperty(Controller2.prototype, "identifier", {
-      get: function() {
-        return this.scope.identifier;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Object.defineProperty(Controller2.prototype, "targets", {
-      get: function() {
-        return this.scope.targets;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Object.defineProperty(Controller2.prototype, "data", {
-      get: function() {
-        return this.scope.data;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Controller2.prototype.initialize = function() {
-    };
-    Controller2.prototype.connect = function() {
-    };
-    Controller2.prototype.disconnect = function() {
-    };
-    Controller2.targets = [];
-    return Controller2;
-  }();
+  var Controller = (
+    /** @class */
+    function() {
+      function Controller2(context) {
+        this.context = context;
+      }
+      Controller2.bless = function() {
+        defineTargetProperties(this);
+      };
+      Object.defineProperty(Controller2.prototype, "application", {
+        get: function() {
+          return this.context.application;
+        },
+        enumerable: true,
+        configurable: true
+      });
+      Object.defineProperty(Controller2.prototype, "scope", {
+        get: function() {
+          return this.context.scope;
+        },
+        enumerable: true,
+        configurable: true
+      });
+      Object.defineProperty(Controller2.prototype, "element", {
+        get: function() {
+          return this.scope.element;
+        },
+        enumerable: true,
+        configurable: true
+      });
+      Object.defineProperty(Controller2.prototype, "identifier", {
+        get: function() {
+          return this.scope.identifier;
+        },
+        enumerable: true,
+        configurable: true
+      });
+      Object.defineProperty(Controller2.prototype, "targets", {
+        get: function() {
+          return this.scope.targets;
+        },
+        enumerable: true,
+        configurable: true
+      });
+      Object.defineProperty(Controller2.prototype, "data", {
+        get: function() {
+          return this.scope.data;
+        },
+        enumerable: true,
+        configurable: true
+      });
+      Controller2.prototype.initialize = function() {
+      };
+      Controller2.prototype.connect = function() {
+      };
+      Controller2.prototype.disconnect = function() {
+      };
+      Controller2.targets = [];
+      return Controller2;
+    }()
+  );
 
   // app/javascript/controllers/autocomplete_controller.js
   var autocomplete_controller_default = class extends Controller {
@@ -49286,6 +50622,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
             response(json);
           });
         }
+        // onSelect: () => $(this).trigger('click')
       });
     }
     disconnect() {
@@ -49562,7 +50899,10 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     }
     initMap() {
       if (typeof google === "undefined") {
-        setTimeout(() => this.initMap(), 1e3);
+        setTimeout(
+          () => this.initMap(),
+          1e3
+        );
         return;
       }
       this.mapInitialized = true;
@@ -50456,11 +51796,15 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var initMapDispatchToProps = match2(mapDispatchToProps, mapDispatchToPropsFactories, "mapDispatchToProps");
       var initMergeProps = match2(mergeProps, mergePropsFactories, "mergeProps");
       return connectHOC(selectorFactory, _extends({
+        // used in error messages
         methodName: "connect",
+        // used to compute Connect's displayName from the wrapped component's displayName.
         getDisplayName: function getDisplayName(name) {
           return "Connect(" + name + ")";
         },
+        // if mapStateToProps is falsy, the Connect component doesn't subscribe to store state changes
         shouldHandleStateChanges: Boolean(mapStateToProps8),
+        // passed through to selectorFactory
         initMapStateToProps,
         initMapDispatchToProps,
         initMergeProps,
@@ -50714,9 +52058,13 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   })]))]);
   var TransitionTimeouts = {
     Fade: 150,
+    // $transition-fade
     Collapse: 350,
+    // $transition-collapse
     Modal: 300,
+    // $modal-transition
     Carousel: 600
+    // $carousel-transition
   };
   var TransitionPropTypeKeys = ["in", "mountOnEnter", "unmountOnExit", "appear", "enter", "exit", "timeout", "onEnter", "onEntering", "onEntered", "onExit", "onExiting", "onExited"];
   var keyCodes = {
@@ -51177,6 +52525,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     backdropTransition: {
       mountOnEnter: true,
       timeout: TransitionTimeouts.Fade
+      // uses standard fade transition
     },
     unmountOnClose: true,
     returnFocusAfterClose: true,
@@ -51798,24 +53147,16 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       const selected = this.props.selected || false;
       const opacity = this.props.opacity === void 0 ? 100 : this.props.opacity;
       const { id, name, toggle, setOpacity } = this.props;
-      return /* @__PURE__ */ import_react20.default.createElement("div", {
-        className: "layer"
-      }, /* @__PURE__ */ import_react20.default.createElement(FormGroup_default, {
-        check: true
-      }, /* @__PURE__ */ import_react20.default.createElement(Label_default, {
-        check: true
-      }, /* @__PURE__ */ import_react20.default.createElement(Input_default, {
-        type: "checkbox",
-        className: "form-check-input",
-        checked: selected,
-        onChange: toggle
-      }), name), selected && /* @__PURE__ */ import_react20.default.createElement("input", {
-        type: "range",
-        min: 0,
-        max: 100,
-        value: opacity,
-        onChange: (e) => setOpacity(id, e.target.value)
-      })));
+      return /* @__PURE__ */ import_react20.default.createElement("div", { className: "layer" }, /* @__PURE__ */ import_react20.default.createElement(FormGroup_default, { check: true }, /* @__PURE__ */ import_react20.default.createElement(Label_default, { check: true }, /* @__PURE__ */ import_react20.default.createElement(Input_default, { type: "checkbox", className: "form-check-input", checked: selected, onChange: toggle }), name), selected && /* @__PURE__ */ import_react20.default.createElement(
+        "input",
+        {
+          type: "range",
+          min: 0,
+          max: 100,
+          value: opacity,
+          onChange: (e) => setOpacity(id, e.target.value)
+        }
+      )));
     }
   };
   var Layers = class extends import_react20.default.PureComponent {
@@ -51824,12 +53165,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       if (!layers3 || !layers3.length)
         return null;
       const { toggle, setOpacity } = this.props;
-      return /* @__PURE__ */ import_react20.default.createElement("div", null, /* @__PURE__ */ import_react20.default.createElement("h3", null, "Map Layers"), layers3.map((layer) => /* @__PURE__ */ import_react20.default.createElement(Layer, __spreadProps(__spreadValues({
-        key: layer.id
-      }, layer), {
-        toggle: () => toggle(layer.id),
-        setOpacity
-      }))));
+      return /* @__PURE__ */ import_react20.default.createElement("div", null, /* @__PURE__ */ import_react20.default.createElement("h3", null, "Map Layers"), layers3.map((layer) => /* @__PURE__ */ import_react20.default.createElement(Layer, __spreadProps(__spreadValues({ key: layer.id }, layer), { toggle: () => toggle(layer.id), setOpacity }))));
     }
   };
   var mapStateToProps = (state) => {
@@ -52233,12 +53569,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       }
       setPrevProps(props);
     });
-    return /* @__PURE__ */ import_react21.default.createElement("div", {
-      id: "map-wrapper"
-    }, /* @__PURE__ */ import_react21.default.createElement("div", {
-      id: "map",
-      ref: mapRef
-    }));
+    return /* @__PURE__ */ import_react21.default.createElement("div", { id: "map-wrapper" }, /* @__PURE__ */ import_react21.default.createElement("div", { id: "map", ref: mapRef }));
   };
   function mapOptions() {
     return {
@@ -52315,20 +53646,27 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
 
   // app/javascript/forge/CensusSearch/YearButtons.tsx
   var import_react22 = __toESM(require_react());
-  var YearButton = ({ censusYear, displayYear, onClick }) => /* @__PURE__ */ import_react22.default.createElement("button", {
-    type: "button",
-    key: censusYear,
-    className: `btn btn-${censusYear === displayYear ? "primary" : "light"}`,
-    onClick
-  }, censusYear);
-  var YearButtons = ({ years, setYear: setYear2, year }) => /* @__PURE__ */ import_react22.default.createElement(ButtonGroup_default, {
-    className: "btn-group btn-block"
-  }, years.map((censusYear) => /* @__PURE__ */ import_react22.default.createElement(YearButton, {
-    key: censusYear,
-    censusYear,
-    displayYear: year,
-    onClick: () => setYear2(censusYear)
-  })));
+  var YearButton = ({ censusYear, displayYear, onClick }) => /* @__PURE__ */ import_react22.default.createElement(
+    "button",
+    {
+      type: "button",
+      key: censusYear,
+      className: `btn btn-${censusYear === displayYear ? "primary" : "light"}`,
+      onClick
+    },
+    censusYear
+  );
+  var YearButtons = ({ years, setYear: setYear2, year }) => /* @__PURE__ */ import_react22.default.createElement(ButtonGroup_default, { className: "btn-group btn-block" }, years.map(
+    (censusYear) => /* @__PURE__ */ import_react22.default.createElement(
+      YearButton,
+      {
+        key: censusYear,
+        censusYear,
+        displayYear: year,
+        onClick: () => setYear2(censusYear)
+      }
+    )
+  ));
   var YearButtons_default = YearButtons;
 
   // app/javascript/forge/CensusSearch/AddFilter.tsx
@@ -52340,16 +53678,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       const value = e.target.value;
       addFilter(value);
     };
-    return /* @__PURE__ */ import_react23.default.createElement("select", {
-      value: "",
-      onChange: handleChange,
-      className: "form-control"
-    }, /* @__PURE__ */ import_react23.default.createElement("option", {
-      value: null
-    }, "Select a field to search"), Object.keys(filters).map((key) => filters[key].type && /* @__PURE__ */ import_react23.default.createElement("option", {
-      key,
-      value: key
-    }, filters[key].label)));
+    return /* @__PURE__ */ import_react23.default.createElement("select", { value: "", onChange: handleChange, className: "form-control" }, /* @__PURE__ */ import_react23.default.createElement("option", { value: null }, "Select a field to search"), Object.keys(filters).map((key) => filters[key].type && /* @__PURE__ */ import_react23.default.createElement("option", { key, value: key }, filters[key].label)));
   };
   var AddFilter_default = AddFilter;
 
@@ -52379,13 +53708,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   }
   var FilterListItem = (props) => {
     const { setOpen, remove, config: { label }, predicate, criteria } = props;
-    return /* @__PURE__ */ import_react24.default.createElement("div", {
-      className: "list-group-item",
-      onClick: setOpen
-    }, /* @__PURE__ */ import_react24.default.createElement("span", {
-      className: "float-right",
-      onClick: remove
-    }, "\xD7"), label, getFilterText(predicate, criteria, props.config));
+    return /* @__PURE__ */ import_react24.default.createElement("div", { className: "list-group-item", onClick: setOpen }, /* @__PURE__ */ import_react24.default.createElement("span", { className: "float-right", onClick: remove }, "\xD7"), label, getFilterText(predicate, criteria, props.config));
   };
   var FilterListItem_default = FilterListItem;
 
@@ -52401,18 +53724,16 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   // app/javascript/forge/CensusSearch/ScopeSelector.jsx
   var import_react25 = __toESM(require_react());
   function ScopeSelector({ field, predicate, criteria, config: { scopes }, handleChange }) {
-    return Object.keys(scopes).map((scope) => /* @__PURE__ */ import_react25.default.createElement(FormGroup_default, {
-      key: scope,
-      check: true
-    }, /* @__PURE__ */ import_react25.default.createElement(Label_default, {
-      check: true
-    }, /* @__PURE__ */ import_react25.default.createElement(Input_default, {
-      type: "radio",
-      name: "predicate",
-      value: scope,
-      checked: predicate === scope,
-      onChange: () => handleChange(field, scope, criteria)
-    }), scopes[scope])));
+    return Object.keys(scopes).map((scope) => /* @__PURE__ */ import_react25.default.createElement(FormGroup_default, { key: scope, check: true }, /* @__PURE__ */ import_react25.default.createElement(Label_default, { check: true }, /* @__PURE__ */ import_react25.default.createElement(
+      Input_default,
+      {
+        type: "radio",
+        name: "predicate",
+        value: scope,
+        checked: predicate === scope,
+        onChange: () => handleChange(field, scope, criteria)
+      }
+    ), scopes[scope])));
   }
 
   // app/javascript/forge/CensusSearch/BasicField.jsx
@@ -52420,16 +53741,15 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     const { type, field, predicate, criteria, handleChange } = props;
     console.log(predicate);
     const hasInput = !predicate.match(/null$/);
-    return /* @__PURE__ */ import_react26.default.createElement(Row_default, null, /* @__PURE__ */ import_react26.default.createElement(Col_default, {
-      sm: 6
-    }, /* @__PURE__ */ import_react26.default.createElement(ScopeSelector, __spreadValues({}, props))), /* @__PURE__ */ import_react26.default.createElement(Col_default, {
-      sm: 6
-    }, hasInput && /* @__PURE__ */ import_react26.default.createElement(Input_default, {
-      type,
-      name: field,
-      value: criteria || "",
-      onChange: (e) => handleChange(field, predicate, e.target.value)
-    })));
+    return /* @__PURE__ */ import_react26.default.createElement(Row_default, null, /* @__PURE__ */ import_react26.default.createElement(Col_default, { sm: 6 }, /* @__PURE__ */ import_react26.default.createElement(ScopeSelector, __spreadValues({}, props))), /* @__PURE__ */ import_react26.default.createElement(Col_default, { sm: 6 }, hasInput && /* @__PURE__ */ import_react26.default.createElement(
+      Input_default,
+      {
+        type,
+        name: field,
+        value: criteria || "",
+        onChange: (e) => handleChange(field, predicate, e.target.value)
+      }
+    )));
   }
 
   // app/javascript/forge/CensusSearch/BooleanField.jsx
@@ -52439,18 +53759,16 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       const scope = Object.keys(scopes)[0];
       handleChange(field, scope, scopes[scope]);
     }, []);
-    return Object.keys(scopes).map((scope) => /* @__PURE__ */ import_react27.default.createElement(FormGroup_default, {
-      key: scope,
-      check: true
-    }, /* @__PURE__ */ import_react27.default.createElement(Label_default, {
-      check: true
-    }, /* @__PURE__ */ import_react27.default.createElement(Input_default, {
-      type: "radio",
-      name: field,
-      value: scope,
-      checked: predicate === scope,
-      onChange: () => handleChange(field, scope, scopes[scope])
-    }), scopes[scope])));
+    return Object.keys(scopes).map((scope) => /* @__PURE__ */ import_react27.default.createElement(FormGroup_default, { key: scope, check: true }, /* @__PURE__ */ import_react27.default.createElement(Label_default, { check: true }, /* @__PURE__ */ import_react27.default.createElement(
+      Input_default,
+      {
+        type: "radio",
+        name: field,
+        value: scope,
+        checked: predicate === scope,
+        onChange: () => handleChange(field, scope, scopes[scope])
+      }
+    ), scopes[scope])));
   }
 
   // app/javascript/forge/CensusSearch/ListField.jsx
@@ -52469,21 +53787,15 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var ListField = (props) => {
     const { field, config: { choices } } = props;
     const criteria = props.criteria || [];
-    return /* @__PURE__ */ import_react28.default.createElement(Row_default, null, /* @__PURE__ */ import_react28.default.createElement(Col_default, {
-      sm: 6
-    }, /* @__PURE__ */ import_react28.default.createElement(ScopeSelector, __spreadValues({}, props))), /* @__PURE__ */ import_react28.default.createElement(Col_default, {
-      sm: 6
-    }, choices.map((choice) => /* @__PURE__ */ import_react28.default.createElement(FormGroup_default, {
-      key: choice[1],
-      check: true
-    }, /* @__PURE__ */ import_react28.default.createElement(Label_default, {
-      check: true
-    }, /* @__PURE__ */ import_react28.default.createElement(Input_default, {
-      type: "checkbox",
-      name: `${field}-${choice[1]}`,
-      checked: criteria.indexOf(choice[1]) > -1,
-      onChange: () => choose(props, choice[1])
-    }), choice[0])))));
+    return /* @__PURE__ */ import_react28.default.createElement(Row_default, null, /* @__PURE__ */ import_react28.default.createElement(Col_default, { sm: 6 }, /* @__PURE__ */ import_react28.default.createElement(ScopeSelector, __spreadValues({}, props))), /* @__PURE__ */ import_react28.default.createElement(Col_default, { sm: 6 }, choices.map((choice) => /* @__PURE__ */ import_react28.default.createElement(FormGroup_default, { key: choice[1], check: true }, /* @__PURE__ */ import_react28.default.createElement(Label_default, { check: true }, /* @__PURE__ */ import_react28.default.createElement(
+      Input_default,
+      {
+        type: "checkbox",
+        name: `${field}-${choice[1]}`,
+        checked: criteria.indexOf(choice[1]) > -1,
+        onChange: () => choose(props, choice[1])
+      }
+    ), choice[0])))));
   };
   var ListField_default = ListField;
 
@@ -52496,43 +53808,29 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       case "checkboxes":
         return /* @__PURE__ */ import_react29.default.createElement(ListField_default, __spreadValues({}, props));
       case "number":
-        return /* @__PURE__ */ import_react29.default.createElement(BasicField, __spreadValues({
-          type: "number"
-        }, props));
+        return /* @__PURE__ */ import_react29.default.createElement(BasicField, __spreadValues({ type: "number" }, props));
       case "text":
-        return /* @__PURE__ */ import_react29.default.createElement(BasicField, __spreadValues({
-          type: "text"
-        }, props));
+        return /* @__PURE__ */ import_react29.default.createElement(BasicField, __spreadValues({ type: "text" }, props));
       default:
         return null;
     }
   }
 
   // app/javascript/forge/CensusSearch/Filters.tsx
-  var CurrentFilters = ({ current, filters, setOpen, remove }) => /* @__PURE__ */ import_react30.default.createElement("div", {
-    className: "list-group"
-  }, Object.keys(current).map((key) => /* @__PURE__ */ import_react30.default.createElement(FilterListItem_default, __spreadProps(__spreadValues({
-    key
-  }, current[key]), {
-    config: filters[key],
-    setOpen: () => setOpen(key),
-    remove: (e) => {
-      e.stopPropagation();
-      remove(key);
-    }
-  }))));
-  var FilterModal = ({ filters, current, close, open, search: search3, setFilter }) => /* @__PURE__ */ import_react30.default.createElement(Modal_default, {
-    isOpen: !!open
-  }, /* @__PURE__ */ import_react30.default.createElement(ModalHeader_default, {
-    toggle: close
-  }, "Search on \u201C", open && filters[open].label, "\u201D"), /* @__PURE__ */ import_react30.default.createElement(ModalBody_default, null, open && /* @__PURE__ */ import_react30.default.createElement(FilterField, __spreadProps(__spreadValues({}, current[open]), {
-    config: filters[open],
-    handleChange: setFilter
-  }))), /* @__PURE__ */ import_react30.default.createElement(ModalFooter_default, null, /* @__PURE__ */ import_react30.default.createElement("button", {
-    className: "btn btn-primary",
-    type: "button",
-    onClick: search3
-  }, "Search")));
+  var CurrentFilters = ({ current, filters, setOpen, remove }) => /* @__PURE__ */ import_react30.default.createElement("div", { className: "list-group" }, Object.keys(current).map((key) => /* @__PURE__ */ import_react30.default.createElement(
+    FilterListItem_default,
+    __spreadProps(__spreadValues({
+      key
+    }, current[key]), {
+      config: filters[key],
+      setOpen: () => setOpen(key),
+      remove: (e) => {
+        e.stopPropagation();
+        remove(key);
+      }
+    })
+  )));
+  var FilterModal = ({ filters, current, close, open, search: search3, setFilter }) => /* @__PURE__ */ import_react30.default.createElement(Modal_default, { isOpen: !!open }, /* @__PURE__ */ import_react30.default.createElement(ModalHeader_default, { toggle: close }, "Search on \u201C", open && filters[open].label, "\u201D"), /* @__PURE__ */ import_react30.default.createElement(ModalBody_default, null, open && /* @__PURE__ */ import_react30.default.createElement(FilterField, __spreadProps(__spreadValues({}, current[open]), { config: filters[open], handleChange: setFilter }))), /* @__PURE__ */ import_react30.default.createElement(ModalFooter_default, null, /* @__PURE__ */ import_react30.default.createElement("button", { className: "btn btn-primary", type: "button", onClick: search3 }, "Search")));
   var Filters = (props) => props.current ? /* @__PURE__ */ import_react30.default.createElement(import_react30.default.Fragment, null, /* @__PURE__ */ import_react30.default.createElement(CurrentFilters, __spreadValues({}, props)), /* @__PURE__ */ import_react30.default.createElement(FilterModal, __spreadValues({}, props))) : null;
   var Filters_default = Filters;
 
@@ -52556,36 +53854,19 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       setOpen(null);
       props.load();
     };
-    return /* @__PURE__ */ import_react31.default.createElement("div", {
-      className: "pt-3 pb-1"
-    }, /* @__PURE__ */ import_react31.default.createElement("h3", null, "Search HistoryForge"), /* @__PURE__ */ import_react31.default.createElement(YearButtons_default, {
-      years,
-      year,
-      setYear: setYear2
-    }), /* @__PURE__ */ import_react31.default.createElement(AddFilter_default, {
-      filters,
-      addFilter: add2
-    }), /* @__PURE__ */ import_react31.default.createElement(Filters_default, {
-      current,
-      setOpen: (key) => setOpen(key),
-      open,
-      filters,
-      close: () => setOpen(null),
-      search: search3,
-      setFilter: set2,
-      remove: (key) => remove(key)
-    }), message && /* @__PURE__ */ import_react31.default.createElement("div", {
-      className: "mt-2 alert alert-info"
-    }, message), year && /* @__PURE__ */ import_react31.default.createElement(ButtonGroup_default, {
-      className: "btn-block"
-    }, /* @__PURE__ */ import_react31.default.createElement("a", {
-      href: buildCensusUrl(year, params),
-      className: "btn btn-sm btn-info col-6"
-    }, "VIEW CENSUS RECORDS"), /* @__PURE__ */ import_react31.default.createElement("button", {
-      className: "btn btn-sm btn-info col-6",
-      type: "button",
-      onClick: props.reset
-    }, "RESET")));
+    return /* @__PURE__ */ import_react31.default.createElement("div", { className: "pt-3 pb-1" }, /* @__PURE__ */ import_react31.default.createElement("h3", null, "Search HistoryForge"), /* @__PURE__ */ import_react31.default.createElement(YearButtons_default, { years, year, setYear: setYear2 }), /* @__PURE__ */ import_react31.default.createElement(AddFilter_default, { filters, addFilter: add2 }), /* @__PURE__ */ import_react31.default.createElement(
+      Filters_default,
+      {
+        current,
+        setOpen: (key) => setOpen(key),
+        open,
+        filters,
+        close: () => setOpen(null),
+        search: search3,
+        setFilter: set2,
+        remove: (key) => remove(key)
+      }
+    ), message && /* @__PURE__ */ import_react31.default.createElement("div", { className: "mt-2 alert alert-info" }, message), year && /* @__PURE__ */ import_react31.default.createElement(ButtonGroup_default, { className: "btn-block" }, /* @__PURE__ */ import_react31.default.createElement("a", { href: buildCensusUrl(year, params), className: "btn btn-sm btn-info col-6" }, "VIEW CENSUS RECORDS"), /* @__PURE__ */ import_react31.default.createElement("button", { className: "btn btn-sm btn-info col-6", type: "button", onClick: props.reset }, "RESET")));
   };
   function buildCensusUrl(year, params) {
     let url = `/census/${year}`;
@@ -52614,19 +53895,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
 
   // app/javascript/forge/Building/Residents.jsx
   var import_react32 = __toESM(require_react());
-  var Residents = ({ buildingId, residents, years }) => years.map((year) => residents[year] && /* @__PURE__ */ import_react32.default.createElement("div", {
-    key: year,
-    className: "mt-4"
-  }, /* @__PURE__ */ import_react32.default.createElement("h5", {
-    className: "mb-3"
-  }, "Residents in ", year), residents[year].map((family, index) => /* @__PURE__ */ import_react32.default.createElement("div", {
-    key: `family-${index}`
-  }, family.map((person, personIndex) => /* @__PURE__ */ import_react32.default.createElement(import_react32.default.Fragment, {
-    key: `person-${buildingId}-${personIndex}`
-  }, /* @__PURE__ */ import_react32.default.createElement(Resident, {
-    person,
-    year
-  }), /* @__PURE__ */ import_react32.default.createElement("hr", null)))))));
+  var Residents = ({ buildingId, residents, years }) => years.map((year) => residents[year] && /* @__PURE__ */ import_react32.default.createElement("div", { key: year, className: "mt-4" }, /* @__PURE__ */ import_react32.default.createElement("h5", { className: "mb-3" }, "Residents in ", year), residents[year].map((family, index) => /* @__PURE__ */ import_react32.default.createElement("div", { key: `family-${index}` }, family.map((person, personIndex) => /* @__PURE__ */ import_react32.default.createElement(import_react32.default.Fragment, { key: `person-${buildingId}-${personIndex}` }, /* @__PURE__ */ import_react32.default.createElement(Resident, { person, year }), /* @__PURE__ */ import_react32.default.createElement("hr", null)))))));
   var Residents_default = Residents;
   var Resident = ({ person, year }) => {
     let occupation = person.occupation;
@@ -52636,22 +53905,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     if (person.relation_to_head === person.occupation) {
       occupation = null;
     }
-    return /* @__PURE__ */ import_react32.default.createElement(Row_default, null, /* @__PURE__ */ import_react32.default.createElement(Col_default, {
-      size: 7,
-      sm: 6
-    }, /* @__PURE__ */ import_react32.default.createElement("a", {
-      href: `/census/${year}/${person.id}`,
-      target: "_blank"
-    }, person.name)), /* @__PURE__ */ import_react32.default.createElement(Col_default, {
-      size: 5,
-      sm: 6
-    }, person.relation_to_head), /* @__PURE__ */ import_react32.default.createElement(Col_default, {
-      size: 6,
-      sm: 6
-    }, "Age ", person.age, " - ", person.race, " - ", person.sex), occupation && /* @__PURE__ */ import_react32.default.createElement(Col_default, {
-      size: 6,
-      sm: 6
-    }, occupation));
+    return /* @__PURE__ */ import_react32.default.createElement(Row_default, null, /* @__PURE__ */ import_react32.default.createElement(Col_default, { size: 7, sm: 6 }, /* @__PURE__ */ import_react32.default.createElement("a", { href: `/census/${year}/${person.id}`, target: "_blank" }, person.name)), /* @__PURE__ */ import_react32.default.createElement(Col_default, { size: 5, sm: 6 }, person.relation_to_head), /* @__PURE__ */ import_react32.default.createElement(Col_default, { size: 6, sm: 6 }, "Age ", person.age, " - ", person.race, " - ", person.sex), occupation && /* @__PURE__ */ import_react32.default.createElement(Col_default, { size: 6, sm: 6 }, occupation));
   };
 
   // app/javascript/forge/Building/Details.jsx
@@ -52679,42 +53933,39 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       const props2 = __spreadProps(__spreadValues({}, wrapperTagProps), { dangerouslySetInnerHTML: { __html: text[0] } });
       return import_react33.default.createElement(wrapperTag, props2);
     }
-    return import_react33.default.createElement(wrapperTag, wrapperTagProps, text.map((paragraph, index) => postfix && index === text.length - 1 ? /* @__PURE__ */ import_react33.default.createElement("p", {
-      key: index
-    }, /* @__PURE__ */ import_react33.default.createElement("span", {
-      dangerouslySetInnerHTML: { __html: paragraph }
-    }), postfix) : /* @__PURE__ */ import_react33.default.createElement("p", {
-      key: index,
-      dangerouslySetInnerHTML: { __html: paragraph }
-    })));
+    return import_react33.default.createElement(wrapperTag, wrapperTagProps, text.map((paragraph, index) => postfix && index === text.length - 1 ? /* @__PURE__ */ import_react33.default.createElement("p", { key: index }, /* @__PURE__ */ import_react33.default.createElement("span", { dangerouslySetInnerHTML: { __html: paragraph } }), postfix) : /* @__PURE__ */ import_react33.default.createElement("p", { key: index, dangerouslySetInnerHTML: { __html: paragraph } })));
   };
   var SimpleFormat_default = SimpleFormat;
 
   // app/javascript/forge/Building/Details.jsx
-  var Details = (building) => /* @__PURE__ */ import_react34.default.createElement(import_react34.default.Fragment, null, /* @__PURE__ */ import_react34.default.createElement("h5", null, /* @__PURE__ */ import_react34.default.createElement("a", {
-    href: `/buildings/${building.id}`,
-    target: "_blank",
-    title: "Open building record in new tab",
-    rel: "noreferrer"
-  }, /* @__PURE__ */ import_react34.default.createElement(SimpleFormat_default, {
-    text: building.street_address
-  }))), (building.year_earliest || building.year_latest) && /* @__PURE__ */ import_react34.default.createElement("dl", {
-    className: "mb-0"
-  }, /* @__PURE__ */ import_react34.default.createElement("dt", null, "Years"), /* @__PURE__ */ import_react34.default.createElement("dd", null, building.year_earliest && `Built in ${building.year_earliest}.`, building.year_latest ? ` Torn down in ${building.year_latest}.` : " Still standing.")), building.architects && building.architects.length && /* @__PURE__ */ import_react34.default.createElement("dl", {
-    className: "mb-0"
-  }, /* @__PURE__ */ import_react34.default.createElement("dt", null, "Architects"), /* @__PURE__ */ import_react34.default.createElement("dd", null, building.architects)), /* @__PURE__ */ import_react34.default.createElement("dl", null, /* @__PURE__ */ import_react34.default.createElement("dt", null, "Type"), /* @__PURE__ */ import_react34.default.createElement("dd", null, building.type || "Not specified"), (building.stories || building.frame || building.lining) && /* @__PURE__ */ import_react34.default.createElement(import_react34.default.Fragment, null, /* @__PURE__ */ import_react34.default.createElement("dt", null, "Construction"), /* @__PURE__ */ import_react34.default.createElement("dd", null, building.stories && `${building.stories}-story `, building.frame && `${building.frame} structure`, building.lining && ` with ${building.lining} lining`, "."))), building.photo && /* @__PURE__ */ import_react34.default.createElement("div", null, /* @__PURE__ */ import_react34.default.createElement("picture", null, /* @__PURE__ */ import_react34.default.createElement("source", {
-    srcSet: `/photos/${building.photo}/15/phone.jpg`,
-    media: "(max-width:480px)"
-  }), /* @__PURE__ */ import_react34.default.createElement("source", {
-    srcSet: `/photos/${building.photo}/15/tablet.jpg`,
-    media: "(min-width:481px) and (max-width:1024px)"
-  }), /* @__PURE__ */ import_react34.default.createElement("source", {
-    srcSet: `/photos/${building.photo}/15/desktop.jpg`,
-    media: "(min-width:1025px)"
-  }), /* @__PURE__ */ import_react34.default.createElement("img", {
-    className: "img-responsive img-thumbnail",
-    alt: "Building photo"
-  }))));
+  var Details = (building) => /* @__PURE__ */ import_react34.default.createElement(import_react34.default.Fragment, null, /* @__PURE__ */ import_react34.default.createElement("h5", null, /* @__PURE__ */ import_react34.default.createElement(
+    "a",
+    {
+      href: `/buildings/${building.id}`,
+      target: "_blank",
+      title: "Open building record in new tab",
+      rel: "noreferrer"
+    },
+    /* @__PURE__ */ import_react34.default.createElement(SimpleFormat_default, { text: building.street_address })
+  )), (building.year_earliest || building.year_latest) && /* @__PURE__ */ import_react34.default.createElement("dl", { className: "mb-0" }, /* @__PURE__ */ import_react34.default.createElement("dt", null, "Years"), /* @__PURE__ */ import_react34.default.createElement("dd", null, building.year_earliest && `Built in ${building.year_earliest}.`, building.year_latest ? ` Torn down in ${building.year_latest}.` : " Still standing.")), building.architects && building.architects.length && /* @__PURE__ */ import_react34.default.createElement("dl", { className: "mb-0" }, /* @__PURE__ */ import_react34.default.createElement("dt", null, "Architects"), /* @__PURE__ */ import_react34.default.createElement("dd", null, building.architects)), /* @__PURE__ */ import_react34.default.createElement("dl", null, /* @__PURE__ */ import_react34.default.createElement("dt", null, "Type"), /* @__PURE__ */ import_react34.default.createElement("dd", null, building.type || "Not specified"), (building.stories || building.frame || building.lining) && /* @__PURE__ */ import_react34.default.createElement(import_react34.default.Fragment, null, /* @__PURE__ */ import_react34.default.createElement("dt", null, "Construction"), /* @__PURE__ */ import_react34.default.createElement("dd", null, building.stories && `${building.stories}-story `, building.frame && `${building.frame} structure`, building.lining && ` with ${building.lining} lining`, "."))), building.photo && /* @__PURE__ */ import_react34.default.createElement("div", null, /* @__PURE__ */ import_react34.default.createElement("picture", null, /* @__PURE__ */ import_react34.default.createElement(
+    "source",
+    {
+      srcSet: `/photos/${building.photo}/15/phone.jpg`,
+      media: "(max-width:480px)"
+    }
+  ), /* @__PURE__ */ import_react34.default.createElement(
+    "source",
+    {
+      srcSet: `/photos/${building.photo}/15/tablet.jpg`,
+      media: "(min-width:481px) and (max-width:1024px)"
+    }
+  ), /* @__PURE__ */ import_react34.default.createElement(
+    "source",
+    {
+      srcSet: `/photos/${building.photo}/15/desktop.jpg`,
+      media: "(min-width:1025px)"
+    }
+  ), /* @__PURE__ */ import_react34.default.createElement("img", { className: "img-responsive img-thumbnail", alt: "Building photo" }))));
   var Details_default = Details;
 
   // app/javascript/forge/Building/index.jsx
@@ -52742,33 +53993,14 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     }
     render() {
       const { visible } = this.state;
-      return /* @__PURE__ */ import_react35.default.createElement(Modal_default, {
-        size: this.hasResidents() ? "xl" : "md",
-        isOpen: visible
-      }, /* @__PURE__ */ import_react35.default.createElement(ModalHeader_default, {
-        toggle: this.close.bind(this)
-      }, "Building Details"), /* @__PURE__ */ import_react35.default.createElement(ModalBody_default, null, this.props.id && this.renderBuilding()));
+      return /* @__PURE__ */ import_react35.default.createElement(Modal_default, { size: this.hasResidents() ? "xl" : "md", isOpen: visible }, /* @__PURE__ */ import_react35.default.createElement(ModalHeader_default, { toggle: this.close.bind(this) }, "Building Details"), /* @__PURE__ */ import_react35.default.createElement(ModalBody_default, null, this.props.id && this.renderBuilding()));
     }
     renderBuilding() {
       const building = this.props;
       if (this.hasResidents()) {
-        return /* @__PURE__ */ import_react35.default.createElement("div", {
-          id: "building-details"
-        }, /* @__PURE__ */ import_react35.default.createElement(Row_default, null, /* @__PURE__ */ import_react35.default.createElement(Col_default, {
-          sm: 12,
-          lg: 5
-        }, /* @__PURE__ */ import_react35.default.createElement(Details_default, __spreadValues({}, building))), /* @__PURE__ */ import_react35.default.createElement(Col_default, {
-          sm: 12,
-          lg: 7
-        }, /* @__PURE__ */ import_react35.default.createElement(Residents_default, {
-          buildingId: building.id,
-          residents: building.census_records,
-          years: this.props.years
-        }))));
+        return /* @__PURE__ */ import_react35.default.createElement("div", { id: "building-details" }, /* @__PURE__ */ import_react35.default.createElement(Row_default, null, /* @__PURE__ */ import_react35.default.createElement(Col_default, { sm: 12, lg: 5 }, /* @__PURE__ */ import_react35.default.createElement(Details_default, __spreadValues({}, building))), /* @__PURE__ */ import_react35.default.createElement(Col_default, { sm: 12, lg: 7 }, /* @__PURE__ */ import_react35.default.createElement(Residents_default, { buildingId: building.id, residents: building.census_records, years: this.props.years }))));
       }
-      return /* @__PURE__ */ import_react35.default.createElement("div", {
-        id: "building-details"
-      }, /* @__PURE__ */ import_react35.default.createElement(Details_default, __spreadValues({}, building)));
+      return /* @__PURE__ */ import_react35.default.createElement("div", { id: "building-details" }, /* @__PURE__ */ import_react35.default.createElement(Details_default, __spreadValues({}, building)));
     }
     hasResidents() {
       return this.props.census_records && Object.keys(this.props.census_records).length;
@@ -52809,58 +54041,51 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       setSidebarRight(false);
       setSidebarLeft(false);
     };
-    return /* @__PURE__ */ import_react36.default.createElement("div", {
-      className: "map-wrap"
-    }, /* @__PURE__ */ import_react36.default.createElement(Map_default, null), sidebarLeft && /* @__PURE__ */ import_react36.default.createElement("div", {
-      id: "forge-left-col",
-      className: "open"
-    }, /* @__PURE__ */ import_react36.default.createElement("button", {
-      type: "button",
-      id: "forge-sidebar-left-closer",
-      className: "btn btn-primary",
-      onClick: closeSidebar
-    }, /* @__PURE__ */ import_react36.default.createElement("i", {
-      className: "fa fa-close"
-    })), /* @__PURE__ */ import_react36.default.createElement(Layers_default, null)), sidebarRight && /* @__PURE__ */ import_react36.default.createElement("div", {
-      id: "forge-right-col",
-      className: "open"
-    }, /* @__PURE__ */ import_react36.default.createElement("button", {
-      type: "button",
-      id: "forge-sidebar-right-closer",
-      className: "btn btn-primary",
-      onClick: closeSidebar
-    }, /* @__PURE__ */ import_react36.default.createElement("i", {
-      className: "fa fa-close"
-    })), /* @__PURE__ */ import_react36.default.createElement(CensusSearch_default, null)), /* @__PURE__ */ import_react36.default.createElement("div", {
-      id: "button-bar",
-      className: "btn-group"
-    }, !sidebarLeft && !sidebarRight && /* @__PURE__ */ import_react36.default.createElement("button", {
-      type: "button",
-      id: "forge-sidebar-left-toggle",
-      className: "btn btn-primary",
-      onClick: (e) => {
-        e.stopPropagation();
-        setSidebarLeft(true);
-        setSidebarRight(false);
-      }
-    }, /* @__PURE__ */ import_react36.default.createElement("i", {
-      className: "fa fa-map"
-    })), !sidebarRight && !sidebarLeft && /* @__PURE__ */ import_react36.default.createElement("button", {
-      type: "button",
-      id: "forge-sidebar-right-toggle",
-      className: "btn btn-primary",
-      onClick: (e) => {
-        e.stopPropagation();
-        setSidebarLeft(false);
-        setSidebarRight(true);
-      }
-    }, /* @__PURE__ */ import_react36.default.createElement("i", {
-      className: "fa fa-search"
-    })), forgeActive && !sidebarRight && !sidebarLeft && /* @__PURE__ */ import_react36.default.createElement("button", {
-      type: "button",
-      className: "btn btn-primary",
-      onClick: resetForge
-    }, "Reset")), /* @__PURE__ */ import_react36.default.createElement(Building_default, null));
+    return /* @__PURE__ */ import_react36.default.createElement("div", { className: "map-wrap" }, /* @__PURE__ */ import_react36.default.createElement(Map_default, null), sidebarLeft && /* @__PURE__ */ import_react36.default.createElement("div", { id: "forge-left-col", className: "open" }, /* @__PURE__ */ import_react36.default.createElement(
+      "button",
+      {
+        type: "button",
+        id: "forge-sidebar-left-closer",
+        className: "btn btn-primary",
+        onClick: closeSidebar
+      },
+      /* @__PURE__ */ import_react36.default.createElement("i", { className: "fa fa-close" })
+    ), /* @__PURE__ */ import_react36.default.createElement(Layers_default, null)), sidebarRight && /* @__PURE__ */ import_react36.default.createElement("div", { id: "forge-right-col", className: "open" }, /* @__PURE__ */ import_react36.default.createElement(
+      "button",
+      {
+        type: "button",
+        id: "forge-sidebar-right-closer",
+        className: "btn btn-primary",
+        onClick: closeSidebar
+      },
+      /* @__PURE__ */ import_react36.default.createElement("i", { className: "fa fa-close" })
+    ), /* @__PURE__ */ import_react36.default.createElement(CensusSearch_default, null)), /* @__PURE__ */ import_react36.default.createElement("div", { id: "button-bar", className: "btn-group" }, !sidebarLeft && !sidebarRight && /* @__PURE__ */ import_react36.default.createElement(
+      "button",
+      {
+        type: "button",
+        id: "forge-sidebar-left-toggle",
+        className: "btn btn-primary",
+        onClick: (e) => {
+          e.stopPropagation();
+          setSidebarLeft(true);
+          setSidebarRight(false);
+        }
+      },
+      /* @__PURE__ */ import_react36.default.createElement("i", { className: "fa fa-map" })
+    ), !sidebarRight && !sidebarLeft && /* @__PURE__ */ import_react36.default.createElement(
+      "button",
+      {
+        type: "button",
+        id: "forge-sidebar-right-toggle",
+        className: "btn btn-primary",
+        onClick: (e) => {
+          e.stopPropagation();
+          setSidebarLeft(false);
+          setSidebarRight(true);
+        }
+      },
+      /* @__PURE__ */ import_react36.default.createElement("i", { className: "fa fa-search" })
+    ), forgeActive && !sidebarRight && !sidebarLeft && /* @__PURE__ */ import_react36.default.createElement("button", { type: "button", className: "btn btn-primary", onClick: resetForge }, "Reset")), /* @__PURE__ */ import_react36.default.createElement(Building_default, null));
   };
   var App_default = App;
 
@@ -52967,7 +54192,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     const current = __spreadValues({}, state.current);
     const criteria = action.predicate.match(/null/) ? "1" : action.criteria;
     current[action.field] = { field: action.field, predicate: action.predicate, criteria };
-    return __spreadProps(__spreadValues({}, state), { current, d: new Date().getTime(), params: buildParams2(state, current) });
+    return __spreadProps(__spreadValues({}, state), { current, d: (/* @__PURE__ */ new Date()).getTime(), params: buildParams2(state, current) });
   }
   function buildParams2({ filters, year }, current) {
     const params = { people: year, s: {} };
@@ -53038,11 +54263,11 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         layer.selected = layerStorage.isSelected(layer);
         return layer;
       });
-      return __spreadProps(__spreadValues({}, state), { layers: nextLayers, active: layerStorage.active, layeredAt: new Date().getTime() });
+      return __spreadProps(__spreadValues({}, state), { layers: nextLayers, active: layerStorage.active, layeredAt: (/* @__PURE__ */ new Date()).getTime() });
     }
     if (action.type === "LAYERS_RESET") {
       layerStorage.reset();
-      return __spreadProps(__spreadValues({}, state), { active: false, layeredAt: new Date().getTime() });
+      return __spreadProps(__spreadValues({}, state), { active: false, layeredAt: (/* @__PURE__ */ new Date()).getTime() });
     }
     if (action.type === "LAYER_TOGGLE") {
       const layer = state.layers.find((item) => item.id === action.id);
@@ -53053,12 +54278,12 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       } else {
         layerStorage.remove(layer.id);
       }
-      return __spreadProps(__spreadValues({}, state), { layers: [...state.layers], active: layerStorage.active, layeredAt: new Date().getTime() });
+      return __spreadProps(__spreadValues({}, state), { layers: [...state.layers], active: layerStorage.active, layeredAt: (/* @__PURE__ */ new Date()).getTime() });
     }
     if (action.type === "LAYER_OPACITY") {
       const layer = state.layers.find((item) => item.id === action.id);
       layer.opacity = parseInt(action.opacity);
-      return __spreadProps(__spreadValues({}, state), { layers: [...state.layers], opacityAt: new Date().getTime() });
+      return __spreadProps(__spreadValues({}, state), { layers: [...state.layers], opacityAt: (/* @__PURE__ */ new Date()).getTime() });
     }
     return state;
   };
@@ -53071,15 +54296,15 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       });
     }
     if (action.type === "BUILDING_ADDRESS_LOADED") {
-      return __spreadProps(__spreadValues({}, state), { bubble: action.address, addressedAt: new Date().getTime() });
+      return __spreadProps(__spreadValues({}, state), { bubble: action.address, addressedAt: (/* @__PURE__ */ new Date()).getTime() });
     }
     if (action.type === "BUILDING_ADDRESS_REMOVE") {
-      return __spreadProps(__spreadValues({}, state), { bubble: null, addressedAt: new Date().getTime() });
+      return __spreadProps(__spreadValues({}, state), { bubble: null, addressedAt: (/* @__PURE__ */ new Date()).getTime() });
     }
     if (action.type === "BUILDING_LOADED") {
       const { buildings: buildings3 } = action;
       const info = action.meta ? action.meta.info : `Found ${buildings3.length} results.`;
-      return __spreadProps(__spreadValues({}, state), { building: null, highlighted: null, buildings: buildings3, message: info, loadedAt: new Date().getTime() });
+      return __spreadProps(__spreadValues({}, state), { building: null, highlighted: null, buildings: buildings3, message: info, loadedAt: (/* @__PURE__ */ new Date()).getTime() });
     }
     if (action.type === "BUILDING_SELECTED") {
       const { building } = action;
@@ -53128,9 +54353,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   document.addEventListener("DOMContentLoaded", () => {
     const forge = document.getElementById("forge");
     if (forge)
-      import_react_dom3.default.render(/* @__PURE__ */ import_react37.default.createElement(Provider_default, {
-        store
-      }, /* @__PURE__ */ import_react37.default.createElement(App_default, null)), forge);
+      import_react_dom3.default.render(/* @__PURE__ */ import_react37.default.createElement(Provider_default, { store }, /* @__PURE__ */ import_react37.default.createElement(App_default, null)), forge);
   });
 
   // app/javascript/miniforge/index.tsx
@@ -53146,22 +54369,16 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       const { layers: layers3, layer, opacity, setOpacity } = this.props;
       if (!layers3 || !layers3.length)
         return null;
-      return /* @__PURE__ */ import_react38.default.createElement("div", null, /* @__PURE__ */ import_react38.default.createElement("input", {
-        type: "range",
-        min: 0,
-        max: 100,
-        value: opacity > -1 ? opacity : 100,
-        onChange: (e) => setOpacity(e.target.value)
-      }), /* @__PURE__ */ import_react38.default.createElement("select", {
-        className: "form-control",
-        value: layer == null ? void 0 : layer.id,
-        onChange: this.handleChange.bind(this)
-      }, /* @__PURE__ */ import_react38.default.createElement("option", {
-        value: null
-      }, "No historic map"), layers3.map((l) => /* @__PURE__ */ import_react38.default.createElement("option", {
-        key: l.id,
-        value: l.id
-      }, l.name))));
+      return /* @__PURE__ */ import_react38.default.createElement("div", null, /* @__PURE__ */ import_react38.default.createElement(
+        "input",
+        {
+          type: "range",
+          min: 0,
+          max: 100,
+          value: opacity > -1 ? opacity : 100,
+          onChange: (e) => setOpacity(e.target.value)
+        }
+      ), /* @__PURE__ */ import_react38.default.createElement("select", { className: "form-control", value: layer == null ? void 0 : layer.id, onChange: this.handleChange.bind(this) }, /* @__PURE__ */ import_react38.default.createElement("option", { value: null }, "No historic map"), layers3.map((l) => /* @__PURE__ */ import_react38.default.createElement("option", { key: l.id, value: l.id }, l.name))));
     }
     handleChange(event) {
       const value = parseInt(event.currentTarget.value);
@@ -53250,10 +54467,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       }
       setPrevProps(props);
     });
-    return /* @__PURE__ */ import_react39.default.createElement("div", {
-      id: "map",
-      ref: mapRef
-    });
+    return /* @__PURE__ */ import_react39.default.createElement("div", { id: "map", ref: mapRef });
   };
   function addLayer(map3, layer) {
     const currentLayers = map3.overlayMapTypes.getArray();
@@ -53301,24 +54515,23 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
 
   // app/javascript/miniforge/Buildings.jsx
   var import_react40 = __toESM(require_react());
-  var Building2 = ({ id, street_address, highlight: highlight2, highlighted }) => /* @__PURE__ */ import_react40.default.createElement("div", {
-    className: `list-group-item building ${highlighted === id && "active"}`,
-    onMouseOver: () => highlight2(id),
-    onMouseOut: () => highlight2(null)
-  }, /* @__PURE__ */ import_react40.default.createElement("p", null, /* @__PURE__ */ import_react40.default.createElement("a", {
-    href: `/buildings/${id}`,
-    title: "Open building record"
-  }, street_address)));
-  var Buildings = ({ buildings: buildings3, highlighted, highlight: highlight2 }) => buildings3 ? /* @__PURE__ */ import_react40.default.createElement("div", {
-    id: "building-list"
-  }, /* @__PURE__ */ import_react40.default.createElement("h3", null, "Nearby Buildings"), /* @__PURE__ */ import_react40.default.createElement("div", {
-    className: "list-group"
-  }, buildings3.map((building, i) => /* @__PURE__ */ import_react40.default.createElement(Building2, __spreadProps(__spreadValues({
-    key: i
-  }, building), {
-    highlighted,
-    highlight: highlight2
-  }))))) : null;
+  var Building2 = ({ id, street_address, highlight: highlight2, highlighted }) => /* @__PURE__ */ import_react40.default.createElement(
+    "div",
+    {
+      className: `list-group-item building ${highlighted === id && "active"}`,
+      onMouseOver: () => highlight2(id),
+      onMouseOut: () => highlight2(null)
+    },
+    /* @__PURE__ */ import_react40.default.createElement("p", null, /* @__PURE__ */ import_react40.default.createElement(
+      "a",
+      {
+        href: `/buildings/${id}`,
+        title: "Open building record"
+      },
+      street_address
+    ))
+  );
+  var Buildings = ({ buildings: buildings3, highlighted, highlight: highlight2 }) => buildings3 ? /* @__PURE__ */ import_react40.default.createElement("div", { id: "building-list" }, /* @__PURE__ */ import_react40.default.createElement("h3", null, "Nearby Buildings"), /* @__PURE__ */ import_react40.default.createElement("div", { className: "list-group" }, buildings3.map((building, i) => /* @__PURE__ */ import_react40.default.createElement(Building2, __spreadProps(__spreadValues({ key: i }, building), { highlighted, highlight: highlight2 }))))) : null;
   var mapStateToProps7 = (state) => {
     return __spreadValues({}, state.buildings);
   };
@@ -53338,10 +54551,10 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     if (action.type === "LAYER_TOGGLE") {
       const layerId = parseInt(action.id);
       const layer = state.layers.find((item) => item.id === layerId);
-      return __spreadProps(__spreadValues({}, state), { layers: [...state.layers], layer, layeredAt: new Date().getTime() });
+      return __spreadProps(__spreadValues({}, state), { layers: [...state.layers], layer, layeredAt: (/* @__PURE__ */ new Date()).getTime() });
     }
     if (action.type === "LAYER_OPACITY") {
-      return __spreadProps(__spreadValues({}, state), { opacity: action.opacity, opacityAt: new Date().getTime() });
+      return __spreadProps(__spreadValues({}, state), { opacity: action.opacity, opacityAt: (/* @__PURE__ */ new Date()).getTime() });
     }
     return state;
   };
@@ -53373,13 +54586,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var App2 = () => {
     const [store2, setStore] = (0, import_react41.useState)(null);
     store2 || setStore(buildStore(reducers_exports2));
-    return /* @__PURE__ */ import_react41.default.createElement(Provider_default, {
-      store: store2
-    }, /* @__PURE__ */ import_react41.default.createElement("div", {
-      className: "map-wrap"
-    }, /* @__PURE__ */ import_react41.default.createElement(Map_default2, null), /* @__PURE__ */ import_react41.default.createElement("div", {
-      id: "miniforge-controls"
-    }, /* @__PURE__ */ import_react41.default.createElement(Layers_default2, null), /* @__PURE__ */ import_react41.default.createElement(Buildings_default, null))));
+    return /* @__PURE__ */ import_react41.default.createElement(Provider_default, { store: store2 }, /* @__PURE__ */ import_react41.default.createElement("div", { className: "map-wrap" }, /* @__PURE__ */ import_react41.default.createElement(Map_default2, null), /* @__PURE__ */ import_react41.default.createElement("div", { id: "miniforge-controls" }, /* @__PURE__ */ import_react41.default.createElement(Layers_default2, null), /* @__PURE__ */ import_react41.default.createElement(Buildings_default, null))));
   };
   var App_default2 = App2;
 
@@ -53394,15 +54601,18 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   // node_modules/promise-polyfill/src/finally.js
   function finallyConstructor(callback2) {
     var constructor = this.constructor;
-    return this.then(function(value) {
-      return constructor.resolve(callback2()).then(function() {
-        return value;
-      });
-    }, function(reason) {
-      return constructor.resolve(callback2()).then(function() {
-        return constructor.reject(reason);
-      });
-    });
+    return this.then(
+      function(value) {
+        return constructor.resolve(callback2()).then(function() {
+          return value;
+        });
+      },
+      function(reason) {
+        return constructor.resolve(callback2()).then(function() {
+          return constructor.reject(reason);
+        });
+      }
+    );
   }
   var finally_default = finallyConstructor;
 
@@ -53411,7 +54621,11 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     var P = this;
     return new P(function(resolve3, reject2) {
       if (!(arr && typeof arr.length !== "undefined")) {
-        return reject2(new TypeError(typeof arr + " " + arr + " is not iterable(cannot read property Symbol(Symbol.iterator))"));
+        return reject2(
+          new TypeError(
+            typeof arr + " " + arr + " is not iterable(cannot read property Symbol(Symbol.iterator))"
+          )
+        );
       }
       var args = Array.prototype.slice.call(arr);
       if (args.length === 0)
@@ -53421,14 +54635,18 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         if (val && (typeof val === "object" || typeof val === "function")) {
           var then = val.then;
           if (typeof then === "function") {
-            then.call(val, function(val2) {
-              res(i2, val2);
-            }, function(e) {
-              args[i2] = { status: "rejected", reason: e };
-              if (--remaining === 0) {
-                resolve3(args);
+            then.call(
+              val,
+              function(val2) {
+                res(i2, val2);
+              },
+              function(e) {
+                args[i2] = { status: "rejected", reason: e };
+                if (--remaining === 0) {
+                  resolve3(args);
+                }
               }
-            });
+            );
             return;
           }
         }
@@ -53542,17 +54760,20 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   function doResolve(fn, self2) {
     var done = false;
     try {
-      fn(function(value) {
-        if (done)
-          return;
-        done = true;
-        resolve2(self2, value);
-      }, function(reason) {
-        if (done)
-          return;
-        done = true;
-        reject(self2, reason);
-      });
+      fn(
+        function(value) {
+          if (done)
+            return;
+          done = true;
+          resolve2(self2, value);
+        },
+        function(reason) {
+          if (done)
+            return;
+          done = true;
+          reject(self2, reason);
+        }
+      );
     } catch (ex) {
       if (done)
         return;
@@ -53583,9 +54804,13 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           if (val && (typeof val === "object" || typeof val === "function")) {
             var then = val.then;
             if (typeof then === "function") {
-              then.call(val, function(val2) {
-                res(i2, val2);
-              }, reject2);
+              then.call(
+                val,
+                function(val2) {
+                  res(i2, val2);
+                },
+                reject2
+              );
               return;
             }
           }
@@ -53626,7 +54851,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       }
     });
   };
-  Promise2._immediateFn = typeof setImmediateFunc === "function" && function(fn) {
+  Promise2._immediateFn = // @ts-ignore
+  typeof setImmediateFunc === "function" && function(fn) {
     setImmediateFunc(fn);
   } || function(fn) {
     setTimeoutFunc(fn, 0);
@@ -53685,139 +54911,142 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   function scale(num, level) {
     return num >> level || 1;
   }
-  var Truncator = function() {
-    function Truncator2(opts) {
-      this.maxStringLength = 1024;
-      this.maxObjectLength = MAX_OBJ_LENGTH;
-      this.maxArrayLength = MAX_OBJ_LENGTH;
-      this.maxDepth = 8;
-      this.keys = [];
-      this.keysBlocklist = [];
-      this.seen = [];
-      var level = opts.level || 0;
-      this.keysBlocklist = opts.keysBlocklist || [];
-      this.maxStringLength = scale(this.maxStringLength, level);
-      this.maxObjectLength = scale(this.maxObjectLength, level);
-      this.maxArrayLength = scale(this.maxArrayLength, level);
-      this.maxDepth = scale(this.maxDepth, level);
-    }
-    Truncator2.prototype.truncate = function(value, key, depth) {
-      if (key === void 0) {
-        key = "";
+  var Truncator = (
+    /** @class */
+    function() {
+      function Truncator2(opts) {
+        this.maxStringLength = 1024;
+        this.maxObjectLength = MAX_OBJ_LENGTH;
+        this.maxArrayLength = MAX_OBJ_LENGTH;
+        this.maxDepth = 8;
+        this.keys = [];
+        this.keysBlocklist = [];
+        this.seen = [];
+        var level = opts.level || 0;
+        this.keysBlocklist = opts.keysBlocklist || [];
+        this.maxStringLength = scale(this.maxStringLength, level);
+        this.maxObjectLength = scale(this.maxObjectLength, level);
+        this.maxArrayLength = scale(this.maxArrayLength, level);
+        this.maxDepth = scale(this.maxDepth, level);
       }
-      if (depth === void 0) {
-        depth = 0;
-      }
-      if (value === null || value === void 0) {
-        return value;
-      }
-      switch (typeof value) {
-        case "boolean":
-        case "number":
-        case "function":
+      Truncator2.prototype.truncate = function(value, key, depth) {
+        if (key === void 0) {
+          key = "";
+        }
+        if (depth === void 0) {
+          depth = 0;
+        }
+        if (value === null || value === void 0) {
           return value;
-        case "string":
-          return this.truncateString(value);
-        case "object":
-          break;
-        default:
-          return this.truncateString(String(value));
-      }
-      if (value instanceof String) {
-        return this.truncateString(value.toString());
-      }
-      if (value instanceof Boolean || value instanceof Number || value instanceof Date || value instanceof RegExp) {
-        return value;
-      }
-      if (value instanceof Error) {
-        return this.truncateString(value.toString());
-      }
-      if (this.seen.indexOf(value) >= 0) {
-        return "[Circular " + this.getPath(value) + "]";
-      }
-      var type = objectType(value);
-      depth++;
-      if (depth > this.maxDepth) {
-        return "[Truncated " + type + "]";
-      }
-      this.keys.push(key);
-      this.seen.push(value);
-      switch (type) {
-        case "Array":
-          return this.truncateArray(value, depth);
-        case "Object":
-          return this.truncateObject(value, depth);
-        default:
-          var saved = this.maxDepth;
-          this.maxDepth = 0;
-          var obj = this.truncateObject(value, depth);
-          obj.__type = type;
-          this.maxDepth = saved;
-          return obj;
-      }
-    };
-    Truncator2.prototype.getPath = function(value) {
-      var index = this.seen.indexOf(value);
-      var path = [this.keys[index]];
-      for (var i = index; i >= 0; i--) {
-        var sub = this.seen[i];
-        if (sub && getAttr(sub, path[0]) === value) {
-          value = sub;
-          path.unshift(this.keys[i]);
         }
-      }
-      return "~" + path.join(".");
-    };
-    Truncator2.prototype.truncateString = function(s) {
-      if (s.length > this.maxStringLength) {
-        return s.slice(0, this.maxStringLength) + "...";
-      }
-      return s;
-    };
-    Truncator2.prototype.truncateArray = function(arr, depth) {
-      if (depth === void 0) {
-        depth = 0;
-      }
-      var length = 0;
-      var dst = [];
-      for (var i = 0; i < arr.length; i++) {
-        var el = arr[i];
-        dst.push(this.truncate(el, i.toString(), depth));
-        length++;
-        if (length >= this.maxArrayLength) {
-          break;
+        switch (typeof value) {
+          case "boolean":
+          case "number":
+          case "function":
+            return value;
+          case "string":
+            return this.truncateString(value);
+          case "object":
+            break;
+          default:
+            return this.truncateString(String(value));
         }
-      }
-      return dst;
-    };
-    Truncator2.prototype.truncateObject = function(obj, depth) {
-      if (depth === void 0) {
-        depth = 0;
-      }
-      var length = 0;
-      var dst = {};
-      for (var key in obj) {
-        if (!Object.prototype.hasOwnProperty.call(obj, key)) {
-          continue;
+        if (value instanceof String) {
+          return this.truncateString(value.toString());
         }
-        if (isBlocklisted(key, this.keysBlocklist)) {
-          dst[key] = FILTERED;
-          continue;
+        if (value instanceof Boolean || value instanceof Number || value instanceof Date || value instanceof RegExp) {
+          return value;
         }
-        var value = getAttr(obj, key);
-        if (value === void 0 || typeof value === "function") {
-          continue;
+        if (value instanceof Error) {
+          return this.truncateString(value.toString());
         }
-        dst[key] = this.truncate(value, key, depth);
-        length++;
-        if (length >= this.maxObjectLength) {
-          break;
+        if (this.seen.indexOf(value) >= 0) {
+          return "[Circular " + this.getPath(value) + "]";
         }
-      }
-      return dst;
-    };
-    return Truncator2;
-  }();
+        var type = objectType(value);
+        depth++;
+        if (depth > this.maxDepth) {
+          return "[Truncated " + type + "]";
+        }
+        this.keys.push(key);
+        this.seen.push(value);
+        switch (type) {
+          case "Array":
+            return this.truncateArray(value, depth);
+          case "Object":
+            return this.truncateObject(value, depth);
+          default:
+            var saved = this.maxDepth;
+            this.maxDepth = 0;
+            var obj = this.truncateObject(value, depth);
+            obj.__type = type;
+            this.maxDepth = saved;
+            return obj;
+        }
+      };
+      Truncator2.prototype.getPath = function(value) {
+        var index = this.seen.indexOf(value);
+        var path = [this.keys[index]];
+        for (var i = index; i >= 0; i--) {
+          var sub = this.seen[i];
+          if (sub && getAttr(sub, path[0]) === value) {
+            value = sub;
+            path.unshift(this.keys[i]);
+          }
+        }
+        return "~" + path.join(".");
+      };
+      Truncator2.prototype.truncateString = function(s) {
+        if (s.length > this.maxStringLength) {
+          return s.slice(0, this.maxStringLength) + "...";
+        }
+        return s;
+      };
+      Truncator2.prototype.truncateArray = function(arr, depth) {
+        if (depth === void 0) {
+          depth = 0;
+        }
+        var length = 0;
+        var dst = [];
+        for (var i = 0; i < arr.length; i++) {
+          var el = arr[i];
+          dst.push(this.truncate(el, i.toString(), depth));
+          length++;
+          if (length >= this.maxArrayLength) {
+            break;
+          }
+        }
+        return dst;
+      };
+      Truncator2.prototype.truncateObject = function(obj, depth) {
+        if (depth === void 0) {
+          depth = 0;
+        }
+        var length = 0;
+        var dst = {};
+        for (var key in obj) {
+          if (!Object.prototype.hasOwnProperty.call(obj, key)) {
+            continue;
+          }
+          if (isBlocklisted(key, this.keysBlocklist)) {
+            dst[key] = FILTERED;
+            continue;
+          }
+          var value = getAttr(obj, key);
+          if (value === void 0 || typeof value === "function") {
+            continue;
+          }
+          dst[key] = this.truncate(value, key, depth);
+          length++;
+          if (length >= this.maxObjectLength) {
+            break;
+          }
+        }
+        return dst;
+      };
+      return Truncator2;
+    }()
+  );
   function truncate(value, opts) {
     if (opts === void 0) {
       opts = {};
@@ -53852,100 +55081,109 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   }
 
   // node_modules/@airbrake/browser/esm/metrics.js
-  var Span = function() {
-    function Span2(metric, name, startTime) {
-      this._dur = 0;
-      this._level = 0;
-      this._metric = metric;
-      this.name = name;
-      this.startTime = startTime || new Date();
-    }
-    Span2.prototype.end = function(endTime) {
-      this.endTime = endTime ? endTime : new Date();
-      this._dur += this.endTime.getTime() - this.startTime.getTime();
-      this._metric._incGroup(this.name, this._dur);
-      this._metric = null;
-    };
-    Span2.prototype._pause = function() {
-      if (this._paused()) {
-        return;
+  var Span = (
+    /** @class */
+    function() {
+      function Span2(metric, name, startTime) {
+        this._dur = 0;
+        this._level = 0;
+        this._metric = metric;
+        this.name = name;
+        this.startTime = startTime || /* @__PURE__ */ new Date();
       }
-      var now = new Date();
-      this._dur += now.getTime() - this.startTime.getTime();
-      this.startTime = null;
-    };
-    Span2.prototype._resume = function() {
-      if (!this._paused()) {
-        return;
+      Span2.prototype.end = function(endTime) {
+        this.endTime = endTime ? endTime : /* @__PURE__ */ new Date();
+        this._dur += this.endTime.getTime() - this.startTime.getTime();
+        this._metric._incGroup(this.name, this._dur);
+        this._metric = null;
+      };
+      Span2.prototype._pause = function() {
+        if (this._paused()) {
+          return;
+        }
+        var now = /* @__PURE__ */ new Date();
+        this._dur += now.getTime() - this.startTime.getTime();
+        this.startTime = null;
+      };
+      Span2.prototype._resume = function() {
+        if (!this._paused()) {
+          return;
+        }
+        this.startTime = /* @__PURE__ */ new Date();
+      };
+      Span2.prototype._paused = function() {
+        return this.startTime == null;
+      };
+      return Span2;
+    }()
+  );
+  var BaseMetric = (
+    /** @class */
+    function() {
+      function BaseMetric2() {
+        this._spans = {};
+        this._groups = {};
+        this.startTime = /* @__PURE__ */ new Date();
       }
-      this.startTime = new Date();
-    };
-    Span2.prototype._paused = function() {
-      return this.startTime == null;
-    };
-    return Span2;
-  }();
-  var BaseMetric = function() {
-    function BaseMetric2() {
-      this._spans = {};
-      this._groups = {};
-      this.startTime = new Date();
-    }
-    BaseMetric2.prototype.end = function(endTime) {
-      if (!this.endTime) {
-        this.endTime = endTime || new Date();
+      BaseMetric2.prototype.end = function(endTime) {
+        if (!this.endTime) {
+          this.endTime = endTime || /* @__PURE__ */ new Date();
+        }
+      };
+      BaseMetric2.prototype.isRecording = function() {
+        return true;
+      };
+      BaseMetric2.prototype.startSpan = function(name, startTime) {
+        var span = this._spans[name];
+        if (span) {
+          span._level++;
+        } else {
+          span = new Span(this, name, startTime);
+          this._spans[name] = span;
+        }
+      };
+      BaseMetric2.prototype.endSpan = function(name, endTime) {
+        var span = this._spans[name];
+        if (!span) {
+          console.error("airbrake: span=%s does not exist", name);
+          return;
+        }
+        if (span._level > 0) {
+          span._level--;
+        } else {
+          span.end(endTime);
+          delete this._spans[span.name];
+        }
+      };
+      BaseMetric2.prototype._incGroup = function(name, ms) {
+        this._groups[name] = (this._groups[name] || 0) + ms;
+      };
+      BaseMetric2.prototype._duration = function() {
+        if (!this.endTime) {
+          this.endTime = /* @__PURE__ */ new Date();
+        }
+        return this.endTime.getTime() - this.startTime.getTime();
+      };
+      return BaseMetric2;
+    }()
+  );
+  var NoopMetric = (
+    /** @class */
+    function() {
+      function NoopMetric2() {
       }
-    };
-    BaseMetric2.prototype.isRecording = function() {
-      return true;
-    };
-    BaseMetric2.prototype.startSpan = function(name, startTime) {
-      var span = this._spans[name];
-      if (span) {
-        span._level++;
-      } else {
-        span = new Span(this, name, startTime);
-        this._spans[name] = span;
-      }
-    };
-    BaseMetric2.prototype.endSpan = function(name, endTime) {
-      var span = this._spans[name];
-      if (!span) {
-        console.error("airbrake: span=%s does not exist", name);
-        return;
-      }
-      if (span._level > 0) {
-        span._level--;
-      } else {
-        span.end(endTime);
-        delete this._spans[span.name];
-      }
-    };
-    BaseMetric2.prototype._incGroup = function(name, ms) {
-      this._groups[name] = (this._groups[name] || 0) + ms;
-    };
-    BaseMetric2.prototype._duration = function() {
-      if (!this.endTime) {
-        this.endTime = new Date();
-      }
-      return this.endTime.getTime() - this.startTime.getTime();
-    };
-    return BaseMetric2;
-  }();
-  var NoopMetric = function() {
-    function NoopMetric2() {
-    }
-    NoopMetric2.prototype.isRecording = function() {
-      return false;
-    };
-    NoopMetric2.prototype.startSpan = function(_name, _startTime) {
-    };
-    NoopMetric2.prototype.endSpan = function(_name, _startTime) {
-    };
-    NoopMetric2.prototype._incGroup = function(_name, _ms) {
-    };
-    return NoopMetric2;
-  }();
+      NoopMetric2.prototype.isRecording = function() {
+        return false;
+      };
+      NoopMetric2.prototype.startSpan = function(_name, _startTime) {
+      };
+      NoopMetric2.prototype.endSpan = function(_name, _startTime) {
+      };
+      NoopMetric2.prototype._incGroup = function(_name, _ms) {
+      };
+      return NoopMetric2;
+    }()
+  );
 
   // node_modules/@airbrake/browser/esm/scope.js
   var __assign = function() {
@@ -53960,75 +55198,78 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     };
     return __assign.apply(this, arguments);
   };
-  var Scope2 = function() {
-    function Scope3() {
-      this._noopMetric = new NoopMetric();
-      this._context = {};
-      this._historyMaxLen = 20;
-      this._history = [];
-    }
-    Scope3.prototype.clone = function() {
-      var clone2 = new Scope3();
-      clone2._context = __assign({}, this._context);
-      clone2._history = this._history.slice();
-      return clone2;
-    };
-    Scope3.prototype.setContext = function(context) {
-      this._context = __assign(__assign({}, this._context), context);
-    };
-    Scope3.prototype.context = function() {
-      var ctx = __assign({}, this._context);
-      if (this._history.length > 0) {
-        ctx.history = this._history.slice();
+  var Scope2 = (
+    /** @class */
+    function() {
+      function Scope3() {
+        this._noopMetric = new NoopMetric();
+        this._context = {};
+        this._historyMaxLen = 20;
+        this._history = [];
       }
-      return ctx;
-    };
-    Scope3.prototype.pushHistory = function(state) {
-      if (this._isDupState(state)) {
-        if (this._lastRecord.num) {
-          this._lastRecord.num++;
-        } else {
-          this._lastRecord.num = 2;
+      Scope3.prototype.clone = function() {
+        var clone2 = new Scope3();
+        clone2._context = __assign({}, this._context);
+        clone2._history = this._history.slice();
+        return clone2;
+      };
+      Scope3.prototype.setContext = function(context) {
+        this._context = __assign(__assign({}, this._context), context);
+      };
+      Scope3.prototype.context = function() {
+        var ctx = __assign({}, this._context);
+        if (this._history.length > 0) {
+          ctx.history = this._history.slice();
         }
-        return;
-      }
-      if (!state.date) {
-        state.date = new Date();
-      }
-      this._history.push(state);
-      this._lastRecord = state;
-      if (this._history.length > this._historyMaxLen) {
-        this._history = this._history.slice(-this._historyMaxLen);
-      }
-    };
-    Scope3.prototype._isDupState = function(state) {
-      if (!this._lastRecord) {
-        return false;
-      }
-      for (var key in state) {
-        if (!state.hasOwnProperty(key) || key === "date") {
-          continue;
+        return ctx;
+      };
+      Scope3.prototype.pushHistory = function(state) {
+        if (this._isDupState(state)) {
+          if (this._lastRecord.num) {
+            this._lastRecord.num++;
+          } else {
+            this._lastRecord.num = 2;
+          }
+          return;
         }
-        if (state[key] !== this._lastRecord[key]) {
+        if (!state.date) {
+          state.date = /* @__PURE__ */ new Date();
+        }
+        this._history.push(state);
+        this._lastRecord = state;
+        if (this._history.length > this._historyMaxLen) {
+          this._history = this._history.slice(-this._historyMaxLen);
+        }
+      };
+      Scope3.prototype._isDupState = function(state) {
+        if (!this._lastRecord) {
           return false;
         }
-      }
-      return true;
-    };
-    Scope3.prototype.routeMetric = function() {
-      return this._routeMetric || this._noopMetric;
-    };
-    Scope3.prototype.setRouteMetric = function(metric) {
-      this._routeMetric = metric;
-    };
-    Scope3.prototype.queueMetric = function() {
-      return this._queueMetric || this._noopMetric;
-    };
-    Scope3.prototype.setQueueMetric = function(metric) {
-      this._queueMetric = metric;
-    };
-    return Scope3;
-  }();
+        for (var key in state) {
+          if (!state.hasOwnProperty(key) || key === "date") {
+            continue;
+          }
+          if (state[key] !== this._lastRecord[key]) {
+            return false;
+          }
+        }
+        return true;
+      };
+      Scope3.prototype.routeMetric = function() {
+        return this._routeMetric || this._noopMetric;
+      };
+      Scope3.prototype.setRouteMetric = function(metric) {
+        this._routeMetric = metric;
+      };
+      Scope3.prototype.queueMetric = function() {
+        return this._queueMetric || this._noopMetric;
+      };
+      Scope3.prototype.setQueueMetric = function(metric) {
+        this._queueMetric = metric;
+      };
+      return Scope3;
+    }()
+  );
 
   // node_modules/@airbrake/browser/esm/processor/esp.js
   var import_error_stack_parser = __toESM(require_error_stack_parser());
@@ -54351,68 +55592,74 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     hasTdigest = true;
   } catch (err) {
   }
-  var TDigestStat = function() {
-    function TDigestStat2() {
-      this.count = 0;
-      this.sum = 0;
-      this.sumsq = 0;
-      this._td = new tdigest.Digest();
-    }
-    TDigestStat2.prototype.add = function(ms) {
-      if (ms === 0) {
-        ms = 1e-5;
+  var TDigestStat = (
+    /** @class */
+    function() {
+      function TDigestStat2() {
+        this.count = 0;
+        this.sum = 0;
+        this.sumsq = 0;
+        this._td = new tdigest.Digest();
       }
-      this.count += 1;
-      this.sum += ms;
-      this.sumsq += ms * ms;
-      if (this._td) {
-        this._td.push(ms);
-      }
-    };
-    TDigestStat2.prototype.toJSON = function() {
-      return {
-        count: this.count,
-        sum: this.sum,
-        sumsq: this.sumsq,
-        tdigestCentroids: tdigestCentroids(this._td)
-      };
-    };
-    return TDigestStat2;
-  }();
-  var TDigestStatGroups = function(_super) {
-    __extends3(TDigestStatGroups2, _super);
-    function TDigestStatGroups2() {
-      var _this = _super !== null && _super.apply(this, arguments) || this;
-      _this.groups = {};
-      return _this;
-    }
-    TDigestStatGroups2.prototype.addGroups = function(totalMs, groups) {
-      this.add(totalMs);
-      for (var name_1 in groups) {
-        if (groups.hasOwnProperty(name_1)) {
-          this.addGroup(name_1, groups[name_1]);
+      TDigestStat2.prototype.add = function(ms) {
+        if (ms === 0) {
+          ms = 1e-5;
         }
-      }
-    };
-    TDigestStatGroups2.prototype.addGroup = function(name, ms) {
-      var stat = this.groups[name];
-      if (!stat) {
-        stat = new TDigestStat();
-        this.groups[name] = stat;
-      }
-      stat.add(ms);
-    };
-    TDigestStatGroups2.prototype.toJSON = function() {
-      return {
-        count: this.count,
-        sum: this.sum,
-        sumsq: this.sumsq,
-        tdigestCentroids: tdigestCentroids(this._td),
-        groups: this.groups
+        this.count += 1;
+        this.sum += ms;
+        this.sumsq += ms * ms;
+        if (this._td) {
+          this._td.push(ms);
+        }
       };
-    };
-    return TDigestStatGroups2;
-  }(TDigestStat);
+      TDigestStat2.prototype.toJSON = function() {
+        return {
+          count: this.count,
+          sum: this.sum,
+          sumsq: this.sumsq,
+          tdigestCentroids: tdigestCentroids(this._td)
+        };
+      };
+      return TDigestStat2;
+    }()
+  );
+  var TDigestStatGroups = (
+    /** @class */
+    function(_super) {
+      __extends3(TDigestStatGroups2, _super);
+      function TDigestStatGroups2() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.groups = {};
+        return _this;
+      }
+      TDigestStatGroups2.prototype.addGroups = function(totalMs, groups) {
+        this.add(totalMs);
+        for (var name_1 in groups) {
+          if (groups.hasOwnProperty(name_1)) {
+            this.addGroup(name_1, groups[name_1]);
+          }
+        }
+      };
+      TDigestStatGroups2.prototype.addGroup = function(name, ms) {
+        var stat = this.groups[name];
+        if (!stat) {
+          stat = new TDigestStat();
+          this.groups[name] = stat;
+        }
+        stat.add(ms);
+      };
+      TDigestStatGroups2.prototype.toJSON = function() {
+        return {
+          count: this.count,
+          sum: this.sum,
+          sumsq: this.sumsq,
+          tdigestCentroids: tdigestCentroids(this._td),
+          groups: this.groups
+        };
+      };
+      return TDigestStatGroups2;
+    }(TDigestStat)
+  );
   function tdigestCentroids(td) {
     var means = [];
     var counts = [];
@@ -54440,102 +55687,108 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     return __assign2.apply(this, arguments);
   };
   var FLUSH_INTERVAL = 15e3;
-  var QueryInfo = function() {
-    function QueryInfo2(query) {
-      if (query === void 0) {
-        query = "";
-      }
-      this.method = "";
-      this.route = "";
-      this.query = "";
-      this.func = "";
-      this.file = "";
-      this.line = 0;
-      this.startTime = new Date();
-      this.query = query;
-    }
-    QueryInfo2.prototype._duration = function() {
-      if (!this.endTime) {
-        this.endTime = new Date();
-      }
-      return this.endTime.getTime() - this.startTime.getTime();
-    };
-    return QueryInfo2;
-  }();
-  var QueriesStats = function() {
-    function QueriesStats2(opt) {
-      this._m = {};
-      this._opt = opt;
-      this._url = opt.host + "/api/v5/projects/" + opt.projectId + "/queries-stats?key=" + opt.projectKey;
-      this._requester = makeRequester2(opt);
-    }
-    QueriesStats2.prototype.start = function(query) {
-      if (query === void 0) {
-        query = "";
-      }
-      return new QueryInfo(query);
-    };
-    QueriesStats2.prototype.notify = function(q) {
-      var _this = this;
-      if (!hasTdigest) {
-        return;
-      }
-      var ms = q._duration();
-      var minute = 60 * 1e3;
-      var startTime = new Date(Math.floor(q.startTime.getTime() / minute) * minute);
-      var key = {
-        method: q.method,
-        route: q.route,
-        query: q.query,
-        func: q.func,
-        file: q.file,
-        line: q.line,
-        time: startTime
-      };
-      var keyStr = JSON.stringify(key);
-      var stat = this._m[keyStr];
-      if (!stat) {
-        stat = new TDigestStat();
-        this._m[keyStr] = stat;
-      }
-      stat.add(ms);
-      if (this._timer) {
-        return;
-      }
-      this._timer = setTimeout(function() {
-        _this._flush();
-      }, FLUSH_INTERVAL);
-    };
-    QueriesStats2.prototype._flush = function() {
-      var queries = [];
-      for (var keyStr in this._m) {
-        if (!this._m.hasOwnProperty(keyStr)) {
-          continue;
+  var QueryInfo = (
+    /** @class */
+    function() {
+      function QueryInfo2(query) {
+        if (query === void 0) {
+          query = "";
         }
-        var key = JSON.parse(keyStr);
-        var v = __assign2(__assign2({}, key), this._m[keyStr].toJSON());
-        queries.push(v);
+        this.method = "";
+        this.route = "";
+        this.query = "";
+        this.func = "";
+        this.file = "";
+        this.line = 0;
+        this.startTime = /* @__PURE__ */ new Date();
+        this.query = query;
       }
-      this._m = {};
-      this._timer = null;
-      var outJSON = JSON.stringify({
-        environment: this._opt.environment,
-        queries
-      });
-      var req = {
-        method: "POST",
-        url: this._url,
-        body: outJSON
-      };
-      this._requester(req).then(function(_resp) {
-      }).catch(function(err) {
-        if (console.error) {
-          console.error("can not report queries stats", err);
+      QueryInfo2.prototype._duration = function() {
+        if (!this.endTime) {
+          this.endTime = /* @__PURE__ */ new Date();
         }
-      });
-    };
-    return QueriesStats2;
-  }();
+        return this.endTime.getTime() - this.startTime.getTime();
+      };
+      return QueryInfo2;
+    }()
+  );
+  var QueriesStats = (
+    /** @class */
+    function() {
+      function QueriesStats2(opt) {
+        this._m = {};
+        this._opt = opt;
+        this._url = opt.host + "/api/v5/projects/" + opt.projectId + "/queries-stats?key=" + opt.projectKey;
+        this._requester = makeRequester2(opt);
+      }
+      QueriesStats2.prototype.start = function(query) {
+        if (query === void 0) {
+          query = "";
+        }
+        return new QueryInfo(query);
+      };
+      QueriesStats2.prototype.notify = function(q) {
+        var _this = this;
+        if (!hasTdigest) {
+          return;
+        }
+        var ms = q._duration();
+        var minute = 60 * 1e3;
+        var startTime = new Date(Math.floor(q.startTime.getTime() / minute) * minute);
+        var key = {
+          method: q.method,
+          route: q.route,
+          query: q.query,
+          func: q.func,
+          file: q.file,
+          line: q.line,
+          time: startTime
+        };
+        var keyStr = JSON.stringify(key);
+        var stat = this._m[keyStr];
+        if (!stat) {
+          stat = new TDigestStat();
+          this._m[keyStr] = stat;
+        }
+        stat.add(ms);
+        if (this._timer) {
+          return;
+        }
+        this._timer = setTimeout(function() {
+          _this._flush();
+        }, FLUSH_INTERVAL);
+      };
+      QueriesStats2.prototype._flush = function() {
+        var queries = [];
+        for (var keyStr in this._m) {
+          if (!this._m.hasOwnProperty(keyStr)) {
+            continue;
+          }
+          var key = JSON.parse(keyStr);
+          var v = __assign2(__assign2({}, key), this._m[keyStr].toJSON());
+          queries.push(v);
+        }
+        this._m = {};
+        this._timer = null;
+        var outJSON = JSON.stringify({
+          environment: this._opt.environment,
+          queries
+        });
+        var req = {
+          method: "POST",
+          url: this._url,
+          body: outJSON
+        };
+        this._requester(req).then(function(_resp) {
+        }).catch(function(err) {
+          if (console.error) {
+            console.error("can not report queries stats", err);
+          }
+        });
+      };
+      return QueriesStats2;
+    }()
+  );
 
   // node_modules/@airbrake/browser/esm/queues.js
   var __extends4 = function() {
@@ -54570,82 +55823,88 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     return __assign3.apply(this, arguments);
   };
   var FLUSH_INTERVAL2 = 15e3;
-  var QueueMetric = function(_super) {
-    __extends4(QueueMetric2, _super);
-    function QueueMetric2(queue) {
-      var _this = _super.call(this) || this;
-      _this.queue = queue;
-      _this.startTime = new Date();
-      return _this;
-    }
-    return QueueMetric2;
-  }(BaseMetric);
-  var QueuesStats = function() {
-    function QueuesStats2(opt) {
-      this._m = {};
-      this._opt = opt;
-      this._url = opt.host + "/api/v5/projects/" + opt.projectId + "/queues-stats?key=" + opt.projectKey;
-      this._requester = makeRequester2(opt);
-    }
-    QueuesStats2.prototype.notify = function(q) {
-      var _this = this;
-      if (!hasTdigest) {
-        return;
+  var QueueMetric = (
+    /** @class */
+    function(_super) {
+      __extends4(QueueMetric2, _super);
+      function QueueMetric2(queue) {
+        var _this = _super.call(this) || this;
+        _this.queue = queue;
+        _this.startTime = /* @__PURE__ */ new Date();
+        return _this;
       }
-      var ms = q._duration();
-      if (ms === 0) {
-        ms = 1e-5;
+      return QueueMetric2;
+    }(BaseMetric)
+  );
+  var QueuesStats = (
+    /** @class */
+    function() {
+      function QueuesStats2(opt) {
+        this._m = {};
+        this._opt = opt;
+        this._url = opt.host + "/api/v5/projects/" + opt.projectId + "/queues-stats?key=" + opt.projectKey;
+        this._requester = makeRequester2(opt);
       }
-      var minute = 60 * 1e3;
-      var startTime = new Date(Math.floor(q.startTime.getTime() / minute) * minute);
-      var key = {
-        queue: q.queue,
-        time: startTime
-      };
-      var keyStr = JSON.stringify(key);
-      var stat = this._m[keyStr];
-      if (!stat) {
-        stat = new TDigestStatGroups();
-        this._m[keyStr] = stat;
-      }
-      stat.addGroups(ms, q._groups);
-      if (this._timer) {
-        return;
-      }
-      this._timer = setTimeout(function() {
-        _this._flush();
-      }, FLUSH_INTERVAL2);
-    };
-    QueuesStats2.prototype._flush = function() {
-      var queues = [];
-      for (var keyStr in this._m) {
-        if (!this._m.hasOwnProperty(keyStr)) {
-          continue;
+      QueuesStats2.prototype.notify = function(q) {
+        var _this = this;
+        if (!hasTdigest) {
+          return;
         }
-        var key = JSON.parse(keyStr);
-        var v = __assign3(__assign3({}, key), this._m[keyStr].toJSON());
-        queues.push(v);
-      }
-      this._m = {};
-      this._timer = null;
-      var outJSON = JSON.stringify({
-        environment: this._opt.environment,
-        queues
-      });
-      var req = {
-        method: "POST",
-        url: this._url,
-        body: outJSON
-      };
-      this._requester(req).then(function(_resp) {
-      }).catch(function(err) {
-        if (console.error) {
-          console.error("can not report queues breakdowns", err);
+        var ms = q._duration();
+        if (ms === 0) {
+          ms = 1e-5;
         }
-      });
-    };
-    return QueuesStats2;
-  }();
+        var minute = 60 * 1e3;
+        var startTime = new Date(Math.floor(q.startTime.getTime() / minute) * minute);
+        var key = {
+          queue: q.queue,
+          time: startTime
+        };
+        var keyStr = JSON.stringify(key);
+        var stat = this._m[keyStr];
+        if (!stat) {
+          stat = new TDigestStatGroups();
+          this._m[keyStr] = stat;
+        }
+        stat.addGroups(ms, q._groups);
+        if (this._timer) {
+          return;
+        }
+        this._timer = setTimeout(function() {
+          _this._flush();
+        }, FLUSH_INTERVAL2);
+      };
+      QueuesStats2.prototype._flush = function() {
+        var queues = [];
+        for (var keyStr in this._m) {
+          if (!this._m.hasOwnProperty(keyStr)) {
+            continue;
+          }
+          var key = JSON.parse(keyStr);
+          var v = __assign3(__assign3({}, key), this._m[keyStr].toJSON());
+          queues.push(v);
+        }
+        this._m = {};
+        this._timer = null;
+        var outJSON = JSON.stringify({
+          environment: this._opt.environment,
+          queues
+        });
+        var req = {
+          method: "POST",
+          url: this._url,
+          body: outJSON
+        };
+        this._requester(req).then(function(_resp) {
+        }).catch(function(err) {
+          if (console.error) {
+            console.error("can not report queues breakdowns", err);
+          }
+        });
+      };
+      return QueuesStats2;
+    }()
+  );
 
   // node_modules/@airbrake/browser/esm/routes.js
   var __extends5 = function() {
@@ -54680,179 +55939,188 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     return __assign4.apply(this, arguments);
   };
   var FLUSH_INTERVAL3 = 15e3;
-  var RouteMetric = function(_super) {
-    __extends5(RouteMetric2, _super);
-    function RouteMetric2(method, route, statusCode, contentType) {
-      if (method === void 0) {
-        method = "";
-      }
-      if (route === void 0) {
-        route = "";
-      }
-      if (statusCode === void 0) {
-        statusCode = 0;
-      }
-      if (contentType === void 0) {
-        contentType = "";
-      }
-      var _this = _super.call(this) || this;
-      _this.method = method;
-      _this.route = route;
-      _this.statusCode = statusCode;
-      _this.contentType = contentType;
-      _this.startTime = new Date();
-      return _this;
-    }
-    return RouteMetric2;
-  }(BaseMetric);
-  var RoutesStats = function() {
-    function RoutesStats2(opt) {
-      this._m = {};
-      this._opt = opt;
-      this._url = opt.host + "/api/v5/projects/" + opt.projectId + "/routes-stats?key=" + opt.projectKey;
-      this._requester = makeRequester2(opt);
-    }
-    RoutesStats2.prototype.notify = function(req) {
-      var _this = this;
-      if (!hasTdigest) {
-        return;
-      }
-      var ms = req._duration();
-      var minute = 60 * 1e3;
-      var startTime = new Date(Math.floor(req.startTime.getTime() / minute) * minute);
-      var key = {
-        method: req.method,
-        route: req.route,
-        statusCode: req.statusCode,
-        time: startTime
-      };
-      var keyStr = JSON.stringify(key);
-      var stat = this._m[keyStr];
-      if (!stat) {
-        stat = new TDigestStat();
-        this._m[keyStr] = stat;
-      }
-      stat.add(ms);
-      if (this._timer) {
-        return;
-      }
-      this._timer = setTimeout(function() {
-        _this._flush();
-      }, FLUSH_INTERVAL3);
-    };
-    RoutesStats2.prototype._flush = function() {
-      var routes = [];
-      for (var keyStr in this._m) {
-        if (!this._m.hasOwnProperty(keyStr)) {
-          continue;
+  var RouteMetric = (
+    /** @class */
+    function(_super) {
+      __extends5(RouteMetric2, _super);
+      function RouteMetric2(method, route, statusCode, contentType) {
+        if (method === void 0) {
+          method = "";
         }
-        var key = JSON.parse(keyStr);
-        var v = __assign4(__assign4({}, key), this._m[keyStr].toJSON());
-        routes.push(v);
-      }
-      this._m = {};
-      this._timer = null;
-      var outJSON = JSON.stringify({
-        environment: this._opt.environment,
-        routes
-      });
-      var req = {
-        method: "POST",
-        url: this._url,
-        body: outJSON
-      };
-      this._requester(req).then(function(_resp) {
-      }).catch(function(err) {
-        if (console.error) {
-          console.error("can not report routes stats", err);
+        if (route === void 0) {
+          route = "";
         }
-      });
-    };
-    return RoutesStats2;
-  }();
-  var RoutesBreakdowns = function() {
-    function RoutesBreakdowns2(opt) {
-      this._m = {};
-      this._opt = opt;
-      this._url = opt.host + "/api/v5/projects/" + opt.projectId + "/routes-breakdowns?key=" + opt.projectKey;
-      this._requester = makeRequester2(opt);
-    }
-    RoutesBreakdowns2.prototype.notify = function(req) {
-      var _this = this;
-      if (!hasTdigest) {
-        return;
-      }
-      if (req.statusCode < 200 || req.statusCode >= 300 && req.statusCode < 400 || req.statusCode === 404 || Object.keys(req._groups).length === 0) {
-        return;
-      }
-      var ms = req._duration();
-      if (ms === 0) {
-        ms = 1e-5;
-      }
-      var minute = 60 * 1e3;
-      var startTime = new Date(Math.floor(req.startTime.getTime() / minute) * minute);
-      var key = {
-        method: req.method,
-        route: req.route,
-        responseType: this._responseType(req),
-        time: startTime
-      };
-      var keyStr = JSON.stringify(key);
-      var stat = this._m[keyStr];
-      if (!stat) {
-        stat = new TDigestStatGroups();
-        this._m[keyStr] = stat;
-      }
-      stat.addGroups(ms, req._groups);
-      if (this._timer) {
-        return;
-      }
-      this._timer = setTimeout(function() {
-        _this._flush();
-      }, FLUSH_INTERVAL3);
-    };
-    RoutesBreakdowns2.prototype._flush = function() {
-      var routes = [];
-      for (var keyStr in this._m) {
-        if (!this._m.hasOwnProperty(keyStr)) {
-          continue;
+        if (statusCode === void 0) {
+          statusCode = 0;
         }
-        var key = JSON.parse(keyStr);
-        var v = __assign4(__assign4({}, key), this._m[keyStr].toJSON());
-        routes.push(v);
-      }
-      this._m = {};
-      this._timer = null;
-      var outJSON = JSON.stringify({
-        environment: this._opt.environment,
-        routes
-      });
-      var req = {
-        method: "POST",
-        url: this._url,
-        body: outJSON
-      };
-      this._requester(req).then(function(_resp) {
-      }).catch(function(err) {
-        if (console.error) {
-          console.error("can not report routes breakdowns", err);
+        if (contentType === void 0) {
+          contentType = "";
         }
-      });
-    };
-    RoutesBreakdowns2.prototype._responseType = function(req) {
-      if (req.statusCode >= 500) {
-        return "5xx";
+        var _this = _super.call(this) || this;
+        _this.method = method;
+        _this.route = route;
+        _this.statusCode = statusCode;
+        _this.contentType = contentType;
+        _this.startTime = /* @__PURE__ */ new Date();
+        return _this;
       }
-      if (req.statusCode >= 400) {
-        return "4xx";
+      return RouteMetric2;
+    }(BaseMetric)
+  );
+  var RoutesStats = (
+    /** @class */
+    function() {
+      function RoutesStats2(opt) {
+        this._m = {};
+        this._opt = opt;
+        this._url = opt.host + "/api/v5/projects/" + opt.projectId + "/routes-stats?key=" + opt.projectKey;
+        this._requester = makeRequester2(opt);
       }
-      if (!req.contentType) {
-        return "";
+      RoutesStats2.prototype.notify = function(req) {
+        var _this = this;
+        if (!hasTdigest) {
+          return;
+        }
+        var ms = req._duration();
+        var minute = 60 * 1e3;
+        var startTime = new Date(Math.floor(req.startTime.getTime() / minute) * minute);
+        var key = {
+          method: req.method,
+          route: req.route,
+          statusCode: req.statusCode,
+          time: startTime
+        };
+        var keyStr = JSON.stringify(key);
+        var stat = this._m[keyStr];
+        if (!stat) {
+          stat = new TDigestStat();
+          this._m[keyStr] = stat;
+        }
+        stat.add(ms);
+        if (this._timer) {
+          return;
+        }
+        this._timer = setTimeout(function() {
+          _this._flush();
+        }, FLUSH_INTERVAL3);
+      };
+      RoutesStats2.prototype._flush = function() {
+        var routes = [];
+        for (var keyStr in this._m) {
+          if (!this._m.hasOwnProperty(keyStr)) {
+            continue;
+          }
+          var key = JSON.parse(keyStr);
+          var v = __assign4(__assign4({}, key), this._m[keyStr].toJSON());
+          routes.push(v);
+        }
+        this._m = {};
+        this._timer = null;
+        var outJSON = JSON.stringify({
+          environment: this._opt.environment,
+          routes
+        });
+        var req = {
+          method: "POST",
+          url: this._url,
+          body: outJSON
+        };
+        this._requester(req).then(function(_resp) {
+        }).catch(function(err) {
+          if (console.error) {
+            console.error("can not report routes stats", err);
+          }
+        });
+      };
+      return RoutesStats2;
+    }()
+  );
+  var RoutesBreakdowns = (
+    /** @class */
+    function() {
+      function RoutesBreakdowns2(opt) {
+        this._m = {};
+        this._opt = opt;
+        this._url = opt.host + "/api/v5/projects/" + opt.projectId + "/routes-breakdowns?key=" + opt.projectKey;
+        this._requester = makeRequester2(opt);
       }
-      return req.contentType.split(";")[0].split("/")[-1];
-    };
-    return RoutesBreakdowns2;
-  }();
+      RoutesBreakdowns2.prototype.notify = function(req) {
+        var _this = this;
+        if (!hasTdigest) {
+          return;
+        }
+        if (req.statusCode < 200 || req.statusCode >= 300 && req.statusCode < 400 || req.statusCode === 404 || Object.keys(req._groups).length === 0) {
+          return;
+        }
+        var ms = req._duration();
+        if (ms === 0) {
+          ms = 1e-5;
+        }
+        var minute = 60 * 1e3;
+        var startTime = new Date(Math.floor(req.startTime.getTime() / minute) * minute);
+        var key = {
+          method: req.method,
+          route: req.route,
+          responseType: this._responseType(req),
+          time: startTime
+        };
+        var keyStr = JSON.stringify(key);
+        var stat = this._m[keyStr];
+        if (!stat) {
+          stat = new TDigestStatGroups();
+          this._m[keyStr] = stat;
+        }
+        stat.addGroups(ms, req._groups);
+        if (this._timer) {
+          return;
+        }
+        this._timer = setTimeout(function() {
+          _this._flush();
+        }, FLUSH_INTERVAL3);
+      };
+      RoutesBreakdowns2.prototype._flush = function() {
+        var routes = [];
+        for (var keyStr in this._m) {
+          if (!this._m.hasOwnProperty(keyStr)) {
+            continue;
+          }
+          var key = JSON.parse(keyStr);
+          var v = __assign4(__assign4({}, key), this._m[keyStr].toJSON());
+          routes.push(v);
+        }
+        this._m = {};
+        this._timer = null;
+        var outJSON = JSON.stringify({
+          environment: this._opt.environment,
+          routes
+        });
+        var req = {
+          method: "POST",
+          url: this._url,
+          body: outJSON
+        };
+        this._requester(req).then(function(_resp) {
+        }).catch(function(err) {
+          if (console.error) {
+            console.error("can not report routes breakdowns", err);
+          }
+        });
+      };
+      RoutesBreakdowns2.prototype._responseType = function(req) {
+        if (req.statusCode >= 500) {
+          return "5xx";
+        }
+        if (req.statusCode >= 400) {
+          return "4xx";
+        }
+        if (!req.contentType) {
+          return "";
+        }
+        return req.contentType.split(";")[0].split("/")[-1];
+      };
+      return RoutesBreakdowns2;
+    }()
+  );
 
   // node_modules/@airbrake/browser/esm/version.js
   var NOTIFIER_NAME = "airbrake-js/browser";
@@ -54872,230 +56140,239 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     };
     return __assign5.apply(this, arguments);
   };
-  var BaseNotifier = function() {
-    function BaseNotifier2(opt) {
-      var _this = this;
-      this._filters = [];
-      this._performanceFilters = [];
-      this._scope = new Scope2();
-      this._onClose = [];
-      if (!opt.projectId || !opt.projectKey) {
-        throw new Error("airbrake: projectId and projectKey are required");
-      }
-      this._opt = opt;
-      this._opt.host = this._opt.host || "https://api.airbrake.io";
-      this._opt.timeout = this._opt.timeout || 1e4;
-      this._opt.keysBlocklist = this._opt.keysBlocklist || this._opt.keysBlacklist || [/password/, /secret/];
-      this._url = this._opt.host + "/api/v3/projects/" + this._opt.projectId + "/notices?key=" + this._opt.projectKey;
-      this._processor = this._opt.processor || espProcessor;
-      this._requester = makeRequester2(this._opt);
-      this.addFilter(ignoreNoiseFilter);
-      this.addFilter(makeDebounceFilter());
-      this.addFilter(uncaughtMessageFilter);
-      this.addFilter(angularMessageFilter);
-      this.addFilter(function(notice) {
-        notice.context.notifier = {
-          name: NOTIFIER_NAME,
-          version: NOTIFIER_VERSION,
-          url: NOTIFIER_URL
-        };
-        if (_this._opt.environment) {
-          notice.context.environment = _this._opt.environment;
+  var BaseNotifier = (
+    /** @class */
+    function() {
+      function BaseNotifier2(opt) {
+        var _this = this;
+        this._filters = [];
+        this._performanceFilters = [];
+        this._scope = new Scope2();
+        this._onClose = [];
+        if (!opt.projectId || !opt.projectKey) {
+          throw new Error("airbrake: projectId and projectKey are required");
         }
-        return notice;
-      });
-      this.routes = new Routes(this);
-      this.queues = new Queues(this);
-      this.queries = new QueriesStats(this._opt);
-    }
-    BaseNotifier2.prototype.close = function() {
-      for (var _i = 0, _a = this._onClose; _i < _a.length; _i++) {
-        var fn = _a[_i];
-        fn();
+        this._opt = opt;
+        this._opt.host = this._opt.host || "https://api.airbrake.io";
+        this._opt.timeout = this._opt.timeout || 1e4;
+        this._opt.keysBlocklist = this._opt.keysBlocklist || this._opt.keysBlacklist || [/password/, /secret/];
+        this._url = this._opt.host + "/api/v3/projects/" + this._opt.projectId + "/notices?key=" + this._opt.projectKey;
+        this._processor = this._opt.processor || espProcessor;
+        this._requester = makeRequester2(this._opt);
+        this.addFilter(ignoreNoiseFilter);
+        this.addFilter(makeDebounceFilter());
+        this.addFilter(uncaughtMessageFilter);
+        this.addFilter(angularMessageFilter);
+        this.addFilter(function(notice) {
+          notice.context.notifier = {
+            name: NOTIFIER_NAME,
+            version: NOTIFIER_VERSION,
+            url: NOTIFIER_URL
+          };
+          if (_this._opt.environment) {
+            notice.context.environment = _this._opt.environment;
+          }
+          return notice;
+        });
+        this.routes = new Routes(this);
+        this.queues = new Queues(this);
+        this.queries = new QueriesStats(this._opt);
       }
-    };
-    BaseNotifier2.prototype.scope = function() {
-      return this._scope;
-    };
-    BaseNotifier2.prototype.setActiveScope = function(scope) {
-      this._scope = scope;
-    };
-    BaseNotifier2.prototype.addFilter = function(filter) {
-      this._filters.push(filter);
-    };
-    BaseNotifier2.prototype.addPerformanceFilter = function(performanceFilter) {
-      this._performanceFilters.push(performanceFilter);
-    };
-    BaseNotifier2.prototype.notify = function(err) {
-      var notice = {
-        errors: [],
-        context: __assign5(__assign5({ severity: "error" }, this.scope().context()), err.context),
-        params: err.params || {},
-        environment: err.environment || {},
-        session: err.session || {}
+      BaseNotifier2.prototype.close = function() {
+        for (var _i = 0, _a = this._onClose; _i < _a.length; _i++) {
+          var fn = _a[_i];
+          fn();
+        }
       };
-      if (typeof err !== "object" || err.error === void 0) {
-        err = { error: err };
-      }
-      if (!err.error) {
-        notice.error = new Error("airbrake: got err=" + JSON.stringify(err.error) + ", wanted an Error");
-        return src_default.resolve(notice);
-      }
-      var error2 = this._processor(err.error);
-      notice.errors.push(error2);
-      for (var _i = 0, _a = this._filters; _i < _a.length; _i++) {
-        var filter = _a[_i];
-        var r = filter(notice);
-        if (r === null) {
-          notice.error = new Error("airbrake: error is filtered");
+      BaseNotifier2.prototype.scope = function() {
+        return this._scope;
+      };
+      BaseNotifier2.prototype.setActiveScope = function(scope) {
+        this._scope = scope;
+      };
+      BaseNotifier2.prototype.addFilter = function(filter) {
+        this._filters.push(filter);
+      };
+      BaseNotifier2.prototype.addPerformanceFilter = function(performanceFilter) {
+        this._performanceFilters.push(performanceFilter);
+      };
+      BaseNotifier2.prototype.notify = function(err) {
+        var notice = {
+          errors: [],
+          context: __assign5(__assign5({ severity: "error" }, this.scope().context()), err.context),
+          params: err.params || {},
+          environment: err.environment || {},
+          session: err.session || {}
+        };
+        if (typeof err !== "object" || err.error === void 0) {
+          err = { error: err };
+        }
+        if (!err.error) {
+          notice.error = new Error("airbrake: got err=" + JSON.stringify(err.error) + ", wanted an Error");
           return src_default.resolve(notice);
         }
-        notice = r;
-      }
-      if (!notice.context) {
-        notice.context = {};
-      }
-      notice.context.language = "JavaScript";
-      return this._sendNotice(notice);
-    };
-    BaseNotifier2.prototype._sendNotice = function(notice) {
-      var body = jsonifyNotice(notice, {
-        keysBlocklist: this._opt.keysBlocklist
-      });
-      if (this._opt.reporter) {
-        if (typeof this._opt.reporter === "function") {
-          return this._opt.reporter(notice);
-        } else {
-          console.warn("airbrake: options.reporter must be a function");
+        var error2 = this._processor(err.error);
+        notice.errors.push(error2);
+        for (var _i = 0, _a = this._filters; _i < _a.length; _i++) {
+          var filter = _a[_i];
+          var r = filter(notice);
+          if (r === null) {
+            notice.error = new Error("airbrake: error is filtered");
+            return src_default.resolve(notice);
+          }
+          notice = r;
         }
-      }
-      var req = {
-        method: "POST",
-        url: this._url,
-        body
+        if (!notice.context) {
+          notice.context = {};
+        }
+        notice.context.language = "JavaScript";
+        return this._sendNotice(notice);
       };
-      return this._requester(req).then(function(resp) {
-        notice.id = resp.json.id;
-        notice.url = resp.json.url;
-        return notice;
-      }).catch(function(err) {
-        notice.error = err;
-        return notice;
-      });
-    };
-    BaseNotifier2.prototype.wrap = function(fn, props) {
-      if (props === void 0) {
-        props = [];
-      }
-      if (fn._airbrake) {
-        return fn;
-      }
-      var client = this;
-      var airbrakeWrapper = function() {
-        var fnArgs = Array.prototype.slice.call(arguments);
-        var wrappedArgs = client._wrapArguments(fnArgs);
-        try {
-          return fn.apply(this, wrappedArgs);
-        } catch (err) {
-          client.notify({ error: err, params: { arguments: fnArgs } });
-          this._ignoreNextWindowError();
-          throw err;
+      BaseNotifier2.prototype._sendNotice = function(notice) {
+        var body = jsonifyNotice(notice, {
+          keysBlocklist: this._opt.keysBlocklist
+        });
+        if (this._opt.reporter) {
+          if (typeof this._opt.reporter === "function") {
+            return this._opt.reporter(notice);
+          } else {
+            console.warn("airbrake: options.reporter must be a function");
+          }
         }
+        var req = {
+          method: "POST",
+          url: this._url,
+          body
+        };
+        return this._requester(req).then(function(resp) {
+          notice.id = resp.json.id;
+          notice.url = resp.json.url;
+          return notice;
+        }).catch(function(err) {
+          notice.error = err;
+          return notice;
+        });
       };
-      for (var prop in fn) {
-        if (fn.hasOwnProperty(prop)) {
-          airbrakeWrapper[prop] = fn[prop];
+      BaseNotifier2.prototype.wrap = function(fn, props) {
+        if (props === void 0) {
+          props = [];
         }
-      }
-      for (var _i = 0, props_1 = props; _i < props_1.length; _i++) {
-        var prop = props_1[_i];
-        if (fn.hasOwnProperty(prop)) {
-          airbrakeWrapper[prop] = fn[prop];
+        if (fn._airbrake) {
+          return fn;
         }
-      }
-      airbrakeWrapper._airbrake = true;
-      airbrakeWrapper.inner = fn;
-      return airbrakeWrapper;
-    };
-    BaseNotifier2.prototype._wrapArguments = function(args) {
-      for (var i = 0; i < args.length; i++) {
-        var arg = args[i];
-        if (typeof arg === "function") {
-          args[i] = this.wrap(arg);
+        var client = this;
+        var airbrakeWrapper = function() {
+          var fnArgs = Array.prototype.slice.call(arguments);
+          var wrappedArgs = client._wrapArguments(fnArgs);
+          try {
+            return fn.apply(this, wrappedArgs);
+          } catch (err) {
+            client.notify({ error: err, params: { arguments: fnArgs } });
+            this._ignoreNextWindowError();
+            throw err;
+          }
+        };
+        for (var prop in fn) {
+          if (fn.hasOwnProperty(prop)) {
+            airbrakeWrapper[prop] = fn[prop];
+          }
         }
-      }
-      return args;
-    };
-    BaseNotifier2.prototype._ignoreNextWindowError = function() {
-    };
-    BaseNotifier2.prototype.call = function(fn) {
-      var _args = [];
-      for (var _i = 1; _i < arguments.length; _i++) {
-        _args[_i - 1] = arguments[_i];
-      }
-      var wrapper = this.wrap(fn);
-      return wrapper.apply(this, Array.prototype.slice.call(arguments, 1));
-    };
-    return BaseNotifier2;
-  }();
-  var Routes = function() {
-    function Routes2(notifier) {
-      this._notifier = notifier;
-      this._routes = new RoutesStats(notifier._opt);
-      this._breakdowns = new RoutesBreakdowns(notifier._opt);
-    }
-    Routes2.prototype.start = function(method, route, statusCode, contentType) {
-      if (method === void 0) {
-        method = "";
-      }
-      if (route === void 0) {
-        route = "";
-      }
-      if (statusCode === void 0) {
-        statusCode = 0;
-      }
-      if (contentType === void 0) {
-        contentType = "";
-      }
-      var metric = new RouteMetric(method, route, statusCode, contentType);
-      var scope = this._notifier.scope().clone();
-      scope.setContext({ httpMethod: method, route });
-      scope.setRouteMetric(metric);
-      this._notifier.setActiveScope(scope);
-      return metric;
-    };
-    Routes2.prototype.notify = function(req) {
-      req.end();
-      for (var _i = 0, _a = this._notifier._performanceFilters; _i < _a.length; _i++) {
-        var performanceFilter = _a[_i];
-        if (performanceFilter(req) === null) {
-          return;
+        for (var _i = 0, props_1 = props; _i < props_1.length; _i++) {
+          var prop = props_1[_i];
+          if (fn.hasOwnProperty(prop)) {
+            airbrakeWrapper[prop] = fn[prop];
+          }
         }
+        airbrakeWrapper._airbrake = true;
+        airbrakeWrapper.inner = fn;
+        return airbrakeWrapper;
+      };
+      BaseNotifier2.prototype._wrapArguments = function(args) {
+        for (var i = 0; i < args.length; i++) {
+          var arg = args[i];
+          if (typeof arg === "function") {
+            args[i] = this.wrap(arg);
+          }
+        }
+        return args;
+      };
+      BaseNotifier2.prototype._ignoreNextWindowError = function() {
+      };
+      BaseNotifier2.prototype.call = function(fn) {
+        var _args = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+          _args[_i - 1] = arguments[_i];
+        }
+        var wrapper = this.wrap(fn);
+        return wrapper.apply(this, Array.prototype.slice.call(arguments, 1));
+      };
+      return BaseNotifier2;
+    }()
+  );
+  var Routes = (
+    /** @class */
+    function() {
+      function Routes2(notifier) {
+        this._notifier = notifier;
+        this._routes = new RoutesStats(notifier._opt);
+        this._breakdowns = new RoutesBreakdowns(notifier._opt);
       }
-      this._routes.notify(req);
-      this._breakdowns.notify(req);
-    };
-    return Routes2;
-  }();
-  var Queues = function() {
-    function Queues2(notifier) {
-      this._notifier = notifier;
-      this._queues = new QueuesStats(notifier._opt);
-    }
-    Queues2.prototype.start = function(queue) {
-      var metric = new QueueMetric(queue);
-      var scope = this._notifier.scope().clone();
-      scope.setContext({ queue });
-      scope.setQueueMetric(metric);
-      this._notifier.setActiveScope(scope);
-      return metric;
-    };
-    Queues2.prototype.notify = function(q) {
-      q.end();
-      this._queues.notify(q);
-    };
-    return Queues2;
-  }();
+      Routes2.prototype.start = function(method, route, statusCode, contentType) {
+        if (method === void 0) {
+          method = "";
+        }
+        if (route === void 0) {
+          route = "";
+        }
+        if (statusCode === void 0) {
+          statusCode = 0;
+        }
+        if (contentType === void 0) {
+          contentType = "";
+        }
+        var metric = new RouteMetric(method, route, statusCode, contentType);
+        var scope = this._notifier.scope().clone();
+        scope.setContext({ httpMethod: method, route });
+        scope.setRouteMetric(metric);
+        this._notifier.setActiveScope(scope);
+        return metric;
+      };
+      Routes2.prototype.notify = function(req) {
+        req.end();
+        for (var _i = 0, _a = this._notifier._performanceFilters; _i < _a.length; _i++) {
+          var performanceFilter = _a[_i];
+          if (performanceFilter(req) === null) {
+            return;
+          }
+        }
+        this._routes.notify(req);
+        this._breakdowns.notify(req);
+      };
+      return Routes2;
+    }()
+  );
+  var Queues = (
+    /** @class */
+    function() {
+      function Queues2(notifier) {
+        this._notifier = notifier;
+        this._queues = new QueuesStats(notifier._opt);
+      }
+      Queues2.prototype.start = function(queue) {
+        var metric = new QueueMetric(queue);
+        var scope = this._notifier.scope().clone();
+        scope.setContext({ queue });
+        scope.setQueueMetric(metric);
+        this._notifier.setActiveScope(scope);
+        return metric;
+      };
+      Queues2.prototype.notify = function(q) {
+        q.end();
+        this._queues.notify(q);
+      };
+      return Queues2;
+    }()
+  );
 
   // node_modules/@airbrake/browser/esm/filter/window.js
   function windowFilter(notice) {
@@ -55248,7 +56525,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     window.fetch = function(req, options) {
       var state = {
         type: "xhr",
-        date: new Date()
+        date: /* @__PURE__ */ new Date()
       };
       state.method = options && options.method ? options.method : "GET";
       if (typeof req === "string") {
@@ -55263,12 +56540,12 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       });
       return oldFetch.apply(this, arguments).then(function(resp) {
         state.statusCode = resp.status;
-        state.duration = new Date().getTime() - state.date.getTime();
+        state.duration = (/* @__PURE__ */ new Date()).getTime() - state.date.getTime();
         notifier.scope().pushHistory(state);
         return resp;
       }).catch(function(err) {
         state.error = err;
-        state.duration = new Date().getTime() - state.date.getTime();
+        state.duration = (/* @__PURE__ */ new Date()).getTime() - state.date.getTime();
         notifier.scope().pushHistory(state);
         throw err;
       });
@@ -55322,7 +56599,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     function recordReq(req) {
       var state = req.__state;
       state.statusCode = req.status;
-      state.duration = new Date().getTime() - state.date.getTime();
+      state.duration = (/* @__PURE__ */ new Date()).getTime() - state.date.getTime();
       notifier.scope().pushHistory(state);
     }
     var oldOpen = XMLHttpRequest.prototype.open;
@@ -55348,7 +56625,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         }
       };
       if (this.__state) {
-        this.__state.date = new Date();
+        this.__state.date = /* @__PURE__ */ new Date();
       }
       return oldSend.apply(this, arguments);
     };
@@ -55386,167 +56663,170 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     };
     return __assign6.apply(this, arguments);
   };
-  var Notifier = function(_super) {
-    __extends6(Notifier2, _super);
-    function Notifier2(opt) {
-      var _this = _super.call(this, opt) || this;
-      _this.offline = false;
-      _this.todo = [];
-      _this._ignoreWindowError = 0;
-      _this._ignoreNextXHR = 0;
-      if (typeof window === "undefined") {
+  var Notifier = (
+    /** @class */
+    function(_super) {
+      __extends6(Notifier2, _super);
+      function Notifier2(opt) {
+        var _this = _super.call(this, opt) || this;
+        _this.offline = false;
+        _this.todo = [];
+        _this._ignoreWindowError = 0;
+        _this._ignoreNextXHR = 0;
+        if (typeof window === "undefined") {
+          return _this;
+        }
+        _this.addFilter(windowFilter);
+        if (window.addEventListener) {
+          _this.onOnline = _this.onOnline.bind(_this);
+          window.addEventListener("online", _this.onOnline);
+          _this.onOffline = _this.onOffline.bind(_this);
+          window.addEventListener("offline", _this.onOffline);
+          _this.onUnhandledrejection = _this.onUnhandledrejection.bind(_this);
+          window.addEventListener("unhandledrejection", _this.onUnhandledrejection);
+          _this._onClose.push(function() {
+            window.removeEventListener("online", _this.onOnline);
+            window.removeEventListener("offline", _this.onOffline);
+            window.removeEventListener("unhandledrejection", _this.onUnhandledrejection);
+          });
+        }
+        if (_this._opt.ignoreWindowError) {
+          opt.instrumentation.onerror = false;
+        }
+        _this._instrument(opt.instrumentation);
         return _this;
       }
-      _this.addFilter(windowFilter);
-      if (window.addEventListener) {
-        _this.onOnline = _this.onOnline.bind(_this);
-        window.addEventListener("online", _this.onOnline);
-        _this.onOffline = _this.onOffline.bind(_this);
-        window.addEventListener("offline", _this.onOffline);
-        _this.onUnhandledrejection = _this.onUnhandledrejection.bind(_this);
-        window.addEventListener("unhandledrejection", _this.onUnhandledrejection);
-        _this._onClose.push(function() {
-          window.removeEventListener("online", _this.onOnline);
-          window.removeEventListener("offline", _this.onOffline);
-          window.removeEventListener("unhandledrejection", _this.onUnhandledrejection);
-        });
-      }
-      if (_this._opt.ignoreWindowError) {
-        opt.instrumentation.onerror = false;
-      }
-      _this._instrument(opt.instrumentation);
-      return _this;
-    }
-    Notifier2.prototype._instrument = function(opt) {
-      if (opt === void 0) {
-        opt = {};
-      }
-      if (opt.console === void 0) {
-        opt.console = !isDevEnv(this._opt.environment);
-      }
-      if (enabled(opt.onerror)) {
-        var self_1 = this;
-        var oldHandler_1 = window.onerror;
-        window.onerror = function abOnerror() {
-          if (oldHandler_1) {
-            oldHandler_1.apply(this, arguments);
-          }
-          self_1.onerror.apply(self_1, arguments);
-        };
-      }
-      instrumentDOM(this);
-      if (enabled(opt.fetch) && typeof fetch === "function") {
-        instrumentFetch(this);
-      }
-      if (enabled(opt.history) && typeof history === "object") {
-        instrumentLocation(this);
-      }
-      if (enabled(opt.console) && typeof console === "object") {
-        instrumentConsole(this);
-      }
-      if (enabled(opt.xhr) && typeof XMLHttpRequest !== "undefined") {
-        instrumentXHR(this);
-      }
-    };
-    Notifier2.prototype.notify = function(err) {
-      var _this = this;
-      if (this.offline) {
-        return new src_default(function(resolve3, reject2) {
-          _this.todo.push({
-            err,
-            resolve: resolve3,
-            reject: reject2
-          });
-          while (_this.todo.length > 100) {
-            var j = _this.todo.shift();
-            if (j === void 0) {
-              break;
+      Notifier2.prototype._instrument = function(opt) {
+        if (opt === void 0) {
+          opt = {};
+        }
+        if (opt.console === void 0) {
+          opt.console = !isDevEnv(this._opt.environment);
+        }
+        if (enabled(opt.onerror)) {
+          var self_1 = this;
+          var oldHandler_1 = window.onerror;
+          window.onerror = function abOnerror() {
+            if (oldHandler_1) {
+              oldHandler_1.apply(this, arguments);
             }
-            j.resolve({
-              error: new Error("airbrake: offline queue is too large")
-            });
-          }
-        });
-      }
-      return _super.prototype.notify.call(this, err);
-    };
-    Notifier2.prototype.onOnline = function() {
-      this.offline = false;
-      var _loop_1 = function(j2) {
-        this_1.notify(j2.err).then(function(notice) {
-          j2.resolve(notice);
-        });
+            self_1.onerror.apply(self_1, arguments);
+          };
+        }
+        instrumentDOM(this);
+        if (enabled(opt.fetch) && typeof fetch === "function") {
+          instrumentFetch(this);
+        }
+        if (enabled(opt.history) && typeof history === "object") {
+          instrumentLocation(this);
+        }
+        if (enabled(opt.console) && typeof console === "object") {
+          instrumentConsole(this);
+        }
+        if (enabled(opt.xhr) && typeof XMLHttpRequest !== "undefined") {
+          instrumentXHR(this);
+        }
       };
-      var this_1 = this;
-      for (var _i = 0, _a = this.todo; _i < _a.length; _i++) {
-        var j = _a[_i];
-        _loop_1(j);
-      }
-      this.todo = [];
-    };
-    Notifier2.prototype.onOffline = function() {
-      this.offline = true;
-    };
-    Notifier2.prototype.onUnhandledrejection = function(e) {
-      var reason = e.reason || e.detail && e.detail.reason;
-      if (!reason) {
-        return;
-      }
-      var msg = reason.message || String(reason);
-      if (msg.indexOf && msg.indexOf("airbrake: ") === 0) {
-        return;
-      }
-      if (typeof reason !== "object" || reason.error === void 0) {
+      Notifier2.prototype.notify = function(err) {
+        var _this = this;
+        if (this.offline) {
+          return new src_default(function(resolve3, reject2) {
+            _this.todo.push({
+              err,
+              resolve: resolve3,
+              reject: reject2
+            });
+            while (_this.todo.length > 100) {
+              var j = _this.todo.shift();
+              if (j === void 0) {
+                break;
+              }
+              j.resolve({
+                error: new Error("airbrake: offline queue is too large")
+              });
+            }
+          });
+        }
+        return _super.prototype.notify.call(this, err);
+      };
+      Notifier2.prototype.onOnline = function() {
+        this.offline = false;
+        var _loop_1 = function(j2) {
+          this_1.notify(j2.err).then(function(notice) {
+            j2.resolve(notice);
+          });
+        };
+        var this_1 = this;
+        for (var _i = 0, _a = this.todo; _i < _a.length; _i++) {
+          var j = _a[_i];
+          _loop_1(j);
+        }
+        this.todo = [];
+      };
+      Notifier2.prototype.onOffline = function() {
+        this.offline = true;
+      };
+      Notifier2.prototype.onUnhandledrejection = function(e) {
+        var reason = e.reason || e.detail && e.detail.reason;
+        if (!reason) {
+          return;
+        }
+        var msg = reason.message || String(reason);
+        if (msg.indexOf && msg.indexOf("airbrake: ") === 0) {
+          return;
+        }
+        if (typeof reason !== "object" || reason.error === void 0) {
+          this.notify({
+            error: reason,
+            context: {
+              unhandledRejection: true
+            }
+          });
+          return;
+        }
+        this.notify(__assign6(__assign6({}, reason), { context: {
+          unhandledRejection: true
+        } }));
+      };
+      Notifier2.prototype.onerror = function(message, filename, line, column, err) {
+        if (this._ignoreWindowError > 0) {
+          return;
+        }
+        if (err) {
+          this.notify({
+            error: err,
+            context: {
+              windowError: true
+            }
+          });
+          return;
+        }
+        if (!filename || !line) {
+          return;
+        }
         this.notify({
-          error: reason,
-          context: {
-            unhandledRejection: true
-          }
-        });
-        return;
-      }
-      this.notify(__assign6(__assign6({}, reason), { context: {
-        unhandledRejection: true
-      } }));
-    };
-    Notifier2.prototype.onerror = function(message, filename, line, column, err) {
-      if (this._ignoreWindowError > 0) {
-        return;
-      }
-      if (err) {
-        this.notify({
-          error: err,
+          error: {
+            message,
+            fileName: filename,
+            lineNumber: line,
+            columnNumber: column,
+            noStack: true
+          },
           context: {
             windowError: true
           }
         });
-        return;
-      }
-      if (!filename || !line) {
-        return;
-      }
-      this.notify({
-        error: {
-          message,
-          fileName: filename,
-          lineNumber: line,
-          columnNumber: column,
-          noStack: true
-        },
-        context: {
-          windowError: true
-        }
-      });
-    };
-    Notifier2.prototype._ignoreNextWindowError = function() {
-      var _this = this;
-      this._ignoreWindowError++;
-      setTimeout(function() {
-        return _this._ignoreWindowError--;
-      });
-    };
-    return Notifier2;
-  }(BaseNotifier);
+      };
+      Notifier2.prototype._ignoreNextWindowError = function() {
+        var _this = this;
+        this._ignoreWindowError++;
+        setTimeout(function() {
+          return _this._ignoreWindowError--;
+        });
+      };
+      return Notifier2;
+    }(BaseNotifier)
+  );
   function isDevEnv(env) {
     return env && env.startsWith && env.startsWith("dev");
   }
@@ -55650,105 +56930,139 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     jQuery("#building_name").val(buildingName);
   });
 })();
-/*
-object-assign
-(c) Sindre Sorhus
-@license MIT
-*/
-/*!
-  Copyright (c) 2018 Jed Watson.
-  Licensed under the MIT License (MIT), see
-  http://jedwatson.github.io/classnames
-*/
-/*!
- * @kurkle/color v0.1.9
- * https://github.com/kurkle/color#readme
- * (c) 2020 Jukka Kurkela
- * Released under the MIT License
- */
-/*!
- * Chart.js v3.7.0
- * https://www.chartjs.org
- * (c) 2021 Chart.js Contributors
- * Released under the MIT License
- */
-/*!
- * Chartkick.js
- * Create beautiful charts with one line of JavaScript
- * https://github.com/ankane/chartkick.js
- * v4.1.1
- * MIT License
- */
-/*!
- * chartjs-adapter-date-fns v2.0.0
- * https://www.chartjs.org
- * (c) 2021 chartjs-adapter-date-fns Contributors
- * Released under the MIT license
- */
 /*!
  * parallax.js v1.5.0 (http://pixelcog.github.io/parallax.js/)
  * @copyright 2016 PixelCog, Inc.
  * @license MIT (https://github.com/pixelcog/parallax.js/blob/master/LICENSE)
  */
-/**
- * Checks if an event is supported in the current execution environment.
- *
- * NOTE: This will not work correctly for non-generic events such as `change`,
- * `reset`, `load`, `error`, and `select`.
- *
- * Borrows from Modernizr.
- *
- * @param {string} eventNameSuffix Event name, e.g. "click".
- * @return {boolean} True if the event is supported.
- * @internal
- * @license Modernizr 3.0.0pre (Custom Build) | MIT
- */
-/** @license React v0.20.2
- * scheduler-tracing.development.js
- *
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-/** @license React v0.20.2
- * scheduler.development.js
- *
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-/** @license React v16.13.1
- * react-is.development.js
- *
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-/** @license React v17.0.2
- * react-dom.development.js
- *
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-/** @license React v17.0.2
- * react-is.development.js
- *
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-/** @license React v17.0.2
- * react.development.js
- *
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
+/*! Bundled license information:
+
+chartkick/dist/chartkick.js:
+  (*!
+   * Chartkick.js
+   * Create beautiful charts with one line of JavaScript
+   * https://github.com/ankane/chartkick.js
+   * v4.1.1
+   * MIT License
+   *)
+
+object-assign/index.js:
+  (*
+  object-assign
+  (c) Sindre Sorhus
+  @license MIT
+  *)
+
+react/cjs/react.development.js:
+  (** @license React v17.0.2
+   * react.development.js
+   *
+   * Copyright (c) Facebook, Inc. and its affiliates.
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE file in the root directory of this source tree.
+   *)
+
+scheduler/cjs/scheduler.development.js:
+  (** @license React v0.20.2
+   * scheduler.development.js
+   *
+   * Copyright (c) Facebook, Inc. and its affiliates.
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE file in the root directory of this source tree.
+   *)
+
+scheduler/cjs/scheduler-tracing.development.js:
+  (** @license React v0.20.2
+   * scheduler-tracing.development.js
+   *
+   * Copyright (c) Facebook, Inc. and its affiliates.
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE file in the root directory of this source tree.
+   *)
+
+react-dom/cjs/react-dom.development.js:
+  (** @license React v17.0.2
+   * react-dom.development.js
+   *
+   * Copyright (c) Facebook, Inc. and its affiliates.
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE file in the root directory of this source tree.
+   *)
+  (**
+   * Checks if an event is supported in the current execution environment.
+   *
+   * NOTE: This will not work correctly for non-generic events such as `change`,
+   * `reset`, `load`, `error`, and `select`.
+   *
+   * Borrows from Modernizr.
+   *
+   * @param {string} eventNameSuffix Event name, e.g. "click".
+   * @return {boolean} True if the event is supported.
+   * @internal
+   * @license Modernizr 3.0.0pre (Custom Build) | MIT
+   *)
+
+react-is/cjs/react-is.development.js:
+  (** @license React v16.13.1
+   * react-is.development.js
+   *
+   * Copyright (c) Facebook, Inc. and its affiliates.
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE file in the root directory of this source tree.
+   *)
+
+react-is/cjs/react-is.development.js:
+  (** @license React v17.0.2
+   * react-is.development.js
+   *
+   * Copyright (c) Facebook, Inc. and its affiliates.
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE file in the root directory of this source tree.
+   *)
+
+classnames/index.js:
+  (*!
+    Copyright (c) 2018 Jed Watson.
+    Licensed under the MIT License (MIT), see
+    http://jedwatson.github.io/classnames
+  *)
+
+chart.js/dist/chunks/helpers.segment.js:
+  (*!
+   * Chart.js v3.7.0
+   * https://www.chartjs.org
+   * (c) 2021 Chart.js Contributors
+   * Released under the MIT License
+   *)
+
+chart.js/dist/chunks/helpers.segment.js:
+  (*!
+   * @kurkle/color v0.1.9
+   * https://github.com/kurkle/color#readme
+   * (c) 2020 Jukka Kurkela
+   * Released under the MIT License
+   *)
+
+chart.js/dist/chart.esm.js:
+  (*!
+   * Chart.js v3.7.0
+   * https://www.chartjs.org
+   * (c) 2021 Chart.js Contributors
+   * Released under the MIT License
+   *)
+
+chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.esm.js:
+  (*!
+   * chartjs-adapter-date-fns v2.0.0
+   * https://www.chartjs.org
+   * (c) 2021 chartjs-adapter-date-fns Contributors
+   * Released under the MIT license
+   *)
+*/
 //# sourceMappingURL=application.js.map

@@ -60,8 +60,7 @@ class Census1940FormFields < CensusFormFieldConfig
   input :full_time_weeks, as: :integer, min: 0
 
   divider 'Income in 1939 (12 months ending Dec. 31, 1939)'
-  input :income, as: :integer, min: 0
-  input :income_plus, as: :boolean
+  input :wages_or_salary, coded: true, as: :radio_buttons_other
   input :had_unearned_income, as: :boolean
   input :farm_schedule
 

@@ -168,6 +168,7 @@ en:
         attended_school: 'Attended School or College?'
         age: 'Age at Last Birthday'
         veteran: 'Veteran or Veteran-related'
+        wages_or_salary: 'Income (Wages or Salary)'
         income_plus: 'Income has +'
       census1950_record:
         family_id: 'Serial No.'

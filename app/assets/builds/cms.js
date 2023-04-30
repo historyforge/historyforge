@@ -59,7 +59,7 @@
         const code_name = name.toLowerCase().replace(/\W+/g, "-");
         const tab_link = $(`<a class="dropdown-item" href="#${code_name}" data-toggle="tab">${name}</a>`);
         let tab_pane = $(`#new_${widget}_fields`).text();
-        const new_id = new Date().getTime();
+        const new_id = (/* @__PURE__ */ new Date()).getTime();
         const regexp = new RegExp("new_widgets", "g");
         tab_pane = $(tab_pane.replace(regexp, new_id));
         tab_pane.find("input.id").remove();
@@ -1236,15 +1236,15 @@
         };
         Delayed.prototype.onTimeout = function(self2) {
           self2.id = 0;
-          if (self2.time <= +new Date()) {
+          if (self2.time <= +/* @__PURE__ */ new Date()) {
             self2.f();
           } else {
-            setTimeout(self2.handler, self2.time - +new Date());
+            setTimeout(self2.handler, self2.time - +/* @__PURE__ */ new Date());
           }
         };
         Delayed.prototype.set = function(ms, f) {
           this.f = f;
-          var time = +new Date() + ms;
+          var time = +/* @__PURE__ */ new Date() + ms;
           if (!this.id || time < this.time) {
             clearTimeout(this.id);
             this.id = setTimeout(this.handler, ms);
@@ -2176,9 +2176,17 @@
         };
         function highlightLine(cm, line, context, forceToEnd) {
           var st = [cm.state.modeGen], lineClasses = {};
-          runMode(cm, line.text, cm.doc.mode, context, function(end, style) {
-            return st.push(end, style);
-          }, lineClasses, forceToEnd);
+          runMode(
+            cm,
+            line.text,
+            cm.doc.mode,
+            context,
+            function(end, style) {
+              return st.push(end, style);
+            },
+            lineClasses,
+            forceToEnd
+          );
           var state = context.state;
           var loop = function(o2) {
             context.baseTokens = st;
@@ -2475,7 +2483,11 @@
               var endsAfter = span.to == null || (marker.inclusiveRight ? span.to >= endCh : span.to > endCh);
               if (endsAfter || span.from == endCh && marker.type == "bookmark" && (!isInsert || span.marker.insertLeft)) {
                 var startsBefore = span.from == null || (marker.inclusiveLeft ? span.from <= endCh : span.from < endCh);
-                (nw || (nw = [])).push(new MarkedSpan(marker, startsBefore ? null : span.from - endCh, span.to == null ? null : span.to - endCh));
+                (nw || (nw = [])).push(new MarkedSpan(
+                  marker,
+                  startsBefore ? null : span.from - endCh,
+                  span.to == null ? null : span.to - endCh
+                ));
               }
             }
           }
@@ -3126,7 +3138,12 @@
                 }
               }
               if (collapsed && (collapsed.from || 0) == pos) {
-                buildCollapsedSpan(builder, (collapsed.to == null ? len + 1 : collapsed.to) - pos, collapsed.marker, collapsed.from == null);
+                buildCollapsedSpan(
+                  builder,
+                  (collapsed.to == null ? len + 1 : collapsed.to) - pos,
+                  collapsed.marker,
+                  collapsed.from == null
+                );
                 if (collapsed.to == null) {
                   return;
                 }
@@ -3144,7 +3161,15 @@
                 var end = pos + text.length;
                 if (!collapsed) {
                   var tokenText = end > upto ? text.slice(0, upto - pos) : text;
-                  builder.addToken(builder, tokenText, style ? style + spanStyle : spanStyle, spanStartStyle, pos + tokenText.length == nextChange ? spanEndStyle : "", css, attributes);
+                  builder.addToken(
+                    builder,
+                    tokenText,
+                    style ? style + spanStyle : spanStyle,
+                    spanStartStyle,
+                    pos + tokenText.length == nextChange ? spanEndStyle : "",
+                    css,
+                    attributes
+                  );
                 }
                 if (end >= upto) {
                   text = text.slice(upto - pos);
@@ -3336,7 +3361,12 @@
           }
           if (lineView.line.gutterClass) {
             var wrap = ensureLineWrapped(lineView);
-            lineView.gutterBackground = elt("div", null, "CodeMirror-gutter-background " + lineView.line.gutterClass, "left: " + (cm.options.fixedGutter ? dims.fixedPos : -dims.gutterTotalWidth) + "px; width: " + dims.gutterTotalWidth + "px");
+            lineView.gutterBackground = elt(
+              "div",
+              null,
+              "CodeMirror-gutter-background " + lineView.line.gutterClass,
+              "left: " + (cm.options.fixedGutter ? dims.fixedPos : -dims.gutterTotalWidth) + "px; width: " + dims.gutterTotalWidth + "px"
+            );
             cm.display.input.setUneditable(lineView.gutterBackground);
             wrap.insertBefore(lineView.gutterBackground, lineView.text);
           }
@@ -3351,13 +3381,25 @@
               gutterWrap.className += " " + lineView.line.gutterClass;
             }
             if (cm.options.lineNumbers && (!markers || !markers["CodeMirror-linenumbers"])) {
-              lineView.lineNumber = gutterWrap.appendChild(elt("div", lineNumberFor(cm.options, lineN), "CodeMirror-linenumber CodeMirror-gutter-elt", "left: " + dims.gutterLeft["CodeMirror-linenumbers"] + "px; width: " + cm.display.lineNumInnerWidth + "px"));
+              lineView.lineNumber = gutterWrap.appendChild(
+                elt(
+                  "div",
+                  lineNumberFor(cm.options, lineN),
+                  "CodeMirror-linenumber CodeMirror-gutter-elt",
+                  "left: " + dims.gutterLeft["CodeMirror-linenumbers"] + "px; width: " + cm.display.lineNumInnerWidth + "px"
+                )
+              );
             }
             if (markers) {
               for (var k = 0; k < cm.display.gutterSpecs.length; ++k) {
                 var id = cm.display.gutterSpecs[k].className, found = markers.hasOwnProperty(id) && markers[id];
                 if (found) {
-                  gutterWrap.appendChild(elt("div", [found], "CodeMirror-gutter-elt", "left: " + dims.gutterLeft[id] + "px; width: " + dims.gutterWidth[id] + "px"));
+                  gutterWrap.appendChild(elt(
+                    "div",
+                    [found],
+                    "CodeMirror-gutter-elt",
+                    "left: " + dims.gutterLeft[id] + "px; width: " + dims.gutterWidth[id] + "px"
+                  ));
                 }
               }
             }
@@ -3993,12 +4035,24 @@
         function coordsBidiPart(cm, lineObj, lineNo2, preparedMeasure, order, x, y) {
           var index = findFirst(function(i2) {
             var part2 = order[i2], ltr2 = part2.level != 1;
-            return boxIsAfter(cursorCoords(cm, Pos(lineNo2, ltr2 ? part2.to : part2.from, ltr2 ? "before" : "after"), "line", lineObj, preparedMeasure), x, y, true);
+            return boxIsAfter(cursorCoords(
+              cm,
+              Pos(lineNo2, ltr2 ? part2.to : part2.from, ltr2 ? "before" : "after"),
+              "line",
+              lineObj,
+              preparedMeasure
+            ), x, y, true);
           }, 0, order.length - 1);
           var part = order[index];
           if (index > 0) {
             var ltr = part.level != 1;
-            var start = cursorCoords(cm, Pos(lineNo2, ltr ? part.from : part.to, ltr ? "after" : "before"), "line", lineObj, preparedMeasure);
+            var start = cursorCoords(
+              cm,
+              Pos(lineNo2, ltr ? part.from : part.to, ltr ? "after" : "before"),
+              "line",
+              lineObj,
+              preparedMeasure
+            );
             if (boxIsAfter(start, x, y, true) && start.top > y) {
               part = order[index - 1];
             }
@@ -4985,21 +5039,35 @@
           cm.curOp = {
             cm,
             viewChanged: false,
+            // Flag that indicates that lines might need to be redrawn
             startHeight: cm.doc.height,
+            // Used to detect need to update scrollbar
             forceUpdate: false,
+            // Used to force a redraw
             updateInput: 0,
+            // Whether to reset the input textarea
             typing: false,
+            // Whether this reset should be careful to leave existing text (for compositing)
             changeObjs: null,
+            // Accumulated changes, for firing change events
             cursorActivityHandlers: null,
+            // Set of handlers to fire cursorActivity on
             cursorActivityCalled: 0,
+            // Tracks which cursorActivity handlers have been called already
             selectionChanged: false,
+            // Whether the selection needs to be redrawn
             updateMaxLine: false,
+            // Set when the widest line needs to be determined anew
             scrollLeft: null,
             scrollTop: null,
+            // Intermediate scroll position, not pushed to DOM yet
             scrollToPos: null,
+            // Used to scroll to a specific position
             focus: false,
             id: ++nextOpId,
+            // Unique ID
             markArrays: null
+            // Used by addMarkedSpan
           };
           pushOperation(cm.curOp);
         }
@@ -5104,7 +5172,12 @@
             setScrollLeft(cm, op.scrollLeft, true, true);
           }
           if (op.scrollToPos) {
-            var rect = scrollPosIntoView(cm, clipPos(doc, op.scrollToPos.from), clipPos(doc, op.scrollToPos.to), op.scrollToPos.margin);
+            var rect = scrollPosIntoView(
+              cm,
+              clipPos(doc, op.scrollToPos.from),
+              clipPos(doc, op.scrollToPos.to),
+              op.scrollToPos.margin
+            );
             maybeScrollWindow(cm, rect);
           }
           var hidden = op.maybeHiddenMarkers, unhidden = op.maybeUnhiddenMarkers;
@@ -5193,7 +5266,7 @@
           if (doc.highlightFrontier >= cm.display.viewTo) {
             return;
           }
-          var end = +new Date() + cm.options.workTime;
+          var end = +/* @__PURE__ */ new Date() + cm.options.workTime;
           var context = getContextBefore(cm, doc.highlightFrontier);
           var changedLines = [];
           doc.iter(context.line, Math.min(doc.first + doc.size, cm.display.viewTo + 500), function(line) {
@@ -5227,7 +5300,7 @@
               line.stateAfter = context.line % 5 == 0 ? context.save() : null;
               context.nextLine();
             }
-            if (+new Date() > end) {
+            if (+/* @__PURE__ */ new Date() > end) {
               startWorker(cm, cm.options.workDelay);
               return true;
             }
@@ -5494,7 +5567,11 @@
           }
           var doc = cm.doc, last = lineNumberFor(cm.options, doc.first + doc.size - 1), display = cm.display;
           if (last.length != display.lineNumChars) {
-            var test = display.measure.appendChild(elt("div", [elt("div", last)], "CodeMirror-linenumber CodeMirror-gutter-elt"));
+            var test = display.measure.appendChild(elt(
+              "div",
+              [elt("div", last)],
+              "CodeMirror-linenumber CodeMirror-gutter-elt"
+            ));
             var innerW = test.firstChild.offsetWidth, padding = test.offsetWidth - innerW;
             display.lineGutter.style.width = "";
             display.lineNumInnerWidth = Math.max(innerW, display.lineGutter.offsetWidth - padding) + 1;
@@ -5565,7 +5642,12 @@
           d.cursorDiv = elt("div", null, "CodeMirror-cursors");
           d.measure = elt("div", null, "CodeMirror-measure");
           d.lineMeasure = elt("div", null, "CodeMirror-measure");
-          d.lineSpace = eltP("div", [d.measure, d.lineMeasure, d.selectionDiv, d.cursorDiv, d.lineDiv], null, "position: relative; outline: none");
+          d.lineSpace = eltP(
+            "div",
+            [d.measure, d.lineMeasure, d.selectionDiv, d.cursorDiv, d.lineDiv],
+            null,
+            "position: relative; outline: none"
+          );
           var lines = eltP("div", [d.lineSpace], "CodeMirror-lines");
           d.mover = elt("div", [lines], null, "position: relative");
           d.sizer = elt("div", [d.mover], "CodeMirror-sizer");
@@ -5805,7 +5887,10 @@
           if (!change.text) {
             return change.to;
           }
-          return Pos(change.from.line + change.text.length - 1, lst(change.text).length + (change.text.length == 1 ? change.from.ch : 0));
+          return Pos(
+            change.from.line + change.text.length - 1,
+            lst(change.text).length + (change.text.length == 1 ? change.from.ch : 0)
+          );
         }
         function adjustForChange(pos, change) {
           if (cmp(pos, change.from) < 0) {
@@ -5824,7 +5909,10 @@
           var out = [];
           for (var i2 = 0; i2 < doc.sel.ranges.length; i2++) {
             var range2 = doc.sel.ranges[i2];
-            out.push(new Range(adjustForChange(range2.anchor, change), adjustForChange(range2.head, change)));
+            out.push(new Range(
+              adjustForChange(range2.anchor, change),
+              adjustForChange(range2.head, change)
+            ));
           }
           return normalizeSelection(doc.cm, out, doc.sel.primIndex);
         }
@@ -6014,7 +6102,7 @@
         function addChangeToHistory(doc, change, selAfter, opId) {
           var hist = doc.history;
           hist.undone.length = 0;
-          var time = +new Date(), cur;
+          var time = +/* @__PURE__ */ new Date(), cur;
           var last;
           if ((hist.lastOp == opId || hist.lastOrigin == change.origin && change.origin && (change.origin.charAt(0) == "+" && hist.lastModTime > time - (doc.cm ? doc.cm.options.historyEventDelay : 500) || change.origin.charAt(0) == "*")) && (cur = lastChangeEvent(hist, hist.lastOp == opId))) {
             last = lst(cur.changes);
@@ -6051,7 +6139,7 @@
         }
         function selectionEventCanBeMerged(doc, origin, prev, sel) {
           var ch = origin.charAt(0);
-          return ch == "*" || ch == "+" && prev.ranges.length == sel.ranges.length && prev.somethingSelected() == sel.somethingSelected() && new Date() - doc.history.lastSelTime <= (doc.cm ? doc.cm.options.historyEventDelay : 500);
+          return ch == "*" || ch == "+" && prev.ranges.length == sel.ranges.length && prev.somethingSelected() == sel.somethingSelected() && /* @__PURE__ */ new Date() - doc.history.lastSelTime <= (doc.cm ? doc.cm.options.historyEventDelay : 500);
         }
         function addSelectionToHistory(doc, sel, opId, options) {
           var hist = doc.history, origin = options && options.origin;
@@ -6060,7 +6148,7 @@
           } else {
             pushSelectionToHistory(sel, hist.done);
           }
-          hist.lastSelTime = +new Date();
+          hist.lastSelTime = +/* @__PURE__ */ new Date();
           hist.lastSelOrigin = origin;
           hist.lastSelOp = opId;
           if (options && options.clearRedo !== false) {
@@ -6210,7 +6298,10 @@
             update: function(ranges) {
               this.ranges = [];
               for (var i2 = 0; i2 < ranges.length; i2++) {
-                this.ranges[i2] = new Range(clipPos(doc, ranges[i2].anchor), clipPos(doc, ranges[i2].head));
+                this.ranges[i2] = new Range(
+                  clipPos(doc, ranges[i2].anchor),
+                  clipPos(doc, ranges[i2].head)
+                );
               }
             },
             origin: options && options.origin
@@ -6501,7 +6592,10 @@
           }
           doc.first += distance;
           doc.sel = new Selection(map(doc.sel.ranges, function(range2) {
-            return new Range(Pos(range2.anchor.line + distance, range2.anchor.ch), Pos(range2.head.line + distance, range2.head.ch));
+            return new Range(
+              Pos(range2.anchor.line + distance, range2.anchor.ch),
+              Pos(range2.head.line + distance, range2.head.ch)
+            );
           }), doc.sel.primIndex);
           if (doc.cm) {
             regChange(doc.cm, doc.first, doc.first - distance, distance);
@@ -6697,6 +6791,7 @@
           chunkSize: function() {
             return this.lines.length;
           },
+          // Remove the n lines at offset 'at'.
           removeInner: function(at, n) {
             for (var i2 = at, e = at + n; i2 < e; ++i2) {
               var line = this.lines[i2];
@@ -6706,9 +6801,12 @@
             }
             this.lines.splice(at, n);
           },
+          // Helper used to collapse a small branch into a single leaf.
           collapse: function(lines) {
             lines.push.apply(lines, this.lines);
           },
+          // Insert the given array of lines at offset 'at', count them as
+          // having the given height.
           insertInner: function(at, lines, height) {
             this.height += height;
             this.lines = this.lines.slice(0, at).concat(lines).concat(this.lines.slice(at));
@@ -6716,6 +6814,7 @@
               lines[i2].parent = this;
             }
           },
+          // Used to iterate over a part of the tree.
           iterN: function(at, n, op) {
             for (var e = at + n; at < e; ++at) {
               if (op(this.lines[at])) {
@@ -6796,6 +6895,7 @@
               at -= sz;
             }
           },
+          // When a node has grown, check whether it should be split.
           maybeSpill: function() {
             if (this.children.length <= 10) {
               return;
@@ -7102,7 +7202,11 @@
             if (marker.collapsed && curLine != from.line) {
               updateLineHeight(line, 0);
             }
-            addMarkedSpan(line, new MarkedSpan(marker, curLine == from.line ? from.ch : null, curLine == to.line ? to.ch : null), doc.cm && doc.cm.curOp);
+            addMarkedSpan(line, new MarkedSpan(
+              marker,
+              curLine == from.line ? from.ch : null,
+              curLine == to.line ? to.ch : null
+            ), doc.cm && doc.cm.curOp);
             ++curLine;
           });
           if (marker.collapsed) {
@@ -7248,6 +7352,10 @@
         };
         Doc.prototype = createObj(BranchChunk.prototype, {
           constructor: Doc,
+          // Iterate over the document. Supports two forms -- with only one
+          // argument, it calls that for each line in the document. With
+          // three, it iterates over the range given by the first two (with
+          // the second being non-inclusive).
           iter: function(from, to, op) {
             if (op) {
               this.iterN(from - this.first, to - from, op);
@@ -7255,6 +7363,7 @@
               this.iterN(this.first, this.first + this.size, from);
             }
           },
+          // Non-public interface for adding and removing lines.
           insert: function(at, lines) {
             var height = 0;
             for (var i2 = 0; i2 < lines.length; ++i2) {
@@ -7265,6 +7374,8 @@
           remove: function(at, n) {
             this.removeInner(at - this.first, n);
           },
+          // From here, the methods are part of the public interface. Most
+          // are also available from CodeMirror (editor) instances.
           getValue: function(lineSep) {
             var lines = getLines(this, this.first, this.first + this.size);
             if (lineSep === false) {
@@ -7372,7 +7483,10 @@
             }
             var out = [];
             for (var i2 = 0; i2 < ranges.length; i2++) {
-              out[i2] = new Range(clipPos(this, ranges[i2].anchor), clipPos(this, ranges[i2].head || ranges[i2].anchor));
+              out[i2] = new Range(
+                clipPos(this, ranges[i2].anchor),
+                clipPos(this, ranges[i2].head || ranges[i2].anchor)
+              );
             }
             if (primary == null) {
               primary = Math.min(ranges.length - 1, this.sel.primIndex);
@@ -7667,7 +7781,13 @@
             return index;
           },
           copy: function(copyHistory) {
-            var doc = new Doc(getLines(this, this.first, this.first + this.size), this.modeOption, this.first, this.lineSep, this.direction);
+            var doc = new Doc(
+              getLines(this, this.first, this.first + this.size),
+              this.modeOption,
+              this.first,
+              this.lineSep,
+              this.direction
+            );
             doc.scrollTop = this.scrollTop;
             doc.scrollLeft = this.scrollLeft;
             doc.sel = this.sel;
@@ -7768,7 +7888,7 @@
           }
           e_preventDefault(e);
           if (ie) {
-            lastDrop = +new Date();
+            lastDrop = +/* @__PURE__ */ new Date();
           }
           var pos = posFromMouse(cm, e, true), files = e.dataTransfer.files;
           if (!pos || cm.isReadOnly()) {
@@ -7783,9 +7903,11 @@
                   var change = {
                     from: pos,
                     to: pos,
-                    text: cm.doc.splitLines(text.filter(function(t) {
-                      return t != null;
-                    }).join(cm.doc.lineSeparator())),
+                    text: cm.doc.splitLines(
+                      text.filter(function(t) {
+                        return t != null;
+                      }).join(cm.doc.lineSeparator())
+                    ),
                     origin: "paste"
                   };
                   makeChange(cm.doc, change);
@@ -7845,7 +7967,7 @@
           }
         }
         function onDragStart(cm, e) {
-          if (ie && (!cm.state.draggingText || +new Date() - lastDrop < 100)) {
+          if (ie && (!cm.state.draggingText || +/* @__PURE__ */ new Date() - lastDrop < 100)) {
             e_stop(e);
             return;
           }
@@ -8419,19 +8541,28 @@
             return cm.extendSelection(Pos(cm.lastLine()));
           },
           goLineStart: function(cm) {
-            return cm.extendSelectionsBy(function(range2) {
-              return lineStart(cm, range2.head.line);
-            }, { origin: "+move", bias: 1 });
+            return cm.extendSelectionsBy(
+              function(range2) {
+                return lineStart(cm, range2.head.line);
+              },
+              { origin: "+move", bias: 1 }
+            );
           },
           goLineStartSmart: function(cm) {
-            return cm.extendSelectionsBy(function(range2) {
-              return lineStartSmart(cm, range2.head);
-            }, { origin: "+move", bias: 1 });
+            return cm.extendSelectionsBy(
+              function(range2) {
+                return lineStartSmart(cm, range2.head);
+              },
+              { origin: "+move", bias: 1 }
+            );
           },
           goLineEnd: function(cm) {
-            return cm.extendSelectionsBy(function(range2) {
-              return lineEnd(cm, range2.head.line);
-            }, { origin: "+move", bias: -1 });
+            return cm.extendSelectionsBy(
+              function(range2) {
+                return lineEnd(cm, range2.head.line);
+              },
+              { origin: "+move", bias: -1 }
+            );
           },
           goLineRight: function(cm) {
             return cm.extendSelectionsBy(function(range2) {
@@ -8537,6 +8668,13 @@
               cm.execCommand("insertTab");
             }
           },
+          // Swap the two chars left and right of each selection's head.
+          // Move cursor behind the two swapped characters afterwards.
+          //
+          // Doesn't consider line feeds a character.
+          // Doesn't scan more than one line above to find a character.
+          // Doesn't do anything on an empty line.
+          // Doesn't do anything with non-empty selections.
           transposeChars: function(cm) {
             return runInOp(cm, function() {
               var ranges = cm.listSelections(), newSel = [];
@@ -8551,12 +8689,22 @@
                   }
                   if (cur.ch > 0) {
                     cur = new Pos(cur.line, cur.ch + 1);
-                    cm.replaceRange(line.charAt(cur.ch - 1) + line.charAt(cur.ch - 2), Pos(cur.line, cur.ch - 2), cur, "+transpose");
+                    cm.replaceRange(
+                      line.charAt(cur.ch - 1) + line.charAt(cur.ch - 2),
+                      Pos(cur.line, cur.ch - 2),
+                      cur,
+                      "+transpose"
+                    );
                   } else if (cur.line > cm.doc.first) {
                     var prev = getLine(cm.doc, cur.line - 1).text;
                     if (prev) {
                       cur = new Pos(cur.line, 1);
-                      cm.replaceRange(line.charAt(0) + cm.doc.lineSeparator() + prev.charAt(prev.length - 1), Pos(cur.line - 1, prev.length - 1), cur, "+transpose");
+                      cm.replaceRange(
+                        line.charAt(0) + cm.doc.lineSeparator() + prev.charAt(prev.length - 1),
+                        Pos(cur.line - 1, prev.length - 1),
+                        cur,
+                        "+transpose"
+                      );
                     }
                   }
                 }
@@ -8790,7 +8938,7 @@
         };
         var lastClick, lastDoubleClick;
         function clickRepeat(pos, button) {
-          var now = +new Date();
+          var now = +/* @__PURE__ */ new Date();
           if (lastDoubleClick && lastDoubleClick.compare(now, pos, button)) {
             lastClick = lastDoubleClick = null;
             return "triple";
@@ -9018,9 +9166,17 @@
             startSel = doc.sel;
           } else if (ourIndex == -1) {
             ourIndex = ranges.length;
-            setSelection(doc, normalizeSelection(cm, ranges.concat([ourRange]), ourIndex), { scroll: false, origin: "*mouse" });
+            setSelection(
+              doc,
+              normalizeSelection(cm, ranges.concat([ourRange]), ourIndex),
+              { scroll: false, origin: "*mouse" }
+            );
           } else if (ranges.length > 1 && ranges[ourIndex].empty() && behavior.unit == "char" && !behavior.extend) {
-            setSelection(doc, normalizeSelection(cm, ranges.slice(0, ourIndex).concat(ranges.slice(ourIndex + 1)), 0), { scroll: false, origin: "*mouse" });
+            setSelection(
+              doc,
+              normalizeSelection(cm, ranges.slice(0, ourIndex).concat(ranges.slice(ourIndex + 1)), 0),
+              { scroll: false, origin: "*mouse" }
+            );
             startSel = doc.sel;
           } else {
             replaceOneSelection(doc, ourIndex, ourRange, sel_mouse);
@@ -9047,7 +9203,11 @@
               if (!ranges2.length) {
                 ranges2.push(new Range(start, start));
               }
-              setSelection(doc, normalizeSelection(cm, startSel.ranges.slice(0, ourIndex).concat(ranges2), ourIndex), { origin: "*mouse", scroll: false });
+              setSelection(
+                doc,
+                normalizeSelection(cm, startSel.ranges.slice(0, ourIndex).concat(ranges2), ourIndex),
+                { origin: "*mouse", scroll: false }
+              );
               cm.scrollIntoView(pos);
             } else {
               var oldRange = ourRange;
@@ -9442,18 +9602,25 @@
           initScrollbars(this);
           this.state = {
             keyMaps: [],
+            // stores maps added by addKeyMap
             overlays: [],
+            // highlighting overlays, as added by addOverlay
             modeGen: 0,
+            // bumped when mode/overlay changes, used to invalidate highlighting info
             overwrite: false,
             delayingBlurEvent: false,
             focused: false,
             suppressEdits: false,
+            // used to disable editing during key handlers when in readOnly mode
             pasteIncoming: -1,
             cutIncoming: -1,
+            // help recognize paste/cut edits in input.poll
             selectingText: false,
             draggingText: false,
             highlight: new Delayed(),
+            // stores highlight worker timeout
             keySeq: null,
+            // Unfinished key sequence
             specialChars: null
           };
           if (options.autofocus && !mobile) {
@@ -9533,7 +9700,7 @@
                 return d.activeTouch = null;
               }, 1e3);
               prevTouch = d.activeTouch;
-              prevTouch.end = +new Date();
+              prevTouch.end = +/* @__PURE__ */ new Date();
             }
           }
           function isMouseLikeTouchEvent(e) {
@@ -9554,7 +9721,7 @@
             if (!signalDOMEvent(cm, e) && !isMouseLikeTouchEvent(e) && !clickInGutter(cm, e)) {
               d.input.ensurePolled();
               clearTimeout(touchFinished);
-              var now = +new Date();
+              var now = +/* @__PURE__ */ new Date();
               d.activeTouch = {
                 start: now,
                 moved: false,
@@ -9573,7 +9740,7 @@
           });
           on(d.scroller, "touchend", function(e) {
             var touch = d.activeTouch;
-            if (touch && !eventInWidget(d, e) && touch.left != null && !touch.moved && new Date() - touch.start < 300) {
+            if (touch && !eventInWidget(d, e) && touch.left != null && !touch.moved && /* @__PURE__ */ new Date() - touch.start < 300) {
               var pos = cm.coordsChar(d.activeTouch, "page"), range2;
               if (!touch.prev || farAway(touch, touch.prev)) {
                 range2 = new Range(pos, pos);
@@ -9723,7 +9890,7 @@
           if (!sel) {
             sel = doc.sel;
           }
-          var recent = +new Date() - 200;
+          var recent = +/* @__PURE__ */ new Date() - 200;
           var paste = origin == "paste" || cm.state.pasteIncoming > recent;
           var textLines = splitLinesAuto(inserted), multiPaste = null;
           if (paste && sel.ranges.length > 1) {
@@ -9885,14 +10052,18 @@
               if (mode.startState) {
                 throw new Error("Overlays may not be stateful.");
               }
-              insertSorted(this.state.overlays, {
-                mode,
-                modeSpec: spec,
-                opaque: options && options.opaque,
-                priority: options && options.priority || 0
-              }, function(overlay) {
-                return overlay.priority;
-              });
+              insertSorted(
+                this.state.overlays,
+                {
+                  mode,
+                  modeSpec: spec,
+                  opaque: options && options.opaque,
+                  priority: options && options.priority || 0
+                },
+                function(overlay) {
+                  return overlay.priority;
+                }
+              );
               this.state.modeGen++;
               regChange(this);
             }),
@@ -9944,6 +10115,8 @@
                 }
               }
             }),
+            // Fetch the parser token for a given character. Useful for hacks
+            // that want to inspect the mode state (say, for completion).
             getTokenAt: function(pos, precise) {
               return takeToken(this, pos, precise);
             },
@@ -10197,6 +10370,7 @@
                 }
               }
             }),
+            // Find the word at the given position (as returned by coordsChar).
             findWordAt: function(pos) {
               var doc = this.doc, line = getLine(doc, pos.line).text;
               var start = pos.ch, end = pos.ch;
@@ -10801,7 +10975,10 @@
             ++cutFront;
           }
           var newBot = lst(newText), oldBot = lst(oldText);
-          var maxCutEnd = Math.min(newBot.length - (newText.length == 1 ? cutFront : 0), oldBot.length - (oldText.length == 1 ? cutFront : 0));
+          var maxCutEnd = Math.min(
+            newBot.length - (newText.length == 1 ? cutFront : 0),
+            oldBot.length - (oldText.length == 1 ? cutFront : 0)
+          );
           while (cutEnd < maxCutEnd && newBot.charCodeAt(newBot.length - cutEnd - 1) == oldBot.charCodeAt(oldBot.length - cutEnd - 1)) {
             ++cutEnd;
           }
@@ -11096,7 +11273,7 @@
             if (signalDOMEvent(cm, e) || handlePaste(e, cm)) {
               return;
             }
-            cm.state.pasteIncoming = +new Date();
+            cm.state.pasteIncoming = +/* @__PURE__ */ new Date();
             input.fastPoll();
           });
           function prepareCopyCut(e) {
@@ -11119,7 +11296,7 @@
               }
             }
             if (e.type == "cut") {
-              cm.state.cutIncoming = +new Date();
+              cm.state.cutIncoming = +/* @__PURE__ */ new Date();
             }
           }
           on(te, "cut", prepareCopyCut);
@@ -11129,7 +11306,7 @@
               return;
             }
             if (!te.dispatchEvent) {
-              cm.state.pasteIncoming = +new Date();
+              cm.state.pasteIncoming = +/* @__PURE__ */ new Date();
               input.focus();
               return;
             }
@@ -11177,8 +11354,14 @@
           if (cm.options.moveInputWithCursor) {
             var headPos = cursorCoords(cm, doc.sel.primary().head, "div");
             var wrapOff = display.wrapper.getBoundingClientRect(), lineOff = display.lineDiv.getBoundingClientRect();
-            result.teTop = Math.max(0, Math.min(display.wrapper.clientHeight - 10, headPos.top + lineOff.top - wrapOff.top));
-            result.teLeft = Math.max(0, Math.min(display.wrapper.clientWidth - 10, headPos.left + lineOff.left - wrapOff.left));
+            result.teTop = Math.max(0, Math.min(
+              display.wrapper.clientHeight - 10,
+              headPos.top + lineOff.top - wrapOff.top
+            ));
+            result.teLeft = Math.max(0, Math.min(
+              display.wrapper.clientWidth - 10,
+              headPos.left + lineOff.left - wrapOff.left
+            ));
           }
           return result;
         };
@@ -11292,7 +11475,13 @@
             ++same;
           }
           runInOp(cm, function() {
-            applyTextInput(cm, text.slice(same), prevInput.length - same, null, this$1.composing ? "*compose" : null);
+            applyTextInput(
+              cm,
+              text.slice(same),
+              prevInput.length - same,
+              null,
+              this$1.composing ? "*compose" : null
+            );
             if (text.length > 1e3 || text.indexOf("\n") > -1) {
               input.value = this$1.prevInput = "";
             } else {
@@ -11300,7 +11489,11 @@
             }
             if (this$1.composing) {
               this$1.composing.range.clear();
-              this$1.composing.range = cm.markText(this$1.composing.start, cm.getCursor("to"), { className: "CodeMirror-composing" });
+              this$1.composing.range = cm.markText(
+                this$1.composing.start,
+                cm.getCursor("to"),
+                { className: "CodeMirror-composing" }
+              );
             }
           });
           return true;
@@ -11463,9 +11656,12 @@
             };
           };
           textarea.style.display = "none";
-          var cm = CodeMirror2(function(node) {
-            return textarea.parentNode.insertBefore(node, textarea.nextSibling);
-          }, options);
+          var cm = CodeMirror2(
+            function(node) {
+              return textarea.parentNode.insertBefore(node, textarea.nextSibling);
+            },
+            options
+          );
           return cm;
         }
         function addLegacyProps(CodeMirror3) {
@@ -12442,6 +12638,7 @@
           "word-wrap",
           "writing-mode",
           "z-index",
+          // SVG-specific
           "clip-path",
           "clip-rule",
           "mask",
@@ -14316,7 +14513,17 @@
               }
             }
             if (type2 == "switch")
-              return cont(pushlex("form"), parenExpr, expect("{"), pushlex("}", "switch"), pushblockcontext, block, poplex, poplex, popcontext);
+              return cont(
+                pushlex("form"),
+                parenExpr,
+                expect("{"),
+                pushlex("}", "switch"),
+                pushblockcontext,
+                block,
+                poplex,
+                poplex,
+                popcontext
+              );
             if (type2 == "case")
               return cont(expression, expect(":"));
             if (type2 == "default")
@@ -15511,7 +15718,8 @@
             if (tok.end > pos.ch)
               tagName = tagName.slice(0, tagName.length - tok.end + pos.ch);
             var lowerTagName = tagName.toLowerCase();
-            if (!tagName || tok.type == "string" && (tok.end != pos.ch || !/[\"\']/.test(tok.string.charAt(tok.string.length - 1)) || tok.string.length == 1) || tok.type == "tag" && tagInfo.close || tok.string.indexOf("/") == pos.ch - tok.start - 1 || dontCloseTags && indexOf(dontCloseTags, lowerTagName) > -1 || closingTagExists(cm, inner.mode.xmlCurrentContext && inner.mode.xmlCurrentContext(state) || [], tagName, pos, true))
+            if (!tagName || tok.type == "string" && (tok.end != pos.ch || !/[\"\']/.test(tok.string.charAt(tok.string.length - 1)) || tok.string.length == 1) || tok.type == "tag" && tagInfo.close || tok.string.indexOf("/") == pos.ch - tok.start - 1 || // match something like <someTagName />
+            dontCloseTags && indexOf(dontCloseTags, lowerTagName) > -1 || closingTagExists(cm, inner.mode.xmlCurrentContext && inner.mode.xmlCurrentContext(state) || [], tagName, pos, true))
               return CodeMirror2.Pass;
             var emptyTags = typeof opt == "object" && opt.emptyTags;
             if (emptyTags && indexOf(emptyTags, tagName) > -1) {

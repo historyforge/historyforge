@@ -67,7 +67,7 @@ RSpec.describe '1940 US Census' do
     fill_in 'Worker Class Code', with: '3'
     fill_in 'Weeks Worked in 1939', with: '32'
 
-    fill_in 'Income (Wages or Salary)', with: '100'
+    choose '$5,000+', name: 'census_record[wages_or_salary]'
     check 'Other Income Source'
 
     fill_in 'Place of Birth - Father', with: 'Ireland'

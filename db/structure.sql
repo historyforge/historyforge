@@ -1094,7 +1094,8 @@ CREATE TABLE public.census_1940_records (
     histid uuid,
     enum_dist character varying NOT NULL,
     ward integer,
-    income_plus boolean
+    income_plus boolean,
+    wages_or_salary character varying
 );
 
 
@@ -4481,6 +4482,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20230318221021'),
 ('20230319030813'),
 ('20230430171534'),
+('20230430231531'),
 ('4'),
 ('8'),
 ('9');
