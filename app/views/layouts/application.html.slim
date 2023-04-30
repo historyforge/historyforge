@@ -28,7 +28,7 @@ html
     - if @onload
       = javascript_tag "document.body.onload=\"#{@onload}\""
     = yield :announcement
-    = render 'shared/header'
+    = render 'header'
     - if @full_layout
       == yield
     -else
