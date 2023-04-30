@@ -18,24 +18,16 @@
 # for multiple related places, but (in the future) be able to search them together or separately.
 class Locality < ApplicationRecord
   validates :name, presence: true, uniqueness: true
-
-  has_many :buildings, dependent: :nullify
+  has_many :buildings, dependent: :restrict_with_exception
+  has_many :map_overlays, dependent: :restrict_with_exception
 
   CensusYears.each do |year|
-    has_many :"census#{year}_records", inverse_of: :locality
+    has_many :"census#{year}_records", inverse_of: :locality, dependent: :restrict_with_exception
   end
 
   default_scope -> { order(:name) }
 
-  before_destroy do
-    throw(:abort) if census_record_count > 0
-  end
-
   def self.select_options
     all.map { |item| [item.name, item.id] }
-  end
-
-  def census_record_count
-    CensusYears.map { |year| self.public_send(:"census#{year}_records").count }.reduce(&:+)
   end
 end
