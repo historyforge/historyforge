@@ -11,6 +11,8 @@ class Ability
       can :read, Architect
       can :read, CensusRecord do |record| record.reviewed?; end
       can :read, Photograph do |record| record.reviewed?; end
+      can :read, Document do |record| record.available_to_public?; end
+
     else
       # A user can have multiple roles so we only grant the things that apply to that role
 

@@ -55,17 +55,13 @@ class Person < ApplicationRecord
 
   scope :uncensused, -> {
     qry = self
-    CensusYears.each do |year|
-      qry = qry.left_outer_joins(:"census#{year}_records")
-    end
+    CensusYears.each { |year| qry = qry.left_outer_joins(:"census#{year}_records") }
     qry.where CensusYears.map { |year| "#{CensusRecord.for_year(year).table_name}.id IS NULL" }.join(' AND ')
   }
 
   scope :with_census_records, -> {
     qry = self
-    CensusYears.each do |year|
-      qry = qry.includes(:"census#{year}_records")
-    end
+    CensusYears.each { |year| qry = qry.includes(:"census#{year}_records") }
     qry
   }
 

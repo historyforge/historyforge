@@ -1,11 +1,11 @@
-- set_page_title 'Transcriber\'s Corner'
-- content_for :pills do
-  = link_to "Manage Categories", document_categories_path, class: 'btn btn-light'
-  - if can?(:create, Document)
+- set_page_title 'Resources & Credits'
+-if can?(:create, Document)
+  - content_for :pills do
+    = link_to "Manage Categories", document_categories_path, class: 'btn btn-light'
     = link_to "Add Document", new_document_path, class: 'btn btn-light'
 .col-xs-9#documents
   - if @documents.blank?
-    p No documents yet!
+    p No resources are available at this time. Alas, no credit is given either. Please check back soon!
   - else
     - @categories.each do |category|
       - if @documents[category.id]

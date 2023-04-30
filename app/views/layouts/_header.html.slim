@@ -54,7 +54,7 @@ header
               - CensusYears.each_visible_to_user(user_signed_in?) do |year|
                 = link_to "#{year} US Census", "/census/#{year}", class: 'dropdown-item'
               = link_to 'All People', '/people', class: 'dropdown-item' if can_people?
-              = link_to 'Transcriber\'s Corner', '/documents', class: 'dropdown-item' if user_signed_in?
+              = link_to 'Resources & Credits', '/documents', class: 'dropdown-item'
               - if current_user&.has_role?("photographer")
                 = link_to "Photographs", photographs_path, class: 'dropdown-item'
 

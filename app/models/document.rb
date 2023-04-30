@@ -24,7 +24,8 @@ class Document < ApplicationRecord
   acts_as_list scope: :document_category_id
   has_one_attached :file
   before_save :assign_name_from_file
-
+  scope :available_to_public, -> { where(available_to_public: true) }
+  scope :authorized_for, ->(user){ user.blank? ? available_to_public : self }
   private
 
   def assign_name_from_file

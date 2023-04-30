@@ -62,7 +62,7 @@ class DocumentsController < ApplicationController
   end
 
   def collection
-    @documents ||= parent.order(:position)
+    @documents ||= parent.authorized_for(current_user).order(:position)
   end
 
   def resource
