@@ -45,8 +45,6 @@ header
                 - if flags_count > 0
                   span.badge.badge-danger= flags_count
 
-          - unless user_signed_in?
-            li.nav-item= link_to 'Log In', '/u/sign_in', class: 'nav-link'
           li.nav-item= link_to 'The Forge', '/forge', class: 'nav-link'
           li.nav-item.dropdown
             a.nav-link.dropdown-toggle data-toggle='dropdown' href="#"
@@ -63,7 +61,6 @@ header
           li.nav-item= link_to 'About', 'https://historyforge.net', class: 'nav-link', target: '_blank'
           li.nav-item= link_to 'Contact', '/contact', class: 'nav-link'
           li.nav-item= link_to 'Volunteer', '/volunteer', class: 'nav-link'
-
           - if user_signed_in?
             li.nav-item.dropleft
               a.nav-link.dropdown-toggle data-toggle='dropdown' data-placement="left" href="#"
@@ -73,3 +70,5 @@ header
                 = link_to 'My profile', user_path(current_user), class: 'dropdown-item'
                 = link_to 'Edit my account', edit_user_path(current_user), class: 'dropdown-item'
                 = link_to "Log out", destroy_user_session_path, method: :delete, class: 'dropdown-item'
+          - else
+            li.nav-item= link_to 'Log In', '/u/sign_in', class: 'nav-link'
