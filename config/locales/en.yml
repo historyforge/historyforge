@@ -84,6 +84,7 @@ en:
         street_address: 'Street Address'
         hive_year: 'Approximate Year of Address Split'
         parent_id: 'Parent Address'
+        city: 'Place'
       person:
         id: 'ID'
         birth_year: 'Birth Year'

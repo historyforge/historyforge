@@ -9,7 +9,7 @@ json.filters do
 
   json.city do
     json.type 'text'
-    json.label 'City'
+    json.label 'Place'
     json.scopes do
       json.city_cont 'contains'
       json.city_not_cont 'does not contain'

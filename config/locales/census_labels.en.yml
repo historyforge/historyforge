@@ -1,6 +1,8 @@
 en:
   simple_form:
     filters:
+      building:
+        city: 'Place'
       census_record:
         residence_1935_county: '[Residence April 1, 1935] County'
         residence_1935_farm: '[Residence April 1, 1935] On a Farm'
