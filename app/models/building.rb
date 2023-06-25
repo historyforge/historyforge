@@ -100,12 +100,14 @@ class Building < ApplicationRecord
   }
 
   scope :without_residents, lambda {
-    joins('LEFT OUTER JOIN census_1900_records ON census_1900_records.building_id=buildings.id')
-      .joins('LEFT OUTER JOIN census_1910_records ON census_1910_records.building_id=buildings.id')
-      .joins('LEFT OUTER JOIN census_1920_records ON census_1920_records.building_id=buildings.id')
-      .joins('LEFT OUTER JOIN census_1930_records ON census_1930_records.building_id=buildings.id')
-      .joins('LEFT OUTER JOIN census_1940_records ON census_1940_records.building_id=buildings.id')
-      .where('census_1900_records.id IS NULL AND census_1910_records.id IS NULL AND census_1920_records.id IS NULL AND census_1930_records.id IS NULL AND census_1940_records.id IS NULL')
+    join_clause = []
+    where_clause = []
+    CensusYears.each do |year|
+      join_clause << "LEFT OUTER JOIN census_#{year}_records ON census_#{year}_records.building_id=buildings.id"
+      where_clause << "census_#{year}_records IS NULL"
+    end
+    joins(join_clause.join(' '))
+      .where(where_clause.join(' AND '))
       .building_types_id_in(3)
   }
 
