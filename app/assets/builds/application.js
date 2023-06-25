@@ -55580,8 +55580,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     window.alerts = window.alerts || [];
     window.alertifyInit();
     alertify.set({ delay: 1e4 });
-    window.alerts.forEach(function(alert) {
-      alertify[alert[0]](alert[1]);
+    window.alerts.forEach(function(alert2) {
+      alertify[alert2[0]](alert2[1]);
     });
     window.alerts = [];
   };
@@ -55648,6 +55648,10 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       return;
     const buildingName = [jQuery("#building_address_house_number").val(), jQuery("#building_address_street_prefix").val(), jQuery("#building_address_street_name").val(), jQuery("#building_address_street_suffix").val()].join(" ");
     jQuery("#building_name").val(buildingName);
+  });
+  window.addEventListener("trix-file-accept", function(event) {
+    event.preventDefault();
+    alert("File attachment not supported!");
   });
 })();
 /*

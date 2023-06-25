@@ -51,4 +51,4 @@ html
     script src="https://cdn.jsdelivr.net/npm/ag-grid-community@29.0.0/dist/ag-grid-community.min.noStyle.js" crossorigin="anonymous" data-turbolinks-track="true"
     = javascript_include_tag 'application'
     = javascript_include_tag 'cms' if can?(:update, Cms::Page)
-    = javascript_include_tag 'richtext' if can?(:update, Building)
+    = yield :html_end

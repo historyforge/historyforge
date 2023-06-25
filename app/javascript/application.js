@@ -120,3 +120,8 @@ jQuery(document).on('change', '#building_address_house_number, #building_address
   const buildingName = [jQuery('#building_address_house_number').val(), jQuery('#building_address_street_prefix').val(), jQuery('#building_address_street_name').val(), jQuery('#building_address_street_suffix').val()].join(' ')
   jQuery('#building_name').val(buildingName)
 })
+
+window.addEventListener("trix-file-accept", function(event) {
+  event.preventDefault()
+  alert("File attachment not supported!")
+})
