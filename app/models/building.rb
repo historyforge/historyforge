@@ -248,7 +248,7 @@ class Building < ApplicationRecord
   end
 
   def street_address
-    addresses.sort_by { |b| b.is_primary? ? -1 : 1 }.map(&:address_with_year).join("\n")
+    addresses.sort { |a,b| b.year <=> a.year }.map(&:address_with_year).join("\n")
   end
 
   def primary_street_address
