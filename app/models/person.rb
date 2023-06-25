@@ -73,6 +73,10 @@ class Person < ApplicationRecord
                   against: %i[first_name last_name],
                   using: %i[dmetaphone]
 
+  pg_search_scope :fuzzy_name_search,
+                  against: %i[searchable_name],
+                  using: %i[dmetaphone]
+
   # To make the "Mark n Reviewed" button not show up because there is not a person review system at the moment
   def reviewed?
     true
