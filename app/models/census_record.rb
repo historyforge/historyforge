@@ -48,10 +48,6 @@ class CensusRecord < ApplicationRecord
   scope :unmatched, -> { where(person_id: nil) }
   scope :in_census_order, -> { order :ward, :enum_dist, :page_number, :page_side, :line_number }
 
-  def self.ransackable_attributes(_auth_object = nil)
-    columns.map(&:name)
-  end
-
   class_attribute :year
 
   def self.for_year(year)
