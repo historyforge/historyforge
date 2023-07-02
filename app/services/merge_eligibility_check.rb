@@ -16,7 +16,7 @@ class MergeEligibilityCheck
   end
 
   def okay?
-    true # @clashes.blank?
+    @clashes.blank?
   end
 
   def years
