@@ -11,10 +11,12 @@ class MergeEligibilityCheck
     @clashes << 1910 if @source.census1910_records.exists? && @target.census1910_records.exists?
     @clashes << 1920 if @source.census1920_records.exists? && @target.census1920_records.exists?
     @clashes << 1930 if @source.census1930_records.exists? && @target.census1930_records.exists?
+    @clashes << 1940 if @source.census1940_records.exists? && @target.census1940_records.exists?
+    @clashes << 1950 if @source.census1940_records.exists? && @target.census1950_records.exists?
   end
 
   def okay?
-    @clashes.blank?
+    true # @clashes.blank?
   end
 
   def years

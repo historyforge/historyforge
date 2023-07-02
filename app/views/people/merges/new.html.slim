@@ -1,6 +1,6 @@
 - set_page_title 'Merge Person Records'
 
-p.lead You propose to merge person ##{@source.id} #{@source.name} into person ##{@target.id} #{@target.name}.
+p.lead You propose to merge person record ##{@source.id} #{@source.name} into person record ##{@target.id} #{@target.name}.
 
 .row
   .col-6
@@ -86,9 +86,10 @@ p.lead You propose to merge person ##{@source.id} #{@source.name} into person ##
                 th Link
                 td= link_to 'View', row
 
-- if @check.okay?
-  = form_with url: person_merges_url(@target) do |form|
-    = hidden_field_tag 'merge_id', @source.id
-    = form.submit 'Yes Please', class: 'btn btn-danger btn-lg'
-- else
-  .alert.alert-danger You can't actually do merge this people because they share same-year census records in #{@check.years.to_sentence}.
+- if @check.years.present?
+  .alert.alert-danger You might reconsider merging these person records because they share same-year census records in #{@check.years.to_sentence}.
+
+= form_with url: person_merges_url(@target) do |form|
+  = hidden_field_tag 'merge_id', @source.id
+  = form.submit 'Yes Please', class: 'btn btn-danger btn-lg'
+
