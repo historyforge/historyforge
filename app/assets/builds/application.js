@@ -55613,7 +55613,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     let suffix = jQuery("#street_suffix").val();
     if (street === "")
       suffix = null;
-    if (locality_id && street && house) {
+    if (locality_id && street) {
       const params = { locality_id, street, prefix, suffix, house };
       const year = document.location.pathname.split("/")[2];
       jQuery.getJSON(`/census/${year}/building_autocomplete`, params, function(json) {
@@ -55633,7 +55633,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   jQuery(function() {
     const building = jQuery("#building_id, #census_record_building_id");
     if (building.length) {
-      building.each(getBuildingList);
+      getBuildingList();
       $(".census_record_ensure_building").toggle(!building.val().length);
     }
   }).on("change", "#building_id, #census_record_building_id", function() {

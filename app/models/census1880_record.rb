@@ -84,6 +84,14 @@ class Census1880Record < CensusRecord
   define_enumeration :page_side, %w[A B C D], strict: true
   define_enumeration :race, %w[W B Mu Ch In]
 
+  def self.ransackable_attributes(_auth_object = nil)
+    %w[age age_months apartment_number attended_school birth_month blind cannot_read cannot_write city
+       county deaf_dumb dwelling_number enum_dist family_id farm_schedule first_name foreign_born idiotic insane
+       just_married last_name line_number locality_id maimed marital_status middle_name name notes occupation
+       page_number page_side person_id pob pob_father pob_mother race relation_to_head sex sick state street_address
+       unemployed_months ward]
+  end
+
   COLUMNS = {
     street_house_number: '2nd Column on the Left',
     street_prefix: '1st Column on the Left',

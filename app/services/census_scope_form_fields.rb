@@ -23,7 +23,7 @@ module CensusScopeFormFields
       input :apartment_number, facet: false
       input :building_id,
             as: :select,
-            collection: ->(form) { BuildingsOnStreet.new(form.object).perform },
+            collection: [],
             input_html: { id: 'building_id' },
             facet: false
       input :ensure_building,

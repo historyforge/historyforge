@@ -27,15 +27,9 @@ class BuildingsOnStreet
 
   attr_reader :building_id, :street_house_number, :street_name, :street_prefix, :street_suffix, :locality_id, :year, :is_building
 
-  def perform
-    buildings_on_street
+  def self.perform(record)
+    new(record).buildings_on_street
   end
-
-  Row = Struct.new(:id, :name)
-
-  private
-
-  HOUSE_SQL = "substring(house_number, '^[0-9]+')::int"
 
   def buildings_on_street
     items = Building.where(locality_id:)
@@ -56,6 +50,12 @@ class BuildingsOnStreet
       .map { |item| Row.new item.id, item.street_address_for_building_id(year) }
       .sort_by { |row| row.name.to_i }
   end
+
+  private
+
+  Row = Struct.new(:id, :name)
+
+  HOUSE_SQL = "substring(house_number, '^[0-9]+')::int"
 
   def add_block_filter(items)
     base_number = street_house_number.to_i

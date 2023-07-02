@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe BuildingsOnStreet do
-  subject { BuildingsOnStreet.new(record).perform }
+  subject { BuildingsOnStreet.perform(record) }
   let(:locality) { create(:locality) }
   before do
     create(:building, locality:, addresses: [build(:address, house_number: '305', name: 'Tioga', prefix: 'N', suffix: 'St')])
