@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::Base
+  impersonates :user
   protect_from_forgery with: :exception
 
   around_action :load_settings
@@ -13,7 +14,6 @@ class ApplicationController < ActionController::Base
                 Mime::Type::InvalidMimeType,
                 ActionController::MethodNotAllowed, with: :render_404
   end
-
   before_action :check_cms_for_page
   layout :cms_choose_layout
 

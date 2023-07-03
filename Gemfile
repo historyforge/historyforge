@@ -35,6 +35,7 @@ gem 'omniauth-rails_csrf_protection'
 gem 'paper_trail'
 gem 'pg'
 gem 'pg_search'
+gem 'pretender'
 gem 'puma', '~>5' # pegged at 5 because of capybara issue - try again when capybara updates
 gem 'rails'
 gem 'ransack'

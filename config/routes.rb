@@ -129,7 +129,7 @@ Rails.application.routes.draw do
       put 'enable'
       put 'disable'
       put 'disable_and_reset'
-      get 'mask'
+      put 'mask'
       put :resend_invitation
     end
     resource :user_account

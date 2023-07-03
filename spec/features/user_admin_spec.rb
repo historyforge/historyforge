@@ -20,7 +20,7 @@ RSpec.describe 'User management' do
     expect(page).to have_content('Users')
     click_on 'Create User'
     expect(page).to have_content('Send invitation')
-    email = Faker::Internet.safe_email
+    email = Faker::Internet.email
     fill_in 'Email', with: email
     fill_in 'Username', with: Faker::FunnyName.name
     click_on 'Send an invitation'

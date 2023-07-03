@@ -158,6 +158,16 @@ class Building < ApplicationRecord
        building_types_id_in building_types_id_not_in building_types_id_null building_types_id_not_null]
   end
 
+  def self.ransackable_associations(_auth_object = nil)
+    %w[addresses annotations architects census_1850_records census_1860_records
+       census_1870_records census_1880_records census_1900_records census_1910_records census_1920_records
+       census_1930_records census_1940_records census_1950_records photos]
+  end
+
+  def self.ransackable_attributes(_auth_object = nil)
+    super + %w[street_address]
+  end
+
   Geocoder.configure(
     timeout: 2,
     use_https: true,

@@ -39,7 +39,7 @@ json.filters do
   AttributeBuilder.text       json, :description
   AttributeBuilder.text       json, :annotations
 
-  architects = Architect.order(:name).map {|item| [item.name, item.id] }
+  architects = Architect.order(:name).map { |item| [item.name, item.id] }
   AttributeBuilder.collection json, :architects_id, klass: Architect, collection: architects
 
 end

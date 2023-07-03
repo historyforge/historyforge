@@ -49,6 +49,8 @@ class CollectionRadioButtonsInput < SimpleForm::Inputs::CollectionRadioButtonsIn
       code = code.gsub('_', ' ')
       label = translated_option item, code: options[:coded]
       return label if %[5000+ 10000+ P6].include?(code)
+      return 'Blank - White' if code == 'W' && special_race_question?
+
       code == label ? label : "#{code} - #{label}"
     else
       translated_option(item).titleize
@@ -67,12 +69,16 @@ class CollectionRadioButtonsInput < SimpleForm::Inputs::CollectionRadioButtonsIn
 
   def add_blanks(items)
     items << [options[:unknown] || 'Un - Unknown', 'unknown']
-    items.unshift ['Left blank', nil]
+    items.unshift ['Left blank', nil] unless special_race_question?
     items
   end
 
   def extract_collection_from_choices
     collection_method_name = attribute_name.to_s.sub(/\_key\Z/, '') << '_choices'
     @builder.object.class.respond_to?(collection_method_name) ? @builder.object.class.send(collection_method_name) : []
+  end
+
+  def special_race_question?
+    attribute_name == :race && [1860, 1870].include?(@builder.object.year)
   end
 end

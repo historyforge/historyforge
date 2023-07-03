@@ -134,8 +134,8 @@ class UsersController < ApplicationController
   def mask
     @user = User.find(params[:id])
     authorize! :mask, @user
-    session[:mask] = current_user.id
-    sign_in @user
+    impersonate_user(@user)
+    flash[:notice] = "You are now impersonating #{@user.name}. Log out to return control."
     redirect_to root_path
   end
 

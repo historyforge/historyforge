@@ -5,9 +5,8 @@ class SessionsController < Devise::SessionsController
   respond_to :html, :json
 
   def destroy
-    if session[:mask]
-      @user = User.find session.delete(:mask)
-      sign_in(@user)
+    if current_user != true_user
+      stop_impersonating_user
       redirect_to users_path
     else
       super

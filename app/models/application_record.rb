@@ -25,6 +25,10 @@ class ApplicationRecord < ActiveRecord::Base
     columns.map(&:name)
   end
 
+  def self.ransackable_associations(_auth_object = nil)
+    []
+  end
+
   def self.decorator_class
     @decorator_class ||= "#{name}Decorator".safe_constantize || "#{superclass.name}Decorator".constantize
   end
