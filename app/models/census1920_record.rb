@@ -86,6 +86,7 @@ class Census1920Record < CensusRecord
 
   validates :mother_tongue, :mother_tongue_father, :mother_tongue_mother, vocabulary: { name: :language, allow_blank: true }
   validates :dwelling_number, presence: true
+  validates :enum_dist, presence: true
 
   define_enumeration :employment, %w[W Em OA]
   define_enumeration :race, %w[W B Mu In Ch Jp Fil Hin Kor]

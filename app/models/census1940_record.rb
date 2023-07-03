@@ -112,6 +112,7 @@ class Census1940Record < CensusRecord
   belongs_to :locality, inverse_of: :census1940_records
 
   before_validation :translate_income
+  validates :enum_dist, presence: true
   validate :validate_occupation_codes
 
   define_enumeration :marital_status, %w[S M (M)7 Wd D]

@@ -100,6 +100,7 @@ class Census1910Record < CensusRecord
   validates :language_spoken, vocabulary: { name: :language, allow_blank: true }
   validates :mother_tongue, :mother_tongue_father, :mother_tongue_mother, vocabulary: { name: :language, allow_blank: true }
   validates :dwelling_number, presence: true
+  validates :enum_dist, presence: true
 
   define_enumeration :race, %w[W B Mu Ch Jp In]
   define_enumeration :marital_status, %w[S M_or_M1 M2_or_M3 Wd D]

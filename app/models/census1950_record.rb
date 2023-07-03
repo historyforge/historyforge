@@ -109,6 +109,7 @@ class Census1950Record < CensusRecord
 
   belongs_to :locality, inverse_of: :census1950_records
 
+  validates :enum_dist, presence: true
   validate :validate_occupation_codes
 
   define_enumeration :marital_status, %w[Nev Mar Wd D Sep]
