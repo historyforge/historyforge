@@ -3,6 +3,7 @@ class Census1860Record < CensusRecord
   self.year = 1860
 
   belongs_to :locality, inverse_of: :census1860_records
+  validates :post_office, presence: true
 
   define_enumeration :race, %w[W B Mu]
 

@@ -113,6 +113,7 @@ en:
         pob_mother_code: 'Place of Birth - Mother (Code)'
         pob_mother: 'Place of Birth - Mother'
         pob: 'Place of Birth'
+        post_office: 'Post Office'
         private_hours_worked: 'Hours Worked Week Prior to Census'
         private_work: 'Private/Non-emergency Government Work'
         provisional: 'Provisional'

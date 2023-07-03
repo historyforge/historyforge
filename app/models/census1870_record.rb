@@ -3,6 +3,7 @@ class Census1870Record < CensusRecord
   self.year = 1870
 
   belongs_to :locality, inverse_of: :census1870_records
+  validates :post_office, presence: true
 
   def page_side?
     false
