@@ -9,10 +9,13 @@
   - else
     - @categories.each do |category|
       - if @documents[category.id]
-        = panel category.name do
-          - if category.description.present?
-            = simple_format category.description
-          = render 'table', documents: @documents[category.id]
+        .card.card-default.mb-3
+          .card-header
+            h5.card-title= link_to(category.name, "#panel-#{category.id}", data: { toggle: "collapse" }, role: "button", aria: { expanded: false })
+          .card-body.collapse.collapsed id="panel-#{category.id}"
+            - if category.description.present?
+              = simple_format category.description
+            = render 'table', documents: @documents[category.id]
   - if @documents[nil]
     h3 Uncategorized
     = render 'table', documents: @documents[nil]
