@@ -2,9 +2,10 @@
 
 # Centralizes the means to iterate all census years
 module CensusYears
-  YEARS = [1880, 1900, 1910, 1920, 1930, 1940, 1950].freeze
+  YEARS = [1850, 1860, 1870, 1880, 1900, 1910, 1920, 1930, 1940, 1950].freeze
   YEARS_IN_WORDS = %w[
-    eighteen_eighty nineteen_aught nineteen_ten nineteen_twenty nineteen_thirty nineteen_forty nineteen_fifty
+    eighteen_fifty, eighteen_sixty, eighteen_seventy eighteen_eighty nineteen_aught nineteen_ten
+    nineteen_twenty nineteen_thirty nineteen_forty nineteen_fifty
   ].freeze
 
   def self.each
@@ -27,9 +28,7 @@ module CensusYears
   end
 
   def self.each_visible_to_user(user, &block)
-    visible_to_user(user).each do |year|
-      yield year
-    end
+    visible_to_user(user).each(&block)
   end
 
   def self.lte(year)

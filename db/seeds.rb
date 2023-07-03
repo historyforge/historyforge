@@ -36,7 +36,7 @@ Setting.add 'facebook_login_secret', value: ENV['FACEBOOK_LOGIN_SECRET'] || '', 
 
 CensusYears.each do |year|
   group = "#{year} US Census"
-  Setting.add "enabled_private_#{year}", type: :boolean, value: '1', group: group, name: 'Enabled Private', hint: 'This census year is available to logged-in users for data entry.'
-  Setting.add "enabled_public_#{year}", type: :boolean, value: '1', group: group, name: 'Enabled Public', hint: 'This census year is available to the public for search.'
+  Setting.add "enabled_private_#{year}", type: :boolean, value: '0', group: group, name: 'Enabled Private', hint: 'This census year is available to logged-in users for data entry.'
+  Setting.add "enabled_public_#{year}", type: :boolean, value: '0', group: group, name: 'Enabled Public', hint: 'This census year is available to the public for search.'
   Setting.add "add_buildings_#{year}", type: :boolean, value: '1', group: group, name: 'Add Buildings', hint: 'Allows census taker to create a new building from address.'
 end

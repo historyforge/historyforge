@@ -4,7 +4,7 @@
 # fills in the attributes for the next record. If you're at the end of the sheet or side, it will start the
 # next one.
 class NextCensusRecordAttributes
-  ALWAYS_FIELDS = %i[county city ward enum_dist locality_id].freeze
+  ALWAYS_FIELDS = %i[county city post_office ward enum_dist locality_id].freeze
 
   AFTER_SAVED_FIELDS = {
     'page' => [],
