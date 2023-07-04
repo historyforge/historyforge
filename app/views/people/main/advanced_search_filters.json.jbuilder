@@ -18,6 +18,8 @@ json.filters do
   AttributeBuilder.text   json, :last_name
 
   AttributeBuilder.enumeration json, Person, :sex
+  AttributeBuilder.enumeration json, Person, :race
+  AttributeBuilder.text json, :pob
 
   AttributeBuilder.text   json, :description
 

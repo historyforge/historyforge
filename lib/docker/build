@@ -1,4 +1,4 @@
 set -e
 rails assets:clean assets:precompile DEPLOYING=true RAILS_ENV=production
-docker build -t dfurber/historyforge -f ./lib/docker/Dockerfile .
-docker push dfurber/historyforge
+sudo docker build -t dfurber/historyforge -f ./lib/docker/Dockerfile .
+sudo docker push dfurber/historyforge
