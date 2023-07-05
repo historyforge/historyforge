@@ -59,6 +59,8 @@ en:
         unemployed_weeks: 'Enter what you see on the census. If the field is blank on the census or the number is crossed out, leave it blank on HistoryForge. Note: If the total number of weeks is crossed out and a code starting with a V is written above, enter the total number of weeks, not the code.'
         ward: 'The ward is in the upper right corner of the sheet underneath the Enumeration District. Enter the ward as a number (2).  If there is no ward on the census, leave the field blank on HistoryForge.'
         worker_class_code: 'This is a three-digit occupation code followed by a two-figure industry code and a 1-figure worker class code. The occupation code can contain a “V” or “X” as well as numbers. The industry code can contain a “V” or “X” as well as numbers. The worker class code is a number from 1 to 6. If you are unsure, check the resource for verifying the occupation code on the Transcriber’s Corner.'
+        nature_of_misfortune: 'In the last column of the page, there will be an indication that corresponds to a checkbox, along with additional details. Check the corresponding box and add the additional details here.'
+        year_of_misfortune: 'In column 3 with the name. There will be corresponding information in column 13 about the nature of the misfortune.'
 
       census1850_record:
         page_number: 'There is no field for the page number on the 1850 census. If there is a handwritten page number enter that. Otherwise, enter the FamilySearch image number in the image box on the upper left corner above the image.'
@@ -80,6 +82,8 @@ en:
         insane: 'Check the box according to what you see in column 13 (Deaf and Dumb, Blind, Insane, Idiotic, Pauper, or Convict)'
         pauper: 'Check the box according to what you see in column 13 (Deaf and Dumb, Blind, Insane, Idiotic, Pauper, or Convict)'
         convict: 'Check the box according to what you see in column 13 (Deaf and Dumb, Blind, Insane, Idiotic, Pauper, or Convict)'
+        institution_name: 'If applicable, it will be in column 1 after the dwelling number.'
+        institution_type: 'If applicable, it will be in column 1 after the dwelling number.'
       census1860_record:
         page_number: 'The page number alternates between the upper left and right corners of the page.'
         street_house_number: 'There is no corresponding field on the census, however, if known or determined this field can be populated with the current address in order to map this census record.'
@@ -101,6 +105,8 @@ en:
         insane: 'Check the box according to what you see in column 14 (Deaf and Dumb, Blind, Insane, Idiotic, Pauper, or Convict)'
         pauper: 'Check the box according to what you see in column 14 (Deaf and Dumb, Blind, Insane, Idiotic, Pauper, or Convict)'
         convict: 'Check the box according to what you see in column 14 (Deaf and Dumb, Blind, Insane, Idiotic, Pauper, or Convict)'
+        institution_name: 'If applicable, it will be in column 1 after the dwelling number.'
+        institution_type: 'If applicable, it will be in column 1 after the dwelling number.'
       census1880_record:
         boolean: 'Check the box if the field contains a slash (/). Enumerators used this mark to indicate yes. Enter any additional information in the notes.'
         page_number: 'The sheet (page) number is in the upper left corner of the sheet.'

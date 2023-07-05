@@ -3,6 +3,8 @@ FROM ruby:3.2.2
 ENV DEBIAN_FRONTEND noninteractive
 ENV RAILS_SERVE_STATIC_FILES true
 ENV RAILS_LOG_TO_STDOUT true
+ENV LANG en_US.UTF-8
+ENV LC_ALL en_US.UTF-8
 
 # Curl lets us get node and yarn in the next step
 RUN apt-get update -qq && apt-get upgrade -y && apt-get install -y curl
@@ -18,7 +20,7 @@ RUN apt-get update -qq && \
   automake build-essential patch zlib1g-dev liblzma-dev git \
   libssl-dev libreadline-dev \
   libyaml-dev libcurl4-openssl-dev libffi-dev \
-  libpq-dev nodejs yarn libvips
+  libpq-dev nodejs yarn libvips locales
 
 # Clean up
 RUN \

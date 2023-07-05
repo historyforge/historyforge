@@ -161,14 +161,18 @@ en:
         years_married: 'Years of Present Marriage'
 
       census1850_record:
+        page_number: 'Page'
         home_value: 'Value of Real Estate Owned'
         just_married: 'Married within the Year'
         attended_school: 'At School within the Last Year'
       census1860_record:
+        page_number: 'Page'
         home_value: 'Value of Real Estate'
         personal_value: 'Value of Personal Estate'
         just_married: 'Married within the Year'
         attended_school: 'At School within the Last Year'
+      census1870_record:
+        page_number: 'Page'
       census1880_record:
         page_number: 'Page'
       census1900_record:

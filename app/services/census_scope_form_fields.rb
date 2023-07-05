@@ -33,6 +33,8 @@ module CensusScopeFormFields
             facet: false,
             if: ->(form) { Setting.can_add_buildings?(form.object.year) }
       input :dwelling_number, if: ->(form) { form.object.year < 1940 }, facet: false
+      input :institution_name, as: :string, facet: false, if: ->(form) { form.object.year < 1870 }
+      input :institution_type, as: :string, facet: false, if: ->(form) { form.object.year < 1870 }
       input :family_id, facet: false
     end
   end
