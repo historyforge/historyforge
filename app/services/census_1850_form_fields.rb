@@ -7,8 +7,8 @@ class Census1850FormFields < CensusFormFieldConfig
   divider 'Personal Description'
   input :age, as: :integer, min: 0, max: 130
   input :age_months, as: :integer, min: 0, max: 12
-  input :race, as: :radio_buttons, coded: true
   input :sex, as: :radio_buttons, coded: true
+  input :race, as: :radio_buttons, coded: true
   input :occupation
   input :home_value, as: :integer
   input :pob

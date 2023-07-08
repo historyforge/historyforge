@@ -36,7 +36,7 @@ en:
         can_read_write: 'Can Read and Write'
         can_read: 'Can Read'
         cannot_read: 'Cannot Read'
-        cannot_read_write: 'Illiterate'
+        cannot_read_write: 'Cannot Read or Write'
         can_speak_english: 'Speaks English'
         can_write: 'Can Write'
         cannot_write: 'Cannot Write'
@@ -95,6 +95,7 @@ en:
         name_prefix: 'Title'
         name_suffix: 'Suffix'
         naturalized_alien: 'Naturalization'
+        nature_of_misfortune: 'Nature of Misfortune'
         no_work_reason: 'No Work Reason'
         notes: 'Notes'
         num_children_alive: 'No. Children Alive'
@@ -159,18 +160,19 @@ en:
         year_naturalized: 'Year Naturalized'
         years_in_us: 'Years in US'
         years_married: 'Years of Present Marriage'
+        year_of_misfortune: 'Year of Misfortune'
 
       census1850_record:
         page_number: 'Page'
         home_value: 'Value of Real Estate Owned'
         just_married: 'Married within the Year'
-        attended_school: 'At School within the Last Year'
+        attended_school: 'At School within the Year'
       census1860_record:
         page_number: 'Page'
         home_value: 'Value of Real Estate'
         personal_value: 'Value of Personal Estate'
         just_married: 'Married within the Year'
-        attended_school: 'At School within the Last Year'
+        attended_school: 'At School within the Year'
       census1870_record:
         page_number: 'Page'
       census1880_record:
