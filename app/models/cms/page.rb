@@ -22,7 +22,7 @@
 # frozen_string_literal: true
 
 module Cms
-  class Page < Cms::BaseModel
+  class Page < ApplicationRecord
 
     self.table_name = 'cms_pages'
 

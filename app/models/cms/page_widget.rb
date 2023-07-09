@@ -16,7 +16,7 @@
 
 # frozen_string_literal: true
 
-class Cms::PageWidget < ActiveRecord::Base
+class Cms::PageWidget < ApplicationRecord
 
   include ArDocStore::Model
 

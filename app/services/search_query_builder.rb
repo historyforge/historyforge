@@ -22,7 +22,7 @@ class SearchQueryBuilder
     end
     @s ||= {}
     @g ||= {}
-    @f ||= default_fields
+    @f = default_fields if @f.blank? || @f.is_a?(String)
     @f = @f.values if @f.is_a?(Hash) # Shouldn't be a hash but somehow possible...
     @from = @from.to_i if @from
     @to = @to.to_i if @to

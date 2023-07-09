@@ -51,8 +51,7 @@ class MapOverlaysController < ApplicationController
     else
       flash[:errors] = "Sorry couldn't do it."
     end
-    redirect_back fallback_location: { action: :index }
-
+    redirect_to action: :index
   end
 
   private
