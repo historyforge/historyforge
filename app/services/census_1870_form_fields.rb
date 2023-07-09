@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 class Census1870FormFields < CensusFormFieldConfig
-  include CensusScopeFormFields
-  include CensusNameFields
+  scope_fields_for 1870
+  name_fields
 
   divider 'Personal Description'
   input :age, as: :integer, min: 0, max: 130
   input :age_months, as: :integer, min: 0, max: 12
-  input :race, as: :radio_buttons, coded: true
   input :sex, as: :radio_buttons, coded: true
+  input :race, as: :radio_buttons, coded: true
   input :occupation
   input :home_value, as: :integer
   input :personal_value, as: :integer
@@ -16,8 +16,8 @@ class Census1870FormFields < CensusFormFieldConfig
   input :foreign_born, as: :boolean
   input :father_foreign_born, as: :boolean
   input :mother_foreign_born, as: :boolean
-  input :just_born, as: :boolean
-  input :just_married, as: :boolean
+  input :birth_month, as: :radio_buttons, collection: (1..12).map { |m| ["#{m} - #{Date::MONTHNAMES[m]}", m] }
+  input :marriage_month, as: :radio_buttons, collection: (1..12).map { |m| ["#{m} - #{Date::MONTHNAMES[m]}", m] }
   input :attended_school, as: :boolean
   input :cannot_read, as: :boolean
   input :cannot_write, as: :boolean
@@ -27,12 +27,10 @@ class Census1870FormFields < CensusFormFieldConfig
   input :blind, as: :boolean
   input :insane, as: :boolean
   input :idiotic, as: :boolean
-  input :pauper, as: :boolean
-  input :convict, as: :boolean
 
   divider 'Constitutional Relations'
   input :full_citizen, as: :boolean
   input :denied_citizen, as: :boolean
 
-  include CensusAdditionalFormFields
+  additional_fields
 end

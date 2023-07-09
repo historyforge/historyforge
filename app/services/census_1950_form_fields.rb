@@ -1,14 +1,13 @@
 # frozen_string_literal: true
 
 class Census1950FormFields < CensusFormFieldConfig
-  include CensusScopeFormFields
-
+  scope_fields_for 1950
   divider 'Household Data'
   input :lives_on_farm, as: :boolean
   input :lives_on_3_acres, as: :boolean
   input :ag_questionnaire_no
 
-  include CensusNameFields
+  name_fields
 
   divider 'Relation'
   input :relation_to_head
@@ -38,7 +37,7 @@ class Census1950FormFields < CensusFormFieldConfig
   input :industry_code
   input :worker_class_code
 
-  include CensusAdditionalFormFields
+  additional_fields
 
   with_options if: ->(form) { form.editing? || form.object&.supplemental? } do
     divider 'Sample Questions', hint: 'The following questions pertain to persons whose names appear on the line numbers requiring sample question responses.'

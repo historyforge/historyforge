@@ -46,6 +46,7 @@ en:
         owned_or_rented: 'Select the option that corresponds to the answer on the census. Note: This information should only be entered once for the family/household.'
         page_number: 'The sheet (page) number is in the upper right corner of the sheet.'
         page_side: 'Each census sheet has side A and B printed next to the sheet number.'
+        person_id: 'Use this to link this census record to a person record manually. Clearing out this field will detach any existing person link.'
         pob_code: 'Place of Birth (Code)'
         pob_father: 'Enter what you see on the census. Note: This field has a controlled vocabulary. If, as you enter the term from the census, the term does not appear from the list of controlled vocabulary, enter an X in the field and enter “Place of Birth is ____” in the notes field.'
         pob_mother: 'Enter what you see on the census. Note: This field has a controlled vocabulary. If, as you enter the term from the census, the term does not appear from the list of controlled vocabulary, enter an X in the field and enter “Place of Birth is ____” in the notes field.'

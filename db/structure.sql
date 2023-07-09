@@ -10,6 +10,13 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
+-- Name: public; Type: SCHEMA; Schema: -; Owner: -
+--
+
+-- *not* creating schema, since initdb creates it
+
+
+--
 -- Name: fuzzystrmatch; Type: EXTENSION; Schema: -; Owner: -
 --
 
@@ -49,8 +56,6 @@ $_$;
 
 
 SET default_tablespace = '';
-
-SET default_table_access_method = heap;
 
 --
 -- Name: action_text_rich_texts; Type: TABLE; Schema: public; Owner: -
@@ -728,8 +733,6 @@ CREATE TABLE public.census_1870_records (
     pob character varying,
     father_foreign_born boolean,
     mother_foreign_born boolean,
-    just_born boolean,
-    just_married boolean,
     attended_school boolean,
     cannot_read boolean,
     cannot_write boolean,
@@ -737,8 +740,6 @@ CREATE TABLE public.census_1870_records (
     blind boolean,
     insane boolean,
     idiotic boolean,
-    pauper boolean,
-    convict boolean,
     full_citizen boolean,
     denied_citizen boolean,
     notes text,
@@ -748,7 +749,9 @@ CREATE TABLE public.census_1870_records (
     searchable_name text,
     histid uuid,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    birth_month integer,
+    marriage_month integer
 );
 
 
@@ -5008,6 +5011,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20230702224623'),
 ('20230702224634'),
 ('20230702224640'),
+('20230709002649'),
 ('4'),
 ('8'),
 ('9');

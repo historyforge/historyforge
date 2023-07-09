@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class Census1930FormFields < CensusFormFieldConfig
-  include CensusScopeFormFields
-  include CensusNameFields
+  scope_fields_for 1930
+  name_fields
 
   divider 'Relation'
   input :relation_to_head
@@ -48,5 +48,5 @@ class Census1930FormFields < CensusFormFieldConfig
   input :war_fought, as: :radio_buttons_other, coded: true
   input :farm_schedule
 
-  include CensusAdditionalFormFields
+  additional_fields
 end

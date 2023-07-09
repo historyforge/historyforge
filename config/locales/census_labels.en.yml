@@ -85,6 +85,7 @@ en:
         locality_id: 'Locality'
         maimed: 'Maimed, Crippled, Bedridden, or Otherwise Disabled'
         marital_status: 'Marital Status'
+        marriage_month: 'Marriage Month'
         middle_name: 'Middle Name'
         month_born: 'Month Born within Census Year'
         mortgage: 'Mortgage'
@@ -175,6 +176,14 @@ en:
         attended_school: 'At School within the Year'
       census1870_record:
         page_number: 'Page'
+        home_value: 'Value of Real Estate'
+        personal_value: 'Value of Personal Estate'
+        father_foreign_born: 'Father Foreign Born'
+        mother_foreign_born: 'Mother Foreign Born'
+        full_citizen: 'Full Citizen'
+        denied_citizen: 'Denied Citizen'
+        birth_month: 'Born During Census Year'
+        marriage_month: 'Married During Census Year'
       census1880_record:
         page_number: 'Page'
       census1900_record:
@@ -194,7 +203,6 @@ en:
         lives_on_farm: 'Live on Farm'
         lives_on_3_acres: 'Live on 3 or More Acres'
         ag_questionnaire_no: 'Agriculture Questionnaire No.'
-        birth_month: 'Birth Month'
         activity_last_week: 'Activity Last Week'
         worked_last_week: 'Any Work Last Week'
         seeking_work: 'Seeking Work'

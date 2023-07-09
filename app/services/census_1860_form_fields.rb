@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class Census1860FormFields < CensusFormFieldConfig
-  include CensusScopeFormFields
-  include CensusNameFields
+  scope_fields_for 1860
+  name_fields
 
   divider 'Personal Description'
   input :age, as: :integer, min: 0, max: 130
@@ -28,5 +28,5 @@ class Census1860FormFields < CensusFormFieldConfig
   input :nature_of_misfortune, hint: false
   input :year_of_misfortune, hint: false
 
-  include CensusAdditionalFormFields
+  additional_fields
 end

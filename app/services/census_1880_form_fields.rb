@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 class Census1880FormFields < CensusFormFieldConfig
-  include CensusScopeFormFields
-
-  include CensusNameFields
+  scope_fields_for 1880
+  name_fields
 
   divider 'Personal Description'
   input :race, as: :radio_buttons, coded: true
@@ -38,5 +37,5 @@ class Census1880FormFields < CensusFormFieldConfig
   input :pob_mother
   input :foreign_born, as: :boolean
 
-  include CensusAdditionalFormFields
+  additional_fields
 end

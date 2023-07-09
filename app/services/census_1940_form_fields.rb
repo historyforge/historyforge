@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 class Census1940FormFields < CensusFormFieldConfig
-  include CensusScopeFormFields
+  scope_fields_for 1940
 
   divider 'Household Data'
   input :owned_or_rented,as: :radio_buttons, coded: true
   input :home_value, as: :integer
   input :lives_on_farm, as: :boolean
 
-  include CensusNameFields
+  name_fields
 
   divider 'Relation'
   input :relation_to_head
@@ -64,7 +64,7 @@ class Census1940FormFields < CensusFormFieldConfig
   input :had_unearned_income, as: :boolean
   input :farm_schedule
 
-  include CensusAdditionalFormFields
+  additional_fields
 
   with_options if: ->(form) { form.editing? || form.object&.supplemental? } do
     divider 'Supplemental Questions', hint: 'The rest of this form pertains to persons whose names appear on the line numbers requiring supplementary question responses.'

@@ -29,6 +29,9 @@ RUN \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+# So the system doesn't complain about unable to set locale
+RUN locale-gen en_US.UTF-8
+
 RUN gem install bundler
 
 RUN mkdir /app

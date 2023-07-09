@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class Census1910FormFields < CensusFormFieldConfig
-  include CensusScopeFormFields
-  include CensusNameFields
+  scope_fields_for 1910
+  name_fields
 
   divider 'Relation'
   input :relation_to_head
@@ -50,5 +50,5 @@ class Census1910FormFields < CensusFormFieldConfig
   input :blind, as: :boolean
   input :deaf_dumb, as: :boolean
 
-  include CensusAdditionalFormFields
+  additional_fields
 end
