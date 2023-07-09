@@ -71,7 +71,11 @@ class Person < ApplicationRecord
 
   pg_search_scope :last_name_search,
                   against: %i[first_name last_name],
-                  using: %i[dmetaphone]
+                  using: {
+                    trigram: {
+                      word_similarity: true
+                    }
+                  }
 
   pg_search_scope :fuzzy_name_search,
                   against: %i[searchable_name],
@@ -85,7 +89,7 @@ class Person < ApplicationRecord
   # TODO: Move to service object
   def self.likely_matches_for(record)
     matches = where(sex: record.sex, last_name: record.last_name, first_name: record.first_name).order(:first_name, :middle_name)
-    matches = last_name_search(record.last_name).where(sex: record.sex) unless matches.exists?
+    matches = last_name_search("#{record.first_name} #{record.last_name}").where(sex: record.sex) unless matches.exists?
     unless matches.exists?
       matches = where(sex: record.sex, last_name: record.last_name).order(:first_name, :middle_name)
     end
