@@ -33,19 +33,19 @@ class CensusFiltersGenerator
 
     if options[:collection]
       collection = options[:coded] ? coded_collection(field, options) : options[:collection]
-      AttributeBuilder.collection json, field, klass: klass, collection: collection
+      AttributeBuilder.collection(json, field, klass:, collection:)
       return
     end
 
     case options[:as]
     when :number, :integer
-      AttributeBuilder.number json, field, klass: klass
+      AttributeBuilder.number json, field, klass:
     when :boolean
-      AttributeBuilder.boolean json, field, klass: klass
+      AttributeBuilder.boolean json, field, klass:
     when :radio_buttons
       AttributeBuilder.enumeration json, klass, field
     else
-      AttributeBuilder.text json, field, klass: klass
+      AttributeBuilder.text json, field, klass:
     end
   end
 
@@ -59,33 +59,35 @@ class CensusFiltersGenerator
   end
 
   def output_header_fields
-    AttributeBuilder.collection json, :locality_id, klass: klass, collection: Locality.select_options
-    AttributeBuilder.text(json, :name, klass: klass)
-    AttributeBuilder.text   json, :first_name, klass: klass
-    AttributeBuilder.text   json, :middle_name, klass: klass
-    AttributeBuilder.text   json, :last_name, klass: klass
+    AttributeBuilder.collection json, :locality_id, klass:, collection: Locality.select_options
+    AttributeBuilder.text(json, :name, klass:)
+    AttributeBuilder.text(json, :first_name, klass:)
+    AttributeBuilder.text(json, :middle_name, klass:)
+    AttributeBuilder.text(json, :last_name, klass:)
     json.census_scope do
       json.label 'Census Schedule'
       json.sortable 'census_scope'
     end
-    AttributeBuilder.number json, :page_number, klass: klass
-    AttributeBuilder.enumeration json, klass, :page_side
-    AttributeBuilder.number json, :line_number, sortable: false, klass: klass
-    AttributeBuilder.text   json, :county, klass: klass
-    AttributeBuilder.text   json, :city, klass: klass
-    AttributeBuilder.number json, :ward, klass: klass
-    AttributeBuilder.number json, :enum_dist, klass: klass
-    if klass.year == 1950
-      AttributeBuilder.text json, :institution_name, klass: klass
-      AttributeBuilder.text json, :institution_type, klass: klass
+    AttributeBuilder.number(json, :page_number, klass:)
+    AttributeBuilder.enumeration json, klass, :page_side if klass.year >= 1880
+    AttributeBuilder.number(json, :line_number, sortable: false, klass:)
+    AttributeBuilder.text(json, :county, klass:)
+    AttributeBuilder.text(json, :city, klass:)
+    if klass.year >= 1880
+      AttributeBuilder.number(json, :ward, klass:)
+      AttributeBuilder.number json, :enum_dist, klass:
     end
-    AttributeBuilder.text   json, :street_address, klass: klass
+    if klass.year == 1950
+      AttributeBuilder.text(json, :institution_name, klass:)
+      AttributeBuilder.text json, :institution_type, klass:
+    end
+    AttributeBuilder.text(json, :street_address, klass:)
     AttributeBuilder.text   json, :dwelling_number, klass: klass unless klass == Census1940Record
-    AttributeBuilder.text   json, :family_id, klass: klass
+    AttributeBuilder.text   json, :family_id, klass:
   end
 
   def output_footer_fields
-    AttributeBuilder.boolean json, :foreign_born, klass: klass
-    AttributeBuilder.text json, :notes, klass: klass
+    AttributeBuilder.boolean(json, :foreign_born, klass:)
+    AttributeBuilder.text json, :notes, klass:
   end
 end

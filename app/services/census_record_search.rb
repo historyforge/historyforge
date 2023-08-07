@@ -83,7 +83,11 @@ class CensusRecordSearch < SearchQueryBuilder
   end
 
   def census_page_order_clause(dir)
-    Arel.sql "ward #{dir}, regexp_replace(NULLIF(enum_dist, ''), '[^0-9]+', '', 'g')::numeric #{dir}, enum_dist #{dir}, page_number #{dir}, page_side #{dir}, line_number #{dir}"
+    if entity_class.year < 1880
+      Arel.sql "page_number #{dir}, page_side #{dir}, line_number #{dir}"
+    else
+      Arel.sql "ward #{dir}, regexp_replace(NULLIF(enum_dist, ''), '[^0-9]+', '', 'g')::numeric #{dir}, enum_dist #{dir}, page_number #{dir}, page_side #{dir}, line_number #{dir}"
+    end
   end
 
   def name_order_clause(dir)

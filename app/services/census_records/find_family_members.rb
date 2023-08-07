@@ -6,7 +6,11 @@ module CensusRecords
   class FindFamilyMembers < ApplicationInteraction
     object :record, class: 'CensusRecord'
 
-    delegate :locality_id, :enum_dist, :family_id, :page_number, :building_id, :dwelling_number, :id, to: :record
+    delegate :locality_id, :family_id, :page_number, :building_id, :dwelling_number, :id, to: :record
+
+    def enum_dist
+      record.has_enum_dist? ? record.enum_dist : nil
+    end
 
     def execute
       record.class.where(options).where.not(id:).in_census_order
@@ -15,10 +19,10 @@ module CensusRecords
     def options
       {
         locality_id:,
-        enum_dist:,
         family_id:,
         **(building_id ? { building_id: } : {}),
-        **(dwelling_number ? { dwelling_number: } : {})
+        **(dwelling_number ? { dwelling_number: } : {}),
+        **(record.has_enum_dist? ? { enum_dist: } : {})
       }
     end
   end

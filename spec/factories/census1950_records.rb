@@ -16,7 +16,7 @@
 #  city                   :string
 #  state                  :string
 #  ward                   :integer
-#  enum_dist              :integer
+#  enum_dist              :string           not null
 #  institution_name       :string
 #  institution_type       :string
 #  apartment_number       :string

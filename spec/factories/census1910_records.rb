@@ -75,7 +75,7 @@
 #  mother_tongue_mother  :string
 #  locality_id           :bigint
 #  histid                :uuid
-#  enum_dist             :integer
+#  enum_dist             :string           not null
 #  ward                  :integer
 #
 # Indexes

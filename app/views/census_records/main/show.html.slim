@@ -43,7 +43,8 @@ div.mb-3
           th County
           th Place
           th Ward
-          th Enum Dist
+          - if @record.has_enum_dist?
+            th Enum Dist
           th Page
           th Line
           - if controller.year < 1940
@@ -55,7 +56,8 @@ div.mb-3
           td= @record.county
           td= @record.city
           td= @record.ward
-          td= @record.enum_dist
+          - if @record.has_enum_dist?
+            td= @record.enum_dist
           td= "#{@record.page_number}#{@record.page_side}"
           td= @record.line_number
           - if controller.year < 1940

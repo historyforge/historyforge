@@ -81,7 +81,7 @@
 #  occupation1930_code_id :bigint
 #  locality_id            :bigint
 #  histid                 :uuid
-#  enum_dist              :integer
+#  enum_dist              :string           not null
 #  ward                   :integer
 #
 # Indexes
@@ -108,9 +108,13 @@ class Census1930Record < CensusRecord
   belongs_to :locality, inverse_of: :census1930_records
 
   before_validation :handle_occupation_code, if: :occupation_code_changed?
+  validates :relation_to_head, vocabulary: { allow_blank: true }, presence: true
+  validates :pob_father, :pob_mother, vocabulary: { name: :pob, allow_blank: true }
   validates :mother_tongue, vocabulary: { name: :language, allow_blank: true }
   validates :dwelling_number, presence: true
   validates :enum_dist, presence: true
+
+  scope :in_census_order, -> { order :ward, :enum_dist, :page_number, :page_side, :line_number }
 
   define_enumeration :worker_class, %w[E W OA NP]
   define_enumeration :war_fought, %w[WW Sp Civ Phil Box Mex]

@@ -17,14 +17,13 @@ class CensusRecord < ApplicationRecord
 
   attr_accessor :ensure_building
 
-  validates :first_name, :last_name, :family_id, :relation_to_head, :occupation,
+  validates :first_name, :last_name, :family_id, :occupation,
             :page_number, :line_number, :county, :city, :state,
             presence: true
   validates :page_side, presence: true, if: :page_side?
   validates :age, numericality: { greater_than_or_equal_to: -1, allow_nil: true }
   validate :dont_add_same_person, on: :create
-  validates :relation_to_head, vocabulary: { allow_blank: true }
-  validates :pob, :pob_father, :pob_mother, vocabulary: { name: :pob, allow_blank: true }
+  validates :pob, vocabulary: { name: :pob, allow_blank: true }
 
   after_initialize :set_defaults
   before_save :ensure_housing
@@ -46,7 +45,6 @@ class CensusRecord < ApplicationRecord
 
   scope :unhoused, -> { where(building_id: nil) }
   scope :unmatched, -> { where(person_id: nil) }
-  scope :in_census_order, -> { order :ward, :enum_dist, :page_number, :page_side, :line_number }
 
   class_attribute :year
 
@@ -88,10 +86,18 @@ class CensusRecord < ApplicationRecord
 
   scope :not_me, ->(record) { record.persisted? ? where.not(id: record.id) : self }
   def duplicate_census_scope?
-    self.class.where(locality_id:, ward:, enum_dist:, page_number:, page_side:, line_number:)
+    attrs = { locality_id:, ward:, page_number:, page_side:, line_number: }
+    attrs.merge!(enum_dist:) if has_enum_dist?
+    self.class.where(attrs)
         .not_me(self)
         .count
         .positive?
+  end
+
+  def has_enum_dist?
+    return @has_enum_dist if defined?(@has_enum_dist)
+
+    @has_enum_dist = self.class.columns.detect { |c| c.name == 'enum_dist' }
   end
 
   def likely_matches?

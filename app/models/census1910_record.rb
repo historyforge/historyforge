@@ -73,7 +73,7 @@
 #  mother_tongue_mother  :string
 #  locality_id           :bigint
 #  histid                :uuid
-#  enum_dist             :integer
+#  enum_dist             :string           not null
 #  ward                  :integer
 #
 # Indexes
@@ -97,10 +97,14 @@ class Census1910Record < CensusRecord
 
   belongs_to :locality, inverse_of: :census1910_records
 
+  validates :pob_father, :pob_mother, vocabulary: { name: :pob, allow_blank: true }
+  validates :relation_to_head, vocabulary: { allow_blank: true }, presence: true
   validates :language_spoken, vocabulary: { name: :language, allow_blank: true }
   validates :mother_tongue, :mother_tongue_father, :mother_tongue_mother, vocabulary: { name: :language, allow_blank: true }
   validates :dwelling_number, presence: true
   validates :enum_dist, presence: true
+
+  scope :in_census_order, -> { order :ward, :enum_dist, :page_number, :page_side, :line_number }
 
   define_enumeration :race, %w[W B Mu Ch Jp In]
   define_enumeration :marital_status, %w[S M_or_M1 M2_or_M3 Wd D]

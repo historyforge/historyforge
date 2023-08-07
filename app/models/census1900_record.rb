@@ -68,7 +68,7 @@
 #  age_months          :integer
 #  locality_id         :bigint
 #  histid              :uuid
-#  enum_dist           :integer
+#  enum_dist           :string           not null
 #  ward                :integer
 #
 # Indexes
@@ -89,6 +89,8 @@ class Census1900Record < CensusRecord
 
   belongs_to :locality, inverse_of: :census1900_records
 
+  validates :relation_to_head, vocabulary: { allow_blank: true }, presence: true
+  validates :pob_father, :pob_mother, vocabulary: { name: :pob, allow_blank: true }
   validates :attended_school, :years_in_us, :years_married,
             :num_children_born, :num_children_alive, :unemployed_months,
             :birth_month, :birth_year, :age, :age_months,
@@ -97,6 +99,8 @@ class Census1900Record < CensusRecord
   validates :language_spoken, vocabulary: { name: :language, allow_blank: true }
   validates :dwelling_number, presence: true
   validates :enum_dist, presence: true
+
+  scope :in_census_order, -> { order :ward, :enum_dist, :page_number, :page_side, :line_number }
 
   define_enumeration :race, %w[W B Ch Jp In]
 

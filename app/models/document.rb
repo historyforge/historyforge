@@ -12,6 +12,7 @@
 #  created_at           :datetime         not null
 #  updated_at           :datetime         not null
 #  url                  :string
+#  available_to_public  :boolean          default(FALSE)
 #
 # Indexes
 #

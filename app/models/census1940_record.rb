@@ -89,9 +89,10 @@
 #  industry_code           :string
 #  locality_id             :bigint
 #  histid                  :uuid
-#  enum_dist               :integer
+#  enum_dist               :string           not null
 #  ward                    :integer
 #  income_plus             :boolean
+#  wages_or_salary         :string
 #
 # Indexes
 #
@@ -112,8 +113,12 @@ class Census1940Record < CensusRecord
   belongs_to :locality, inverse_of: :census1940_records
 
   before_validation :translate_income
+  validates :relation_to_head, vocabulary: { allow_blank: true }, presence: true
+  validates :pob_father, :pob_mother, vocabulary: { name: :pob, allow_blank: true }
   validates :enum_dist, presence: true
   validate :validate_occupation_codes
+
+  scope :in_census_order, -> { order :ward, :enum_dist, :page_number, :page_side, :line_number }
 
   define_enumeration :marital_status, %w[S M (M)7 Wd D]
   define_enumeration :worker_class, %w[PW GW E OA NP NW]

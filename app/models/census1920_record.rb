@@ -64,7 +64,7 @@
 #  employment_code      :string
 #  locality_id          :bigint
 #  histid               :uuid
-#  enum_dist            :integer
+#  enum_dist            :string           not null
 #  ward                 :integer
 #
 # Indexes
@@ -84,9 +84,13 @@ class Census1920Record < CensusRecord
 
   belongs_to :locality, inverse_of: :census1920_records
 
+  validates :relation_to_head, vocabulary: { allow_blank: true }, presence: true
+  validates :pob_father, :pob_mother, vocabulary: { name: :pob, allow_blank: true }
   validates :mother_tongue, :mother_tongue_father, :mother_tongue_mother, vocabulary: { name: :language, allow_blank: true }
   validates :dwelling_number, presence: true
   validates :enum_dist, presence: true
+
+  scope :in_census_order, -> { order :ward, :enum_dist, :page_number, :page_side, :line_number }
 
   define_enumeration :employment, %w[W Em OA]
   define_enumeration :race, %w[W B Mu In Ch Jp Fil Hin Kor]

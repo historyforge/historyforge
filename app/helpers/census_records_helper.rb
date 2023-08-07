@@ -4,10 +4,10 @@ module CensusRecordsHelper
   def path_to_census_sheet(record)
     query = {
       ward_eq: record.ward,
-      enum_dist_eq: record.enum_dist,
       page_number_eq: record.page_number,
       page_side_eq: record.page_side
     }
+    query.merge!(enum_dist_eq: record.enum_dist) if record.has_enum_dist?
     public_send "census#{record.year}_records_path", s: query
   end
 

@@ -62,7 +62,7 @@
 #  histid              :uuid
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
-#  enum_dist           :integer
+#  enum_dist           :string           not null
 #  ward                :integer
 #
 # Indexes

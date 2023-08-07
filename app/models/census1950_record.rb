@@ -16,7 +16,7 @@
 #  city                   :string
 #  state                  :string
 #  ward                   :integer
-#  enum_dist              :integer
+#  enum_dist              :string           not null
 #  institution_name       :string
 #  institution_type       :string
 #  apartment_number       :string
@@ -109,8 +109,12 @@ class Census1950Record < CensusRecord
 
   belongs_to :locality, inverse_of: :census1950_records
 
+  validates :relation_to_head, vocabulary: { allow_blank: true }, presence: true
+  validates :pob_father, :pob_mother, vocabulary: { name: :pob, allow_blank: true }
   validates :enum_dist, presence: true
   validate :validate_occupation_codes
+
+  scope :in_census_order, -> { order :ward, :enum_dist, :page_number, :page_side, :line_number }
 
   define_enumeration :marital_status, %w[Nev Mar Wd D Sep]
   define_enumeration :race, %w[W Neg Ind Chi Jap Fil]

@@ -91,9 +91,10 @@
 #  industry_code           :string
 #  locality_id             :bigint
 #  histid                  :uuid
-#  enum_dist               :integer
+#  enum_dist               :string           not null
 #  ward                    :integer
 #  income_plus             :boolean
+#  wages_or_salary         :string
 #
 # Indexes
 #

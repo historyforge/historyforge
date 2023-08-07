@@ -83,7 +83,7 @@
 #  occupation1930_code_id :bigint
 #  locality_id            :bigint
 #  histid                 :uuid
-#  enum_dist              :integer
+#  enum_dist              :string           not null
 #  ward                   :integer
 #
 # Indexes

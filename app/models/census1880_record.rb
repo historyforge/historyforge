@@ -60,7 +60,7 @@
 #  histid              :uuid
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
-#  enum_dist           :integer
+#  enum_dist           :string           not null
 #  ward                :integer
 #
 # Indexes
@@ -81,7 +81,11 @@ class Census1880Record < CensusRecord
 
   belongs_to :locality, inverse_of: :census1880_records
 
+  validates :relation_to_head, vocabulary: { allow_blank: true }, presence: true
+  validates :pob_father, :pob_mother, vocabulary: { name: :pob, allow_blank: true }
   validates :enum_dist, presence: true
+
+  scope :in_census_order, -> { order :ward, :enum_dist, :page_number, :page_side, :line_number }
 
   define_enumeration :page_side, %w[A B C D], strict: true
   define_enumeration :race, %w[W B Mu Ch In]
