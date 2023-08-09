@@ -54,7 +54,7 @@
         tr
           td= row.year
           td.text-nowrap= link_to row.name, row
-          td= row.relation_to_head
+          td= row.relation_to_head if row.year >= 1880
           td.text-nowrap= row.street_address
           td= row.age
           td= row.race
