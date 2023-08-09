@@ -118,7 +118,7 @@
             td= row.age
             td= row.race
             td= row.pob
-            td= row.marital_status
+            td= row.marital_status if row.year >= 1880
             td= row.occupation
             td
               = form_for row do |form|
