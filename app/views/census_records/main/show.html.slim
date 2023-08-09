@@ -113,7 +113,8 @@ div.mb-3
               th Name
               th Sex
               th Age
-              th Relation
+              - if @record.year >= 1880
+                th Relation
               th Occupation
           tbody
             - @record.fellows.each do |row|
@@ -121,7 +122,8 @@ div.mb-3
                 td= link_to row.name, row
                 td= row.sex
                 td= row.age
-                td= row.relation_to_head
+                - if @record.year >= 1880
+                  td= row.relation_to_head
                 td= row.occupation
     - if @model.person_id.blank? && can?(:review, @model)
       .card.mb-3
