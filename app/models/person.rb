@@ -143,7 +143,7 @@ class Person < ApplicationRecord
   memoize :relatives
 
   def relation_to_head
-    census_records.map(&:relation_to_head).uniq.join(', ')
+    census_records.select { |record| record.year >= 1880 }.map(&:relation_to_head).uniq.join(', ')
   end
 
   def occupation
