@@ -67,11 +67,11 @@ class CensusFormFieldConfig
             facet: false
       input :ensure_building, as: :boolean, hint: false, facet: false if Setting.can_add_buildings?(year)
       input :dwelling_number, facet: false if year < 1940
+      input :family_id, facet: false
       if year < 1870
         input :institution_name, as: :string, facet: false
         input :institution_type, as: :string, facet: false
       end
-      input :family_id, facet: false
     end
   end
 
