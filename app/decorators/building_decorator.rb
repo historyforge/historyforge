@@ -74,10 +74,10 @@ class BuildingDecorator < ApplicationDecorator
     object
       .residents
       .group_by(&:year)
-      .each_with_object({}) { |data, hash|
-        hash[data[0]] = data[1].group_by(&:family_id).each_with_object([]) { |family, arr|
+      .each_with_object({}) do |data, hash|
+        hash[data[0]] = data[1].group_by(&:family_id).each_with_object([]) do |family, arr|
           arr << family[1].map { |item| CensusRecordSerializer.new(item.decorate).as_json }
-        }
-      }
+        end
+      end
   end
 end

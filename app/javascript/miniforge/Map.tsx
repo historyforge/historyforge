@@ -87,8 +87,8 @@ function addLayer(map, layer) {
   }
   if (layer) {
     loadWMS(map, layer, layer.name)
+    window.localStorage.setItem('miniforge-layer', layer.id)
   }
-  window.localStorage.setItem('miniforge-layer', layer.id)
 }
 
 export function addOpacity(map, opacity) {

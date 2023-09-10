@@ -14,5 +14,12 @@ class ApplicationDecorator
   end
 
   attr_reader :object
-  delegate_missing_to(:object)
+
+  def method_missing(name, *args)
+    object.send(name, *args) if object.respond_to?(name)
+  end
+
+  def respond_to_missing?(name)
+    object.respond_to?(name) || false
+  end
 end

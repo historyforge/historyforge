@@ -70,7 +70,7 @@
                 input.form-control#s_enum_dist_eq type="search" name="s[enum_dist_eq]" value=@search.s[:enum_dist_eq]
             .col-3
               label for="s_page_number_eq" Sheet
-              = select_tag 's[page_number_eq]', options_for_select((1..100).map, @search.s[:page_number_eq]), include_blank: true, class: 'form-control'
+              = select_tag 's[page_number_eq]', options_for_select((1..200).map, @search.s[:page_number_eq]), include_blank: true, class: 'form-control'
             - if controller.year < 1950 and controller.year >= 1880
               .col-3
                 label for="s_page_side_eq" Side
