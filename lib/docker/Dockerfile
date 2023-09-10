@@ -20,7 +20,7 @@ RUN apt-get update -qq && \
   automake build-essential patch zlib1g-dev liblzma-dev git \
   libssl-dev libreadline-dev \
   libyaml-dev libcurl4-openssl-dev libffi-dev \
-  libpq-dev nodejs yarn libvips locales
+  libpq-dev nodejs yarn libvips locales postgresql-client
 
 # Clean up
 RUN \
