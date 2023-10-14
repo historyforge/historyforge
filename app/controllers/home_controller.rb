@@ -15,9 +15,8 @@ class HomeController < ApplicationController
   def saved_searches; end
 
   def search_people
-    @names = PgSearch.multisearch(params[:term]).limit(10).includes(:searchable)
-    @names = @names.all.map(&:searchable) if @names.present?
-    render json: @names.map { |p| { url: url_for(p), year: p.year, name: p.name, sex: p.sex, age: p.age, address: p.street_address, occupation: p.occupation } }
+    @names = Person.fuzzy_name_search(params[:term]).limit(10)
+    render json: @names.map { |p| { url: url_for(p), year: p.birth_year, name: p.name, sex: p.sex } }
   end
 
   def search_buildings

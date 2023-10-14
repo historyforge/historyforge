@@ -6,11 +6,11 @@ $(document).ready(function() {
           return response(json)
         })
       },
-      onSelect: function (event, term, item) {
+      onSelect: function (_event, _term, item) {
         document.location = item.data('url')
       },
       renderItem: function (item) {
-        return `<div class="autocomplete-suggestion" data-url="${item.url}"><div class="float-right">${item.year}</div>${item.name} (${item.age})<br>${item.address}</div>`
+        return `<div class="autocomplete-suggestion" data-url="${item.url}"><div class="float-right">Born ${item.year}</div>${item.name}</div>`
       }
     })
   })
