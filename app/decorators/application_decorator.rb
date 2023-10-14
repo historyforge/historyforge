@@ -19,7 +19,7 @@ class ApplicationDecorator
     object.send(name, *args) if object.respond_to?(name)
   end
 
-  def respond_to_missing?(name)
-    object.respond_to?(name) || false
+  def respond_to_missing?(name, *args)
+    object.respond_to?(name, *args) || false
   end
 end

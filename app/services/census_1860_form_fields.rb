@@ -2,7 +2,7 @@
 
 class Census1860FormFields < CensusFormFieldConfig
   scope_fields_for 1860
-  name_fields
+  pre_1880_name_fields
 
   divider 'Personal Description'
   input :age, as: :integer, min: 0, max: 130

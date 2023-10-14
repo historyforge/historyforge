@@ -55936,8 +55936,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     }
     if (layer) {
       loadWMS(map3, layer, layer.name);
+      window.localStorage.setItem("miniforge-layer", layer.id);
     }
-    window.localStorage.setItem("miniforge-layer", layer.id);
   }
   function addOpacity2(map3, opacity) {
     const currentLayers = map3.overlayMapTypes.getArray();

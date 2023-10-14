@@ -118,8 +118,8 @@ class Census1860Record < CensusRecord
   }.freeze
 
   IMAGES = {
-    first_name: '1910/names.png',
-    middle_name: '1910/names.png',
-    last_name: '1910/names.png'
+    first_name: '1850/names.png',
+    middle_name: '1850/names.png',
+    last_name: '1850/names.png'
   }.freeze
 end

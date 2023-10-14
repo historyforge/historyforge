@@ -36,7 +36,7 @@ gem 'paper_trail'
 gem 'pg'
 gem 'pg_search'
 gem 'pretender'
-gem 'puma', '~>5' # pegged at 5 because of capybara issue - try again when capybara updates
+gem 'puma'
 gem 'rails'
 gem 'ransack'
 gem 'recaptcha'

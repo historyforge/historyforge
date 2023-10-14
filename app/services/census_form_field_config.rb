@@ -84,6 +84,15 @@ class CensusFormFieldConfig
     input :name_suffix, facet: false
   end
 
+  def self.pre_1880_name_fields
+    divider 'Name'
+    input :first_name, facet: false
+    input :middle_name, facet: false
+    input :last_name, facet: false
+    input :name_prefix, facet: false
+    input :name_suffix, facet: false
+  end
+
   def self.additional_fields
     divider 'Additional'
     input :notes, as: :text, facet: false
