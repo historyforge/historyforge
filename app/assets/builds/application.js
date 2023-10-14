@@ -54565,6 +54565,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   };
   var WMSLoader = class {
     constructor(map3, layer, position) {
+      var _a;
       this.baseURL = layer.url.replace(/mosaics\/tile/, "mosaics/wms").replace("/{z}/{x}/{y}.png", "").split("?")[0] + "?";
       this.id = layer.id;
       this.map = map3;
@@ -54578,8 +54579,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         "SRS=EPSG:900913",
         "WIDTH=256",
         "HEIGHT=256",
-        "format=image/png",
-        "layers=image"
+        "FORMAT=image/png",
+        `LAYERS=${(_a = layer.layers_param) != null ? _a : "image"}`
       ].join("&");
     }
     getTileUrl(coord, zoom) {

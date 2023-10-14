@@ -83,8 +83,8 @@ class WMSLoader {
             "SRS=EPSG:900913",
             "WIDTH=256",
             "HEIGHT=256",
-            "format=image/png",
-            "layers=image"
+            "FORMAT=image/png",
+            `LAYERS=${layer.layers_param ?? "image"}`
         ].join("&");
     }
 
