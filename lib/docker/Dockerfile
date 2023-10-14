@@ -6,21 +6,13 @@ ENV RAILS_LOG_TO_STDOUT true
 ENV LANG en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
 
-# Curl lets us get node and yarn in the next step
-RUN apt-get update -qq && apt-get upgrade -y && apt-get install -y curl
-
-# Install node 16 LTS and yarn
-RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
-    curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
-    echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-
 # Install packages
 RUN apt-get update -qq && \
   apt-get install -y \
   automake build-essential patch zlib1g-dev liblzma-dev git \
   libssl-dev libreadline-dev \
   libyaml-dev libcurl4-openssl-dev libffi-dev \
-  libpq-dev nodejs yarn libvips locales postgresql-client
+  libpq-dev libvips locales postgresql-client
 
 # Clean up
 RUN \
