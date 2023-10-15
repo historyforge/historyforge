@@ -38,9 +38,9 @@ module Buildings
     def merge_building_data
       source.attributes.keys.each do |attr|
         next if attr =~ /created|updated|reviewed|address|name/
-
         create_or_append(attr)
       end
+      target.name = source.name if target.name.blank?
       create_or_append(:architect_ids)
     end
 
