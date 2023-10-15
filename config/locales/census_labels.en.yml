@@ -77,6 +77,7 @@ en:
         insane: 'Insane'
         institution_name: 'Institution Name'
         institution_type: 'Institution Type'
+        institutional_work: 'Institutional Work'
         just_married: 'Married during Census Year'
         language_spoken: 'Language Spoken'
         last_name: 'Last Name'
@@ -180,8 +181,8 @@ en:
         personal_value: 'Value of Personal Estate'
         father_foreign_born: 'Father Foreign Born'
         mother_foreign_born: 'Mother Foreign Born'
-        full_citizen: 'Full Citizen'
-        denied_citizen: 'Denied Citizen'
+        full_citizen: 'Male Citizen of Voting Age'
+        denied_citizen: 'Denied Right to Vote'
         birth_month: 'Born During Census Year'
         marriage_month: 'Married During Census Year'
       census1880_record:
