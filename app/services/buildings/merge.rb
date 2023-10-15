@@ -37,7 +37,7 @@ module Buildings
 
     def merge_building_data
       source.attributes.keys.each do |attr|
-        next if attr =~ /created|updated|reviewed|address/
+        next if attr =~ /created|updated|reviewed|address|name/
 
         create_or_append(attr)
       end
