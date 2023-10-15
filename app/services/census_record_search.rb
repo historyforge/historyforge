@@ -109,7 +109,7 @@ class CensusRecordSearch < SearchQueryBuilder
   end
 
   def default_fields
-    %w[census_scope name sex race age marital_status relation_to_head occupation pob street_address]
+    %w[census_scope street_address name relation_to_head sex race age pob occupation]
   end
 
   def all_fields
