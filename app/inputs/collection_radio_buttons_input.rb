@@ -41,14 +41,11 @@ class CollectionRadioButtonsInput < SimpleForm::Inputs::CollectionRadioButtonsIn
   end
 
   def option_label(item)
-    return item unless item.is_a?(String)
-    return 'blank' if item.blank?
-
     if options[:coded]
       code = item.downcase == item ? item.capitalize : item
       code = code.gsub('_', ' ')
       label = translated_option item, code: options[:coded]
-      return label if %[5000+ 10000+ P6].include?(code)
+      return label if %w[5000+ 10000+ P6].include?(code)
       return 'Blank - White' if code == 'W' && special_race_question?
 
       code == label ? label : "#{code} - #{label}"
