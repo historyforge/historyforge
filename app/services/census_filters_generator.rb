@@ -52,9 +52,10 @@ class CensusFiltersGenerator
   def coded_collection(field, options)
     options[:collection].map do |item|
       code = item.downcase == item ? item.capitalize : item
+      translated_code = field == :race && @klass.respond_to?(:translate_race_code) ? @klass.translate_race_code(code) : code
       attribute = options[:coded].is_a?(Symbol) ? options[:coded] : field
       label = Translator.option attribute, item
-      code == label ? label : ["#{code.gsub('_', ' ')} - #{label}", code]
+      translated_code == label ? label : ["#{translated_code.gsub('_', ' ')} - #{label}", code]
     end
   end
 

@@ -117,7 +117,7 @@ class Census1950Record < CensusRecord
   scope :in_census_order, -> { order :ward, :enum_dist, :page_number, :page_side, :line_number }
 
   define_enumeration :marital_status, %w[Nev Mar Wd D Sep]
-  define_enumeration :race, %w[W Neg Ind Chi Jap Fil]
+  define_enumeration :race, %w[W B In Ch Jp Fil]
   define_enumeration :name_suffix, %w[Jr Sr]
   define_enumeration :name_prefix, %w[Dr Mr Mrs]
   define_enumeration :activity_last_week, %w[Wk H U Ot Inmate]
@@ -135,6 +135,15 @@ class Census1950Record < CensusRecord
   define_enumeration :unearned_income_family, income_enumeration
 
   auto_upcase_attributes :occupation_code, :industry_code, :worker_class_code
+
+  def self.translate_race_code(code)
+    return 'Neg' if code == 'B'
+    return 'Ind' if code == 'In'
+    return 'Chi' if code == 'Ch'
+    return 'Jap' if code == 'Jp'
+
+    code
+  end
 
   def page_side
     nil

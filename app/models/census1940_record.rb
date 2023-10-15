@@ -122,7 +122,7 @@ class Census1940Record < CensusRecord
 
   define_enumeration :marital_status, %w[S M (M)7 Wd D]
   define_enumeration :worker_class, %w[PW GW E OA NP NW]
-  define_enumeration :race, %w[W Neg In Ch Jp Fil Hin Kor]
+  define_enumeration :race, %w[W B In Ch Jp Fil Hin Kor]
   define_enumeration :name_suffix, %w[Jr Sr]
   define_enumeration :name_prefix, %w[Dr Mr Mrs]
   define_enumeration :grade_completed, %w[0 1 2 3 4 5 6 7 8 H-1 H-2 H-3 H-4 C-1 C-2 C-3 C-4 C-5]
@@ -134,6 +134,12 @@ class Census1940Record < CensusRecord
 
   auto_upcase_attributes :occupation_code, :usual_occupation_code,
                          :usual_industry_code, :worker_class_code, :usual_worker_class_code
+
+  def self.translate_race_code(code)
+    return 'Neg' if code == 'B'
+
+    code
+  end
 
   def per_side
     40

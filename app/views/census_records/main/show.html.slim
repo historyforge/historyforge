@@ -42,7 +42,8 @@ div.mb-3
           th Year
           th County
           th Place
-          th Ward
+          - if @record.ward.present?
+            th Ward
           - if @record.has_enum_dist?
             th Enum Dist
           th Page
@@ -55,7 +56,8 @@ div.mb-3
           td= controller.year
           td= @record.county
           td= @record.city
-          td= @record.ward
+          - if @record.ward.present?
+            td= @record.ward
           - if @record.has_enum_dist?
             td= @record.enum_dist
           td= "#{@record.page_number}#{@record.page_side}"

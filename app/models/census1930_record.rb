@@ -118,11 +118,17 @@ class Census1930Record < CensusRecord
 
   define_enumeration :worker_class, %w[E W OA NP]
   define_enumeration :war_fought, %w[WW Sp Civ Phil Box Mex]
-  define_enumeration :race, %w[W Neg Mex In Ch Jp Fil Hin Kor]
+  define_enumeration :race, %w[W B Mex In Ch Jp Fil Hin Kor]
   define_enumeration :name_suffix, %w[Jr Sr]
   define_enumeration :name_prefix, %w[Dr Mr Mrs]
 
   auto_upcase_attributes :occupation_code
+
+  def self.translate_race_code(code)
+    return 'Neg' if code == 'B'
+
+    code
+  end
 
   def coded_occupation_name
     coded_occupation&.name_with_code
