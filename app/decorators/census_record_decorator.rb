@@ -37,7 +37,7 @@ class CensusRecordDecorator < ApplicationDecorator
      seeking_work had_job had_unearned_income veteran_dead soc_sec deductions
      newlyweds item_20_entries veteran_other veteran_ww1 veteran_ww2 finished_grade
      same_house_1949 on_farm_1949 same_county_1949 employed_absent worked_last_week
-     multi_marriage].each do |method|
+     multi_marriage full_citizen denied_citizen].each do |method|
     define_method method do
       object.send(method) && 'Yes' || nil
     end

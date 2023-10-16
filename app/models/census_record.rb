@@ -46,6 +46,10 @@ class CensusRecord < ApplicationRecord
   scope :unhoused, -> { where(building_id: nil) }
   scope :unmatched, -> { where(person_id: nil) }
 
+  def self.ransackable_attributes(_auth_object = nil)
+    super + %w[street_address]
+  end
+
   class_attribute :year
 
   def self.for_year(year)
