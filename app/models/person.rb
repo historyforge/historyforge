@@ -38,7 +38,7 @@ class Person < ApplicationRecord
   attr_accessor :match_score
 
   define_enumeration :sex, %w[M F]
-  define_enumeration :race, %w[W B M Mex Neg Ind Chi Jap Fil Hin Kor]
+  define_enumeration :race, %w[W B Mu Mex In Ch Jp Fil Hin Kor]
 
   CensusYears.each do |year|
     has_many :"census#{year}_records", dependent: :nullify, class_name: "Census#{year}Record"

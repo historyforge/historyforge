@@ -18,8 +18,8 @@ class AttributeBuilder
     ).to_json
   end
 
-  def self.enumeration(json, klass, key, cols=2)
-    AttributeBuilder::Enumeration.new(json:, key:, klass:, columns: cols).to_json
+  def self.enumeration(json, klass, key, cols = 2, **extras)
+    AttributeBuilder::Enumeration.new(json:, key:, klass:, columns: cols, extras:).to_json
   end
 
   def self.time(json, key, *args)
@@ -44,9 +44,16 @@ class AttributeBuilder::BaseAttribute
   attr_accessor :key, :json, :type, :klass
 
   def initialize(key: nil, json: nil, type: nil, klass: nil, choices: nil, columns: nil, extras: nil)
-    @key, @json, @type, @klass, @choices, @columns, @extras = key, json, type, klass, choices, columns, extras
+    @key = key
+    @json = json
+    @type = type
+    @klass = klass
+    @choices = choices
+    @columns = columns
+    @extras = extras
     @klass = @extras.delete(:klass) if @klass.nil? && @extras&.key?(:klass)
     @sortable = @extras&.delete(:sortable)
+    @choices = @extras&.delete(:choices)
   end
 
   def to_json(*_args)
@@ -118,7 +125,7 @@ class AttributeBuilder::Enumeration < AttributeBuilder::BaseAttribute
   end
 
   def choices
-    klass.send("#{key}_choices").map do |item|
+    (@choices || klass.send("#{key}_choices")).map do |item|
       [I18n.t("census_codes.#{key}.#{item.downcase}", default: item), item]
     end.concat(key == :page_side ? [] : [['Left blank', 'blank'], %w[Unknown unknown]])
   end
