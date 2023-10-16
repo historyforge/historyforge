@@ -16,11 +16,18 @@
         <% @stats.recent_census_summaries.each do |row| %>
         <tr>
           <th><%= row[:year] %></th>
-          <th><%= number_with_delimiter row[:total] %></th>
-          <th><%= number_with_delimiter row[:reviewed] %></th>
+          <td><%= number_with_delimiter row[:total] %></td>
+          <td><%= number_with_delimiter row[:reviewed] %></td>
         </tr>
         <% end %>
       </tbody>
+      <tfoot>
+      <tr>
+        <th>Total</th>
+        <td><%= number_with_delimiter @stats.recent_census_summaries.map { |row| row[:total] }.sum %></td>
+        <td><%= number_with_delimiter @stats.recent_census_summaries.map { |row| row[:reviewed] }.sum %></td>
+      </tr>
+      </tfoot>
     </table>
   </div>
   <div class="col-sm-6">
@@ -42,6 +49,13 @@
         </tr>
         <% end %>
       </tbody>
+      <tfoot>
+      <tr>
+        <th>Total</th>
+        <td><%= number_with_delimiter @stats.census_summaries.map { |row| row[:total] }.sum %></td>
+        <td><%= number_with_delimiter @stats.census_summaries.map { |row| row[:reviewed] }.sum %></td>
+      </tr>
+      </tfoot>
     </table>
   </div>
 </div>
