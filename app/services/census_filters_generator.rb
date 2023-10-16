@@ -78,7 +78,7 @@ class CensusFiltersGenerator
       AttributeBuilder.number(json, :ward, klass:)
       AttributeBuilder.number json, :enum_dist, klass:
     end
-    if klass.year == 1950
+    if klass.year == 1950 || klass.year < 1870
       AttributeBuilder.text(json, :institution_name, klass:)
       AttributeBuilder.text json, :institution_type, klass:
     end
