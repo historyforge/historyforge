@@ -18,7 +18,6 @@
 #  institution_name     :string
 #  institution_type     :string
 #  state                :string
-#  enum_dist            :string           not null
 #  ward                 :integer
 #  street_house_number  :string
 #  street_prefix        :string

@@ -11,6 +11,7 @@
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
 #  locality_id   :bigint
+#  layers_param  :string
 #
 # Indexes
 #

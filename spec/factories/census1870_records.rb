@@ -16,7 +16,6 @@
 #  city                :string
 #  post_office         :string
 #  state               :string
-#  enum_dist           :string           not null
 #  ward                :integer
 #  street_house_number :string
 #  street_prefix       :string

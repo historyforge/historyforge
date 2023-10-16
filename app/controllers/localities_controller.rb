@@ -5,13 +5,9 @@ class LocalitiesController < ApplicationController
 
   def index
     @localities = Locality.all
-    ActiveRecord::Precounter.new(@localities).precount(:census1880_records)
-    ActiveRecord::Precounter.new(@localities).precount(:census1900_records)
-    ActiveRecord::Precounter.new(@localities).precount(:census1910_records)
-    ActiveRecord::Precounter.new(@localities).precount(:census1920_records)
-    ActiveRecord::Precounter.new(@localities).precount(:census1930_records)
-    ActiveRecord::Precounter.new(@localities).precount(:census1940_records)
-    ActiveRecord::Precounter.new(@localities).precount(:census1950_records)
+    CensusYears.each do |year|
+      ActiveRecord::Precounter.new(@localities).precount(:"census#{year}_records")
+    end
   end
 
   def new

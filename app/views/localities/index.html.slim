@@ -9,25 +9,17 @@
     thead
       tr
         th Name
-        th 1880
-        th 1900
-        th 1910
-        th 1920
-        th 1930
-        th 1940
-        th 1950
+        - CensusYears.each do |year|
+          th= year
+        th Total
         th
     tbody
       - @localities.each do |record|
         tr.draggable
           td= record.name
-          td= number_with_delimiter record.census1880_records_count
-          td= number_with_delimiter record.census1900_records_count
-          td= number_with_delimiter record.census1910_records_count
-          td= number_with_delimiter record.census1920_records_count
-          td= number_with_delimiter record.census1930_records_count
-          td= number_with_delimiter record.census1940_records_count
-          td= number_with_delimiter record.census1950_records_count
+          - CensusYears.each do |year|
+            td= number_with_delimiter record.send(:"census#{year}_records_count")
+          td= number_with_delimiter record.total_count
           td style="text-align:right;white-space:nowrap"
             = link_to 'Edit', [:edit, record], class: 'btn btn-xs btn-light'
 

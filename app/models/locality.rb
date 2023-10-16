@@ -30,4 +30,8 @@ class Locality < ApplicationRecord
   def self.select_options
     all.map { |item| [item.name, item.id] }
   end
+
+  def total_count
+    CensusYears.map { |year| send(:"census#{year}_records_count") }.sum
+  end
 end

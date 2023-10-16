@@ -93,6 +93,7 @@
 #  ward                    :integer
 #  income_plus             :boolean
 #  wages_or_salary         :string
+#  institutional_work      :boolean
 #
 # Indexes
 #
