@@ -22,4 +22,9 @@
           td= number_with_delimiter record.total_count
           td style="text-align:right;white-space:nowrap"
             = link_to 'Edit', [:edit, record], class: 'btn btn-xs btn-light'
-
+      tr
+        th Total
+        - CensusYears.each do |year|
+          td= number_with_delimiter @localities.map { |locality| locality.send(:"census#{year}_records_count") }.sum
+        td= number_with_delimiter @localities.map { |locality| locality.total_count }.sum
+        td
