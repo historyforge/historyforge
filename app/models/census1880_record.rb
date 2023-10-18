@@ -88,7 +88,14 @@ class Census1880Record < CensusRecord
   scope :in_census_order, -> { order :ward, :enum_dist, :page_number, :page_side, :line_number }
 
   define_enumeration :page_side, %w[A B C D], strict: true
-  define_enumeration :race, %w[W B Ch In]
+  define_enumeration :race, %w[W B Mu Ch In]
+
+  def self.translate_race_code(code)
+    return 'C' if code == 'Ch'
+    return 'I' if code == 'In'
+
+    code
+  end
 
   COLUMNS = {
     street_house_number: '2nd Column on the Left',

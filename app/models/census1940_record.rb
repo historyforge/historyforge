@@ -138,6 +138,7 @@ class Census1940Record < CensusRecord
 
   def self.translate_race_code(code)
     return 'Neg' if code == 'B'
+    return 'Chi' if code == 'Ch'
 
     code
   end

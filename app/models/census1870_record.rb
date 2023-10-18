@@ -71,11 +71,17 @@ class Census1870Record < CensusRecord
   self.table_name = 'census_1870_records'
   self.year = 1870
 
-  define_enumeration :race, %w[W B]
-
   belongs_to :locality, inverse_of: :census1870_records
   validates :post_office, presence: true
   scope :in_census_order, -> { order :ward, :page_number, :page_side, :line_number }
+
+  define_enumeration :race, %w[W B Mu]
+
+  def self.translate_race_code(code)
+    return 'M' if code == 'Mu'
+
+    code
+  end
 
   def page_side?
     false
