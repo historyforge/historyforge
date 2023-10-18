@@ -32,8 +32,8 @@ module PersonNames
     end
 
     def clean_name
-      [name_prefix, first_name, middle_name, last_name, name_suffix].each do |attribute|
-        self[attribute].gsub(/\W/, ' ').squish if self[attribute]
+      %i[name_prefix first_name middle_name last_name name_suffix].each do |attribute|
+        self[attribute] = self[attribute].gsub(/\W/, '').squish if self[attribute]
       end
     end
   end

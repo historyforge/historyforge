@@ -18,8 +18,8 @@ class AttributeBuilder
     ).to_json
   end
 
-  def self.enumeration(json, klass, key, cols = 2, **extras)
-    AttributeBuilder::Enumeration.new(json:, key:, klass:, columns: cols, extras:).to_json
+  def self.enumeration(json, klass, key, cols = 2, choices: nil)
+    AttributeBuilder::Enumeration.new(json:, key:, klass:, columns: cols, choices:).to_json
   end
 
   def self.time(json, key, *args)
@@ -53,7 +53,6 @@ class AttributeBuilder::BaseAttribute
     @extras = extras
     @klass = @extras.delete(:klass) if @klass.nil? && @extras&.key?(:klass)
     @sortable = @extras&.delete(:sortable)
-    @choices = @extras&.delete(:choices)
   end
 
   def to_json(*_args)
