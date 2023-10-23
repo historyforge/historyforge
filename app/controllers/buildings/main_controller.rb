@@ -36,7 +36,7 @@ class Buildings::MainController < ApplicationController
   end
 
   def autocomplete
-    @buildings = Building.ransack(street_address_cont: params[:term]).result.limit(5).by_street_address
+    @buildings = Building.joins(:addresses).ransack(street_address_cont: params[:term]).result.limit(5).by_street_address
     render json: @buildings.map { |building|
       {
         id: building.id,
