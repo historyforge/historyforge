@@ -3,6 +3,16 @@
 # Provides scopes and methods related to person names.
 module PersonNames
   extend ActiveSupport::Concern
+
+  module NameCleaning
+    refine String do
+      def clean
+        gsub(/\.(\w)/) { ". #{$1}" }.gsub(/\.\Z/, '').squish
+      end
+    end
+  end
+  using NameCleaning
+
   included do
     before_validation :clean_name
     before_save :set_searchable_name
@@ -33,7 +43,7 @@ module PersonNames
 
     def clean_name
       %i[name_prefix first_name middle_name last_name name_suffix].each do |attribute|
-        self[attribute] = self[attribute].gsub(/\W/, '').squish if self[attribute]
+        self[attribute] = self[attribute].clean if self[attribute]
       end
     end
   end
