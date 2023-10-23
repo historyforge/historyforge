@@ -7,7 +7,7 @@ module PersonNames
   module NameCleaning
     refine String do
       def clean
-        gsub(/\.(\w)/) { ". #{$1}" }.gsub(/\.\Z/, '').squish
+        gsub(/\./, ' ').squish
       end
     end
   end
