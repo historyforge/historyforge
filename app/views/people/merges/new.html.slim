@@ -33,15 +33,17 @@ p.lead You propose to merge person record ##{@source.id} #{@source.name} into pe
               tr
                 th Age in #{row.year - 1}
                 td= row.age
-              tr
-                th Marital Status
-                td= row.marital_status
+              - if row.respond_to?(:marital_status)
+                tr
+                  th Marital Status
+                  td= row.marital_status
               tr
                 th Occupation
                 td= row.occupation
-              tr
-                th Relation to Head
-                td= row.relation_to_head
+              - if row.respond_to?(:relation_to_head)
+                tr
+                  th Relation to Head
+                  td= row.relation_to_head
               tr
                 th Link
                 td= link_to 'View', row
@@ -73,15 +75,17 @@ p.lead You propose to merge person record ##{@source.id} #{@source.name} into pe
               tr
                 th Age in #{row.year - 1}
                 td= row.age
-              tr
-                th Marital Status
-                td= row.marital_status
+              - if row.respond_to?(:marital_status)
+                tr
+                  th Marital Status
+                  td= row.marital_status
               tr
                 th Occupation
                 td= row.occupation
-              tr
-                th Relation to Head
-                td= row.relation_to_head
+              - if row.respond_to?(:relation_to_head)
+                tr
+                  th Relation to Head
+                  td= row.relation_to_head
               tr
                 th Link
                 td= link_to 'View', row
