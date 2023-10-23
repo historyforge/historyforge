@@ -4,20 +4,20 @@ module CensusRecords
   class BulkUpdatesController < ApplicationController
     def index
       authorize! :bulk_update, BulkUpdate
-      @bulk_updates = BulkUpdate.where(year: year).page(params[:page] || 1).order('updated_at desc')
+      @bulk_updates = BulkUpdate.where(year:).page(params[:page] || 1).order('updated_at desc')
     end
 
     def new
       authorize! :bulk_update, BulkUpdate
-      @bulk_update = BulkUpdate.new user: current_user, year: year
+      @bulk_update = BulkUpdate.new user: current_user, year:
     end
 
     def create
       authorize! :bulk_update, BulkUpdate
-      @bulk_update = BulkUpdate.new user: current_user, year: year
+      @bulk_update = BulkUpdate.new user: current_user, year:
       @bulk_update.attributes = params.require(:bulk_update).permit(:field)
       if @bulk_update.save
-        redirect_to "/census/#{year}/bulk/#{@bulk_update.id}/edit" #action: :edit, id: @bulk_update.id
+        redirect_to "/census/#{year}/bulk/#{@bulk_update.id}/edit"
       else
         render action: :new
       end

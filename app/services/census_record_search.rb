@@ -9,7 +9,7 @@ class CensusRecordSearch < SearchQueryBuilder
   attr_accessor :page, :s, :f, :g, :user, :sort, :from, :to, :scope, :entity_class, :form_fields_config
 
   def census_scope_search?
-    @s[:enum_dist_eq].present? && @s[:page_number_eq].present? && (entity_class == Census1950Record || @s[:page_side_eq].present?)
+    (@s[:enum_dist_eq].present? || entity_class.year < 1880) && @s[:page_number_eq].present? && ([1850, 1860, 1870, 1950].include?(entity_class.year) || @s[:page_side_eq].present?)
   end
 
   def results
