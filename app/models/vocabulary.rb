@@ -43,6 +43,9 @@ class Vocabulary < ApplicationRecord
 
   DICTIONARY = {
     language: {
+      1850 => [],
+      1860 => [],
+      1870 => [],
       1880 => [],
       1900 => %w[language_spoken],
       1910 => %w[language_spoken],
@@ -52,6 +55,9 @@ class Vocabulary < ApplicationRecord
       1950 => %w[]
     },
     pob: {
+      1850 => %w[pob],
+      1860 => %w[pob],
+      1870 => %w[pob],
       1880 => %w[pob pob_father pob_mother],
       1900 => %w[pob pob_father pob_mother],
       1910 => %w[pob pob_father pob_mother],
@@ -61,6 +67,9 @@ class Vocabulary < ApplicationRecord
       1950 => %w[pob pob_father pob_mother]
     },
     relation_to_head: {
+      1850 => [],
+      1860 => [],
+      1870 => [],
       1880 => %w[relation_to_head],
       1900 => %w[relation_to_head],
       1910 => %w[relation_to_head],
