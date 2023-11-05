@@ -58,6 +58,7 @@
 #  updated_at          :datetime         not null
 #  birth_month         :integer
 #  marriage_month      :integer
+#  institution         :string
 #
 # Indexes
 #

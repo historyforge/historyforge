@@ -58,6 +58,7 @@
 #  updated_at          :datetime         not null
 #  birth_month         :integer
 #  marriage_month      :integer
+#  institution         :string
 #
 # Indexes
 #
@@ -94,10 +95,6 @@ class Census1870Record < CensusRecord
   end
 
   COLUMNS = {
-    street_house_number: '2nd Column on the Left',
-    street_prefix: '1st Column on the Left',
-    street_name: '1st Column on the Left',
-    street_suffix: '1st Column on the Left',
     dwelling_number: 1,
     family_id: 2,
     last_name: 3,
@@ -115,8 +112,8 @@ class Census1870Record < CensusRecord
     pob: 10,
     father_foreign_born: 11,
     mother_foreign_born: 12,
-    just_born: 13,
-    just_married: 14,
+    birth_month: 13,
+    marriage_month: 14,
     attended_school: 15,
     cannot_read: 16,
     cannot_write: 17,

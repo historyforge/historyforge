@@ -57,7 +57,7 @@ class CensusFormHint
 
   def unknown
     return if year >= 1940
-    return if field =~ /name|head|house|page|line_|apartment|dwelling|family|occupation|code/
+    return if field =~ /name|head|house|page|line_|apartment|dwelling|family|occupation|code|post_office|misfortune|person_id/
     return unless %i[integer radio_buttons radio_buttons_other].include?(type) || type.blank?
 
     "<br /><hr />The scribble for &ldquo;Unknown&rdquo; often looks like this:<br />#{template.image_tag('unknown-scribble.png')}"

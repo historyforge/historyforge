@@ -89,10 +89,6 @@ class Census1850Record < CensusRecord
   end
 
   COLUMNS = {
-    street_house_number: '2nd Column on the Left',
-    street_prefix: '1st Column on the Left',
-    street_name: '1st Column on the Left',
-    street_suffix: '1st Column on the Left',
     dwelling_number: 1,
     family_id: 2,
     last_name: 3,
@@ -119,6 +115,7 @@ class Census1850Record < CensusRecord
   }.freeze
 
   IMAGES = {
+    page_number: '1850/page.png',
     first_name: '1850/names.png',
     middle_name: '1850/names.png',
     last_name: '1850/names.png'

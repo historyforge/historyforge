@@ -47,7 +47,7 @@ class CensusFormFieldConfig
       input :line_number, as: :integer, min: 0, max: 100, facet: false
       input :county, hint: false, facet: false
       input :city, input_html: { id: 'city' }, hint: false, facet: false
-      input :post_office, hint: false, facet: false if [1860, 1870].include?(year)
+      input :post_office, facet: false if [1860, 1870].include?(year)
       input :ward, as: :integer, min: 0, max: 10_000, facet: false if year > 1880 && year < 1950
       input :enum_dist, facet: false if year >= 1880
       if year == 1950
@@ -71,6 +71,8 @@ class CensusFormFieldConfig
       if year < 1870
         input :institution_name, as: :string, facet: false
         input :institution_type, as: :string, facet: false
+      elsif year == 1870
+        input :institution, as: :string, facet: false
       end
     end
   end

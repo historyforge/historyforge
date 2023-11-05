@@ -92,10 +92,6 @@ class Census1860Record < CensusRecord
   end
 
   COLUMNS = {
-    street_house_number: '2nd Column on the Left',
-    street_prefix: '1st Column on the Left',
-    street_name: '1st Column on the Left',
-    street_suffix: '1st Column on the Left',
     dwelling_number: 1,
     family_id: 2,
     last_name: 3,

@@ -44,6 +44,8 @@ div.mb-3
           th Place
           - if @record.ward.present?
             th Ward
+          - if @record.try(:post_office)
+            th Post Office
           - if @record.has_enum_dist?
             th Enum Dist
           th Page
@@ -58,6 +60,8 @@ div.mb-3
           td= @record.city
           - if @record.ward.present?
             td= @record.ward
+          - if @record.try(:post_office)
+            td= @record.post_office
           - if @record.has_enum_dist?
             td= @record.enum_dist
           td= "#{@record.page_number}#{@record.page_side}"
@@ -92,15 +96,20 @@ div.mb-3
               .form-group.row
                 .col-6.col-form-label Locality
                 .col-6= @record.locality
-            - if controller.year === 1950
+            - if controller.year == 1870
               li.list-group-item
                 .form-group.row
-                  .col-6.col-form-label Institution Type
-                  .col-6= @record.institution_type || 'blank'
+                  .col-6.col-form-label Institution
+                  .col-6= @record.institution || 'blank'
+            - if [1850, 1860, 1950].include?(controller.year)
               li.list-group-item
                 .form-group.row
                   .col-6.col-form-label Institution Name
                   .col-6= @record.institution_name || 'blank'
+              li.list-group-item
+                .form-group.row
+                  .col-6.col-form-label Institution Type
+                  .col-6= @record.institution_type || 'blank'
 
         = CensusFormGenerator.generate form, census_form_renderer
 

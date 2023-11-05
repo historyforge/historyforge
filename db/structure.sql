@@ -748,7 +748,8 @@ CREATE TABLE public.census_1870_records (
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
     birth_month integer,
-    marriage_month integer
+    marriage_month integer,
+    institution character varying
 );
 
 
@@ -5016,6 +5017,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20231015223752'),
 ('20231015225421'),
 ('20231016225407'),
+('20231105155617'),
 ('4'),
 ('8'),
 ('9');

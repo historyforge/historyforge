@@ -59,7 +59,7 @@ en:
         farm_schedule: 'Farm Schedule No.'
         first_marriage_age: 'Age at First Marriage'
         first_name: 'First Name'
-        foreign_born: 'This Person is Foreign Born.'
+        foreign_born: 'Foreign Born'
         full_time_weeks: 'Weeks Worked in 1939'
         grade_completed: 'Highest Grade of School Completed'
         had_job: 'Employed but Temporarily Absent'
@@ -166,15 +166,11 @@ en:
 
       census1850_record:
         page_number: 'Page'
-        home_value: 'Value of Real Estate Owned'
-        just_married: 'Married within the Year'
-        attended_school: 'At School within the Year'
+        home_value: 'Value of Real Estate'
       census1860_record:
         page_number: 'Page'
         home_value: 'Value of Real Estate'
         personal_value: 'Value of Personal Estate'
-        just_married: 'Married within the Year'
-        attended_school: 'At School within the Year'
       census1870_record:
         page_number: 'Page'
         home_value: 'Value of Real Estate'
@@ -185,8 +181,10 @@ en:
         denied_citizen: 'Denied Right to Vote'
         birth_month: 'Born During Census Year'
         marriage_month: 'Married During Census Year'
+        institution: 'Institution'
       census1880_record:
         page_number: 'Page'
+        birth_month: 'Born During Census Year'
       census1900_record:
       census1910_record:
       census1920_record:

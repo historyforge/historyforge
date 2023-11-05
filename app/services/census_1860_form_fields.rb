@@ -25,8 +25,8 @@ class Census1860FormFields < CensusFormFieldConfig
   input :idiotic, as: :boolean
   input :pauper, as: :boolean
   input :convict, as: :boolean
-  input :nature_of_misfortune, hint: false
-  input :year_of_misfortune, hint: false
+  input :nature_of_misfortune
+  input :year_of_misfortune
 
   additional_fields
 end
