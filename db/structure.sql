@@ -836,7 +836,8 @@ CREATE TABLE public.census_1880_records (
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
     enum_dist character varying NOT NULL,
-    ward integer
+    ward integer,
+    institution character varying
 );
 
 
@@ -931,7 +932,8 @@ CREATE TABLE public.census_1900_records (
     locality_id bigint,
     histid uuid,
     enum_dist character varying NOT NULL,
-    ward integer
+    ward integer,
+    institution character varying
 );
 
 
@@ -1031,7 +1033,8 @@ CREATE TABLE public.census_1910_records (
     locality_id bigint,
     histid uuid,
     enum_dist character varying NOT NULL,
-    ward integer
+    ward integer,
+    institution character varying
 );
 
 
@@ -1122,7 +1125,8 @@ CREATE TABLE public.census_1920_records (
     locality_id bigint,
     histid uuid,
     enum_dist character varying NOT NULL,
-    ward integer
+    ward integer,
+    institution character varying
 );
 
 
@@ -1230,7 +1234,8 @@ CREATE TABLE public.census_1930_records (
     locality_id bigint,
     histid uuid,
     enum_dist character varying NOT NULL,
-    ward integer
+    ward integer,
+    institution character varying
 );
 
 
@@ -1349,7 +1354,8 @@ CREATE TABLE public.census_1940_records (
     ward integer,
     income_plus boolean,
     wages_or_salary character varying,
-    institutional_work boolean
+    institutional_work boolean,
+    institution character varying
 );
 
 
@@ -5018,6 +5024,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20231015225421'),
 ('20231016225407'),
 ('20231105155617'),
+('20231105171039'),
 ('4'),
 ('8'),
 ('9');

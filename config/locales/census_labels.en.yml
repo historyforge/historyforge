@@ -75,6 +75,7 @@ en:
         industry: 'Industry'
         industry1930_code_id: 'Industry Code (1930)'
         insane: 'Insane'
+        institution: 'Institution'
         institution_name: 'Institution Name'
         institution_type: 'Institution Type'
         institutional_work: 'Institutional Work'
@@ -181,7 +182,6 @@ en:
         denied_citizen: 'Denied Right to Vote'
         birth_month: 'Born During Census Year'
         marriage_month: 'Married During Census Year'
-        institution: 'Institution'
       census1880_record:
         page_number: 'Page'
         birth_month: 'Born During Census Year'

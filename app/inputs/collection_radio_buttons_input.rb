@@ -79,6 +79,6 @@ class CollectionRadioButtonsInput < SimpleForm::Inputs::CollectionRadioButtonsIn
   end
 
   def special_race_question?
-    attribute_name == :race && @builder.object.respond_to?(:year) && [1850, 1860, 1870].include?(@builder.object.year)
+    attribute_name == :race && @builder.object.respond_to?(:year) && [1850, 1860].include?(@builder.object.year)
   end
 end

@@ -54,7 +54,7 @@ class Building < ApplicationRecord
   include Flaggable
   include Versioning
 
-  self.ignored_columns = %i[city state postal_code]
+  self.ignored_columns = %i[city state postal_code description]
 
   has_rich_text :description
 

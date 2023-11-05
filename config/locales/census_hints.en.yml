@@ -137,6 +137,7 @@ en:
         idiotic: 'Check the box if the field contains a slash (/). Enumerators used this mark to indicate yes.'
         full_citizen: 'Check the box if the field contains a slash (/). Enumerators used this mark to indicate yes.'
         denied_citizen: 'Check the box if the field contains a slash (/). Enumerators used this mark to indicate yes.'
+
       census1880_record:
         boolean: 'Check the box if the field contains a slash (/). Enumerators used this mark to indicate yes. Enter any additional information in the notes.'
         page_number: 'The page number is in the upper left corner of the page.'
@@ -150,11 +151,13 @@ en:
         sick: 'Enter what you see on the census. If the field is blank on the census, leave it blank on HistoryForge. If the enumerator made a mark, enter X. For difficult handwriting, a list of possible Sicknesses on Day of Enumeration is available on the Transcriber’s Corner.'
         relation_to_head: 'Enter what you see on the census. If this field is blank but the person is the Head (the first person with a new dwelling and/or family number), enter the word Head. If the field is blank and the person is not the Head, enter the word Blank so you can save the record. Note: This field has a controlled vocabulary. If, as you enter the term from the census, it does not appear from the list of controlled vocabulary, enter an X in the field and enter “Relation to head is ____” in the notes field.'
         occupation: 'Enter what you see on the census. If the field is blank on the census, leave the default “None.”'
+        institution: 'The Institution Name is entered in the line above the names of the institution’s inmates. Enter what you see on the census. If the field is blank on the census, leave it blank on HistoryForge.'
 
       census1900_record:
         age_months: 'Enter what you see on the census. If the field is blank, leave blank. If the answer is Un (Unknown) enter 999. A child that is less than one year of age will be listed by their age in months on the census i.e., 3/12 or 11/12. If the age is entered this way on the census, enter the years in the Age field and the months in the Age (months) field on HistoryForge.'
         age: 'Enter what you see on the census. If the field is blank, leave blank. If the answer is Un (Unknown) enter 999. A child that is less than one year of age will be listed by their age in months on the census i.e., 3/12 or 11/12. If the age is entered this way on the census, enter the years in the Age field and the months in the Age (months) field on HistoryForge.'
         industry: 'There is no industry field on this census, but sometimes it was supplied by the enumerator after the profession.  If that is the case, enter it here.'
+        institution: 'The Institution Name is in the upper right side of the sheet under Enumeration District. Enter the information into the corresponding field on HistoryForge.'
         occupation: 'Enter what you see on the census. If the field is blank on the census, leave the default “None.”'
 
       census1910_record:
@@ -163,6 +166,7 @@ en:
         blind: 'Select the option that corresponds to the answer on the census. *Note: Columns 30-32 will sometime include a series of annotations rather than responses to the questions themselves (see image below). These annotations were the key-punch symbols used for post-enumeration processing of the census. If this is the case, do not check the boxes and do not enter this information into the Notes field.'
         deaf_dumb: 'Select the option that corresponds to the answer on the census. *Note: Columns 30-32 will sometime include a series of annotations rather than responses to the questions themselves (see image below). These annotations were the key-punch symbols used for post-enumeration processing of the census. If this is the case, do not check the boxes and do not enter this information into the Notes field.'
         civil_war_vet: 'Select the option that corresponds to the answer on the census. *Note: Columns 30-32 will sometime include a series of annotations rather than responses to the questions themselves (see image below). These annotations were the key-punch symbols used for post-enumeration processing of the census. If this is the case, do not check the boxes and do not enter this information into the Notes field.'
+        institution: 'The Institution Name is in the upper left side of the sheet under Township or other division. Enter the information into the corresponding field on HistoryForge.'
         language_spoken: 'Enter what you see on the census. If the enumerator wrote un (see below) or don’t know enter Unknown. Note: This field has a controlled vocabulary. If, as you enter the term from the census, the term does not appear from the list of controlled vocabulary, enter an X in the field and enter “Language spoken is ____” in the notes field.'
 
       census1920_record:
@@ -170,6 +174,7 @@ en:
         age_months: 'Enter what you see on the census. If the field is blank, leave blank. If the answer is Un (Unknown) enter 999. A child that is less than five years of age will be listed by their age in months on the census i.e., 1 and 3/12. If the age is entered this way on the census, enter the years in the Age field and the months in the Age (months) field on HistoryForge.'
         employment_code: 'There is no official column for occupation codes on the census, these 3-digit numbers which range from 000-999 were added in the right margin or sometimes under farm number, please enter the numbers here. If you are unsure of the code, check the resource for verifying the occupation code on the Transcriber’s Corner.'
         farm_schedule: 'If this column contains a 1- or 2-digit number enter it here.  If it contains a 3-digit number enter it under occupation code.'
+        institution: 'The Institution Name is in the upper left side of the sheet under Township or other division. Enter the information into the corresponding field on HistoryForge.'
 
       census1930_record:
         ward: 'The ward is on the upper left side of the sheet. Enter the ward as a number (2). If there is no ward on the census, leave the field blank on HistoryForge.'
@@ -179,6 +184,7 @@ en:
         occupation_code: 'This is a four-digit code, the first two digits represent the occupation, and the second two represent the industry.  Primarily numerical, this code may contain the letters “V” or “X” which should be entered as capital letters. If you are unsure of the code, check the resource for verifying the occupation code on the Transcriber’s Corner.'
         has_radio: 'Check the box if the response is yes or R.'
         home_value: 'Enter what you see on the census. If the field is blank on the census, leave it blank on HistoryForge. Note: This information should only be entered once for the family/household. If the answer is Un (Unknown), enter -1.'
+        institution: 'The Institution Name is in the middle of the top of the sheet under "Population Schedule." Enter the information into the corresponding field on HistoryForge.'
 
       census1940_record:
         family_id: 'Enter what you see on the census.  If the Household number is not listed on the first line of the sheet, it can be found listed with the head of that household on the previous sheet. Note: Household numbers are generally sequential.  If it is hard to read the number, check the numbers above and below for a pattern.'
@@ -190,6 +196,7 @@ en:
         wages_or_salary: 'Select the option that corresponds to the answer on the census. For dollar amounts other than 5,000+ select “Other” and enter the actual amount (numbers only).'
         mother_tongue: 'Enter what you see on the census. If the enumerator wrote un (see below) or don’t know enter Unknown. Note: This field has a controlled vocabulary. If, as you enter the term from the census, the term does not appear from the list of controlled vocabulary, enter an X in the field and enter “Mother Tongue is ____” in the notes field.'
         home_value: 'Enter what you see on the census. If the field is blank on the census, leave it blank on HistoryForge. Note: This information should only be entered once for the family/household. If the answer is Un (Unknown), enter -1.'
+        institution: 'The Institution Name is in the upper left side of the sheet under Unincorporated place. Enter the information into the corresponding field on HistoryForge.'
 
       census1950_record:
         apartment_number: 'The apartment number or designation is written on the line below the house number in the same field on the census. Enter only when applicable. If there is no apartment information on the census, leave the field blank on HistoryForge.'

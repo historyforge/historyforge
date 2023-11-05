@@ -82,7 +82,7 @@ class CensusFiltersGenerator
       AttributeBuilder.text(json, :institution_name, klass:)
       AttributeBuilder.text json, :institution_type, klass:
     end
-    AttributeBuilder.text(json, :institution, klass:) if klass.year == 1870
+    AttributeBuilder.text(json, :institution, klass:) if klass.year >= 1870 && klass.year <= 1940
     AttributeBuilder.text(json, :street_address, klass:)
     AttributeBuilder.text   json, :dwelling_number, klass: klass unless klass == Census1940Record
     AttributeBuilder.text   json, :family_id, klass:

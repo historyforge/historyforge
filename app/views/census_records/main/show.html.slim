@@ -96,7 +96,7 @@ div.mb-3
               .form-group.row
                 .col-6.col-form-label Locality
                 .col-6= @record.locality
-            - if controller.year == 1870
+            - if controller.year >= 1870 && controller.year <= 1940
               li.list-group-item
                 .form-group.row
                   .col-6.col-form-label Institution

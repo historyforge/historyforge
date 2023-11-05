@@ -71,7 +71,7 @@ class CensusFormFieldConfig
       if year < 1870
         input :institution_name, as: :string, facet: false
         input :institution_type, as: :string, facet: false
-      elsif year == 1870
+      elsif year < 1950
         input :institution, as: :string, facet: false
       end
     end
