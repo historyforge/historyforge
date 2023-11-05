@@ -36,7 +36,7 @@ en:
         can_read_write: 'Can Read and Write'
         can_read: 'Can Read'
         cannot_read: 'Cannot Read'
-        cannot_read_write: 'Cannot Read or Write'
+        cannot_read_write: 'Cannot Read and Write'
         can_speak_english: 'Speaks English'
         can_write: 'Can Write'
         cannot_write: 'Cannot Write'
