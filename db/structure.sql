@@ -1986,7 +1986,7 @@ CREATE TABLE public.people (
     first_name character varying,
     middle_name character varying,
     sex character varying(12),
-    race character varying(12),
+    race character varying,
     name_prefix character varying,
     name_suffix character varying,
     searchable_name text,
@@ -5025,6 +5025,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20231016225407'),
 ('20231105155617'),
 ('20231105171039'),
+('20231219022737'),
 ('4'),
 ('8'),
 ('9');

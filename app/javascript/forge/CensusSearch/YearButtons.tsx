@@ -1,14 +1,14 @@
-import { ButtonGroup } from 'reactstrap'
+// import { ButtonGroup } from 'reactstrap'
 import React from 'react'
 
-const YearButton = ({ censusYear, displayYear, onClick }) => (
-    <button type="button"
-            key={censusYear}
-            className={`btn btn-${censusYear === displayYear ? 'primary' : 'light'}`}
-            onClick={onClick}>
-        {censusYear}
-    </button>
-)
+// const YearButton = ({ censusYear, displayYear, onClick }) => (
+//     <button type="button"
+//             key={censusYear}
+//             className={`btn btn-${censusYear === displayYear ? 'primary' : 'light'}`}
+//             onClick={onClick}>
+//         {censusYear}
+//     </button>
+// )
 
 const YearButtons = ({ years, setYear, year }) => {
     if (!years) return null;
