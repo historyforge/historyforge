@@ -33,6 +33,10 @@ Setting.add 'recaptcha_secret_key', value: nil, group: 'API Keys'
 Setting.add 'facebook_login_enabled', type: :boolean, value: ENV['FACEBOOK_LOGIN_ENABLED'] || '0', group: 'Authentication', name: 'Enable Facebook Authentication', hint: 'Allow users to signup with their Facebook account.'
 Setting.add 'facebook_login_app_id', value: ENV['FACEBOOK_LOGIN_APP_ID'] || '',  group: 'Authentication'
 Setting.add 'facebook_login_secret', value: ENV['FACEBOOK_LOGIN_SECRET'] || '', group: 'Authentication'
+group = 'Announcement Banner'
+Setting.add 'announcement_show', type: :boolean, value: '0', group:, name: 'Show announcement?', hint: 'Should we show the announcement banner on the home page?'
+Setting.add 'announcement_text', type: :string, value: nil, group:, name: 'Announcement Text', hint: 'The text of the announcement.'
+Setting.add 'announcement_url', type: :string, value: nil, group:, name: 'Announcement URL', hint: 'Go somewhere when you click on the announcement? Enter a URL starting with https://.'
 
 CensusYears.each do |year|
   group = "#{year} US Census"
