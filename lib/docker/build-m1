@@ -1,0 +1,4 @@
+set -e
+rails assets:clean assets:precompile DEPLOYING=true RAILS_ENV=production
+docker buildx build --platform linux/amd64 -t dfurber/historyforge -f ./lib/docker/Dockerfile .
+docker push dfurber/historyforge

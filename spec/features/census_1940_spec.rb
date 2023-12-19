@@ -45,7 +45,7 @@ RSpec.describe '1940 US Census' do
     choose 'C 5 Or Over', name: 'census_record[grade_completed]'
 
     fill_in 'Place of Birth', with: 'At Sea'
-    check 'This Person is Foreign Born.'
+    check 'Foreign Born'
     choose 'AmCit - American Citizen', name: 'census_record[naturalized_alien]'
 
     fill_in 'Town', with: 'Ithaca', name: 'census_record[residence_1935_town]'

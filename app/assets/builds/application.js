@@ -54988,22 +54988,24 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
 
   // app/javascript/forge/CensusSearch/YearButtons.tsx
   var import_react22 = __toESM(require_react());
-  var YearButton = ({ censusYear, displayYear, onClick }) => /* @__PURE__ */ import_react22.default.createElement("button", {
-    type: "button",
-    key: censusYear,
-    className: `btn btn-${censusYear === displayYear ? "primary" : "light"}`,
-    onClick
-  }, censusYear);
-  var YearButtons = ({ years, setYear: setYear2, year }) => /* @__PURE__ */ import_react22.default.createElement(ButtonGroup_default, {
-    className: "btn-group btn-block"
-  }, years.map(
-    (censusYear) => /* @__PURE__ */ import_react22.default.createElement(YearButton, {
-      key: censusYear,
-      censusYear,
-      displayYear: year,
-      onClick: () => setYear2(censusYear)
-    })
-  ));
+  var YearButtons = ({ years, setYear: setYear2, year }) => {
+    if (!years)
+      return null;
+    const handleChange = (e2) => {
+      const value = e2.target.value;
+      setYear2(value);
+    };
+    return /* @__PURE__ */ import_react22.default.createElement("select", {
+      value: year,
+      onChange: handleChange,
+      className: "form-control mb-1"
+    }, /* @__PURE__ */ import_react22.default.createElement("option", {
+      value: null
+    }, "Select a year to search"), years.map((key) => /* @__PURE__ */ import_react22.default.createElement("option", {
+      key,
+      value: key
+    }, key)));
+  };
   var YearButtons_default = YearButtons;
 
   // app/javascript/forge/CensusSearch/AddFilter.tsx

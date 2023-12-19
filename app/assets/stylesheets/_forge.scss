@@ -47,6 +47,9 @@ body.streetview {
   }
   .layer {
     margin-bottom: 6px;
+    .form-check-label {
+      max-width: 400px;
+    }
   }
   .layer-slider {
     width: 400px;
