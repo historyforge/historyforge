@@ -19,11 +19,13 @@ class PhotographsController < ApplicationController
     @photograph = model_class.new
     authorize! :create, @photograph
 
-    return unless @building
-
-    @photograph.buildings << @building
-    @photograph.latitude = @building.latitude
-    @photograph.longitude = @building.longitude
+    if @building
+      @photograph.buildings << @building
+      @photograph.latitude = @building.latitude
+      @photograph.longitude = @building.longitude
+    elsif @person
+      @photograph.people << @person
+    end
   end
 
   def create
