@@ -41,7 +41,11 @@ class CensusFieldListGenerator
     @fields << 'ward' unless klass.year <= 1880
     @fields << 'enum_dist' if klass.year >= 1880
     @fields.concat %w[street_address]
-    @fields.concat %w[institution_name institution_type] if klass == Census1950Record
+    if klass == Census1950Record || klass.year < 1880
+      @fields.concat %w[institution_name institution_type]
+    else
+      @fields << 'institution'
+    end
     @fields << 'dwelling_number' unless klass == Census1940Record || klass == Census1950Record
     @fields << 'family_id'
   end
