@@ -16,7 +16,7 @@
 
 .row
   .col-sm-8
-    - if can?(:review, @building.object) && @building.investigate?
+    - if !@building.reviewed? && can?(:review, @building.object) && @building.investigate?
       .alert.alert-danger
         | This building requires further investigation before it can be marked as reviewed.
         - if @building.investigate_reason?
