@@ -44,3 +44,16 @@ CensusYears.each do |year|
   Setting.add "enabled_public_#{year}", type: :boolean, value: Rails.env.test? ? '1' : '0', group: group, name: 'Enabled Public', hint: 'This census year is available to the public for search.'
   Setting.add "add_buildings_#{year}", type: :boolean, value: '1', group: group, name: 'Add Buildings', hint: 'Allows census taker to create a new building from address.'
 end
+
+Setting.add 'people_private',
+            type: :boolean,
+            value: '1',
+            group: 'All People',
+            name: 'Enabled Private',
+            hint: 'Logged-in users can access the People pages. People records connect census records across multiple censuses.'
+Setting.add 'people_public',
+            type: :boolean,
+            value: '1',
+            group: 'All People',
+            name: 'Enabled Public',
+            hint: 'The people pages are available to the public for search.'
