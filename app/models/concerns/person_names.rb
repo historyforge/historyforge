@@ -18,7 +18,9 @@ module PersonNames
     before_save :set_searchable_name
 
     scope :by_name, -> { order(:last_name, :first_name, :middle_name) }
-    scope :fuzzy_name_search, ->(name) { where('searchable_name % ?', name) }
+    scope :fuzzy_name_search, ->(names) {
+      Array.wrap(names).map { |name| where('searchable_name % ?', name) }.reduce(:or)
+    }
 
     ransacker :name, formatter: proc { |v| v.mb_chars.downcase.to_s } do |parent|
       Arel::Nodes::NamedFunction.new('LOWER',

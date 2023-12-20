@@ -82,19 +82,6 @@ class Person < ApplicationRecord
     true
   end
 
-  # TODO: Move to service object
-  def self.likely_matches_for(record)
-    matches = where(sex: record.sex, last_name: record.last_name, first_name: record.first_name).order(:first_name, :middle_name)
-    matches = fuzzy_name_search("#{record.first_name} #{record.last_name}").where(sex: record.sex) unless matches.exists?
-    unless matches.exists?
-      matches = where(sex: record.sex, last_name: record.last_name).order(:first_name, :middle_name)
-    end
-    CensusYears.each do |year|
-      matches = matches.includes(:"census#{year}_records")
-    end
-    matches.select { |match| match.census_records.blank? || match.similar_in_age?(record) }
-  end
-
   def possible_unmatched_records
     CensusYears.map do |year|
       CensusRecord.for_year(year).where(person_id: nil, sex:, last_name:, first_name:)

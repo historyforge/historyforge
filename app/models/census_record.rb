@@ -112,7 +112,7 @@ class CensusRecord < ApplicationRecord
   end
 
   def likely_person_matches
-    Person.likely_matches_for(self)
+    People::LikelyMatches.run!(record: self)
   end
   memoize :likely_person_matches
 
