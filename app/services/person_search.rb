@@ -73,7 +73,7 @@ class PersonSearch < SearchQueryBuilder
   end
 
   def default_fields
-    %w[name sex race birth_year pob census1880 census1900 census1910 census1920 census1930 census1940 census1950]
+    %w[name sex race birth_year pob] + CensusYears.map { |year| "census#{year}"}
   end
 
   def all_fields
