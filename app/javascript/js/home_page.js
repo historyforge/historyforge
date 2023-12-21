@@ -11,7 +11,9 @@ $(document).ready(function() {
       },
       renderItem: function (item) {
         return `<div class="autocomplete-suggestion" data-url="${item.url}"><div class="float-right">Born ${item.year}</div>${item.name}</div>`
-      }
+      },
+      delay: 250,
+      cache: 0
     })
   })
 

@@ -3,8 +3,13 @@
 # Nickname lists adapted from https://www.usgenweb.org/research/nicknames.html
 
 class Nicknames
-  def self.matches_for(name, gender)
-    match_against = gender.downcase.start_with?('m') ? MALE_NAMES : FEMALE_NAMES
+  def self.matches_for(name, gender = 'all')
+    match_against = case gender.downcase.first
+                    when 'm' then MALE_NAMES
+                    when 'f' then FEMALE_NAMES
+                    else
+                      ALL_NAMES
+                    end
     matches = match_against.select { |names| names.include?(name) }
     matches.flatten.uniq.presence || [name]
   end
@@ -372,4 +377,6 @@ class Nicknames
     %w{Wilhelmina Mina Willie Wilma Minnie},
     %w{Winifred Winnie},
   ].freeze
+
+  ALL_NAMES = (MALE_NAMES + FEMALE_NAMES).freeze
 end
