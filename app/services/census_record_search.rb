@@ -109,7 +109,11 @@ class CensusRecordSearch < SearchQueryBuilder
   end
 
   def default_fields
-    %w[census_scope street_address name relation_to_head sex race age pob occupation]
+    %w[census_scope street_address name].tap do |fields|
+      fields << 'relation_to_head' if entity_class.year >= 1880
+    end.tap do |fields|
+      fields.concat(%w[sex race age pob occupation])
+    end
   end
 
   def all_fields
