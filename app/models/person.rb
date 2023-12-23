@@ -82,6 +82,9 @@ class Person < ApplicationRecord
   scope :name_cont, ->(names) {
     possible_names = names.squish.split(' ').map { |name| Nicknames.matches_for(name) }
     query = joins(:names)
+    if select_values.present?
+      query = query.select(select_values, 'concat_ws(\' \', person_names.name_prefix, person_names.first_name, person_names.middle_name, person_names.last_name, person_names.name_suffix) as found_name')
+    end
     possible_names.each do |name_set|
       conditions = name_set.map { 'person_names.searchable_name % ?' }.join(' OR ')
       query = query.where(conditions, *name_set)
@@ -100,7 +103,7 @@ class Person < ApplicationRecord
   end
 
   def name
-    names.detect(&:is_primary)&.name
+    try(:found_name) || names.detect(&:is_primary)&.name
   end
 
   # pg_search_scope :fuzzy_name_search,

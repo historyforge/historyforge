@@ -15,11 +15,7 @@ class HomeController < ApplicationController
   def saved_searches; end
 
   def search_people
-    possible_names = params[:term].squish.split(' ').map { |name| Nicknames.matches_for(name) }
-    @names = Person.limit(10)
-    possible_names.each do |names|
-      @names = @names.fuzzy_name_search(names)
-    end
+    @names = Person.name_cont(params[:term]).limit(10)
     render json: @names.map { |p| { url: url_for(p), year: p.birth_year, name: p.name, sex: p.sex } }
   end
 
