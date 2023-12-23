@@ -5,10 +5,8 @@ json.filters do
     json.type 'text'
     json.label 'Name'
     json.scopes do
-      json.name_cont 'contains'
-      json.name_not_cont 'does not contain'
-      json.name_has_any_term 'is one of'
-      json.name_has_every_term 'is all of'
+      json.name_fuzzy_matches 'fuzzy matches'
+      json.name_cont 'contains exactly'
     end
     json.sortable 'name'
   end

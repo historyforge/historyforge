@@ -92,8 +92,12 @@ class Person < ApplicationRecord
     query
   }
 
+  def self.ransackable_attributes(_auth_object = nil)
+    super + %w[name]
+  end
+
   def self.ransackable_scopes(_auth_object = nil)
-    super + %w[name_cont]
+    super + %w[name_fuzzy_matches]
   end
 
   def self.ransackable_associations(_auth_object = nil)
