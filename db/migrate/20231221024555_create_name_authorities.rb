@@ -1,6 +1,6 @@
 class CreateNameAuthorities < ActiveRecord::Migration[7.0]
   def change
-    create_table :name_authorities do |t|
+    create_table :person_names do |t|
       t.references :person, null: false, foreign_key: true
       t.boolean :is_primary
       t.string :last_name
@@ -8,7 +8,7 @@ class CreateNameAuthorities < ActiveRecord::Migration[7.0]
       t.string :middle_name
       t.string :name_prefix
       t.string :name_suffix
-
+      t.string :searchable_name, index: true
       t.timestamps
     end
 

@@ -46,7 +46,7 @@ class Person < ApplicationRecord
 
   has_and_belongs_to_many :photos, class_name: 'Photograph', dependent: :nullify
 
-  has_many :names, ->{ order('is_primary desc NULLS LAST, last_name asc, first_name asc, middle_name asc, name_suffix asc, name_prefix asc')}, class_name: 'NameAuthority', dependent: :destroy, autosave: true
+  has_many :names, ->{ order('is_primary desc NULLS LAST, last_name asc, first_name asc, middle_name asc, name_suffix asc, name_prefix asc')}, class_name: 'PersonName', dependent: :destroy, autosave: true
   accepts_nested_attributes_for :names, allow_destroy: true, reject_if: proc { |p| p['last_name'].blank? }
 
   validates :last_name, presence: true
@@ -71,28 +71,26 @@ class Person < ApplicationRecord
   scope :with_multiple_names, lambda {
     all
       .joins(:names)
-      .group('people.id, name_authorities.last_name')
-      .having('COUNT(name_authorities.last_name) > 1')
+      .group('people.id, person_names.last_name')
+      .having('COUNT(person_names.last_name) > 1')
   }
 
   scope :photographed, -> {
     joins('INNER JOIN people_photographs ON people_photographs.person_id=people.id')
   }
 
-  ransacker :name, formatter: proc { |v| v.mb_chars.downcase.to_s } do
-    names = NameAuthority.arel_table
-    Arel::Nodes::NamedFunction.new('LOWER',
-                                   [Arel::Nodes::NamedFunction.new('concat_ws',
-                                                                   [Arel::Nodes::Quoted.new(' '),
-                                                                    names[:name_prefix],
-                                                                    names[:first_name],
-                                                                    names[:middle_name],
-                                                                    names[:last_name],
-                                                                    names[:name_suffix]])])
-  end
+  scope :name_cont, ->(names) {
+    possible_names = names.squish.split(' ').map { |name| Nicknames.matches_for(name) }
+    query = joins(:names)
+    possible_names.each do |name_set|
+      conditions = name_set.map { 'person_names.searchable_name % ?' }.join(' OR ')
+      query = query.where(conditions, *name_set)
+    end
+    query
+  }
 
-  def self.ransackable_attributes(_auth_object = nil)
-    super + %w[name]
+  def self.ransackable_scopes(_auth_object = nil)
+    super + %w[name_cont]
   end
 
   def self.ransackable_associations(_auth_object = nil)
@@ -119,7 +117,7 @@ class Person < ApplicationRecord
   end
 
   def add_name_from(record)
-    return if names.any? { |name_authority| name_authority.same_name_as?(record) }
+    return if names.any? { |name| name.same_name_as?(record) }
 
     names.create(
       is_primary: names.blank?,

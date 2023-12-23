@@ -51,9 +51,8 @@ class PersonSearch < SearchQueryBuilder
     CensusYears.each do |year|
       next unless f.include?("census#{year}")
 
-      builder.left_outer_joins(:"census#{year}_records")
       table = CensusRecord.for_year(year).table_name
-      builder.select(builder.scoped.select_values, "array_agg(DISTINCT #{table}.id) AS census#{year}")
+      builder.select(builder.scoped.select_values, "(select array_agg(#{table}.id) from #{table} where person_id=people.id) AS census#{year}")
     end
   end
 
@@ -77,11 +76,11 @@ class PersonSearch < SearchQueryBuilder
   end
 
   def default_fields
-    %w[name sex race birth_year pob] + CensusYears.map { |year| "census#{year}"}
+    %w[name sex race birth_year pob]
   end
 
   def all_fields
-    default_fields + %w[description]
+    default_fields + %w[description] + CensusYears.map { |year| "census#{year}"}
   end
 
   def uncensused?

@@ -4,6 +4,7 @@
 
 class Nicknames
   def self.matches_for(name, gender = 'all')
+    name = name.downcase
     match_against = case gender.downcase.first
                     when 'm' then MALE_NAMES
                     when 'f' then FEMALE_NAMES
@@ -211,7 +212,7 @@ class Nicknames
     %w{Zebedee Zeb},
     %w{Zedediah Zed Diah Dyer},
     %w{Zephaniah Zeph}
-  ].freeze
+  ].map { |group| group.map(&:downcase) }.freeze
 
   FEMALE_NAMES = [
     %w{Abigail Abby Nabby Gail},
@@ -376,7 +377,7 @@ class Nicknames
     %w{Virginia Ginger Ginny Jane Jennie Virgy},
     %w{Wilhelmina Mina Willie Wilma Minnie},
     %w{Winifred Winnie},
-  ].freeze
+  ].map { |group| group.map(&:downcase) }.freeze
 
   ALL_NAMES = (MALE_NAMES + FEMALE_NAMES).freeze
 end

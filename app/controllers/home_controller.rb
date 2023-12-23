@@ -15,7 +15,7 @@ class HomeController < ApplicationController
   def saved_searches; end
 
   def search_people
-    possible_names = params[:term].squish.split(' ').map { |name| Nicknames.matches_for(name.capitalize) }
+    possible_names = params[:term].squish.split(' ').map { |name| Nicknames.matches_for(name) }
     @names = Person.limit(10)
     possible_names.each do |names|
       @names = @names.fuzzy_name_search(names)

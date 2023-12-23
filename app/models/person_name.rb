@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class NameAuthority < ApplicationRecord
+class PersonName < ApplicationRecord
   include PersonNames
 
   belongs_to :person

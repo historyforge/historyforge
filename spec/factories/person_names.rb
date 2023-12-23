@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :name_authority do
+  factory :person_name do
     person { nil }
     is_primary { false }
     last_name { "MyString" }

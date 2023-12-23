@@ -1943,43 +1943,6 @@ ALTER SEQUENCE public.map_overlays_id_seq OWNED BY public.map_overlays.id;
 
 
 --
--- Name: name_authorities; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.name_authorities (
-    id bigint NOT NULL,
-    person_id bigint NOT NULL,
-    is_primary boolean,
-    last_name character varying,
-    first_name character varying,
-    middle_name character varying,
-    name_prefix character varying,
-    name_suffix character varying,
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
-);
-
-
---
--- Name: name_authorities_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.name_authorities_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: name_authorities_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.name_authorities_id_seq OWNED BY public.name_authorities.id;
-
-
---
 -- Name: occupation1930_codes; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2095,6 +2058,44 @@ CREATE SEQUENCE public.permissions_id_seq
 --
 
 ALTER SEQUENCE public.permissions_id_seq OWNED BY public.permissions.id;
+
+
+--
+-- Name: person_names; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.person_names (
+    id bigint NOT NULL,
+    person_id bigint NOT NULL,
+    is_primary boolean,
+    last_name character varying,
+    first_name character varying,
+    middle_name character varying,
+    name_prefix character varying,
+    name_suffix character varying,
+    searchable_name character varying,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: person_names_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.person_names_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: person_names_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.person_names_id_seq OWNED BY public.person_names.id;
 
 
 --
@@ -2888,13 +2889,6 @@ ALTER TABLE ONLY public.map_overlays ALTER COLUMN id SET DEFAULT nextval('public
 
 
 --
--- Name: name_authorities id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.name_authorities ALTER COLUMN id SET DEFAULT nextval('public.name_authorities_id_seq'::regclass);
-
-
---
 -- Name: occupation1930_codes id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -2913,6 +2907,13 @@ ALTER TABLE ONLY public.people ALTER COLUMN id SET DEFAULT nextval('public.peopl
 --
 
 ALTER TABLE ONLY public.permissions ALTER COLUMN id SET DEFAULT nextval('public.permissions_id_seq'::regclass);
+
+
+--
+-- Name: person_names id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.person_names ALTER COLUMN id SET DEFAULT nextval('public.person_names_id_seq'::regclass);
 
 
 --
@@ -3309,14 +3310,6 @@ ALTER TABLE ONLY public.map_overlays
 
 
 --
--- Name: name_authorities name_authorities_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.name_authorities
-    ADD CONSTRAINT name_authorities_pkey PRIMARY KEY (id);
-
-
---
 -- Name: occupation1930_codes occupation1930_codes_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3338,6 +3331,14 @@ ALTER TABLE ONLY public.people
 
 ALTER TABLE ONLY public.permissions
     ADD CONSTRAINT permissions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: person_names person_names_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.person_names
+    ADD CONSTRAINT person_names_pkey PRIMARY KEY (id);
 
 
 --
@@ -3699,6 +3700,13 @@ CREATE INDEX index_census_1850_records_on_reviewed_by_id ON public.census_1850_r
 
 
 --
+-- Name: index_census_1850_records_on_searchable_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_census_1850_records_on_searchable_name ON public.census_1850_records USING gist (searchable_name public.gist_trgm_ops);
+
+
+--
 -- Name: index_census_1860_records_on_building_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3731,6 +3739,13 @@ CREATE INDEX index_census_1860_records_on_person_id ON public.census_1860_record
 --
 
 CREATE INDEX index_census_1860_records_on_reviewed_by_id ON public.census_1860_records USING btree (reviewed_by_id);
+
+
+--
+-- Name: index_census_1860_records_on_searchable_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_census_1860_records_on_searchable_name ON public.census_1860_records USING gist (searchable_name public.gist_trgm_ops);
 
 
 --
@@ -3769,6 +3784,13 @@ CREATE INDEX index_census_1870_records_on_reviewed_by_id ON public.census_1870_r
 
 
 --
+-- Name: index_census_1870_records_on_searchable_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_census_1870_records_on_searchable_name ON public.census_1870_records USING gist (searchable_name public.gist_trgm_ops);
+
+
+--
 -- Name: index_census_1880_records_on_building_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3801,6 +3823,13 @@ CREATE INDEX index_census_1880_records_on_person_id ON public.census_1880_record
 --
 
 CREATE INDEX index_census_1880_records_on_reviewed_by_id ON public.census_1880_records USING btree (reviewed_by_id);
+
+
+--
+-- Name: index_census_1880_records_on_searchable_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_census_1880_records_on_searchable_name ON public.census_1880_records USING gist (searchable_name public.gist_trgm_ops);
 
 
 --
@@ -4084,10 +4113,17 @@ CREATE INDEX index_map_overlays_on_locality_id ON public.map_overlays USING btre
 
 
 --
--- Name: index_name_authorities_on_person_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_person_names_on_person_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_name_authorities_on_person_id ON public.name_authorities USING btree (person_id);
+CREATE INDEX index_person_names_on_person_id ON public.person_names USING btree (person_id);
+
+
+--
+-- Name: index_person_names_on_searchable_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_person_names_on_searchable_name ON public.person_names USING gist (searchable_name public.gist_trgm_ops);
 
 
 --
@@ -4328,14 +4364,6 @@ ALTER TABLE ONLY public.census_1930_records
 
 
 --
--- Name: name_authorities fk_rails_2f23800fb9; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.name_authorities
-    ADD CONSTRAINT fk_rails_2f23800fb9 FOREIGN KEY (person_id) REFERENCES public.people(id);
-
-
---
 -- Name: bulk_updates fk_rails_35d0a740ec; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4461,6 +4489,14 @@ ALTER TABLE ONLY public.users
 
 ALTER TABLE ONLY public.census_1950_records
     ADD CONSTRAINT fk_rails_537eccb7b7 FOREIGN KEY (created_by_id) REFERENCES public.users(id);
+
+
+--
+-- Name: person_names fk_rails_546377d8eb; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.person_names
+    ADD CONSTRAINT fk_rails_546377d8eb FOREIGN KEY (person_id) REFERENCES public.people(id);
 
 
 --
@@ -5095,6 +5131,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20231219022737'),
 ('20231219030352'),
 ('20231221024555'),
+('20231223181402'),
 ('4'),
 ('8'),
 ('9');
