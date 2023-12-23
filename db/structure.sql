@@ -1943,6 +1943,43 @@ ALTER SEQUENCE public.map_overlays_id_seq OWNED BY public.map_overlays.id;
 
 
 --
+-- Name: name_authorities; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.name_authorities (
+    id bigint NOT NULL,
+    person_id bigint NOT NULL,
+    is_primary boolean,
+    last_name character varying,
+    first_name character varying,
+    middle_name character varying,
+    name_prefix character varying,
+    name_suffix character varying,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: name_authorities_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.name_authorities_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: name_authorities_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.name_authorities_id_seq OWNED BY public.name_authorities.id;
+
+
+--
 -- Name: occupation1930_codes; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2851,6 +2888,13 @@ ALTER TABLE ONLY public.map_overlays ALTER COLUMN id SET DEFAULT nextval('public
 
 
 --
+-- Name: name_authorities id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.name_authorities ALTER COLUMN id SET DEFAULT nextval('public.name_authorities_id_seq'::regclass);
+
+
+--
 -- Name: occupation1930_codes id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3262,6 +3306,14 @@ ALTER TABLE ONLY public.localities
 
 ALTER TABLE ONLY public.map_overlays
     ADD CONSTRAINT map_overlays_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: name_authorities name_authorities_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.name_authorities
+    ADD CONSTRAINT name_authorities_pkey PRIMARY KEY (id);
 
 
 --
@@ -4032,6 +4084,13 @@ CREATE INDEX index_map_overlays_on_locality_id ON public.map_overlays USING btre
 
 
 --
+-- Name: index_name_authorities_on_person_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_name_authorities_on_person_id ON public.name_authorities USING btree (person_id);
+
+
+--
 -- Name: index_pg_search_documents_on_searchable_type_and_searchable_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4266,6 +4325,14 @@ ALTER TABLE ONLY public.census_1950_records
 
 ALTER TABLE ONLY public.census_1930_records
     ADD CONSTRAINT fk_rails_2dae75f911 FOREIGN KEY (locality_id) REFERENCES public.localities(id);
+
+
+--
+-- Name: name_authorities fk_rails_2f23800fb9; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.name_authorities
+    ADD CONSTRAINT fk_rails_2f23800fb9 FOREIGN KEY (person_id) REFERENCES public.people(id);
 
 
 --
@@ -5027,6 +5094,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20231105171039'),
 ('20231219022737'),
 ('20231219030352'),
+('20231221024555'),
 ('4'),
 ('8'),
 ('9');

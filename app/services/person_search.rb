@@ -25,6 +25,8 @@ class PersonSearch < SearchQueryBuilder
   memoize :results
 
   def scoped
+    active? && builder.left_outer_joins(:names)
+
     builder.offset(from) if from
     builder.limit(to.to_i - from.to_i) if from && to
     builder.uncensused if uncensused?
@@ -36,6 +38,8 @@ class PersonSearch < SearchQueryBuilder
   memoize :scoped
 
   def count
+    active? && builder.left_outer_joins(:names)
+
     builder.uncensused if uncensused?
     builder.photographed if photographed?
     builder.scoped.count

@@ -46,6 +46,9 @@ class Person < ApplicationRecord
 
   has_and_belongs_to_many :photos, class_name: 'Photograph', dependent: :nullify
 
+  has_many :names, ->{ order('is_primary desc NULLS LAST, last_name asc, first_name asc, middle_name asc, name_suffix asc, name_prefix asc')}, class_name: 'NameAuthority', dependent: :destroy, autosave: true
+  accepts_nested_attributes_for :names, allow_destroy: true, reject_if: proc { |p| p['last_name'].blank? }
+
   validates :last_name, presence: true
 
   before_validation do
@@ -65,9 +68,42 @@ class Person < ApplicationRecord
     qry
   }
 
+  scope :with_multiple_names, lambda {
+    all
+      .joins(:names)
+      .group('people.id, name_authorities.last_name')
+      .having('COUNT(name_authorities.last_name) > 1')
+  }
+
   scope :photographed, -> {
     joins('INNER JOIN people_photographs ON people_photographs.person_id=people.id')
   }
+
+  ransacker :name, formatter: proc { |v| v.mb_chars.downcase.to_s } do
+    names = NameAuthority.arel_table
+    Arel::Nodes::NamedFunction.new('LOWER',
+                                   [Arel::Nodes::NamedFunction.new('concat_ws',
+                                                                   [Arel::Nodes::Quoted.new(' '),
+                                                                    names[:name_prefix],
+                                                                    names[:first_name],
+                                                                    names[:middle_name],
+                                                                    names[:last_name],
+                                                                    names[:name_suffix]])])
+  end
+
+  def self.ransackable_attributes(_auth_object = nil)
+    super + %w[name]
+  end
+
+  def self.ransackable_associations(_auth_object = nil)
+    %w[names census_1850_records census_1860_records
+       census_1870_records census_1880_records census_1900_records census_1910_records census_1920_records
+       census_1930_records census_1940_records census_1950_records photos]
+  end
+
+  def name
+    names.detect(&:is_primary)&.name
+  end
 
   # pg_search_scope :fuzzy_name_search,
   #                 against: %i[first_name last_name],
@@ -80,6 +116,19 @@ class Person < ApplicationRecord
   # To make the "Mark n Reviewed" button not show up because there is not a person review system at the moment
   def reviewed?
     true
+  end
+
+  def add_name_from(record)
+    return if names.any? { |name_authority| name_authority.same_name_as?(record) }
+
+    names.create(
+      is_primary: names.blank?,
+      first_name: record.first_name,
+      last_name: record.last_name,
+      middle_name: record.middle_name,
+      name_prefix: record.name_prefix,
+      name_suffix: record.name_suffix
+    )
   end
 
   def possible_unmatched_records

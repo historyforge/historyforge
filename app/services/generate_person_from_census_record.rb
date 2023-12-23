@@ -23,6 +23,7 @@ class GeneratePersonFromCensusRecord
     @person.birth_year = census_record.year - census_record.age if census_record.age&.< 120
     @person.pob = census_record.pob
     @person.save
+    @person.add_name_from(census_record)
     @person
   end
   memoize :person

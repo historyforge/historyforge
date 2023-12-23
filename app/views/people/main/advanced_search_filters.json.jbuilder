@@ -13,9 +13,9 @@ json.filters do
     json.sortable 'name'
   end
 
-  AttributeBuilder.text   json, :first_name
-  AttributeBuilder.text   json, :middle_name
-  AttributeBuilder.text   json, :last_name
+  AttributeBuilder.text   json, :names_first_name
+  AttributeBuilder.text   json, :names_middle_name
+  AttributeBuilder.text   json, :names_last_name
 
   AttributeBuilder.enumeration json, Person, :sex
   AttributeBuilder.enumeration json, Person, :race, choices: Person.pluck('distinct race').compact.sort

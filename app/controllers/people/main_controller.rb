@@ -34,6 +34,7 @@ module People
     def new
       authorize! :create, Person
       @person = Person.new
+      @person.names.build(is_primary: true)
     end
 
     def create
@@ -91,7 +92,8 @@ module People
     def resource_params
       params.require(:person).permit :first_name, :last_name, :middle_name,
                                      :sex, :race, :name_prefix, :name_suffix, :birth_year, :is_birth_year_estimated,
-                                     :pob, :is_pob_estimated, :notes, :description
+                                     :pob, :is_pob_estimated, :notes, :description,
+                                     names_attributes: %i[_destroy id is_primary name_prefix first_name middle_name last_name name_suffix]
     end
   end
 end
