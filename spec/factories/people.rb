@@ -37,10 +37,22 @@ FactoryBot.define do
 
     transient do
       name { FactoryBot.build(:person_name, is_primary: true) }
+      first_name { nil }
+      middle_name { nil }
+      last_name { nil }
     end
 
     after(:build) do |person, evaluator|
-      person.names << evaluator.name
+      if evaluator.first_name || evaluator.middle_name || evaluator.last_name
+        name_attrs = {
+          first_name: evaluator.first_name,
+          middle_name: evaluator.middle_name,
+          last_name: evaluator.last_name
+        }.compact_blank
+        person.names << FactoryBot.build(:person_name, is_primary: true, **name_attrs)
+      elsif evaluator.name
+        person.names << evaluator.name
+      end
     end
 
     after(:create) do |person|
