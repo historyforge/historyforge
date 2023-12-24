@@ -4253,6 +4253,13 @@ CREATE INDEX people_name_trgm ON public.people USING gist (searchable_name publi
 
 
 --
+-- Name: person_names_primary_name_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX person_names_primary_name_index ON public.person_names USING btree (person_id, is_primary);
+
+
+--
 -- Name: unique_schema_migrations; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -5132,6 +5139,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20231219030352'),
 ('20231221024555'),
 ('20231223181402'),
+('20231224022917'),
 ('4'),
 ('8'),
 ('9');

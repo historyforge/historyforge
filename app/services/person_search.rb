@@ -25,12 +25,7 @@ class PersonSearch < SearchQueryBuilder
   memoize :results
 
   def scoped
-    # if ransacking name_cont or name_fuzzy_matches, then don't join names
-    # otherwise join on primary name and select it.
-    unless s.key?(:name_fuzzy_matches)
-      active? && builder.with_primary_name
-    end
-
+    builder.preload(:primary_name)
     builder.offset(from) if from
     builder.limit(to.to_i - from.to_i) if from && to
     builder.uncensused if uncensused?
@@ -44,7 +39,7 @@ class PersonSearch < SearchQueryBuilder
   def count
     builder.uncensused if uncensused?
     builder.photographed if photographed?
-    builder.scoped.count
+    entity_class.where(id: builder.scoped.select('people.id')).count
   end
 
   def add_census_record_links

@@ -50,6 +50,7 @@ class Person < ApplicationRecord
 
   has_many :names, ->{ order('is_primary desc NULLS LAST, last_name asc, first_name asc, middle_name asc, name_suffix asc, name_prefix asc')}, class_name: 'PersonName', dependent: :destroy, autosave: true
   accepts_nested_attributes_for :names, allow_destroy: true, reject_if: proc { |p| p['last_name'].blank? }
+  has_one :primary_name, ->{ where(is_primary: true) }, class_name: 'PersonName'
 
   validate :validate_primary_name
 
@@ -58,13 +59,13 @@ class Person < ApplicationRecord
     self.race = nil if race.blank? || race == 'on'
   end
 
-  scope :uncensused, -> {
+  scope :uncensused, lambda {
     qry = self
     CensusYears.each { |year| qry = qry.left_outer_joins(:"census#{year}_records") }
     qry.where CensusYears.map { |year| "#{CensusRecord.for_year(year).table_name}.id IS NULL" }.join(' AND ')
   }
 
-  scope :with_census_records, -> {
+  scope :with_census_records, lambda {
     qry = self
     CensusYears.each { |year| qry = qry.includes(:"census#{year}_records") }
     qry
@@ -77,16 +78,13 @@ class Person < ApplicationRecord
       .having('COUNT(person_names.last_name) > 1')
   }
 
-  scope :photographed, -> {
+  scope :photographed, lambda {
     joins('INNER JOIN people_photographs ON people_photographs.person_id=people.id')
   }
 
-  scope :name_fuzzy_matches, ->(names) {
+  scope :name_fuzzy_matches, lambda { |names|
     possible_names = names.squish.split(' ').map { |name| Nicknames.matches_for(name) }
-    query = joins(:names)
-    if select_values.present?
-      query = query.select(select_values, 'concat_ws(\' \', person_names.name_prefix, person_names.first_name, person_names.middle_name, person_names.last_name, person_names.name_suffix) as found_name')
-    end
+    query = joins(:names).group('people.id')
     possible_names.each do |name_set|
       conditions = name_set.map { 'person_names.searchable_name % ?' }.join(' OR ')
       query = query.where(conditions, *name_set)
@@ -94,7 +92,7 @@ class Person < ApplicationRecord
     query
   }
 
-  scope :with_primary_name, -> {
+  scope :with_primary_name, lambda {
     joins(:names).where(names: { is_primary: true }).tap do
       select(select_values, 'concat_ws(\' \', person_names.name_prefix, person_names.first_name, person_names.middle_name, person_names.last_name, person_names.name_suffix) as found_name')
     end
@@ -246,11 +244,6 @@ class Person < ApplicationRecord
   def unattached?
     census_records.blank? && photos.blank?
   end
-
-  def primary_name
-    names.to_a.detect(&:is_primary)
-  end
-  memoize :primary_name
 
   def validate_primary_name
     primary_names = names.to_a.select(&:is_primary)
