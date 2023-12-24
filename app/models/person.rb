@@ -30,14 +30,12 @@
 # A person record is the glue that connects multiple census records to the same individual person. A person record
 # itself is pretty sparse, mainly glue, but does not have to have census records.
 class Person < ApplicationRecord
-  include PersonNames
-  include PgSearch::Model
   include Flaggable
   include Versioning
 
   attr_accessor :match_score
 
-  self.ignored_columns = %i[first_name middle_name last_name name_prefix name_suffix]
+  self.ignored_columns = %i[searchable_name first_name middle_name last_name name_prefix name_suffix]
 
   define_enumeration :sex, %w[M F]
   define_enumeration :race, %w[W B Mu Mex In Ch Jp Fil Hin Kor]
@@ -57,6 +55,12 @@ class Person < ApplicationRecord
     self.sex = nil if sex.blank? || sex == 'on'
     self.race = nil if race.blank? || race == 'on'
   end
+
+  scope :fuzzy_name_search, lambda { |names|
+    joins(:names).tap do
+      Array.wrap(names).map { |name| where('names.searchable_name % ?', name) }.reduce(:or)
+    end
+  }
 
   scope :uncensused, lambda {
     qry = self

@@ -4,8 +4,11 @@ module People
   class LikelyMatches < ApplicationInteraction
     include FastMemoize
     object :record, class: 'CensusRecord'
-    
+
     def execute
+      # puts "Exact Matches: #{exact_name_matches.inspect}"
+      # puts "Fuzzy Matches: #{fuzzy_name_matches.inspect}"
+      # puts "Last Name Matches: #{last_name_matches.inspect}"
       matches = exact_name_matches || fuzzy_name_matches || last_name_matches
       return [] unless matches
 
@@ -14,6 +17,8 @@ module People
       end
       matches.select { |match| match.census_records.blank? || match.similar_in_age?(record) }
     end
+
+    private
 
     def first_name_cognates
       Nicknames.matches_for(record.first_name, record.sex)
@@ -24,23 +29,27 @@ module People
       first_name_cognates.map { |first_name| "#{first_name} #{record.last_name}" }
     end
 
-    private
-
-    def last_name_matches
-      matches = Person.where(sex: record.sex, last_name: record.last_name)
-                      .order(:first_name, :middle_name)
-      matches.exists? ? matches : false
+    def exact_name_matches
+      if_exists(Person.where(sex: record.sex)
+                      .joins(:names)
+                      .where(names: { last_name: record.last_name, first_name: record.first_name })
+                      .order('names.first_name, names.middle_name'))
     end
 
     def fuzzy_name_matches
-      matches = Person.fuzzy_name_search(first_names_with_last_name)
-                      .where(sex: record.sex)
-      matches.exists? ? matches : false
+      if_exists(Person.fuzzy_name_search(record.last_name)
+                      .fuzzy_name_search(first_name_cognates)
+                      .where(sex: record.sex))
     end
 
-    def exact_name_matches
-      matches = Person.where(sex: record.sex, last_name: record.last_name, first_name: first_name_cognates)
-                      .order(:first_name, :middle_name)
+    def last_name_matches
+      if_exists(Person.where(sex: record.sex)
+                      .joins(:names)
+                      .where(names: { last_name: record.last_name })
+                      .order('names.first_name, names.middle_name'))
+    end
+
+    def if_exists(matches)
       matches.exists? ? matches : false
     end
   end
