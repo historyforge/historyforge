@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe GeneratePersonFromCensusRecord do
+RSpec.describe People::GenerateFromCensusRecord do
   let(:record) { create(:census1900_record, birth_year: 1872, age: 28) }
   subject { described_class.new(record).perform }
   it 'works' do

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe MergeEligibilityCheck do
+RSpec.describe People::MergeEligibilityCheck do
   let(:source) { create(:person, description: 'source text') }
   let(:target) { create(:person, description: 'target text') }
   let!(:source_record) { create(:census1910_record, person: source) }

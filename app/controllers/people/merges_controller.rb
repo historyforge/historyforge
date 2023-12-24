@@ -9,7 +9,7 @@ module People
       authorize! :merge, Person
       @target = Person.find params[:person_id]
       @source = Person.find params[:merge_id]
-      MergePeople.new(@source, @target).perform
+      People::Merge.new(@source, @target).perform
       flash[:notice] = 'The merge operation has been performed.'
       redirect_to @target
     end
@@ -20,7 +20,7 @@ module People
       authorize! :merge, Person
       @target = Person.find params[:person_id]
       @source = Person.find params[:merge_id]
-      @check = MergeEligibilityCheck.new(@source, @target)
+      @check = People::MergeEligibilityCheck.new(@source, @target)
       @check.perform
     end
 
