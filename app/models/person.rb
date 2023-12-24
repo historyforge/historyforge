@@ -50,7 +50,6 @@ class Person < ApplicationRecord
 
   has_many :names, ->{ order('is_primary desc NULLS LAST, last_name asc, first_name asc, middle_name asc, name_suffix asc, name_prefix asc')}, class_name: 'PersonName', dependent: :destroy, autosave: true
   accepts_nested_attributes_for :names, allow_destroy: true, reject_if: proc { |p| p['last_name'].blank? }
-  has_one :primary_name, ->{ where(is_primary: true) }, class_name: 'PersonName'
 
   validate :validate_primary_name
 
@@ -115,6 +114,11 @@ class Person < ApplicationRecord
   def name
     try(:found_name) || primary_name&.name
   end
+
+  def primary_name
+    names.loaded? ? names.detect(&:is_primary?) : names.primary.first
+  end
+  memoize :primary_name
 
   delegate :first_name, :last_name, :middle_name, :name_prefix, :name_suffix, to: :primary_name
 

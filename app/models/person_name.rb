@@ -5,6 +5,8 @@ class PersonName < ApplicationRecord
 
   belongs_to :person
 
+  scope :primary, -> { where(is_primary: true) }
+
   def same_name_as?(census_record)
     census_record.first_name == first_name &&
       census_record.last_name == last_name &&
