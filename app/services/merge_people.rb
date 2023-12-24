@@ -8,15 +8,21 @@ class MergePeople
 
   def perform
     @target.update_column :description, [@target.description, @source.description].compact_blank.join("\n\n")
+    merge_names
     merge_census_records
     merge_photographs
     @source.reload.destroy
     @target.reload
     @target.audit_logs.create message: "Merged ##{@source.id} - #{@source.name}"
-
   end
 
   private
+
+  def merge_names
+    @source.names.each do |name|
+      @target.add_name_from!(name)
+    end
+  end
 
   def merge_census_records
     CensusYears.each do |year|

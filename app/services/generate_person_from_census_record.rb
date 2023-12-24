@@ -17,13 +17,12 @@ class GeneratePersonFromCensusRecord
 
   def person
     @person = Person.new "census#{year}_records" => [census_record]
-    %i[name_prefix name_suffix first_name middle_name last_name sex race].each do |attr|
-      @person[attr] = census_record[attr]
-    end
+    @person.race = census_record.race
+    @person.sex = census_record.sex
     @person.birth_year = census_record.year - census_record.age if census_record.age&.< 120
     @person.pob = census_record.pob
-    @person.save
     @person.add_name_from(census_record)
+    @person.save
     @person
   end
   memoize :person

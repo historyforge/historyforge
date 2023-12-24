@@ -128,4 +128,27 @@ RSpec.describe Person do
       expect(subject.census_records).to eq([record])
     end
   end
+
+  describe '#add_name_from' do
+    subject { FactoryBot.create(:person) }
+    context 'when the person already has the name' do
+      let(:primary_name) { subject.primary_name }
+      let(:record) { create(:census1900_record, birth_year: 1876, age: 25, first_name: subject.primary_name.first_name, middle_name: subject.primary_name.middle_name, last_name: subject.primary_name.last_name) }
+      it 'does not duplicate the name on the person record' do
+        subject.add_name_from(record)
+        expect(subject.names.length).to eq(1)
+        name = subject.names.first.name
+        expect(name).to eq(record.name)
+      end
+    end
+    context 'when the person does not have the name yet' do
+      let(:record) { create(:census1900_record, birth_year: 1876, age: 25) }
+      it 'adds the name to the person record' do
+        subject.add_name_from(record)
+        expect(subject.names.length).to eq(2)
+        name = subject.names.last.name
+        expect(name).to eq(record.name)
+      end
+    end
+  end
 end

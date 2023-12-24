@@ -133,6 +133,6 @@ class CensusRecord < ApplicationRecord
   end
 
   def add_name_to_person_record
-    person&.add_name_from(self)
+    person&.add_name_from!(self)
   end
 end

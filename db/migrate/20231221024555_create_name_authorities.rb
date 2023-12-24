@@ -24,7 +24,7 @@ class CreateNameAuthorities < ActiveRecord::Migration[7.0]
             name_suffix: person.name_suffix
           )
           person.census_records.each do |record|
-            person.add_name_from(record)
+            person.add_name_from!(record)
           end
         end
       end

@@ -25,7 +25,11 @@ class PersonSearch < SearchQueryBuilder
   memoize :results
 
   def scoped
-    active? && builder.left_outer_joins(:names)
+    # if ransacking name_cont or name_fuzzy_matches, then don't join names
+    # otherwise join on primary name and select it.
+    unless s.key?(:name_fuzzy_matches)
+      active? && builder.with_primary_name
+    end
 
     builder.offset(from) if from
     builder.limit(to.to_i - from.to_i) if from && to
@@ -38,8 +42,6 @@ class PersonSearch < SearchQueryBuilder
   memoize :scoped
 
   def count
-    active? && builder.left_outer_joins(:names)
-
     builder.uncensused if uncensused?
     builder.photographed if photographed?
     builder.scoped.count

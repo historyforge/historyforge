@@ -12,8 +12,10 @@ RSpec.describe MergePeople do
     PaperTrail.request.whodunnit = create(:user)
   end
   it 'merges successfully' do
+    source_name = source.names.first.name
     subject.perform
     expect(source.destroyed?).to be_truthy
+    expect(target.names.map(&:name)).to include(source_name)
     expect(target.census1910_records).to include(source_record)
     expect(target.census1920_records).to include(target_record)
     expect(target.description).to include('target text')
