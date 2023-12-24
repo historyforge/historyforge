@@ -3,9 +3,6 @@
 Rails.application.routes.draw do
   get '/check.txt', to: proc {[200, {}, ['simple_check']]}
 
-  # require 'sidekiq/web'
-  # mount Sidekiq::Web => '/sidekiq', constraints: AdminConstraint.new
-
   if Rails.env.development?
     redirector = lambda { |params, _req|
       ApplicationController.helpers.asset_path(params[:name].split('-').first + '.map')
