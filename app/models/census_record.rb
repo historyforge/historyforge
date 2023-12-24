@@ -27,7 +27,7 @@ class CensusRecord < ApplicationRecord
 
   after_initialize :set_defaults
   before_save :ensure_housing
-
+  after_save :add_name_to_person_record, if: :person_id_changed?
   after_commit :audit_person_connection, if: :saved_change_to_person_id?
 
   define_enumeration :page_side, %w[A B], strict: true, if: :page_side?
@@ -130,5 +130,9 @@ class CensusRecord < ApplicationRecord
   def audit_person_connection
     person_from, person_to = saved_change_to_person_id
     CensusRecords::AuditPersonConnection.run!(person_from:, person_to:, year:, name:)
+  end
+
+  def add_name_to_person_record
+    person&.add_name_from!(self)
   end
 end

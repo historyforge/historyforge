@@ -29,11 +29,31 @@
 
 FactoryBot.define do
   factory(:person) do
-    sequence(:first_name) { |n| "First#{n}" }
-    sequence(:middle_name) { |n| "Middle#{n}" }
-    sequence(:last_name) { |n| "Last#{n}" }
+    # sequence(:first_name) { |n| "First#{n}" }
+    # sequence(:middle_name) { |n| "Middle#{n}" }
+    # sequence(:last_name) { |n| "Last#{n}" }
     sex { 'M' }
     race { 'W' }
+
+    transient do
+      name { FactoryBot.build(:person_name, is_primary: true) }
+      first_name { nil }
+      middle_name { nil }
+      last_name { nil }
+    end
+
+    after(:build) do |person, evaluator|
+      if evaluator.first_name || evaluator.middle_name || evaluator.last_name
+        name_attrs = {
+          first_name: evaluator.first_name,
+          middle_name: evaluator.middle_name,
+          last_name: evaluator.last_name
+        }.compact_blank
+        person.names << FactoryBot.build(:person_name, is_primary: true, **name_attrs)
+      elsif evaluator.name
+        person.names << evaluator.name
+      end
+    end
 
     after(:create) do |person|
       if person.instance_variable_defined?(:@census_records)

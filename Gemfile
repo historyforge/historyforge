@@ -3,6 +3,7 @@
 source 'https://rubygems.org'
 ruby '3.2.2'
 
+gem 'active_interaction', '~> 5.2'
 gem 'activerecord-precounter'
 gem 'active_storage_validations'
 gem 'acts_as_list'
@@ -78,6 +79,3 @@ group :test do
   gem 'faker'
   gem 'rspec-collection_matchers'
 end
-
-
-gem "active_interaction", "~> 5.2"

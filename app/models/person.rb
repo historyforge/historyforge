@@ -37,6 +37,8 @@ class Person < ApplicationRecord
 
   attr_accessor :match_score
 
+  self.ignored_columns = %i[first_name middle_name last_name name_prefix name_suffix]
+
   define_enumeration :sex, %w[M F]
   define_enumeration :race, %w[W B Mu Mex In Ch Jp Fil Hin Kor]
 
@@ -46,7 +48,10 @@ class Person < ApplicationRecord
 
   has_and_belongs_to_many :photos, class_name: 'Photograph', dependent: :nullify
 
-  validates :last_name, presence: true
+  has_many :names, ->{ order('is_primary desc NULLS LAST, last_name asc, first_name asc, middle_name asc, name_suffix asc, name_prefix asc')}, class_name: 'PersonName', dependent: :destroy, autosave: true
+  accepts_nested_attributes_for :names, allow_destroy: true, reject_if: proc { |p| p['last_name'].blank? }
+
+  validate :validate_primary_name
 
   before_validation do
     self.sex = nil if sex.blank? || sex == 'on'
@@ -65,9 +70,55 @@ class Person < ApplicationRecord
     qry
   }
 
+  scope :with_multiple_names, lambda {
+    all
+      .joins(:names)
+      .group('people.id, person_names.last_name')
+      .having('COUNT(person_names.last_name) > 1')
+  }
+
   scope :photographed, -> {
     joins('INNER JOIN people_photographs ON people_photographs.person_id=people.id')
   }
+
+  scope :name_fuzzy_matches, ->(names) {
+    possible_names = names.squish.split(' ').map { |name| Nicknames.matches_for(name) }
+    query = joins(:names)
+    if select_values.present?
+      query = query.select(select_values, 'concat_ws(\' \', person_names.name_prefix, person_names.first_name, person_names.middle_name, person_names.last_name, person_names.name_suffix) as found_name')
+    end
+    possible_names.each do |name_set|
+      conditions = name_set.map { 'person_names.searchable_name % ?' }.join(' OR ')
+      query = query.where(conditions, *name_set)
+    end
+    query
+  }
+
+  scope :with_primary_name, -> {
+    joins(:names).where(names: { is_primary: true }).tap do
+      select(select_values, 'concat_ws(\' \', person_names.name_prefix, person_names.first_name, person_names.middle_name, person_names.last_name, person_names.name_suffix) as found_name')
+    end
+  }
+
+  def self.ransackable_attributes(_auth_object = nil)
+    super + %w[name]
+  end
+
+  def self.ransackable_scopes(_auth_object = nil)
+    super + %w[name_fuzzy_matches]
+  end
+
+  def self.ransackable_associations(_auth_object = nil)
+    %w[names census_1850_records census_1860_records
+       census_1870_records census_1880_records census_1900_records census_1910_records census_1920_records
+       census_1930_records census_1940_records census_1950_records photos]
+  end
+
+  def name
+    try(:found_name) || primary_name&.name
+  end
+
+  delegate :first_name, :last_name, :middle_name, :name_prefix, :name_suffix, to: :primary_name
 
   # pg_search_scope :fuzzy_name_search,
   #                 against: %i[first_name last_name],
@@ -82,6 +133,23 @@ class Person < ApplicationRecord
     true
   end
 
+  def add_name_from(record)
+    return if names.any? { |name| name.same_name_as?(record) }
+
+    names.build(
+      is_primary: names.blank?,
+      first_name: record.first_name,
+      last_name: record.last_name,
+      middle_name: record.middle_name,
+      name_prefix: record.name_prefix,
+      name_suffix: record.name_suffix
+    )
+  end
+
+  def add_name_from!(record)
+    new_name = add_name_from(record)
+    new_name&.save
+  end
   def possible_unmatched_records
     CensusYears.map do |year|
       CensusRecord.for_year(year).where(person_id: nil, sex:, last_name:, first_name:)
@@ -177,5 +245,19 @@ class Person < ApplicationRecord
 
   def unattached?
     census_records.blank? && photos.blank?
+  end
+
+  def primary_name
+    names.to_a.detect(&:is_primary)
+  end
+  memoize :primary_name
+
+  def validate_primary_name
+    primary_names = names.to_a.select(&:is_primary)
+    if primary_names.blank?
+      errors.add(:base, 'Primary name missing.')
+    elsif primary_names.size > 1
+      errors.add(:base, 'Multiple primary names not allowed.')
+    end
   end
 end

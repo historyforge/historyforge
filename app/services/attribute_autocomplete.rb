@@ -42,7 +42,7 @@ class AttributeAutocomplete
   end
 
   def search_name
-    Person.ransack("#{attribute}_start": term).result.distinct.limit(15).pluck(attribute)
+    PersonName.ransack("#{attribute}_start": term).result.distinct.limit(15).pluck(attribute)
   end
 
   def search_address

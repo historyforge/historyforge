@@ -17,6 +17,13 @@
       span.d-none.d-lg-inline
         | &nbsp; Delete
 .list-group.mb-3
+  - if @person.names.length > 1
+      .list-group-item
+        .row
+          .col-6 Names
+          .col-6
+            - @person.names.each do |name|
+              div= name.name
   .list-group-item
     .row
       .col-6 Person ID

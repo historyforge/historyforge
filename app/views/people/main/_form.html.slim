@@ -1,5 +1,5 @@
 = simple_form_for @person do |form|
-  .card.mb-1
+  /.card.mb-1
     .card-header Name
     .card-body
       .row
@@ -13,6 +13,23 @@
           = form.input :last_name, input_html: {autocomplete: 'new-password'}, label: 'Last'
         .col-1
           = form.input :name_suffix, input_html: {autocomplete: 'new-password'}, label: 'Suffix'
+  .card.mb-1
+    .card-header Name
+    .card-body
+      .nested-form.list-group
+        .list-group-item
+          .row
+            .col-sm-1 Main
+            .col-sm-1 Prefix
+            .col-sm-3 First
+            .col-sm-2 Middle
+            .col-sm-3 Last
+            .col-sm-1 Suffix
+            .col-xs-1
+        .nested-form-items
+          = form.fields_for :names do |form2|
+            = render 'people/main/name', form: form2
+        p= add_child_link 'Add alternate, additional, or historical name for this person', form, :names, object: form.object.names.build, partial: 'people/main/name'
 
   .card.mb-1
     .card-header Race and sex
