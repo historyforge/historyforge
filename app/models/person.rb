@@ -37,7 +37,7 @@ class Person < ApplicationRecord
 
   attr_accessor :match_score
 
-  self.ignored_columns = %i[first_name middle_name last_name name_prefix name_suffix]
+  # self.ignored_columns = %i[first_name middle_name last_name name_prefix name_suffix]
 
   define_enumeration :sex, %w[M F]
   define_enumeration :race, %w[W B Mu Mex In Ch Jp Fil Hin Kor]
