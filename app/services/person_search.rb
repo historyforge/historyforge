@@ -25,7 +25,7 @@ class PersonSearch < SearchQueryBuilder
   memoize :results
 
   def scoped
-    builder.preload(:primary_name)
+    builder.preload(:names)
     builder.offset(from) if from
     builder.limit(to.to_i - from.to_i) if from && to
     builder.uncensused if uncensused?
