@@ -8,7 +8,7 @@ class CreateNameAuthorities < ActiveRecord::Migration[7.0]
       t.string :middle_name
       t.string :name_prefix
       t.string :name_suffix
-      t.string :searchable_name, index: true
+      t.string :searchable_name
       t.timestamps
     end
 
@@ -17,11 +17,11 @@ class CreateNameAuthorities < ActiveRecord::Migration[7.0]
         Person.find_each do |person|
           person.names.create(
             is_primary: true,
-            first_name: person.first_name,
-            last_name: person.last_name,
-            middle_name: person.middle_name,
-            name_prefix: person.name_prefix,
-            name_suffix: person.name_suffix
+            first_name: person.read_attribute(:first_name),
+            last_name: person.read_attribute(:last_name),
+            middle_name: person.read_attribute(:middle_name),
+            name_prefix: person.read_attribute(:name_prefix),
+            name_suffix: person.read_attribute(:name_suffix)
           )
           person.census_records.each do |record|
             person.add_name_from!(record)
