@@ -50,7 +50,7 @@ module People
     end
 
     def if_exists(matches)
-      matches.exists? ? matches : false
+      matches.exists? ? matches.limit(10) : false
     end
   end
 end
