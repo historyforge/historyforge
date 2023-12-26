@@ -3,7 +3,7 @@
 # Nickname lists adapted from https://www.usgenweb.org/research/nicknames.html
 
 class Nicknames
-  def self.matches_for(name, gender: nil)
+  def self.matches_for(name, gender = nil)
     name = name.downcase
     match_against = if gender
                       gender == 'm' ? MALE_NAMES : FEMALE_NAMES
