@@ -3,7 +3,7 @@
 class UserMailer < ApplicationMailer
   def disabled_change_password(user)
     @user = user
-    @subject = "#{ENV['APP_NAME']} You account is disabled until you change your password"
+    @subject = "#{ENV['APP_NAME']} Your account is disabled until you change your password"
     mail(to: @user.email, subject: @subject, from: AppConfig[:mail_from])
   end
 

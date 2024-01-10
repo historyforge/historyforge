@@ -28,8 +28,9 @@ module Devise
     end
 
     def mailer_options(opts)
-      opts.merge from: proc { "HistoryForge <#{AppConfig[:mail_from]}>" },
-                 reply_to: proc { "HistoryForge <#{AppConfig[:contact_email]}>" }
+      opts.merge from: "HistoryForge <#{AppConfig[:mail_from]}>",
+                 reply_to: "HistoryForge <#{AppConfig[:contact_email]}>"
+
     end
   end
 end
