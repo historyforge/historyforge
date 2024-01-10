@@ -4,6 +4,9 @@ module Devise
   class Mailer < ApplicationMailer
     include Devise::Mailers::Helpers
 
+    default from: proc { "HistoryForge <#{AppConfig[:mail_from]}>" },
+            reply_to: proc { "HistoryForge <#{AppConfig[:contact_email]}>" }
+
     def confirmation_instructions(record, token, opts = {})
       @token = token
       devise_mail(record, :confirmation_instructions, mailer_options(opts))
@@ -25,11 +28,6 @@ module Devise
 
     def password_change(record, opts = {})
       devise_mail(record, :password_change, mailer_options(opts))
-    end
-
-    def mailer_options(opts)
-      opts.merge from: "HistoryForge <#{AppConfig[:mail_from]}>",
-                 reply_to: "HistoryForge <#{AppConfig[:contact_email]}>"
     end
   end
 end
