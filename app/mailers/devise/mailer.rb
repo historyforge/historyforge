@@ -4,8 +4,8 @@ module Devise
   class Mailer < ApplicationMailer
     include Devise::Mailers::Helpers
 
-    default from: -> { AppConfig[:mail_from] },
-            reply_to: -> { AppConfig[:contact_email] }
+    default from: proc { AppConfig[:mail_from] },
+            reply_to: proc { AppConfig[:contact_email] }
 
     def confirmation_instructions(record, token, opts = {})
       @token = token
