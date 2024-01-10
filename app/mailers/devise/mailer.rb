@@ -4,7 +4,7 @@ module Devise
   class Mailer < ApplicationMailer
     include Devise::Mailers::Helpers
 
-    default from: proc { AppConfig[:mail_from] },
+    default from: proc { "HistoryForge <#{AppConfig[:mail_from]}>" },
             reply_to: proc { AppConfig[:contact_email] }
 
     def confirmation_instructions(record, token, opts = {})

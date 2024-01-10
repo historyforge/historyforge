@@ -15,7 +15,7 @@ module People
       CensusYears.each do |year|
         matches = matches.includes(:"census#{year}_records")
       end
-      matches.select { |match| match.census_records.blank? || match.similar_in_age?(record) }
+      matches.to_a.select { |match| match.census_records.blank? || match.similar_in_age?(record) }
     end
 
     private
