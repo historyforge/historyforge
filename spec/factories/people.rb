@@ -5,14 +5,8 @@
 #  id                      :integer          not null, primary key
 #  created_at              :datetime         not null
 #  updated_at              :datetime         not null
-#  last_name               :string
-#  first_name              :string
-#  middle_name             :string
 #  sex                     :string(12)
-#  race                    :string(12)
-#  name_prefix             :string
-#  name_suffix             :string
-#  searchable_name         :text
+#  race                    :string
 #  birth_year              :integer
 #  is_birth_year_estimated :boolean          default(TRUE)
 #  pob                     :string

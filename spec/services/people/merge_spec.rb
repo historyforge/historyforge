@@ -7,6 +7,7 @@ RSpec.describe People::Merge do
   let(:target) { create(:person, description: 'target text') }
   let!(:source_record) { create(:census1910_record, person: source) }
   let!(:target_record) { create(:census1920_record, person: target) }
+
   subject { described_class.new(source, target) }
   before do
     PaperTrail.request.whodunnit = create(:user)

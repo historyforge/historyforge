@@ -7,7 +7,6 @@
 #  year_earliest         :integer
 #  year_latest           :integer
 #  building_type_id      :integer
-#  description           :text
 #  lat                   :decimal(15, 10)
 #  lon                   :decimal(15, 10)
 #  created_at            :datetime         not null

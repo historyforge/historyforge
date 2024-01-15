@@ -20,19 +20,28 @@ module People
 
     private
 
+    def first_name
+      @first_name ||= record.first_name.downcase
+    end
+
+    def last_name
+      @last_name ||= record.last_name.downcase
+    end
+
     def first_name_cognates
-      Nicknames.matches_for(record.first_name, record.sex)
+      Nicknames.matches_for(first_name, record.sex)
     end
     memoize :first_name_cognates
 
     def first_names_with_last_name
-      first_name_cognates.map { |first_name| "#{first_name} #{record.last_name}" }
+      first_name_cognates.map { |first_name| "#{first_name} #{last_name}" }
     end
 
     def exact_name_matches
+      # TODO: search searchable_name rather than
       if_exists(Person.where(sex: record.sex)
                       .joins(:names)
-                      .where(names: { last_name: record.last_name, first_name: record.first_name })
+                      .where(names: { last_name: last_name, first_name: first_name })
                       .order('names.first_name, names.middle_name'))
     end
 

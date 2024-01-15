@@ -127,7 +127,7 @@ class User < ApplicationRecord
   end
 
   def accept_invitation
-    self.invitation_accepted_at = Time.now.utc
+    self.invitation_accepted_at = Time.current.utc
     self.invitation_token = nil
     self.enabled = true
   end

@@ -8,9 +8,7 @@ RSpec.describe People::MergeEligibilityCheck do
   let!(:source_record) { create(:census1910_record, person: source) }
   let!(:target_record) { nil }
   subject { described_class.new(source, target) }
-  before do
-    PaperTrail.request.whodunnit = create(:user)
-  end
+  before { PaperTrail.request.whodunnit = create(:user) }
   describe '#okay?' do
     context 'not okay because of census records in the same year' do
       let!(:target_record) { create(:census1910_record, person: target) }
@@ -21,7 +19,7 @@ RSpec.describe People::MergeEligibilityCheck do
     end
     context 'is okay because no census records in the same year' do
       let!(:target_record) { create(:census1920_record, person: target) }
-      before { subject.perform }
+      before { subject.perform.okay? }
       it 'says no' do
         expect(subject.okay?).to be_truthy
       end

@@ -23,7 +23,7 @@ module Moderation
   def review!(reviewer)
     return if reviewed?
 
-    self.reviewed_at = Time.now
+    self.reviewed_at = Time.current
     self.reviewed_by = reviewer
     unless save
       self.reviewed_at = nil
@@ -35,7 +35,7 @@ module Moderation
   def prepare_for_review
     return if reviewed?
 
-    self.reviewed_at = Time.now
+    self.reviewed_at = Time.current
     validate
     self.reviewed_at = nil
   end

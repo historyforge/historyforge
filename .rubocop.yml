@@ -1,5 +1,10 @@
 # Common configuration.
-
+require:
+  - rubocop-capybara
+  - rubocop-factory_bot
+  - rubocop-rails
+  - rubocop-rspec
+  - rubocop-performance
 AllCops:
   RubyInterpreters:
     - ruby
@@ -66,7 +71,7 @@ AllCops:
   # the `--enable-pending-cops` command-line option.
   # When `NewCops` is `disable`, pending cops are disabled in bulk. Can be overridden by
   # the `--disable-pending-cops` command-line option.
-  NewCops: pending
+  NewCops: enable
   # Enables the result cache if `true`. Can be overridden by the `--cache` command
   # line option.
   UseCache: true
@@ -124,16 +129,6 @@ Bundler/DuplicatedGem:
   Severity: warning
   VersionAdded: '0.46'
   VersionChanged: '1.40'
-  Include:
-    - '**/*.gemfile'
-    - '**/Gemfile'
-    - '**/gems.rb'
-
-Bundler/DuplicatedGroup:
-  Description: 'Checks for duplicate group entries in Gemfile.'
-  Enabled: true
-  Severity: warning
-  VersionAdded: '1.56'
   Include:
     - '**/*.gemfile'
     - '**/Gemfile'
@@ -1919,12 +1914,6 @@ Lint/InterpolationCheck:
   VersionAdded: '0.50'
   VersionChanged: '1.40'
 
-Lint/ItWithoutArgumentsInBlock:
-  Description: 'Checks uses of `it` calls without arguments in block.'
-  Reference: 'https://bugs.ruby-lang.org/issues/18980'
-  Enabled: pending
-  VersionAdded: '1.59'
-
 Lint/LambdaWithoutLiteralBlock:
   Description: 'Checks uses of lambda without a literal block.'
   Enabled: pending
@@ -1934,11 +1923,6 @@ Lint/LiteralAsCondition:
   Description: 'Checks of literals used in conditions.'
   Enabled: true
   VersionAdded: '0.51'
-
-Lint/LiteralAssignmentInCondition:
-  Description: 'Checks for literal assignments in the conditions.'
-  Enabled: pending
-  VersionAdded: '1.58'
 
 Lint/LiteralInInterpolation:
   Description: 'Checks for literals used in interpolation.'
@@ -1977,12 +1961,6 @@ Lint/MissingSuper:
   AllowedParentClasses: []
   VersionAdded: '0.89'
   VersionChanged: '1.4'
-
-Lint/MixedCaseRange:
-  Description: 'Checks for mixed-case character ranges since they include likely unintended characters.'
-  Enabled: pending
-  SafeAutoCorrect: false
-  VersionAdded: '1.53'
 
 Lint/MixedRegexpCaptureTypes:
   Description: 'Do not mix named captures and numbered captures in a Regexp literal.'
@@ -2132,11 +2110,6 @@ Lint/RedundantDirGlobSort:
   VersionAdded: '1.8'
   VersionChanged: '1.26'
   SafeAutoCorrect: false
-
-Lint/RedundantRegexpQuantifiers:
-  Description: 'Checks for redundant quantifiers in Regexps.'
-  Enabled: pending
-  VersionAdded: '1.53'
 
 Lint/RedundantRequireStatement:
   Description: 'Checks for unnecessary `require` statement.'
@@ -3054,7 +3027,6 @@ Style/ArgumentsForwarding:
   Description: 'Use arguments forwarding.'
   StyleGuide: '#arguments-forwarding'
   Enabled: pending
-  AllowOnlyRestArgument: true
   UseAnonymousForwarding: true
   RedundantRestArgumentNames:
     - args
@@ -3079,9 +3051,8 @@ Style/ArrayCoercion:
   Enabled: false
   VersionAdded: '0.88'
 
-Style/ArrayFirstLast:
+Style/ConcatArrayLiterals:
   Description: 'Use `arr.first` and `arr.last` instead of `arr[0]` and `arr[-1]`.'
-  Reference: '#first-and-last'
   Enabled: false
   VersionAdded: '1.58'
   Safe: false
@@ -3146,7 +3117,7 @@ Style/BisectedAttrAccessor:
 Style/BlockComments:
   Description: 'Do not use block comments.'
   StyleGuide: '#no-block-comments'
-  Enabled: true
+  Enabled: false
   VersionAdded: '0.9'
   VersionChanged: '0.23'
 
@@ -3480,12 +3451,6 @@ Style/ComparableClamp:
   Description: 'Enforces the use of `Comparable#clamp` instead of comparison by minimum and maximum.'
   Enabled: pending
   VersionAdded: '1.44'
-
-Style/ConcatArrayLiterals:
-  Description: 'Enforces the use of `Array#push(item)` instead of `Array#concat([item])` to avoid redundant array literals.'
-  Enabled: pending
-  Safe: false
-  VersionAdded: '1.41'
 
 Style/ConditionalAssignment:
   Description: >-
@@ -4865,11 +4830,6 @@ Style/RedundantConstantBase:
   Enabled: pending
   VersionAdded: '1.40'
 
-Style/RedundantCurrentDirectoryInPath:
-  Description: 'Checks for uses a redundant current directory in path.'
-  Enabled: pending
-  VersionAdded: '1.53'
-
 Style/RedundantDoubleSplatHashBraces:
   Description: 'Checks for redundant uses of double splat hash braces.'
   Enabled: pending
@@ -4959,11 +4919,6 @@ Style/RedundantPercentQ:
   StyleGuide: '#percent-q'
   Enabled: true
   VersionAdded: '0.76'
-
-Style/RedundantRegexpArgument:
-  Description: 'Identifies places where argument can be replaced from a deterministic regexp to a string.'
-  Enabled: pending
-  VersionAdded: '1.53'
 
 Style/RedundantRegexpCharacterClass:
   Description: 'Checks for unnecessary single-element Regexp character classes.'

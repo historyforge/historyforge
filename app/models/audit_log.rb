@@ -24,7 +24,7 @@ class AuditLog < ApplicationRecord
 
   before_validation do
     self.user_id ||= PaperTrail.request.whodunnit
-    self.logged_at ||= Time.now
+    self.logged_at ||= Time.current
   end
 
   def whodunnit

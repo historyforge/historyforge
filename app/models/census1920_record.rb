@@ -66,6 +66,7 @@
 #  histid               :uuid
 #  enum_dist            :string           not null
 #  ward                 :integer
+#  institution          :string
 #
 # Indexes
 #

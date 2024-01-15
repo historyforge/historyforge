@@ -11,7 +11,7 @@ namespace :db do
 
   desc 'Restores the database dump at db/APP_NAME.dump. To use the backup from up to 7 days ago, pass in the days argument like so: rake db:restore days=2'
   task restore: :environment do
-    timestamp = ENV['days'] ? ENV['days'].days.ago : Time.now
+    timestamp = ENV['days'] ? ENV['days'].days.ago : Time.current
     timestamp = timestamp.strftime('%Y-%m-%d')
     cmd = nil
     with_config do |app, host, db, user, password|
@@ -27,7 +27,7 @@ namespace :db do
   task backup: :dump do
     require 'fileutils'
     basename = File.join(Rails.root, 'db', Rails.application.class.parent_name.underscore)
-    timestamp = Time.now.strftime('%Y-%m-%d')
+    timestamp = Time.current.strftime('%Y-%m-%d')
     expired = 7.days.ago.strftime('%y-%m-%d')
     FileUtils.mv "#{basename}.dump", "#{basename}-#{timestamp}.dump"
     FileUtils.rm "#{basename}-#{expired}.dump", force: true

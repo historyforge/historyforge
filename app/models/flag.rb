@@ -49,7 +49,7 @@ class Flag < ApplicationRecord
   def mark_resolved=(value)
     if value == '1'
       self.resolved_by = editing_user
-      self.resolved_at = Time.now
+      self.resolved_at = Time.current
     end
   end
 

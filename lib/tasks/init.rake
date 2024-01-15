@@ -15,7 +15,7 @@ namespace :init do
     pwd = chars.sort_by { rand }.join[0...16]
     user.password = pwd
     user.password_confirmation = pwd
-    user.confirmed_at = Time.now
+    user.confirmed_at = Time.current
     if user.save
       STDOUT.puts "A new user has been created with the email #{user.email}. The password is: \n#{pwd}"
     else
