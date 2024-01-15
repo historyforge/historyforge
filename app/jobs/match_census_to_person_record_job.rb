@@ -58,6 +58,6 @@ class MatchCensusToPersonRecordJob < ApplicationJob
   end
 
   def generate_person_record
-    People::GenerateFromCensusRecord.new(@census_record).perform
+    People::GenerateFromCensusRecord.run!(record: @census_record)
   end
 end

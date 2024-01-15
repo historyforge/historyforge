@@ -3,10 +3,11 @@
 require 'rails_helper'
 
 RSpec.describe AutoStripAttributes do
-  subject { Census1930Record.new }
-  it 'works' do
-    subject.occupation_code = 'vx'
-    subject.validate
-    expect(subject.occupation_code).to eq('VX')
+  let(:record) { Census1930Record.new }
+
+  it 'validates occupation_code' do
+    record.occupation_code = 'vx'
+    record.validate
+    expect(record.occupation_code).to eq('VX')
   end
 end

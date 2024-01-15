@@ -3,7 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe NextCensusRecordAttributes do
-  subject { NextCensusRecordAttributes.new(record, action) }
+  let(:result) { described_class.new(record, action) }
+
   let(:record) { Census1900Record.new }
 
   describe 'attributes' do
@@ -25,117 +26,121 @@ RSpec.describe NextCensusRecordAttributes do
       record.building_id = 1
     end
 
-    context 'same enumeration district' do
+    context 'with same enumeration district' do
       let(:action) { 'enumeration' }
+
       it 'has the correct attributes' do
-        expect(subject.attributes[:county]).to eq(record.county)
-        expect(subject.attributes[:city]).to eq(record.city)
-        expect(subject.attributes[:ward]).to eq(record.ward)
-        expect(subject.attributes[:enum_dist]).to eq(record.enum_dist)
-        expect(subject.attributes[:locality_id]).to eq(record.locality_id)
-        expect(subject.attributes[:dwelling_number]).to be_nil
-        expect(subject.attributes[:family_id]).to be_nil
-        expect(subject.attributes[:street_house_number]).to be_nil
-        expect(subject.attributes[:street_prefix]).to be_nil
-        expect(subject.attributes[:street_name]).to be_nil
-        expect(subject.attributes[:street_suffix]).to be_nil
-        expect(subject.attributes[:building_id]).to be_nil
+        expect(result.attributes[:county]).to eq(record.county)
+        expect(result.attributes[:city]).to eq(record.city)
+        expect(result.attributes[:ward]).to eq(record.ward)
+        expect(result.attributes[:enum_dist]).to eq(record.enum_dist)
+        expect(result.attributes[:locality_id]).to eq(record.locality_id)
+        %i[dwelling_number family_id street_house_number
+           street_prefix street_name street_suffix building_id].each do |attribute|
+          expect(result.attributes[attribute]).to be_nil
+        end
       end
     end
 
-    context 'same street' do
+    context 'with the same street' do
       let(:action) { 'street' }
+
       it 'has the correct attributes' do
-        expect(subject.attributes[:county]).to eq(record.county)
-        expect(subject.attributes[:city]).to eq(record.city)
-        expect(subject.attributes[:ward]).to eq(record.ward)
-        expect(subject.attributes[:enum_dist]).to eq(record.enum_dist)
-        expect(subject.attributes[:locality_id]).to eq(record.locality_id)
-        expect(subject.attributes[:dwelling_number]).to be_nil
-        expect(subject.attributes[:family_id]).to be_nil
-        expect(subject.attributes[:street_house_number]).to be_nil
-        expect(subject.attributes[:street_prefix]).to eq(record.street_prefix)
-        expect(subject.attributes[:street_name]).to eq(record.street_name)
-        expect(subject.attributes[:street_suffix]).to eq(record.street_suffix)
-        expect(subject.attributes[:building_id]).to be_nil
+        expect(result.attributes[:county]).to eq(record.county)
+        expect(result.attributes[:city]).to eq(record.city)
+        expect(result.attributes[:ward]).to eq(record.ward)
+        expect(result.attributes[:enum_dist]).to eq(record.enum_dist)
+        expect(result.attributes[:locality_id]).to eq(record.locality_id)
+        expect(result.attributes[:street_prefix]).to eq(record.street_prefix)
+        expect(result.attributes[:street_name]).to eq(record.street_name)
+        expect(result.attributes[:street_suffix]).to eq(record.street_suffix)
+        %i[dwelling_number family_id street_house_number building_id].each do |attribute|
+          expect(result.attributes[attribute]).to be_nil
+        end
       end
     end
 
-    context 'same dwelling' do
+    context 'with the same dwelling' do
       let(:action) { 'dwelling' }
+
       it 'has the correct attributes' do
-        expect(subject.attributes[:county]).to eq(record.county)
-        expect(subject.attributes[:city]).to eq(record.city)
-        expect(subject.attributes[:ward]).to eq(record.ward)
-        expect(subject.attributes[:enum_dist]).to eq(record.enum_dist)
-        expect(subject.attributes[:locality_id]).to eq(record.locality_id)
-        expect(subject.attributes[:dwelling_number]).to eq(record.dwelling_number)
-        expect(subject.attributes[:family_id]).to be_nil
-        expect(subject.attributes[:street_house_number]).to eq(record.street_house_number)
-        expect(subject.attributes[:street_prefix]).to eq(record.street_prefix)
-        expect(subject.attributes[:street_name]).to eq(record.street_name)
-        expect(subject.attributes[:street_suffix]).to eq(record.street_suffix)
-        expect(subject.attributes[:building_id]).to eq(record.building_id)
+        expect(result.attributes[:county]).to eq(record.county)
+        expect(result.attributes[:city]).to eq(record.city)
+        expect(result.attributes[:ward]).to eq(record.ward)
+        expect(result.attributes[:enum_dist]).to eq(record.enum_dist)
+        expect(result.attributes[:locality_id]).to eq(record.locality_id)
+        expect(result.attributes[:dwelling_number]).to eq(record.dwelling_number)
+        expect(result.attributes[:family_id]).to be_nil
+        expect(result.attributes[:street_house_number]).to eq(record.street_house_number)
+        expect(result.attributes[:street_prefix]).to eq(record.street_prefix)
+        expect(result.attributes[:street_name]).to eq(record.street_name)
+        expect(result.attributes[:street_suffix]).to eq(record.street_suffix)
+        expect(result.attributes[:building_id]).to eq(record.building_id)
       end
     end
 
-    context 'same family' do
+    context 'with same family' do
       let(:action) { 'family' }
+
       it 'has the correct attributes' do
-        expect(subject.attributes[:county]).to eq(record.county)
-        expect(subject.attributes[:city]).to eq(record.city)
-        expect(subject.attributes[:ward]).to eq(record.ward)
-        expect(subject.attributes[:enum_dist]).to eq(record.enum_dist)
-        expect(subject.attributes[:locality_id]).to eq(record.locality_id)
-        expect(subject.attributes[:dwelling_number]).to eq(record.dwelling_number)
-        expect(subject.attributes[:family_id]).to eq(record.family_id)
-        expect(subject.attributes[:street_house_number]).to eq(record.street_house_number)
-        expect(subject.attributes[:street_prefix]).to eq(record.street_prefix)
-        expect(subject.attributes[:street_name]).to eq(record.street_name)
-        expect(subject.attributes[:street_suffix]).to eq(record.street_suffix)
-        expect(subject.attributes[:building_id]).to eq(record.building_id)
+        expect(result.attributes[:county]).to eq(record.county)
+        expect(result.attributes[:city]).to eq(record.city)
+        expect(result.attributes[:ward]).to eq(record.ward)
+        expect(result.attributes[:enum_dist]).to eq(record.enum_dist)
+        expect(result.attributes[:locality_id]).to eq(record.locality_id)
+        expect(result.attributes[:dwelling_number]).to eq(record.dwelling_number)
+        expect(result.attributes[:family_id]).to eq(record.family_id)
+        expect(result.attributes[:street_house_number]).to eq(record.street_house_number)
+        expect(result.attributes[:street_prefix]).to eq(record.street_prefix)
+        expect(result.attributes[:street_name]).to eq(record.street_name)
+        expect(result.attributes[:street_suffix]).to eq(record.street_suffix)
+        expect(result.attributes[:building_id]).to eq(record.building_id)
       end
     end
   end
 
   describe 'pagination' do
     let(:action) { 'enumeration' }
-    context 'not at the end of page or side' do
+
+    context 'when not at the end of page or side' do
       before do
         record.page_number = 1
         record.page_side = 'A'
         record.line_number = 1
       end
+
       it 'goes to the next line' do
-        expect(subject.attributes[:page_number]).to eq(1)
-        expect(subject.attributes[:page_side]).to eq('A')
-        expect(subject.attributes[:line_number]).to eq(2)
+        expect(result.attributes[:page_number]).to eq(1)
+        expect(result.attributes[:page_side]).to eq('A')
+        expect(result.attributes[:line_number]).to eq(2)
       end
     end
 
-    context 'at the end of side A' do
+    context 'when at the end of side A' do
       before do
         record.page_number = 1
         record.page_side = 'A'
         record.line_number = record.per_page
       end
+
       it 'goes to the first line of side B' do
-        expect(subject.attributes[:page_number]).to eq(1)
-        expect(subject.attributes[:page_side]).to eq('B')
-        expect(subject.attributes[:line_number]).to eq(1)
+        expect(result.attributes[:page_number]).to eq(1)
+        expect(result.attributes[:page_side]).to eq('B')
+        expect(result.attributes[:line_number]).to eq(1)
       end
     end
 
-    context 'at the end of side B' do
+    context 'when at the end of side B' do
       before do
         record.page_number = 1
         record.page_side = 'B'
         record.line_number = record.per_page
       end
+
       it 'goes to the first line of side A of next page' do
-        expect(subject.attributes[:page_number]).to eq(2)
-        expect(subject.attributes[:page_side]).to eq('A')
-        expect(subject.attributes[:line_number]).to eq(1)
+        expect(result.attributes[:page_number]).to eq(2)
+        expect(result.attributes[:page_side]).to eq('A')
+        expect(result.attributes[:line_number]).to eq(1)
       end
     end
   end

@@ -7,41 +7,55 @@ module Buildings
     let(:locality) { create(:locality, year_street_renumber: 1915) }
     let(:source) { create(:building, locality:) }
     let(:target) { create(:building, locality:) }
-    subject { described_class.run!(source:, target:) }
-    let(:architect) { create(:architect) }
-    let(:resident) { create(:census1910_record) }
-    let(:resident2) { create(:census1920_record) }
+
     before do
       PaperTrail.request.whodunnit = create(:user)
     end
 
-    it 'basically works' do
-      subject
-      expect(source.destroyed?).to be_truthy
-      expect(target.audit_logs.count).to eq(1)
+    def run_interaction
+      described_class.run!(source:, target:)
     end
 
-    it 'does not overwrite target attributes' do
-      target_name = target.name
-      subject
-      expect(target.name).to include(target_name)
+    context 'with the basic case' do
+      it 'basically works' do
+        target_name = target.name
+        run_interaction
+        expect(target.name).to include(target_name)
+        expect(source).to be_destroyed
+        expect(target.audit_logs.count).to eq(1)
+      end
     end
 
-    it 'transfers architects' do
-      source.architects = [architect]
-      subject
-      expect(target.architects).to include(architect)
+    context 'with architects' do
+      let(:architect) { create(:architect) }
+
+      before do
+        source.architects = [architect]
+        run_interaction
+      end
+
+      it 'transfers architects' do
+        expect(target.architects).to include(architect)
+      end
     end
 
-    context 'transfers residents' do
-      before { resident.update(building: source) }
+    context 'with residents' do
+      let(:resident) { create(:census1910_record) }
+
+      before do
+        resident.update(building: source)
+        run_interaction
+      end
+
       it 'moves the resident from the source building to the target building' do
-        subject
         expect(target.census_1910_records).to include(resident)
       end
     end
 
-    context 'address history' do
+    context 'with address history' do
+      let(:resident) { create(:census1910_record) }
+      let(:resident2) { create(:census1920_record) }
+
       before do
         resident.update(building: source, street_house_number: '17', street_name: 'Mill', street_prefix: 'E',
                         street_suffix: 'St', city: 'Ithaca')
@@ -51,10 +65,10 @@ module Buildings
                                       city: 'Ithaca')
         target.addresses.first.update(house_number: '117', name: 'Mill', prefix: 'E', suffix: 'St',
                                       city: 'Ithaca')
-        subject
+        run_interaction
       end
+
       it 'sets the correct year on the target address' do
-        subject
         expect(target.address.year).to eq(locality.year_street_renumber)
         expect(target.addresses.length).to eq(2)
       end

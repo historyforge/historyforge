@@ -2490,7 +2490,7 @@ Metrics/AbcSize:
   AllowedMethods: []
   AllowedPatterns: []
   CountRepeatedAttributes: true
-  Max: 17
+  Max: 25
 
 Metrics/BlockLength:
   Description: 'Avoid long blocks with many lines.'
@@ -2914,6 +2914,17 @@ Naming/VariableNumber:
     - rfc3339      # DateTime.rfc3339
     - x86_64       # Allowed by default as an underscore separated CPU architecture name
   AllowedPatterns: []
+
+#################### RSpec ##############################
+
+RSpec/ExampleLength:
+  Max: 12
+
+RSpec/MultipleExpectations:
+  Max: 12
+
+RSpec/NestedGroups:
+  Max: 4
 
 #################### Security ##############################
 

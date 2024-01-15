@@ -7,15 +7,16 @@ RSpec.describe People::Merge do
   let(:target) { create(:person, description: 'target text') }
   let!(:source_record) { create(:census1910_record, person: source) }
   let!(:target_record) { create(:census1920_record, person: target) }
+  let(:source_name) { @source_name }
 
-  subject { described_class.new(source, target) }
   before do
     PaperTrail.request.whodunnit = create(:user)
+    @source_name = source.names.first.name
+    described_class.new(source, target).perform
   end
+
   it 'merges successfully' do
-    source_name = source.names.first.name
-    subject.perform
-    expect(source.destroyed?).to be_truthy
+    expect(source).to be_destroyed
     expect(target.names.map(&:name)).to include(source_name)
     expect(target.census1910_records).to include(source_record)
     expect(target.census1920_records).to include(target_record)

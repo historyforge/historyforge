@@ -1,31 +1,25 @@
 # frozen_string_literal: true
 
 module People
-  class GenerateFromCensusRecord
-    include FastMemoize
+  class GenerateFromCensusRecord < ApplicationInteraction
+    # @!attribute census_record [CensusRecord]
+    object :record, class: 'CensusRecord'
 
-    def initialize(census_record)
-      @census_record = census_record
-    end
-
-    attr_reader :census_record
-    delegate :year, to: :census_record
-
-    def perform
-      census_record.update person_id: person.id
+    def execute
+      person = person_from_census_record
+      person.save
+      record.update person_id: person.id
       person
     end
 
-    def person
-      @person = Person.new "census#{year}_records" => [census_record]
-      @person.race = census_record.race
-      @person.sex = census_record.sex
-      @person.birth_year = census_record.year - census_record.age if census_record.age&.< 120
-      @person.pob = census_record.pob
-      @person.add_name_from(census_record)
-      @person.save
-      @person
+    def person_from_census_record
+      person = Person.new "census#{record.year}_records" => [record]
+      person.race = record.race
+      person.sex = record.sex
+      person.birth_year = record.year - record.age if record.age&.< 120
+      person.pob = record.pob
+      person.add_name_from(record)
+      person
     end
-    memoize :person
   end
 end
