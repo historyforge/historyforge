@@ -38,15 +38,14 @@ module People
     end
 
     def exact_name_matches
-      # TODO: search searchable_name rather than
       if_exists(Person.where(sex: record.sex)
                       .joins(:names)
-                      .where(names: { last_name: last_name, first_name: first_name })
+                      .where('(LOWER(names.last_name) % :last_name AND LOWER(names.first_name) % :first_name) OR (LOWER(names.first_name) % :last_name AND LOWER(names.last_name) % :first_name)', { last_name:, first_name: })
                       .order('names.first_name, names.middle_name'))
     end
 
     def fuzzy_name_matches
-      if_exists(Person.fuzzy_name_search(record.last_name)
+      if_exists(Person.fuzzy_name_search(last_name)
                       .fuzzy_name_search(first_name_cognates)
                       .where(sex: record.sex))
     end
@@ -54,7 +53,7 @@ module People
     def last_name_matches
       if_exists(Person.where(sex: record.sex)
                       .joins(:names)
-                      .where(names: { last_name: record.last_name })
+                      .where('LOWER(names.last_name) % :last_name OR LOWER(names.first_name) % :last_name', { last_name: })
                       .order('names.first_name, names.middle_name'))
     end
 

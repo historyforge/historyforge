@@ -19,6 +19,10 @@ module CensusYears
     YEARS.map(&block)
   end
 
+  def self.sum(&block)
+    YEARS.map(&block).reduce(&:+)
+  end
+
   def self.to_words(year)
     YEARS_IN_WORDS[YEARS.index(year)]
   end

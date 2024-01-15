@@ -69,8 +69,8 @@ class CensusRecordDecorator < ApplicationDecorator
   def census_scope
     str = []
     str << "Ward #{object.ward} " if object.ward.present?
-    str << "ED #{object.enum_dist}" if object.respond_to?(:enum_dist)
-    str << "Sheet #{object.page_number}#{object.page_side} # #{object.line_number}"
+    str << "ED #{object.enum_dist} " if object.respond_to?(:enum_dist)
+    str << "Sheet #{object.page_number}#{object.page_side} ##{object.line_number}"
     str.join
   end
 

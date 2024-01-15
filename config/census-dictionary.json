@@ -1481,7 +1481,7 @@
     },
     "census_scope": {
       "defaults": {
-        "label": "Census Scope"
+        "label": "Census Scope (ED/Sheet/Line)"
       }
     },
     "id": {

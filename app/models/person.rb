@@ -118,15 +118,9 @@ class Person < ApplicationRecord
   end
   memoize :primary_name
 
-  delegate :first_name, :last_name, :middle_name, :name_prefix, :name_suffix, to: :primary_name
-
-  # pg_search_scope :fuzzy_name_search,
-  #                 against: %i[first_name last_name],
-  #                 using: {
-  #                   trigram: {
-  #                     word_similarity: true
-  #                   }
-  #                 }
+  delegate :first_name, :last_name, :middle_name, :name_prefix, :name_suffix,
+           to: :primary_name,
+           allow_nil: true
 
   # To make the "Mark n Reviewed" button not show up because there is not a person review system at the moment
   def reviewed?
@@ -150,10 +144,13 @@ class Person < ApplicationRecord
     new_name = add_name_from(record)
     new_name&.save
   end
+
   def possible_unmatched_records
-    CensusYears.map do |year|
+    return unless primary_name
+
+    CensusYears.sum do |year|
       CensusRecord.for_year(year).where(person_id: nil, sex:, last_name:, first_name:)
-    end.reduce(&:+)
+    end
   end
   memoize :possible_unmatched_records
 
@@ -163,16 +160,14 @@ class Person < ApplicationRecord
   end
 
   def age_in_year(year)
-    if birth_year
-      year - birth_year
+    return year - birth_year if birth_year
+
+    match = census_records.first
+    if match
+      diff = match.year - year
+      (match.age || 0) - diff
     else
-      match = census_records.first
-      if match
-        diff = match.year - year
-        (match.age || 0) - diff
-      else
-        -1
-      end
+      -1
     end
   end
 
@@ -211,13 +206,12 @@ class Person < ApplicationRecord
     aged_records = census_records.reject { |r| r.age&.> 120 }
     return if aged_records.blank?
 
-    aged_records
-      .map { |r| r.year - (r.age || 0) }
-      .reduce(&:+) / (census_records.length || 1)
+    aged_records.sum { |r| r.year - (r.age || 0) } / (census_records.length || 1)
   end
 
   def save_with_estimates
     return if @saved_with_estimates
+
     self.is_birth_year_estimated = true
     self.is_pob_estimated = true
     estimate_birth_year
@@ -240,7 +234,7 @@ class Person < ApplicationRecord
   end
 
   def estimated_pob
-    census_records.map(&:pob).compact.uniq.first
+    census_records.filter_map(&:pob).uniq.first
   end
 
   def unattached?

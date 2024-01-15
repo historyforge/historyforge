@@ -19,7 +19,7 @@ RSpec.describe People::MergeEligibilityCheck do
     end
     context 'is okay because no census records in the same year' do
       let!(:target_record) { create(:census1920_record, person: target) }
-      before { subject.perform.okay? }
+      before { subject.perform }
       it 'says no' do
         expect(subject.okay?).to be_truthy
       end
