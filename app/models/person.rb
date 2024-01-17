@@ -27,9 +27,9 @@ class Person < ApplicationRecord
   include Flaggable
   include Versioning
 
-  attr_accessor :match_score
+  NAME_ATTRIBUTES = %i[first_name middle_name last_name name_prefix name_suffix].freeze
 
-  self.ignored_columns = %i[searchable_name first_name middle_name last_name name_prefix name_suffix]
+  attr_accessor :match_score
 
   define_enumeration :sex, %w[M F]
   define_enumeration :race, %w[W B Mu Mex In Ch Jp Fil Hin Kor]
@@ -114,13 +114,9 @@ class Person < ApplicationRecord
   end
 
   def primary_name
-    names.loaded? ? names.detect(&:is_primary?) : names.primary.first
+    names.to_a.detect(&:is_primary?)
   end
   memoize :primary_name
-
-  delegate :first_name, :last_name, :middle_name, :name_prefix, :name_suffix,
-           to: :primary_name,
-           allow_nil: true
 
   # To make the "Mark n Reviewed" button not show up because there is not a person review system at the moment
   def reviewed?
@@ -130,14 +126,9 @@ class Person < ApplicationRecord
   def add_name_from(record)
     return if names.any? { |name| name.same_name_as?(record) }
 
-    names.build(
-      is_primary: names.blank?,
-      first_name: record.first_name,
-      last_name: record.last_name,
-      middle_name: record.middle_name,
-      name_prefix: record.name_prefix,
-      name_suffix: record.name_suffix
-    )
+    names.build(is_primary: names.blank?).tap do |name|
+      name.attributes = record.attributes.slice(*NAME_ATTRIBUTES)
+    end
   end
 
   def add_name_from!(record)
@@ -247,6 +238,12 @@ class Person < ApplicationRecord
       errors.add(:base, 'Primary name missing.')
     elsif primary_names.size > 1
       errors.add(:base, 'Multiple primary names not allowed.')
+    else
+      pull_name_from(primary_names.first)
     end
+  end
+
+  def pull_name_from(name_record)
+    attributes.merge!(name_record.attributes.slice(*NAME_ATTRIBUTES))
   end
 end

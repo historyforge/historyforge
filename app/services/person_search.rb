@@ -31,6 +31,7 @@ class PersonSearch < SearchQueryBuilder
     builder.uncensused if uncensused?
     builder.photographed if photographed?
     add_census_record_links
+    add_see_names
     add_sorts
     builder.scoped
   end
@@ -53,9 +54,16 @@ class PersonSearch < SearchQueryBuilder
     end
   end
 
+  def add_see_names
+    return unless has_names_joined?
+
+    builder.group('person_names.id')
+    builder.select(builder.scoped.select_values, 'person_names.first_name as matched_first_name, person_names.middle_name as matched_middle_name, person_names.last_name as matched_last_name, person_names.name_suffix as matched_name_suffix, person_names.name_prefix as matched_name_prefix')
+  end
+
   def add_sorts
     order = []
-    sort&.each do |_key, sort_unit|
+    sort&.each_value do |sort_unit|
       col = sort_unit['colId']
       dir = sort_unit['sort']
       order << if col == 'name'
@@ -69,7 +77,7 @@ class PersonSearch < SearchQueryBuilder
   end
 
   def name_order_clause(dir)
-    "LOWER(people.last_name) #{dir}, LOWER(people.first_name) #{dir}, middle_name #{dir} NULLS FIRST"
+    "LOWER(people.last_name) #{dir}, LOWER(people.first_name) #{dir}, people.middle_name #{dir} NULLS FIRST"
   end
 
   def default_fields
@@ -86,5 +94,13 @@ class PersonSearch < SearchQueryBuilder
 
   def photographed?
     @scope == 'photographed'
+  end
+
+  def has_names_joined?
+    joins_values = builder.scoped.joins_values
+    return false if joins_values.blank?
+    return joins_values.any? { |v| v == :names } if joins_values.first.is_a?(Symbol)
+
+    joins_values.any? { |v| v.reflections.any? { |r| r.name == :names } }
   end
 end

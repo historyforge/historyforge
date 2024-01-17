@@ -56,9 +56,9 @@ class SearchQueryBuilder
 
     attr_reader :scoped
 
-    def method_missing(method, *args)
+    def method_missing(method, *)
       if @scoped
-        @scoped = @scoped.public_send(method, *args)
+        @scoped = @scoped.public_send(method, *)
       else
         super
       end

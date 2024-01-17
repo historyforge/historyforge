@@ -15,7 +15,21 @@ class PersonGridTranslator
       hash = { id: record.id }
       columns.each do |column|
         value = record.public_send(column)
-        value = { name: value, reviewed: record.reviewed? } if column == 'name'
+        if column == 'name'
+          if record.matched_last_name.present?
+            matched_name = record.format_name(
+              first_name: record.matched_first_name,
+              middle_name: record.matched_middle_name,
+              last_name: record.matched_last_name,
+              name_prefix: record.matched_name_prefix,
+              name_suffix: record.matched_name_suffix
+            )
+            name = matched_name == value ? value : "#{matched_name} (see #{value})"
+            value = { name:, reviewed: record.reviewed? }
+          else
+            value = { name: value, reviewed: record.reviewed? }
+          end
+        end
         if column =~ /census\d{4}/
           value = value.compact
           value = value.present? ? { year: column[-4...].to_i, id: value } : nil
@@ -64,8 +78,8 @@ class PersonGridTranslator
     id: 60,
     view: 60,
     occupation: 160,
-    name: 160,
-    description: 250,
+    name: 300,
+    description: 250
   }.freeze
 
   def width_for_column(column)
