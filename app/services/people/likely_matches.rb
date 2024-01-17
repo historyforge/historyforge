@@ -45,8 +45,7 @@ module People
     end
 
     def fuzzy_name_matches
-      if_exists(Person.fuzzy_name_search(last_name)
-                      .fuzzy_name_search(first_name_cognates)
+      if_exists(Person.fuzzy_name_search(first_names_with_last_name)
                       .where(sex: record.sex))
     end
 
