@@ -21,8 +21,9 @@ module People
 
     def merge_names
       @source.names.each do |name|
-        @target.add_name_from!(name)
+        @target.add_name_from(name)
       end
+      @target.save
     end
 
     def merge_census_records

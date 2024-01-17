@@ -27,7 +27,7 @@ class Person < ApplicationRecord
   include Flaggable
   include Versioning
 
-  NAME_ATTRIBUTES = %i[first_name middle_name last_name name_prefix name_suffix].freeze
+  NAME_ATTRIBUTES = %w[first_name middle_name last_name name_prefix name_suffix].freeze
 
   attr_accessor :match_score
 
@@ -126,9 +126,10 @@ class Person < ApplicationRecord
   def add_name_from(record)
     return if names.any? { |name| name.same_name_as?(record) }
 
-    names.build(is_primary: names.blank?).tap do |name|
+    primary_name_record = names.build(is_primary: names.blank?).tap do |name|
       name.attributes = record.attributes.slice(*NAME_ATTRIBUTES)
     end
+    pull_name_from(primary_name_record)
   end
 
   def add_name_from!(record)
@@ -244,6 +245,6 @@ class Person < ApplicationRecord
   end
 
   def pull_name_from(name_record)
-    attributes.merge!(name_record.attributes.slice(*NAME_ATTRIBUTES))
+    assign_attributes(name_record.attributes.slice(*NAME_ATTRIBUTES))
   end
 end
