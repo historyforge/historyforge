@@ -40,7 +40,7 @@ module People
     def exact_name_matches
       if_exists(Person.where(sex: record.sex)
                       .joins(:names)
-                      .where('(LOWER(names.last_name) % :last_name AND LOWER(names.first_name) % :first_name) OR (LOWER(names.first_name) % :last_name AND LOWER(names.last_name) % :first_name)', { last_name:, first_name: })
+                      .where('(LOWER(names.last_name) = ? AND LOWER(names.first_name) = ?) OR (LOWER(names.first_name) = ? AND LOWER(names.last_name) = ?)', last_name, first_name, last_name, first_name)
                       .order('names.first_name, names.middle_name'))
     end
 
@@ -51,9 +51,10 @@ module People
     end
 
     def last_name_matches
+      Rails.logger.info "last_name_matches"
       if_exists(Person.where(sex: record.sex)
                       .joins(:names)
-                      .where('LOWER(names.last_name) % :last_name OR LOWER(names.first_name) % :last_name', { last_name: })
+                      .where('LOWER(names.last_name) = ? OR LOWER(names.first_name) = ?', last_name, last_name)
                       .order('names.first_name, names.middle_name'))
     end
 

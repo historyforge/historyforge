@@ -51,9 +51,9 @@ class Person < ApplicationRecord
   end
 
   scope :fuzzy_name_search, lambda { |names|
-    joins(:names).tap do
-      Array.wrap(names).map { |name| where('names.searchable_name % ?', name) }.reduce(:or)
-    end
+    names = Array.wrap(names)
+    joins(:names)
+      .where(names.map { 'person_names.searchable_name % ?' }.join(' OR '), *names)
   }
 
   scope :uncensused, lambda {
