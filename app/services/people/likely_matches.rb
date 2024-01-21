@@ -9,7 +9,8 @@ module People
       # puts "Exact Matches: #{exact_name_matches.inspect}"
       # puts "Fuzzy Matches: #{fuzzy_name_matches.inspect}"
       # puts "Last Name Matches: #{last_name_matches.inspect}"
-      matches = exact_name_matches || fuzzy_name_matches || last_name_matches
+      # matches = exact_name_matches || fuzzy_name_matches || last_name_matches
+      matches = exact_name_matches || last_name_matches || fuzzy_name_matches
       return [] unless matches
 
       CensusYears.each do |year|
