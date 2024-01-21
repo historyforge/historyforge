@@ -18,7 +18,7 @@ class CensusRecordSearch < SearchQueryBuilder
   memoize :results
 
   def scoped
-    builder.includes(:locality) if f.include?('locality')
+    builder.includes(:locality) if f.include?('locality_id')
     builder.reviewed unless user
 
     builder.offset(from) if from&.positive?

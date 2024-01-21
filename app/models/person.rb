@@ -80,7 +80,7 @@ class Person < ApplicationRecord
   }
 
   scope :name_fuzzy_matches, lambda { |names|
-    possible_names = names.squish.split(' ').map { |name| Nicknames.matches_for(name) }
+    possible_names = names.squish.split.map { |name| Nicknames.matches_for(name) }
     query = joins(:names).group('people.id')
     possible_names.each do |name_set|
       conditions = name_set.map { 'person_names.searchable_name % ?' }.join(' OR ')

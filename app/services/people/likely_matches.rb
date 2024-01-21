@@ -38,10 +38,14 @@ module People
     end
 
     def exact_name_matches
-      if_exists(Person.where(sex: record.sex)
-                      .joins(:names)
-                      .where('(LOWER(names.last_name) = ? AND LOWER(names.first_name) = ?) OR (LOWER(names.first_name) = ? AND LOWER(names.last_name) = ?)', last_name, first_name, last_name, first_name)
-                      .order('names.first_name, names.middle_name'))
+      cognates = Nicknames.matches_for(first_name, record.sex)
+      query = Person.where(sex: record.sex)
+                    .where(id: PersonName.select(:person_id)
+                                         .where('lower(person_names.first_name) in (?)', cognates)
+                                         .where('person_names.last_name % ?', last_name)
+                                         .where('person_names.person_id=people.id'))
+                    .order('people.first_name, people.middle_name')
+      if_exists(query)
     end
 
     def fuzzy_name_matches

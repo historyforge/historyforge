@@ -5,10 +5,10 @@ module DecoratorFormatting
     name = last_name.dup
     name << ' ' << name_suffix if name_suffix.present?
     name << ', '
-    name << first_name
+    name << first_name if first_name.present?
     name << ' ' << middle_name if middle_name.present?
     name << ' ' << name_prefix if name_prefix.present?
-    name.strip
+    name.strip.sub(/,$/, '')
   end
 
   def name

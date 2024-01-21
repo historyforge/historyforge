@@ -46,8 +46,14 @@ class CensusRecord < ApplicationRecord
   scope :unhoused, -> { where(building_id: nil) }
   scope :unmatched, -> { where(person_id: nil) }
 
+  scope :name_cont, ->(name) { fuzzy_name_search(name.downcase) }
+
   def self.ransackable_attributes(_auth_object = nil)
     super + %w[street_address]
+  end
+
+  def self.ransackable_scopes(_auth_object = nil)
+    super + %w[name_cont]
   end
 
   class_attribute :year
@@ -91,7 +97,7 @@ class CensusRecord < ApplicationRecord
   scope :not_me, ->(record) { record.persisted? ? where.not(id: record.id) : self }
   def duplicate_census_scope?
     attrs = { locality_id:, ward:, page_number:, page_side:, line_number: }
-    attrs.merge!(enum_dist:) if has_enum_dist?
+    attrs[:enum_dist] = enum_dist if has_enum_dist?
     self.class.where(attrs)
         .not_me(self)
         .count
