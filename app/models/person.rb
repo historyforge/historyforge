@@ -34,13 +34,23 @@ class Person < ApplicationRecord
   define_enumeration :sex, %w[M F]
   define_enumeration :race, %w[W B Mu Mex In Ch Jp Fil Hin Kor]
 
-  CensusYears.each do |year|
-    has_many :"census#{year}_records", dependent: :nullify, class_name: "Census#{year}Record"
-  end
-
+  has_many :census1850_records, dependent: :nullify, class_name: 'Census1850Record', inverse_of: :person
+  has_many :census1860_records, dependent: :nullify, class_name: 'Census1860Record', inverse_of: :person
+  has_many :census1870_records, dependent: :nullify, class_name: 'Census1870Record', inverse_of: :person
+  has_many :census1880_records, dependent: :nullify, class_name: 'Census1880Record', inverse_of: :person
+  has_many :census1900_records, dependent: :nullify, class_name: 'Census1900Record', inverse_of: :person
+  has_many :census1910_records, dependent: :nullify, class_name: 'Census1910Record', inverse_of: :person
+  has_many :census1920_records, dependent: :nullify, class_name: 'Census1920Record', inverse_of: :person
+  has_many :census1930_records, dependent: :nullify, class_name: 'Census1930Record', inverse_of: :person
+  has_many :census1940_records, dependent: :nullify, class_name: 'Census1940Record', inverse_of: :person
+  has_many :census1950_records, dependent: :nullify, class_name: 'Census1950Record', inverse_of: :person
   has_and_belongs_to_many :photos, class_name: 'Photograph', dependent: :nullify
-
-  has_many :names, ->{ order('is_primary desc NULLS LAST, last_name asc, first_name asc, middle_name asc, name_suffix asc, name_prefix asc')}, class_name: 'PersonName', dependent: :destroy, autosave: true
+  has_and_belongs_to_many :localities
+  has_many :names, ->{ order('is_primary desc NULLS LAST, last_name asc, first_name asc, middle_name asc, name_suffix asc, name_prefix asc')},
+           class_name: 'PersonName',
+           dependent: :destroy,
+           autosave: true,
+           inverse_of: :person
   accepts_nested_attributes_for :names, allow_destroy: true, reject_if: proc { |p| p['last_name'].blank? }
 
   validate :validate_primary_name
@@ -135,6 +145,12 @@ class Person < ApplicationRecord
   def add_name_from!(record)
     new_name = add_name_from(record)
     new_name&.save
+  end
+
+  def add_locality_from(record)
+    return if locality_ids.include?(record.locality_id)
+
+    locality_ids << record.locality_id
   end
 
   def possible_unmatched_records

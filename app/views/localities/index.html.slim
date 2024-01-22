@@ -16,7 +16,7 @@
     tbody
       - @localities.each do |record|
         tr.draggable
-          td= record.name
+          td= record.short_name
           - CensusYears.each do |year|
             td= number_with_delimiter record.send(:"census#{year}_records_count")
           td= number_with_delimiter record.total_count

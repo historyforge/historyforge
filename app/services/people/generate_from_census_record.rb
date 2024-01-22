@@ -18,6 +18,7 @@ module People
       person.sex = record.sex
       person.birth_year = record.year - record.age if record.age&.< 120
       person.pob = record.pob
+      person.add_locality_from(record)
       person.add_name_from(record)
       person
     end

@@ -47,6 +47,7 @@ class BuildingSearch < SearchQueryBuilder
     builder.without_residents if unpeopled?
     builder.where(reviewed_at: nil) if unreviewed?
     builder.where(investigate: true) if uninvestigated?
+    builder.where(locality_id: Current.locality_id) if Current.locality_id
 
     if from
       builder.offset(from) if from.positive?

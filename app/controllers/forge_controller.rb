@@ -6,10 +6,7 @@ class ForgeController < ApplicationController
     @layers = MapOverlay.order(:position).where(active: true)
     return unless @locality
 
+    session[:locality] = @locality.id
     @layers = @layers.joins(:localities).where(localities: { id: @locality.id })
-    params[:s] ||= {}
-    params[:s][:locality_id_eq] = @locality.id
-    params[:people] ||= {}
-    params[:people][:locality_id_eq] = @locality.id
   end
 end

@@ -1,7 +1,18 @@
 # frozen_string_literal: true
 
 class LocalitiesController < ApplicationController
-  before_action :check_administrator_role
+  before_action :check_administrator_role, except: %i[set unset]
+
+  def set
+    locality = Locality.find params[:id]
+    locality && (session[:locality] = locality.id)
+    redirect_back_or_to root_path
+  end
+
+  def reset
+    session.delete(:locality)
+    redirect_back_or_to root_path
+  end
 
   def index
     @localities = Locality.all
@@ -14,6 +25,9 @@ class LocalitiesController < ApplicationController
     @locality = Locality.new
   end
 
+  def edit
+    @locality = Locality.find params[:id]
+  end
   def create
     @locality = Locality.new resource_params
     if @locality.save
@@ -25,9 +39,6 @@ class LocalitiesController < ApplicationController
     end
   end
 
-  def edit
-    @locality = Locality.find params[:id]
-  end
 
   def update
     @locality = Locality.find params[:id]

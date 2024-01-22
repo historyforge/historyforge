@@ -8,6 +8,7 @@ class MapOverlaysController < ApplicationController
 
   def index
     @map_overlays = MapOverlay.includes(:localities)
+    @map_overlays = @map_overlays.where(localities: { id: Current.locality_id }) if Current.locality_id
   end
 
   def new

@@ -95,8 +95,10 @@ class ApplicationController < ActionController::Base
 
   def load_settings
     Setting.load
+    Current.locality_id = session[:locality]
     yield
     Setting.unload
+    Current.reset
   end
 
 end

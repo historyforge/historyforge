@@ -101,7 +101,10 @@ Rails.application.routes.draw do
 
   resources :flags
 
-  resources :localities
+  resources :localities do
+    put :set, on: :member
+    put :reset, on: :collection
+  end
 
   resources :map_overlays
 

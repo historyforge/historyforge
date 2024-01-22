@@ -12,6 +12,7 @@ module People
       merge_names
       merge_census_records
       merge_photographs
+      merge_localities
       @source.reload.destroy
       @target.reload
       @target.audit_logs.create message: "Merged ##{@source.id} - #{@source.name}"
@@ -35,6 +36,12 @@ module People
     def merge_photographs
       @source.photos.each do |photo|
         photo.people << @target
+      end
+    end
+
+    def merge_localities
+      @source.locality_ids.each do |locality_id|
+        @target.locality_ids << locality_id unless @target.locality_ids.include?(locality_id)
       end
     end
   end

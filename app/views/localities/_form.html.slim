@@ -1,6 +1,8 @@
 = simple_form_for @locality do |form|
 
   = form.input :name
+  = form.input :short_name,
+          hint: 'For example, "Caroline" instead of "Town of Caroline.'
   = form.input :latitude,
           hint: 'Find an appropriate center point on Google Maps and copy its latitude here. Required if you want the Forge to be able to filter to this locality.'
   = form.input :longitude,
