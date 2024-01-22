@@ -1872,7 +1872,8 @@ CREATE TABLE public.localities (
     "position" integer,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    year_street_renumber integer
+    year_street_renumber integer,
+    slug character varying
 );
 
 
@@ -5141,6 +5142,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20231223181402'),
 ('20231224022917'),
 ('20240117020347'),
+('20240121141010'),
 ('4'),
 ('8'),
 ('9');

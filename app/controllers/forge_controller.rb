@@ -1,12 +1,15 @@
 # frozen_string_literal: true
 
 class ForgeController < ApplicationController
-
-  # The AngularJS version
   def index
-  end
+    @locality = Locality.find_by(slug: params[:locality]) if params[:locality]
+    @layers = MapOverlay.order(:position).where(active: true)
+    return unless @locality
 
-  # The React version
-  def index2
+    @layers = @layers.joins(:localities).where(localities: { id: @locality.id })
+    params[:s] ||= {}
+    params[:s][:locality_id_eq] = @locality.id
+    params[:people] ||= {}
+    params[:people][:locality_id_eq] = @locality.id
   end
 end

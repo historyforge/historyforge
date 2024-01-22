@@ -1,9 +1,10 @@
 = simple_form_for @locality do |form|
 
   = form.input :name
-  /= form.input :locality_id, collection: Locality.order(:position)
-  = form.input :latitude
-  = form.input :longitude
+  = form.input :latitude,
+          hint: 'Find an appropriate center point on Google Maps and copy its latitude here. Required if you want the Forge to be able to filter to this locality.'
+  = form.input :longitude,
+          hint: 'Find an appropriate center point on Google Maps and copy its longitude here. Required if you want the Forge to be able to filter to this locality.'
   = form.input :year_street_renumber,
           label: 'Year Streets Renumbered',
           hint: 'If the addresses were renumbered in a specific year, put it here so we can maintain the address history of buildings.'

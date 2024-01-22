@@ -45,7 +45,16 @@ header
                 - if flags_count > 0
                   span.badge.badge-danger= flags_count
 
-          li.nav-item= link_to 'The Forge', '/forge', class: 'nav-link'
+          - forges = Locality.where.not(latitude: nil)
+          - if forges.length <= 1
+            li.nav-item= link_to 'The Forge', '/forge', class: 'nav-link'
+          - else
+            li.nav-item.dropdown
+              a.nav-link.dropdown-toggle data-toggle='dropdown' href="#"
+                | The Forge
+              .dropdown-menu
+                - forges.each do |forge|
+                  = link_to forge.name, local_forge_path(forge.slug), class: 'dropdown-item'
           li.nav-item.dropdown
             a.nav-link.dropdown-toggle data-toggle='dropdown' href="#"
               | Data

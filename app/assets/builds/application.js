@@ -7727,11 +7727,11 @@
       if (true) {
         (function() {
           "use strict";
-          var React39 = require_react();
+          var React40 = require_react();
           var _assign = require_object_assign();
           var Scheduler = require_scheduler();
           var tracing = require_tracing();
-          var ReactSharedInternals = React39.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+          var ReactSharedInternals = React40.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
           function warn(format2) {
             {
               for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
@@ -7763,7 +7763,7 @@
               Function.prototype.apply.call(console[level], console, argsWithFormat);
             }
           }
-          if (!React39) {
+          if (!React40) {
             {
               throw Error("ReactDOM was loaded before React. Make sure you load the React package before loading ReactDOM.");
             }
@@ -9099,7 +9099,7 @@
           var didWarnInvalidChild = false;
           function flattenChildren(children) {
             var content = "";
-            React39.Children.forEach(children, function(child) {
+            React40.Children.forEach(children, function(child) {
               if (child == null) {
                 return;
               }
@@ -9110,7 +9110,7 @@
           function validateProps(element, props) {
             {
               if (typeof props.children === "object" && props.children !== null) {
-                React39.Children.forEach(props.children, function(child) {
+                React40.Children.forEach(props.children, function(child) {
                   if (child == null) {
                     return;
                   }
@@ -16313,7 +16313,7 @@
           }
           var fakeInternalInstance = {};
           var isArray3 = Array.isArray;
-          var emptyRefsObject = new React39.Component().refs;
+          var emptyRefsObject = new React40.Component().refs;
           var didWarnAboutStateAssignmentForComponent;
           var didWarnAboutUninitializedState;
           var didWarnAboutGetSnapshotBeforeUpdateWithoutDidUpdate;
@@ -52441,7 +52441,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var import_react_dom3 = __toESM(require_react_dom());
 
   // app/javascript/forge/App.tsx
-  var import_react36 = __toESM(require_react());
+  var import_react37 = __toESM(require_react());
 
   // app/javascript/forge/Layers.jsx
   var import_react20 = __toESM(require_react());
@@ -55470,12 +55470,28 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var useAppDispatch = useDispatch;
   var useAppSelector = useSelector;
 
+  // app/javascript/forge/Forges.jsx
+  var import_react36 = __toESM(require_react());
+  var Forges = () => {
+    const { forges } = window.initialState.forges;
+    return /* @__PURE__ */ import_react36.default.createElement("div", null, /* @__PURE__ */ import_react36.default.createElement("h3", null, "Jump to Localities"), /* @__PURE__ */ import_react36.default.createElement("ul", {
+      className: "list-group"
+    }, forges.map((forge) => /* @__PURE__ */ import_react36.default.createElement("li", {
+      className: "list-group-item"
+    }, /* @__PURE__ */ import_react36.default.createElement("a", {
+      key: forge.slug,
+      href: `/${forge.slug}/forge`
+    }, forge.name)))));
+  };
+
   // app/javascript/forge/App.tsx
   var App = () => {
-    const [sidebarLeft, setSidebarLeft] = (0, import_react36.useState)(false);
-    const [sidebarRight, setSidebarRight] = (0, import_react36.useState)(false);
+    const [sidebarLeft, setSidebarLeft] = (0, import_react37.useState)(false);
+    const [sidebarRight, setSidebarRight] = (0, import_react37.useState)(false);
+    const [forgePickerOpen, setForgePickerOpen] = (0, import_react37.useState)(false);
+    const hasForges = window.initialState.forges.forges.length > 1;
     const dispatch = useAppDispatch();
-    (0, import_react36.useEffect)(() => {
+    (0, import_react37.useEffect)(() => {
       dispatch(forgeInit());
     }, [dispatch]);
     const forgeActive = useAppSelector((state) => state.layers.active || state.search.current);
@@ -55487,33 +55503,56 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       e2.stopPropagation();
       setSidebarRight(false);
       setSidebarLeft(false);
+      setForgePickerOpen(false);
     };
-    return /* @__PURE__ */ import_react36.default.createElement("div", {
+    return /* @__PURE__ */ import_react37.default.createElement("div", {
       className: "map-wrap"
-    }, /* @__PURE__ */ import_react36.default.createElement(Map_default, null), sidebarLeft && /* @__PURE__ */ import_react36.default.createElement("div", {
+    }, /* @__PURE__ */ import_react37.default.createElement(Map_default, null), forgePickerOpen && /* @__PURE__ */ import_react37.default.createElement("div", {
       id: "forge-left-col",
       className: "open"
-    }, /* @__PURE__ */ import_react36.default.createElement("button", {
+    }, /* @__PURE__ */ import_react37.default.createElement("button", {
       type: "button",
       id: "forge-sidebar-left-closer",
       className: "btn btn-primary",
       onClick: closeSidebar
-    }, /* @__PURE__ */ import_react36.default.createElement("i", {
+    }, /* @__PURE__ */ import_react37.default.createElement("i", {
       className: "fa fa-close"
-    })), /* @__PURE__ */ import_react36.default.createElement(Layers_default, null)), sidebarRight && /* @__PURE__ */ import_react36.default.createElement("div", {
+    })), /* @__PURE__ */ import_react37.default.createElement(Forges, null)), sidebarLeft && /* @__PURE__ */ import_react37.default.createElement("div", {
+      id: "forge-left-col",
+      className: "open"
+    }, /* @__PURE__ */ import_react37.default.createElement("button", {
+      type: "button",
+      id: "forge-sidebar-left-closer",
+      className: "btn btn-primary",
+      onClick: closeSidebar
+    }, /* @__PURE__ */ import_react37.default.createElement("i", {
+      className: "fa fa-close"
+    })), /* @__PURE__ */ import_react37.default.createElement(Layers_default, null)), sidebarRight && /* @__PURE__ */ import_react37.default.createElement("div", {
       id: "forge-right-col",
       className: "open"
-    }, /* @__PURE__ */ import_react36.default.createElement("button", {
+    }, /* @__PURE__ */ import_react37.default.createElement("button", {
       type: "button",
       id: "forge-sidebar-right-closer",
       className: "btn btn-primary",
       onClick: closeSidebar
-    }, /* @__PURE__ */ import_react36.default.createElement("i", {
+    }, /* @__PURE__ */ import_react37.default.createElement("i", {
       className: "fa fa-close"
-    })), /* @__PURE__ */ import_react36.default.createElement(CensusSearch_default, null)), /* @__PURE__ */ import_react36.default.createElement("div", {
+    })), /* @__PURE__ */ import_react37.default.createElement(CensusSearch_default, null)), /* @__PURE__ */ import_react37.default.createElement("div", {
       id: "button-bar",
       className: "btn-group"
-    }, !sidebarLeft && !sidebarRight && /* @__PURE__ */ import_react36.default.createElement("button", {
+    }, !sidebarLeft && !sidebarRight && !forgePickerOpen && /* @__PURE__ */ import_react37.default.createElement(import_react37.default.Fragment, null, hasForges && /* @__PURE__ */ import_react37.default.createElement("button", {
+      type: "button",
+      id: "forge-picker-toggle",
+      className: "btn btn-primary",
+      onClick: (e2) => {
+        e2.stopPropagation();
+        setForgePickerOpen(true);
+        setSidebarLeft(false);
+        setSidebarRight(false);
+      }
+    }, /* @__PURE__ */ import_react37.default.createElement("i", {
+      className: "fa fa-car"
+    })), /* @__PURE__ */ import_react37.default.createElement("button", {
       type: "button",
       id: "forge-sidebar-left-toggle",
       className: "btn btn-primary",
@@ -55521,10 +55560,11 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         e2.stopPropagation();
         setSidebarLeft(true);
         setSidebarRight(false);
+        setForgePickerOpen(false);
       }
-    }, /* @__PURE__ */ import_react36.default.createElement("i", {
+    }, /* @__PURE__ */ import_react37.default.createElement("i", {
       className: "fa fa-map"
-    })), !sidebarRight && !sidebarLeft && /* @__PURE__ */ import_react36.default.createElement("button", {
+    })), /* @__PURE__ */ import_react37.default.createElement("button", {
       type: "button",
       id: "forge-sidebar-right-toggle",
       className: "btn btn-primary",
@@ -55532,19 +55572,20 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         e2.stopPropagation();
         setSidebarLeft(false);
         setSidebarRight(true);
+        setForgePickerOpen(false);
       }
-    }, /* @__PURE__ */ import_react36.default.createElement("i", {
+    }, /* @__PURE__ */ import_react37.default.createElement("i", {
       className: "fa fa-search"
-    })), forgeActive && !sidebarRight && !sidebarLeft && /* @__PURE__ */ import_react36.default.createElement("button", {
+    })), forgeActive && /* @__PURE__ */ import_react37.default.createElement("button", {
       type: "button",
       className: "btn btn-primary",
       onClick: resetForge
-    }, "Reset")), /* @__PURE__ */ import_react36.default.createElement(Building_default, null));
+    }, "Reset"))), /* @__PURE__ */ import_react37.default.createElement(Building_default, null));
   };
   var App_default = App;
 
   // app/javascript/forge/index.tsx
-  var import_react37 = __toESM(require_react());
+  var import_react38 = __toESM(require_react());
 
   // app/javascript/forge/reducers/index.js
   var reducers_exports = {};
@@ -55807,37 +55848,37 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   document.addEventListener("DOMContentLoaded", () => {
     const forge = document.getElementById("forge");
     if (forge)
-      import_react_dom3.default.render(/* @__PURE__ */ import_react37.default.createElement(Provider_default, {
+      import_react_dom3.default.render(/* @__PURE__ */ import_react38.default.createElement(Provider_default, {
         store
-      }, /* @__PURE__ */ import_react37.default.createElement(App_default, null)), forge);
+      }, /* @__PURE__ */ import_react38.default.createElement(App_default, null)), forge);
   });
 
   // app/javascript/miniforge/index.tsx
   var import_react_dom4 = __toESM(require_react_dom());
 
   // app/javascript/miniforge/App.jsx
-  var import_react41 = __toESM(require_react());
+  var import_react42 = __toESM(require_react());
 
   // app/javascript/miniforge/Layers.jsx
-  var import_react38 = __toESM(require_react());
-  var Layers2 = class extends import_react38.default.PureComponent {
+  var import_react39 = __toESM(require_react());
+  var Layers2 = class extends import_react39.default.PureComponent {
     render() {
       const { layers: layers3, layer, opacity, setOpacity } = this.props;
       if (!layers3 || !layers3.length)
         return null;
-      return /* @__PURE__ */ import_react38.default.createElement("div", null, /* @__PURE__ */ import_react38.default.createElement("input", {
+      return /* @__PURE__ */ import_react39.default.createElement("div", null, /* @__PURE__ */ import_react39.default.createElement("input", {
         type: "range",
         min: 0,
         max: 100,
         value: opacity > -1 ? opacity : 100,
         onChange: (e2) => setOpacity(e2.target.value)
-      }), /* @__PURE__ */ import_react38.default.createElement("select", {
+      }), /* @__PURE__ */ import_react39.default.createElement("select", {
         className: "form-control",
         value: layer == null ? void 0 : layer.id,
         onChange: this.handleChange.bind(this)
-      }, /* @__PURE__ */ import_react38.default.createElement("option", {
+      }, /* @__PURE__ */ import_react39.default.createElement("option", {
         value: null
-      }, "No historic map"), layers3.map((l) => /* @__PURE__ */ import_react38.default.createElement("option", {
+      }, "No historic map"), layers3.map((l) => /* @__PURE__ */ import_react39.default.createElement("option", {
         key: l.id,
         value: l.id
       }, l.name))));
@@ -55859,7 +55900,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var Layers_default2 = Component5;
 
   // app/javascript/miniforge/Map.tsx
-  var import_react39 = __toESM(require_react());
+  var import_react40 = __toESM(require_react());
   var google4 = window.google;
   function mapOptions2() {
     return {
@@ -55879,12 +55920,12 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     };
   }
   var Map3 = (props) => {
-    const mapRef = (0, import_react39.useRef)(null);
-    const [map3, setMap] = (0, import_react39.useState)(null);
-    const [markers, setMarkers] = (0, import_react39.useState)(null);
-    const [marker, setMarker] = (0, import_react39.useState)(null);
-    const [prevProps, setPrevProps] = (0, import_react39.useState)(props);
-    (0, import_react39.useEffect)(() => {
+    const mapRef = (0, import_react40.useRef)(null);
+    const [map3, setMap] = (0, import_react40.useState)(null);
+    const [markers, setMarkers] = (0, import_react40.useState)(null);
+    const [marker, setMarker] = (0, import_react40.useState)(null);
+    const [prevProps, setPrevProps] = (0, import_react40.useState)(props);
+    (0, import_react40.useEffect)(() => {
       if (!map3 && mapRef.current) {
         const myMap = new google4.maps.Map(mapRef.current, mapOptions2());
         myMap.setCenter(props.center);
@@ -55929,7 +55970,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       }
       setPrevProps(props);
     });
-    return /* @__PURE__ */ import_react39.default.createElement("div", {
+    return /* @__PURE__ */ import_react40.default.createElement("div", {
       id: "map",
       ref: mapRef
     });
@@ -55979,20 +56020,20 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var Map_default2 = Component6;
 
   // app/javascript/miniforge/Buildings.jsx
-  var import_react40 = __toESM(require_react());
-  var Building2 = ({ id, street_address, highlight: highlight2, highlighted }) => /* @__PURE__ */ import_react40.default.createElement("div", {
+  var import_react41 = __toESM(require_react());
+  var Building2 = ({ id, street_address, highlight: highlight2, highlighted }) => /* @__PURE__ */ import_react41.default.createElement("div", {
     className: `list-group-item building ${highlighted === id && "active"}`,
     onMouseOver: () => highlight2(id),
     onMouseOut: () => highlight2(null)
-  }, /* @__PURE__ */ import_react40.default.createElement("p", null, /* @__PURE__ */ import_react40.default.createElement("a", {
+  }, /* @__PURE__ */ import_react41.default.createElement("p", null, /* @__PURE__ */ import_react41.default.createElement("a", {
     href: `/buildings/${id}`,
     title: "Open building record"
   }, street_address)));
-  var Buildings = ({ buildings: buildings3, highlighted, highlight: highlight2 }) => buildings3 ? /* @__PURE__ */ import_react40.default.createElement("div", {
+  var Buildings = ({ buildings: buildings3, highlighted, highlight: highlight2 }) => buildings3 ? /* @__PURE__ */ import_react41.default.createElement("div", {
     id: "building-list"
-  }, /* @__PURE__ */ import_react40.default.createElement("h3", null, "Nearby Buildings"), /* @__PURE__ */ import_react40.default.createElement("div", {
+  }, /* @__PURE__ */ import_react41.default.createElement("h3", null, "Nearby Buildings"), /* @__PURE__ */ import_react41.default.createElement("div", {
     className: "list-group"
-  }, buildings3.map((building, i2) => /* @__PURE__ */ import_react40.default.createElement(Building2, __spreadProps(__spreadValues({
+  }, buildings3.map((building, i2) => /* @__PURE__ */ import_react41.default.createElement(Building2, __spreadProps(__spreadValues({
     key: i2
   }, building), {
     highlighted,
@@ -56050,24 +56091,24 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
 
   // app/javascript/miniforge/App.jsx
   var App2 = () => {
-    const [store2, setStore] = (0, import_react41.useState)(null);
+    const [store2, setStore] = (0, import_react42.useState)(null);
     store2 || setStore(buildStore(reducers_exports2));
-    return /* @__PURE__ */ import_react41.default.createElement(Provider_default, {
+    return /* @__PURE__ */ import_react42.default.createElement(Provider_default, {
       store: store2
-    }, /* @__PURE__ */ import_react41.default.createElement("div", {
+    }, /* @__PURE__ */ import_react42.default.createElement("div", {
       className: "map-wrap"
-    }, /* @__PURE__ */ import_react41.default.createElement(Map_default2, null), /* @__PURE__ */ import_react41.default.createElement("div", {
+    }, /* @__PURE__ */ import_react42.default.createElement(Map_default2, null), /* @__PURE__ */ import_react42.default.createElement("div", {
       id: "miniforge-controls"
-    }, /* @__PURE__ */ import_react41.default.createElement(Layers_default2, null), /* @__PURE__ */ import_react41.default.createElement(Buildings_default, null))));
+    }, /* @__PURE__ */ import_react42.default.createElement(Layers_default2, null), /* @__PURE__ */ import_react42.default.createElement(Buildings_default, null))));
   };
   var App_default2 = App2;
 
   // app/javascript/miniforge/index.tsx
-  var import_react42 = __toESM(require_react());
+  var import_react43 = __toESM(require_react());
   document.addEventListener("DOMContentLoaded", () => {
     const miniforge = document.getElementById("miniforge");
     if (miniforge)
-      import_react_dom4.default.render(/* @__PURE__ */ import_react42.default.createElement(App_default2, null), miniforge);
+      import_react_dom4.default.render(/* @__PURE__ */ import_react43.default.createElement(App_default2, null), miniforge);
   });
 
   // node_modules/promise-polyfill/src/finally.js

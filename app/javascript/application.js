@@ -65,6 +65,7 @@ jQuery(document).on('click', '#search-map', function() {
     const year = jQuery(this).data('year')
     $form.append(`<input type="hidden" name="people" value="${year}">`)
   }
+  // TODO: Put the location slug into the URL if possible.
   $form.attr('action', '/forge')
   $form.submit()
 })
