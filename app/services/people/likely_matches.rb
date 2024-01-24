@@ -6,10 +6,16 @@ module People
     object :record, class: 'CensusRecord'
 
     def execute
+      return [] if only_one_census_going?
+
       exact_matches || fuzzy_matches || []
     end
 
     private
+
+    def only_one_census_going?
+      compose(CensusRecords::SingleCensus)
+    end
 
     def format_matches(matches)
       matches
