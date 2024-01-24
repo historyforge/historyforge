@@ -19,7 +19,6 @@ module People
 
     def format_matches(matches)
       matches
-        .limit(10)
         .preload(*CensusYears.map { |year| :"census#{year}_records" })
         .to_a
         .select { |match| match.census_records.blank? || match.similar_in_age?(record) }
@@ -62,7 +61,7 @@ module People
 
     def fuzzy_name_matches
       if_exists(Person.fuzzy_name_search(first_names_with_last_name)
-                      .where(sex: record.sex))
+                      .where(sex: record.sex).limit(10))
     end
 
     def last_name_matches
@@ -70,11 +69,11 @@ module People
                   .where(id: PersonName.select(:person_id)
                                .where('LOWER(person_names.last_name) = ? OR LOWER(person_names.first_name) = ?', last_name, last_name)
                                .where('person_names.person_id=people.id'))
-                      .order(:first_name, :middle_name))
+                      .order(:first_name, :middle_name).limit(10))
     end
 
     def if_exists(matches)
-      matches.exists? ? matches.limit(10) : false
+      matches.exists? ? matches : false
     end
   end
 end
