@@ -5,14 +5,16 @@
 module People
   class Nicknames
     def self.matches_for(name, gender = nil)
-      name = name.downcase
       match_against = if gender
-                        gender == 'm' ? MALE_NAMES : FEMALE_NAMES
+                        gender.downcase == 'm' ? MALE_NAMES : FEMALE_NAMES
                       else
                         ALL_NAMES
                       end
-      matches = match_against.select { |names| names.include?(name) }
-      matches.flatten.uniq.presence || [name]
+      match_against
+        .select { |names| names.include?(name) }
+        .flat_map(&:to_a)
+        .uniq
+        .presence || [name]
     end
 
     MALE_NAMES = [
@@ -212,7 +214,7 @@ module People
       %w[Zebedee Zeb],
       %w[Zedediah Zed Diah Dyer],
       %w[Zephaniah Zeph]
-    ].map { |group| group.map(&:downcase) }.freeze
+    ].map { |group| Set.new(group.map(&:downcase)) }.freeze
 
     FEMALE_NAMES = [
       %w[Abigail Abby Nabby Gail],
@@ -275,7 +277,7 @@ module People
       %w[Faith Fay],
       %w[Fidelia Delia],
       %w[Florence Flo Flora Flossy],
-      %w[Frances Fanny Fran Cissy Frankie Sis],
+      %w[Frances Fanny Fannie Fran Cissy Frankie Sis],
       %w[Fredericka Freda Freddy Ricka Frieda],
       %w[Gabrielle Gabriella Gabby Ella],
       %w[Genevieve Eve Jean Jenny],
@@ -377,7 +379,7 @@ module People
       %w[Virginia Ginger Ginny Jane Jennie Virgy],
       %w[Wilhelmina Mina Willie Wilma Minnie],
       %w[Winifred Winnie]
-    ].map { |group| group.map(&:downcase) }.freeze
+    ].map { |group| Set.new(group.map(&:downcase)) }.freeze
 
     ALL_NAMES = (MALE_NAMES + FEMALE_NAMES).freeze
   end
