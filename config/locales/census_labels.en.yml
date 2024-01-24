@@ -23,6 +23,7 @@ en:
       names_first_name: 'First Name'
       names_last_name: 'Last Name'
       names_middle_name: 'Middle Name'
+      locality_ids: 'Localities'
 
     labels:
       census_record:
@@ -246,3 +247,4 @@ en:
         census1930: '1930 Census'
         census1940: '1940 Census'
         census1950: '1950 Census'
+        locality_ids: 'Localities'

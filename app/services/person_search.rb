@@ -34,6 +34,7 @@ class PersonSearch < SearchQueryBuilder
     add_see_names
     add_sorts
     scope_to_locality if Current.locality_id
+    builder.preload(:localities) if f.include?('locality_ids')
     builder.scoped
   end
   memoize :scoped
@@ -88,7 +89,6 @@ class PersonSearch < SearchQueryBuilder
 
   def name_order_clause(dir)
     "sortable_name #{dir}"
-    # "LOWER(people.last_name) #{dir}, LOWER(people.first_name) #{dir}, people.middle_name #{dir} NULLS FIRST"
   end
 
   def default_fields
@@ -96,7 +96,7 @@ class PersonSearch < SearchQueryBuilder
   end
 
   def all_fields
-    default_fields + %w[description] + CensusYears.map { |year| "census#{year}"}
+    default_fields + %w[locality_ids description] + CensusYears.map { |year| "census#{year}"}
   end
 
   def uncensused?

@@ -2099,7 +2099,8 @@ CREATE TABLE public.person_names (
     name_suffix character varying,
     searchable_name character varying,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    sortable_name character varying
 );
 
 

@@ -107,7 +107,7 @@ const App = (): React.ReactNode => {
                     </>
                 )}
             </div>
-            <Building/>
+            <Building />
         </div>
     )
 }

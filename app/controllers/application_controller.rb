@@ -95,7 +95,13 @@ class ApplicationController < ActionController::Base
 
   def load_settings
     Setting.load
-    Current.locality_id = session[:locality]
+    if params[:locality]
+      Current.locality = Locality.find_by(slug: params[:locality])
+      Current.locality_id = Current.locality.id
+    elsif session[:locality]
+      Current.locality_id = session[:locality]
+      Current.locality = Locality.find Current.locality_id
+    end
     yield
     Setting.unload
     Current.reset

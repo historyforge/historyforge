@@ -2,11 +2,7 @@
 
 class ForgeController < ApplicationController
   def index
-    @locality = Locality.find_by(slug: params[:locality]) if params[:locality]
     @layers = MapOverlay.order(:position).where(active: true)
-    return unless @locality
-
-    session[:locality] = @locality.id
-    @layers = @layers.joins(:localities).where(localities: { id: @locality.id })
+    @layers = @layers.joins(:localities).where(localities: { id: Current.locality_id }) if Current.locality_id
   end
 end
