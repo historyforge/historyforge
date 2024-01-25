@@ -33,6 +33,7 @@ html
     -else
       div class="container#{@full_layout ? '-fluid' : ''}"
         = flash_messages
+        = yield :breadcrumb
         - if content_for? :pills
           .pills= yield :pills
         h1= page_title if page_title

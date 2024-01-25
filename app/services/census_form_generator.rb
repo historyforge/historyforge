@@ -82,14 +82,13 @@ class CensusFormGenerator
       @title = title
       @list = []
     end
+
     attr_accessor :title, :list
 
-    def to_h
-      { title: title, list: list }
-    end
+    delegate :<<, to: :list
 
-    def <<(item)
-      list << item
+    def to_h
+      { title:, list: }
     end
   end
 end

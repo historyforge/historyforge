@@ -1,79 +1,69 @@
 - set_page_title @record.name
+- content_for :breadcrumb do
+  nav aria-label="breadcrumb"
+    ol.breadcrumb
+      li.breadcrumb-item= link_to @record.year, resource_class
+      li.breadcrumb-item= link_to @record.census_scope, path_to_census_sheet(@record), class: 'float-right'
+
 - btn_class = 'btn btn-sm btn-secondary'
-div.mb-3
-  - if can?(:create, Flag)
-    = render 'shared/flag_it', item: @model, item_class: btn_class
-  - if can?(:update, @model)
-    => link_to [:edit, @model], class: btn_class do
-      i.fa.fa-pencil
-      | &nbsp;Edit
-  - if !@model.reviewed? && can?(:review, @model)
-    = link_to 'Review', [:reviewed, @model], data: { method: :put, confirm: 'This will mark the record as reviewed.' }, class: btn_class
-  - if can?(:destroy, @model)
-    = link_to @model, data: { method: :delete, confirm: 'Are you sure? There is no return short of re-entering the census record.' }, class: btn_class do
-      i.fa.fa-trash
-      | &nbsp;Delete
-  = link_to 'View All', resource_class, class: btn_class
-  - if @model.building_id?
-    = link_to 'Building', building_path(@model.building_id), class: btn_class
+div.mb-3.clearfix.d-flex.justify-content-between
+  div.mr-auto
+    - if can?(:create, Flag)
+      = render 'shared/flag_it', item: @record, item_class: btn_class
+    - if can?(:update, @record)
+      => link_to [:edit, @record], class: btn_class do
+        i.fa.fa-pencil
+        span.d-none.d-md-inline
+          | &nbsp;Edit
+    - if can?(:destroy, @record)
+      = link_to @record, data: { method: :delete, confirm: 'Are you sure? There is no return short of re-entering the census record.' }, class: btn_class do
+        i.fa.fa-trash
+        span.d-none.d-md-inline
+          | &nbsp;Delete
+    - if !@record.reviewed? && can?(:review, @record)
+      | &nbsp;
+      => link_to 'Review', [:reviewed, @record], class: 'btn btn-sm btn-danger', data: { method: :put, confirm: 'You are about to make this census record public.' }
 
   - if can?(:create, CensusRecord)
-    .add-another-form.float-right
-      = form_tag([:save_as, @model], method: :put, class: 'form-inline') do
-        = select_tag 'then', options_for_select([['In this family', 'family'], ['In this dwelling', 'dwelling'], ['On this page', 'page'], ['In this enumeration district', 'enumeration']], params[:then]), prompt: 'Select', class: 'form-control form-control-sm', style: 'width:120px'
+    .add-another-form.ml-auto.d-flex.justify-content-right
+      = form_tag([:save_as, @record], method: :put, class: 'form-inline') do
+        = select_tag 'then', options_for_select([['In this family', 'family'], ['In this dwelling', 'dwelling'], ['On this page', 'page'], ['In this enumeration district', 'enumeration']], params[:then]), prompt: 'Select', class: 'form-control form-control-sm d-inline-block', style: 'width:120px'
         = submit_tag 'Add', class: 'btn btn-sm btn-primary'
 
-  - if !@model.reviewed? && can?(:review, @model)
-    | &nbsp;
-    => link_to 'Good to go!', [:reviewed, @model], class: 'btn btn-sm btn-danger', data: { method: :put, confirm: 'You are about to make this census record public.' }
-
-= render 'shared/flag_resolution', item: @model
-
-.card.mb-3
-  .card-header
-    = link_to 'Go to Census Sheet', path_to_census_sheet(@record), class: 'float-right'
-    - if @record.person_id
-      = link_to 'Go to Person Record', @record.person, class: 'float-right mr-4'
-    | Census Scope
-  .card-body.p-0
-    table.table.table-bordered.table-condensed.mb-0
-      thead
-        tr
-          th Year
-          th County
-          th Place
-          - if @record.ward.present?
-            th Ward
-          - if @record.try(:post_office)
-            th Post Office
-          - if @record.has_enum_dist?
-            th Enum Dist
-          th Page
-          th Line
-          - if controller.year < 1940
-            th Dwelling
-          th= translated_label(controller.resource_class, :family_id)
-      tbody
-        tr
-          td= controller.year
-          td= @record.county
-          td= @record.city
-          - if @record.ward.present?
-            td= @record.ward
-          - if @record.try(:post_office)
-            td= @record.post_office
-          - if @record.has_enum_dist?
-            td= @record.enum_dist
-          td= "#{@record.page_number}#{@record.page_side}"
-          td= @record.line_number
-          - if controller.year < 1940
-            td= @record.dwelling_number
-          td= @record.family_id
+= render 'shared/flag_resolution', item: @record
 
 .row
   .col-lg-6.col-md-12
-    = view_for @model do |form|
+    = view_for @record do |form|
       .form-horizontal
+        .card.mb-3
+          .card-header
+            - if @record.person_id
+              = link_to 'Go to Person Record', @record.person, class: 'float-right mr-4'
+            | Census Scope
+          ul.list-group.list-group-flush
+            li.list-group-item
+              .form-group.row
+                .col-6.col-form-label Year
+                .col-6= @record.year
+            li.list-group-item
+              .form-group.row
+                .col-6.col-form-label Place
+                .col-6= ["#{@record.county} County", @record.city, @record.ward ? "Ward #{@record.ward}" : nil].compact.join(', ')
+            li.list-group-item
+              .form-group.row
+                .col-6.col-form-label Census Scope
+                .col-6= @record.census_scope
+            - if controller.year < 1940
+              li.list-group-item
+                .form-group.row
+                  .col-6.col-form-label Dwelling
+                  .col-6= @record.dwelling_number
+            li.list-group-item
+              .form-group.row
+                .col-6.col-form-label= translated_label(controller.resource_class, :family_id)
+                .col-6= @record.family_id
+
         .card.mb-3
           .card-header Location
           ul.list-group.list-group-flush
@@ -136,26 +126,26 @@ div.mb-3
                 - if @record.year >= 1880
                   td= row.relation_to_head
                 td= row.occupation
-    - if @model.person_id.blank? && can?(:review, @model)
+    - if @record.person_id.blank? && can?(:review, @record)
       .card.mb-3
         .card-header
-          = link_to 'Create New Person Record', [:make_person, @model], class: 'float-right', data: { method: :put, confirm: 'This will generate a new person record out of this census record.' }
+          = link_to 'Create New Person Record', [:make_person, @record], class: 'float-right', data: { method: :put, confirm: 'This will generate a new person record out of this census record.' }
           | Match Person Record
-        - if @model.likely_person_matches.blank?
+        - if @record.likely_person_matches.blank?
           .card-body
             p No matches on Last Name/First Name or Last Name.
         - else
           .list-group
-            - @model.likely_person_matches.each do |match|
+            - @record.likely_person_matches.each do |match|
               .list-group-item
-                = form_for @model, html: { class: 'float-right' } do |form|
+                = form_for @record, html: { class: 'float-right' } do |form|
                   = hidden_field_tag 'census_record[person_id]', match.id
                   = form.submit 'Match!', class: 'btn btn-sm btn-secondary'
                 h5= link_to match, target: :_blank do
                   => match.name
                   i.fa.fa-external-link
                 p
-                  | Age: #{match.age_in_year(@model.year)} |&nbsp; #{match.relation_to_head} |&nbsp; #{match.occupation}
+                  | Age: #{match.age_in_year(@record.year)} |&nbsp; #{match.relation_to_head} |&nbsp; #{match.occupation}
                 p.mb-0= match.address
 
     - if can?(:review, CensusRecord)
@@ -165,5 +155,5 @@ div.mb-3
         .alert.alert-info
           = "Reviewed by #{@record.reviewed_by&.name || 'a kind soul'} on #{@record.reviewed_at.to_formatted_s(:long)}"
 
-    = render 'shared/change_history', item: @model
+    = render 'shared/change_history', item: @record
 
