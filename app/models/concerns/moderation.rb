@@ -25,6 +25,7 @@ module Moderation
 
     self.reviewed_at = Time.current
     self.reviewed_by = reviewer
+
     unless save
       self.reviewed_at = nil
       self.reviewed_by = nil

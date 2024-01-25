@@ -30,6 +30,7 @@ class CensusRecord < ApplicationRecord
   after_save :add_name_to_person_record, if: :person_id_changed?
   after_save :add_locality_to_person_record, if: :person_id_changed?
   after_commit :audit_person_connection, if: :saved_change_to_person_id?
+  after_commit :auto_generate_person_record, if: :saved_change_to_reviewed_at?
 
   define_enumeration :page_side, %w[A B], strict: true, if: :page_side?
   define_enumeration :street_prefix, STREET_PREFIXES
@@ -145,5 +146,11 @@ class CensusRecord < ApplicationRecord
 
   def add_locality_to_person_record
     person&.add_locality_from!(self)
+  end
+
+  def auto_generate_person_record
+    return unless reviewed? && CensusRecords::SingleCensus.run!
+
+    People::GenerateFromCensusRecord.run!(record: self)
   end
 end

@@ -62,8 +62,9 @@ class Person < ApplicationRecord
 
   scope :fuzzy_name_search, lambda { |names|
     names = Array.wrap(names)
-    joins(:names)
-      .where(names.map { 'person_names.searchable_name % ?' }.join(' OR '), *names)
+    where(id: PersonName.select(:person_id)
+                        .where(names.map { 'person_names.searchable_name % ?' }.join(' OR '), *names)
+                        .where('person_names.person_id=people.id'))
   }
 
   scope :uncensused, lambda {
@@ -90,7 +91,7 @@ class Person < ApplicationRecord
   }
 
   scope :name_fuzzy_matches, lambda { |names|
-    possible_names = names.squish.split.map { |name| Nicknames.matches_for(name) }
+    possible_names = names.squish.split.map { |name| People::Nicknames.matches_for(name) }
     query = joins(:names).group('people.id')
     possible_names.each do |name_set|
       conditions = name_set.map { 'person_names.searchable_name % ?' }.join(' OR ')
@@ -120,11 +121,11 @@ class Person < ApplicationRecord
   end
 
   def name
-    try(:found_name) || primary_name&.name
+    try(:found_name) || [name_prefix, first_name, middle_name, last_name, name_suffix].select(&:present?).join(' ')
   end
 
   def primary_name
-    names.to_a.detect(&:is_primary?)
+    names.detect(&:is_primary?)
   end
   memoize :primary_name
 

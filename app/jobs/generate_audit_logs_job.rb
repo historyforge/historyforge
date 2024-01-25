@@ -6,7 +6,7 @@ class GenerateAuditLogsJob < ApplicationJob
       person_change = version.changeset[:person_id]
       if person_change
         from_person_id, to_person_id = person_change
-        next unless version.item.present?
+        next if version.item.blank?
 
         user = User.find_by id: version.whodunnit
         next if user.blank?
@@ -21,7 +21,6 @@ class GenerateAuditLogsJob < ApplicationJob
                                                                  logged_at: version.created_at,
                                                                  user_id: version.whodunnit
         end
-
       end
     end
   end
