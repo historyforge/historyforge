@@ -54713,13 +54713,12 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     dispatch(__spreadValues({ type: "FORGE_FILTERS_LOADED" }, json.data));
   });
   var buildParams = function(search3) {
-    var _a;
+    var _a, _b;
     const params = { s: {} };
-    console.log(search3);
-    if (search3 == null ? void 0 : search3.s) {
-      params.s = search3.s;
+    if ((_a = search3 == null ? void 0 : search3.params) == null ? void 0 : _a.s) {
+      params.s = search3.params.s;
     }
-    if (((_a = search3 == null ? void 0 : search3.people) == null ? void 0 : _a.s) || (search3 == null ? void 0 : search3.year)) {
+    if (((_b = search3 == null ? void 0 : search3.people) == null ? void 0 : _b.s) || (search3 == null ? void 0 : search3.year)) {
       params.people = search3.people || (search3 == null ? void 0 : search3.year);
       params.peopleParams = search3.params.s;
     }

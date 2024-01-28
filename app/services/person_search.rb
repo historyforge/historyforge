@@ -26,6 +26,7 @@ class PersonSearch < SearchQueryBuilder
 
   def scoped
     builder.preload(:names)
+    builder.group('people.id')
     builder.offset(from) if from
     builder.limit(to.to_i - from.to_i) if from && to
     builder.uncensused if uncensused?

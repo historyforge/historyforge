@@ -16,7 +16,7 @@ json.filters do
   AttributeBuilder.text   json, :names_last_name
 
   AttributeBuilder.enumeration json, Person, :sex
-  AttributeBuilder.enumeration json, Person, :race, choices: Person.pluck('distinct race').compact.sort
+  AttributeBuilder.enumeration json, Person, :race
 
   AttributeBuilder.text json, :pob
 

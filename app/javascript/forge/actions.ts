@@ -87,9 +87,8 @@ const loadFilters = year => async dispatch => {
 
 const buildParams = function(search: keyable) {
   const params = { s: {} } as keyable
-  console.log(search)
-  if (search?.s) {
-    params.s = search.s
+  if (search?.params?.s) {
+    params.s = search.params.s
   }
   if (search?.people?.s || search?.year) {
     params.people = search.people || search?.year
