@@ -149,9 +149,9 @@ class Person < ApplicationRecord
   end
 
   def add_locality_from(record)
-    return if locality_ids.include?(record.locality_id)
+    return if localities.include?(record.locality)
 
-    locality_ids << record.locality_id
+    localities << record.locality
   end
 
   def possible_unmatched_records
