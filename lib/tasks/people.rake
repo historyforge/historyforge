@@ -1,4 +1,32 @@
+# frozen_string_literal: true
+
 namespace :people do
+  task audit_names: :environment do
+    Person.preload(:names).find_each do |person|
+      primary_name = person.primary_name
+      person.names.each do |name|
+        next if primary_name.eql?(name)
+
+        # If the first name is a prefix and prefix is null then let's move the first name to the prefix and set the first name to null
+        if name.name_prefix.blank? && (name.first_name == 'Mr' || name.first_name == 'Mrs')
+          name.update(name_prefix: name.first_name, first_name: nil)
+        end
+
+        unless (name.first_name && primary_name.first_name && name.first_name.casecmp(primary_name.first_name).zero?) && (name.last_name && primary_name.last_name && name.last_name.casecmp(primary_name.last_name).zero?)
+          next
+        end
+
+        primary_name.middle_name ||= name.middle_name
+        primary_name.name_prefix ||= name.name_prefix
+        primary_name.name_suffix ||= name.name_suffix
+        primary_name.save && name.destroy
+      rescue StandardError => e
+        puts name.inspect
+        puts primary_name.inspect
+        raise e
+      end
+    end
+  end
   task reindex: :environment do
     CensusYears.each do |year|
       PgSearch::Multisearch.rebuild("Census#{year}Record".constantize)

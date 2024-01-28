@@ -135,6 +135,9 @@ class Person < ApplicationRecord
   end
 
   def add_name_from(record)
+    # same first and last name lower case match
+    # if there is one with middle initial use it, prefix, or suffix
+    # if the name being added has a middle name and the person record does not, add it
     return if names.any? { |name| name.same_name_as?(record) }
 
     primary_name_record = names.build(is_primary: names.blank?).tap do |name|
