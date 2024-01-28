@@ -53,14 +53,9 @@ class PersonSearch < SearchQueryBuilder
 
   def add_census_record_links
     builder.select 'people.*'
-    grouped = false
     CensusYears.each do |year|
       next unless f.include?("census#{year}")
 
-      unless grouped
-        builder.group 'people.id'
-        grouped = true
-      end
       table = CensusRecord.for_year(year).table_name
       builder.select(builder.scoped.select_values, "(select array_agg(#{table}.id) from #{table} where person_id=people.id) AS census#{year}")
     end
@@ -89,7 +84,11 @@ class PersonSearch < SearchQueryBuilder
   end
 
   def name_order_clause(dir)
-    "sortable_name #{dir}"
+    if has_names_joined?
+      "matched_last_name #{dir}, matched_first_name #{dir}, matched_middle_name #{dir}"
+    else
+      "sortable_name #{dir}"
+    end
   end
 
   def default_fields
