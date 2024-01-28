@@ -101,9 +101,9 @@ class ApplicationController < ActionController::Base
   end
 
   def set_current_attributes
-    if params[:locality]
+    if params[:locality_slug]
       Current.locality = Locality.find_by(slug: params[:locality_slug])
-      Current.locality_id = Current.locality.id
+      Current.locality_id = Current.locality&.id
     elsif session[:locality]
       Current.locality_id = session[:locality]
       Current.locality = Locality.find Current.locality_id
