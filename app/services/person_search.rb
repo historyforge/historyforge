@@ -33,6 +33,8 @@ class PersonSearch < SearchQueryBuilder
     add_census_record_links
     add_see_names
     add_sorts
+    scope_to_locality if Current.locality_id
+    builder.preload(:localities) if f.include?('locality_ids')
     builder.scoped
   end
   memoize :scoped
@@ -43,12 +45,21 @@ class PersonSearch < SearchQueryBuilder
     entity_class.where(id: builder.scoped.select('people.id')).count
   end
 
+  def scope_to_locality
+    builder.joins(:localities)
+    builder.where(localities_people: { locality_id: Current.locality_id })
+  end
+
   def add_census_record_links
     builder.select 'people.*'
-    builder.group 'people.id'
+    grouped = false
     CensusYears.each do |year|
       next unless f.include?("census#{year}")
 
+      unless grouped
+        builder.group 'people.id'
+        grouped = true
+      end
       table = CensusRecord.for_year(year).table_name
       builder.select(builder.scoped.select_values, "(select array_agg(#{table}.id) from #{table} where person_id=people.id) AS census#{year}")
     end
@@ -77,7 +88,7 @@ class PersonSearch < SearchQueryBuilder
   end
 
   def name_order_clause(dir)
-    "LOWER(people.last_name) #{dir}, LOWER(people.first_name) #{dir}, people.middle_name #{dir} NULLS FIRST"
+    "sortable_name #{dir}"
   end
 
   def default_fields
@@ -85,7 +96,7 @@ class PersonSearch < SearchQueryBuilder
   end
 
   def all_fields
-    default_fields + %w[description] + CensusYears.map { |year| "census#{year}"}
+    default_fields + %w[locality_ids description] + CensusYears.map { |year| "census#{year}"}
   end
 
   def uncensused?

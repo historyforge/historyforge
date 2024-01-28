@@ -52,7 +52,7 @@ FactoryBot.define do
     name { "The #{Faker::Name.name} Building" }
     lat { 42.442376 }
     lon { -76.4907835 }
-    locality { Locality.find_or_create_by(name: 'Town of There') }
+    locality { Locality.find_or_create_by(name: 'Town of There', short_name: 'There') }
     building_type_ids { [1] }
     frame_type_id { 1 }
     lining_type_id { 1 }

@@ -2915,6 +2915,10 @@ Naming/VariableNumber:
     - x86_64       # Allowed by default as an underscore separated CPU architecture name
   AllowedPatterns: []
 
+#################### Rails ##############################
+Rails/HasAndBelongsToMany:
+  Enabled: false
+
 #################### RSpec ##############################
 
 RSpec/ExampleLength:

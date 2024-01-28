@@ -22,11 +22,11 @@ class CensusRecordDecorator < ApplicationDecorator
   end
 
   def locality
-    object.locality&.name
+    object.locality&.short_name
   end
 
   def locality_id
-    object.locality&.name
+    object.locality&.short_name
   end
 
   # Yes/no fields should output Yes if true otherwise nothing.

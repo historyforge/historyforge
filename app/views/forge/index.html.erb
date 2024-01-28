@@ -1,10 +1,12 @@
 <% @full_layout = true %>
+<% set_page_title("#{Current.locality ? "#{Current.locality.name} - " : ''}HistoryForge") %>
 <div id="forge"></div>
 
 <script type="text/javascript">
   window.initialState = {
-      layers: { center: {lat: <%= AppConfig[:latitude] %>, lng: <%= AppConfig[:longitude] %>}, layers: <%== MapOverlay.order(:position).where(active: true).to_json %> },
+      layers: { center: { lat: <%= Current.locality&.latitude || AppConfig[:latitude] %>, lng: <%= Current.locality&.longitude || AppConfig[:longitude] %> }, layers: <%== @layers.to_json %> },
       buildings: { buildings: null },
+      forges: { forges: <%== Locality.where.not(latitude: nil).map { |forge| { name: forge.name, slug: forge.slug } }.to_json %> },
       search: { params: <%== {f: params[:f], s: params[:s]&.compact_blank, people: params[:people]}.to_json %>, years: <%== CensusYears.visible_to_user(user_signed_in?).to_json %> }
   }
   window.googleApiKey = '<%== AppConfig[:google_api_key] %>'

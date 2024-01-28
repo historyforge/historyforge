@@ -28,6 +28,7 @@ class CensusRecord < ApplicationRecord
   after_initialize :set_defaults
   before_save :ensure_housing
   after_save :add_name_to_person_record, if: :person_id_changed?
+  after_save :add_locality_to_person_record, if: :person_id_changed?
   after_commit :audit_person_connection, if: :saved_change_to_person_id?
   after_commit :auto_generate_person_record, if: :saved_change_to_reviewed_at?
 
@@ -141,6 +142,10 @@ class CensusRecord < ApplicationRecord
 
   def add_name_to_person_record
     person&.add_name_from!(self)
+  end
+
+  def add_locality_to_person_record
+    person&.add_locality_from!(self)
   end
 
   def auto_generate_person_record

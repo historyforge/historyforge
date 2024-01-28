@@ -20,6 +20,7 @@ Rails.application.routes.draw do
   get '/photos/:id/:style/:device' => 'buildings/main#photo', as: 'photo'
 
   get '/forge' => 'forge#index', as: 'forge'
+  get '/:locality/forge' => 'forge#index', as: 'local_forge'
 
   post '/census/rebuild', to: 'census_records/main#rebuild', as: 'rebuild_index'
 
@@ -100,7 +101,10 @@ Rails.application.routes.draw do
 
   resources :flags
 
-  resources :localities
+  resources :localities do
+    put :set, on: :member
+    put :reset, on: :collection
+  end
 
   resources :map_overlays
 

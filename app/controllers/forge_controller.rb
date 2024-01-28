@@ -1,12 +1,8 @@
 # frozen_string_literal: true
 
 class ForgeController < ApplicationController
-
-  # The AngularJS version
   def index
-  end
-
-  # The React version
-  def index2
+    @layers = MapOverlay.order(:position).where(active: true)
+    @layers = @layers.joins(:localities).where(localities: { id: Current.locality_id }) if Current.locality_id
   end
 end

@@ -1,29 +1,15 @@
 = simple_form_for @person do |form|
-  /.card.mb-1
-    .card-header Name
-    .card-body
-      .row
-        .col-1
-          = form.input :name_prefix, input_html: {autocomplete: 'new-password'}, label: 'Prefix'
-        .col-3
-          = form.input :first_name, input_html: {autocomplete: 'new-password'}, label: 'First'
-        .col-3
-          = form.input :middle_name, input_html: {autocomplete: 'new-password'}, label: 'Middle'
-        .col-3
-          = form.input :last_name, input_html: {autocomplete: 'new-password'}, label: 'Last'
-        .col-1
-          = form.input :name_suffix, input_html: {autocomplete: 'new-password'}, label: 'Suffix'
   .card.mb-1
-    .card-header Name
+    .card-header Name(s)
     .card-body
       .nested-form.list-group
         .list-group-item
           .row
             .col-sm-1 Main
             .col-sm-1 Prefix
-            .col-sm-3 First
+            .col-sm-3 First Name
             .col-sm-2 Middle
-            .col-sm-3 Last
+            .col-sm-3 Last Name
             .col-sm-1 Suffix
             .col-xs-1
         .nested-form-items
@@ -32,16 +18,16 @@
         p= add_child_link 'Add alternate, additional, or historical name for this person', form, :names, object: form.object.names.build, partial: 'people/main/name'
 
   .card.mb-1
-    .card-header Race and sex
     .card-body
       .row
-        .col-6
+        .col-4
           = form.input :race, as: :radio_buttons, collection: Person.race_choices, coded: true
-        .col-6
+        .col-4
           = form.input :sex, as: :radio_buttons, collection: Census1900Record.sex_choices, coded: true
+        .col-4
+          = form.input :locality_ids, as: :check_boxes, collection: Locality.order(:short_name), label: 'Localities'
 
   .card.mb-1
-    .card-header Birth year and place
     .card-body
       .row
         .col-8

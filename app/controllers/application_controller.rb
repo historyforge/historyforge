@@ -5,6 +5,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   around_action :load_settings
+  around_action :set_current_attributes
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :set_paper_trail_whodunnit
 
@@ -99,4 +100,15 @@ class ApplicationController < ActionController::Base
     Setting.unload
   end
 
+  def set_current_attributes
+    if params[:locality]
+      Current.locality = Locality.find_by(slug: params[:locality])
+      Current.locality_id = Current.locality.id
+    elsif session[:locality]
+      Current.locality_id = session[:locality]
+      Current.locality = Locality.find Current.locality_id
+    end
+    yield
+    Current.reset
+  end
 end

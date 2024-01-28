@@ -582,7 +582,8 @@ CREATE TABLE public.census_1850_records (
     searchable_name text,
     histid uuid,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    sortable_name character varying
 );
 
 
@@ -665,7 +666,8 @@ CREATE TABLE public.census_1860_records (
     searchable_name text,
     histid uuid,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    sortable_name character varying
 );
 
 
@@ -749,7 +751,8 @@ CREATE TABLE public.census_1870_records (
     updated_at timestamp(6) without time zone NOT NULL,
     birth_month integer,
     marriage_month integer,
-    institution character varying
+    institution character varying,
+    sortable_name character varying
 );
 
 
@@ -837,7 +840,8 @@ CREATE TABLE public.census_1880_records (
     updated_at timestamp(6) without time zone NOT NULL,
     enum_dist character varying NOT NULL,
     ward integer,
-    institution character varying
+    institution character varying,
+    sortable_name character varying
 );
 
 
@@ -933,7 +937,8 @@ CREATE TABLE public.census_1900_records (
     histid uuid,
     enum_dist character varying NOT NULL,
     ward integer,
-    institution character varying
+    institution character varying,
+    sortable_name character varying
 );
 
 
@@ -1034,7 +1039,8 @@ CREATE TABLE public.census_1910_records (
     histid uuid,
     enum_dist character varying NOT NULL,
     ward integer,
-    institution character varying
+    institution character varying,
+    sortable_name character varying
 );
 
 
@@ -1126,7 +1132,8 @@ CREATE TABLE public.census_1920_records (
     histid uuid,
     enum_dist character varying NOT NULL,
     ward integer,
-    institution character varying
+    institution character varying,
+    sortable_name character varying
 );
 
 
@@ -1235,7 +1242,8 @@ CREATE TABLE public.census_1930_records (
     histid uuid,
     enum_dist character varying NOT NULL,
     ward integer,
-    institution character varying
+    institution character varying,
+    sortable_name character varying
 );
 
 
@@ -1355,7 +1363,8 @@ CREATE TABLE public.census_1940_records (
     income_plus boolean,
     wages_or_salary character varying,
     institutional_work boolean,
-    institution character varying
+    institution character varying,
+    sortable_name character varying
 );
 
 
@@ -1470,7 +1479,8 @@ CREATE TABLE public.census_1950_records (
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
     birth_month integer,
-    attended_school boolean DEFAULT false
+    attended_school boolean DEFAULT false,
+    sortable_name character varying
 );
 
 
@@ -1872,7 +1882,10 @@ CREATE TABLE public.localities (
     "position" integer,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    year_street_renumber integer
+    year_street_renumber integer,
+    slug character varying,
+    short_name character varying,
+    "primary" boolean DEFAULT false
 );
 
 
@@ -1902,6 +1915,16 @@ ALTER SEQUENCE public.localities_id_seq OWNED BY public.localities.id;
 CREATE TABLE public.localities_map_overlays (
     locality_id bigint NOT NULL,
     map_overlay_id bigint NOT NULL
+);
+
+
+--
+-- Name: localities_people; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.localities_people (
+    locality_id bigint,
+    person_id bigint
 );
 
 
@@ -1995,7 +2018,8 @@ CREATE TABLE public.people (
     pob character varying,
     is_pob_estimated boolean DEFAULT true,
     notes text,
-    description text
+    description text,
+    sortable_name character varying
 );
 
 
@@ -2075,7 +2099,8 @@ CREATE TABLE public.person_names (
     name_suffix character varying,
     searchable_name character varying,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    sortable_name character varying
 );
 
 
@@ -4106,6 +4131,27 @@ CREATE INDEX index_ipums_records_on_histid ON public.ipums_records USING btree (
 
 
 --
+-- Name: index_localities_people_on_locality_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_localities_people_on_locality_id ON public.localities_people USING btree (locality_id);
+
+
+--
+-- Name: index_localities_people_on_locality_id_and_person_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_localities_people_on_locality_id_and_person_id ON public.localities_people USING btree (locality_id, person_id);
+
+
+--
+-- Name: index_localities_people_on_person_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_localities_people_on_person_id ON public.localities_people USING btree (person_id);
+
+
+--
 -- Name: index_map_overlays_on_locality_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4411,6 +4457,14 @@ ALTER TABLE ONLY public.census_1940_records
 
 
 --
+-- Name: localities_people fk_rails_433a970f40; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.localities_people
+    ADD CONSTRAINT fk_rails_433a970f40 FOREIGN KEY (locality_id) REFERENCES public.localities(id);
+
+
+--
 -- Name: census_1870_records fk_rails_44b9e7970f; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4688,6 +4742,14 @@ ALTER TABLE ONLY public.buildings
 
 ALTER TABLE ONLY public.census_1850_records
     ADD CONSTRAINT fk_rails_a4a4fc5011 FOREIGN KEY (building_id) REFERENCES public.buildings(id);
+
+
+--
+-- Name: localities_people fk_rails_a6372e6fac; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.localities_people
+    ADD CONSTRAINT fk_rails_a6372e6fac FOREIGN KEY (person_id) REFERENCES public.people(id);
 
 
 --
@@ -5141,6 +5203,10 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20231223181402'),
 ('20231224022917'),
 ('20240117020347'),
+('20240121141010'),
+('20240122125742'),
+('20240122134440'),
+('20240122140922'),
 ('4'),
 ('8'),
 ('9');

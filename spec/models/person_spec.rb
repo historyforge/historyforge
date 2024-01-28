@@ -26,86 +26,76 @@ require 'rails_helper'
 RSpec.describe Person do
   describe '#estimated_birth_year' do
     context 'with a birth year' do
-      before do
-        subject.birth_year = 1872
-        subject.is_birth_year_estimated = false
-      end
+      let(:person) { build(:person, birth_year: 1872, is_birth_year_estimated: false) }
 
       it 'returns the birth year' do
-        expect(subject.estimated_birth_year).to eq(subject.birth_year)
+        expect(person.estimated_birth_year).to eq(person.birth_year)
       end
     end
 
     context 'with multiple census records that all have an age' do
-      before do
-        subject.census1900_records << build(:census1900_record, age: 28)
-        subject.census1910_records << build(:census1910_record, age: 38)
-        subject.census1920_records << build(:census1920_record, age: 48)
-        subject.census1930_records << build(:census1930_record, age: 58)
-        subject.census1940_records << build(:census1940_record, age: 68)
+      let(:person) do
+        build(:person,
+              census1900_records: [build(:census1900_record, age: 28)],
+              census1910_records: [build(:census1910_record, age: 38)],
+              census1920_records: [build(:census1920_record, age: 48)],
+              census1930_records: [build(:census1930_record, age: 58)],
+              census1940_records: [build(:census1940_record, age: 68)])
       end
+      subject { person.estimated_birth_year }
 
-      it 'returns the correct birth year' do
-        expect(subject.estimated_birth_year).to eq(1872)
-      end
+      it { is_expected.to eq 1872 }
     end
 
     context 'with multiple census records that will not all have an age because one is a baby' do
-      before do
-        subject.census1900_records << build(:census1900_record, age: nil)
-        subject.census1910_records << build(:census1910_record, age: 10)
-        subject.census1920_records << build(:census1920_record, age: 20)
-        subject.census1930_records << build(:census1930_record, age: 30)
-        subject.census1940_records << build(:census1940_record, age: 40)
+      let(:person) do
+        build(:person,
+              census1900_records: [build(:census1900_record, age: nil)],
+              census1910_records: [build(:census1910_record, age: 10)],
+              census1920_records: [build(:census1920_record, age: 20)],
+              census1930_records: [build(:census1930_record, age: 30)],
+              census1940_records: [build(:census1940_record, age: 40)])
       end
+      subject { person.estimated_birth_year }
 
-      it 'returns the correct birth year' do
-        expect(subject.estimated_birth_year).to eq(1900)
-      end
+      it { is_expected.to eq 1900 }
     end
   end
 
   describe '#age_in_year' do
     context 'with a birth year' do
-      before do
-        subject.birth_year = 1872
-        subject.is_birth_year_estimated = false
-      end
+      let(:person) { build(:person, birth_year: 1872, is_birth_year_estimated: false) }
 
       it 'calculates the age based on the birth year' do
-        expect(subject.age_in_year(1900)).to eq(28)
+        expect(person.age_in_year(1900)).to eq(28)
       end
     end
 
     context 'without a birth year' do
-      before do
-        subject.census1900_records << build(:census1900_record, birth_year: 1872, age: 28)
-      end
+      let(:person) { build(:person, census1900_records: [build(:census1900_record, birth_year: 1872, age: 28)]) }
 
       it 'calculates the age based on the birth year of the census record' do
-        expect(subject.age_in_year(1900)).to eq(28)
+        expect(person.age_in_year(1900)).to eq(28)
       end
     end
 
-    context 'returns 0 for a baby' do
-      before do
-        subject.census1900_records << build(:census1900_record, birth_year: 1900, age: 0)
-      end
+    context 'when the person is a baby' do
+      let(:person) { build(:person, census1900_records: [build(:census1900_record, birth_year: 1900, age: 0)]) }
 
       it 'calculates the age based on the birth year of the census record' do
-        expect(subject.age_in_year(1900)).to eq(0)
+        expect(person.age_in_year(1900)).to eq(0)
       end
     end
   end
 
   describe '#similar_in_age?' do
-    before { subject.birth_year = 1872 }
+    let(:person) { build(:person, birth_year: 1872) }
 
     context 'when same age' do
       let(:record) { build(:census1900_record, birth_year: 1872, age: 28) }
 
       it 'returns true' do
-        expect(subject).to be_similar_in_age(record)
+        expect(person).to be_similar_in_age(record)
       end
     end
 
@@ -113,7 +103,7 @@ RSpec.describe Person do
       let(:record) { build(:census1900_record, birth_year: 1873, age: 27) }
 
       it 'returns true' do
-        expect(subject).to be_similar_in_age(record)
+        expect(person).to be_similar_in_age(record)
       end
     end
 
@@ -121,7 +111,7 @@ RSpec.describe Person do
       let(:record) { build(:census1900_record, birth_year: 1874, age: 26) }
 
       it 'returns true' do
-        expect(subject).to be_similar_in_age(record)
+        expect(person).to be_similar_in_age(record)
       end
     end
 
@@ -129,18 +119,17 @@ RSpec.describe Person do
       let(:record) { build(:census1900_record, birth_year: 1876, age: 25) }
 
       it 'returns true' do
-        expect(subject).not_to be_similar_in_age(record)
+        expect(person).not_to be_similar_in_age(record)
       end
     end
   end
 
   describe '#census_records' do
+    let(:person) { build(:person, census1900_records: [record]) }
     let(:record) { build(:census1900_record, birth_year: 1876, age: 25) }
 
-    before { subject.census1900_records << record }
-
     it 'returns the census record from 1900' do
-      expect(subject.census_records).to eq([record])
+      expect(person.census_records).to eq([record])
     end
   end
 
@@ -148,26 +137,43 @@ RSpec.describe Person do
     subject { create(:person) }
 
     context 'when the person already has the name' do
-      let(:primary_name) { subject.primary_name }
-      let(:record) { create(:census1900_record, birth_year: 1876, age: 25, first_name: subject.primary_name.first_name, middle_name: subject.primary_name.middle_name, last_name: subject.primary_name.last_name) }
+      let(:person) { create(:person) }
+      let(:primary_name) { person.primary_name }
+      let(:record) { create(:census1900_record, birth_year: 1876, age: 25, first_name: person.primary_name.first_name, middle_name: person.primary_name.middle_name, last_name: person.primary_name.last_name) }
 
       it 'does not duplicate the name on the person record' do
-        subject.add_name_from(record)
-        expect(subject.names.length).to eq(1)
-        name = subject.names.first.name
+        person.add_name_from(record)
+        expect(person.names.length).to eq(1)
+        name = person.names.first.name
         expect(name).to eq(record.name)
       end
     end
 
     context 'when the person does not have the name yet' do
+      let(:person) { create(:person) }
       let(:record) { create(:census1900_record, birth_year: 1876, age: 25) }
 
-      before { subject.add_name_from(record) }
+      before { person.add_name_from(record) }
 
       it 'adds the name to the person record' do
-        expect(subject.names.length).to eq(2)
-        name = subject.names.last.name
+        expect(person.names.length).to eq(2)
+        name = person.names.last.name
         expect(name).to eq(record.name)
+      end
+    end
+  end
+
+  describe '#add_locality_from' do
+    context 'when the person does not have the location yet' do
+      let(:locality) { create(:locality) }
+      let(:record) { create(:census1900_record, birth_year: 1876, age: 25, locality:) }
+      let(:person) { create(:person, localities: []) }
+
+      before { person.add_locality_from(record) }
+
+      it 'adds the locality to the person record' do
+        expect(person.localities.length).to eq(1)
+        expect(person.locality_ids).to contain_exactly(record.locality_id)
       end
     end
   end

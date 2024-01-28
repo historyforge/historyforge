@@ -6,4 +6,8 @@ class PersonDecorator < ApplicationDecorator
   def reviewed?
     true
   end
+
+  def locality_ids
+    object.localities.map(&:short_name)
+  end
 end

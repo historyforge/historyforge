@@ -17,5 +17,6 @@
 FactoryBot.define do
   factory(:locality) do
     name { Faker::Address.community }
+    short_name { name }
   end
 end

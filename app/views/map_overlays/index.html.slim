@@ -19,7 +19,7 @@
             = record.name
             - if record.localities.present?
               br
-              = record.localities.map(&:name).join(', ')
+              = record.localities.map(&:short_name).to_sentence
           td= record.year_depicted
           td= record.active? ? 'Yes' : 'No'
           td style="text-align:right;white-space:nowrap"
