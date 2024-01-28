@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class LocalitiesController < ApplicationController
-  before_action :check_administrator_role, except: %i[set unset]
+  before_action :check_administrator_role, except: %i[set reset]
 
   def set
     locality = Locality.find params[:id]
