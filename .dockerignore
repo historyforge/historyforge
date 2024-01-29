@@ -25,3 +25,4 @@ README.rdoc
 .gitlab-ci.yml
 LICENSE.md
 README.mdlog/*
+*.dump
