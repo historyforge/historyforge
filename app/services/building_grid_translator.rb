@@ -4,20 +4,24 @@
 class BuildingGridTranslator
   include ActionView::Helpers::TextHelper
 
+  SKIP_COLUMNS = %w[street_address id].freeze
+
   def initialize(search)
     @search = search
   end
 
   def column_def
-    search.columns.map(&method(:column_config))
+    search.columns.reject { |col| col == 'id' }.map(&method(:column_config))
   end
 
   def row_data
     records.map do |record|
-      hash = { id: record.id }
+      # hash = { id: record.id }
+      hash = { street_address: { name: record.street_address, id: record.id, reviewed: record.reviewed? } }
       columns.each do |column|
+        next if SKIP_COLUMNS.include?(column)
+
         value = record.public_send(column)
-        value = { name: value, reviewed: record.reviewed? } if column == 'street_address'
         value = truncate(strip_tags(value.to_s), escape: false) if column == 'description'
         value = truncate(value, escape: false) if column == 'annotations'
         hash[column] = value

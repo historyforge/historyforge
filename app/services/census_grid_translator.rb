@@ -2,20 +2,25 @@
 
 # This translates a census record search into a format digestible by AgGrid
 class CensusGridTranslator
+  SKIP_COLUMNS = %w[name id].freeze
+
   def initialize(search)
     @search = search
   end
 
   def column_def
-    columns.map { |column| column_config(column) }
+    columns.reject { |col| col == 'id' }.map { |column| column_config(column) }
   end
 
   def row_data
     records.lazy.map do |record|
-      hash = { id: record.id }
+      # hash = { id: record.id }
+      hash = { name: { name: record.name, reviewed: record.reviewed?, id: record.id } }
       columns.each do |column|
+        next if SKIP_COLUMNS.include?(column)
+
         value = record.public_send(column)
-        value = { name: value, reviewed: record.reviewed? } if column == 'name'
+        # value = { name: value, reviewed: record.reviewed? } if column == 'name'
         hash[column] = value
       rescue NoMethodError
         # sometimes people manipulate URLs to include fields that don't exist
