@@ -1,17 +1,9 @@
 .list-group-item.nested-form-item
   .row
-    .col-sm-1
-      = form.input_field :is_primary, as: :boolean, class: 'form-check', autocomplete: 'new-password'
-    .col-sm-1
-      = form.input_field :name_prefix, class: 'form-control', autocomplete: 'new-password'
-    .col-sm-3
+    .col-sm-5
       = form.input_field :first_name, class: 'form-control', autocomplete: 'new-password'
-    .col-sm-2
-      = form.input_field :middle_name, class: 'form-control', autocomplete: 'new-password'
-    .col-sm-3
+    .col-sm-6
       = form.input_field :last_name, class: 'form-control', autocomplete: 'new-password'
-    .col-sm-1
-      = form.input_field :name_suffix, class: 'form-control', autocomplete: 'new-password'
     .col-sm-1
       button.remove.float-right.btn.btn-default type="button"
         | &times;

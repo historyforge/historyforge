@@ -15,14 +15,16 @@ module People
       merge_localities
       @source.reload.destroy
       @target.reload
-      @target.audit_logs.create message: "Merged ##{@source.id} - #{@source.name}"
+      @target.audit_logs.create message: "Merged ##{@source.id} - #{@source.first_name} #{@source.last_name}"
     end
 
     private
 
     def merge_names
       @source.names.each do |name|
-        @target.add_name_from(name)
+        next if @target.names.any? { |target_name| name.same_name_as?(target_name) }
+
+        @target.names.create(first_name: name.first_name, last_name: name.last_name)
       end
       @target.save
     end

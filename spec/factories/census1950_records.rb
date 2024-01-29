@@ -90,6 +90,7 @@
 #  updated_at             :datetime         not null
 #  birth_month            :integer
 #  attended_school        :boolean          default(FALSE)
+#  sortable_name          :string
 #
 # Indexes
 #

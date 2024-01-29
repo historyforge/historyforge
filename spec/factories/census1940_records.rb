@@ -97,6 +97,7 @@
 #  wages_or_salary         :string
 #  institutional_work      :boolean
 #  institution             :string
+#  sortable_name           :string
 #
 # Indexes
 #

@@ -16,13 +16,10 @@ class PersonGridTranslator
       columns.each do |column|
         value = record.public_send(column)
         if column == 'name'
-          if record.matched_last_name.present?
+          if record.matched_last_name.present? && (record.first_name != record.matched_first_name || record.last_name != record.matched_last_name)
             matched_name = record.format_name(
               first_name: record.matched_first_name,
-              middle_name: record.matched_middle_name,
-              last_name: record.matched_last_name,
-              name_prefix: record.matched_name_prefix,
-              name_suffix: record.matched_name_suffix
+              last_name: record.matched_last_name
             )
             name = matched_name == value ? value : "#{matched_name} (see #{value})"
             value = { name:, reviewed: record.reviewed? }

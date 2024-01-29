@@ -1885,7 +1885,7 @@ CREATE TABLE public.localities (
     year_street_renumber integer,
     slug character varying,
     short_name character varying,
-    "primary" boolean DEFAULT false
+    "primary" boolean DEFAULT false NOT NULL
 );
 
 
@@ -4131,6 +4131,13 @@ CREATE INDEX index_ipums_records_on_histid ON public.ipums_records USING btree (
 
 
 --
+-- Name: index_localities_on_slug; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_localities_on_slug ON public.localities USING btree (slug);
+
+
+--
 -- Name: index_localities_people_on_locality_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -5204,9 +5211,9 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20231224022917'),
 ('20240117020347'),
 ('20240121141010'),
-('20240122125742'),
 ('20240122134440'),
 ('20240122140922'),
+('20240128190924'),
 ('4'),
 ('8'),
 ('9');

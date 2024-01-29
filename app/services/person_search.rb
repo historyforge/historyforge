@@ -36,7 +36,7 @@ class PersonSearch < SearchQueryBuilder
     add_sorts
     scope_to_locality if Current.locality_id
     builder.preload(:localities) if f.include?('locality_ids')
-    builder.scoped
+    builder.scoped.distinct
   end
   memoize :scoped
 
@@ -65,7 +65,7 @@ class PersonSearch < SearchQueryBuilder
     return unless has_names_joined?
 
     builder.group('person_names.id')
-    builder.select(builder.scoped.select_values, 'person_names.first_name as matched_first_name, person_names.middle_name as matched_middle_name, person_names.last_name as matched_last_name, person_names.name_suffix as matched_name_suffix, person_names.name_prefix as matched_name_prefix')
+    builder.select(builder.scoped.select_values, 'person_names.first_name as matched_first_name, person_names.last_name as matched_last_name')
   end
 
   def add_sorts
@@ -85,7 +85,7 @@ class PersonSearch < SearchQueryBuilder
 
   def name_order_clause(dir)
     if has_names_joined?
-      "matched_last_name #{dir}, matched_first_name #{dir}, matched_middle_name #{dir}"
+      "matched_last_name #{dir}, matched_first_name #{dir}"
     else
       "sortable_name #{dir}"
     end

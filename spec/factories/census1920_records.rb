@@ -69,6 +69,7 @@
 #  enum_dist            :string           not null
 #  ward                 :integer
 #  institution          :string
+#  sortable_name        :string
 #
 # Indexes
 #

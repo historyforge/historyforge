@@ -59,6 +59,7 @@
 #  birth_month         :integer
 #  marriage_month      :integer
 #  institution         :string
+#  sortable_name       :string
 #
 # Indexes
 #

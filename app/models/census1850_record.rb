@@ -56,6 +56,7 @@
 #  histid               :uuid
 #  created_at           :datetime         not null
 #  updated_at           :datetime         not null
+#  sortable_name        :string
 #
 # Indexes
 #

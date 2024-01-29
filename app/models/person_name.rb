@@ -15,6 +15,7 @@
 #  searchable_name :string
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
+#  sortable_name   :string
 #
 # Indexes
 #
@@ -23,14 +24,57 @@
 #  person_names_primary_name_index        (person_id,is_primary)
 #
 class PersonName < ApplicationRecord
-  include PersonNames
+  using NameCleaning
 
   belongs_to :person
 
-  scope :primary, -> { where(is_primary: true) }
+  before_validation :clean_name
+  before_save :set_searchable_name
 
-  def same_name_as?(census_record)
-    census_record.first_name == first_name &&
-      census_record.last_name == last_name
+  validates :first_name, :last_name, presence: true
+
+  after_commit :audit_new_name, on: :create
+  after_commit :audit_name_change, on: :update
+  after_commit :audit_name_removal, on: :destroy
+
+  def name
+    [first_name, last_name].compact_blank.join(' ')
+  end
+
+  def previous_name
+    [first_name_was, last_name_was].compact_blank.join(' ')
+  end
+
+  def set_searchable_name
+    self.searchable_name = name
+    self.sortable_name = [last_name, first_name].join(' ')
+  end
+
+  def clean_name
+    %i[first_name last_name].each do |attribute|
+      self[attribute] = self[attribute].clean if self[attribute]
+    end
+  end
+
+  def same_name_as?(record)
+    record.first_name == first_name && record.last_name == last_name
+  end
+
+  def audit_new_name
+    person.audit_logs.create(message: "Name variant added: \"#{name}\"", logged_at: created_at)
+  end
+
+  def audit_name_change
+    return unless saved_change_to_first_name? || saved_change_to_last_name?
+
+    message = "Name variant \"#{previous_name}\" changed to \"#{name}\"."
+    person.audit_logs.create(message:, logged_at: Time.current)
+  end
+
+  def audit_name_removal
+    return if person.destroyed?
+
+    message = "Name variant removed: \"#{name}\"."
+    person.audit_logs.create(message:, logged_at: Time.current)
   end
 end

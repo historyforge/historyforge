@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module DecoratorFormatting
-  def format_name(last_name:, middle_name:, first_name:, name_prefix:, name_suffix:)
+  def format_name(last_name:, middle_name: nil, first_name:, name_prefix: nil, name_suffix: nil)
     name = last_name.dup
     name << ' ' << name_suffix if name_suffix.present?
     name << ', '

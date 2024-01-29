@@ -4,13 +4,6 @@
 module PersonNames
   extend ActiveSupport::Concern
 
-  module NameCleaning
-    refine String do
-      def clean
-        gsub(/\./, ' ').squish
-      end
-    end
-  end
   using NameCleaning
 
   included do
@@ -35,6 +28,10 @@ module PersonNames
 
     def name
       [name_prefix, first_name, middle_name, last_name, name_suffix].select(&:present?).join(' ')
+    end
+
+    def previous_name
+      [name_prefix_was, first_name_was, middle_name_was, last_name_was, name_suffix_was].select(&:present?).join(' ')
     end
 
     private

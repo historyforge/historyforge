@@ -5,14 +5,21 @@
 #  id                      :integer          not null, primary key
 #  created_at              :datetime         not null
 #  updated_at              :datetime         not null
+#  last_name               :string
+#  first_name              :string
+#  middle_name             :string
 #  sex                     :string(12)
 #  race                    :string
+#  name_prefix             :string
+#  name_suffix             :string
+#  searchable_name         :text
 #  birth_year              :integer
 #  is_birth_year_estimated :boolean          default(TRUE)
 #  pob                     :string
 #  is_pob_estimated        :boolean          default(TRUE)
 #  notes                   :text
 #  description             :text
+#  sortable_name           :string
 #
 # Indexes
 #
@@ -23,18 +30,11 @@
 
 FactoryBot.define do
   factory(:person) do
-    # sequence(:first_name) { |n| "First#{n}" }
-    # sequence(:middle_name) { |n| "Middle#{n}" }
-    # sequence(:last_name) { |n| "Last#{n}" }
+    sequence(:first_name) { |n| "First#{n}" }
+    sequence(:middle_name) { |n| "Middle#{n}" }
+    sequence(:last_name) { |n| "Last#{n}" }
     sex { 'M' }
     race { 'W' }
-
-    transient do
-      name { FactoryBot.build(:person_name, is_primary: true) }
-      first_name { nil }
-      middle_name { nil }
-      last_name { nil }
-    end
 
     after(:build) do |person, evaluator|
       if evaluator.first_name || evaluator.middle_name || evaluator.last_name

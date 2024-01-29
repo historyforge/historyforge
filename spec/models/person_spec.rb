@@ -5,14 +5,21 @@
 #  id                      :integer          not null, primary key
 #  created_at              :datetime         not null
 #  updated_at              :datetime         not null
+#  last_name               :string
+#  first_name              :string
+#  middle_name             :string
 #  sex                     :string(12)
 #  race                    :string
+#  name_prefix             :string
+#  name_suffix             :string
+#  searchable_name         :text
 #  birth_year              :integer
 #  is_birth_year_estimated :boolean          default(TRUE)
 #  pob                     :string
 #  is_pob_estimated        :boolean          default(TRUE)
 #  notes                   :text
 #  description             :text
+#  sortable_name           :string
 #
 # Indexes
 #
@@ -24,6 +31,15 @@
 require 'rails_helper'
 
 RSpec.describe Person do
+  context 'when creating a record' do
+    let(:person) { build(:person) }
+
+    it 'automatically creates a name variant with first and last name' do
+      expect(person.names.first.first_name).to eq person.first_name
+      expect(person.names.first.last_name).to eq person.last_name
+    end
+  end
+
   describe '#estimated_birth_year' do
     context 'with a birth year' do
       let(:person) { build(:person, birth_year: 1872, is_birth_year_estimated: false) }
@@ -34,6 +50,8 @@ RSpec.describe Person do
     end
 
     context 'with multiple census records that all have an age' do
+      subject { person.estimated_birth_year }
+
       let(:person) do
         build(:person,
               census1900_records: [build(:census1900_record, age: 28)],
@@ -42,12 +60,13 @@ RSpec.describe Person do
               census1930_records: [build(:census1930_record, age: 58)],
               census1940_records: [build(:census1940_record, age: 68)])
       end
-      subject { person.estimated_birth_year }
 
       it { is_expected.to eq 1872 }
     end
 
     context 'with multiple census records that will not all have an age because one is a baby' do
+      subject { person.estimated_birth_year }
+
       let(:person) do
         build(:person,
               census1900_records: [build(:census1900_record, age: nil)],
@@ -56,7 +75,6 @@ RSpec.describe Person do
               census1930_records: [build(:census1930_record, age: 30)],
               census1940_records: [build(:census1940_record, age: 40)])
       end
-      subject { person.estimated_birth_year }
 
       it { is_expected.to eq 1900 }
     end
@@ -115,10 +133,10 @@ RSpec.describe Person do
       end
     end
 
-    context 'when 3 years apart' do
-      let(:record) { build(:census1900_record, birth_year: 1876, age: 25) }
+    context 'when 6 years apart' do
+      let(:record) { build(:census1900_record, birth_year: 1878, age: 20) }
 
-      it 'returns true' do
+      it 'returns false' do
         expect(person).not_to be_similar_in_age(record)
       end
     end
@@ -139,26 +157,26 @@ RSpec.describe Person do
     context 'when the person already has the name' do
       let(:person) { create(:person) }
       let(:primary_name) { person.primary_name }
-      let(:record) { create(:census1900_record, birth_year: 1876, age: 25, first_name: person.primary_name.first_name, middle_name: person.primary_name.middle_name, last_name: person.primary_name.last_name) }
+      let(:record) { create(:census1900_record, birth_year: 1876, age: 25, first_name: person.first_name, middle_name: person.middle_name, last_name: person.last_name) }
 
       it 'does not duplicate the name on the person record' do
         person.add_name_from(record)
         expect(person.names.length).to eq(1)
         name = person.names.first.name
-        expect(name).to eq(record.name)
+        expect(name).to eq([record.first_name, record.last_name].join(' '))
       end
     end
 
     context 'when the person does not have the name yet' do
-      let(:person) { create(:person) }
-      let(:record) { create(:census1900_record, birth_year: 1876, age: 25) }
+      let(:person) { create(:person, first_name: 'Robert', last_name: 'Kibbee') }
+      let(:record) { create(:census1900_record, birth_year: 1876, age: 25, first_name: 'Bob', last_name: 'Kibbee') }
 
       before { person.add_name_from(record) }
 
       it 'adds the name to the person record' do
         expect(person.names.length).to eq(2)
         name = person.names.last.name
-        expect(name).to eq(record.name)
+        expect(name).to eq([record.first_name, record.last_name].join(' '))
       end
     end
   end

@@ -10,6 +10,13 @@
 #  created_at           :datetime         not null
 #  updated_at           :datetime         not null
 #  year_street_renumber :integer
+#  slug                 :string
+#  short_name           :string
+#  primary              :boolean          default(FALSE), not null
+#
+# Indexes
+#
+#  index_localities_on_slug  (slug) UNIQUE
 #
 
 # frozen_string_literal: true

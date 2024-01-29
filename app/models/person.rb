@@ -5,14 +5,21 @@
 #  id                      :integer          not null, primary key
 #  created_at              :datetime         not null
 #  updated_at              :datetime         not null
+#  last_name               :string
+#  first_name              :string
+#  middle_name             :string
 #  sex                     :string(12)
 #  race                    :string
+#  name_prefix             :string
+#  name_suffix             :string
+#  searchable_name         :text
 #  birth_year              :integer
 #  is_birth_year_estimated :boolean          default(TRUE)
 #  pob                     :string
 #  is_pob_estimated        :boolean          default(TRUE)
 #  notes                   :text
 #  description             :text
+#  sortable_name           :string
 #
 # Indexes
 #
@@ -25,9 +32,11 @@
 # itself is pretty sparse, mainly glue, but does not have to have census records.
 class Person < ApplicationRecord
   include Flaggable
+  include PersonNames
   include Versioning
 
-  NAME_ATTRIBUTES = %w[first_name middle_name last_name name_prefix name_suffix].freeze
+  NAME_VARIANT_ATTRIBUTES = %w[first_name last_name].freeze
+  PRIMARY_NAME_ATTRIBUTES = %w[name_prefix first_name middle_name last_name name_suffix].freeze
 
   attr_accessor :match_score
 
@@ -46,19 +55,19 @@ class Person < ApplicationRecord
   has_many :census1950_records, dependent: :nullify, class_name: 'Census1950Record', inverse_of: :person
   has_and_belongs_to_many :photos, class_name: 'Photograph', dependent: :nullify
   has_and_belongs_to_many :localities
-  has_many :names, ->{ order('is_primary desc NULLS LAST, last_name asc, first_name asc, middle_name asc, name_suffix asc, name_prefix asc')},
+  has_many :names, -> { order('last_name asc, first_name asc') },
            class_name: 'PersonName',
            dependent: :destroy,
            autosave: true,
            inverse_of: :person
-  accepts_nested_attributes_for :names, allow_destroy: true, reject_if: proc { |p| p['last_name'].blank? }
-
-  validate :validate_primary_name
+  accepts_nested_attributes_for :names, allow_destroy: true, reject_if: proc { |p| p['first_name'].blank? || p['last_name'].blank? }
 
   before_validation do
     self.sex = nil if sex.blank? || sex == 'on'
     self.race = nil if race.blank? || race == 'on'
   end
+
+  before_save :ensure_primary_name
 
   scope :fuzzy_name_search, lambda { |names|
     names = Array.wrap(names)
@@ -100,12 +109,6 @@ class Person < ApplicationRecord
     query
   }
 
-  scope :with_primary_name, lambda {
-    joins(:names).where(names: { is_primary: true }).tap do
-      select(select_values, 'concat_ws(\' \', person_names.name_prefix, person_names.first_name, person_names.middle_name, person_names.last_name, person_names.name_suffix) as found_name')
-    end
-  }
-
   def self.ransackable_attributes(_auth_object = nil)
     super + %w[name]
   end
@@ -124,26 +127,19 @@ class Person < ApplicationRecord
     try(:found_name) || [name_prefix, first_name, middle_name, last_name, name_suffix].select(&:present?).join(' ')
   end
 
-  def primary_name
-    names.detect(&:is_primary?)
-  end
-  memoize :primary_name
-
   # To make the "Mark n Reviewed" button not show up because there is not a person review system at the moment
   def reviewed?
     true
   end
 
   def add_name_from(record)
-    # same first and last name lower case match
-    # if there is one with middle initial use it, prefix, or suffix
-    # if the name being added has a middle name and the person record does not, add it
+    # If the record's name has bits that we don't have yet, assign them here.
+    PRIMARY_NAME_ATTRIBUTES.each do |attr|
+      self[attr] ||= record[attr]
+    end
     return if names.any? { |name| name.same_name_as?(record) }
 
-    primary_name_record = names.build(is_primary: names.blank?).tap do |name|
-      name.attributes = record.attributes.slice(*NAME_ATTRIBUTES)
-    end
-    pull_name_from(primary_name_record)
+    names.build(first_name: record.first_name, last_name: record.last_name)
   end
 
   def add_name_from!(record)
@@ -158,7 +154,7 @@ class Person < ApplicationRecord
   end
 
   def possible_unmatched_records
-    return unless primary_name
+    return unless first_name.present? && last_name.present?
 
     CensusYears.sum do |year|
       CensusRecord.for_year(year).where(person_id: nil, sex:, last_name:, first_name:)
@@ -168,7 +164,7 @@ class Person < ApplicationRecord
 
   # Takes a census record and returns whether this person's age is within two years of the census record's age
   def similar_in_age?(target)
-    (age_in_year(target.year) - (target.age || 0)).abs <= 2
+    (age_in_year(target.year) - (target.age || 0)).abs <= 5
   end
 
   def age_in_year(year)
@@ -253,18 +249,8 @@ class Person < ApplicationRecord
     census_records.blank? && photos.blank?
   end
 
-  def validate_primary_name
-    primary_names = names.to_a.select(&:is_primary)
-    if primary_names.blank?
-      errors.add(:base, 'Primary name missing.')
-    elsif primary_names.size > 1
-      errors.add(:base, 'Multiple primary names not allowed.')
-    else
-      pull_name_from(primary_names.first)
-    end
-  end
-
-  def pull_name_from(name_record)
-    assign_attributes(name_record.attributes.slice(*NAME_ATTRIBUTES))
+  def ensure_primary_name
+    matching_name_variant = names.detect { |name| name.same_name_as?(self) }
+    names.build(first_name:, last_name:) if matching_name_variant.blank?
   end
 end
