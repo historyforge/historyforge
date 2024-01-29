@@ -74,8 +74,15 @@ NameCellRenderer.prototype.init = function(params) {
   // create the cell
   const value = params.value || params.getValue()
   this.eGui = document.createElement('div')
+  console.log(value)
   if (value && value.name) {
-    this.eGui.innerHTML = value.name
+    if (value.id) {
+      const link = document.location.toString().split('?')[0] + '/' + (value.id || value)
+      this.eGui.innerHTML = `<a href="${link}" title="${value.name}">${value.name}</a>`
+    } else {
+      this.eGui.innerHTML = value.name
+    }
+
     if (!value.reviewed) {
       this.eGui.innerHTML += '<span class="badge badge-success">NEW</span>'
     }

@@ -2,31 +2,33 @@
 
 # This translates a census record search into a format digestible by AgGrid
 class PersonGridTranslator
+  SKIP_COLUMNS = %w[name id].freeze
+
   def initialize(search)
     @search = search
   end
 
   def column_def
-    search.columns.map(&method(:column_config))
+    search.columns.reject { |col| col == 'id' }.map(&method(:column_config))
   end
 
   def row_data
     records.lazy.map do |record|
-      hash = { id: record.id }
+      name = if record.matched_last_name.present? && (record.first_name != record.matched_first_name || record.last_name != record.matched_last_name)
+        matched_name = record.format_name(
+          first_name: record.matched_first_name,
+          last_name: record.matched_last_name
+        )
+        "#{matched_name} (see #{record.name})"
+      else
+        record.name
+      end
+      hash = { name: { name:, reviewed: record.reviewed?, id: record.id } }
+
       columns.each do |column|
+        next if SKIP_COLUMNS.include?(column)
+
         value = record.public_send(column)
-        if column == 'name'
-          if record.matched_last_name.present? && (record.first_name != record.matched_first_name || record.last_name != record.matched_last_name)
-            matched_name = record.format_name(
-              first_name: record.matched_first_name,
-              last_name: record.matched_last_name
-            )
-            name = matched_name == value ? value : "#{matched_name} (see #{value})"
-            value = { name:, reviewed: record.reviewed? }
-          else
-            value = { name: value, reviewed: record.reviewed? }
-          end
-        end
         if column =~ /census\d{4}/
           value = value.compact
           value = value.present? ? { year: column[-4...].to_i, id: value } : nil
@@ -59,8 +61,6 @@ class PersonGridTranslator
     }
     options[:headerName] = 'Actions' if column == 'id'
     options[:headerName] = column[-4...] if column =~ /census\d{4}/
-    options[:pinned] = 'left' if %w[id name].include?(column)
-    options[:cellRenderer] = 'actionCellRenderer' if column == 'id'
     options[:cellRenderer] = 'nameCellRenderer' if column == 'name'
     options[:cellRenderer] = 'censusLinkCellRenderer' if column =~ /census\d{4}/
     options[:width] = width_for_column(column)
