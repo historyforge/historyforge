@@ -16,7 +16,6 @@ class BuildingGridTranslator
 
   def row_data
     records.map do |record|
-      # hash = { id: record.id }
       hash = { street_address: { name: record.street_address, id: record.id, reviewed: record.reviewed? } }
       columns.each do |column|
         next if SKIP_COLUMNS.include?(column)
@@ -44,20 +43,21 @@ class BuildingGridTranslator
     search.results
   end
 
+  FIXED_WIDTH_COLUMNS = %w[name street_address historical_addresses description annotations].freeze
+  NON_SORTABLE_COLUMNS = %w[view historical_addresses description notes annotations].freeze
+  HTML_COLUMNS = %w[description historical_addresses].freeze
+
   def column_config(column)
     options = {
       headerName: Translator.label(Building, column),
       field: column,
       resizable: true
     }
-    options[:headerName] = 'Actions' if column == 'id'
-    options[:pinned] = 'left' if %w[id street_address].include?(column)
-    options[:pinned] = 'right' if column == 'view'
-    options[:cellRenderer] = 'actionCellRenderer' if column == 'id'
+    options[:pinned] = 'left' if column == 'street_address'
     options[:cellRenderer] = 'nameCellRenderer' if column == 'street_address'
-    options[:cellRenderer] = 'htmlCellRenderer' if column == 'description' || column == 'historical_addresses'
-    options[:width] = 200 if %w[name street_address historical_addresses description annotations].include?(column)
-    options[:sortable] = true unless %w{view historical_addresses description notes annotations}.include?(column)
+    options[:cellRenderer] = 'htmlCellRenderer' if HTML_COLUMNS.include?(column)
+    options[:width] = 200 if FIXED_WIDTH_COLUMNS.include?(column)
+    options[:sortable] = true unless NON_SORTABLE_COLUMNS.include?(column)
     options
   end
 end

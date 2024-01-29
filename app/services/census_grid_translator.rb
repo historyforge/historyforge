@@ -14,14 +14,11 @@ class CensusGridTranslator
 
   def row_data
     records.lazy.map do |record|
-      # hash = { id: record.id }
       hash = { name: { name: record.name, reviewed: record.reviewed?, id: record.id } }
       columns.each do |column|
         next if SKIP_COLUMNS.include?(column)
 
-        value = record.public_send(column)
-        # value = { name: value, reviewed: record.reviewed? } if column == 'name'
-        hash[column] = value
+        hash[column] = record.public_send(column)
       rescue NoMethodError
         # sometimes people manipulate URLs to include fields that don't exist
         # we just ignore because it's not a symptom of anything wrong here just
@@ -47,13 +44,11 @@ class CensusGridTranslator
       field: column,
       resizable: true
     }
-    options[:headerName] = 'Actions' if column == 'id'
-    options[:headerName] = column[-4...] if column =~ /census\d{4}/
-    options[:pinned] = 'left' if %w[id name].include?(column)
-    options[:cellRenderer] = 'actionCellRenderer' if column == 'id'
+    options[:headerName] = column[-4...] if /census\d{4}/.match?(column)
+    options[:pinned] = 'left' if column == 'name'
     options[:cellRenderer] = 'nameCellRenderer' if column == 'name'
     options[:width] = width_for_column(column)
-    options[:sortable] = true unless column == 'id'
+    options[:sortable] = true
     options
   end
 
