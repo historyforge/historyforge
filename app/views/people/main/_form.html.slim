@@ -33,7 +33,7 @@
             .col-sm-6 Last Name
             .col-xs-1
         .nested-form-items
-          = form.fields_for :names do |form2|
+          = form.fields_for :names, @person.non_variant_names do |form2|
             = render 'people/main/name', form: form2
         p= add_child_link 'Add alternate, additional, or historical name for this person', form, :names, object: form.object.names.build, partial: 'people/main/name'
 

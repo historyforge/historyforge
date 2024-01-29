@@ -32,7 +32,7 @@ class AuditPersonNames < ActiveRecord::Migration[7.0]
         primary_name = person.names.create(first_name: person.first_name, last_name: person.last_name)
       end
 
-      # Now remove any other name records that have the same first and last name.
+      # Now remove any other name variant records that have the same first and last name.
       person.names.each do |name|
         next if primary_name.id == name.id
 
@@ -43,6 +43,7 @@ class AuditPersonNames < ActiveRecord::Migration[7.0]
         last_name_same = name.last_name.present? && person.last_name.present? && person.last_name.casecmp(name.last_name).zero?
 
         if first_name_same && last_name_same
+          name.skip_removal_audit!
           name.destroy
         else
           name.audit_new_name

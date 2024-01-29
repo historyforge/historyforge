@@ -17,12 +17,13 @@
       span.d-none.d-lg-inline
         | &nbsp; Delete
 .list-group.mb-3
-  - if @person.names.length > 1
+  - names = @person.non_variant_names
+  - if names.any?
     .list-group-item
       .row
-        .col-6 Names
+        .col-6 Name Variants
         .col-6
-          - @person.names.each do |name|
+          -names.each do |name|
             div= name.name
   .list-group-item
     .row

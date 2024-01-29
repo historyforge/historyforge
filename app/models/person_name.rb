@@ -61,6 +61,8 @@ class PersonName < ApplicationRecord
   end
 
   def audit_new_name
+    return if same_name_as?(person)
+
     person.audit_logs.create(message: "Name variant added: \"#{name}\"", logged_at: created_at)
   end
 
@@ -72,9 +74,13 @@ class PersonName < ApplicationRecord
   end
 
   def audit_name_removal
-    return if person.destroyed?
+    return if person.destroyed? || @skip_removal_audit
 
     message = "Name variant removed: \"#{name}\"."
     person.audit_logs.create(message:, logged_at: Time.current)
+  end
+
+  def skip_removal_audit!
+    @skip_removal_audit = true
   end
 end

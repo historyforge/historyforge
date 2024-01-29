@@ -21,16 +21,19 @@ a {
   clear:both;
 }
 
-.pills {
-  @include media('>=desktop') {
-    float: right;
-    min-width: 40%;
-    text-align: right;
-  }
-  @include media('<=tablet') {
+.content-header {
+  @include media('>=tablet') {
     display: flex;
-    justify-content: center;
-    margin-bottom: 1.125rem;
+    justify-content: space-between;
+    h1 {
+      margin-right: auto;
+    }
+    .pills {
+      margin-left: auto;
+    }
+  }
+  @include media('<tablet') {
+    margin-bottom: 1rem;
   }
 }
 

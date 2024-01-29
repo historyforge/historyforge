@@ -34,9 +34,10 @@ html
       div class="container#{@full_layout ? '-fluid' : ''}"
         = flash_messages
         = yield :breadcrumb
-        - if content_for? :pills
-          .pills= yield :pills
-        h1= page_title if page_title
+        div.content-header
+          h1= page_title if page_title
+          - if content_for? :pills
+            .pills= yield :pills
         - if content_for?(:content)
           = yield :content
         - else

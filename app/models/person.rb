@@ -123,8 +123,8 @@ class Person < ApplicationRecord
        census_1930_records census_1940_records census_1950_records photos]
   end
 
-  def name
-    try(:found_name) || [name_prefix, first_name, middle_name, last_name, name_suffix].select(&:present?).join(' ')
+  def non_variant_names
+    names.reject { |name| name.same_name_as?(self) }
   end
 
   # To make the "Mark n Reviewed" button not show up because there is not a person review system at the moment
