@@ -6,10 +6,11 @@
 - content_for :pills do
   - if can?(:create, Flag)
     = render 'shared/flag_it', item: @building.object, item_class: 'btn btn-light'
-  - if can?(:create, Photograph)
-    = link_to 'Add Photo', new_building_photograph_path(@building.object), class: 'btn btn-right'
   - if can?(:update, @building.object)
-    = link_to 'Edit', [:edit, @building], class: 'btn btn-light'
+    = link_to [:edit, @building], class: 'btn btn-light' do
+      i.fa.fa-pencil
+      span.d-none.d-lg-inline
+        | &nbsp; Edit
   - if can?(:review, @building.object) && !@building.reviewed?
     = link_to 'Review', [:review, @building], class: 'btn btn-light', data: { method: :put }
   = link_to 'View All', buildings_path, class: 'btn btn-light'
@@ -113,13 +114,11 @@
         .card-body#building-description
           == @building.description
 
-    /- photos = can?(:review, Photo) ? @building.photos : @building.photos.reviewed
     - photos = @building.photos
-    / - if photos.present?
     .card.mb-1
       .card-header
         - if can?(:create, Photograph)
-          = link_to 'Upload', [:new, @building, :photograph], class: 'btn btn-sm btn-light float-right'
+          = link_to 'Add New Photo', [:new, @building, :photograph], class: 'btn btn-sm btn-light float-right'
         | Photos
       .card-body
         .row
