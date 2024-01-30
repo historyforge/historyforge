@@ -133,10 +133,6 @@ class Person < ApplicationRecord
   end
 
   def add_name_from(record)
-    # If the record's name has bits that we don't have yet, assign them here.
-    PRIMARY_NAME_ATTRIBUTES.each do |attr|
-      self[attr] ||= record[attr]
-    end
     return if names.any? { |name| name.same_name_as?(record) }
 
     names.build(first_name: record.first_name, last_name: record.last_name)

@@ -14,6 +14,11 @@ module People
 
     def person_from_census_record
       person = Person.new "census#{record.year}_records" => [record]
+      person.first_name = record.first_name
+      person.middle_name = record.middle_name
+      person.last_name = record.last_name
+      person.name_prefix = record.name_prefix
+      person.name_suffix = record.name_suffix
       person.race = record.race
       person.sex = record.sex
       person.birth_year = record.year - record.age if record.age&.< 120
