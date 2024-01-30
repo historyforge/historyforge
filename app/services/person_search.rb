@@ -65,7 +65,7 @@ class PersonSearch < SearchQueryBuilder
     return unless has_names_joined?
 
     builder.group('person_names.id')
-    builder.select(builder.scoped.select_values, 'person_names.first_name as matched_first_name, person_names.last_name as matched_last_name')
+    builder.select(builder.scoped.select_values, 'person_names.first_name as matched_first_name, person_names.last_name as matched_last_name, concat_ws(lower(person_names.last_name), lower(person_names.first_name)) as sortable_matched_name')
   end
 
   def add_sorts
@@ -73,6 +73,8 @@ class PersonSearch < SearchQueryBuilder
     sort&.each_value do |sort_unit|
       col = sort_unit['colId']
       dir = sort_unit['sort']
+      next if col == 'locality_ids'
+
       order << if col == 'name'
                  name_order_clause(dir)
                else
@@ -85,7 +87,7 @@ class PersonSearch < SearchQueryBuilder
 
   def name_order_clause(dir)
     if has_names_joined?
-      "matched_last_name #{dir}, matched_first_name #{dir}"
+      "sortable_matched_name #{dir}"
     else
       "sortable_name #{dir}"
     end
