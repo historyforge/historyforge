@@ -32,6 +32,20 @@ export const searchTerm = (term) => async(dispatch) => {
   }, term === '' ? 1000 : 200)
 }
 
+export const getBuildingsNearMe = ({ latitude, longitude }: { latitude: number, longitude: number}) => async(dispatch, getState) => {
+  const near = `${latitude}+${longitude}`;
+  const qs = buildParams(getState().search || {});
+  const params = {
+    ...qs,
+    near,
+    from: 0,
+    to: 4
+  };
+  const json = await axios.get('/buildings.json', { params })
+  if (typeof json.data === 'string') { json.data = JSON.parse(json.data) }
+  // TODO: use the data to build a bounding box, put that in state, and make the map center and zoom on the bounding box.
+}
+
 export const load = () => async (dispatch, getState) => {
   const qs = getState().search || {}
   const json = await axios.get('/buildings.json', {

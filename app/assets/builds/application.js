@@ -54638,6 +54638,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     address: () => address,
     deAddress: () => deAddress,
     forgeInit: () => forgeInit,
+    getBuildingsNearMe: () => getBuildingsNearMe,
     highlight: () => highlight,
     load: () => load,
     moveBuilding: () => moveBuilding,
@@ -54675,6 +54676,19 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         dispatch({ type: "BUILDING_LOADED", buildings: json.data });
       });
     }, term === "" ? 1e3 : 200);
+  });
+  var getBuildingsNearMe = ({ latitude, longitude }) => (dispatch, getState) => __async(void 0, null, function* () {
+    const near = `${latitude}+${longitude}`;
+    const qs = buildParams(getState().search || {});
+    const params = __spreadProps(__spreadValues({}, qs), {
+      near,
+      from: 0,
+      to: 4
+    });
+    const json = yield import_axios2.default.get("/buildings.json", { params });
+    if (typeof json.data === "string") {
+      json.data = JSON.parse(json.data);
+    }
   });
   var load = () => (dispatch, getState) => __async(void 0, null, function* () {
     const qs = getState().search || {};
@@ -55514,6 +55528,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { coords } = position;
+          dispatch(getBuildingsNearMe(coords));
         },
         (error2) => {
           if (error2.message.match(/denied/)) {

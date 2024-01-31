@@ -3,7 +3,7 @@ import Layers from './Layers'
 import Map from './Map'
 import CensusSearch from './CensusSearch'
 import Building from './Building'
-import {forgeInit, reset, resetMap} from './actions'
+import {forgeInit, getBuildingsNearMe, reset, resetMap} from './actions'
 import {useAppDispatch, useAppSelector} from './hooks'
 import {Forges} from "./Forges";
 
@@ -35,7 +35,7 @@ const App = (): React.ReactNode => {
         navigator.geolocation.getCurrentPosition(
             (position) => {
                 const { coords } = position;
-
+                dispatch(getBuildingsNearMe(coords))
             },
             (error) => {
                 if (error.message.match(/denied/)) {
