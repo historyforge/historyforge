@@ -1,19 +1,14 @@
 # frozen_string_literal: true
 
 class BuildingSearch < SearchQueryBuilder
-  attr_reader :num_residents
+  attr_reader :num_residents, :people_params, :near
+  attr_accessor :people, :expanded
 
   def self.generate(params: {}, user: nil)
     new user: user,
-        s: params[:s],
-        f: params[:f],
-        g: params[:g],
-        from: params[:from],
-        to: params[:to],
-        sort: params[:sort],
-        people: params[:people],
         people_params: params[:peopleParams] && handle_people_params(params[:peopleParams]),
-        scope: params[:scope] && params[:scope] != 'on' && params[:scope].intern
+        scope: params[:scope] && params[:scope] != 'on' && params[:scope].intern,
+        **params.slice(:s, :f, :g, :from, :to, :sort, :people, :near)
   end
 
   def self.handle_people_params(params)
@@ -23,10 +18,6 @@ class BuildingSearch < SearchQueryBuilder
       hash[item[0].to_sym] = item[1] if item[1].present?
     end
   end
-
-  attr_accessor :people, :expanded
-
-  attr_reader :people_params
 
   def results
     results = scoped.to_a
@@ -56,6 +47,7 @@ class BuildingSearch < SearchQueryBuilder
 
     prepare_expanded_search if expanded
     enrich_with_residents if people.present?
+    filter_by_distance if near
 
     builder.scoped
   end
@@ -93,6 +85,11 @@ class BuildingSearch < SearchQueryBuilder
   end
 
   private
+
+  def filter_by_distance
+    coordinates = near.split('+').map(&:to_d)
+    builder.near(coordinates)
+  end
 
   def prepare_expanded_search
     builder.preload(:locality) if f.include?('locality')
