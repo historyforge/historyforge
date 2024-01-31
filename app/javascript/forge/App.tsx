@@ -31,9 +31,29 @@ const App = (): React.ReactNode => {
         setForgePickerOpen(false);
     }
 
+    const centerOnMe = () => {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const { coords } = position;
+
+            },
+            (error) => {
+                if (error.message.match(/denied/)) {
+                    alert("Sorry but we can't show you what's nearby if you don't share your location.");
+                } else {
+                    alert(`Sorry but an error occurred while trying to get your location.: ${error.message}`)
+                }
+                console.error(error);
+            }
+        );
+    }
+
     return (
         <div className="map-wrap">
             <Map/>
+            <button id="near-me-button" onClick={centerOnMe} className="btn btn-primary">
+                <i className="fa fa-bullseye" />
+            </button>
             {forgePickerOpen && (
                 <div id="forge-left-col" className="open">
                     <button type="button" id="forge-sidebar-left-closer" className="btn btn-primary"

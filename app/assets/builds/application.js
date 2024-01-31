@@ -55510,9 +55510,30 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       setSidebarLeft(false);
       setForgePickerOpen(false);
     };
+    const centerOnMe = () => {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { coords } = position;
+        },
+        (error2) => {
+          if (error2.message.match(/denied/)) {
+            alert("Sorry but we can't show you what's nearby if you don't share your location.");
+          } else {
+            alert(`Sorry but an error occurred while trying to get your location.: ${error2.message}`);
+          }
+          console.error(error2);
+        }
+      );
+    };
     return /* @__PURE__ */ import_react37.default.createElement("div", {
       className: "map-wrap"
-    }, /* @__PURE__ */ import_react37.default.createElement(Map_default, null), forgePickerOpen && /* @__PURE__ */ import_react37.default.createElement("div", {
+    }, /* @__PURE__ */ import_react37.default.createElement(Map_default, null), /* @__PURE__ */ import_react37.default.createElement("button", {
+      id: "near-me-button",
+      onClick: centerOnMe,
+      className: "btn btn-primary"
+    }, /* @__PURE__ */ import_react37.default.createElement("i", {
+      className: "fa fa-bullseye"
+    })), forgePickerOpen && /* @__PURE__ */ import_react37.default.createElement("div", {
       id: "forge-left-col",
       className: "open"
     }, /* @__PURE__ */ import_react37.default.createElement("button", {
