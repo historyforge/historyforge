@@ -80,6 +80,15 @@ const Map = (props: MapProps) => {
         highlightMarkers(props, prevProps, markers)
       }
 
+      if (propertyChanged(props, prevProps, 'focusOnPoints')) {
+        if (props.focusOnPoints) {
+          const bounds = new google.maps.LatLngBounds();
+          debugger
+          props.focusOnPoints.forEach(point => bounds.extend(new google.maps.LatLng(point.lat, point.lon)));
+          map.fitBounds(bounds);
+        }
+      }
+
       if (propertyChanged(props, prevProps, 'addressedAt')) {
         const { bubble } = props
         if (bubble) {

@@ -43,6 +43,7 @@ type MapProps = {
     layeredAt?: Date;
     opacityAt?: Date;
     loadedAt?: Date;
+    focusOnPoints?: Array<keyable>;
 }
 
 // interface SearchFilters {

@@ -54681,14 +54681,13 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     const near = `${latitude}+${longitude}`;
     const qs = buildParams(getState().search || {});
     const params = __spreadProps(__spreadValues({}, qs), {
-      near,
-      from: 0,
-      to: 4
+      near
     });
     const json = yield import_axios2.default.get("/buildings.json", { params });
     if (typeof json.data === "string") {
       json.data = JSON.parse(json.data);
     }
+    dispatch({ type: "FORGE_FOCUS", buildings: json.data.buildings });
   });
   var load = () => (dispatch, getState) => __async(void 0, null, function* () {
     const qs = getState().search || {};
@@ -54909,6 +54908,14 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         }
         if (markers) {
           highlightMarkers(props, prevProps, markers);
+        }
+        if (propertyChanged(props, prevProps, "focusOnPoints")) {
+          if (props.focusOnPoints) {
+            const bounds = new google3.maps.LatLngBounds();
+            debugger;
+            props.focusOnPoints.forEach((point) => bounds.extend(new google3.maps.LatLng(point.lat, point.lon)));
+            map3.fitBounds(bounds);
+          }
         }
         if (propertyChanged(props, prevProps, "addressedAt")) {
           const { bubble } = props;
@@ -55800,6 +55807,9 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         return layer;
       });
       return __spreadProps(__spreadValues({}, state), { layers: nextLayers, active: layerStorage.active, layeredAt: new Date().getTime() });
+    }
+    if (action.type === "FORGE_FOCUS") {
+      return __spreadProps(__spreadValues({}, state), { focusOnPoints: action.buildings });
     }
     if (action.type === "LAYERS_RESET") {
       layerStorage.reset();

@@ -37,13 +37,11 @@ export const getBuildingsNearMe = ({ latitude, longitude }: { latitude: number, 
   const qs = buildParams(getState().search || {});
   const params = {
     ...qs,
-    near,
-    from: 0,
-    to: 4
+    near
   };
   const json = await axios.get('/buildings.json', { params })
   if (typeof json.data === 'string') { json.data = JSON.parse(json.data) }
-  // TODO: use the data to build a bounding box, put that in state, and make the map center and zoom on the bounding box.
+  dispatch({ type: 'FORGE_FOCUS', buildings: json.data.buildings })
 }
 
 export const load = () => async (dispatch, getState) => {
