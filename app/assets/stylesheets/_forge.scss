@@ -29,6 +29,21 @@ body.streetview {
   bottom: 6px;
 }
 
+#focusing {
+  position: absolute;
+  z-index: 17;
+  left: 50%;
+  width: 150px;
+  margin-left: -75px;
+  bottom: 100px;
+  background: $link-color;
+  color: white;
+  padding: 1rem;
+  border-radius: 6px;
+  font-weight: bold;
+  text-align: center;
+}
+
 #forge-left-col {
   position: absolute;
   z-index: 19;

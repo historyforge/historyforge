@@ -19,6 +19,7 @@ const App = (): React.ReactNode => {
     }, [dispatch])
 
     const forgeActive = useAppSelector(state => state.layers.active || state.search.current);
+    const focusing = useAppSelector(state => state.layers.focusing || false);
 
     const resetForge = () => {
         dispatch(reset());
@@ -32,6 +33,7 @@ const App = (): React.ReactNode => {
     }
 
     const centerOnMe = () => {
+        dispatch({ type: "FORGE_FOCUSING"} )
         navigator.geolocation.getCurrentPosition(
             (position) => {
                 const { coords } = position;
@@ -44,6 +46,7 @@ const App = (): React.ReactNode => {
                     alert(`Sorry but an error occurred while trying to get your location.: ${error.message}`)
                 }
                 console.error(error);
+                dispatch({ type: "FORGE_FOCUSING"} )
             }
         );
     }
@@ -54,13 +57,14 @@ const App = (): React.ReactNode => {
             <button id="near-me-button" onClick={centerOnMe} className="btn btn-primary">
                 <i className="fa fa-bullseye" />
             </button>
+            {focusing && <div id="focusing">Working</div>}
             {forgePickerOpen && (
                 <div id="forge-left-col" className="open">
                     <button type="button" id="forge-sidebar-left-closer" className="btn btn-primary"
                             onClick={closeSidebar}>
                         <i className="fa fa-close"/>
                     </button>
-                    <Forges/>
+                    <Forges />
                 </div>
             )}
             {sidebarLeft && (
@@ -69,7 +73,7 @@ const App = (): React.ReactNode => {
                             onClick={closeSidebar}>
                         <i className="fa fa-close"/>
                     </button>
-                    <Layers/>
+                    <Layers />
                 </div>
             )}
             {sidebarRight && (
@@ -80,7 +84,7 @@ const App = (): React.ReactNode => {
                             onClick={closeSidebar}>
                         <i className="fa fa-close"/>
                     </button>
-                    <CensusSearch/>
+                    <CensusSearch />
                 </div>
             )}
             <div id="button-bar" className="btn-group">

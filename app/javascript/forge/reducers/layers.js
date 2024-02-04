@@ -56,7 +56,15 @@ export const layers = function(state = {}, action) {
   }
 
   if (action.type === "FORGE_FOCUS") {
-    return { ...state, focusOnPoints: action.buildings }
+    return { ...state, focusOnPoints: action.buildings };
+  }
+
+  if (action.type === "FORGE_FOCUSING") {
+    return { ...state, focusing: true };
+  }
+
+  if (action.type === "FORGE_FOCUSED") {
+    return { ...state, focusing: false };
   }
 
   if (action.type === "LAYERS_RESET") {

@@ -44,6 +44,7 @@ type MapProps = {
     opacityAt?: Date;
     loadedAt?: Date;
     focusOnPoints?: Array<keyable>;
+    finishedFocusing: () => void;
 }
 
 // interface SearchFilters {

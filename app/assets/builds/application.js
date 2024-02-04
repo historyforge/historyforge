@@ -54637,6 +54637,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   __export(actions_exports, {
     address: () => address,
     deAddress: () => deAddress,
+    finishedFocusing: () => finishedFocusing,
     forgeInit: () => forgeInit,
     getBuildingsNearMe: () => getBuildingsNearMe,
     highlight: () => highlight,
@@ -54689,6 +54690,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     }
     dispatch({ type: "FORGE_FOCUS", buildings: json.data.buildings });
   });
+  var finishedFocusing = () => (dispatch) => dispatch({ type: "FORGE_FOCUSED" });
   var load = () => (dispatch, getState) => __async(void 0, null, function* () {
     const qs = getState().search || {};
     const json = yield import_axios2.default.get("/buildings.json", {
@@ -54912,9 +54914,9 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         if (propertyChanged(props, prevProps, "focusOnPoints")) {
           if (props.focusOnPoints) {
             const bounds = new google3.maps.LatLngBounds();
-            debugger;
             props.focusOnPoints.forEach((point) => bounds.extend(new google3.maps.LatLng(point.lat, point.lon)));
             map3.fitBounds(bounds);
+            props.finishedFocusing();
           }
         }
         if (propertyChanged(props, prevProps, "addressedAt")) {
@@ -55521,6 +55523,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       dispatch(forgeInit());
     }, [dispatch]);
     const forgeActive = useAppSelector((state) => state.layers.active || state.search.current);
+    const focusing = useAppSelector((state) => state.layers.focusing || false);
     const resetForge = () => {
       dispatch(reset());
       dispatch(resetMap());
@@ -55532,6 +55535,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       setForgePickerOpen(false);
     };
     const centerOnMe = () => {
+      dispatch({ type: "FORGE_FOCUSING" });
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { coords } = position;
@@ -55544,6 +55548,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
             alert(`Sorry but an error occurred while trying to get your location.: ${error2.message}`);
           }
           console.error(error2);
+          dispatch({ type: "FORGE_FOCUSING" });
         }
       );
     };
@@ -55555,7 +55560,9 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       className: "btn btn-primary"
     }, /* @__PURE__ */ import_react37.default.createElement("i", {
       className: "fa fa-bullseye"
-    })), forgePickerOpen && /* @__PURE__ */ import_react37.default.createElement("div", {
+    })), focusing && /* @__PURE__ */ import_react37.default.createElement("div", {
+      id: "focusing"
+    }, "Working"), forgePickerOpen && /* @__PURE__ */ import_react37.default.createElement("div", {
       id: "forge-left-col",
       className: "open"
     }, /* @__PURE__ */ import_react37.default.createElement("button", {
@@ -55711,7 +55718,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   }
   function forgeFiltersLoaded(state, action) {
     const nextState = { filters: action.filters, year: state.year, years: state.years };
-    if (state.params && state.params.s && state.params.s) {
+    if (state.params && state.params.s) {
       console.log("resetting filters", state.params);
       nextState.current = buildFilters(action.filters, state.params.s);
       nextState.params = buildParams2(nextState, nextState.current);
@@ -55810,6 +55817,12 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     }
     if (action.type === "FORGE_FOCUS") {
       return __spreadProps(__spreadValues({}, state), { focusOnPoints: action.buildings });
+    }
+    if (action.type === "FORGE_FOCUSING") {
+      return __spreadProps(__spreadValues({}, state), { focusing: true });
+    }
+    if (action.type === "FORGE_FOCUSED") {
+      return __spreadProps(__spreadValues({}, state), { focusing: false });
     }
     if (action.type === "LAYERS_RESET") {
       layerStorage.reset();
