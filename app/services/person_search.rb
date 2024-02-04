@@ -43,6 +43,7 @@ class PersonSearch < SearchQueryBuilder
   def count
     builder.uncensused if uncensused?
     builder.photographed if photographed?
+    scope_to_locality if Current.locality_id
     entity_class.where(id: builder.scoped.select('people.id')).count
   end
 
