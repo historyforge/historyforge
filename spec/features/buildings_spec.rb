@@ -22,7 +22,7 @@ RSpec.describe 'buildings' do
     expect(page).to have_content 'Found 1 record'
     # sleep 1 # Otherwise sometimes it says it can't find View
     expect(page).to have_content '405 N Titus Ave', wait: 5
-    click_on 'View'
+    click_on '405 N Titus Ave'
     expect(page).to have_content '405 N Titus Ave'
   end
 

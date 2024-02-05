@@ -96,7 +96,7 @@ RSpec.describe '1900 US Census' do
     # but not in reality.
     # expect(find('span.badge.badge-success')).to have_content('NEW')
 
-    click_on 'View'
+    click_on 'Squarepants III, Sponge Bob Dr'
     expect(page).to have_content 'Squarepants III, Sponge Bob Dr'
 
     click_on 'Edit'
