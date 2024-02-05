@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import loadWMS from './wms'
 import * as actions from './actions'
 import { propertyChanged, addOpacity, generateMarkers, highlightMarkers } from './MapComponent'
+import {finishedFocusing} from "./actions";
 
 const google = window.google
 // @ts-ignore
@@ -78,6 +79,15 @@ const Map = (props: MapProps) => {
       }
       if (markers) {
         highlightMarkers(props, prevProps, markers)
+      }
+
+      if (propertyChanged(props, prevProps, 'focusOnPoints')) {
+        if (props.focusOnPoints) {
+          const bounds = new google.maps.LatLngBounds();
+          props.focusOnPoints.forEach(point => bounds.extend(new google.maps.LatLng(point.lat, point.lon)));
+          map.fitBounds(bounds);
+          props.finishedFocusing();
+        }
       }
 
       if (propertyChanged(props, prevProps, 'addressedAt')) {

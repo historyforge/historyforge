@@ -89,6 +89,7 @@ class BuildingSearch < SearchQueryBuilder
   def filter_by_distance
     coordinates = near.split('+').map(&:to_d)
     builder.near(coordinates)
+    builder.limit(5)
   end
 
   def prepare_expanded_search

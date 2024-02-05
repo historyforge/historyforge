@@ -55,6 +55,18 @@ export const layers = function(state = {}, action) {
     return { ...state, layers: nextLayers, active: layerStorage.active, layeredAt: new Date().getTime() };
   }
 
+  if (action.type === "FORGE_FOCUS") {
+    return { ...state, focusOnPoints: action.buildings };
+  }
+
+  if (action.type === "FORGE_FOCUSING") {
+    return { ...state, focusing: true };
+  }
+
+  if (action.type === "FORGE_FOCUSED") {
+    return { ...state, focusing: false };
+  }
+
   if (action.type === "LAYERS_RESET") {
     layerStorage.reset();
     return { ...state, active: false, layeredAt: new Date().getTime() };

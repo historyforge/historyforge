@@ -54637,7 +54637,9 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   __export(actions_exports, {
     address: () => address,
     deAddress: () => deAddress,
+    finishedFocusing: () => finishedFocusing,
     forgeInit: () => forgeInit,
+    getBuildingsNearMe: () => getBuildingsNearMe,
     highlight: () => highlight,
     load: () => load,
     moveBuilding: () => moveBuilding,
@@ -54676,6 +54678,19 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       });
     }, term === "" ? 1e3 : 200);
   });
+  var getBuildingsNearMe = ({ latitude, longitude }) => (dispatch, getState) => __async(void 0, null, function* () {
+    const near = `${latitude}+${longitude}`;
+    const qs = buildParams(getState().search || {});
+    const params = __spreadProps(__spreadValues({}, qs), {
+      near
+    });
+    const json = yield import_axios2.default.get("/buildings.json", { params });
+    if (typeof json.data === "string") {
+      json.data = JSON.parse(json.data);
+    }
+    dispatch({ type: "FORGE_FOCUS", buildings: json.data.buildings });
+  });
+  var finishedFocusing = () => (dispatch) => dispatch({ type: "FORGE_FOCUSED" });
   var load = () => (dispatch, getState) => __async(void 0, null, function* () {
     const qs = getState().search || {};
     const json = yield import_axios2.default.get("/buildings.json", {
@@ -54895,6 +54910,14 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         }
         if (markers) {
           highlightMarkers(props, prevProps, markers);
+        }
+        if (propertyChanged(props, prevProps, "focusOnPoints")) {
+          if (props.focusOnPoints) {
+            const bounds = new google3.maps.LatLngBounds();
+            props.focusOnPoints.forEach((point) => bounds.extend(new google3.maps.LatLng(point.lat, point.lon)));
+            map3.fitBounds(bounds);
+            props.finishedFocusing();
+          }
         }
         if (propertyChanged(props, prevProps, "addressedAt")) {
           const { bubble } = props;
@@ -55500,6 +55523,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       dispatch(forgeInit());
     }, [dispatch]);
     const forgeActive = useAppSelector((state) => state.layers.active || state.search.current);
+    const focusing = useAppSelector((state) => state.layers.focusing || false);
     const resetForge = () => {
       dispatch(reset());
       dispatch(resetMap());
@@ -55510,9 +55534,35 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       setSidebarLeft(false);
       setForgePickerOpen(false);
     };
+    const centerOnMe = () => {
+      dispatch({ type: "FORGE_FOCUSING" });
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { coords } = position;
+          dispatch(getBuildingsNearMe(coords));
+        },
+        (error2) => {
+          if (error2.message.match(/denied/)) {
+            alert("Sorry but we can't show you what's nearby if you don't share your location.");
+          } else {
+            alert(`Sorry but an error occurred while trying to get your location.: ${error2.message}`);
+          }
+          console.error(error2);
+          dispatch({ type: "FORGE_FOCUSING" });
+        }
+      );
+    };
     return /* @__PURE__ */ import_react37.default.createElement("div", {
       className: "map-wrap"
-    }, /* @__PURE__ */ import_react37.default.createElement(Map_default, null), forgePickerOpen && /* @__PURE__ */ import_react37.default.createElement("div", {
+    }, /* @__PURE__ */ import_react37.default.createElement(Map_default, null), /* @__PURE__ */ import_react37.default.createElement("button", {
+      id: "near-me-button",
+      onClick: centerOnMe,
+      className: "btn btn-primary"
+    }, /* @__PURE__ */ import_react37.default.createElement("i", {
+      className: "fa fa-bullseye"
+    })), focusing && /* @__PURE__ */ import_react37.default.createElement("div", {
+      id: "focusing"
+    }, "Working"), forgePickerOpen && /* @__PURE__ */ import_react37.default.createElement("div", {
       id: "forge-left-col",
       className: "open"
     }, /* @__PURE__ */ import_react37.default.createElement("button", {
@@ -55668,7 +55718,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   }
   function forgeFiltersLoaded(state, action) {
     const nextState = { filters: action.filters, year: state.year, years: state.years };
-    if (state.params && state.params.s && state.params.s) {
+    if (state.params && state.params.s) {
       console.log("resetting filters", state.params);
       nextState.current = buildFilters(action.filters, state.params.s);
       nextState.params = buildParams2(nextState, nextState.current);
@@ -55764,6 +55814,15 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         return layer;
       });
       return __spreadProps(__spreadValues({}, state), { layers: nextLayers, active: layerStorage.active, layeredAt: new Date().getTime() });
+    }
+    if (action.type === "FORGE_FOCUS") {
+      return __spreadProps(__spreadValues({}, state), { focusOnPoints: action.buildings });
+    }
+    if (action.type === "FORGE_FOCUSING") {
+      return __spreadProps(__spreadValues({}, state), { focusing: true });
+    }
+    if (action.type === "FORGE_FOCUSED") {
+      return __spreadProps(__spreadValues({}, state), { focusing: false });
     }
     if (action.type === "LAYERS_RESET") {
       layerStorage.reset();

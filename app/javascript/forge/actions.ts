@@ -32,6 +32,20 @@ export const searchTerm = (term) => async(dispatch) => {
   }, term === '' ? 1000 : 200)
 }
 
+export const getBuildingsNearMe = ({ latitude, longitude }: { latitude: number, longitude: number}) => async(dispatch, getState) => {
+  const near = `${latitude}+${longitude}`;
+  const qs = buildParams(getState().search || {});
+  const params = {
+    ...qs,
+    near
+  };
+  const json = await axios.get('/buildings.json', { params })
+  if (typeof json.data === 'string') { json.data = JSON.parse(json.data) }
+  dispatch({ type: 'FORGE_FOCUS', buildings: json.data.buildings })
+}
+
+export const finishedFocusing = () => (dispatch) => dispatch({ type: "FORGE_FOCUSED"});
+
 export const load = () => async (dispatch, getState) => {
   const qs = getState().search || {}
   const json = await axios.get('/buildings.json', {

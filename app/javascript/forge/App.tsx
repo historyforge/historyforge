@@ -3,7 +3,7 @@ import Layers from './Layers'
 import Map from './Map'
 import CensusSearch from './CensusSearch'
 import Building from './Building'
-import {forgeInit, reset, resetMap} from './actions'
+import {forgeInit, getBuildingsNearMe, reset, resetMap} from './actions'
 import {useAppDispatch, useAppSelector} from './hooks'
 import {Forges} from "./Forges";
 
@@ -19,6 +19,7 @@ const App = (): React.ReactNode => {
     }, [dispatch])
 
     const forgeActive = useAppSelector(state => state.layers.active || state.search.current);
+    const focusing = useAppSelector(state => state.layers.focusing || false);
 
     const resetForge = () => {
         dispatch(reset());
@@ -31,16 +32,39 @@ const App = (): React.ReactNode => {
         setForgePickerOpen(false);
     }
 
+    const centerOnMe = () => {
+        dispatch({ type: "FORGE_FOCUSING"} )
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const { coords } = position;
+                dispatch(getBuildingsNearMe(coords))
+            },
+            (error) => {
+                if (error.message.match(/denied/)) {
+                    alert("Sorry but we can't show you what's nearby if you don't share your location.");
+                } else {
+                    alert(`Sorry but an error occurred while trying to get your location.: ${error.message}`)
+                }
+                console.error(error);
+                dispatch({ type: "FORGE_FOCUSING"} )
+            }
+        );
+    }
+
     return (
         <div className="map-wrap">
             <Map/>
+            <button id="near-me-button" onClick={centerOnMe} className="btn btn-primary">
+                <i className="fa fa-bullseye" />
+            </button>
+            {focusing && <div id="focusing">Working</div>}
             {forgePickerOpen && (
                 <div id="forge-left-col" className="open">
                     <button type="button" id="forge-sidebar-left-closer" className="btn btn-primary"
                             onClick={closeSidebar}>
                         <i className="fa fa-close"/>
                     </button>
-                    <Forges/>
+                    <Forges />
                 </div>
             )}
             {sidebarLeft && (
@@ -49,7 +73,7 @@ const App = (): React.ReactNode => {
                             onClick={closeSidebar}>
                         <i className="fa fa-close"/>
                     </button>
-                    <Layers/>
+                    <Layers />
                 </div>
             )}
             {sidebarRight && (
@@ -60,7 +84,7 @@ const App = (): React.ReactNode => {
                             onClick={closeSidebar}>
                         <i className="fa fa-close"/>
                     </button>
-                    <CensusSearch/>
+                    <CensusSearch />
                 </div>
             )}
             <div id="button-bar" className="btn-group">

@@ -38,7 +38,7 @@ class ForgeQuery
 
   def query
     sql = scoped.select('buildings.id,buildings.lat,buildings.lon').to_sql
-    sql = "select array_to_json(array_agg(row_to_json(t))) as data, count(t.id) as meta from (#{sql}) t"
+    sql = "select array_to_json(array_agg(row_to_json(t))) as data, count(*) as meta from (#{sql}) t"
     ActiveRecord::Base.connection.execute(sql).first
   end
   memoize :query
