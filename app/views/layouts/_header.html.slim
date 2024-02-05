@@ -52,7 +52,7 @@ header
                 - if Current.locality_id
                   = localities.detect { |item| item.id == Current.locality_id }.short_name
                 - else
-                  | Showing All
+                  | Localities
               .dropdown-menu
                 - if Current.locality_id
                   = link_to 'Show All', reset_localities_path, data: { method: :put }, class: 'dropdown-item'
