@@ -19,7 +19,8 @@ class CensusRecordSearch < SearchQueryBuilder
 
   def scoped
     builder.includes(:locality) if f.include?('locality_id')
-    builder.where(locality_id: Current.locality_id) if Current.locality_id
+    builder.where(locality_id: Current.locality_id) if Current.locality_id && !s.keys.include?('locality_id_in')
+
     builder.reviewed unless user
 
     builder.offset(from) if from&.positive?

@@ -45,7 +45,7 @@ module People
       cognates = Nicknames.matches_for(first_name, record.sex)
       query = Person.where(sex: record.sex)
                     .where(id: PersonName.select(:person_id)
-                                         .where('lower(person_names.first_name) in (?) OR person_names.first_name % ?', cognates, first_name)
+                                         .where('lower(person_names.first_name) IN (?) OR person_names.first_name % ? OR person_names.middle_name IN (?) OR person_names.middle_name % ?', cognates, first_name, cognates, first_name)
                                          .where('person_names.last_name % ?', last_name)
                                          .where('person_names.person_id=people.id'))
                     .order('people.first_name, people.middle_name')

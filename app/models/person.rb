@@ -118,7 +118,7 @@ class Person < ApplicationRecord
   end
 
   def self.ransackable_associations(_auth_object = nil)
-    %w[names census_1850_records census_1860_records
+    %w[names localities census_1850_records census_1860_records
        census_1870_records census_1880_records census_1900_records census_1910_records census_1920_records
        census_1930_records census_1940_records census_1950_records photos]
   end
