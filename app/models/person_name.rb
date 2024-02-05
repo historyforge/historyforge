@@ -57,7 +57,7 @@ class PersonName < ApplicationRecord
   end
 
   def same_name_as?(record)
-    record.first_name == first_name && record.last_name == last_name
+    (record.first_name == first_name && record.last_name == last_name) || record.name == name
   end
 
   def audit_new_name
