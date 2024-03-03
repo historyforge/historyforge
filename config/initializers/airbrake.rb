@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 # This needs to happen before configuring Airbrake.
-Rails.application.config.filter_parameters += [
-  :passw, :secret, :token, :_key, :crypt, :salt, :certificate, :otp, :ssn
+Rails.application.config.filter_parameters += %i[
+  passw secret token _key crypt salt certificate otp ssn
 ]
 
 # Airbrake is an online tool that provides robust exception tracking in your
@@ -19,10 +19,11 @@ Airbrake.configure do |c|
   # project_key navigate to your project's General Settings and copy the
   # values from the right sidebar.
   # https://github.com/airbrake/airbrake-ruby#project_id--project_key
-  c.project_id = ENV['AIRBRAKE_ID']
-  c.project_key = ENV['AIRBRAKE_KEY']
+  c.project_id = ENV.fetch('AIRBRAKE_ID', nil)
+  c.project_key = ENV.fetch('AIRBRAKE_KEY', nil)
+  c.performance_stats = false
 
-  c.host = ENV['AIRBRAKE_URL']
+  c.host = ENV.fetch('AIRBRAKE_URL', nil)
 
   # Configures the root directory of your project. Expects a String or a
   # Pathname, which represents the path to your project. Providing this option
@@ -86,5 +87,5 @@ ignored_errors = %w[
   SIGQUIT
 ].freeze
 Airbrake.add_filter do |notice|
-  notice.ignore! if ignored_errors.include?(notice[:error_class])
+  notice.ignore! if ignored_errors.include?(notice.stash[:exception])
 end
