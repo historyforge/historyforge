@@ -2919,6 +2919,9 @@ Naming/VariableNumber:
 Rails/HasAndBelongsToMany:
   Enabled: false
 
+Rails/I18nLocaleTexts:
+  Enabled: false
+
 #################### RSpec ##############################
 
 RSpec/ExampleLength:
