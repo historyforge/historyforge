@@ -15,6 +15,12 @@ class PhotographsController < ApplicationController
     @photographs = @photographs.reviewed unless can?(:review, Photograph)
   end
 
+  def show
+    @photograph = model_class.find params[:id]
+    authorize! :read, @photograph
+    @photograph = @photograph.decorate
+  end
+
   def new
     @photograph = model_class.new
     authorize! :create, @photograph
@@ -28,6 +34,11 @@ class PhotographsController < ApplicationController
     end
   end
 
+  def edit
+    @photograph = model_class.find params[:id]
+    authorize! :update, @photograph
+  end
+
   def create
     @photograph = model_class.new resource_params
     @photograph.created_by = current_user
@@ -39,17 +50,6 @@ class PhotographsController < ApplicationController
       flash[:errors] = 'Sorry we could not save the photograph. Please correct the errors and try again.'
       render action: :edit
     end
-  end
-
-  def show
-    @photograph = model_class.find params[:id]
-    authorize! :read, @photograph
-    @photograph = @photograph.decorate
-  end
-
-  def edit
-    @photograph = model_class.find params[:id]
-    authorize! :update, @photograph
   end
 
   def update

@@ -12,6 +12,6 @@ module PanelHelper
   end
 
   def panel_body(body)
-    content_tag(:div, body, class: 'card-body')
+    content_tag(:div, body, class: 'card-body p-0')
   end
 end

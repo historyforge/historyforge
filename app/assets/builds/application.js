@@ -52005,6 +52005,10 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   // app/javascript/controllers/blowup_controller.js
   var blowup_controller_default = class extends Controller {
     connect() {
+      if (window.screen.width <= 768) {
+        this.element.classList.add("img-fluid");
+        return;
+      }
       $(this.element).blowup({ scale: 2, cursor: false, width: 300, height: 300 });
     }
   };

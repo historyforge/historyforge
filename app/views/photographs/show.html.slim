@@ -1,42 +1,54 @@
 = render 'shared/flag_resolution', item: @photograph
 
+- content_for :breadcrumb do
+  nav aria-label="breadcrumb"
+    ol.breadcrumb
+      - if @person
+        li.breadcrumb-item= link_to @person.name, @person
+      - elsif @building
+        li.breadcrumb-item= link_to @building.name, @building
+      - else
+        li.breadcrumb-item= link_to 'Photographs', photographs_path
+      li.breadcrumb-item= link_to "Photograph ##{@photograph.id}", @photograph
+
 #photograph-page
   .row.mb-3
-    .col-6
+    .col-12.col-md-6
       = image_tag @photograph.file, class: 'img img-thumbnail', id: 'photograph', data: { controller: 'blowup' }
-    .col-6
-      .float-right
-        = link_to 'View All', photographs_path, class: 'btn btn-light'
-        - if can? :update, @photograph
-          = link_to 'Edit', [:edit, @photograph], class: 'btn btn-light'
-        - if can? :destroy, @photograph
-          = link_to 'Delete', @photograph, class: 'btn btn-light', data: { confirm: 'Are you sure?', method: :delete }
+      p
+        - if can?(:update, @photograph)
+          = link_to 'Edit Photo', [:edit, @photograph], class: 'btn btn-light'
+        - if can?(:destroy, @photograph)
+          = link_to 'Delete Photo', @photograph, class: 'btn btn-light', data: { confirm: 'Are you sure?', method: :delete }
         = render 'shared/flag_it', item: @photograph.object, item_class: 'btn btn-light'
-      h1.page-title Photograph ##{@photograph.id}
-      / h3 #{@photograph.creator}
-      h4 #{@photograph.date}
+
+    /.col-12.col-md-6
+      - if @photograph.date
+        h4 #{@photograph.date}
 
       - if @photograph.caption.present?
-        = simple_format @photograph.caption
+        h3= @photograph.caption
       - if @photograph.description.present?
         = simple_format @photograph.description
       - if @photograph.buildings.present?
         h4 Buildings
-        p= @photograph.buildings.map { |building| link_to(building.street_address, building) }.join('<br />').html_safe
+        - @photograph.buildings.each do |building|
+          p
+            - building.addresses.each do |address|
+              = link_to(address.address_with_year, building, class: 'd-block')
       - if @photograph.people.present?
         h4 People
         p= @photograph.people.map { |person| link_to(person.name, person) }.join('<br />').html_safe
 
-  - if can?(:review, @photograph)
-    - unless @photograph.reviewed?
-      - if @photograph.errors.any?
-        = review_error_messages_for @photograph
-      - else
-        .alert.alert-info.alert-block
-          | Mark this photograph as reviewed? &nbsp; &nbsp;
-          =< link_to 'Review', [:review, @photograph], class: 'btn btn-primary', data: { method: :patch, confirm: 'Go ahead with it?' }
+  - if can?(:review, @photograph) && !@photograph.reviewed?
+    - if @photograph.errors.any?
+      = review_error_messages_for @photograph
+    - else
+      .alert.alert-info.alert-block
+        | Mark this photograph as reviewed? &nbsp; &nbsp;
+        =< link_to 'Review', [:review, @photograph], class: 'btn btn-primary', data: { method: :patch, confirm: 'Go ahead with it?' }
 
-  - if can?(:review, @photograph)
+  /- if can?(:review, @photograph)
     = panel 'Metadata' do
       .list-group.list-group-flush
         .list-group-item
