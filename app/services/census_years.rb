@@ -15,6 +15,12 @@ module CensusYears
     end
   end
 
+  def each_class
+    YEARS.each do |year|
+      yield "Census#{year}Record".safe_constantize
+    end
+  end
+
   def self.map(&block)
     YEARS.map(&block)
   end
