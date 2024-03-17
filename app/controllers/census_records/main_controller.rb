@@ -49,7 +49,7 @@ module CensusRecords
                                   street_suffix: params[:suffix],
                                   locality_id: params[:locality_id]
       record.auto_strip_attributes
-      buildings = BuildingsOnStreet.perform(record)
+      buildings = Buildings::PossibleMatches.perform(record)
       render json: buildings.to_json
     end
 

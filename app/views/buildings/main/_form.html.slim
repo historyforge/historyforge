@@ -22,7 +22,7 @@
     .card-body
       .row
         .col-sm-6
-          = form.input :parent_id, as: :select, collection: form.object.nearbys(0.03) || BuildingsOnStreet.perform(form.object), input_html: { id: 'building_id' }
+          = form.input :parent_id, as: :select, collection: form.object.nearbys(0.03) || Buildings::PossibleMatches.perform(form.object), input_html: { id: 'building_id' }
         .col-sm-6
           = form.input :hive_year
       .nested-form
