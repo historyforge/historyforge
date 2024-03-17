@@ -38,7 +38,7 @@ module PersonNames
 
     def set_searchable_name
       self.searchable_name = name
-      self.sortable_name = [last_name, first_name, middle_name].join(' ')
+      self.sortable_name = [last_name, first_name, middle_name].join(', ')
     end
 
     def clean_name

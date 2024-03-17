@@ -249,7 +249,7 @@ module People
       %w[Cornelia Cornie Nelia],
       %w[Carol Caroline Carolyn Carrie Cassie Lynn Carole],
       %w[Cassandra Cassie Cass Sandra Sandy],
-      %w[Catherine Cathleen Katherine Kathleen Cathy Kathy Katy Cassie Kay Kit Kittie Trina Lena],
+      %w[Catherine Cathleen Katherine Kathryn Kathleen Cathy Kathy Katy Cassie Kay Kit Kittie Trina Lena],
       %w[Cecilia Celia Cissy],
       %w[Charlotte Char Lottie Lotta Sherry],
       %w[Christine Christina Christiana Kristine Chris Kris Crissy Christy Kristy Tina],
