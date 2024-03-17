@@ -22,7 +22,7 @@
           = link_to 'Delete Photo', @photograph, class: 'btn btn-light', data: { confirm: 'Are you sure?', method: :delete }
         = render 'shared/flag_it', item: @photograph.object, item_class: 'btn btn-light'
 
-    /.col-12.col-md-6
+    .col-12.col-md-6
       - if @photograph.date
         h4 #{@photograph.date}
 
@@ -48,7 +48,7 @@
         | Mark this photograph as reviewed? &nbsp; &nbsp;
         =< link_to 'Review', [:review, @photograph], class: 'btn btn-primary', data: { method: :patch, confirm: 'Go ahead with it?' }
 
-  /- if can?(:review, @photograph)
+  - if can?(:review, @photograph)
     = panel 'Metadata' do
       .list-group.list-group-flush
         .list-group-item
