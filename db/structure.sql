@@ -334,6 +334,9 @@ CREATE TABLE public.audios (
     identifier character varying,
     latitude numeric,
     longitude numeric,
+    duration integer,
+    file_size integer,
+    processed_at timestamp(6) without time zone,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
 );
@@ -2749,6 +2752,12 @@ CREATE TABLE public.videos (
     identifier character varying,
     latitude numeric,
     longitude numeric,
+    duration integer,
+    file_size integer,
+    width integer,
+    height integer,
+    thumbnail_processed_at timestamp(6) without time zone,
+    processed_at timestamp(6) without time zone,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
 );

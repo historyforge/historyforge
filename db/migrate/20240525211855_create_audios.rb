@@ -16,6 +16,10 @@ class CreateAudios < ActiveRecord::Migration[7.0]
       t.string :identifier
       t.decimal :latitude
       t.decimal :longitude
+      t.integer :duration
+      t.integer :file_size
+
+      t.datetime :processed_at
 
       t.timestamps
     end

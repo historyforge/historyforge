@@ -16,7 +16,13 @@ class CreateVideos < ActiveRecord::Migration[7.0]
       t.string :identifier
       t.decimal :latitude
       t.decimal :longitude
+      t.integer :duration
+      t.integer :file_size
+      t.integer :width
+      t.integer :height
 
+      t.datetime :thumbnail_processed_at
+      t.datetime :processed_at
       t.timestamps
     end
   end
