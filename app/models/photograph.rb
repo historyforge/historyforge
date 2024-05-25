@@ -44,24 +44,23 @@ class Photograph < ApplicationRecord
   alias_attribute :title, :caption
   alias_attribute :name, :caption
 
-  attr_writer :date_year, :date_month, :date_day
-  attr_writer :date_year_end, :date_month_end, :date_day_end
+  attr_writer :date_year, :date_month, :date_day, :date_year_end, :date_month_end, :date_day_end
 
-  enum date_type: %i[year month day years months days]
+  enum date_type: { year: 0, month: 1, day: 2, years: 3, months: 4, days: 5 }
 
   before_validation :set_dates
-  validates :file, attached: true, content_type: ['image/jpg', 'image/jpeg', 'image/png']
+  validates :file, attached: true, content_type: %w[image/jpg image/jpeg image/png]
 
   pg_search_scope :full_text_search,
                   against: %i[caption location notes],
                   using: {
-                      tsearch: { prefix: true, any_word: true }
+                    tsearch: { prefix: true, any_word: true }
                   }
 
   scope :unreviewed_only, ->(val) { val == '1' ? unreviewed : self }
 
   def self.ransackable_scopes(_auth_object=nil)
-    %i{full_text_search unreviewed_only}
+    %i[full_text_search unreviewed_only]
   end
 
   def full_caption
