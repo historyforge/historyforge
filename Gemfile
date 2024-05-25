@@ -48,6 +48,7 @@ gem 'sassc'
 gem 'simple_form'
 gem 'slim'
 gem 'sprockets-rails'
+gem 'streamio-ffmpeg'
 
 group :development do
   gem 'annotate'
