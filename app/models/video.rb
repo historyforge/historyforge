@@ -1,4 +1,6 @@
+# frozen_string_literal: true
+
 class Video < ApplicationRecord
-  belongs_to :created_by
-  belongs_to :reviewed_by
+  include Media
+  include MediaDateBehavior
 end

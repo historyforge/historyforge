@@ -54,6 +54,8 @@ class Person < ApplicationRecord
   has_many :census1940_records, dependent: :nullify, class_name: 'Census1940Record', inverse_of: :person
   has_many :census1950_records, dependent: :nullify, class_name: 'Census1950Record', inverse_of: :person
   has_and_belongs_to_many :photos, class_name: 'Photograph', dependent: :nullify
+  has_and_belongs_to_many :audios, dependent: :nullify
+  has_and_belongs_to_many :videos, dependent: :nullify
   has_and_belongs_to_many :localities
   has_many :names, -> { order('last_name asc, first_name asc') },
            class_name: 'PersonName',

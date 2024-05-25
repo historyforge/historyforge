@@ -77,6 +77,8 @@ class Building < ApplicationRecord
     has_many :"census_#{year}_records", dependent: :nullify, class_name: "Census#{year}Record"
   end
   has_and_belongs_to_many :photos, class_name: 'Photograph', dependent: :nullify
+  has_and_belongs_to_many :audios, dependent: :nullify
+  has_and_belongs_to_many :videos, dependent: :nullify
 
   before_validation :check_locality
   validates :name, presence: true, length: { maximum: 255 }
