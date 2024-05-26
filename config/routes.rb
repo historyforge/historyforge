@@ -62,6 +62,8 @@ Rails.application.routes.draw do
       get :address
     end
     resources :photographs
+    resources :audios
+    resources :videos
     resources :merges, only: %i[new create], controller: 'buildings/merges'
   end
 
@@ -115,9 +117,19 @@ Rails.application.routes.draw do
     end
     resources :merges, only: %i[new create], controller: 'people/merges'
     resources :photographs
+    resources :audios
+    resources :videos
   end
 
   resources :photographs do
+    patch :review, on: :member
+  end
+
+  resources :audios do
+    patch :review, on: :member
+  end
+
+  resources :videos do
     patch :review, on: :member
   end
 

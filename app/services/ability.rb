@@ -7,12 +7,13 @@ class Ability
     if user.blank?
       # a guest user can only do this stuff
       can :read, Person
-      can :read, Building do |building| building.reviewed?; end
+      can :read, Building, &:reviewed?
       can :read, Architect
-      can :read, CensusRecord do |record| record.reviewed?; end
-      can :read, Photograph do |record| record.reviewed?; end
-      can :read, Document do |record| record.available_to_public?; end
-
+      can :read, CensusRecord, &:reviewed?
+      can :read, Photograph, &:reviewed?
+      can :read, Audio, &:reviewed?
+      can :read, Video, &:reviewed?
+      can :read, Document, &:available_to_public?
     else
       # A user can have multiple roles so we only grant the things that apply to that role
 
@@ -33,18 +34,18 @@ class Ability
       end
 
       if user.has_role?('photographer')
-        can :create, Photograph
-        can :update, Photograph
+        can :create, [Photograph, Audio, Video]
+        can :update, [Photograph, Audio, Video]
       end
 
       if user.has_role?('census taker')
         can :create, CensusRecord
-        can :update, CensusRecord, created_by_id: user.id
+        can :update, CensusRecord, created_by_id: user.id, reviewed_by_id: nil
       end
 
       if user.has_role?('builder')
         can :create, Building
-        can :update, Building #, created_by_id: user.id
+        can :update, Building
         can :merge, Building
       end
 
@@ -66,8 +67,8 @@ class Ability
       can :read, Person
 
       # User generated photographs?
-      can :create, Photograph
-      can :update, Photograph, created_by_id: user.id
+      can :create, [Photograph, Audio, Video]
+      can :update, [Photograph, Audio, Video], created_by_id: user.id, reviewed_by_id: nil
     end
   end
 
