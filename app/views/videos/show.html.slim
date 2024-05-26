@@ -13,9 +13,9 @@
 
 #photograph-page
   .row.mb-3
-    .col-12.col-md-6
-      video controls="controls"
-        source src=url_for(@asset.file) type="audio/mpeg"
+    .col-12
+      video controls="controls" poster=url_for(@asset.thumbnail)
+        source src=url_for(@asset.file) type="video/mp4"
       p
         - if can?(:update, @asset)
           = link_to 'Edit Video', [:edit, @asset], class: 'btn btn-light'
@@ -23,7 +23,7 @@
           = link_to 'Delete Video', @asset, class: 'btn btn-light', data: { confirm: 'Are you sure?', method: :delete }
         = render 'shared/flag_it', item: @asset.object, item_class: 'btn btn-light'
 
-    .col-12.col-md-6
+    .col-12
       - if @asset.date
         h4 #{@asset.date}
 

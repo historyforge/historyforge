@@ -5,7 +5,6 @@ class VideoProcessingJob < ApplicationJob
     @video = Video.find video_id
 
     video.processed? || process!
-    VideoThumbnailJob.perform_later(video_id)
   end
 
   private
@@ -16,9 +15,9 @@ class VideoProcessingJob < ApplicationJob
     return unless movie.valid?
 
     attach_file
+    attach_thumbnail
     update_attributes
-
-    FileUtils.rm_f target_filename
+    clean_up
   end
 
   def attach_file
@@ -29,13 +28,29 @@ class VideoProcessingJob < ApplicationJob
     )
   end
 
+  def attach_thumbnail
+    FFMPEG::Movie.new(target_filename).screenshot(thumbnail_target_filename, seek_time: 5)
+    video.thumbnail.attach(
+      io: File.open(thumbnail_target_filename),
+      filename: thumbnail_filename,
+      content_type: 'image/jpeg'
+    )
+  end
+
   def update_attributes
     video.update!(
       duration: movie.duration.to_i,
       file_size: movie.size / 1000,
       width: movie.width,
-      height: movie.height
+      height: movie.height,
+      thumbnail_processed_at: Time.current,
+      processed_at: Time.current
     )
+  end
+
+  def clean_up
+    FileUtils.rm_f target_filename
+    FileUtils.rm_f thumbnail_target_filename
   end
 
   def source_filename
@@ -48,6 +63,14 @@ class VideoProcessingJob < ApplicationJob
 
   def filename
     "video-#{video.id}.mp4"
+  end
+
+  def thumbnail_target_filename
+    Rails.root.join('tmp', thumbnail_filename).to_s
+  end
+
+  def thumbnail_filename
+    "video-#{video.id}-preview.jpg"
   end
 
   def movie

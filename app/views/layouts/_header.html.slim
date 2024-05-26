@@ -30,7 +30,6 @@ header
                   = link_to "Localities", localities_path, class: 'dropdown-item'
                   = link_to "Map Overlays", map_overlays_path, class: 'dropdown-item'
                   = link_to 'Person Records', people_path, class: 'dropdown-item'
-                  = link_to "Photographs", photographs_path, class: 'dropdown-item'
                   = link_to 'Rebuild Index', rebuild_index_path, class: 'dropdown-item', data: { method: :post }
                   = link_to "Settings", settings_path, class: 'dropdown-item'
                   = link_to "Street Conversions", street_conversions_path, class: 'dropdown-item'
@@ -70,8 +69,9 @@ header
                 = link_to "#{year} US Census", "/census/#{year}", class: 'dropdown-item'
               = link_to 'All People', '/people', class: 'dropdown-item' if can_people?
               = link_to 'Resources & Credits', '/documents', class: 'dropdown-item'
-              - if current_user&.has_role?("photographer")
-                = link_to "Photographs", photographs_path, class: 'dropdown-item'
+              = link_to "Photographs", photographs_path, class: 'dropdown-item'
+              = link_to 'Audio Recordings', audios_path, class: 'dropdown-item'
+              = link_to 'Videos', videos_path, class: 'dropdown-item'
 
           li.nav-item.dropdown
             a.dropdown-toggle.nav-link data-toggle="dropdown" href="#" More

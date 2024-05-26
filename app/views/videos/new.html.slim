@@ -1,4 +1,4 @@
-- set_page_title "Add Audio Recording #{@building && "to #{@building.name}"}#{@person && "to #{@person.name}"}"
+- set_page_title "Add Video #{@building && "to #{@building.name}"}#{@person && "to #{@person.name}"}"
 
 = error_messages_for @asset
 
@@ -9,7 +9,7 @@
     .card-body
       .row
         .col-sm-6.col-xs-12
-          = form.input :file, as: :file, label: 'Upload your audio', hint: 'MP3 files only please!', input_html: { accept: 'audio/mpeg', id: 'photograph_file' }
+          = form.input :file, as: :file, label: 'Upload your video', hint: 'MP4 files only please!', input_html: { accept: 'video/mp4', id: 'photograph_file' }
           - if form.object.file.attached?
             .alert.alert-success Your audio is uploaded. To get to the other stuff, simply click Next to get to it. You only need to click "Choose file" if you want to replace the audio file that was already uploaded.
         .col-sm-6.col-xs-12#selected-file
@@ -34,7 +34,7 @@
     .card-body
       .row
         .col-sm-8.col-xs-12
-          = render 'media/buildings', form:, question: 'Does this audio pertain to a building?'
+          = render 'media/buildings', form:, question: 'Does this video pertain to a building?'
         /.col-3.offset-1.thumb= thumb_for form.object
     = render 'media/wizard_footer_nav_buttons'
 
@@ -43,7 +43,7 @@
     .card-body
       .row
         .col-sm-8.col-xs-12
-          = render 'media/people', form:, question: 'Is this a recording of a person?'
+          = render 'media/people', form:, question: 'Does a person feature in this video?'
         /.col-3.offset-1.thumb= thumb_for form.object
     = render 'media/wizard_footer_nav_buttons'
 

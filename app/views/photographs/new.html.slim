@@ -26,7 +26,7 @@
           = form.input :caption, as: :text, label: "Caption", hint: "The Caption is text that appears underneath the photo on the building record. Note that the caption should not include the date which is a separate field that will display along with the caption."
           = form.input :description, as: :text, label: "Description", hint: "The Description is secondary text that appears when someone selects the photo to enlarge it. The Description can be standard text used to identify the collection that houses the photo in your institution, or it can be used in whichever way your institution sees fit."
 
-        .col-3.offset-1.thumb= thumb_for form.object
+        .col-3.offset-1.thumb= thumb_for form.object.file
     = render 'media/wizard_footer_nav_buttons'
 
   .card
@@ -45,7 +45,7 @@
                 button.btn.btn-secondary.btn-lg.btn-next type="button" NO
             #building-fields style="display:none"
               = render 'media/building_fields', form: form
-        .col-3.offset-1.thumb= thumb_for form.object
+        .col-3.offset-1.thumb= thumb_for form.object.file
     = render 'media/wizard_footer_nav_buttons'
 
   .card
@@ -64,7 +64,7 @@
                 button.btn.btn-secondary.btn-lg.btn-next type="button" NO
             #person-fields style="display:none"
               = render 'media/person_fields', form: form
-        .col-3.offset-1.thumb= thumb_for form.object
+        .col-3.offset-1.thumb= thumb_for form.object.file
     = render 'media/wizard_footer_nav_buttons'
 
   .card
@@ -78,7 +78,7 @@
           .row
             .col-6= form.input :latitude
             .col-6= form.input :longitude
-        .col-3.offset-1.thumb= thumb_for form.object
+        .col-3.offset-1.thumb= thumb_for form.object.file
     = render 'media/wizard_footer_nav_buttons'
 
   .card
@@ -117,7 +117,7 @@
                 = form.input :date_day_end, collection: days, label: 'Enter the ending day:'
 
           = form.input :date_text, label: 'Date of original', hint: 'Human readable date such as "1940" or "Ca. July 1935" ...'
-        .col-3.offset-1.thumb= thumb_for form.object
+        .col-3.offset-1.thumb= thumb_for form.object.file
     = render 'media/wizard_footer_nav_buttons'
 
   .card
@@ -127,7 +127,7 @@
       .row
         .col-sm-8.col-xs-12
           = form.input :notes
-        .col-3.offset-1.thumb= thumb_for form.object
+        .col-3.offset-1.thumb= thumb_for form.object.file
     .card-footer.d-flex.justify-content-center
       = form.submit 'Submit', class: 'btn btn-lg btn-primary'
 

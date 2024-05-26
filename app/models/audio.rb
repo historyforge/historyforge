@@ -11,6 +11,6 @@ class Audio < ApplicationRecord
   end
 
   def process
-    AudioProcessingJob.perform_later(self.id)
+    AudioProcessingJob.perform_later(id)
   end
 end

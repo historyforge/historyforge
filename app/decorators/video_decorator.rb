@@ -10,7 +10,7 @@ class VideoDecorator < ApplicationDecorator
   end
 
   def date
-    object.date_text || 'No date'
+    object.date_text
   end
 
   def subject

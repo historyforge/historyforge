@@ -11,14 +11,13 @@ class VideoThumbnailJob < ApplicationJob
   attr_reader :video
 
   def process
-    movie = FFMPEG::Movie.new(source_filename)
-    movie.screenshot(target_filename, seek_time: 5, resolution: '800x450')
+    FFMPEG::Movie.new(source_filename).screenshot(target_filename, seek_time: 5, resolution: '800x450')
     video.thumbnail.attach(
       io: File.open(target_filename),
       filename:,
       content_type: 'image/jpeg'
     )
-    video.save!
+    video.update(thumbnail_processed_at: Time.current)
     FileUtils.rm_f target_filename
   end
 
