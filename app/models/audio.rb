@@ -6,8 +6,6 @@ class Audio < ApplicationRecord
 
   validates :file, attached: true, content_type: %w[audio/mpeg]
 
-  after_commit :process, on: :create
-
   def processed?
     processed_at.present?
   end

@@ -1,0 +1,31 @@
+= render 'shared/flag_resolution', item: @asset
+- content_for :pills do
+  = link_to 'View All', audios_path, class: 'btn btn-light'
+  = link_to 'View', @asset, class: 'btn btn-light'
+  = link_to 'Save', "javascript: $('[data-controller=photo-wizard]').submit()", class: 'btn btn-primary'
+
+- set_page_title 'Edit Photo'
+
+= error_messages_for @asset
+
+= simple_form_for @asset, html: { data: { controller: 'photo-wizard' } } do |form|
+  = panel 'Caption & Description' do
+    = form.input :caption, as: :text, label: "Caption", hint: "The Caption is text that appears with the audio on the building record. Note that the caption should not include the date which is a separate field that will display along with the caption."
+    = form.input :description, as: :text, label: "Description", hint: "The Description is secondary text that appears when someone selects the audio to listen to it. The Description can be standard text used to identify the collection that houses the audio recording in your institution, or it can be used in whichever way your institution sees fit."
+s
+  = panel 'Buildings' do
+    = render 'media/buildings', form:, question: 'Does this recording pertain to a building?'
+  = panel 'People' do
+    = render 'media/people', form:, question: 'Is this a recording of a person?'
+  = panel 'Map Location' do
+    = render 'media/map_location', form:
+  = panel 'Date of Photograph' do
+    = render 'media/date_fields', form:
+
+  = panel 'Notes' do
+    = form.input :notes, label: false
+
+  .card-footer.d-flex.justify-content-center
+    = form.submit 'Submit', class: 'btn btn-lg btn-primary'
+
+script async="async" defer="defer" src="https://maps.googleapis.com/maps/api/js?key=#{AppConfig[:google_api_key]}&libraries=places"

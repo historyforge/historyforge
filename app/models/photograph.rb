@@ -36,4 +36,8 @@ class Photograph < ApplicationRecord
   include MediaDateBehavior
 
   validates :file, attached: true, content_type: %w[image/jpg image/jpeg image/png]
+
+  def process
+    # nothing to do here, but let's us keep media controller simple.
+  end
 end

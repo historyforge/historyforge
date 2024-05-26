@@ -8,18 +8,19 @@
       - elsif @building
         li.breadcrumb-item= link_to @building.name, @building
       - else
-        li.breadcrumb-item= link_to 'Photographs', photographs_path
-      li.breadcrumb-item= link_to "Photograph ##{@asset.id}", @asset
+        li.breadcrumb-item= link_to 'Audios', audios_path
+      li.breadcrumb-item= link_to "Audio ##{@asset.id}", @asset
 
 #photograph-page
   .row.mb-3
     .col-12.col-md-6
-      = image_tag @asset.file, class: 'img img-thumbnail', id: 'photograph', data: { controller: 'blowup' }
+      audio controls="controls"
+        source src=url_for(@asset.file) type="audio/mpeg"
       p
         - if can?(:update, @asset)
-          = link_to 'Edit Photo', [:edit, @asset], class: 'btn btn-light'
+          = link_to 'Edit Audio', [:edit, @asset], class: 'btn btn-light'
         - if can?(:destroy, @asset)
-          = link_to 'Delete Photo', @asset, class: 'btn btn-light', data: { confirm: 'Are you sure?', method: :delete }
+          = link_to 'Delete Audio', @asset, class: 'btn btn-light', data: { confirm: 'Are you sure?', method: :delete }
         = render 'shared/flag_it', item: @asset.object, item_class: 'btn btn-light'
 
     .col-12.col-md-6
@@ -45,7 +46,7 @@
       = review_error_messages_for @asset
     - else
       .alert.alert-info.alert-block
-        | Mark this photograph as reviewed? &nbsp; &nbsp;
+        | Mark this audio recording as reviewed? &nbsp; &nbsp;
         =< link_to 'Review', [:review, @asset], class: 'btn btn-primary', data: { method: :patch, confirm: 'Go ahead with it?' }
 
   - if can?(:review, @asset)

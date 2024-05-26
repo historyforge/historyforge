@@ -320,7 +320,7 @@ ALTER SEQUENCE public.architects_id_seq OWNED BY public.architects.id;
 CREATE TABLE public.audios (
     id bigint NOT NULL,
     created_by_id bigint NOT NULL,
-    reviewed_by_id bigint NOT NULL,
+    reviewed_by_id bigint,
     reviewed_at timestamp(6) without time zone,
     description text,
     notes text,
@@ -2738,7 +2738,7 @@ ALTER SEQUENCE public.versions_id_seq OWNED BY public.versions.id;
 CREATE TABLE public.videos (
     id bigint NOT NULL,
     created_by_id bigint NOT NULL,
-    reviewed_by_id bigint NOT NULL,
+    reviewed_by_id bigint,
     reviewed_at timestamp(6) without time zone,
     description text,
     notes text,

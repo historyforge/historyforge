@@ -1,0 +1,6 @@
+p.alert.alert-info You only need to do this if latitude and longitude are empty, or the marker is in the wrong place.
+input.form-control.mb-3#pac-input type="text" placeholder="Enter a location to find on map"
+#photograph-map.mb-3 data-center="[#{form.object.latitude || AppConfig[:latitude]},#{form.object.longitude || AppConfig[:longitude]}]"
+.row
+  .col-6= form.input :latitude, input_html: { id: 'photograph_latitude' }
+  .col-6= form.input :longitude, input_html: { id: 'photograph_longitude' }

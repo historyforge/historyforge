@@ -8,8 +8,6 @@ class Video < ApplicationRecord
 
   has_one_attached :thumbnail
 
-  after_commit :process, on: :create
-
   def processed?
     processed_at.present?
   end

@@ -1,8 +1,8 @@
-- if can?(:create, Photograph)
+- if can?(:create, Audio)
   - content_for :pills do
-    = link_to 'Add Photo', { action: :new }, class: 'btn btn-light'
+    = link_to 'Add Audio', { action: :new }, class: 'btn btn-light'
 
-- set_page_title "Photographs #{@building && "of #{@building.name}"}#{@person && "of #{@person.name}"}"
+- set_page_title "Audio recordings #{@building && "of #{@building.name}"}#{@person && "of #{@person.name}"}"
 
 - content_for :pills do
   - if @building
@@ -14,31 +14,32 @@
 .collapse#filters
   = search_form_for @search, as: :q, builder: SimpleForm::FormBuilder do |form|
     = form.input :full_text_search, label: 'Search'
-    - if can?(:review, Photograph)
+    - if can?(:review, Audio)
       = form.input :unreviewed_only, as: :boolean, label: 'Show only unreviewed', wrapper: :inline_boolean
     .card-footer
       = form.submit 'Search', class: 'btn btn-primary'
-      = link_to 'Reset', photographs_path(reset: true), class: 'btn btn-light'
+      = link_to 'Reset', audios_path(reset: true), class: 'btn btn-light'
 
 = page_entries_info @assets
 
 .list-group#photographs
   - @assets.each do |record|
-    - photo = record.decorate
+    - item = record.decorate
     .list-group-item
       .row
         .col-xl-2.col-lg-3.col-md-3.col-sm-12.col-xs-12
-          - if photo.file.attached?
-            = link_to photo do
-              = thumb_for photo
+          - if item.file.attached?
+            = link_to item do
+              | Audio Recording
+              /= thumb_for photo
           - else
-            .alert.alert-danger No Photo!
+            .alert.alert-danger No Audio!
         .col-xl-7.col-lg-6.col-sm-12.col-xs-12.col-md-6.widest
           - unless record.reviewed?
             span.badge.badge-danger UNREVIEWED
             br
-          = [photo.caption, photo.date].select(&:present?).join('<br />').html_safe
-          = photo.buildings.map { |building| link_to(building.street_address, building) }.join('<br />').html_safe
+          = [item.caption, item.date].select(&:present?).join('<br />').html_safe
+          = item.buildings.map { |building| link_to(building.street_address, building) }.join('<br />').html_safe
         .col-sm-12.col-xs-12.text-right
           = link_to record, class: 'btn btn-xs btn-light' do
             i.fa.fa-eye
