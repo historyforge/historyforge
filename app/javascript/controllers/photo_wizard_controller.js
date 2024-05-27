@@ -4,6 +4,7 @@ export default class extends Controller {
   connect() {
     this.addStepNumbers()
 
+    this.paramKey = location.pathname.match(/photographs/) ? 'photograph' : location.pathname.match(/audios/) ? 'audio' : 'video';
     window.scrollTo(0, 0)
 
     $('button.btn-prev').on('click', (e) => {
@@ -51,6 +52,8 @@ export default class extends Controller {
       $('#person-fields').fadeIn()
     })
 
+    let autocompleteTimeout;
+
     $('#person-autocomplete').on('keyup', (e) => {
       if (e.keyCode === 13) {
         e.stopPropagation()
@@ -58,20 +61,25 @@ export default class extends Controller {
       const input = e.target
       const value = input.value
       if (value.length > 1) {
-        $.getJSON('/people/autocomplete', { term: value }, (json) => {
-          const people = []
-          json.forEach((person) => {
-            people.push(`<div class="list-group-item list-group-item-action" data-person=${person.id}>${person.name}</div>`)
+        if (autocompleteTimeout) {
+          window.clearTimeout(autocompleteTimeout);
+        }
+        autocompleteTimeout = window.setTimeout(() => {
+          $.getJSON('/people/autocomplete', { term: value }, (json) => {
+            const people = []
+            json.forEach((person) => {
+              people.push(`<div class="list-group-item list-group-item-action" data-person=${person.id}>${person.name}</div>`)
+            })
+            $('#person-results').html(people).show()
+            $('#person-results .list-group-item').on('click', (e) => {
+              const id = e.target.dataset.person
+              const name = e.target.innerHTML
+              this.addPerson(id, name)
+              input.value = null
+              $('#person-results').html('')
+            })
           })
-          $('#person-results').html(people).show()
-          $('#person-results .list-group-item').on('click', (e) => {
-            const id = e.target.dataset.person
-            const name = e.target.innerHTML
-            this.addPerson(id, name)
-            input.value = null
-            $('#person-results').html('')
-          })
-        })
+        }, 500)
       }
     })
   }
@@ -112,19 +120,19 @@ export default class extends Controller {
   addBuilding(id, address, lat, lon) {
     const formId = `photograph_building_ids_${id}`
     $(`#${formId}`).closest('.form-check').remove()
-    const html = `<div class="form-check"><input type="checkbox" class="form-check-input" name="photograph[building_ids][]" id="${formId}" value="${id}" checked /><label class="form-check-label" for="${formId}">${address}</label></div>`
-    $('.photograph_building_ids').append(html)
-    if ($('.photograph_building_ids input:checked').length === 1) {
-      $('#photograph_latitude').val(lat)
-      $('#photograph_longitude').val(lon).trigger('change')
+    const html = `<div class="form-check"><input type="checkbox" class="form-check-input" name="${this.paramKey}[building_ids][]" id="${formId}" value="${id}" checked /><label class="form-check-label" for="${formId}">${address}</label></div>`
+    $(`.${this.paramKey}_building_ids`).append(html)
+    if ($(`.${this.paramKey}_building_ids input:checked`).length === 1) {
+      $(`#photograph_latitude`).val(lat)
+      $(`#photograph_longitude`).val(lon).trigger('change')
     }
   }
 
   addPerson(id, name) {
     const formId = `photograph_person_ids_${id}`
-    $(`#${formId}`).closest('.form-check').remove()
-    const html = `<div class="form-check"><input type="checkbox" class="form-check-input" name="photograph[person_ids][]" id="${formId}" value="${id}" checked /><label class="form-check-label" for="${formId}">${name}</label></div>`
-    $('.photograph_person_ids').append(html)
+    $(`#person-fields input[value=${id}]`).closest('.form-check').remove()
+    const html = `<div class="form-check"><input type="checkbox" class="form-check-input" name="${this.paramKey}[person_ids][]" id="${formId}" value="${id}" checked /><label class="form-check-label" for="${formId}">${name}</label></div>`
+    $('#person-fields > .form-group').append(html)
   }
 
   addStepNumbers() {

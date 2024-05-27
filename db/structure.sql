@@ -3670,34 +3670,6 @@ CREATE UNIQUE INDEX buildings_building_types_unique_index ON public.buildings_bu
 
 
 --
--- Name: census_1900_records_name_trgm; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX census_1900_records_name_trgm ON public.census_1900_records USING gist (searchable_name public.gist_trgm_ops);
-
-
---
--- Name: census_1910_records_name_trgm; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX census_1910_records_name_trgm ON public.census_1910_records USING gist (searchable_name public.gist_trgm_ops);
-
-
---
--- Name: census_1920_records_name_trgm; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX census_1920_records_name_trgm ON public.census_1920_records USING gist (searchable_name public.gist_trgm_ops);
-
-
---
--- Name: census_1930_records_name_trgm; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX census_1930_records_name_trgm ON public.census_1930_records USING gist (searchable_name public.gist_trgm_ops);
-
-
---
 -- Name: index_action_text_rich_texts_uniqueness; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3974,7 +3946,7 @@ CREATE INDEX index_census_1850_records_on_reviewed_by_id ON public.census_1850_r
 -- Name: index_census_1850_records_on_searchable_name; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_census_1850_records_on_searchable_name ON public.census_1850_records USING gist (searchable_name public.gist_trgm_ops);
+CREATE INDEX index_census_1850_records_on_searchable_name ON public.census_1850_records USING gin (searchable_name public.gin_trgm_ops);
 
 
 --
@@ -4016,7 +3988,7 @@ CREATE INDEX index_census_1860_records_on_reviewed_by_id ON public.census_1860_r
 -- Name: index_census_1860_records_on_searchable_name; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_census_1860_records_on_searchable_name ON public.census_1860_records USING gist (searchable_name public.gist_trgm_ops);
+CREATE INDEX index_census_1860_records_on_searchable_name ON public.census_1860_records USING gin (searchable_name public.gin_trgm_ops);
 
 
 --
@@ -4058,7 +4030,7 @@ CREATE INDEX index_census_1870_records_on_reviewed_by_id ON public.census_1870_r
 -- Name: index_census_1870_records_on_searchable_name; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_census_1870_records_on_searchable_name ON public.census_1870_records USING gist (searchable_name public.gist_trgm_ops);
+CREATE INDEX index_census_1870_records_on_searchable_name ON public.census_1870_records USING gin (searchable_name public.gin_trgm_ops);
 
 
 --
@@ -4100,7 +4072,7 @@ CREATE INDEX index_census_1880_records_on_reviewed_by_id ON public.census_1880_r
 -- Name: index_census_1880_records_on_searchable_name; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_census_1880_records_on_searchable_name ON public.census_1880_records USING gist (searchable_name public.gist_trgm_ops);
+CREATE INDEX index_census_1880_records_on_searchable_name ON public.census_1880_records USING gin (searchable_name public.gin_trgm_ops);
 
 
 --
@@ -4129,6 +4101,13 @@ CREATE INDEX index_census_1900_records_on_locality_id ON public.census_1900_reco
 --
 
 CREATE INDEX index_census_1900_records_on_person_id ON public.census_1900_records USING btree (person_id);
+
+
+--
+-- Name: index_census_1900_records_on_searchable_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_census_1900_records_on_searchable_name ON public.census_1900_records USING gin (searchable_name public.gin_trgm_ops);
 
 
 --
@@ -4174,6 +4153,13 @@ CREATE INDEX index_census_1910_records_on_reviewed_by_id ON public.census_1910_r
 
 
 --
+-- Name: index_census_1910_records_on_searchable_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_census_1910_records_on_searchable_name ON public.census_1910_records USING gin (searchable_name public.gin_trgm_ops);
+
+
+--
 -- Name: index_census_1920_records_on_building_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4192,6 +4178,13 @@ CREATE INDEX index_census_1920_records_on_locality_id ON public.census_1920_reco
 --
 
 CREATE INDEX index_census_1920_records_on_person_id ON public.census_1920_records USING btree (person_id);
+
+
+--
+-- Name: index_census_1920_records_on_searchable_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_census_1920_records_on_searchable_name ON public.census_1920_records USING gin (searchable_name public.gin_trgm_ops);
 
 
 --
@@ -4244,6 +4237,13 @@ CREATE INDEX index_census_1930_records_on_reviewed_by_id ON public.census_1930_r
 
 
 --
+-- Name: index_census_1930_records_on_searchable_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_census_1930_records_on_searchable_name ON public.census_1930_records USING gin (searchable_name public.gin_trgm_ops);
+
+
+--
 -- Name: index_census_1940_records_on_building_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4279,6 +4279,13 @@ CREATE INDEX index_census_1940_records_on_reviewed_by_id ON public.census_1940_r
 
 
 --
+-- Name: index_census_1940_records_on_searchable_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_census_1940_records_on_searchable_name ON public.census_1940_records USING gin (searchable_name public.gin_trgm_ops);
+
+
+--
 -- Name: index_census_1950_records_on_building_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4311,6 +4318,13 @@ CREATE INDEX index_census_1950_records_on_person_id ON public.census_1950_record
 --
 
 CREATE INDEX index_census_1950_records_on_reviewed_by_id ON public.census_1950_records USING btree (reviewed_by_id);
+
+
+--
+-- Name: index_census_1950_records_on_searchable_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_census_1950_records_on_searchable_name ON public.census_1950_records USING gin (searchable_name public.gin_trgm_ops);
 
 
 --
@@ -4443,7 +4457,7 @@ CREATE INDEX index_person_names_on_person_id ON public.person_names USING btree 
 -- Name: index_person_names_on_searchable_name; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_person_names_on_searchable_name ON public.person_names USING gist (searchable_name public.gist_trgm_ops);
+CREATE INDEX index_person_names_on_searchable_name ON public.person_names USING gin (searchable_name public.gin_trgm_ops);
 
 
 --
@@ -5598,6 +5612,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20240525211843'),
 ('20240525211855'),
 ('20240525212124'),
+('20240527193323'),
 ('4'),
 ('8'),
 ('9');
