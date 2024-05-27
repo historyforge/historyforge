@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module PanelHelper
-  def panel(title = nil, &block)
+  def panel(title = nil, &)
     heading = title ? panel_header(title) : nil
-    body = panel_body(capture(&block))
+    body = panel_body(capture(&))
     content_tag :div, heading + body, class: 'card card-default mb-3'
   end
 

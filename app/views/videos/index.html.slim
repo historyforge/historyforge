@@ -37,7 +37,7 @@
           - unless record.reviewed?
             span.badge.badge-danger UNREVIEWED
             br
-          = [item.caption, item.date].select(&:present?).join('<br />').html_safe
+          = [item.title, item.date].select(&:present?).join('<br />').html_safe
           = item.buildings.map { |building| link_to(building.street_address, building) }.join('<br />').html_safe
         .col-sm-12.col-xs-12.text-right
           = link_to record, class: 'btn btn-xs btn-light' do
