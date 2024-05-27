@@ -2672,7 +2672,8 @@ CREATE TABLE public.users (
     invited_by_id bigint,
     invitations_count integer DEFAULT 0,
     roles_mask integer,
-    user_group_id bigint
+    user_group_id bigint,
+    unconfirmed_email character varying
 );
 
 
@@ -5613,6 +5614,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20240525211855'),
 ('20240525212124'),
 ('20240527193323'),
+('20240527212417'),
 ('4'),
 ('8'),
 ('9');

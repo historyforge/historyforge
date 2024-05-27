@@ -48,7 +48,10 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
-  devise :invitable, :database_authenticatable, :recoverable, :rememberable, :trackable, :validatable, :omniauthable, omniauth_providers: %i[facebook]
+  devise :invitable, :database_authenticatable,
+         :registerable, :confirmable,
+         :recoverable, :rememberable, :trackable,
+         :validatable, :omniauthable, omniauth_providers: %i[facebook]
 
   belongs_to :group, class_name: 'UserGroup', foreign_key: :user_group_id, optional: true
   has_many :search_params, dependent: :destroy
