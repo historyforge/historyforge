@@ -53,6 +53,7 @@ FactoryBot.define do
     email { Faker::Internet.email }
     password { 'b1g_sekrit' }
     enabled { false }
+    confirmed_at { 3.days.ago }
 
     trait :active do
       enabled { true }
