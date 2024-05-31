@@ -72,7 +72,7 @@ class Person < ApplicationRecord
   before_save :ensure_primary_name
 
   scope :fuzzy_name_search, lambda { |names|
-    names = names.downcase.split
+    names = names.is_a?(String) ? names.downcase.split : names
     where(id: PersonName.select(:person_id)
                         .where(names.map { 'person_names.searchable_name % ?' }.join(' AND '), *names)
                         .where('person_names.person_id=people.id'))

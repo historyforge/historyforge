@@ -58410,7 +58410,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     const airbrake = new Notifier({
       projectId: window.airbrakeCreds.app_id,
       projectKey: window.airbrakeCreds.api_key,
-      host: window.airbrakeCreds.host
+      host: window.airbrakeCreds.host,
+      environment: "production"
     });
     window.addEventListener("error", (error2) => {
       airbrake.notify({

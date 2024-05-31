@@ -78,6 +78,10 @@ class User < ApplicationRecord
     %i[roles_id_eq]
   end
 
+  def confirmed?
+    enabled? || !!confirmed_at
+  end
+
   def name
     login
   end

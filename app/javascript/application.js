@@ -26,7 +26,8 @@ if (window.airbrakeCreds && window.env === 'production') {
   const airbrake = new Notifier({
     projectId: window.airbrakeCreds.app_id,
     projectKey: window.airbrakeCreds.api_key,
-    host: window.airbrakeCreds.host
+    host: window.airbrakeCreds.host,
+    environment: 'production'
   })
 
   window.addEventListener('error', (error) => {
