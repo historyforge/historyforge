@@ -1,6 +1,5 @@
-- if can?(:create, Audio)
-  - content_for :pills do
-    = link_to 'Add Audio', { action: :new }, class: 'btn btn-light'
+- content_for :pills do
+  = link_to 'Add Audio', { action: :new }, class: 'btn btn-light'
 
 - set_page_title "Audio recordings #{@building && "of #{@building.name}"}#{@person && "of #{@person.name}"}"
 

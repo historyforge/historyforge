@@ -13,7 +13,7 @@ class ApplicationController < ActionController::Base
     rescue_from ActiveRecord::RecordNotFound,
                 ActionController::RoutingError,
                 Mime::Type::InvalidMimeType,
-                ActionController::MethodNotAllowed, with: :render_404
+                ActionController::MethodNotAllowed, with: :page_not_found
   end
   before_action :check_cms_for_page
   layout :cms_choose_layout
@@ -49,7 +49,7 @@ class ApplicationController < ActionController::Base
     @page.present? ? 'cms' : 'application'
   end
 
-  def render_404
+  def page_not_found
     @page = Cms::Page.find_or_initialize_by(controller: 'pages', action: '404')
 
     # Ensure that we have a custom 404 page

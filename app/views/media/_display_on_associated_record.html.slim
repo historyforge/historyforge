@@ -1,0 +1,30 @@
+- photos = item.photos
+- audios = item.audios
+- videos = item.videos
+.card.mb-1
+  .card-header
+    .dropdown.float-right
+      a.dropdown-toggle.btn.btn-sm.btn-light data-toggle="dropdown" Upload Media
+      .dropdown-menu
+        = link_to 'JPG Photograph', [:new, item, :photograph], class: 'dropdown-item'
+        = link_to 'MP3 Audio', [:new, item, :audio], class: 'dropdown-item'
+        = link_to 'MP4 Video', [:new, item, :video], class: 'dropdown-item'
+    | Media (Photos, Videos, Audio Recordings)
+  .card-body
+    .row
+      - if photos.blank? && audios.blank? && videos.blank?
+        .col-sm-12
+          p.lead No media files have been uploaded yet!
+      - photos.each do |photo|
+        .building-photo.col-12.col-sm-6.col-lg-4 data-href=building_photograph_path(item.object, photo)
+          = picture_tag photo: photo, style: 'quarter', img_class: 'img-thumbnail'
+          = simple_format photo.full_caption
+      - videos.each do |video|
+        .building-photo.col-12.col-sm-6.col-lg-4 data-href=building_video_path(item.object, video)
+          = image_tag video.thumbnail.variant(resize_to_fit: [300, 300]), class: 'img img-thumbnail'
+          = simple_format video.full_caption
+      - audios.each do |audio|
+        .col-sm-6.col-12.col-lg-4
+          | Audio recording:
+          br
+          = link_to audio.full_caption, building_audio_path(item.object, audio)

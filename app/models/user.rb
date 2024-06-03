@@ -60,9 +60,8 @@ class User < ApplicationRecord
     has_many :"census#{year}_records", dependent: :nullify, foreign_key: :created_by_id
   end
 
-  validates_presence_of    :login
-  validates_length_of      :login, within: 3..40
-  validates_uniqueness_of  :login, scope: :email, case_sensitive: false
+  validates    :login, presence: true, length: { within: 3..40 }
+  validates  :login, uniqueness: { scope: :email, case_sensitive: false }
 
   alias_attribute :active, :enabled
 
@@ -144,5 +143,4 @@ class User < ApplicationRecord
     user ||= User.create!(provider: auth.provider, uid: auth.uid, email: auth.info.email, password: Devise.friendly_token[0, 20], login: + auth.info.email + '-' + auth.provider[0])
     user
   end
-
 end

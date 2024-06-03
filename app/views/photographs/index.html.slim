@@ -1,6 +1,5 @@
-- if can?(:create, Photograph)
-  - content_for :pills do
-    = link_to 'Add Photo', { action: :new }, class: 'btn btn-light'
+- content_for :pills do
+  = link_to 'Add Photo', { action: :new }, class: 'btn btn-light'
 
 - set_page_title "Photographs #{@building && "of #{@building.name}"}#{@person && "of #{@person.name}"}"
 

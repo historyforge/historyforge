@@ -1,6 +1,6 @@
 = form.hidden_field :date_type
 #dates-question
-  p.lead You can date this photo down to:
+  p.lead You can date this #{form.object.model_name.singular} down to:
   p
     button.btn.btn-sm class=(form.object.year? ? 'btn-primary' : 'btn-light') type="button" data-date-type="year" The year
     | &nbsp;

@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 class MediaController < ApplicationController
+  include Devise::Controllers::StoreLocation
   include RestoreSearch
+  before_action :store_location!, only: :new
   before_action :load_parent, except: :review
 
   class_attribute :model_class
@@ -96,6 +98,14 @@ class MediaController < ApplicationController
   end
 
   private
+
+  def store_location!
+    return if user_signed_in?
+
+    store_location_for(:user, request.fullpath)
+    flash[:errors] = 'Please sign in or create a HistoryForge account first.'
+    redirect_to(new_user_session_path)
+  end
 
   def what
     @what ||= model_class.model_name.human

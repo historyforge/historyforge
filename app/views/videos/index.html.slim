@@ -1,6 +1,5 @@
-- if can?(:create, Audio)
-  - content_for :pills do
-    = link_to 'Add Video', { action: :new }, class: 'btn btn-light'
+- content_for :pills do
+  = link_to 'Add Video', { action: :new }, class: 'btn btn-light'
 
 - set_page_title "Videos #{@building && "of #{@building.name}"}#{@person && "of #{@person.name}"}"
 

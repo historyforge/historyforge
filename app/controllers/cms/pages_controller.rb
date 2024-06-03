@@ -87,7 +87,7 @@ class Cms::PagesController < ApplicationController
       url_path = "/#{params[:path]}"
       @page = Cms::Page.where(url_path: url_path).includes(:widgets).first
     end
-    render_404 if @page.blank?
+    page_not_found if @page.blank?
   end
 
   def check_page_access
@@ -96,13 +96,13 @@ class Cms::PagesController < ApplicationController
     end
     if @page.controller.present? && @page.action.present?
       unless can?(:update, @page)
-        render_404
+        page_not_found
       end
     elsif !@page.published?
       if can?(:update, @page)
         flash[:notice] = 'This page is not published. You can see it only because you can edit pages.'
       else
-        render_404
+        page_not_found
       end
     end
   end
