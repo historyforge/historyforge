@@ -30,11 +30,10 @@ class Ability
       if user.has_role?('reviewer')
         can :review, CensusRecord
         can :review, Building
-        can :review, Photograph
+        can :review, [Photograph, Audio, Video, Narrative]
       end
 
       if user.has_role?('photographer')
-        can :create, [Photograph, Audio, Video]
         can :update, [Photograph, Audio, Video]
       end
 
@@ -61,14 +60,13 @@ class Ability
       can :update, User, id: user.id
       can :read, CensusRecord
       can :read, Building
-      can :read, Photograph
       can :create, Flag
       can :read, Document
       can :read, Person
 
       # User generated photographs?
-      can :create, [Photograph, Audio, Video]
-      can :update, [Photograph, Audio, Video], created_by_id: user.id, reviewed_by_id: nil
+      can :create, [Photograph, Audio, Video, Narrative]
+      can :update, [Photograph, Audio, Video, Narrative], created_by_id: user.id, reviewed_by_id: nil
     end
   end
 

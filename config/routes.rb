@@ -65,6 +65,7 @@ Rails.application.routes.draw do
     resources :photographs
     resources :audios
     resources :videos
+    resources :narratives
     resources :merges, only: %i[new create], controller: 'buildings/merges'
   end
 
@@ -111,6 +112,8 @@ Rails.application.routes.draw do
 
   resources :map_overlays
 
+  resources :narratives
+
   resources :people, controller: 'people/main' do
     collection do
       get :advanced_search_filters
@@ -120,6 +123,7 @@ Rails.application.routes.draw do
     resources :photographs
     resources :audios
     resources :videos
+    resources :narratives
   end
 
   resources :photographs do

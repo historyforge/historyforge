@@ -517,6 +517,16 @@ ALTER SEQUENCE public.buildings_id_seq OWNED BY public.buildings.id;
 
 
 --
+-- Name: buildings_narratives; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.buildings_narratives (
+    building_id bigint,
+    narrative_id bigint
+);
+
+
+--
 -- Name: buildings_photographs; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2044,6 +2054,56 @@ ALTER SEQUENCE public.map_overlays_id_seq OWNED BY public.map_overlays.id;
 
 
 --
+-- Name: narratives; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.narratives (
+    id bigint NOT NULL,
+    created_by_id bigint NOT NULL,
+    reviewed_by_id bigint,
+    reviewed_at timestamp(6) without time zone,
+    weight integer DEFAULT 0,
+    source character varying,
+    notes text,
+    date_type integer,
+    date_text character varying,
+    date_start date,
+    date_end date,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: narratives_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.narratives_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: narratives_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.narratives_id_seq OWNED BY public.narratives.id;
+
+
+--
+-- Name: narratives_people; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.narratives_people (
+    narrative_id bigint,
+    person_id bigint
+);
+
+
+--
 -- Name: occupation1930_codes; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -3061,6 +3121,13 @@ ALTER TABLE ONLY public.map_overlays ALTER COLUMN id SET DEFAULT nextval('public
 
 
 --
+-- Name: narratives id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.narratives ALTER COLUMN id SET DEFAULT nextval('public.narratives_id_seq'::regclass);
+
+
+--
 -- Name: occupation1930_codes id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3497,6 +3564,14 @@ ALTER TABLE ONLY public.map_overlays
 
 
 --
+-- Name: narratives narratives_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.narratives
+    ADD CONSTRAINT narratives_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: occupation1930_codes occupation1930_codes_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3815,6 +3890,27 @@ CREATE INDEX index_buildings_building_types_on_building_id ON public.buildings_b
 --
 
 CREATE INDEX index_buildings_building_types_on_building_type_id ON public.buildings_building_types USING btree (building_type_id);
+
+
+--
+-- Name: index_buildings_narratives_on_building_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_buildings_narratives_on_building_id ON public.buildings_narratives USING btree (building_id);
+
+
+--
+-- Name: index_buildings_narratives_on_building_id_and_narrative_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_buildings_narratives_on_building_id_and_narrative_id ON public.buildings_narratives USING btree (building_id, narrative_id);
+
+
+--
+-- Name: index_buildings_narratives_on_narrative_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_buildings_narratives_on_narrative_id ON public.buildings_narratives USING btree (narrative_id);
 
 
 --
@@ -4427,6 +4523,41 @@ CREATE INDEX index_map_overlays_on_locality_id ON public.map_overlays USING btre
 
 
 --
+-- Name: index_narratives_on_created_by_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_narratives_on_created_by_id ON public.narratives USING btree (created_by_id);
+
+
+--
+-- Name: index_narratives_on_reviewed_by_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_narratives_on_reviewed_by_id ON public.narratives USING btree (reviewed_by_id);
+
+
+--
+-- Name: index_narratives_people_on_narrative_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_narratives_people_on_narrative_id ON public.narratives_people USING btree (narrative_id);
+
+
+--
+-- Name: index_narratives_people_on_narrative_id_and_person_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_narratives_people_on_narrative_id_and_person_id ON public.narratives_people USING btree (narrative_id, person_id);
+
+
+--
+-- Name: index_narratives_people_on_person_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_narratives_people_on_person_id ON public.narratives_people USING btree (person_id);
+
+
+--
 -- Name: index_people_videos_on_person_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4736,6 +4867,14 @@ ALTER TABLE ONLY public.census_1930_records
 
 
 --
+-- Name: narratives_people fk_rails_34e8fcde8b; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.narratives_people
+    ADD CONSTRAINT fk_rails_34e8fcde8b FOREIGN KEY (person_id) REFERENCES public.people(id);
+
+
+--
 -- Name: bulk_updates fk_rails_35d0a740ec; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -5016,6 +5155,14 @@ ALTER TABLE ONLY public.map_overlays
 
 
 --
+-- Name: narratives_people fk_rails_864a92260f; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.narratives_people
+    ADD CONSTRAINT fk_rails_864a92260f FOREIGN KEY (narrative_id) REFERENCES public.narratives(id);
+
+
+--
 -- Name: annotations fk_rails_88814c38bd; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -5192,6 +5339,14 @@ ALTER TABLE ONLY public.census_1900_records
 
 
 --
+-- Name: buildings_narratives fk_rails_c972f4349e; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.buildings_narratives
+    ADD CONSTRAINT fk_rails_c972f4349e FOREIGN KEY (building_id) REFERENCES public.buildings(id);
+
+
+--
 -- Name: photographs fk_rails_c9d92c9b36; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -5205,6 +5360,22 @@ ALTER TABLE ONLY public.photographs
 
 ALTER TABLE ONLY public.census_1920_records
     ADD CONSTRAINT fk_rails_cba05634b9 FOREIGN KEY (building_id) REFERENCES public.buildings(id);
+
+
+--
+-- Name: narratives fk_rails_ccc494e6a8; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.narratives
+    ADD CONSTRAINT fk_rails_ccc494e6a8 FOREIGN KEY (created_by_id) REFERENCES public.users(id);
+
+
+--
+-- Name: narratives fk_rails_cd47849580; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.narratives
+    ADD CONSTRAINT fk_rails_cd47849580 FOREIGN KEY (reviewed_by_id) REFERENCES public.users(id);
 
 
 --
@@ -5269,6 +5440,14 @@ ALTER TABLE ONLY public.flags
 
 ALTER TABLE ONLY public.audios_people
     ADD CONSTRAINT fk_rails_dccfd2a82e FOREIGN KEY (audio_id) REFERENCES public.audios(id);
+
+
+--
+-- Name: buildings_narratives fk_rails_e44861af48; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.buildings_narratives
+    ADD CONSTRAINT fk_rails_e44861af48 FOREIGN KEY (narrative_id) REFERENCES public.narratives(id);
 
 
 --
@@ -5615,6 +5794,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20240525212124'),
 ('20240527193323'),
 ('20240527212417'),
+('20240603010233'),
 ('4'),
 ('8'),
 ('9');

@@ -56,6 +56,7 @@ class Person < ApplicationRecord
   has_and_belongs_to_many :photos, class_name: 'Photograph', dependent: :nullify
   has_and_belongs_to_many :audios, dependent: :nullify
   has_and_belongs_to_many :videos, dependent: :nullify
+  has_and_belongs_to_many :narratives, dependent: :nullify
   has_and_belongs_to_many :localities
   has_many :names, -> { order('last_name asc, first_name asc') },
            class_name: 'PersonName',

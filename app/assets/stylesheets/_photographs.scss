@@ -58,34 +58,34 @@
 #photograph-date-type {
   .form-group { display: none; }
   &.year {
-    .photograph_date_year { display: block; }
+    .date_year { display: block; }
   }
   &.month {
-    .photograph_date_year { display: block; }
-    .photograph_date_month { display: block; }
+    .date_year { display: block; }
+    .date_month { display: block; }
   }
   &.day {
-    .photograph_date_year { display: block; }
-    .photograph_date_month { display: block; }
-    .photograph_date_day { display: block; }
+    .date_year { display: block; }
+    .date_month { display: block; }
+    .date_day { display: block; }
   }
   &.years {
-    .photograph_date_year { display: block; }
-    .photograph_date_year_end { display: block; }
+    .date_year { display: block; }
+    .date_year_end { display: block; }
   }
   &.months {
-    .photograph_date_year { display: block; }
-    .photograph_date_month { display: block; }
-    .photograph_date_year_end { display: block; }
-    .photograph_date_month_end { display: block; }
+    .date_year { display: block; }
+    .date_month { display: block; }
+    .date_year_end { display: block; }
+    .date_month_end { display: block; }
   }
   &.days {
-    .photograph_date_year { display: block; }
-    .photograph_date_month { display: block; }
-    .photograph_date_day { display: block; }
-    .photograph_date_year_end { display: block; }
-    .photograph_date_month_end { display: block; }
-    .photograph_date_day_end { display: block; }
+    .date_year { display: block; }
+    .date_month { display: block; }
+    .date_day { display: block; }
+    .date_year_end { display: block; }
+    .date_month_end { display: block; }
+    .date_day_end { display: block; }
   }
 }
 

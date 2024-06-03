@@ -35,7 +35,7 @@
       .row
         .col-sm-8.col-xs-12
           - if form.object.building_ids.present?
-            = render 'media/building_fields', form: form
+            = render 'media/building_fields', form:
           - else
             #building-question
               p.lead Is this a picture of a building?
@@ -54,7 +54,7 @@
       .row
         .col-sm-8.col-xs-12
           - if form.object.person_ids.present?
-            = render 'media/person_fields', form: form
+            = render 'media/person_fields', form:
           - else
             #person-question
               p.lead Is this a picture of a person?
@@ -86,37 +86,7 @@
     .card-body
       .row
         .col-sm-8.col-xs-12
-          = form.hidden_field :date_type
-          #dates-question
-            p.lead You can date this photograph down to:
-            p
-              button.btn.btn-sm class=(form.object.year? ? 'btn-primary' : 'btn-light') type="button" data-date-type="year" The year
-              | &nbsp;
-              button.btn.btn-sm class=(form.object.month? ? 'btn-primary' : 'btn-light') type="button" data-date-type="month" The month
-              | &nbsp;
-              button.btn.btn-sm class=(form.object.day? ? 'btn-primary' : 'btn-light') type="button" data-date-type="day" The day
-              | &nbsp;
-              button.btn.btn-sm class=(form.object.years? ? 'btn-primary' : 'btn-light') type="button" data-date-type="years" A range of years
-              | &nbsp;
-              button.btn.btn-sm class=(form.object.months? ? 'btn-primary' : 'btn-light') type="button" data-date-type="months" A range of months
-              | &nbsp;
-              button.btn.btn-sm class=(form.object.days? ? 'btn-primary' : 'btn-light') type="button" data-date-type="days" A range of days
-
-          - years = Date.today.year.downto(1800).map
-          - months = Date::MONTHNAMES.each_with_index.map { |m, i| [m, i] }
-          - days = 1.upto(31).map
-          #photograph-date-type class=@asset.date_type
-            .row
-              .col-6
-                = form.input :date_year, collection: years, label: 'Enter the year:'
-                = form.input :date_month, collection: months, label: 'Enter the month:'
-                = form.input :date_day, collection: days, label: 'Enter the day:'
-              .col-6
-                = form.input :date_year_end, collection: years, label: 'Enter the ending year:'
-                = form.input :date_month_end, collection: months, label: 'Enter the ending month:'
-                = form.input :date_day_end, collection: days, label: 'Enter the ending day:'
-
-          = form.input :date_text, label: 'Date of original', hint: 'Human readable date such as "1940" or "Ca. July 1935" ...'
+          = render 'media/date_fields', form:
         .col-3.offset-1.thumb= thumb_for form.object.file
     = render 'media/wizard_footer_nav_buttons'
 

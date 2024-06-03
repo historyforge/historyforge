@@ -1,0 +1,6 @@
+- set_page_title "Add Narrative #{@building && "to #{@building.name}"}#{@person && "to #{@person.name}"}"
+
+= error_messages_for @asset
+
+= simple_form_for @asset, html: { data: { controller: 'photo-wizard' } } do |form|
+  = render 'fields', form:

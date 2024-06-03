@@ -79,6 +79,7 @@ class Building < ApplicationRecord
   has_and_belongs_to_many :photos, class_name: 'Photograph', dependent: :nullify
   has_and_belongs_to_many :audios, dependent: :nullify
   has_and_belongs_to_many :videos, dependent: :nullify
+  has_and_belongs_to_many :narratives, dependent: :nullify
 
   before_validation :check_locality
   validates :name, presence: true, length: { maximum: 255 }

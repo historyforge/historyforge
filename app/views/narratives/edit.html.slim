@@ -1,0 +1,43 @@
+= render 'shared/flag_resolution', item: @asset
+- content_for :pills do
+  = link_to 'View All', photographs_path, class: 'btn btn-light'
+  = link_to 'View', @asset, class: 'btn btn-light'
+  = link_to 'Save', "javascript: $('[data-controller=photo-wizard]').submit()", class: 'btn btn-primary'
+
+- set_page_title "Edit Narrative #{@building && "for #{@building.name}"}#{@person && "for #{@person.name}"}"
+
+= error_messages_for @asset
+
+= simple_form_for @asset, html: { data: { controller: 'photo-wizard' } } do |form|
+
+  = panel 'The Photograph' do
+    .row
+      .col-sm-6.col-xs-12
+        = form.input :file, as: :file, label: 'Upload your photo', hint: 'JPG files only please!', input_html: { accept: 'image/jpeg' }
+        - if form.object.file.attached?
+          .alert.alert-success Your photo is uploaded. You only need to click "Choose file" if you want to replace the photo that was already uploaded.
+      .col-sm-6.col-xs-12#selected-file
+        - if form.object.file.attached?
+          = image_tag form.object.file
+
+  = panel 'Caption & Description' do
+    .p-3
+      = form.input :caption, as: :text, label: "Caption", hint: "The Caption is text that appears underneath the photo on the building or person record. Note that the caption should not include the date which is a separate field that will display along with the caption."
+      = form.input :description, as: :text, label: "Description", hint: "The Description is secondary text that appears when someone selects the photo to enlarge it. The Description can be standard text used to identify the collection that houses the photo in your institution, or it can be used in whichever way your institution sees fit."
+
+  = panel 'Buildings' do
+    .p-3= render 'media/buildings', form:, question: 'Is this a picture of a building?'
+  = panel 'People' do
+    .p-3= render 'media/people', form:, question: 'Is this a picture of a person?'
+  = panel 'Map Location' do
+    .p-3= render 'media/map_location', form:
+  = panel 'Date of Photograph' do
+    .p-3= render 'media/date_fields', form:
+
+  = panel 'Notes' do
+    .p-3= form.input :notes, label: false
+
+  .card-footer.d-flex.justify-content-center
+    .p-3= form.submit 'Submit', class: 'btn btn-lg btn-primary'
+
+script async="async" defer="defer" src="https://maps.googleapis.com/maps/api/js?key=#{AppConfig[:google_api_key]}&libraries=places"

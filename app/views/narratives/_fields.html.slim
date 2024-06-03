@@ -1,0 +1,50 @@
+= panel('Narrative & Source') do
+  .p-3
+    - content_for :html_end do
+      link rel="stylesheet" type="text/css" href="https://unpkg.com/trix@2.0.0/dist/trix.css"
+      script src= "https://unpkg.com/trix@2.0.0/dist/trix.umd.min.js"
+    = form.input :story do
+      = form.input_field :story, as: :rich_text_area
+    = form.input :source, as: :text, label: 'Source Citation'
+    - if can?(:review, form.object)
+      = form.input :weight, hint: 'The lower the number, the higher up in the list it appears on building and person pages.'
+
+= panel('Buildings') do
+  .p-3
+    - if form.object.building_ids.present?
+      = render 'media/building_fields', form: form
+    - else
+      #building-question
+        p.lead Is this a story about a building?
+        p
+          button.btn.btn-lg.btn-primary type="button" YES
+          | &nbsp;
+          button.btn.btn-secondary.btn-lg.btn-next type="button" NO
+      #building-fields style="display:none"
+        = render 'media/building_fields', form:
+
+= panel('People') do
+  .p-3
+    - if form.object.person_ids.present?
+      = render 'media/person_fields', form:
+    - else
+      #person-question
+        p.lead Is this a story about a person?
+        p
+          button.btn.btn-lg.btn-primary type="button" YES
+          | &nbsp;
+          button.btn.btn-secondary.btn-lg.btn-next type="button" NO
+      #person-fields style="display:none"
+        = render 'media/person_fields', form:
+
+= panel('The Date of the Story') do
+  .p-3
+    = render 'media/date_fields', form:
+
+= panel('Additional Notes') do
+  .p-3
+    = form.input :notes, label: false
+    p Private field visible only to those who can edit this record. Anything meant to be public should go in the narrative itself.
+  .card-footer.d-flex.justify-content-center
+    = form.submit 'Submit', class: 'btn btn-lg btn-primary'
+
