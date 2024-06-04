@@ -110,7 +110,7 @@
     - if @building.description.present?
       .card.mb-1
         .card-header
-          = link_to 'Add Source/Narrative', new_building_narrative_path(@building.object), class: 'float-right'
+          = link_to 'Add Source/Narrative', new_building_narrative_path(@building), class: 'float-right'
           | Description
         .card-body#building-description
           == @building.description
