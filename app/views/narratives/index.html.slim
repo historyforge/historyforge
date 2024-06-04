@@ -37,6 +37,6 @@
         .col-xl-6.col-lg-6.col-sm-12.col-xs-12.col-md-6.widest
           p= record.source
           p= record.buildings.map { |building| link_to(building.street_address, building) }.join('<br />').html_safe
-          p= record.people.map { |building| link_to(building.street_address, building) }.join('<br />').html_safe
+          p= record.people.map { |person| link_to(person.name, person) }.join('<br />').html_safe
 
 = paginate @assets
