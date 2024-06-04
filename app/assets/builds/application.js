@@ -52138,7 +52138,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var photo_wizard_controller_default = class extends Controller {
     connect() {
       this.addStepNumbers();
-      this.paramKey = location.pathname.match(/photographs/) ? "photograph" : location.pathname.match(/audios/) ? "audio" : "video";
+      this.paramKey = location.pathname.match(/photographs/) ? "photograph" : location.pathname.match(/audios/) ? "audio" : location.pathname.match(/videos/) ? "video" : "narrative";
       window.scrollTo(0, 0);
       $("button.btn-prev").on("click", (e2) => {
         this.prev(e2.target);

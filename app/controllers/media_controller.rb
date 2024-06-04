@@ -94,7 +94,7 @@ class MediaController < ApplicationController
     else
       flash[:errors] = "Unable to mark the #{what} as reviewed."
     end
-    redirect_to @asset
+    redirect_back_or_to @asset
   end
 
   private

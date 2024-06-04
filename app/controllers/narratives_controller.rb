@@ -4,6 +4,11 @@ class NarrativesController < MediaController
   self.model_class = Narrative
   self.model_association = :narratives
 
+  def show
+    @asset = scoped_model.find params[:id]
+    authorize! :read, @asset
+  end
+
   def new
     @asset = scoped_model.new
     authorize! :create, @asset

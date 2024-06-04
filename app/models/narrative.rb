@@ -1,13 +1,14 @@
 class Narrative < ApplicationRecord
   include Flaggable
   include Moderation
+  include Versioning
   include MediaDateBehavior
 
   has_and_belongs_to_many :buildings
   has_and_belongs_to_many :people
 
   has_rich_text :story
-  validates :story, presence: true
+  validates :story, :source, presence: true
 
   default_scope -> { order(:weight) }
   scope :with_attached_file, -> { with_all_rich_text }

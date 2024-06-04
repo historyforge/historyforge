@@ -110,11 +110,18 @@
     - if @building.description.present?
       .card.mb-1
         .card-header
+          = link_to 'Add Source/Narrative', new_building_narrative_path(@building), class: 'float-right'
           | Description
         .card-body#building-description
           == @building.description
 
-    = render 'media/display_on_associated_record', item: @building
+    - narratives = @building.narratives.accessible_by(current_ability)
+    - if narratives.present?
+      .list-group
+        - narratives.each do |narrative|
+          = render 'narratives/narrative', narrative:
+
+    = render 'media/display_on_associated_record', item: @building.object
 
     - CensusYears.each do |year|
       - families = @building.public_send("families_in_#{year}")

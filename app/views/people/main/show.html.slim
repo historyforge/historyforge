@@ -136,6 +136,20 @@
 
 = render 'media/display_on_associated_record', item: @person
 
+- narratives = @person.narratives.accessible_by(current_ability)
+.card class="#{narratives.blank? ? 'mb-3' : 'empty-card'}"
+  .card-header
+    = link_to 'Add Source/Narrative', new_person_narrative_path(@person), class: 'float-right'
+    | Sources &amp; Narratives
+  - if narratives.blank?
+    .card-body
+      p.lead No sources or narratives yet for this person.
+
+- if narratives.present?
+  .list-group
+    - narratives.each do |narrative|
+      = render 'narratives/narrative', narrative:
+
 - if @person.notes? && can?(:update, @person)
   .card.mb-1
     .card-header

@@ -111,3 +111,16 @@
     display: block;
   }
 }
+
+.empty-card {
+  border-bottom: none;
+  &, .card-header {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  & + .list-group > .list-group-item:first-of-type {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-top: none;
+  }
+}

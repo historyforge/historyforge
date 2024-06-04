@@ -24,20 +24,19 @@
   - @assets.each do |record|
     .list-group-item
       .row
-        / Some Text
-        / Source
-        / Created By
-        / Reviewed, Buildings, People
-        .col-xl-7.col-lg-6.col-sm-12.col-xs-12.col-md-6.widest
-          - unless record.reviewed?
-            span.badge.badge-danger UNREVIEWED
-            br
-          = record.buildings.map { |building| link_to(building.street_address, building) }.join('<br />').html_safe
-        .col-sm-12.col-xs-12.text-right
+        .col-xl-6.col-lg-6.col-sm-12.col-xs-12.col-md-6.widest
           = link_to record, class: 'btn btn-xs btn-light' do
             i.fa.fa-eye
           - if can?(:update, record)
             = link_to [:edit, record], class: 'btn btn-xs btn-light' do
               i.fa.fa-pencil
+          - unless record.reviewed?
+            span.badge.badge-danger.ml-2  UNREVIEWED
+          p= truncate record.story.to_plain_text, length: 250
+          p= "Submitted by #{record.created_by.login} on #{record.created_at.to_s(:long)}"
+        .col-xl-6.col-lg-6.col-sm-12.col-xs-12.col-md-6.widest
+          p= record.source
+          p= record.buildings.map { |building| link_to(building.street_address, building) }.join('<br />').html_safe
+          p= record.people.map { |building| link_to(building.street_address, building) }.join('<br />').html_safe
 
 = paginate @assets

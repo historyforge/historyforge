@@ -97,6 +97,10 @@ Rails.application.routes.draw do
     end
   end
 
+  concern :reviewable do
+    put :review, on: :member
+  end
+
   resources :document_categories, concerns: %i[moveable] do
     resources :documents, concerns: %i[moveable]
   end
@@ -112,8 +116,6 @@ Rails.application.routes.draw do
 
   resources :map_overlays
 
-  resources :narratives
-
   resources :people, controller: 'people/main' do
     collection do
       get :advanced_search_filters
@@ -126,16 +128,11 @@ Rails.application.routes.draw do
     resources :narratives
   end
 
-  resources :photographs do
-    patch :review, on: :member
-  end
-
-  resources :audios do
-    patch :review, on: :member
-  end
-
-  resources :videos do
-    patch :review, on: :member
+  with_options(concerns: %i[reviewable]) do
+    resources :narratives
+    resources :photographs
+    resources :audios
+    resources :videos
   end
 
   resources :settings, only: %i[index create]
