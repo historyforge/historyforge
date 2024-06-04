@@ -10,9 +10,9 @@ class Ability
       can :read, Building, &:reviewed?
       can :read, Architect
       can :read, CensusRecord, &:reviewed?
-      can :read, Photograph, &:reviewed?
-      can :read, Audio, &:reviewed?
-      can :read, Video, &:reviewed?
+      can :read, Photograph, Photograph.reviewed
+      can :read, Audio, Audio.reviewed
+      can :read, Video, Video.reviewed
       can :read, Document, &:available_to_public?
     else
       # A user can have multiple roles so we only grant the things that apply to that role
