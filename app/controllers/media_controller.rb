@@ -12,14 +12,13 @@ class MediaController < ApplicationController
   helper_method :what, :model_class
 
   def index
-    authorize! :read, model_class
     @search = model_class.ransack(params[:q])
     @assets = @search.result
                      .page(params[:page] || 1)
                      .per(20)
                      .with_attached_file
                      .includes(buildings: :addresses)
-    @assets = @assets.reviewed unless can?(:review, Photograph)
+                     .accessible_by(current_ability)
   end
 
   def show
