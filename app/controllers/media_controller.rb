@@ -51,7 +51,7 @@ class MediaController < ApplicationController
     authorize! :create, @asset
     if @asset.save
       flash[:notice] = "The #{what} has been uploaded and saved."
-      redirect_to @building ? [@building, @asset] : @asset
+      perform_redirect
     else
       flash[:errors] = "Sorry we could not save the #{what}. Please correct the errors and try again."
       render action: :edit
@@ -65,7 +65,7 @@ class MediaController < ApplicationController
     @asset.attributes = resource_params
     if @asset.save
       flash[:notice] = "The #{what} has been updated."
-      redirect_to @building ? [@building, @asset] : @asset
+      perform_redirect
     else
       flash[:errors] = "The #{what} has been saved, but cannot be marked as reviewed until it has been fully dressed."
       render action: :edit
@@ -77,7 +77,7 @@ class MediaController < ApplicationController
     authorize! :destroy, @asset
     if @asset.destroy
       flash[:notice] = "The #{what} has been deleted."
-      redirect_to action: :index
+      redirect_to @building || @person || { action: :index }
     else
       flash[:errors] = "Sorry we could not delete the #{what}."
       render action: :show
@@ -97,6 +97,17 @@ class MediaController < ApplicationController
   end
 
   private
+
+  def perform_redirect
+    target = if @building
+               [@building, @asset]
+             elsif @person
+               [@person, @asset]
+             else
+               @asset
+             end
+    redirect_to target
+  end
 
   def store_location!
     return if user_signed_in?
