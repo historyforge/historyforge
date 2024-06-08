@@ -23,7 +23,7 @@
         - if @building.investigate_reason?
           | &nbsp; &nbsp;
           b= @building.investigate_reason
-    .card.mb-1
+    .card.mb-3
       .card-header Details
       .card-body
         .row
@@ -98,7 +98,7 @@
 
 
     - if @building.annotations.present?
-      .card.mb-1
+      .card.mb-3
         .card-header
           | Annotations
         .card-body
@@ -106,16 +106,22 @@
             h6= annotation.map_overlay_name
             = simple_format annotation.annotation_text
 
-
     - if @building.description.present?
-      .card.mb-1
+      .card.mb-3
         .card-header
-          = link_to 'Add Source/Narrative', new_building_narrative_path(@building.object), class: 'float-right'
           | Description
         .card-body#building-description
           == @building.description
 
     - narratives = @building.narratives.accessible_by(current_ability)
+    .card class="#{@building.description.blank? ? 'mb-3' : 'empty-card'}"
+      .card-header
+        = link_to 'Add Source/Narrative', new_building_narrative_path(@building), class: 'float-right'
+        | Sources &amp; Narratives
+      - if narratives.blank?
+        .card-body
+          p.lead No sources or narratives yet for this building.
+
     - if narratives.present?
       .list-group
         - narratives.each do |narrative|
@@ -127,7 +133,7 @@
       - families = @building.public_send("families_in_#{year}")
       - if families.present?
         - families.each do |id, family|
-          .card.mb-1
+          .card.mb-3
             .card-header
               = "Resident Household in #{year}"
             table.table.card-table
