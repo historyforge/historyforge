@@ -6,7 +6,7 @@ class Ability
   def initialize(user)
     can :read, Person
 
-    # Everybody can read this things if they've been reviewed
+    # Everybody can read these things if they've been reviewed
     can :read, [
       Architect,
       Audio,
@@ -16,6 +16,7 @@ class Ability
       Photograph,
       Video
     ]
+
     cannot :read, [
       Audio,
       Building,
@@ -23,7 +24,7 @@ class Ability
       Narrative,
       Photograph,
       Video
-    ], reviewed_by_id: nil
+    ], reviewed_at: nil
 
     if user.blank?
       # a guest user can only do this stuff
@@ -39,7 +40,7 @@ class Ability
       if user.has_role?('editor')
         can :create, CensusRecord
         can :update, CensusRecord
-        can :read, CensusRecord, reviewed_by_id: nil
+        can :read, CensusRecord, reviewed_at: nil
       end
 
       if user.has_role?('reviewer')
@@ -50,18 +51,18 @@ class Ability
 
       if user.has_role?('photographer')
         can :update, [Photograph, Audio, Video, Narrative]
-        can :read, [Photograph, Audio, Video, Narrative], reviewed_by_id: nil
+        can :read, [Photograph, Audio, Video, Narrative], reviewed_at: nil
       end
 
       if user.has_role?('census taker')
-        can :read, CensusRecord, reviewed_by_id: nil
-        can :read, Building, reviewed_by_id: nil
+        can :read, CensusRecord, reviewed_at: nil
+        can :read, Building, reviewed_at: nil
         can :create, CensusRecord
-        can :update, CensusRecord, created_by_id: user.id, reviewed_by_id: nil
+        can :update, CensusRecord, created_by_id: user.id, reviewed_at: nil
       end
 
       if user.has_role?('builder')
-        can :read, Building, reviewed_by_id: nil
+        can :read, Building, reviewed_at: nil
         can :create, Building
         can :update, Building
         can :merge, Building
@@ -101,19 +102,3 @@ class Ability
     super(action, subject, attribute, *extra_args)
   end
 end
-
-# can :manage, Photograph
-# can :manage, Flag
-# can :manage, Person
-# can :manage, :all
-# cannot :bulk_update, :all
-# cannot :manage, User
-# can :manage, Document
-# can :manage, DocumentCategory
-# can :manage, Building
-# can :manage, Architect
-# can :manage, CensusRecord
-# can :manage, Photograph
-# can :manage, Flag
-# can :manage, Person
-# can :manage, StreetConversion
