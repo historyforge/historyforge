@@ -60,8 +60,8 @@ class User < ApplicationRecord
     has_many :"census#{year}_records", dependent: :nullify, foreign_key: :created_by_id
   end
 
-  validates    :login, presence: true, length: { within: 3..40 }
-  validates  :login, uniqueness: { scope: :email, case_sensitive: false }
+  validates :login, presence: true, length: { within: 3..40 }
+  validates :login, uniqueness: { scope: :email, case_sensitive: false }
 
   alias_attribute :active, :enabled
 
