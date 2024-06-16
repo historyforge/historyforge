@@ -46,7 +46,7 @@
     - else
       .alert.alert-info.alert-block
         | Mark this photograph as reviewed? &nbsp; &nbsp;
-        =< link_to 'Review', [:review, @asset], class: 'btn btn-primary', data: { method: :patch, confirm: 'Go ahead with it?' }
+        =< link_to 'Review', [:review, @asset], class: 'btn btn-primary', data: { method: :put, confirm: 'Go ahead with it?' }
 
   - if can?(:review, @asset)
     = panel 'Metadata' do
