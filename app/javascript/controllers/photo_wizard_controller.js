@@ -129,10 +129,10 @@ export default class extends Controller {
   }
 
   addPerson(id, name) {
-    const formId = `photograph_person_ids_${id}`
+    const formId = `${this.paramKey}_person_ids_${id}`
     $(`#person-fields input[value=${id}]`).closest('.form-check').remove()
     const html = `<div class="form-check"><input type="checkbox" class="form-check-input" name="${this.paramKey}[person_ids][]" id="${formId}" value="${id}" checked /><label class="form-check-label" for="${formId}">${name}</label></div>`
-    $('#person-fields > .form-group').append(html)
+    $(`.${this.paramKey}_person_ids`).append(html)
   }
 
   addStepNumbers() {
