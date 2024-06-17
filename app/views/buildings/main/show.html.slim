@@ -16,18 +16,18 @@
   = link_to 'View All', buildings_path, class: 'btn btn-light'
 
 .row
-  .col-sm-8
+  .col-12.col-md-8
     - if !@building.reviewed? && can?(:review, @building.object) && @building.investigate?
       .alert.alert-danger
         | This building requires further investigation before it can be marked as reviewed.
         - if @building.investigate_reason?
           | &nbsp; &nbsp;
           b= @building.investigate_reason
-    .card.mb-1
+    .card.mb-3
       .card-header Details
       .card-body
         .row
-          .col-sm-6
+          .col-12.col-lg-6
             dl
               - if @building.proper_name?
                 dt Name
@@ -68,7 +68,7 @@
                 dt Architects
                 dd= @building.architects
 
-          .col-sm-6
+          .col-12.col-lg-6
             dl
               dt Building Type
               dd= @building.building_type || 'not specified'
@@ -98,7 +98,7 @@
 
 
     - if @building.annotations.present?
-      .card.mb-1
+      .card.mb-3
         .card-header
           | Annotations
         .card-body
@@ -106,35 +106,34 @@
             h6= annotation.map_overlay_name
             = simple_format annotation.annotation_text
 
-
     - if @building.description.present?
-      .card.mb-1
+      .card.mb-3
         .card-header
           | Description
         .card-body#building-description
           == @building.description
 
-    - photos = @building.photos
-    .card.mb-1
+    - narratives = @building.narratives.accessible_by(current_ability)
+    .card class="#{@building.description.blank? ? 'mb-3' : 'empty-card'}"
       .card-header
-        - if can?(:create, Photograph)
-          = link_to 'Add New Photo', [:new, @building, :photograph], class: 'btn btn-sm btn-light float-right'
-        | Photos
-      .card-body
-        .row
-          - if photos.blank?
-            .col-sm-12
-              p.lead No photos have been uploaded yet!
-          - photos.each do |photo|
-            .building-photo.col-sm-4 data-href=building_photograph_path(@building.object, photo)
-              = picture_tag photo: photo, style: 'quarter', img_class: 'img-thumbnail'
-              = simple_format photo.full_caption
+        = link_to 'Add Source/Narrative', new_building_narrative_path(@building), class: 'float-right'
+        | Sources &amp; Narratives
+      - if narratives.blank?
+        .card-body
+          p.lead No sources or narratives yet for this building.
+
+    - if narratives.present?
+      .list-group
+        - narratives.each do |narrative|
+          = render 'narratives/narrative', narrative:
+
+    = render 'media/display_on_associated_record', item: @building.object
 
     - CensusYears.each do |year|
       - families = @building.public_send("families_in_#{year}")
       - if families.present?
         - families.each do |id, family|
-          .card.mb-1
+          .card.mb-3
             .card-header
               = "Resident Household in #{year}"
             table.table.card-table
@@ -162,10 +161,8 @@
 
     = render 'shared/change_history', item: @building
 
-
-  .col-sm-4.card.bg-light
-    .card-body
-      - if @building.lat?
-        = render 'map'
-      - else
-        .alert.alert-danger Building is not yet mapped!
+  .col-12.col-md-4.card.bg-light
+    - if @building.lat?
+      = render 'map'
+    - else
+      .alert.alert-danger Building is not yet mapped!

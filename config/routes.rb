@@ -26,8 +26,9 @@ Rails.application.routes.draw do
 
   devise_for :users,
              path: 'u',
-             skip: %i[registerable confirmable],
-             controllers: { sessions: 'sessions', omniauth_callbacks: 'users/omniauth_callbacks' }
+             controllers: { registrations: 'users/registrations',
+                            sessions: 'users/sessions',
+                            omniauth_callbacks: 'users/omniauth_callbacks' }
 
   mount LetterOpenerWeb::Engine, at: '/letter_opener' if Rails.env.development?
 
@@ -62,6 +63,9 @@ Rails.application.routes.draw do
       get :address
     end
     resources :photographs
+    resources :audios
+    resources :videos
+    resources :narratives
     resources :merges, only: %i[new create], controller: 'buildings/merges'
   end
 
@@ -93,6 +97,10 @@ Rails.application.routes.draw do
     end
   end
 
+  concern :reviewable do
+    put :review, on: :member
+  end
+
   resources :document_categories, concerns: %i[moveable] do
     resources :documents, concerns: %i[moveable]
   end
@@ -115,10 +123,16 @@ Rails.application.routes.draw do
     end
     resources :merges, only: %i[new create], controller: 'people/merges'
     resources :photographs
+    resources :audios
+    resources :videos
+    resources :narratives
   end
 
-  resources :photographs do
-    patch :review, on: :member
+  with_options(concerns: %i[reviewable]) do
+    resources :narratives
+    resources :photographs
+    resources :audios
+    resources :videos
   end
 
   resources :settings, only: %i[index create]

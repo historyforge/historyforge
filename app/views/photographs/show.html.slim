@@ -1,4 +1,4 @@
-= render 'shared/flag_resolution', item: @photograph
+= render 'shared/flag_resolution', item: @asset
 
 - content_for :breadcrumb do
   nav aria-label="breadcrumb"
@@ -9,67 +9,67 @@
         li.breadcrumb-item= link_to @building.name, @building
       - else
         li.breadcrumb-item= link_to 'Photographs', photographs_path
-      li.breadcrumb-item= link_to "Photograph ##{@photograph.id}", @photograph
+      li.breadcrumb-item= link_to "Photograph ##{@asset.id}", @asset
 
 #photograph-page
   .row.mb-3
     .col-12.col-md-6
-      = image_tag @photograph.file, class: 'img img-thumbnail', id: 'photograph', data: { controller: 'blowup' }
+      = image_tag @asset.file, class: 'img img-thumbnail', id: 'photograph', data: { controller: 'blowup' }
       p
-        - if can?(:update, @photograph)
-          = link_to 'Edit Photo', [:edit, @photograph], class: 'btn btn-light'
-        - if can?(:destroy, @photograph)
-          = link_to 'Delete Photo', @photograph, class: 'btn btn-light', data: { confirm: 'Are you sure?', method: :delete }
-        = render 'shared/flag_it', item: @photograph.object, item_class: 'btn btn-light'
+        - if can?(:update, @asset)
+          = link_to 'Edit Photo', [:edit, @asset], class: 'btn btn-light'
+        - if can?(:destroy, @asset)
+          = link_to 'Delete Photo', @asset, class: 'btn btn-light', data: { confirm: 'Are you sure?', method: :delete }
+        = render 'shared/flag_it', item: @asset.object, item_class: 'btn btn-light'
 
     .col-12.col-md-6
-      - if @photograph.date
-        h4 #{@photograph.date}
+      - if @asset.date
+        h4 #{@asset.date}
 
-      - if @photograph.caption.present?
-        h3= @photograph.caption
-      - if @photograph.description.present?
-        = simple_format @photograph.description
-      - if @photograph.buildings.present?
+      - if @asset.caption.present?
+        h3= @asset.caption
+      - if @asset.description.present?
+        = simple_format @asset.description
+      - if @asset.buildings.present?
         h4 Buildings
-        - @photograph.buildings.each do |building|
+        - @asset.buildings.each do |building|
           p
             - building.addresses.each do |address|
               = link_to(address.address_with_year, building, class: 'd-block')
-      - if @photograph.people.present?
+      - if @asset.people.present?
         h4 People
-        p= @photograph.people.map { |person| link_to(person.name, person) }.join('<br />').html_safe
+        p= @asset.people.map { |person| link_to(person.name, person) }.join('<br />').html_safe
 
-  - if can?(:review, @photograph) && !@photograph.reviewed?
-    - if @photograph.errors.any?
-      = review_error_messages_for @photograph
+  - if can?(:review, @asset) && !@asset.reviewed?
+    - if @asset.errors.any?
+      = review_error_messages_for @asset
     - else
       .alert.alert-info.alert-block
         | Mark this photograph as reviewed? &nbsp; &nbsp;
-        =< link_to 'Review', [:review, @photograph], class: 'btn btn-primary', data: { method: :patch, confirm: 'Go ahead with it?' }
+        =< link_to 'Review', [:review, @asset], class: 'btn btn-primary', data: { method: :put, confirm: 'Go ahead with it?' }
 
-  - if can?(:review, @photograph)
+  - if can?(:review, @asset)
     = panel 'Metadata' do
       .list-group.list-group-flush
         .list-group-item
           .row
             .col-4 Date of Original
-            .col-8= @photograph.date
+            .col-8= @asset.date
         .list-group-item
           .row
             .col-4 Local Location
-            .col-8= @photograph.location
+            .col-8= @asset.location
         .list-group-item
           .row
             .col-4 Identifier
-            .col-8= @photograph.identifier
+            .col-8= @asset.identifier
         .list-group-item
           .row
             .col-4 Date of Digital
-            .col-8= @photograph.created_at.strftime('%Y-%m-%d')
+            .col-8= @asset.created_at.strftime('%Y-%m-%d')
         .list-group-item
           .row
             .col-4 Notes
-            .col-8= simple_format @photograph.notes
+            .col-8= simple_format @asset.notes
 
-    = render 'shared/change_history', item: @photograph.object
+    = render 'shared/change_history', item: @asset.object

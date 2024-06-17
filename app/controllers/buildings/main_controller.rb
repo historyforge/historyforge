@@ -195,11 +195,13 @@ class Buildings::MainController < ApplicationController
                                      :lat, :lon, :architects_list,
                                      :investigate, :investigate_reason, :notes,
                                      :annotations_legacy, :parent_id, :hive_year,
-                                     { building_type_ids: [],
+                                     {
+                                       building_type_ids: [],
                                        photos_attributes: %i[_destroy id photo year_taken caption],
                                        addresses_attributes: %i[_destroy id is_primary house_number prefix name suffix
                                                                 city postal_code year],
-                                       annotations_attributes: %i[_destroy id map_overlay_id annotation_text] }
+                                       annotations_attributes: %i[_destroy id map_overlay_id annotation_text]
+                                     }
   end
 
   def load_buildings

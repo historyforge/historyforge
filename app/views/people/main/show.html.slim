@@ -134,22 +134,24 @@
                 = hidden_field_tag 'context', 'person'
                 = form.submit 'Match!', class: 'btn btn-sm btn-secondary'
 
-.card.mb-1
+= render 'media/display_on_associated_record', item: @person
+
+- narratives = @person.narratives.accessible_by(current_ability)
+.card class="#{narratives.blank? ? 'mb-3' : 'empty-card'}"
   .card-header
-    - if can?(:create, Photograph)
-      = link_to 'Upload', [:new, @person, :photograph], class: 'btn btn-sm btn-light float-right'
-    | Photos
-  .card-body
-    - if @person.photos.blank?
-      p.lead No photos have been uploaded yet!
-    .row
-      - @person.photos.each do |photo|
-        .person-photo.col-sm-4 data-href=person_photograph_path(@person, photo)
-          = picture_tag photo: photo, style: 'quarter', img_class: 'img-thumbnail'
-          = simple_format photo.full_caption
+    = link_to 'Add Source/Narrative', new_person_narrative_path(@person), class: 'float-right'
+    | Sources &amp; Narratives
+  - if narratives.blank?
+    .card-body
+      p.lead No sources or narratives yet for this person.
+
+- if narratives.present?
+  .list-group
+    - narratives.each do |narrative|
+      = render 'narratives/narrative', narrative:
 
 - if @person.notes? && can?(:update, @person)
-  .card.mb-1
+  .card.mb-3
     .card-header
       | Additional Notes
     .card-body

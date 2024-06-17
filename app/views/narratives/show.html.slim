@@ -1,0 +1,63 @@
+= render 'shared/flag_resolution', item: @asset
+
+- content_for :breadcrumb do
+  nav aria-label="breadcrumb"
+    ol.breadcrumb
+      - if @person
+        li.breadcrumb-item= link_to @person.name, @person
+      - elsif @building
+        li.breadcrumb-item= link_to @building.name, @building
+      - else
+        li.breadcrumb-item= link_to 'Narratives', narratives_path
+      li.breadcrumb-item= link_to "Narrative ##{@asset.id}", @asset
+
+#photograph-page
+  .row.mb-3
+    .col-12.col-lg-7
+      = @asset.story
+      p
+        - if can?(:update, @asset)
+          = link_to 'Edit Narrative', [:edit, @asset], class: 'btn btn-light'
+        - if can?(:destroy, @asset)
+          = link_to 'Delete Narrative', @asset, class: 'btn btn-light', data: { confirm: 'Are you sure?', method: :delete }
+        = render 'shared/flag_it', item: @asset, item_class: 'btn btn-light'
+
+    .col-12.col-lg-5
+      - if @asset.date_text
+        h4 #{@asset.date_text}
+
+      - if @asset.buildings.present?
+        h4 Buildings
+        - @asset.buildings.each do |building|
+          p
+            - building.addresses.each do |address|
+              = link_to(address.address_with_year, building, class: 'd-block')
+      - if @asset.people.present?
+        h4 People
+        p= @asset.people.map { |person| link_to(person.name, person) }.join('<br />').html_safe
+
+  - if can?(:review, @asset) && !@asset.reviewed?
+    - if @asset.errors.any?
+      = review_error_messages_for @asset
+    - else
+      .alert.alert-info.alert-block
+        | Mark this narrative as reviewed? &nbsp; &nbsp;
+        =< link_to 'Review', [:review, @asset], class: 'btn btn-primary', data: { method: :put, confirm: 'Go ahead with it?' }
+
+  - if can?(:review, @asset)
+    = panel 'Metadata' do
+      .list-group.list-group-flush
+        .list-group-item
+          .row
+            .col-4 Date of Original
+            .col-8= @asset.date_text
+        .list-group-item
+          .row
+            .col-4 Date of Submission
+            .col-8= @asset.created_at.strftime('%Y-%m-%d')
+        .list-group-item
+          .row
+            .col-4 Notes
+            .col-8= simple_format @asset.notes
+
+    = render 'shared/change_history', item: @asset

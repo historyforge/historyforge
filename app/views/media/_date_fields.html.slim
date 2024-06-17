@@ -1,0 +1,34 @@
+= form.hidden_field :date_type
+#dates-question
+  p.lead You can date this #{form.object.model_name.singular} down to:
+  .row.mb-3
+    .col-xs-12.col-lg-6
+      .p-1
+        button.btn.btn-sm class=(form.object.year? ? 'btn-primary' : 'btn-light') type="button" data-date-type="year" The year
+        | &nbsp;
+        button.btn.btn-sm class=(form.object.month? ? 'btn-primary' : 'btn-light') type="button" data-date-type="month" The month
+        | &nbsp;
+        button.btn.btn-sm class=(form.object.day? ? 'btn-primary' : 'btn-light') type="button" data-date-type="day" The day
+    .col-xs-12.col-lg-6
+      .p-1
+        button.btn.btn-sm class=(form.object.years? ? 'btn-primary' : 'btn-light') type="button" data-date-type="years" A range of years
+        | &nbsp;
+        button.btn.btn-sm class=(form.object.months? ? 'btn-primary' : 'btn-light') type="button" data-date-type="months" A range of months
+        | &nbsp;
+        button.btn.btn-sm class=(form.object.days? ? 'btn-primary' : 'btn-light') type="button" data-date-type="days" A range of days
+
+- years = Date.today.year.downto(1800).map
+- months = Date::MONTHNAMES.each_with_index.map { |m, i| [m, i] }
+- days = 1.upto(31).map
+#photograph-date-type class=@asset.date_type
+  .row
+    .col-6
+      = form.input :date_year, collection: years, label: 'Enter the year:', wrapper_html: { class: 'date_year' }
+      = form.input :date_month, collection: months, label: 'Enter the month:', wrapper_html: { class: 'date_month' }
+      = form.input :date_day, collection: days, label: 'Enter the day:', wrapper_html: { class: 'date_day' }
+    .col-6
+      = form.input :date_year_end, collection: years, label: 'Enter the ending year:', wrapper_html: { class: 'date_year_end' }
+      = form.input :date_month_end, collection: months, label: 'Enter the ending month:', wrapper_html: { class: 'date_month_end' }
+      = form.input :date_day_end, collection: days, label: 'Enter the ending day:', wrapper_html: { class: 'date_day_end' }
+
+= form.input :date_text, label: 'Date of original', hint: 'Human readable date such as "1940" or "Ca. July 1935" ...'

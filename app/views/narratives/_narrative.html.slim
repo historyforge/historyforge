@@ -1,0 +1,10 @@
+.list-group-item.mb-3
+  - if can?(:review, narrative) && !narrative.reviewed?
+    = link_to 'Review', [:review, narrative], class: 'btn btn-sm btn-danger float-right ml-2', data: { method: :put, confirm: 'Are you sure?' }
+  - if can?(:update, narrative)
+    = link_to 'Edit', [:edit, narrative], class: 'btn btn-sm btn-light float-right'
+  = narrative.story
+  p Source: #{narrative.source}
+  - if narrative.date_text
+    p= narrative.date_text
+  /p= "Submitted by #{record.created_by.login} on #{record.created_at.to_s(:long)}"

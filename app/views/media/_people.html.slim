@@ -1,0 +1,11 @@
+- if form.object.person_ids.present?
+  = render 'person_fields', form:
+- else
+  #person-question
+    p.lead= question
+    p
+      button.btn.btn-lg.btn-primary type="button" YES
+      | &nbsp;
+      button.btn.btn-secondary.btn-lg.btn-next type="button" NO
+  #person-fields style="display:none"
+    = render 'person_fields', form:

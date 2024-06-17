@@ -1,0 +1,32 @@
+= render 'shared/flag_resolution', item: @asset
+- content_for :pills do
+  = link_to 'View All', videos_path, class: 'btn btn-light'
+  = link_to 'View', @asset, class: 'btn btn-light'
+  = link_to 'Save', "javascript: $('[data-controller=photo-wizard]').submit()", class: 'btn btn-primary'
+
+- set_page_title 'Edit Video'
+
+= error_messages_for @asset
+
+= simple_form_for @asset, html: { data: { controller: 'photo-wizard' } } do |form|
+  = panel 'Caption & Description' do
+    .p-3
+      = form.input :caption, as: :text, label: "Caption", hint: "The Caption is text that appears underneath the video on the building or person record. Note that the caption should not include the date which is a separate field that will display along with the caption."
+      = form.input :description, as: :text, label: "Description", hint: "The Description is secondary text that appears when someone selects the video to watch it. The Description can be standard text used to identify the collection that houses the video in your institution, or it can be used in whichever way your institution sees fit."
+
+  = panel 'Buildings' do
+    .p-3= render 'media/buildings', form:, question: 'Is this a video of a building?'
+  = panel 'People' do
+    .p-3= render 'media/people', form:, question: 'Is this a video of a person?'
+  = panel 'Map Location' do
+    .p-3= render 'media/map_location', form:
+  = panel 'Date of Photograph' do
+    .p-3= render 'media/date_fields', form:
+
+  = panel 'Notes' do
+    .p-3= form.input :notes, label: false
+
+  .card-footer.d-flex.justify-content-center
+    .p-3= form.submit 'Submit', class: 'btn btn-lg btn-primary'
+
+script async="async" defer="defer" src="https://maps.googleapis.com/maps/api/js?key=#{AppConfig[:google_api_key]}&libraries=places"

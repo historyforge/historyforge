@@ -4,15 +4,31 @@ class Ability
   include CanCan::Ability
 
   def initialize(user)
+    can :read, Person
+
+    # Everybody can read these things if they've been reviewed
+    can :read, [
+      Architect,
+      Audio,
+      Building,
+      CensusRecord,
+      Narrative,
+      Photograph,
+      Video
+    ]
+
+    cannot :read, [
+      Audio,
+      Building,
+      CensusRecord,
+      Narrative,
+      Photograph,
+      Video
+    ], reviewed_at: nil
+
     if user.blank?
       # a guest user can only do this stuff
-      can :read, Person
-      can :read, Building do |building| building.reviewed?; end
-      can :read, Architect
-      can :read, CensusRecord do |record| record.reviewed?; end
-      can :read, Photograph do |record| record.reviewed?; end
-      can :read, Document do |record| record.available_to_public?; end
-
+      can :read, Document, &:available_to_public?
     else
       # A user can have multiple roles so we only grant the things that apply to that role
 
@@ -24,28 +40,33 @@ class Ability
       if user.has_role?('editor')
         can :create, CensusRecord
         can :update, CensusRecord
+        can :read, CensusRecord, reviewed_at: nil
       end
 
       if user.has_role?('reviewer')
         can :review, CensusRecord
         can :review, Building
-        can :review, Photograph
+        can :review, [Photograph, Audio, Video, Narrative]
       end
 
       if user.has_role?('photographer')
-        can :create, Photograph
-        can :update, Photograph
+        can :update, [Photograph, Audio, Video, Narrative]
+        can :read, [Photograph, Audio, Video, Narrative], reviewed_at: nil
       end
 
       if user.has_role?('census taker')
+        can :read, CensusRecord, reviewed_at: nil
+        can :read, Building, reviewed_at: nil
         can :create, CensusRecord
-        can :update, CensusRecord, created_by_id: user.id
+        can :update, CensusRecord, created_by_id: user.id, reviewed_at: nil
       end
 
       if user.has_role?('builder')
+        can :read, Building, reviewed_at: nil
         can :create, Building
-        can :update, Building #, created_by_id: user.id
+        can :update, Building
         can :merge, Building
+        can :review, Building
       end
 
       if user.has_role?('person record editor')
@@ -58,16 +79,21 @@ class Ability
       # any logged in user can do the following things:
 
       can :update, User, id: user.id
-      can :read, CensusRecord
-      can :read, Building
-      can :read, Photograph
       can :create, Flag
       can :read, Document
-      can :read, Person
+      # can :read, [
+      #   Architect,
+      #   Audio,
+      #   Building,
+      #   CensusRecord,
+      #   Narrative,
+      #   Photograph,
+      #   Video
+      # ]
 
       # User generated photographs?
-      can :create, Photograph
-      can :update, Photograph, created_by_id: user.id
+      can :create, [Photograph, Audio, Video, Narrative]
+      can :update, [Photograph, Audio, Video, Narrative], created_by_id: user.id, reviewed_by_id: nil
     end
   end
 
@@ -76,19 +102,3 @@ class Ability
     super(action, subject, attribute, *extra_args)
   end
 end
-
-# can :manage, Photograph
-# can :manage, Flag
-# can :manage, Person
-# can :manage, :all
-# cannot :bulk_update, :all
-# cannot :manage, User
-# can :manage, Document
-# can :manage, DocumentCategory
-# can :manage, Building
-# can :manage, Architect
-# can :manage, CensusRecord
-# can :manage, Photograph
-# can :manage, Flag
-# can :manage, Person
-# can :manage, StreetConversion

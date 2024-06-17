@@ -48,7 +48,10 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
-  devise :invitable, :database_authenticatable, :recoverable, :rememberable, :trackable, :validatable, :omniauthable, omniauth_providers: %i[facebook]
+  devise :invitable, :database_authenticatable,
+         :registerable, :confirmable,
+         :recoverable, :rememberable, :trackable,
+         :validatable, :omniauthable, omniauth_providers: %i[facebook]
 
   belongs_to :group, class_name: 'UserGroup', foreign_key: :user_group_id, optional: true
   has_many :search_params, dependent: :destroy
@@ -57,9 +60,8 @@ class User < ApplicationRecord
     has_many :"census#{year}_records", dependent: :nullify, foreign_key: :created_by_id
   end
 
-  validates_presence_of    :login
-  validates_length_of      :login, within: 3..40
-  validates_uniqueness_of  :login, scope: :email, case_sensitive: false
+  validates :login, presence: true, length: { within: 3..40 }
+  validates :login, uniqueness: { scope: :email, case_sensitive: false }
 
   alias_attribute :active, :enabled
 
@@ -73,6 +75,10 @@ class User < ApplicationRecord
 
   def self.ransackable_scopes(_auth_object=nil)
     %i[roles_id_eq]
+  end
+
+  def confirmed?
+    enabled? || !!confirmed_at
   end
 
   def name
@@ -137,5 +143,4 @@ class User < ApplicationRecord
     user ||= User.create!(provider: auth.provider, uid: auth.uid, email: auth.info.email, password: Devise.friendly_token[0, 20], login: + auth.info.email + '-' + auth.provider[0])
     user
   end
-
 end

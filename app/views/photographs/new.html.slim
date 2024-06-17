@@ -1,8 +1,8 @@
 - set_page_title "Add Photograph #{@building && "to #{@building.name}"}#{@person && "to #{@person.name}"}"
 
-= error_messages_for @photograph
+= error_messages_for @asset
 
-= simple_form_for @photograph, html: { id: 'photo-wizard', data: { controller: 'photo-wizard' } } do |form|
+= simple_form_for @asset, html: { id: 'photo-wizard', data: { controller: 'photo-wizard' } } do |form|
   .card.active
     .float-right
       button.btn.btn-secondary.btn-next.step-1-next-button type="button" disabled=!form.object.file.attached? Next &raquo;
@@ -19,29 +19,23 @@
       button.btn.btn-secondary.btn-lg.btn-next.step-1-next-button type="button" disabled=!form.object.file.attached? Next &raquo;
 
   .card
-    .float-right
-      button.btn.btn-secondary.btn-prev type="button" &laquo; Previous
-      button.btn.btn-secondary.btn-next type="button" Next &raquo;
+    = render 'media/wizard_header_nav_buttons'
     .card-body
       .row
         .col-sm-8.col-xs-12
           = form.input :caption, as: :text, label: "Caption", hint: "The Caption is text that appears underneath the photo on the building record. Note that the caption should not include the date which is a separate field that will display along with the caption."
           = form.input :description, as: :text, label: "Description", hint: "The Description is secondary text that appears when someone selects the photo to enlarge it. The Description can be standard text used to identify the collection that houses the photo in your institution, or it can be used in whichever way your institution sees fit."
 
-        .col-3.offset-1.thumb= thumb_for form.object
-    .card-footer.d-flex.justify-content-center
-      button.btn.btn-secondary.btn-lg.btn-prev type="button" &laquo; Previous
-      button.btn.btn-secondary.btn-lg.btn-next type="button" Next &raquo;
+        .col-3.offset-1.thumb= thumb_for form.object.file
+    = render 'media/wizard_footer_nav_buttons'
 
   .card
-    .float-right
-      button.btn.btn-secondary.btn-prev type="button" &laquo; Previous
-      button.btn.btn-secondary.btn-next type="button" Next &raquo;
+    = render 'media/wizard_header_nav_buttons'
     .card-body
       .row
         .col-sm-8.col-xs-12
           - if form.object.building_ids.present?
-            = render 'building_fields', form: form
+            = render 'media/building_fields', form:
           - else
             #building-question
               p.lead Is this a picture of a building?
@@ -50,21 +44,17 @@
                 | &nbsp;
                 button.btn.btn-secondary.btn-lg.btn-next type="button" NO
             #building-fields style="display:none"
-              = render 'building_fields', form: form
-        .col-3.offset-1.thumb= thumb_for form.object
-    .card-footer.d-flex.justify-content-center
-      button.btn.btn-secondary.btn-lg.btn-prev type="button" &laquo; Previous
-      button.btn.btn-secondary.btn-lg.btn-next type="button" Next &raquo;
+              = render 'media/building_fields', form: form
+        .col-3.offset-1.thumb= thumb_for form.object.file
+    = render 'media/wizard_footer_nav_buttons'
 
   .card
-    .float-right
-      button.btn.btn-secondary.btn-prev type="button" &laquo; Previous
-      button.btn.btn-secondary.btn-next type="button" Next &raquo;
+    = render 'media/wizard_header_nav_buttons'
     .card-body
       .row
         .col-sm-8.col-xs-12
           - if form.object.person_ids.present?
-            = render 'person_fields', form: form
+            = render 'media/person_fields', form:
           - else
             #person-question
               p.lead Is this a picture of a person?
@@ -73,16 +63,12 @@
                 | &nbsp;
                 button.btn.btn-secondary.btn-lg.btn-next type="button" NO
             #person-fields style="display:none"
-              = render 'person_fields', form: form
-        .col-3.offset-1.thumb= thumb_for form.object
-    .card-footer.d-flex.justify-content-center
-      button.btn.btn-secondary.btn-lg.btn-prev type="button" &laquo; Previous
-      button.btn.btn-secondary.btn-lg.btn-next type="button" Next &raquo;
+              = render 'media/person_fields', form: form
+        .col-3.offset-1.thumb= thumb_for form.object.file
+    = render 'media/wizard_footer_nav_buttons'
 
   .card
-    .float-right
-      button.btn.btn-secondary.btn-prev type="button" &laquo; Previous
-      button.btn.btn-secondary.btn-next type="button" Next &raquo;
+    = render 'media/wizard_header_nav_buttons'
     .card-body
       .row
         .col-sm-8.col-xs-12
@@ -92,53 +78,17 @@
           .row
             .col-6= form.input :latitude
             .col-6= form.input :longitude
-        .col-3.offset-1.thumb= thumb_for form.object
-    .card-footer.d-flex.justify-content-center
-      button.btn.btn-secondary.btn-lg.btn-prev type="button" &laquo; Previous
-      button.btn.btn-secondary.btn-lg.btn-next type="button" Next &raquo;
+        .col-3.offset-1.thumb= thumb_for form.object.file
+    = render 'media/wizard_footer_nav_buttons'
 
   .card
-    .float-right
-      button.btn.btn-secondary.btn-prev type="button" &laquo; Previous
-      button.btn.btn-secondary.btn-next type="button" Next &raquo;
+    = render 'media/wizard_header_nav_buttons'
     .card-body
       .row
         .col-sm-8.col-xs-12
-          = form.hidden_field :date_type
-          #dates-question
-            p.lead You can date this photograph down to:
-            p
-              button.btn.btn-sm class=(form.object.year? ? 'btn-primary' : 'btn-light') type="button" data-date-type="year" The year
-              | &nbsp;
-              button.btn.btn-sm class=(form.object.month? ? 'btn-primary' : 'btn-light') type="button" data-date-type="month" The month
-              | &nbsp;
-              button.btn.btn-sm class=(form.object.day? ? 'btn-primary' : 'btn-light') type="button" data-date-type="day" The day
-              | &nbsp;
-              button.btn.btn-sm class=(form.object.years? ? 'btn-primary' : 'btn-light') type="button" data-date-type="years" A range of years
-              | &nbsp;
-              button.btn.btn-sm class=(form.object.months? ? 'btn-primary' : 'btn-light') type="button" data-date-type="months" A range of months
-              | &nbsp;
-              button.btn.btn-sm class=(form.object.days? ? 'btn-primary' : 'btn-light') type="button" data-date-type="days" A range of days
-
-          - years = Date.today.year.downto(1800).map
-          - months = Date::MONTHNAMES.each_with_index.map { |m, i| [m, i] }
-          - days = 1.upto(31).map
-          #photograph-date-type class=@photograph.date_type
-            .row
-              .col-6
-                = form.input :date_year, collection: years, label: 'Enter the year:'
-                = form.input :date_month, collection: months, label: 'Enter the month:'
-                = form.input :date_day, collection: days, label: 'Enter the day:'
-              .col-6
-                = form.input :date_year_end, collection: years, label: 'Enter the ending year:'
-                = form.input :date_month_end, collection: months, label: 'Enter the ending month:'
-                = form.input :date_day_end, collection: days, label: 'Enter the ending day:'
-
-          = form.input :date_text, label: 'Date of original', hint: 'Human readable date such as "1940" or "Ca. July 1935" ...'
-        .col-3.offset-1.thumb= thumb_for form.object
-    .card-footer.d-flex.justify-content-center
-      button.btn.btn-secondary.btn-lg.btn-prev type="button" &laquo; Previous
-      button.btn.btn-secondary.btn-lg.btn-next type="button" Next &raquo;
+          = render 'media/date_fields', form:
+        .col-3.offset-1.thumb= thumb_for form.object.file
+    = render 'media/wizard_footer_nav_buttons'
 
   .card
     .float-right
@@ -147,7 +97,7 @@
       .row
         .col-sm-8.col-xs-12
           = form.input :notes
-        .col-3.offset-1.thumb= thumb_for form.object
+        .col-3.offset-1.thumb= thumb_for form.object.file
     .card-footer.d-flex.justify-content-center
       = form.submit 'Submit', class: 'btn btn-lg btn-primary'
 

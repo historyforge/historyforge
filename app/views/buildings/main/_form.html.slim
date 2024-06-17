@@ -87,7 +87,6 @@
     .card-header Narrative
     .card-body
       - content_for :html_end do
-        /= javascript_include_tag 'richtext'
         link rel="stylesheet" type="text/css" href="https://unpkg.com/trix@2.0.0/dist/trix.css"
         script src= "https://unpkg.com/trix@2.0.0/dist/trix.umd.min.js"
       = form.input :description do

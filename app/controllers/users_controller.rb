@@ -20,6 +20,9 @@ class UsersController < ApplicationController
 
   def show
     @user = User.find(params[:id]) || current_user
+    if @user.unconfirmed_email && @user.unconfirmed_email != @user.email
+      flash[:errors] = "You changed your email from #{@user.email} to #{@user.unconfirmed_email}.The change won't take effect until you click on the link in the email we sent you."
+    end
   end
 
   def new
@@ -43,6 +46,9 @@ class UsersController < ApplicationController
     @html_title = 'Edit User Settings'
     @user = params[:id] ? User.find(params[:id]) : current_user
     authorize! :update, @user
+    if @user.unconfirmed_email && @user.unconfirmed_email != @user.email
+      flash[:errors] = "You changed your email from #{@user.email} to #{@user.unconfirmed_email}.The change won't take effect until you click on the link in the email we sent you."
+    end
   end
 
   def update

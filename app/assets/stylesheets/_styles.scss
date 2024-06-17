@@ -40,7 +40,7 @@ a {
 .container {
   position: relative;
   width: 100%;
-  max-width: 1366px;
+  //max-width: 1366px;
   margin: 0 auto;
 }
 
@@ -66,7 +66,7 @@ body > header {
   }
 
   & + .container {
-    padding: 0 40px 40px;
+    //padding: 0 40px 40px;
     margin-top: 20px;
     //height: calc(100% - 110px);
   }
@@ -577,6 +577,7 @@ abbr[title] {
   margin-bottom: 0;
 }
 
+#narrative-story .trix-content,
 #building-description .trix-content {
   p {
     margin-bottom: 1rem;
@@ -584,3 +585,7 @@ abbr[title] {
 }
 
 .trix-button-group--file-tools { display: none !important; }
+
+#narrative_story {
+  min-height: 16rem;
+}

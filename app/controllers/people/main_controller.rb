@@ -17,7 +17,7 @@ module People
     end
 
     def autocomplete
-      @people = Person.fuzzy_name_search(params[:term]).limit(5).by_name
+      @people = Person.fuzzy_name_search(params[:term]).limit(10).by_name
       render json: @people.map { |person|
         {
           id: person.id,

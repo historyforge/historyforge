@@ -1,0 +1,12 @@
+= render 'shared/flag_resolution', item: @asset
+- content_for :pills do
+  = link_to 'View All', photographs_path, class: 'btn btn-light'
+  = link_to 'View', @asset, class: 'btn btn-light'
+  = link_to 'Save', "javascript: $('[data-controller=photo-wizard]').submit()", class: 'btn btn-primary'
+
+- set_page_title "Edit Narrative #{@building && "for #{@building.name}"}#{@person && "for #{@person.name}"}"
+
+= error_messages_for @asset
+
+= simple_form_for @asset, html: { data: { controller: 'photo-wizard' } } do |form|
+  = render 'fields', form:

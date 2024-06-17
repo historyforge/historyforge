@@ -314,6 +314,74 @@ ALTER SEQUENCE public.architects_id_seq OWNED BY public.architects.id;
 
 
 --
+-- Name: audios; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.audios (
+    id bigint NOT NULL,
+    created_by_id bigint NOT NULL,
+    reviewed_by_id bigint,
+    reviewed_at timestamp(6) without time zone,
+    description text,
+    notes text,
+    caption text,
+    creator character varying,
+    date_type integer,
+    date_text character varying,
+    date_start date,
+    date_end date,
+    location character varying,
+    identifier character varying,
+    latitude numeric,
+    longitude numeric,
+    duration integer,
+    file_size integer,
+    processed_at timestamp(6) without time zone,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: audios_buildings; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.audios_buildings (
+    audio_id bigint,
+    building_id bigint
+);
+
+
+--
+-- Name: audios_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.audios_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: audios_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.audios_id_seq OWNED BY public.audios.id;
+
+
+--
+-- Name: audios_people; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.audios_people (
+    person_id bigint,
+    audio_id bigint
+);
+
+
+--
 -- Name: audit_logs; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -449,12 +517,32 @@ ALTER SEQUENCE public.buildings_id_seq OWNED BY public.buildings.id;
 
 
 --
+-- Name: buildings_narratives; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.buildings_narratives (
+    building_id bigint,
+    narrative_id bigint
+);
+
+
+--
 -- Name: buildings_photographs; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.buildings_photographs (
     photograph_id bigint NOT NULL,
     building_id bigint NOT NULL
+);
+
+
+--
+-- Name: buildings_videos; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.buildings_videos (
+    building_id bigint,
+    video_id bigint
 );
 
 
@@ -1966,6 +2054,56 @@ ALTER SEQUENCE public.map_overlays_id_seq OWNED BY public.map_overlays.id;
 
 
 --
+-- Name: narratives; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.narratives (
+    id bigint NOT NULL,
+    created_by_id bigint NOT NULL,
+    reviewed_by_id bigint,
+    reviewed_at timestamp(6) without time zone,
+    weight integer DEFAULT 0,
+    source character varying,
+    notes text,
+    date_type integer,
+    date_text character varying,
+    date_start date,
+    date_end date,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: narratives_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.narratives_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: narratives_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.narratives_id_seq OWNED BY public.narratives.id;
+
+
+--
+-- Name: narratives_people; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.narratives_people (
+    narrative_id bigint,
+    person_id bigint
+);
+
+
+--
 -- Name: occupation1930_codes; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2049,6 +2187,16 @@ ALTER SEQUENCE public.people_id_seq OWNED BY public.people.id;
 CREATE TABLE public.people_photographs (
     photograph_id bigint NOT NULL,
     person_id bigint NOT NULL
+);
+
+
+--
+-- Name: people_videos; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.people_videos (
+    person_id bigint,
+    video_id bigint
 );
 
 
@@ -2584,7 +2732,8 @@ CREATE TABLE public.users (
     invited_by_id bigint,
     invitations_count integer DEFAULT 0,
     roles_mask integer,
-    user_group_id bigint
+    user_group_id bigint,
+    unconfirmed_email character varying
 );
 
 
@@ -2641,6 +2790,57 @@ CREATE SEQUENCE public.versions_id_seq
 --
 
 ALTER SEQUENCE public.versions_id_seq OWNED BY public.versions.id;
+
+
+--
+-- Name: videos; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.videos (
+    id bigint NOT NULL,
+    created_by_id bigint NOT NULL,
+    reviewed_by_id bigint,
+    reviewed_at timestamp(6) without time zone,
+    description text,
+    notes text,
+    caption text,
+    creator character varying,
+    date_type integer,
+    date_text character varying,
+    date_start date,
+    date_end date,
+    location character varying,
+    identifier character varying,
+    latitude numeric,
+    longitude numeric,
+    duration integer,
+    file_size integer,
+    width integer,
+    height integer,
+    thumbnail_processed_at timestamp(6) without time zone,
+    processed_at timestamp(6) without time zone,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: videos_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.videos_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: videos_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.videos_id_seq OWNED BY public.videos.id;
 
 
 --
@@ -2722,6 +2922,13 @@ ALTER TABLE ONLY public.annotations ALTER COLUMN id SET DEFAULT nextval('public.
 --
 
 ALTER TABLE ONLY public.architects ALTER COLUMN id SET DEFAULT nextval('public.architects_id_seq'::regclass);
+
+
+--
+-- Name: audios id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.audios ALTER COLUMN id SET DEFAULT nextval('public.audios_id_seq'::regclass);
 
 
 --
@@ -2914,6 +3121,13 @@ ALTER TABLE ONLY public.map_overlays ALTER COLUMN id SET DEFAULT nextval('public
 
 
 --
+-- Name: narratives id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.narratives ALTER COLUMN id SET DEFAULT nextval('public.narratives_id_seq'::regclass);
+
+
+--
 -- Name: occupation1930_codes id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3040,6 +3254,13 @@ ALTER TABLE ONLY public.versions ALTER COLUMN id SET DEFAULT nextval('public.ver
 
 
 --
+-- Name: videos id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.videos ALTER COLUMN id SET DEFAULT nextval('public.videos_id_seq'::regclass);
+
+
+--
 -- Name: vocabularies id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3108,6 +3329,14 @@ ALTER TABLE ONLY public.ar_internal_metadata
 
 ALTER TABLE ONLY public.architects
     ADD CONSTRAINT architects_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: audios audios_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.audios
+    ADD CONSTRAINT audios_pkey PRIMARY KEY (id);
 
 
 --
@@ -3335,6 +3564,14 @@ ALTER TABLE ONLY public.map_overlays
 
 
 --
+-- Name: narratives narratives_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.narratives
+    ADD CONSTRAINT narratives_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: occupation1930_codes occupation1930_codes_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3479,6 +3716,14 @@ ALTER TABLE ONLY public.versions
 
 
 --
+-- Name: videos videos_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.videos
+    ADD CONSTRAINT videos_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: vocabularies vocabularies_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3498,34 +3743,6 @@ CREATE UNIQUE INDEX architects_buildings_index ON public.architects_buildings US
 --
 
 CREATE UNIQUE INDEX buildings_building_types_unique_index ON public.buildings_building_types USING btree (building_id, building_type_id);
-
-
---
--- Name: census_1900_records_name_trgm; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX census_1900_records_name_trgm ON public.census_1900_records USING gist (searchable_name public.gist_trgm_ops);
-
-
---
--- Name: census_1910_records_name_trgm; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX census_1910_records_name_trgm ON public.census_1910_records USING gist (searchable_name public.gist_trgm_ops);
-
-
---
--- Name: census_1920_records_name_trgm; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX census_1920_records_name_trgm ON public.census_1920_records USING gist (searchable_name public.gist_trgm_ops);
-
-
---
--- Name: census_1930_records_name_trgm; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX census_1930_records_name_trgm ON public.census_1930_records USING gist (searchable_name public.gist_trgm_ops);
 
 
 --
@@ -3592,6 +3809,62 @@ CREATE INDEX index_annotations_on_map_overlay_id ON public.annotations USING btr
 
 
 --
+-- Name: index_audios_buildings_on_audio_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_audios_buildings_on_audio_id ON public.audios_buildings USING btree (audio_id);
+
+
+--
+-- Name: index_audios_buildings_on_audio_id_and_building_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_audios_buildings_on_audio_id_and_building_id ON public.audios_buildings USING btree (audio_id, building_id);
+
+
+--
+-- Name: index_audios_buildings_on_building_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_audios_buildings_on_building_id ON public.audios_buildings USING btree (building_id);
+
+
+--
+-- Name: index_audios_on_created_by_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_audios_on_created_by_id ON public.audios USING btree (created_by_id);
+
+
+--
+-- Name: index_audios_on_reviewed_by_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_audios_on_reviewed_by_id ON public.audios USING btree (reviewed_by_id);
+
+
+--
+-- Name: index_audios_people_on_audio_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_audios_people_on_audio_id ON public.audios_people USING btree (audio_id);
+
+
+--
+-- Name: index_audios_people_on_person_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_audios_people_on_person_id ON public.audios_people USING btree (person_id);
+
+
+--
+-- Name: index_audios_people_on_person_id_and_audio_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_audios_people_on_person_id_and_audio_id ON public.audios_people USING btree (person_id, audio_id);
+
+
+--
 -- Name: index_audit_logs_on_loggable_type_and_loggable_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3617,6 +3890,27 @@ CREATE INDEX index_buildings_building_types_on_building_id ON public.buildings_b
 --
 
 CREATE INDEX index_buildings_building_types_on_building_type_id ON public.buildings_building_types USING btree (building_type_id);
+
+
+--
+-- Name: index_buildings_narratives_on_building_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_buildings_narratives_on_building_id ON public.buildings_narratives USING btree (building_id);
+
+
+--
+-- Name: index_buildings_narratives_on_building_id_and_narrative_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_buildings_narratives_on_building_id_and_narrative_id ON public.buildings_narratives USING btree (building_id, narrative_id);
+
+
+--
+-- Name: index_buildings_narratives_on_narrative_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_buildings_narratives_on_narrative_id ON public.buildings_narratives USING btree (narrative_id);
 
 
 --
@@ -3666,6 +3960,27 @@ CREATE INDEX index_buildings_on_parent_id ON public.buildings USING btree (paren
 --
 
 CREATE INDEX index_buildings_on_reviewed_by_id ON public.buildings USING btree (reviewed_by_id);
+
+
+--
+-- Name: index_buildings_videos_on_building_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_buildings_videos_on_building_id ON public.buildings_videos USING btree (building_id);
+
+
+--
+-- Name: index_buildings_videos_on_building_id_and_video_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_buildings_videos_on_building_id_and_video_id ON public.buildings_videos USING btree (building_id, video_id);
+
+
+--
+-- Name: index_buildings_videos_on_video_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_buildings_videos_on_video_id ON public.buildings_videos USING btree (video_id);
 
 
 --
@@ -3728,7 +4043,7 @@ CREATE INDEX index_census_1850_records_on_reviewed_by_id ON public.census_1850_r
 -- Name: index_census_1850_records_on_searchable_name; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_census_1850_records_on_searchable_name ON public.census_1850_records USING gist (searchable_name public.gist_trgm_ops);
+CREATE INDEX index_census_1850_records_on_searchable_name ON public.census_1850_records USING gin (searchable_name public.gin_trgm_ops);
 
 
 --
@@ -3770,7 +4085,7 @@ CREATE INDEX index_census_1860_records_on_reviewed_by_id ON public.census_1860_r
 -- Name: index_census_1860_records_on_searchable_name; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_census_1860_records_on_searchable_name ON public.census_1860_records USING gist (searchable_name public.gist_trgm_ops);
+CREATE INDEX index_census_1860_records_on_searchable_name ON public.census_1860_records USING gin (searchable_name public.gin_trgm_ops);
 
 
 --
@@ -3812,7 +4127,7 @@ CREATE INDEX index_census_1870_records_on_reviewed_by_id ON public.census_1870_r
 -- Name: index_census_1870_records_on_searchable_name; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_census_1870_records_on_searchable_name ON public.census_1870_records USING gist (searchable_name public.gist_trgm_ops);
+CREATE INDEX index_census_1870_records_on_searchable_name ON public.census_1870_records USING gin (searchable_name public.gin_trgm_ops);
 
 
 --
@@ -3854,7 +4169,7 @@ CREATE INDEX index_census_1880_records_on_reviewed_by_id ON public.census_1880_r
 -- Name: index_census_1880_records_on_searchable_name; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_census_1880_records_on_searchable_name ON public.census_1880_records USING gist (searchable_name public.gist_trgm_ops);
+CREATE INDEX index_census_1880_records_on_searchable_name ON public.census_1880_records USING gin (searchable_name public.gin_trgm_ops);
 
 
 --
@@ -3883,6 +4198,13 @@ CREATE INDEX index_census_1900_records_on_locality_id ON public.census_1900_reco
 --
 
 CREATE INDEX index_census_1900_records_on_person_id ON public.census_1900_records USING btree (person_id);
+
+
+--
+-- Name: index_census_1900_records_on_searchable_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_census_1900_records_on_searchable_name ON public.census_1900_records USING gin (searchable_name public.gin_trgm_ops);
 
 
 --
@@ -3928,6 +4250,13 @@ CREATE INDEX index_census_1910_records_on_reviewed_by_id ON public.census_1910_r
 
 
 --
+-- Name: index_census_1910_records_on_searchable_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_census_1910_records_on_searchable_name ON public.census_1910_records USING gin (searchable_name public.gin_trgm_ops);
+
+
+--
 -- Name: index_census_1920_records_on_building_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3946,6 +4275,13 @@ CREATE INDEX index_census_1920_records_on_locality_id ON public.census_1920_reco
 --
 
 CREATE INDEX index_census_1920_records_on_person_id ON public.census_1920_records USING btree (person_id);
+
+
+--
+-- Name: index_census_1920_records_on_searchable_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_census_1920_records_on_searchable_name ON public.census_1920_records USING gin (searchable_name public.gin_trgm_ops);
 
 
 --
@@ -3998,6 +4334,13 @@ CREATE INDEX index_census_1930_records_on_reviewed_by_id ON public.census_1930_r
 
 
 --
+-- Name: index_census_1930_records_on_searchable_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_census_1930_records_on_searchable_name ON public.census_1930_records USING gin (searchable_name public.gin_trgm_ops);
+
+
+--
 -- Name: index_census_1940_records_on_building_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4033,6 +4376,13 @@ CREATE INDEX index_census_1940_records_on_reviewed_by_id ON public.census_1940_r
 
 
 --
+-- Name: index_census_1940_records_on_searchable_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_census_1940_records_on_searchable_name ON public.census_1940_records USING gin (searchable_name public.gin_trgm_ops);
+
+
+--
 -- Name: index_census_1950_records_on_building_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4065,6 +4415,13 @@ CREATE INDEX index_census_1950_records_on_person_id ON public.census_1950_record
 --
 
 CREATE INDEX index_census_1950_records_on_reviewed_by_id ON public.census_1950_records USING btree (reviewed_by_id);
+
+
+--
+-- Name: index_census_1950_records_on_searchable_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_census_1950_records_on_searchable_name ON public.census_1950_records USING gin (searchable_name public.gin_trgm_ops);
 
 
 --
@@ -4166,6 +4523,62 @@ CREATE INDEX index_map_overlays_on_locality_id ON public.map_overlays USING btre
 
 
 --
+-- Name: index_narratives_on_created_by_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_narratives_on_created_by_id ON public.narratives USING btree (created_by_id);
+
+
+--
+-- Name: index_narratives_on_reviewed_by_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_narratives_on_reviewed_by_id ON public.narratives USING btree (reviewed_by_id);
+
+
+--
+-- Name: index_narratives_people_on_narrative_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_narratives_people_on_narrative_id ON public.narratives_people USING btree (narrative_id);
+
+
+--
+-- Name: index_narratives_people_on_narrative_id_and_person_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_narratives_people_on_narrative_id_and_person_id ON public.narratives_people USING btree (narrative_id, person_id);
+
+
+--
+-- Name: index_narratives_people_on_person_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_narratives_people_on_person_id ON public.narratives_people USING btree (person_id);
+
+
+--
+-- Name: index_people_videos_on_person_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_people_videos_on_person_id ON public.people_videos USING btree (person_id);
+
+
+--
+-- Name: index_people_videos_on_person_id_and_video_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_people_videos_on_person_id_and_video_id ON public.people_videos USING btree (person_id, video_id);
+
+
+--
+-- Name: index_people_videos_on_video_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_people_videos_on_video_id ON public.people_videos USING btree (video_id);
+
+
+--
 -- Name: index_person_names_on_person_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4176,7 +4589,7 @@ CREATE INDEX index_person_names_on_person_id ON public.person_names USING btree 
 -- Name: index_person_names_on_searchable_name; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_person_names_on_searchable_name ON public.person_names USING gist (searchable_name public.gist_trgm_ops);
+CREATE INDEX index_person_names_on_searchable_name ON public.person_names USING gin (searchable_name public.gin_trgm_ops);
 
 
 --
@@ -4292,6 +4705,20 @@ CREATE INDEX index_versions_on_item_type_and_item_id ON public.versions USING bt
 
 
 --
+-- Name: index_videos_on_created_by_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_videos_on_created_by_id ON public.videos USING btree (created_by_id);
+
+
+--
+-- Name: index_videos_on_reviewed_by_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_videos_on_reviewed_by_id ON public.videos USING btree (reviewed_by_id);
+
+
+--
 -- Name: index_vocabularies_on_machine_name; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4352,6 +4779,14 @@ ALTER TABLE ONLY public.census_1850_records
 
 
 --
+-- Name: videos fk_rails_168a3e4087; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.videos
+    ADD CONSTRAINT fk_rails_168a3e4087 FOREIGN KEY (created_by_id) REFERENCES public.users(id);
+
+
+--
 -- Name: census_1860_records fk_rails_174c870b95; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4400,6 +4835,14 @@ ALTER TABLE ONLY public.bulk_updated_records
 
 
 --
+-- Name: audios_buildings fk_rails_23fadd013c; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.audios_buildings
+    ADD CONSTRAINT fk_rails_23fadd013c FOREIGN KEY (building_id) REFERENCES public.buildings(id);
+
+
+--
 -- Name: census_1860_records fk_rails_25e3e35798; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4421,6 +4864,14 @@ ALTER TABLE ONLY public.census_1950_records
 
 ALTER TABLE ONLY public.census_1930_records
     ADD CONSTRAINT fk_rails_2dae75f911 FOREIGN KEY (locality_id) REFERENCES public.localities(id);
+
+
+--
+-- Name: narratives_people fk_rails_34e8fcde8b; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.narratives_people
+    ADD CONSTRAINT fk_rails_34e8fcde8b FOREIGN KEY (person_id) REFERENCES public.people(id);
 
 
 --
@@ -4493,6 +4944,14 @@ ALTER TABLE ONLY public.census_1930_records
 
 ALTER TABLE ONLY public.census_1900_records
     ADD CONSTRAINT fk_rails_47391b920d FOREIGN KEY (created_by_id) REFERENCES public.users(id);
+
+
+--
+-- Name: audios fk_rails_49407cbc67; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.audios
+    ADD CONSTRAINT fk_rails_49407cbc67 FOREIGN KEY (reviewed_by_id) REFERENCES public.users(id);
 
 
 --
@@ -4592,11 +5051,27 @@ ALTER TABLE ONLY public.census_1850_records
 
 
 --
+-- Name: audios fk_rails_5e3db79a87; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.audios
+    ADD CONSTRAINT fk_rails_5e3db79a87 FOREIGN KEY (created_by_id) REFERENCES public.users(id);
+
+
+--
 -- Name: terms fk_rails_6428f843c5; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.terms
     ADD CONSTRAINT fk_rails_6428f843c5 FOREIGN KEY (vocabulary_id) REFERENCES public.vocabularies(id);
+
+
+--
+-- Name: buildings_videos fk_rails_6a2a310f59; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.buildings_videos
+    ADD CONSTRAINT fk_rails_6a2a310f59 FOREIGN KEY (video_id) REFERENCES public.videos(id);
 
 
 --
@@ -4656,6 +5131,14 @@ ALTER TABLE ONLY public.census_1880_records
 
 
 --
+-- Name: people_videos fk_rails_8183e99f47; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.people_videos
+    ADD CONSTRAINT fk_rails_8183e99f47 FOREIGN KEY (video_id) REFERENCES public.videos(id);
+
+
+--
 -- Name: census_1870_records fk_rails_8536e65a56; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4672,6 +5155,14 @@ ALTER TABLE ONLY public.map_overlays
 
 
 --
+-- Name: narratives_people fk_rails_864a92260f; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.narratives_people
+    ADD CONSTRAINT fk_rails_864a92260f FOREIGN KEY (narrative_id) REFERENCES public.narratives(id);
+
+
+--
 -- Name: annotations fk_rails_88814c38bd; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4685,6 +5176,14 @@ ALTER TABLE ONLY public.annotations
 
 ALTER TABLE ONLY public.professions
     ADD CONSTRAINT fk_rails_8a459f18f0 FOREIGN KEY (profession_subgroup_id) REFERENCES public.profession_subgroups(id);
+
+
+--
+-- Name: videos fk_rails_8cfa78eceb; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.videos
+    ADD CONSTRAINT fk_rails_8cfa78eceb FOREIGN KEY (reviewed_by_id) REFERENCES public.users(id);
 
 
 --
@@ -4736,6 +5235,14 @@ ALTER TABLE ONLY public.census_1940_records
 
 
 --
+-- Name: people_videos fk_rails_a2ccfc7446; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.people_videos
+    ADD CONSTRAINT fk_rails_a2ccfc7446 FOREIGN KEY (person_id) REFERENCES public.people(id);
+
+
+--
 -- Name: buildings fk_rails_a48daee42b; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4773,6 +5280,22 @@ ALTER TABLE ONLY public.addresses
 
 ALTER TABLE ONLY public.census_1920_records
     ADD CONSTRAINT fk_rails_ac957fdb8c FOREIGN KEY (created_by_id) REFERENCES public.users(id);
+
+
+--
+-- Name: audios_people fk_rails_b47cac538e; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.audios_people
+    ADD CONSTRAINT fk_rails_b47cac538e FOREIGN KEY (person_id) REFERENCES public.people(id);
+
+
+--
+-- Name: buildings_videos fk_rails_b55dc50b22; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.buildings_videos
+    ADD CONSTRAINT fk_rails_b55dc50b22 FOREIGN KEY (building_id) REFERENCES public.buildings(id);
 
 
 --
@@ -4816,6 +5339,14 @@ ALTER TABLE ONLY public.census_1900_records
 
 
 --
+-- Name: buildings_narratives fk_rails_c972f4349e; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.buildings_narratives
+    ADD CONSTRAINT fk_rails_c972f4349e FOREIGN KEY (building_id) REFERENCES public.buildings(id);
+
+
+--
 -- Name: photographs fk_rails_c9d92c9b36; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4829,6 +5360,22 @@ ALTER TABLE ONLY public.photographs
 
 ALTER TABLE ONLY public.census_1920_records
     ADD CONSTRAINT fk_rails_cba05634b9 FOREIGN KEY (building_id) REFERENCES public.buildings(id);
+
+
+--
+-- Name: narratives fk_rails_ccc494e6a8; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.narratives
+    ADD CONSTRAINT fk_rails_ccc494e6a8 FOREIGN KEY (created_by_id) REFERENCES public.users(id);
+
+
+--
+-- Name: narratives fk_rails_cd47849580; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.narratives
+    ADD CONSTRAINT fk_rails_cd47849580 FOREIGN KEY (reviewed_by_id) REFERENCES public.users(id);
 
 
 --
@@ -4888,6 +5435,22 @@ ALTER TABLE ONLY public.flags
 
 
 --
+-- Name: audios_people fk_rails_dccfd2a82e; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.audios_people
+    ADD CONSTRAINT fk_rails_dccfd2a82e FOREIGN KEY (audio_id) REFERENCES public.audios(id);
+
+
+--
+-- Name: buildings_narratives fk_rails_e44861af48; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.buildings_narratives
+    ADD CONSTRAINT fk_rails_e44861af48 FOREIGN KEY (narrative_id) REFERENCES public.narratives(id);
+
+
+--
 -- Name: photographs fk_rails_e6b14fa648; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4909,6 +5472,14 @@ ALTER TABLE ONLY public.census_1870_records
 
 ALTER TABLE ONLY public.census_1880_records
     ADD CONSTRAINT fk_rails_ec91bb0298 FOREIGN KEY (reviewed_by_id) REFERENCES public.users(id);
+
+
+--
+-- Name: audios_buildings fk_rails_edfb751506; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.audios_buildings
+    ADD CONSTRAINT fk_rails_edfb751506 FOREIGN KEY (audio_id) REFERENCES public.audios(id);
 
 
 --
@@ -5218,6 +5789,12 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20240130130704'),
 ('20240131130547'),
 ('20240317204603'),
+('20240525211843'),
+('20240525211855'),
+('20240525212124'),
+('20240527193323'),
+('20240527212417'),
+('20240603010233'),
 ('4'),
 ('8'),
 ('9');
