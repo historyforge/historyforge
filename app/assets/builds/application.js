@@ -54664,9 +54664,13 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var highlight = (id) => (dispatch) => {
     dispatch({ type: "BUILDING_HIGHLIGHT", id });
   };
-  var forgeInit = () => (dispatch) => __async(void 0, null, function* () {
+  var forgeInit = () => (dispatch, getState) => __async(void 0, null, function* () {
     yield dispatch({ type: "FORGE_INIT" });
-    dispatch(setYear());
+    if (getState().search.params.buildings) {
+      dispatch(load());
+    } else {
+      dispatch(setYear());
+    }
   });
   var setYear = (proposedYear) => (dispatch, getState) => {
     let year = proposedYear || getState().search.params.people;
@@ -55713,12 +55717,12 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     return state;
   };
   function forgeInit2(state) {
-    var _a;
-    if ((_a = state.params) == null ? void 0 : _a.people) {
+    var _a, _b;
+    if (((_a = state.params) == null ? void 0 : _a.people) || ((_b = state.params) == null ? void 0 : _b.buildings)) {
       return state;
     }
     const { params } = searchStorage;
-    if (params == null ? void 0 : params.people) {
+    if ((params == null ? void 0 : params.people) && !(params == null ? void 0 : params.buildings)) {
       return __spreadProps(__spreadValues({}, state), { year: params.people, params });
     }
     return state;

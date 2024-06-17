@@ -62,12 +62,12 @@ export const search = function(state = {}, action) {
 }
 
 function forgeInit(state) {
-  if (state.params?.people) {
+  if (state.params?.people || state.params?.buildings) {
     return state; // forgeFiltersLoaded will set the filters once they've loaded
   }
 
   const { params } = searchStorage;
-  if (params?.people) {
+  if (params?.people && !params?.buildings) {
     return { ...state, year: params.people, params };
   }
   return state;

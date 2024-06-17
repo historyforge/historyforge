@@ -7,7 +7,7 @@ import {forgeInit, getBuildingsNearMe, reset, resetMap} from './actions'
 import {useAppDispatch, useAppSelector} from './hooks'
 import {Forges} from "./Forges";
 
-const App = (): React.ReactNode => {
+const App = () => {
     const [sidebarLeft, setSidebarLeft] = useState(false)
     const [sidebarRight, setSidebarRight] = useState(false);
     const [forgePickerOpen, setForgePickerOpen] = useState(false);
@@ -53,7 +53,7 @@ const App = (): React.ReactNode => {
 
     return (
         <div className="map-wrap">
-            <Map/>
+            <Map />
             <button id="near-me-button" onClick={centerOnMe} className="btn btn-primary">
                 <i className="fa fa-bullseye" />
             </button>

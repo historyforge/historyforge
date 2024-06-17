@@ -4,13 +4,17 @@ export const highlight = (id: number) => dispatch => {
   dispatch({ type: 'BUILDING_HIGHLIGHT', id })
 }
 
-export const forgeInit = () => async dispatch => {
+export const forgeInit = () => async (dispatch, getState) => {
   await dispatch({ type: "FORGE_INIT" });
-  dispatch(setYear());
+  if (getState().search.params.buildings) {
+    dispatch(load());
+  } else {
+    dispatch(setYear());
+  }
 }
 
 export const setYear = (proposedYear?: number) => (dispatch, getState) => {
-  let year = proposedYear || getState().search.params.people
+  let year = proposedYear || (getState().search.params.people)
   if (year) {
     year = parseInt(year)
     dispatch({ type: 'FORGE_SET_YEAR', year })
