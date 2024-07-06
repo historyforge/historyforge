@@ -27,9 +27,10 @@ p.lead You propose to merge building ##{@source.id} #{@source.name} into buildin
               tr
                 th Age in #{row.year - 1}
                 td= row.age
-              tr
-                th Marital Status
-                td= row.marital_status
+              - if row.respond_to?(:marital_status)
+                tr
+                  th Marital Status
+                  td= row.marital_status
               tr
                 th Occupation
                 td= row.occupation
@@ -77,7 +78,7 @@ p.lead You propose to merge building ##{@source.id} #{@source.name} into buildin
                 td= link_to 'View', row
 
 .card-footer
-  = form_with url: building_merges_url(@source), data: { remote: false } do |form|
-    = hidden_field_tag 'merge_id', @target.id
+  = form_with url: building_merges_url(@target), data: { remote: false } do |form|
+    = hidden_field_tag 'merge_id', @source.id
     .d-flex.justify-content-center
       = form.submit 'Yes Please', class: 'btn btn-danger btn-lg ml-auto mr-auto'

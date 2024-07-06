@@ -16,14 +16,11 @@ class BuildAddressHistory
     addresses = renumbered_addresses_for(building)
     return unless addresses
 
-    latest_address = residents_of(building)
-                       .map { |record| matching_address(addresses, record) }
-                       .compact
-                       .first
+    latest_address = residents_of(building).filter_map { |record| matching_address(addresses, record) }.first
     return unless latest_address
     return if latest_address.year
 
-    latest_address.update(year: year)
+    latest_address.update(year:)
   end
 
   def residents_of(building)

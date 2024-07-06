@@ -21,8 +21,8 @@ module Buildings
 
     def load_and_authorize
       authorize! :merge, Building
-      @target = Building.find(params[:building_id])
       @source = Building.find(params[:merge_id])
+      @target = Building.find(params[:building_id])
     end
   end
 end
