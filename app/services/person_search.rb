@@ -115,6 +115,6 @@ class PersonSearch < SearchQueryBuilder
     return false if joins_values.blank?
     return joins_values.any? { |v| v == :names } if joins_values.first.is_a?(Symbol)
 
-    joins_values.any? { |v| v.reflections.any? { |r| r.name == :names } }
+    joins_values.any? { |v| !v.is_a?(String) && v.reflections.any? { |r| r.name == :names } }
   end
 end
