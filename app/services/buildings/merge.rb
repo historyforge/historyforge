@@ -32,6 +32,7 @@ module Buildings
 
         address.update(building_id: target.id, is_primary: false)
       end
+      target.addresses.reload
     end
 
     def merge_building_data
