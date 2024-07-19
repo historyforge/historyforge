@@ -27,4 +27,4 @@
         .col-sm-6.col-12.col-lg-4
           | Audio recording:
           br
-          = link_to audio.full_caption, building_audio_path(item, audio)
+          = link_to audio.full_caption, url_for([item, audio])
