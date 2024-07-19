@@ -76,6 +76,10 @@ class Ability
         can :destroy, Person
       end
 
+      if user.has_role?('content editor')
+        can :manage, [Photograph, Audio, Video, Narrative]
+      end
+
       # any logged in user can do the following things:
 
       can :update, User, id: user.id
@@ -91,8 +95,10 @@ class Ability
       #   Video
       # ]
 
-      # User generated photographs?
+      # Anyone can add user generated content
       can :create, [Photograph, Audio, Video, Narrative]
+
+      # Anyone can edit their own user generated content until it's been reviewed
       can :update, [Photograph, Audio, Video, Narrative], created_by_id: user.id, reviewed_by_id: nil
     end
   end

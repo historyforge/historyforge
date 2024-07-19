@@ -116,7 +116,7 @@
     - narratives = @building.narratives.accessible_by(current_ability)
     .card class="#{@building.description.blank? ? 'mb-3' : 'empty-card'}"
       .card-header
-        = link_to 'Add Source/Narrative', new_building_narrative_path(@building), class: 'float-right'
+        = link_to 'Add Source/Narrative', new_building_narrative_path(@building.object), class: 'float-right'
         | Sources &amp; Narratives
       - if narratives.blank?
         .card-body

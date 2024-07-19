@@ -10,7 +10,8 @@ class Role < BitmaskModel
     'Photographer',
     'Census Taker',
     'Builder',
-    'Person Record Editor'
+    'Person Record Editor',
+    'Content Editor'
   ]
 
   self.descriptions = [
@@ -20,6 +21,7 @@ class Role < BitmaskModel
     'Photographers can create and edit any photograph records.',
     'Census takers can add new census records and edit the ones they created.',
     'Builders can create and edit any building records.',
-    'Person Record editors can edit person records.'
+    'Person Record editors can edit person records.',
+    'Content Editors can do anything with user generated content.'
   ]
 end
