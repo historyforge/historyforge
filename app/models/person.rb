@@ -216,11 +216,17 @@ class Person < ApplicationRecord
     aged_records.sum { |r| r.year - (r.age || 0) } / (census_records.length || 1)
   end
 
+  # This gets called from AuditPersonConnection, which gets called when
+  # the person_id of a census record changes. The idea is to include the
+  # new census record's data in the estimated birth year and place.
   def save_with_estimates
     return if @saved_with_estimates
 
-    self.is_birth_year_estimated = true
-    self.is_pob_estimated = true
+    # If the person already has a birth year or POB and these are not
+    # estimated, then leave them alone. Otherwise if they are not already
+    # estimated, mark them as estimated.
+    self.is_birth_year_estimated ||= !birth_year
+    self.is_pob_estimated ||= !pob
     estimate_birth_year
     estimate_pob
     @saved_with_estimates = true

@@ -3,8 +3,8 @@
 module CensusRecords
   # Creates audit logs and updates estimated age and birthplace for person records.
   class AuditPersonConnection < ApplicationInteraction
-    record :person_from, class: Person, default: nil
-    record :person_to, class: Person, default: nil
+    object :person_from, class: Person, default: nil
+    object :person_to, class: Person, default: nil
     integer :year
     string :name
 
