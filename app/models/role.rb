@@ -22,6 +22,6 @@ class Role < BitmaskModel
     'Census takers can add new census records and edit the ones they created.',
     'Builders can create and edit any building records.',
     'Person Record editors can edit person records.',
-    'Content Editors can do anything with user generated content.'
+    'Content Editors can do anything with user generated content - photographs, audios, videos, and source narratives.'
   ]
 end

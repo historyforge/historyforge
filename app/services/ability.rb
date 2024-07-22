@@ -99,7 +99,7 @@ class Ability
       can :create, [Photograph, Audio, Video, Narrative]
 
       # Anyone can edit their own user generated content until it's been reviewed
-      can :update, [Photograph, Audio, Video, Narrative], created_by_id: user.id, reviewed_by_id: nil
+      can [:read, :update, :destroy], [Photograph, Audio, Video, Narrative], created_by_id: user.id, reviewed_by_id: nil
     end
   end
 
