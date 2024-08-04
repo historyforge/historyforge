@@ -14,7 +14,7 @@ class PersonGridTranslator
 
   def row_data
     records.lazy.map do |record|
-      name = if record.matched_last_name.present? && (record.first_name != record.matched_first_name || record.last_name != record.matched_last_name)
+      name = if record.matched_searchable_name.present? && (record.searchable_name != record.matched_searchable_name)
         matched_name = record.format_name(
           first_name: record.matched_first_name,
           last_name: record.matched_last_name

@@ -123,17 +123,17 @@ class Census1940Record < CensusRecord
 
   scope :in_census_order, -> { order :ward, :enum_dist, :page_number, :page_side, :line_number }
 
-  define_enumeration :marital_status, %w[S M (M)7 Wd D]
-  define_enumeration :worker_class, %w[PW GW E OA NP NW]
-  define_enumeration :race, %w[W B In Ch Jp Fil Hin Kor]
-  define_enumeration :name_suffix, %w[Jr Sr]
-  define_enumeration :name_prefix, %w[Dr Mr Mrs]
-  define_enumeration :grade_completed, %w[0 1 2 3 4 5 6 7 8 H-1 H-2 H-3 H-4 C-1 C-2 C-3 C-4 C-5]
-  define_enumeration :naturalized_alien, %w[Na Pa Al AmCit]
-  define_enumeration :war_fought, %w[W S SW R]
-  define_enumeration :no_work_reason, %w[H S U Ot]
-  define_enumeration :deduction_rate, %w[1 2 3]
-  define_enumeration :wages_or_salary, %w[5000+]
+  define_enumeration :marital_status, %w[S M (M)7 Wd D].freeze
+  define_enumeration :worker_class, %w[PW GW E OA NP NW].freeze
+  define_enumeration :race, %w[W B In Ch Jp Fil Hin Kor].freeze
+  define_enumeration :name_suffix, %w[Jr Sr].freeze
+  define_enumeration :name_prefix, %w[Dr Mr Mrs].freeze
+  define_enumeration :grade_completed, %w[0 1 2 3 4 5 6 7 8 H-1 H-2 H-3 H-4 C-1 C-2 C-3 C-4 C-5].freeze
+  define_enumeration :naturalized_alien, %w[Na Pa Al AmCit].freeze
+  define_enumeration :war_fought, %w[W S SW R].freeze
+  define_enumeration :no_work_reason, %w[H S U Ot].freeze
+  define_enumeration :deduction_rate, %w[1 2 3].freeze
+  define_enumeration :wages_or_salary, %w[5000+].freeze
 
   auto_upcase_attributes :occupation_code, :usual_occupation_code,
                          :usual_industry_code, :worker_class_code, :usual_worker_class_code

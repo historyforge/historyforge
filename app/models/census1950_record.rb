@@ -117,15 +117,15 @@ class Census1950Record < CensusRecord
 
   scope :in_census_order, -> { order :ward, :enum_dist, :page_number, :page_side, :line_number }
 
-  define_enumeration :marital_status, %w[Nev Mar Wd D Sep]
-  define_enumeration :race, %w[W B In Ch Jp Fil]
-  define_enumeration :name_suffix, %w[Jr Sr]
-  define_enumeration :name_prefix, %w[Dr Mr Mrs]
-  define_enumeration :activity_last_week, %w[Wk H U Ot Inmate]
-  define_enumeration :worker_class, %w[P G O NP]
-  define_enumeration :last_worker_class, %w[P G O NP]
-  define_enumeration :naturalized_alien, %w[Y N AP]
-  define_enumeration :highest_grade, %w[0 K S1 S2 S3 S4 S5 S6 S7 S8 S9 S10 S11 S12 C1 C2 C3 C4 C5]
+  define_enumeration :marital_status, %w[Nev Mar Wd D Sep].freeze
+  define_enumeration :race, %w[W B In Ch Jp Fil].freeze
+  define_enumeration :name_suffix, %w[Jr Sr].freeze
+  define_enumeration :name_prefix, %w[Dr Mr Mrs].freeze
+  define_enumeration :activity_last_week, %w[Wk H U Ot Inmate].freeze
+  define_enumeration :worker_class, %w[P G O NP].freeze
+  define_enumeration :last_worker_class, %w[P G O NP].freeze
+  define_enumeration :naturalized_alien, %w[Y N AP].freeze
+  define_enumeration :highest_grade, %w[0 K S1 S2 S3 S4 S5 S6 S7 S8 S9 S10 S11 S12 C1 C2 C3 C4 C5].freeze
 
   income_enumeration = %w[10000+]
   define_enumeration :wages_or_salary_self, income_enumeration.dup.concat(['p6'])

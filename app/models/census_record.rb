@@ -32,18 +32,18 @@ class CensusRecord < ApplicationRecord
   after_commit :audit_person_connection, if: :saved_change_to_person_id?
   after_commit :auto_generate_person_record, if: :saved_change_to_reviewed_at?
 
-  define_enumeration :page_side, %w[A B], strict: true, if: :page_side?
+  define_enumeration :page_side, %w[A B].freeze, strict: true, if: :page_side?
   define_enumeration :street_prefix, STREET_PREFIXES
   define_enumeration :street_suffix, STREET_SUFFIXES
-  define_enumeration :sex, %w[M F]
-  define_enumeration :race, %w[W B M]
-  define_enumeration :marital_status, %w[S M Wd D]
-  define_enumeration :naturalized_alien, %w[Na Pa Al]
-  define_enumeration :employment, %w[W Emp OA]
-  define_enumeration :owned_or_rented, %w[O R Neither]
-  define_enumeration :mortgage, %w[M F]
-  define_enumeration :farm_or_house, %w[F H]
-  define_enumeration :civil_war_vet, %w[UA UN CA CN]
+  define_enumeration :sex, %w[M F].freeze
+  define_enumeration :race, %w[W B M].freeze
+  define_enumeration :marital_status, %w[S M Wd D].freeze
+  define_enumeration :naturalized_alien, %w[Na Pa Al].freeze
+  define_enumeration :employment, %w[W Emp OA].freeze
+  define_enumeration :owned_or_rented, %w[O R Neither].freeze
+  define_enumeration :mortgage, %w[M F].freeze
+  define_enumeration :farm_or_house, %w[F H].freeze
+  define_enumeration :civil_war_vet, %w[UA UN CA CN].freeze
 
   scope :unhoused, -> { where(building_id: nil) }
   scope :unmatched, -> { where(person_id: nil) }

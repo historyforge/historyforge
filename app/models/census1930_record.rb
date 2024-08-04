@@ -118,11 +118,11 @@ class Census1930Record < CensusRecord
 
   scope :in_census_order, -> { order :ward, :enum_dist, :page_number, :page_side, :line_number }
 
-  define_enumeration :worker_class, %w[E W OA NP]
-  define_enumeration :war_fought, %w[WW Sp Civ Phil Box Mex]
-  define_enumeration :race, %w[W B Mex In Ch Jp Fil Hin Kor]
-  define_enumeration :name_suffix, %w[Jr Sr]
-  define_enumeration :name_prefix, %w[Dr Mr Mrs]
+  define_enumeration :worker_class, %w[E W OA NP].freeze
+  define_enumeration :war_fought, %w[WW Sp Civ Phil Box Mex].freeze
+  define_enumeration :race, %w[W B Mex In Ch Jp Fil Hin Kor].freeze
+  define_enumeration :name_suffix, %w[Jr Sr].freeze
+  define_enumeration :name_prefix, %w[Dr Mr Mrs].freeze
 
   auto_upcase_attributes :occupation_code
 

@@ -66,7 +66,7 @@ class PersonSearch < SearchQueryBuilder
     return unless has_names_joined?
 
     builder.group('person_names.id')
-    builder.select(builder.scoped.select_values, 'person_names.first_name as matched_first_name, person_names.last_name as matched_last_name, concat_ws(\' \', lower(person_names.last_name), lower(person_names.first_name)) as sortable_matched_name')
+    builder.select(builder.scoped.select_values, 'person_names.first_name as matched_first_name, person_names.last_name as matched_last_name, person_names.searchable_name as matched_searchable_name, concat_ws(\' \', lower(person_names.last_name), lower(person_names.first_name)) as sortable_matched_name')
   end
 
   def add_sorts

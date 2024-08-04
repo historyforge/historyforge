@@ -104,7 +104,7 @@ class Census1900Record < CensusRecord
 
   scope :in_census_order, -> { order :ward, :enum_dist, :page_number, :page_side, :line_number }
 
-  define_enumeration :race, %w[W B Ch Jp In]
+  define_enumeration :race, %w[W B Ch Jp In].freeze
 
   def birth_month=(value)
     value = 999 if value == 'unknown'

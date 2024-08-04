@@ -94,8 +94,8 @@ class Census1920Record < CensusRecord
 
   scope :in_census_order, -> { order :ward, :enum_dist, :page_number, :page_side, :line_number }
 
-  define_enumeration :employment, %w[W Em OA]
-  define_enumeration :race, %w[W B Mu In Ch Jp Fil Hin Kor]
+  define_enumeration :employment, %w[W Em OA].freeze
+  define_enumeration :race, %w[W B Mu In Ch Jp Fil Hin Kor].freeze
 
   COLUMNS = {
     street_house_number: 2,

@@ -40,8 +40,8 @@ class Person < ApplicationRecord
 
   attr_accessor :match_score
 
-  define_enumeration :sex, %w[M F]
-  define_enumeration :race, %w[W B Mu Mex In Ch Jp Fil Hin Kor]
+  define_enumeration :sex, %w[M F].freeze
+  define_enumeration :race, %w[W B Mu Mex In Ch Jp Fil Hin Kor].freeze
 
   has_many :census1850_records, dependent: :nullify, class_name: 'Census1850Record', inverse_of: :person
   has_many :census1860_records, dependent: :nullify, class_name: 'Census1860Record', inverse_of: :person

@@ -74,7 +74,7 @@ class Census1850Record < CensusRecord
   belongs_to :locality, inverse_of: :census1850_records
   scope :in_census_order, -> { order :ward, :page_number, :page_side, :line_number }
 
-  define_enumeration :race, %w[W B Mu]
+  define_enumeration :race, %w[W B Mu].freeze
 
   def self.translate_race_code(code)
     return 'M' if code == 'Mu'

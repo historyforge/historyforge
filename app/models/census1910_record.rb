@@ -108,8 +108,8 @@ class Census1910Record < CensusRecord
 
   scope :in_census_order, -> { order :ward, :enum_dist, :page_number, :page_side, :line_number }
 
-  define_enumeration :race, %w[W B Mu Ch Jp In]
-  define_enumeration :marital_status, %w[S M_or_M1 M2_or_M3 Wd D]
+  define_enumeration :race, %w[W B Mu Ch Jp In].freeze
+  define_enumeration :marital_status, %w[S M_or_M1 M2_or_M3 Wd D].freeze
 
   COLUMNS = {
     street_house_number: '2nd Column on the Left',

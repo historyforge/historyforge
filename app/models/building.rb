@@ -53,7 +53,7 @@ class Building < ApplicationRecord
   include Flaggable
   include Versioning
 
-  self.ignored_columns = %i[city state postal_code description]
+  self.ignored_columns += %i[city state postal_code description]
 
   has_rich_text :description
 
@@ -73,9 +73,16 @@ class Building < ApplicationRecord
   has_many :annotations, dependent: :destroy
   accepts_nested_attributes_for :annotations, allow_destroy: true, reject_if: proc { |p| p['annotation_text'].blank? }
 
-  CensusYears.each do |year|
-    has_many :"census_#{year}_records", dependent: :nullify, class_name: "Census#{year}Record"
-  end
+  has_many :census1850_records, dependent: :nullify, class_name: 'Census1850Record', inverse_of: :building
+  has_many :census1860_records, dependent: :nullify, class_name: 'Census1860Record', inverse_of: :building
+  has_many :census1870_records, dependent: :nullify, class_name: 'Census1870Record', inverse_of: :building
+  has_many :census1880_records, dependent: :nullify, class_name: 'Census1880Record', inverse_of: :building
+  has_many :census1900_records, dependent: :nullify, class_name: 'Census1900Record', inverse_of: :building
+  has_many :census1910_records, dependent: :nullify, class_name: 'Census1910Record', inverse_of: :building
+  has_many :census1920_records, dependent: :nullify, class_name: 'Census1920Record', inverse_of: :building
+  has_many :census1930_records, dependent: :nullify, class_name: 'Census1930Record', inverse_of: :building
+  has_many :census1940_records, dependent: :nullify, class_name: 'Census1940Record', inverse_of: :building
+  has_many :census1950_records, dependent: :nullify, class_name: 'Census1950Record', inverse_of: :building
   has_and_belongs_to_many :photos, class_name: 'Photograph', dependent: :nullify
   has_and_belongs_to_many :audios, dependent: :nullify
   has_and_belongs_to_many :videos, dependent: :nullify
