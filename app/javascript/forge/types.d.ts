@@ -35,6 +35,10 @@ type MapProps = {
     highlighted?: string,
     bubble?: keyable,
     layers?: Array<keyable>,
+    layer?: keyable;
+    current?: keyable;
+    editable?: boolean;
+    opacity?: number;
     deAddress?: () => {},
     address?: (id: number) => {},
     highlight?: (id: number) => {},

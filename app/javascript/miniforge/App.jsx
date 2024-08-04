@@ -1,8 +1,8 @@
 // eslint-disable-next-line no-use-before-define
-import React, { useEffect, useState } from 'react'
-import Layers from './Layers'
-import Map from './Map'
-import Buildings from './Buildings'
+import React, { useState } from 'react'
+import { Layers } from './Layers'
+import { Map } from './Map'
+import { Buildings } from './Buildings'
 import { Provider } from 'react-redux'
 import * as reducers from './reducers'
 import { buildStore } from '../forge/store'

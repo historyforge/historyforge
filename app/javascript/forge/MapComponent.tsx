@@ -59,11 +59,11 @@ function tweakMarker(id, icon, zIndex, markers) {
   marker.setZIndex(zIndex)
 }
 
-function highlightMarker(id, markers) {
+export function highlightMarker(id, markers) {
   tweakMarker(id, getHoverIcon(), 100, markers)
 }
 
-function unhighlightMarker(id, markers) {
+export function unhighlightMarker(id, markers) {
   tweakMarker(id, getStaticIcon(), 10, markers)
 }
 

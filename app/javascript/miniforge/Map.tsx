@@ -1,93 +1,133 @@
 import React, { useRef, useState, useEffect } from 'react'
-import { connect } from 'react-redux'
 import loadWMS from '../forge/wms'
-import { getMainIcon, generateMarkers, highlightMarkers, propertyChanged } from '../forge/MapComponent'
+import { getMainIcon, generateMarkers, highlightMarker, unhighlightMarker } from '../forge/MapComponent'
 import { moveBuilding, highlight } from '../forge/actions'
+import {useAppDispatch, useAppSelector} from "../forge/hooks";
 
 const google = window.google
 
-function mapOptions() {
-  return {
-    zoom: 18,
-    disableDefaultUI: true,
-    gestureHandling: 'cooperative',
-    zoomControl: true,
-    mapTypeControl: true,
-    mapTypeControlOptions: {
-      mapTypeIds: [google.maps.MapTypeId.ROADMAP, google.maps.MapTypeId.SATELLITE],
-      style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
-      position: google.maps.ControlPosition.BOTTOM_LEFT
-    },
-    streetViewControl: true,
-    fullscreenControl: true,
-    styles: [{ featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'off' }] }]
-  }
+const MAP_OPTIONS = {
+  zoom: 18,
+  disableDefaultUI: true,
+  gestureHandling: 'cooperative',
+  zoomControl: true,
+  mapTypeControl: true,
+  mapTypeControlOptions: {
+    mapTypeIds: [google.maps.MapTypeId.ROADMAP, google.maps.MapTypeId.SATELLITE],
+    style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+    position: google.maps.ControlPosition.BOTTOM_LEFT
+  },
+  streetViewControl: true,
+  fullscreenControl: true,
+  styles: [{ featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'off' }] }]
 }
 
-const Map = props => {
-  const mapRef = useRef<HTMLDivElement>(null)
-  const [map, setMap] = useState(null)
-  const [markers, setMarkers] = useState(null)
-  const [marker, setMarker] = useState(null)
-  const [prevProps, setPrevProps] = useState(props)
+
+export const Map = () => {
+  const { layeredAt, opacityAt, center, layer, opacity, current, building, highlighted, editable, buildings, layers }: MapProps = useAppSelector(state => ({ ...state.layers, ...state.buildings, ...state.search }))
+  const dispatch = useAppDispatch();
+  const toggle = (id) => dispatch({ type: 'LAYER_TOGGLE', id });
+
+  const mapRef = useRef<HTMLDivElement>(null);
+  const [map, setMap] = useState(null);
+  const [markers, setMarkers] = useState(null);
+  const [marker, setMarker] = useState(null);
+  const [currentHighlight, setCurrentHighlight] = useState(null);
+  const [lastLayeredAt, setLastLayeredAt] = useState<Date | null>(null);
+  const [lastOpacityAt, setLastOpacityAt] = useState<Date | null>(null);
 
   useEffect(() => {
     if (!map && mapRef.current) {
-      const myMap = new google.maps.Map(mapRef.current, mapOptions())
-      myMap.setCenter(props.center)
-      setMap(myMap)
+      setMap(new google.maps.Map(mapRef.current, MAP_OPTIONS));
     }
-    if (map) {
+  }, [map]);
+
+  useEffect(() => {
+    if (map && mapRef.current) {
+      map.setCenter(center)
+    }
+  }, [map, center]);
+
+  useEffect(() => {
+    if (map && mapRef.current) {
       if (!marker) {
-        setMarker(addMainMarker(map, props.current, props.editable, props.move))
-        if (!props.layer) {
+        setMarker(addMainMarker(map, current, editable, (building) => dispatch(moveBuilding(building))))
+        if (!layer) {
           const layerId = window.localStorage.getItem('miniforge-layer')
           if (layerId) {
-            props.toggle(layerId)
+            toggle(layerId)
           }
         } else {
-          addLayer(map, props.layer)
+          addLayer(map, layer)
         }
       }
+    }
+  }, [map, marker, current, editable, layer]);
+
+  useEffect(() => {
+    if (map && mapRef.current) {
       if (!markers) {
         const handlers = {
           onClick(building) {
-            props.highlight(building.id)
+            dispatch(highlight(building.id));
           },
           onMouseOver(building) {
-            props.highlight(building.id)
+            dispatch(highlight(building.id));
           },
           onMouseOut(building) {
-            props.highlight(building.id)
+            dispatch(highlight(building.id));
           }
         }
-        const nextMarkers = generateMarkers(props.buildings, handlers)
+        const nextMarkers = generateMarkers(buildings, handlers)
         addMarkers(map, Object.values(nextMarkers))
         setMarkers(nextMarkers)
       } else {
-        highlightMarkers(props, prevProps, markers)
-      }
-      if (propertyChanged(props, prevProps, 'layeredAt')) {
-        addLayer(map, props.layer)
-      }
-      if (propertyChanged(props, prevProps, 'opacityAt')) {
-        addOpacity(map, props.opacity)
+        const wasHighlighted = parseInt(currentHighlight)
+        const isHighlighted = parseInt(highlighted)
+        const buildingId = building && parseInt(building.id)
+        if (wasHighlighted && wasHighlighted !== isHighlighted) {
+          unhighlightMarker(wasHighlighted, markers);
+        }
+        if (isHighlighted) {
+          highlightMarker(isHighlighted, markers)
+          setCurrentHighlight(isHighlighted);
+        } else if (buildingId) {
+          highlightMarker(buildingId, markers)
+          setCurrentHighlight(buildingId);
+        }
       }
     }
-    setPrevProps(props)
-  })
+  }, [map, building, highlighted, currentHighlight, markers]);
 
-  return <div id="map" ref={mapRef} />
+  useEffect(() => {
+    if (mapRef.current && map && layer) {
+      if (layeredAt !== lastLayeredAt) {
+        addLayer(map, layer);
+        setLastLayeredAt(layeredAt);
+      }
+    }
+  }, [map, layer, layeredAt, lastLayeredAt]);
+
+  useEffect(() => {
+    if (mapRef.current && map && layer && opacity !== null) {
+      if (opacityAt !== lastOpacityAt) {
+        addOpacity(map, opacity);
+        setLastOpacityAt(opacityAt);
+      }
+    }
+  }, [map, layer, opacity, opacityAt]);
+
+  return <div id="map" ref={mapRef} />;
 }
 
 function addLayer(map, layer) {
-  const currentLayers = map.overlayMapTypes.getArray()
-  if (currentLayers.length) {
-    map.overlayMapTypes.removeAt(0)
-  }
+  const currentLayers = map.overlayMapTypes.getArray();
+  currentLayers.forEach((_, index) => {
+    map.overlayMapTypes.removeAt(index);
+  })
   if (layer) {
-    loadWMS(map, layer, layer.name)
-    window.localStorage.setItem('miniforge-layer', layer.id)
+    loadWMS(map, layer, "top");
+    window.localStorage.setItem("miniforge-layer", layer.id);
   }
 }
 
@@ -116,17 +156,3 @@ function addMainMarker(map, current, editable, move) {
   }
   return marker
 }
-
-const mapStateToProps = state => {
-  return { ...state.layers, ...state.buildings, ...state.search }
-}
-
-const actions = {
-  toggle: (id) => ({ type: 'LAYER_TOGGLE', id }),
-  move: moveBuilding,
-  highlight
-}
-
-const Component = connect(mapStateToProps, actions)(Map)
-
-export default Component
