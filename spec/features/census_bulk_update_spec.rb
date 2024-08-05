@@ -9,7 +9,7 @@ RSpec.describe 'Bulk updates of census records' do
     sign_in user
 
     3.times do
-      create(:census1920_record, locality: locality)
+      create(:census1920_record, locality:)
     end
 
     visit '/census/1920'

@@ -56,9 +56,16 @@ class User < ApplicationRecord
   belongs_to :group, class_name: 'UserGroup', foreign_key: :user_group_id, optional: true
   has_many :search_params, dependent: :destroy
 
-  CensusYears.each do |year|
-    has_many :"census#{year}_records", dependent: :nullify, foreign_key: :created_by_id
-  end
+  has_many :census1850_records, dependent: :nullify, class_name: 'Census1850Record', inverse_of: :created_by, foreign_key: :created_by_id
+  has_many :census1860_records, dependent: :nullify, class_name: 'Census1860Record', inverse_of: :created_by, foreign_key: :created_by_id
+  has_many :census1870_records, dependent: :nullify, class_name: 'Census1870Record', inverse_of: :created_by, foreign_key: :created_by_id
+  has_many :census1880_records, dependent: :nullify, class_name: 'Census1880Record', inverse_of: :created_by, foreign_key: :created_by_id
+  has_many :census1900_records, dependent: :nullify, class_name: 'Census1900Record', inverse_of: :created_by, foreign_key: :created_by_id
+  has_many :census1910_records, dependent: :nullify, class_name: 'Census1910Record', inverse_of: :created_by, foreign_key: :created_by_id
+  has_many :census1920_records, dependent: :nullify, class_name: 'Census1920Record', inverse_of: :created_by, foreign_key: :created_by_id
+  has_many :census1930_records, dependent: :nullify, class_name: 'Census1930Record', inverse_of: :created_by, foreign_key: :created_by_id
+  has_many :census1940_records, dependent: :nullify, class_name: 'Census1940Record', inverse_of: :created_by, foreign_key: :created_by_id
+  has_many :census1950_records, dependent: :nullify, class_name: 'Census1950Record', inverse_of: :created_by, foreign_key: :created_by_id
 
   validates :login, presence: true, length: { within: 3..40 }
   validates :login, uniqueness: { scope: :email, case_sensitive: false }

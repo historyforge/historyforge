@@ -30,9 +30,16 @@ class Locality < ApplicationRecord
   has_many :map_overlays, dependent: :restrict_with_exception
   has_and_belongs_to_many :people
 
-  CensusYears.each do |year|
-    has_many :"census#{year}_records", inverse_of: :locality, dependent: :restrict_with_exception
-  end
+  has_many :census1850_records, dependent: :nullify, class_name: 'Census1850Record', inverse_of: :locality
+  has_many :census1860_records, dependent: :nullify, class_name: 'Census1860Record', inverse_of: :locality
+  has_many :census1870_records, dependent: :nullify, class_name: 'Census1870Record', inverse_of: :locality
+  has_many :census1880_records, dependent: :nullify, class_name: 'Census1880Record', inverse_of: :locality
+  has_many :census1900_records, dependent: :nullify, class_name: 'Census1900Record', inverse_of: :locality
+  has_many :census1910_records, dependent: :nullify, class_name: 'Census1910Record', inverse_of: :locality
+  has_many :census1920_records, dependent: :nullify, class_name: 'Census1920Record', inverse_of: :locality
+  has_many :census1930_records, dependent: :nullify, class_name: 'Census1930Record', inverse_of: :locality
+  has_many :census1940_records, dependent: :nullify, class_name: 'Census1940Record', inverse_of: :locality
+  has_many :census1950_records, dependent: :nullify, class_name: 'Census1950Record', inverse_of: :locality
 
   default_scope -> { order(:name) }
 
