@@ -6,7 +6,7 @@ import {useAppDispatch, useAppSelector} from "../forge/hooks";
 
 const google = window.google
 
-const MAP_OPTIONS = {
+const getMapOptions = () => ({
   zoom: 18,
   disableDefaultUI: true,
   gestureHandling: 'cooperative',
@@ -20,11 +20,22 @@ const MAP_OPTIONS = {
   streetViewControl: true,
   fullscreenControl: true,
   styles: [{ featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'off' }] }]
-}
+});
 
 
 export const Map = () => {
-  const { layeredAt, opacityAt, center, layer, opacity, current, building, highlighted, editable, buildings, layers }: MapProps = useAppSelector(state => ({ ...state.layers, ...state.buildings, ...state.search }))
+  const {
+    layeredAt,
+    opacityAt,
+    center,
+    layer,
+    opacity,
+    current,
+    building,
+    highlighted,
+    editable,
+    buildings,
+  }: MapProps = useAppSelector(state => ({ ...state.layers, ...state.buildings, ...state.search }));
   const dispatch = useAppDispatch();
   const toggle = (id) => dispatch({ type: 'LAYER_TOGGLE', id });
 
@@ -38,7 +49,7 @@ export const Map = () => {
 
   useEffect(() => {
     if (!map && mapRef.current) {
-      setMap(new google.maps.Map(mapRef.current, MAP_OPTIONS));
+      setMap(new google.maps.Map(mapRef.current, getMapOptions()));
     }
   }, [map]);
 

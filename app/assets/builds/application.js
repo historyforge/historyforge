@@ -55973,7 +55973,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   // app/javascript/miniforge/Map.tsx
   var import_react40 = __toESM(require_react());
   var google4 = window.google;
-  var MAP_OPTIONS = {
+  var getMapOptions = () => ({
     zoom: 18,
     disableDefaultUI: true,
     gestureHandling: "cooperative",
@@ -55987,9 +55987,20 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     streetViewControl: true,
     fullscreenControl: true,
     styles: [{ featureType: "poi", elementType: "labels", stylers: [{ visibility: "off" }] }]
-  };
+  });
   var Map3 = () => {
-    const { layeredAt, opacityAt, center, layer, opacity, current, building, highlighted, editable, buildings: buildings3, layers: layers3 } = useAppSelector((state) => __spreadValues(__spreadValues(__spreadValues({}, state.layers), state.buildings), state.search));
+    const {
+      layeredAt,
+      opacityAt,
+      center,
+      layer,
+      opacity,
+      current,
+      building,
+      highlighted,
+      editable,
+      buildings: buildings3
+    } = useAppSelector((state) => __spreadValues(__spreadValues(__spreadValues({}, state.layers), state.buildings), state.search));
     const dispatch = useAppDispatch();
     const toggle = (id) => dispatch({ type: "LAYER_TOGGLE", id });
     const mapRef = (0, import_react40.useRef)(null);
@@ -56001,7 +56012,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     const [lastOpacityAt, setLastOpacityAt] = (0, import_react40.useState)(null);
     (0, import_react40.useEffect)(() => {
       if (!map3 && mapRef.current) {
-        setMap(new google4.maps.Map(mapRef.current, MAP_OPTIONS));
+        setMap(new google4.maps.Map(mapRef.current, getMapOptions()));
       }
     }, [map3]);
     (0, import_react40.useEffect)(() => {
