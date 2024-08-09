@@ -135,10 +135,18 @@ class Person < ApplicationRecord
     true
   end
 
+  # @param record [Class<CensusRecord>]
+  # @return [PersonName]
   def add_name_from(record)
     return if names.any? { |name| name.same_name_as?(record) }
 
-    names.build(first_name: record.first_name, last_name: record.last_name)
+    names.build(
+      first_name: record.first_name,
+      last_name: record.last_name,
+      middle_name: record.middle_name,
+      name_prefix: record.name_prefix,
+      name_suffix: record.name_suffix
+    )
   end
 
   def add_name_from!(record)
@@ -255,7 +263,8 @@ class Person < ApplicationRecord
   end
 
   def ensure_primary_name
-    matching_name_variant = names.detect { |name| name.same_name_as?(self) }
-    names.build(first_name:, last_name:) if matching_name_variant.blank?
+    return if names.detect { |name| name.same_name_as?(self) }
+
+    names.build(first_name:, last_name:, middle_name:, name_prefix:, name_suffix:)
   end
 end

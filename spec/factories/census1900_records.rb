@@ -89,7 +89,6 @@ FactoryBot.define do
     county { 'Tompkins' }
     state { 'New York' }
     sequence(:first_name) { |n| "First#{n}" }
-    sequence(:middle_name) { |n| "Middle#{n}" }
     sequence(:last_name) { |n| "Last#{n}" }
     sex { 'M' }
     race { 'W' }

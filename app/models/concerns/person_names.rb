@@ -27,11 +27,11 @@ module PersonNames
     end
 
     def name
-      [name_prefix, first_name, middle_name, last_name, name_suffix].select(&:present?).join(' ')
+      [name_prefix, first_name, middle_name, last_name, name_suffix].compact_blank.join(' ')
     end
 
     def previous_name
-      [name_prefix_was, first_name_was, middle_name_was, last_name_was, name_suffix_was].select(&:present?).join(' ')
+      [name_prefix_was, first_name_was, middle_name_was, last_name_was, name_suffix_was].compact_blank.join(' ')
     end
 
     private

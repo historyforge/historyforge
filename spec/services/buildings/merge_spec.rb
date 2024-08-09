@@ -48,7 +48,7 @@ module Buildings
       end
 
       it 'moves the resident from the source building to the target building' do
-        expect(target.census_1910_records).to include(resident)
+        expect(target.census1910_records).to include(resident)
       end
     end
 

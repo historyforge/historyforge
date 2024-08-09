@@ -21,7 +21,7 @@ module Buildings
     private
 
     def load_for_year(year)
-      records = building_for_year(year).send("census_#{year}_records")
+      records = building_for_year(year).send("census#{year}_records")
       records = records.reviewed if reviewed_only
       records = records.ransack(filters).result if filters
       records.in_census_order

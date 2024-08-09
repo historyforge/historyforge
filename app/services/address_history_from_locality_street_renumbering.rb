@@ -29,7 +29,7 @@ class AddressHistoryFromLocalityStreetRenumbering
   end
 
   def census_associations
-    census_years.map { |y| "census_#{y}_records" }
+    census_years.map { |y| "census#{y}_records" }
   end
 
   def census_years

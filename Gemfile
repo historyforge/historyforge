@@ -70,6 +70,7 @@ group :development do
 end
 
 group :development, :test do
+  gem 'amazing_print'
   gem 'bullet'
   gem 'capybara'
   gem 'factory_bot_rails'

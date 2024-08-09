@@ -53,6 +53,8 @@ module Buildings
       @is_building = true
       @building_id = record.id
       address = record.address
+      return if address.blank?
+
       @street_house_number = address.house_number
       @street_prefix = address.prefix
       @street_name = address.name

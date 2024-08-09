@@ -32,11 +32,15 @@ require 'rails_helper'
 
 RSpec.describe Person do
   context 'when creating a record' do
-    let(:person) { build(:person) }
+    let(:person) { build(:person, middle_name: 'Jimmy', name_suffix: 'Jr', name_prefix: 'Dr') }
 
-    it 'automatically creates a name variant with first and last name' do
-      expect(person.names.first.first_name).to eq person.first_name
-      expect(person.names.first.last_name).to eq person.last_name
+    it 'automatically creates a name variant with all the name parts' do
+      primary_name = person.names.first
+      expect(primary_name.first_name).to eq person.first_name
+      expect(primary_name.last_name).to eq person.last_name
+      expect(primary_name.middle_name).to eq person.middle_name
+      expect(primary_name.name_prefix).to eq person.name_prefix
+      expect(primary_name.name_suffix).to eq person.name_suffix
     end
   end
 

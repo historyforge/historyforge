@@ -84,6 +84,7 @@ GEM
       airbrake-ruby (~> 6.0)
     airbrake-ruby (6.2.1)
       rbtree3 (~> 0.6)
+    amazing_print (1.6.0)
     ancestry (4.3.3)
       activerecord (>= 5.2.6)
     annotate (3.2.0)
@@ -447,6 +448,7 @@ DEPENDENCIES
   activerecord-precounter
   acts_as_list
   airbrake
+  amazing_print
   ancestry
   annotate
   ar_doc_store

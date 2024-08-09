@@ -109,8 +109,8 @@ class Building < ApplicationRecord
     join_clause = []
     where_clause = []
     CensusYears.each do |year|
-      join_clause << "LEFT OUTER JOIN census_#{year}_records ON census_#{year}_records.building_id=buildings.id"
-      where_clause << "census_#{year}_records IS NULL"
+      join_clause << "LEFT OUTER JOIN census#{year}_records ON census_#{year}_records.building_id=buildings.id"
+      where_clause << "census#{year}_records IS NULL"
     end
     joins(join_clause.join(' '))
       .where(where_clause.join(' AND '))

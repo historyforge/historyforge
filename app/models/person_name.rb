@@ -56,15 +56,14 @@ class PersonName < ApplicationRecord
     end
   end
 
-  # @param record [Person]
+  # @param record [Person, PersonName]
   # @ return [Boolean]
   def same_name_as?(record)
-    record.searchable_name == searchable_name
-    # (record.first_name == first_name &&
-    #   record.last_name == last_name &&
-    #   record.middle_name == middle_name &&
-    #   record.name_prefix == name_prefix &&
-    #   record.name_suffix == name_suffix) || record.name == name
+    (record.first_name == first_name &&
+      record.last_name == last_name &&
+      record.middle_name == middle_name &&
+      record.name_prefix == name_prefix &&
+      record.name_suffix == name_suffix) || record.name == name
   end
 
   def audit_new_name

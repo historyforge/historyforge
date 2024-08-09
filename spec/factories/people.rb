@@ -31,7 +31,6 @@
 FactoryBot.define do
   factory(:person) do
     sequence(:first_name) { |n| "First#{n}" }
-    sequence(:middle_name) { |n| "Middle#{n}" }
     sequence(:last_name) { |n| "Last#{n}" }
     sex { 'M' }
     race { 'W' }
@@ -41,7 +40,9 @@ FactoryBot.define do
         name_attrs = {
           first_name: evaluator.first_name,
           middle_name: evaluator.middle_name,
-          last_name: evaluator.last_name
+          last_name: evaluator.last_name,
+          name_prefix: evaluator.name_prefix,
+          name_suffix: evaluator.name_suffix
         }.compact_blank
         person.names << FactoryBot.build(:person_name, is_primary: true, **name_attrs)
       elsif evaluator.name

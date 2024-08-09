@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-export const highlight = (id: number) => dispatch => {
+export const highlight = (id: number | null) => dispatch => {
   dispatch({ type: 'BUILDING_HIGHLIGHT', id })
 }
 

@@ -56126,19 +56126,20 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
 
   // app/javascript/miniforge/Buildings.jsx
   var import_react41 = __toESM(require_react());
-  var Building2 = ({ id, street_address, highlight: highlight2, highlighted }) => /* @__PURE__ */ import_react41.default.createElement("div", {
-    className: `list-group-item building ${highlighted === id && "active"}`,
-    onMouseOver: () => highlight2(id),
-    onMouseOut: () => highlight2(null)
-  }, /* @__PURE__ */ import_react41.default.createElement("p", null, /* @__PURE__ */ import_react41.default.createElement("a", {
-    href: `/buildings/${id}`,
-    title: "Open building record"
-  }, street_address)));
-  var Buildings = () => {
+  var Building2 = ({ id, street_address, highlighted }) => {
     const dispatch = useAppDispatch();
+    return /* @__PURE__ */ import_react41.default.createElement("div", {
+      className: `list-group-item building ${highlighted === id && "active"}`,
+      onMouseOver: () => dispatch(highlight(id)),
+      onMouseOut: () => dispatch(highlight(null))
+    }, /* @__PURE__ */ import_react41.default.createElement("p", null, /* @__PURE__ */ import_react41.default.createElement("a", {
+      href: `/buildings/${id}`,
+      title: "Open building record"
+    }, street_address)));
+  };
+  var Buildings = () => {
     const props = useAppSelector((state) => __spreadValues({}, state.buildings));
     const { buildings: buildings3, highlighted } = props;
-    const highlight2 = (building) => dispatch(highlight(building.id));
     return buildings3 ? /* @__PURE__ */ import_react41.default.createElement("div", {
       id: "building-list"
     }, /* @__PURE__ */ import_react41.default.createElement("h3", null, "Nearby Buildings"), /* @__PURE__ */ import_react41.default.createElement("div", {
@@ -56146,8 +56147,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     }, buildings3.map((building, i2) => /* @__PURE__ */ import_react41.default.createElement(Building2, __spreadProps(__spreadValues({
       key: i2
     }, building), {
-      highlighted,
-      highlight: highlight2
+      highlighted
     }))))) : null;
   };
 

@@ -24,9 +24,9 @@ RSpec.describe 'User management' do
     fill_in 'Email', with: email
     fill_in 'Username', with: Faker::FunnyName.name
     click_on 'Send an invitation'
+    expect(page).to have_content('Users')
     expect(page).to have_content "An invitation email has been sent to #{email}."
     expect(ActionMailer::Base.deliveries).to_not be_empty
-    expect(page).to have_content 'Users'
   end
 
   scenario 'administrator uses filters on users page' do
