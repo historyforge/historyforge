@@ -15,6 +15,9 @@
   .row.mb-3
     .col-12.col-lg-7
       = @asset.story
+      h3 Source
+      = @asset.sources
+
       p
         - if can?(:update, @asset)
           = link_to 'Edit Narrative', [:edit, @asset], class: 'btn btn-light'
@@ -35,7 +38,6 @@
       - if @asset.people.present?
         h4 People
         p= @asset.people.map { |person| link_to(person.name, person) }.join('<br />').html_safe
-
   - if can?(:review, @asset) && !@asset.reviewed?
     - if @asset.errors.any?
       = review_error_messages_for @asset

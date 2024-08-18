@@ -25,7 +25,7 @@ class NarrativesController < MediaController
   def resource_params
     params
       .require(:narrative)
-      .permit :source, :story, :weight,
+      .permit :sources, :story, :weight,
               { building_ids: [], person_ids: [] },
               :date_text, :date_start, :date_end, :date_type,
               :notes,

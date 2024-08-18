@@ -4,7 +4,7 @@
   - if can?(:update, narrative)
     = link_to 'Edit', [:edit, narrative], class: 'btn btn-sm btn-light float-right'
   = narrative.story
-  p Source: #{narrative.source}
+  = narrative.sources
   - if narrative.date_text
     p= narrative.date_text
   /p= "Submitted by #{record.created_by.login} on #{record.created_at.to_s(:long)}"

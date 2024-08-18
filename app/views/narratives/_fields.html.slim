@@ -5,7 +5,7 @@
       script src= "https://unpkg.com/trix@2.0.0/dist/trix.umd.min.js"
     = form.input :story do
       = form.input_field :story, as: :rich_text_area
-    = form.input :source, as: :text, label: 'Source Citation'
+    = form.input :sources, as: :rich_text_area, label: 'Source Citations'
     - if can?(:review, form.object)
       = form.input :weight, hint: 'The lower the number, the higher up in the list it appears on building and person pages.'
 

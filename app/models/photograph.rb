@@ -35,6 +35,7 @@ class Photograph < ApplicationRecord
   include Media
   include MediaDateBehavior
 
+  has_one_attached :file
   validates :file, attached: true, content_type: %w[image/jpg image/jpeg image/png]
 
   def process

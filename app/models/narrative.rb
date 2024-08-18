@@ -8,7 +8,8 @@ class Narrative < ApplicationRecord
   has_and_belongs_to_many :people
 
   has_rich_text :story
-  validates :story, :source, presence: true
+  has_rich_text :sources
+  validates :story, :sources, presence: true
 
   default_scope -> { order(:weight) }
   scope :with_attached_file, -> { with_all_rich_text }
