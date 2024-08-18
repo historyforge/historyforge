@@ -14,8 +14,13 @@
 #photograph-page
   .row.mb-3
     .col-12.col-md-6
-      audio controls="controls"
-        source src=url_for(@asset.file) type="audio/mpeg"
+      - if @asset.remote_url
+        - if @asset.remote_url.match(/youtube\.com\/watch\?v=/)
+          - src = @asset.remote_url.sub(/watch\?v=/, 'embed/')
+          iframe width="560" height="315" src=src title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen="true"
+        p= link_to 'Go here to listen', @asset.remote_url, target: :_blank
+      - else
+        p Sorry but there is no audio to be heard here :(
       p
         - if can?(:update, @asset)
           = link_to 'Edit Audio', [:edit, @asset], class: 'btn btn-light'

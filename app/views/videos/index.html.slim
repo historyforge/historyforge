@@ -13,7 +13,7 @@
 .collapse#filters
   = search_form_for @search, as: :q, builder: SimpleForm::FormBuilder do |form|
     = form.input :full_text_search, label: 'Search'
-    - if can?(:review, Audio)
+    - if can?(:review, Video)
       = form.input :unreviewed_only, as: :boolean, label: 'Show only unreviewed', wrapper: :inline_boolean
     .card-footer
       = form.submit 'Search', class: 'btn btn-primary'
@@ -27,9 +27,8 @@
     .list-group-item
       .row
         .col-xl-2.col-lg-3.col-md-3.col-sm-12.col-xs-12
-          - if item.file.attached?
-            = link_to item do
-              = thumb_for record.thumbnail
+          - if item.remote_url
+            = link_to 'Go to Video', item.remote_url, target: :_blank
           - else
             .alert.alert-danger No Video!
         .col-xl-7.col-lg-6.col-sm-12.col-xs-12.col-md-6.widest
@@ -38,7 +37,7 @@
             br
           = [item.title, item.date].select(&:present?).join('<br />').html_safe
           = item.buildings.map { |building| link_to(building.street_address, building) }.join('<br />').html_safe
-        .col-sm-12.col-xs-12.text-right
+        .col-xl-3.col-lg-3.col-sm-12.col-xs-12.text-right
           = link_to record, class: 'btn btn-xs btn-light' do
             i.fa.fa-eye
           - if can?(:update, record)

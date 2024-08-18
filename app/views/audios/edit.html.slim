@@ -9,6 +9,9 @@
 = error_messages_for @asset
 
 = simple_form_for @asset, html: { data: { controller: 'photo-wizard' } } do |form|
+  = panel 'Audio Source' do
+    .p-3
+      = form.input :remote_url, label: 'Audio URL', hint: 'Link to page on external site such as YouTube or SoundCloud.'
   = panel 'Caption & Description' do
     .p-3
       = form.input :caption, as: :text, label: "Caption", hint: "The Caption is text that appears with the audio on the building record. Note that the caption should not include the date which is a separate field that will display along with the caption."

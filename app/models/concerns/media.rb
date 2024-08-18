@@ -10,7 +10,6 @@ module Media
 
     has_and_belongs_to_many :buildings
     has_and_belongs_to_many :people
-    has_one_attached :file
 
     alias_attribute :title, :caption
     alias_attribute :name, :caption
@@ -32,5 +31,9 @@ module Media
     items = [caption]
     items << date_text if date_text?
     items.compact.join(' ')
+  end
+
+  def process
+    # implemented by interested subclasses
   end
 end

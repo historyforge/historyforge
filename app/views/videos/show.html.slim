@@ -14,8 +14,13 @@
 #photograph-page
   .row.mb-3
     .col-12
-      video controls="controls" poster=url_for(@asset.thumbnail)
-        source src=url_for(@asset.file) type="video/mp4"
+      - if @asset.remote_url
+        - if @asset.remote_url.match(/youtube\.com\/watch\?v=/)
+          - src = @asset.remote_url.sub(/watch\?v=/, 'embed/')
+          iframe width="560" height="315" src=src title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen="true"
+        p= link_to @asset.remote_url, target: :_blank
+      - else
+        p Sorry but there is no video to be seen here :(
       p
         - if can?(:update, @asset)
           = link_to 'Edit Video', [:edit, @asset], class: 'btn btn-light'

@@ -8,13 +8,8 @@
       button.btn.btn-secondary.btn-next.step-1-next-button type="button" disabled=!form.object.file.attached? Next &raquo;
     .card-body
       .row
-        .col-sm-6.col-xs-12
-          = form.input :file, as: :file, label: 'Upload your audio', hint: 'MP3 files only please!', input_html: { accept: 'audio/mpeg', id: 'photograph_file' }
-          - if form.object.file.attached?
-            .alert.alert-success Your audio is uploaded. To get to the other stuff, simply click Next to get to it. You only need to click "Choose file" if you want to replace the audio file that was already uploaded.
-        .col-sm-6.col-xs-12#selected-file
-          - if form.object.file.attached?
-            = image_tag form.object.file
+        .col-xs-12
+          = form.input :remote_url, label: 'Audio URL', hint: 'Link to page on external site such as YouTube or SoundCloud.'
     .card-footer.d-flex.justify-content-center
       button.btn.btn-secondary.btn-lg.btn-next.step-1-next-button type="button" disabled=!form.object.file.attached? Next &raquo;
 
@@ -25,8 +20,6 @@
         .col-sm-8.col-xs-12
           = form.input :caption, as: :text, label: "Caption", hint: "The Caption is text that appears with the audio on the building record. Note that the caption should not include the date which is a separate field that will display along with the caption."
           = form.input :description, as: :text, label: "Description", hint: "The Description is secondary text that appears when someone selects the audio to listen to it. The Description can be standard text used to identify the collection that houses the audio recording in your institution, or it can be used in whichever way your institution sees fit."
-
-        /.col-3.offset-1.thumb= thumb_for form.object
     = render 'media/wizard_footer_nav_buttons'
 
   .card
@@ -35,7 +28,6 @@
       .row
         .col-sm-8.col-xs-12
           = render 'media/buildings', form:, question: 'Does this audio pertain to a building?'
-        /.col-3.offset-1.thumb= thumb_for form.object
     = render 'media/wizard_footer_nav_buttons'
 
   .card
@@ -44,7 +36,6 @@
       .row
         .col-sm-8.col-xs-12
           = render 'media/people', form:, question: 'Is this a recording of a person?'
-        /.col-3.offset-1.thumb= thumb_for form.object
     = render 'media/wizard_footer_nav_buttons'
 
   .card
@@ -53,7 +44,6 @@
       .row
         .col-sm-8.col-xs-12
           = render 'media/map_location', form:
-        /.col-3.offset-1.thumb= thumb_for form.object
     = render 'media/wizard_footer_nav_buttons'
 
   .card
@@ -62,7 +52,6 @@
       .row
         .col-sm-8.col-xs-12
           = render 'media/date_fields', form:
-        /.col-3.offset-1.thumb= thumb_for form.object
     = render 'media/wizard_footer_nav_buttons'
 
   .card
@@ -72,7 +61,6 @@
       .row
         .col-sm-8.col-xs-12
           = form.input :notes
-        /.col-3.offset-1.thumb= thumb_for form.object
     .card-footer.d-flex.justify-content-center
       = form.submit 'Submit', class: 'btn btn-lg btn-primary'
 

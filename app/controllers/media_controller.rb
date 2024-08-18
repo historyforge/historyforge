@@ -16,7 +16,6 @@ class MediaController < ApplicationController
     @assets = @search.result
                      .page(params[:page] || 1)
                      .per(20)
-                     .with_attached_file
                      .includes(buildings: :addresses)
                      .accessible_by(current_ability)
   end
@@ -161,6 +160,7 @@ class MediaController < ApplicationController
               :date_year, :date_month, :date_day,
               :date_year_end,
               :date_month_end,
-              :date_day_end
+              :date_day_end,
+              :remote_url
   end
 end
