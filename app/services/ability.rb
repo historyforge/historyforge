@@ -85,15 +85,6 @@ class Ability
       can :update, User, id: user.id
       can :create, Flag
       can :read, Document
-      # can :read, [
-      #   Architect,
-      #   Audio,
-      #   Building,
-      #   CensusRecord,
-      #   Narrative,
-      #   Photograph,
-      #   Video
-      # ]
 
       # Anyone can add user generated content
       can :create, [Photograph, Audio, Video, Narrative]
