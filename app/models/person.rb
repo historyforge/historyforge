@@ -137,14 +137,21 @@ class Person < ApplicationRecord
     true
   end
 
+  # We want to have a "name variant" record with the person's full name in it
+  # because we use the name variant index for fuzzy name searches. We want someone
+  # to be able to search for "Robert H Treman" and have a hope of finding something.
   # @param record [Class<CensusRecord>]
   # @return [PersonName]
   def add_name_from(record)
-    return if names.any? { |name| name.same_name_as?(record) }
+    return if names.any? { |name| name.exact_same_name_as?(record) }
 
-    names.build(
+    base_name = names.detect { |name| name.same_name_as?(record) } || names.build
+    base_name.assign_attributes(
       first_name: record.first_name,
       last_name: record.last_name,
+      middle_name: record.middle_name,
+      name_prefix: record.name_prefix,
+      name_suffix: record.name_suffix,
       is_primary: true
     )
   end

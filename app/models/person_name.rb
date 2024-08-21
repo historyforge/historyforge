@@ -38,7 +38,7 @@ class PersonName < ApplicationRecord
   after_commit :audit_name_removal, on: :destroy
 
   def name
-    [first_name, last_name].compact_blank.join(' ')
+    [name_prefix, first_name, middle_name, last_name, name_suffix].compact_blank.join(' ')
   end
 
   def previous_name
@@ -60,6 +60,16 @@ class PersonName < ApplicationRecord
   # @ return [Boolean]
   def same_name_as?(record)
     (record.first_name == first_name && record.last_name == last_name) || record.name == name
+  end
+
+  # @param record [Person, PersonName]
+  # @ return [Boolean]
+  def exact_same_name_as?(record)
+    (record.first_name == first_name &&
+      record.last_name == last_name &&
+      record.middle_name == middle_name &&
+      record.name_prefix == name_prefix &&
+      record.name_suffix == name_suffix) || record.name == name
   end
 
   def audit_new_name

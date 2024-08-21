@@ -8,8 +8,8 @@ namespace :people do
   end
 
   task audit_names: :environment do
-    PersonName.update_all(name_prefix: nil, name_suffix: nil, middle_name: nil)
     Person.includes(:names).find_each do |person|
+      person.names.each(&:save)
       variant_names = person.variant_names
       next if variant_names.blank?
 
@@ -17,7 +17,11 @@ namespace :people do
       variant_names.each do |name|
         if name.first_name == person.first_name && name.last_name == person.last_name
           if found_primary_name
-            name.destroy
+            Flag.create(
+              flaggable: person,
+              reason: 'incorrect',
+              message: "Possible extra name variant: first name \"#{name.first_name}\" and last name \"#{name.last_name}\"."
+            )
           else
             found_primary_name = true
           end
@@ -31,8 +35,6 @@ namespace :people do
           message: "Possible extra name variant: first name \"#{name.first_name}\" and last name \"#{name.last_name}\"."
         )
       end
-
-      person.add_name_from!(person) unless found_primary_name
     end
   end
 end
