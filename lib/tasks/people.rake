@@ -22,7 +22,17 @@ namespace :people do
             found_primary_name = true
           end
         end
+
+        next unless name.name == person.name
+
+        Flag.create(
+          flaggable: person,
+          reason: 'incorrect',
+          message: "Possible extra name variant: first name \"#{name.first_name}\" and last name \"#{name.last_name}\"."
+        )
       end
+
+      person.add_name_from!(person) unless found_primary_name
     end
   end
 end
