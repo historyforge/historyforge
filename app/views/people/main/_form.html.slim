@@ -29,9 +29,8 @@
       .nested-form.list-group
         .list-group-item
           .row
-            .col-sm-4 First Name
-            .col-sm-2 Middle Name
-            .col-sm-5 Last Name
+            .col-sm-5 First Name
+            .col-sm-6 Last Name
             .col-xs-1
         .nested-form-items
           = form.fields_for :names, @person.non_variant_names do |form2|
