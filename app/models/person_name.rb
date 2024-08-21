@@ -41,6 +41,10 @@ class PersonName < ApplicationRecord
     [name_prefix, first_name, middle_name, last_name, name_suffix].compact_blank.join(' ')
   end
 
+  def short_name
+    [first_name, last_name].compact_blank.join(' ')
+  end
+
   def previous_name
     [first_name_was, last_name_was].compact_blank.join(' ')
   end
@@ -81,7 +85,7 @@ class PersonName < ApplicationRecord
   def audit_name_change
     return unless saved_change_to_first_name? || saved_change_to_last_name?
 
-    message = "Name variant \"#{previous_name}\" changed to \"#{name}\"."
+    message = "Name variant \"#{previous_name}\" changed to \"#{short_name}\"."
     person.audit_logs.create(message:, logged_at: Time.current)
   end
 

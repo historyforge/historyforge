@@ -20,8 +20,8 @@ en:
         unearned_income_self: "[This Person in 1949] Interest, Dividends, Veteran's Allowances, Pensions, Rents, Other"
         unearned_income_family: "[Family Members in 1949] Interest, Dividends, Veteran's Allowances, Pensions, Rents, Other"
         newlyweds: 'Married/Widowed/Divorced/Separated Less Than 1 Year'
-      names_first_name: 'First Name Variant'
-      names_last_name: 'Last Name Variant'
+      names_first_name: 'First Name'
+      names_last_name: 'Last Name'
       locality_ids: 'Localities'
 
     labels:
