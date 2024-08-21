@@ -19,7 +19,11 @@ class PersonGridTranslator
           first_name: record.matched_first_name,
           last_name: record.matched_last_name
         )
-        "#{matched_name} (see #{record.name})"
+        if matched_name == record.name
+          record.name
+        else
+          "#{matched_name} (see #{record.name})"
+        end
       else
         record.name
       end

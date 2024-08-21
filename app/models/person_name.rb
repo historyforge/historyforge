@@ -62,6 +62,16 @@ class PersonName < ApplicationRecord
     (record.first_name == first_name && record.last_name == last_name) || record.name == name
   end
 
+  # @param record [Person, PersonName]
+  # @ return [Boolean]
+  def exact_same_name_as?(record)
+    (record.first_name == first_name &&
+      record.last_name == last_name &&
+      record.middle_name == middle_name &&
+      record.name_prefix == name_prefix &&
+      record.name_suffix == name_suffix) || record.name == name
+  end
+
   def audit_new_name
     return if same_name_as?(person)
 

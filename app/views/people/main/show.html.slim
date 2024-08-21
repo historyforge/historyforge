@@ -17,7 +17,7 @@
       span.d-none.d-lg-inline
         | &nbsp; Delete
 .list-group.mb-3
-  - names = @person.non_variant_names
+  - names = @person.variant_names
   - if names.any?
     .list-group-item
       .row

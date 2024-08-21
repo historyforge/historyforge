@@ -126,8 +126,9 @@ class Person < ApplicationRecord
        census_1930_records census_1940_records census_1950_records photos]
   end
 
-  def non_variant_names
-    names.reject { |name| name.same_name_as?(self) }
+  def variant_names
+    primary_name = names.detect { |name| name.exact_same_name_as?(self) }
+    names - [primary_name]
   end
 
   # To make the "Mark n Reviewed" button not show up because there is not a person review system at the moment
