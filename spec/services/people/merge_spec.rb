@@ -11,7 +11,7 @@ RSpec.describe People::Merge do
 
   before do
     PaperTrail.request.whodunnit = create(:user)
-    @source_name = source.names.first.name
+    @source_name = [source.names.first.first_name, source.names.first.last_name].join(' ')
     described_class.new(source, target).perform
   end
 
