@@ -4,10 +4,12 @@ class FlagsController < ApplicationController
   include RestoreSearch
   def index
     @search = Flag.unresolved.order('created_at asc').ransack(params[:q])
-    @flags = @search.result.preload(:flaggable, :flagged_by).includes(:flaggable)
-    @flags.each do |flag|
-      flag.destroy unless flag.flaggable
-    end
+    @flags = @search.result
+                    .preload(:flaggable, :flagged_by)
+                    .includes(:flaggable)
+                    .page(params[:page] || 1)
+                    .per(50)
+    @flags.each { |flag| flag.destroy unless flag.flaggable }
   end
 
   def new

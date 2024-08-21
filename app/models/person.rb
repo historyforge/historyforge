@@ -127,9 +127,10 @@ class Person < ApplicationRecord
   end
 
   def variant_names
-    primary_name = names.detect { |name| name.exact_same_name_as?(self) }
+    primary_name = names.detect { |name| name.same_name_as?(self) }
     names - [primary_name]
   end
+  memoize :variant_names
 
   # To make the "Mark n Reviewed" button not show up because there is not a person review system at the moment
   def reviewed?
@@ -144,9 +145,7 @@ class Person < ApplicationRecord
     names.build(
       first_name: record.first_name,
       last_name: record.last_name,
-      middle_name: record.middle_name,
-      name_prefix: record.name_prefix,
-      name_suffix: record.name_suffix
+      is_primary: true
     )
   end
 
@@ -266,6 +265,6 @@ class Person < ApplicationRecord
   def ensure_primary_name
     return if names.detect { |name| name.same_name_as?(self) }
 
-    names.build(first_name:, last_name:, middle_name:, name_prefix:, name_suffix:)
+    names.build(first_name:, last_name:)
   end
 end

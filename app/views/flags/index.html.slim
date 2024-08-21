@@ -27,3 +27,5 @@
           td= flag.flagged_by&.name
           td= flag.created_at.strftime('%-m/%-d/%y')
           td.col-6= [flag.display_reason, flag.message].compact_blank.join("<br />").html_safe
+
+= paginate @flags
