@@ -16,16 +16,16 @@
         .col-sm-12
           p.lead No media have been attached yet!
       - photos.each do |photo|
-        .building-photo.col-12.col-sm-6.col-lg-4 data-href=url_for([item, photo])
+        .building-photo.col-12.col-sm-6.col-lg-4 id="photo_#{photo.id}" data-href=url_for([item, photo])
           = picture_tag photo: photo, style: 'quarter', img_class: 'img-thumbnail'
           = simple_format photo.full_caption
       - videos.each do |video|
-        .building-photo.col-12.col-sm-6.col-lg-4 data-href=url_for([item, video])
+        .building-photo.col-12.col-sm-6.col-lg-4 id="video_#{video.id}" data-href=url_for([item, video])
           | Video
           = link_to url_for([item, video]) do
             = simple_format video.full_caption
       - audios.each do |audio|
-        .col-sm-6.col-12.col-lg-4
+        .col-sm-6.col-12.col-lg-4 id="audio_#{audio.id}"
           | Audio recording:
           br
           = link_to url_for([item, audio]) do

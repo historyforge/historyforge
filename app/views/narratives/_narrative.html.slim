@@ -1,4 +1,4 @@
-.list-group-item.mb-3
+.list-group-item.mb-3 id="narrative_#{narrative.id}"
   - if can?(:review, narrative) && !narrative.reviewed?
     = link_to 'Review', [:review, @building || @person, narrative], class: 'btn btn-sm btn-danger float-right ml-2', data: { method: :put, confirm: 'Are you sure?' }
   - if can?(:destroy, narrative)

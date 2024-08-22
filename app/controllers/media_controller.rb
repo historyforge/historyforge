@@ -98,14 +98,13 @@ class MediaController < ApplicationController
   private
 
   def perform_redirect
-    target = if @building
-               [@building, @asset]
-             elsif @person
-               [@person, @asset]
-             else
-               @asset
-             end
-    redirect_to target
+    if @building
+      redirect_to building_path(@building, anchor: "#{@asset.class.name.downcase}_#{@asset.id}")
+    elsif @person
+      redirect_to person_path(@person, anchor: "#{@asset.class.name.downcase}_#{@asset.id}")
+    else
+      redirect_to @asset
+    end
   end
 
   def store_location!

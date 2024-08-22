@@ -8,5 +8,5 @@
 
 = error_messages_for @asset
 
-= simple_form_for @asset, html: { data: { controller: 'photo-wizard' } } do |form|
+= simple_form_for (@building || @person) ? [(@building || @person), @asset] : @asset, html: { data: { controller: 'photo-wizard' } } do |form|
   = render 'fields', form:
