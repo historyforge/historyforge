@@ -1,16 +1,16 @@
 .list-group-item.mb-3
   - if can?(:review, narrative) && !narrative.reviewed?
     = link_to 'Review', [:review, @building || @person, narrative], class: 'btn btn-sm btn-danger float-right ml-2', data: { method: :put, confirm: 'Are you sure?' }
-  - if can?(:update, narrative)
-    = link_to [:edit, @building || @person, narrative], class: 'btn btn-sm btn-light float-right ml-1' do
-      i.fa.fa-pencil
-      span.d-none.d-lg-inline
-        | &nbsp; Edit
   - if can?(:destroy, narrative)
     = link_to [@building || @person, narrative], class: 'btn btn-sm btn-light float-right ml-1', data: { method: :delete, confirm: "Are you sure? This action is permanent." } do
       i.fa.fa-trash
       span.d-none.d-lg-inline
         | &nbsp; Delete
+  - if can?(:update, narrative)
+    = link_to [:edit, @building || @person, narrative], class: 'btn btn-sm btn-light float-right ml-1' do
+      i.fa.fa-pencil
+      span.d-none.d-lg-inline
+        | &nbsp; Edit
   = narrative.story
   = narrative.sources
   - if narrative.date_text

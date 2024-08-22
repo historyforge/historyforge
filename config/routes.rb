@@ -11,6 +11,19 @@ Rails.application.routes.draw do
     get 'assets/*name', to: redirect(redirector), constraints: constraint
   end
 
+  concern :moveable do
+    member do
+      put :move_up
+      put :move_down
+      put :move_to_top
+      put :move_to_bottom
+    end
+  end
+
+  concern :reviewable do
+    put :review, on: :member
+  end
+
   root 'home#index'
   get 'stats' => 'home#stats'
   get 'search/people' => 'home#search_people', as: 'search_people'
@@ -62,10 +75,12 @@ Rails.application.routes.draw do
       put :review
       get :address
     end
-    resources :photographs
-    resources :audios
-    resources :videos
-    resources :narratives
+    with_options(concerns: %i[reviewable]) do
+      resources :narratives
+      resources :photographs
+      resources :audios
+      resources :videos
+    end
     resources :merges, only: %i[new create], controller: 'buildings/merges'
   end
 
@@ -88,19 +103,6 @@ Rails.application.routes.draw do
   resources :contacts, only: %i[new create]
   get '/contact' => 'contacts#new'
 
-  concern :moveable do
-    member do
-      put :move_up
-      put :move_down
-      put :move_to_top
-      put :move_to_bottom
-    end
-  end
-
-  concern :reviewable do
-    put :review, on: :member
-  end
-
   resources :document_categories, concerns: %i[moveable] do
     resources :documents, concerns: %i[moveable]
   end
@@ -122,10 +124,12 @@ Rails.application.routes.draw do
       get :autocomplete
     end
     resources :merges, only: %i[new create], controller: 'people/merges'
-    resources :photographs
-    resources :audios
-    resources :videos
-    resources :narratives
+    with_options(concerns: %i[reviewable]) do
+      resources :narratives
+      resources :photographs
+      resources :audios
+      resources :videos
+    end
   end
 
   with_options(concerns: %i[reviewable]) do
@@ -163,5 +167,5 @@ Rails.application.routes.draw do
 
   get 'uploads/pictures/:id/:style/:device' => 'cms/pictures#show', as: 'picture'
 
-  match '*path'   => 'cms/pages#show', via: :all, constraints: -> (request) { request.format.html? && request.path != '/routes' }
+  match '*path' => 'cms/pages#show', via: :all, constraints: -> (request) { request.format.html? && request.path != '/routes' }
 end
