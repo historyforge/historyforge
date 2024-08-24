@@ -1833,6 +1833,16 @@ ALTER SEQUENCE public.documents_id_seq OWNED BY public.documents.id;
 
 
 --
+-- Name: documents_localities; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.documents_localities (
+    document_id bigint,
+    locality_id bigint
+);
+
+
+--
 -- Name: flags; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -4455,6 +4465,27 @@ CREATE INDEX index_cms_pages_on_url_path ON public.cms_pages USING btree (url_pa
 
 
 --
+-- Name: index_documents_localities_on_document_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_documents_localities_on_document_id ON public.documents_localities USING btree (document_id);
+
+
+--
+-- Name: index_documents_localities_on_document_id_and_locality_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_documents_localities_on_document_id_and_locality_id ON public.documents_localities USING btree (document_id, locality_id);
+
+
+--
+-- Name: index_documents_localities_on_locality_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_documents_localities_on_locality_id ON public.documents_localities USING btree (locality_id);
+
+
+--
 -- Name: index_documents_on_document_category_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -5205,6 +5236,14 @@ ALTER TABLE ONLY public.buildings
 
 
 --
+-- Name: documents_localities fk_rails_97491e4cbe; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.documents_localities
+    ADD CONSTRAINT fk_rails_97491e4cbe FOREIGN KEY (document_id) REFERENCES public.documents(id);
+
+
+--
 -- Name: census_1930_records fk_rails_979a0fc38d; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -5338,6 +5377,14 @@ ALTER TABLE ONLY public.census_1910_records
 
 ALTER TABLE ONLY public.census_1900_records
     ADD CONSTRAINT fk_rails_c864f6e26b FOREIGN KEY (reviewed_by_id) REFERENCES public.users(id);
+
+
+--
+-- Name: documents_localities fk_rails_c8cee96948; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.documents_localities
+    ADD CONSTRAINT fk_rails_c8cee96948 FOREIGN KEY (locality_id) REFERENCES public.localities(id);
 
 
 --
@@ -5799,6 +5846,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20240603010233'),
 ('20240818182508'),
 ('20240818214339'),
+('20240824170019'),
 ('4'),
 ('8'),
 ('9');

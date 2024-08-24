@@ -3,7 +3,7 @@
   - content_for :pills do
     = link_to "Manage Categories", document_categories_path, class: 'btn btn-light'
     = link_to "Add Document", new_document_path, class: 'btn btn-light'
-.col-xs-9#documents
+.pb-5#documents
   - if @documents.blank?
     p No resources are available at this time. Alas, no credit is given either. Please check back soon!
   - else

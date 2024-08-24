@@ -28,7 +28,8 @@ class Locality < ApplicationRecord
   before_validation :set_slug
   has_many :buildings, dependent: :restrict_with_exception
   has_many :map_overlays, dependent: :restrict_with_exception
-  has_and_belongs_to_many :people
+  has_and_belongs_to_many :people, dependent: :nullify
+  has_and_belongs_to_many :documents, dependent: :nullify
 
   has_many :census1850_records, dependent: :nullify, class_name: 'Census1850Record', inverse_of: :locality
   has_many :census1860_records, dependent: :nullify, class_name: 'Census1860Record', inverse_of: :locality

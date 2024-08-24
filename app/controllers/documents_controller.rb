@@ -58,11 +58,11 @@ class DocumentsController < ApplicationController
   private
 
   def resource_params
-    params.require(:document).permit :file, :name, :description, :document_category_id, :url, :available_to_public
+    params.require(:document).permit :file, :name, :description, :document_category_id, :url, :available_to_public, locality_ids: []
   end
 
   def collection
-    @documents ||= parent.authorized_for(current_user).order(:position)
+    @documents ||= parent.authorized_for(current_user).order(:position).for_locality_id(Current.locality_id)
   end
 
   def resource
