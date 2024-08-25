@@ -69,7 +69,7 @@ header
               - CensusYears.each_visible_to_user(user_signed_in?) do |year|
                 = link_to "#{year} US Census", "/census/#{year}", class: 'dropdown-item'
               = link_to 'All People', '/people', class: 'dropdown-item' if can_people?
-              = link_to 'Resources & Credits', '/documents', class: 'dropdown-item'
+              = link_to AppConfig[:document_page_title] || 'Resources & Credits', '/documents', class: 'dropdown-item'
               = link_to "Photographs", photographs_path, class: 'dropdown-item'
               = link_to 'Audio Recordings', audios_path, class: 'dropdown-item'
               = link_to 'Videos', videos_path, class: 'dropdown-item'

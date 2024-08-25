@@ -39,6 +39,7 @@ class Document < ApplicationRecord
       all
     end
   end
+
   private
 
   def assign_name_from_file

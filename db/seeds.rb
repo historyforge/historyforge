@@ -37,6 +37,8 @@ group = 'Announcement Banner'
 Setting.add 'announcement_show', type: :boolean, value: '0', group:, name: 'Show announcement?', hint: 'Should we show the announcement banner on the home page?'
 Setting.add 'announcement_text', type: :string, value: nil, group:, name: 'Announcement Text', hint: 'The text of the announcement.'
 Setting.add 'announcement_url', type: :string, value: nil, group:, name: 'Announcement URL', hint: 'Go somewhere when you click on the announcement? Enter a URL starting with https://.'
+Setting.add 'document_page_title', type: :string, value: 'Resources', group: 'Documents', name: 'Document Page Title', hint: 'Show up on the main menu and as the page title.'
+Setting.add 'document_category_page', type: :boolean, value: false, group: 'Documents', name: 'Document Category Pages', hint: 'If true, then each category has its own page. If false, then all the documents and categories show up on on page in an accordion.'
 
 CensusYears.each do |year|
   group = "#{year} US Census"

@@ -1,11 +1,34 @@
-- set_page_title 'Resources & Credits'
+- if params[:document_category_id]
+  - set_page_title parent.name
+- else
+  - set_page_title AppConfig[:document_page_title] || 'Resources & Credits'
+
 -if can?(:create, Document)
   - content_for :pills do
     = link_to "Manage Categories", document_categories_path, class: 'btn btn-light'
     = link_to "Add Document", new_document_path, class: 'btn btn-light'
+
+- if AppConfig[:document_category_page]
+  - content_for :pills do
+    = link_to 'View All', documents_path, class: 'btn btn-light'
+
 .pb-5#documents
-  - if @documents.blank?
-    p No resources are available at this time. Alas, no credit is given either. Please check back soon!
+  - if AppConfig[:document_category_page]
+    - if params[:document_category_id]
+      - if parent.description.present?
+        = simple_format parent.description
+      - if @documents.blank?
+        p No resources are available at this time.
+      - else
+        = render 'table', documents: @documents
+    - else
+      ul.list-group
+        - @categories.each do |category|
+          li.list-group-item
+            .float-right= pluralize(category.documents_count, 'document')
+            = link_to category.name, document_category_documents_path(category)
+            - if category.description.present?
+              = simple_format category.description
   - else
     - @categories.each do |category|
       - if @documents[category.id]
@@ -16,6 +39,6 @@
             - if category.description.present?
               = simple_format category.description
             = render 'table', documents: @documents[category.id]
-  - if @documents[nil]
-    h3 Uncategorized
-    = render 'table', documents: @documents[nil]
+    - if @documents[nil]
+      h3 Uncategorized
+      = render 'table', documents: @documents[nil]
