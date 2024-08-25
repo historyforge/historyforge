@@ -82,7 +82,7 @@
         function isPlainObject2(variable) {
           return Object.prototype.toString.call(variable) === "[object Object]" && !isFunction3(variable) && variable instanceof Object;
         }
-        function extend2(target, source) {
+        function extend3(target, source) {
           var key;
           for (key in source) {
             if (key === "__proto__") {
@@ -95,7 +95,7 @@
               if (isArray3(source[key]) && !isArray3(target[key])) {
                 target[key] = [];
               }
-              extend2(target[key], source[key]);
+              extend3(target[key], source[key]);
             } else if (source[key] !== void 0) {
               target[key] = source[key];
             }
@@ -103,8 +103,8 @@
         }
         function merge2(obj1, obj2) {
           var target = {};
-          extend2(target, obj1);
-          extend2(target, obj2);
+          extend3(target, obj1);
+          extend3(target, obj2);
           return target;
         }
         var DATE_PATTERN = /^(\d\d\d\d)(-)?(\d\d)(-)?(\d\d)$/i;
@@ -158,10 +158,10 @@
           }
           return n;
         }
-        function jsOptionsFunc(defaultOptions3, hideLegend2, setTitle2, setMin2, setMax2, setStacked2, setXtitle2, setYtitle2) {
+        function jsOptionsFunc(defaultOptions4, hideLegend2, setTitle2, setMin2, setMax2, setStacked2, setXtitle2, setYtitle2) {
           return function(chart, opts, chartOptions) {
             var series = chart.data;
-            var options = merge2({}, defaultOptions3);
+            var options = merge2({}, defaultOptions4);
             options = merge2(options, chartOptions || {});
             if (chart.singleSeriesFormat || "legend" in opts) {
               hideLegend2(options, opts.legend, chart.singleSeriesFormat);
@@ -1161,7 +1161,7 @@
         };
         var loaded = {};
         var callbacks = [];
-        var defaultOptions2 = {
+        var defaultOptions3 = {
           chartArea: {},
           fontName: "'Lucida Grande', 'Lucida Sans Unicode', Verdana, Arial, Helvetica, sans-serif",
           pointSize: 6,
@@ -1244,7 +1244,7 @@
           options.vAxis.title = title;
           options.vAxis.titleTextStyle.italic = false;
         };
-        var jsOptions = jsOptionsFunc(defaultOptions2, hideLegend, setTitle, setMin, setMax, setStacked, setXtitle, setYtitle);
+        var jsOptions = jsOptionsFunc(defaultOptions3, hideLegend, setTitle, setMin, setMax, setStacked, setXtitle, setYtitle);
         var resize = function(callback2) {
           if (window.attachEvent) {
             window.attachEvent("onresize", callback2);
@@ -1294,7 +1294,7 @@
             if (chart.options.title) {
               setTitle(chartOptions, chart.options.title);
             }
-            var options = merge2(merge2(defaultOptions2, chartOptions), chart.options.library || {});
+            var options = merge2(merge2(defaultOptions3, chartOptions), chart.options.library || {});
             var data = new this$1$1.library.visualization.DataTable();
             data.addColumn("string", "");
             data.addColumn("number", "Value");
@@ -1320,7 +1320,7 @@
                 }
               }
             };
-            var options = jsOptionsFunc(defaultOptions2, hideLegend, setTitle, setBarMin, setBarMax, setStacked, setXtitle, setYtitle)(chart, chart.options, chartOptions);
+            var options = jsOptionsFunc(defaultOptions3, hideLegend, setTitle, setBarMin, setBarMax, setStacked, setXtitle, setYtitle)(chart, chart.options, chartOptions);
             var data = this$1$1.createDataTable(chart.data, chart.xtype);
             this$1$1.drawChart(chart, "BarChart", data, options);
           });
@@ -1347,7 +1347,7 @@
                 colors: chart.options.colors || ["#f6c7b6", "#ce502d"]
               }
             };
-            var options = merge2(merge2(defaultOptions2, chartOptions), chart.options.library || {});
+            var options = merge2(merge2(defaultOptions3, chartOptions), chart.options.library || {});
             var data = new this$1$1.library.visualization.DataTable();
             data.addColumn("string", "");
             data.addColumn("number", chart.options.label || "Value");
@@ -1389,7 +1389,7 @@
             if (chart.options.colors) {
               chartOptions.colors = chart.options.colors;
             }
-            var options = merge2(merge2(defaultOptions2, chartOptions), chart.options.library || {});
+            var options = merge2(merge2(defaultOptions3, chartOptions), chart.options.library || {});
             var data = new this$1$1.library.visualization.DataTable();
             data.addColumn({ type: "string", id: "Name" });
             data.addColumn({ type: "date", id: "Start" });
@@ -2276,10 +2276,10 @@
           };
           return SelectParser2;
         }();
-        SelectParser.select_to_array = function(select2) {
+        SelectParser.select_to_array = function(select3) {
           var child, parser, _i, _len, _ref2;
           parser = new SelectParser();
-          _ref2 = select2.childNodes;
+          _ref2 = select3.childNodes;
           for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
             child = _ref2[_i];
             parser.add_node(child);
@@ -3448,7 +3448,7 @@
         }
         return result;
       }
-      function extend2(a3, b2, thisArg) {
+      function extend3(a3, b2, thisArg) {
         forEach(b2, function assignValue(val, key) {
           if (thisArg && typeof val === "function") {
             a3[key] = bind2(val, thisArg);
@@ -3484,7 +3484,7 @@
         isStandardBrowserEnv,
         forEach,
         merge: merge2,
-        extend: extend2,
+        extend: extend3,
         trim,
         stripBOM
       };
@@ -7003,9 +7003,9 @@
             var _setTimeout = window.setTimeout;
             var _clearTimeout = window.clearTimeout;
             if (typeof console !== "undefined") {
-              var requestAnimationFrame = window.requestAnimationFrame;
+              var requestAnimationFrame2 = window.requestAnimationFrame;
               var cancelAnimationFrame = window.cancelAnimationFrame;
-              if (typeof requestAnimationFrame !== "function") {
+              if (typeof requestAnimationFrame2 !== "function") {
                 console["error"]("This browser doesn't support requestAnimationFrame. Make sure that you load a polyfill in older browsers. https://reactjs.org/link/react-polyfills");
               }
               if (typeof cancelAnimationFrame !== "function") {
@@ -13809,10 +13809,10 @@
           function getOwnerDocumentFromRootContainer(rootContainerElement) {
             return rootContainerElement.nodeType === DOCUMENT_NODE ? rootContainerElement : rootContainerElement.ownerDocument;
           }
-          function noop4() {
+          function noop5() {
           }
           function trapClickOnNonInteractiveElement(node) {
-            node.onclick = noop4;
+            node.onclick = noop5;
           }
           function setInitialDOMProperties(tag, domElement, rootContainerElement, nextProps, isCustomComponentTag) {
             for (var propKey in nextProps) {
@@ -27475,7 +27475,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         onExiting: PropTypes15.func,
         onExited: PropTypes15.func
       } : {};
-      function noop4() {
+      function noop5() {
       }
       Transition2.defaultProps = {
         in: false,
@@ -27484,12 +27484,12 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         appear: false,
         enter: true,
         exit: true,
-        onEnter: noop4,
-        onEntering: noop4,
-        onEntered: noop4,
-        onExit: noop4,
-        onExiting: noop4,
-        onExited: noop4
+        onEnter: noop5,
+        onEntering: noop5,
+        onEntered: noop5,
+        onExit: noop5,
+        onExiting: noop5,
+        onExited: noop5
       };
       Transition2.UNMOUNTED = 0;
       Transition2.EXITED = 1;
@@ -28079,6 +28079,51 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         TransitionGroup: _TransitionGroup.default,
         ReplaceTransition: _ReplaceTransition.default,
         CSSTransition: _CSSTransition.default
+      };
+    }
+  });
+
+  // node_modules/fast-deep-equal/index.js
+  var require_fast_deep_equal = __commonJS({
+    "node_modules/fast-deep-equal/index.js"(exports, module) {
+      "use strict";
+      module.exports = function equal2(a3, b2) {
+        if (a3 === b2)
+          return true;
+        if (a3 && b2 && typeof a3 == "object" && typeof b2 == "object") {
+          if (a3.constructor !== b2.constructor)
+            return false;
+          var length, i2, keys;
+          if (Array.isArray(a3)) {
+            length = a3.length;
+            if (length != b2.length)
+              return false;
+            for (i2 = length; i2-- !== 0; )
+              if (!equal2(a3[i2], b2[i2]))
+                return false;
+            return true;
+          }
+          if (a3.constructor === RegExp)
+            return a3.source === b2.source && a3.flags === b2.flags;
+          if (a3.valueOf !== Object.prototype.valueOf)
+            return a3.valueOf() === b2.valueOf();
+          if (a3.toString !== Object.prototype.toString)
+            return a3.toString() === b2.toString();
+          keys = Object.keys(a3);
+          length = keys.length;
+          if (length !== Object.keys(b2).length)
+            return false;
+          for (i2 = length; i2-- !== 0; )
+            if (!Object.prototype.hasOwnProperty.call(b2, keys[i2]))
+              return false;
+          for (i2 = length; i2-- !== 0; ) {
+            var key = keys[i2];
+            if (!equal2(a3[key], b2[key]))
+              return false;
+          }
+          return true;
+        }
+        return a3 !== a3 && b2 !== b2;
       };
     }
   });
@@ -28979,8 +29024,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         return compose.apply(null, arguments);
       };
       exports.devToolsEnhancer = typeof window !== "undefined" && window.__REDUX_DEVTOOLS_EXTENSION__ ? window.__REDUX_DEVTOOLS_EXTENSION__ : function() {
-        return function(noop4) {
-          return noop4;
+        return function(noop5) {
+          return noop5;
         };
       };
     }
@@ -44725,8 +44770,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   function startOfWeek(dirtyDate, options) {
     var _ref, _ref2, _ref3, _options$weekStartsOn, _options$locale, _options$locale$optio, _defaultOptions$local, _defaultOptions$local2;
     requiredArgs(1, arguments);
-    var defaultOptions2 = getDefaultOptions();
-    var weekStartsOn = toInteger((_ref = (_ref2 = (_ref3 = (_options$weekStartsOn = options === null || options === void 0 ? void 0 : options.weekStartsOn) !== null && _options$weekStartsOn !== void 0 ? _options$weekStartsOn : options === null || options === void 0 ? void 0 : (_options$locale = options.locale) === null || _options$locale === void 0 ? void 0 : (_options$locale$optio = _options$locale.options) === null || _options$locale$optio === void 0 ? void 0 : _options$locale$optio.weekStartsOn) !== null && _ref3 !== void 0 ? _ref3 : defaultOptions2.weekStartsOn) !== null && _ref2 !== void 0 ? _ref2 : (_defaultOptions$local = defaultOptions2.locale) === null || _defaultOptions$local === void 0 ? void 0 : (_defaultOptions$local2 = _defaultOptions$local.options) === null || _defaultOptions$local2 === void 0 ? void 0 : _defaultOptions$local2.weekStartsOn) !== null && _ref !== void 0 ? _ref : 0);
+    var defaultOptions3 = getDefaultOptions();
+    var weekStartsOn = toInteger((_ref = (_ref2 = (_ref3 = (_options$weekStartsOn = options === null || options === void 0 ? void 0 : options.weekStartsOn) !== null && _options$weekStartsOn !== void 0 ? _options$weekStartsOn : options === null || options === void 0 ? void 0 : (_options$locale = options.locale) === null || _options$locale === void 0 ? void 0 : (_options$locale$optio = _options$locale.options) === null || _options$locale$optio === void 0 ? void 0 : _options$locale$optio.weekStartsOn) !== null && _ref3 !== void 0 ? _ref3 : defaultOptions3.weekStartsOn) !== null && _ref2 !== void 0 ? _ref2 : (_defaultOptions$local = defaultOptions3.locale) === null || _defaultOptions$local === void 0 ? void 0 : (_defaultOptions$local2 = _defaultOptions$local.options) === null || _defaultOptions$local2 === void 0 ? void 0 : _defaultOptions$local2.weekStartsOn) !== null && _ref !== void 0 ? _ref : 0);
     if (!(weekStartsOn >= 0 && weekStartsOn <= 6)) {
       throw new RangeError("weekStartsOn must be between 0 and 6 inclusively");
     }
@@ -45066,8 +45111,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   function endOfWeek(dirtyDate, options) {
     var _ref, _ref2, _ref3, _options$weekStartsOn, _options$locale, _options$locale$optio, _defaultOptions$local, _defaultOptions$local2;
     requiredArgs(1, arguments);
-    var defaultOptions2 = getDefaultOptions();
-    var weekStartsOn = toInteger((_ref = (_ref2 = (_ref3 = (_options$weekStartsOn = options === null || options === void 0 ? void 0 : options.weekStartsOn) !== null && _options$weekStartsOn !== void 0 ? _options$weekStartsOn : options === null || options === void 0 ? void 0 : (_options$locale = options.locale) === null || _options$locale === void 0 ? void 0 : (_options$locale$optio = _options$locale.options) === null || _options$locale$optio === void 0 ? void 0 : _options$locale$optio.weekStartsOn) !== null && _ref3 !== void 0 ? _ref3 : defaultOptions2.weekStartsOn) !== null && _ref2 !== void 0 ? _ref2 : (_defaultOptions$local = defaultOptions2.locale) === null || _defaultOptions$local === void 0 ? void 0 : (_defaultOptions$local2 = _defaultOptions$local.options) === null || _defaultOptions$local2 === void 0 ? void 0 : _defaultOptions$local2.weekStartsOn) !== null && _ref !== void 0 ? _ref : 0);
+    var defaultOptions3 = getDefaultOptions();
+    var weekStartsOn = toInteger((_ref = (_ref2 = (_ref3 = (_options$weekStartsOn = options === null || options === void 0 ? void 0 : options.weekStartsOn) !== null && _options$weekStartsOn !== void 0 ? _options$weekStartsOn : options === null || options === void 0 ? void 0 : (_options$locale = options.locale) === null || _options$locale === void 0 ? void 0 : (_options$locale$optio = _options$locale.options) === null || _options$locale$optio === void 0 ? void 0 : _options$locale$optio.weekStartsOn) !== null && _ref3 !== void 0 ? _ref3 : defaultOptions3.weekStartsOn) !== null && _ref2 !== void 0 ? _ref2 : (_defaultOptions$local = defaultOptions3.locale) === null || _defaultOptions$local === void 0 ? void 0 : (_defaultOptions$local2 = _defaultOptions$local.options) === null || _defaultOptions$local2 === void 0 ? void 0 : _defaultOptions$local2.weekStartsOn) !== null && _ref !== void 0 ? _ref : 0);
     if (!(weekStartsOn >= 0 && weekStartsOn <= 6)) {
       throw new RangeError("weekStartsOn must be between 0 and 6 inclusively");
     }
@@ -45184,8 +45229,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   function startOfUTCWeek(dirtyDate, options) {
     var _ref, _ref2, _ref3, _options$weekStartsOn, _options$locale, _options$locale$optio, _defaultOptions$local, _defaultOptions$local2;
     requiredArgs(1, arguments);
-    var defaultOptions2 = getDefaultOptions();
-    var weekStartsOn = toInteger((_ref = (_ref2 = (_ref3 = (_options$weekStartsOn = options === null || options === void 0 ? void 0 : options.weekStartsOn) !== null && _options$weekStartsOn !== void 0 ? _options$weekStartsOn : options === null || options === void 0 ? void 0 : (_options$locale = options.locale) === null || _options$locale === void 0 ? void 0 : (_options$locale$optio = _options$locale.options) === null || _options$locale$optio === void 0 ? void 0 : _options$locale$optio.weekStartsOn) !== null && _ref3 !== void 0 ? _ref3 : defaultOptions2.weekStartsOn) !== null && _ref2 !== void 0 ? _ref2 : (_defaultOptions$local = defaultOptions2.locale) === null || _defaultOptions$local === void 0 ? void 0 : (_defaultOptions$local2 = _defaultOptions$local.options) === null || _defaultOptions$local2 === void 0 ? void 0 : _defaultOptions$local2.weekStartsOn) !== null && _ref !== void 0 ? _ref : 0);
+    var defaultOptions3 = getDefaultOptions();
+    var weekStartsOn = toInteger((_ref = (_ref2 = (_ref3 = (_options$weekStartsOn = options === null || options === void 0 ? void 0 : options.weekStartsOn) !== null && _options$weekStartsOn !== void 0 ? _options$weekStartsOn : options === null || options === void 0 ? void 0 : (_options$locale = options.locale) === null || _options$locale === void 0 ? void 0 : (_options$locale$optio = _options$locale.options) === null || _options$locale$optio === void 0 ? void 0 : _options$locale$optio.weekStartsOn) !== null && _ref3 !== void 0 ? _ref3 : defaultOptions3.weekStartsOn) !== null && _ref2 !== void 0 ? _ref2 : (_defaultOptions$local = defaultOptions3.locale) === null || _defaultOptions$local === void 0 ? void 0 : (_defaultOptions$local2 = _defaultOptions$local.options) === null || _defaultOptions$local2 === void 0 ? void 0 : _defaultOptions$local2.weekStartsOn) !== null && _ref !== void 0 ? _ref : 0);
     if (!(weekStartsOn >= 0 && weekStartsOn <= 6)) {
       throw new RangeError("weekStartsOn must be between 0 and 6 inclusively");
     }
@@ -45203,8 +45248,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     requiredArgs(1, arguments);
     var date = toDate(dirtyDate);
     var year = date.getUTCFullYear();
-    var defaultOptions2 = getDefaultOptions();
-    var firstWeekContainsDate = toInteger((_ref = (_ref2 = (_ref3 = (_options$firstWeekCon = options === null || options === void 0 ? void 0 : options.firstWeekContainsDate) !== null && _options$firstWeekCon !== void 0 ? _options$firstWeekCon : options === null || options === void 0 ? void 0 : (_options$locale = options.locale) === null || _options$locale === void 0 ? void 0 : (_options$locale$optio = _options$locale.options) === null || _options$locale$optio === void 0 ? void 0 : _options$locale$optio.firstWeekContainsDate) !== null && _ref3 !== void 0 ? _ref3 : defaultOptions2.firstWeekContainsDate) !== null && _ref2 !== void 0 ? _ref2 : (_defaultOptions$local = defaultOptions2.locale) === null || _defaultOptions$local === void 0 ? void 0 : (_defaultOptions$local2 = _defaultOptions$local.options) === null || _defaultOptions$local2 === void 0 ? void 0 : _defaultOptions$local2.firstWeekContainsDate) !== null && _ref !== void 0 ? _ref : 1);
+    var defaultOptions3 = getDefaultOptions();
+    var firstWeekContainsDate = toInteger((_ref = (_ref2 = (_ref3 = (_options$firstWeekCon = options === null || options === void 0 ? void 0 : options.firstWeekContainsDate) !== null && _options$firstWeekCon !== void 0 ? _options$firstWeekCon : options === null || options === void 0 ? void 0 : (_options$locale = options.locale) === null || _options$locale === void 0 ? void 0 : (_options$locale$optio = _options$locale.options) === null || _options$locale$optio === void 0 ? void 0 : _options$locale$optio.firstWeekContainsDate) !== null && _ref3 !== void 0 ? _ref3 : defaultOptions3.firstWeekContainsDate) !== null && _ref2 !== void 0 ? _ref2 : (_defaultOptions$local = defaultOptions3.locale) === null || _defaultOptions$local === void 0 ? void 0 : (_defaultOptions$local2 = _defaultOptions$local.options) === null || _defaultOptions$local2 === void 0 ? void 0 : _defaultOptions$local2.firstWeekContainsDate) !== null && _ref !== void 0 ? _ref : 1);
     if (!(firstWeekContainsDate >= 1 && firstWeekContainsDate <= 7)) {
       throw new RangeError("firstWeekContainsDate must be between 1 and 7 inclusively");
     }
@@ -45229,8 +45274,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   function startOfUTCWeekYear(dirtyDate, options) {
     var _ref, _ref2, _ref3, _options$firstWeekCon, _options$locale, _options$locale$optio, _defaultOptions$local, _defaultOptions$local2;
     requiredArgs(1, arguments);
-    var defaultOptions2 = getDefaultOptions();
-    var firstWeekContainsDate = toInteger((_ref = (_ref2 = (_ref3 = (_options$firstWeekCon = options === null || options === void 0 ? void 0 : options.firstWeekContainsDate) !== null && _options$firstWeekCon !== void 0 ? _options$firstWeekCon : options === null || options === void 0 ? void 0 : (_options$locale = options.locale) === null || _options$locale === void 0 ? void 0 : (_options$locale$optio = _options$locale.options) === null || _options$locale$optio === void 0 ? void 0 : _options$locale$optio.firstWeekContainsDate) !== null && _ref3 !== void 0 ? _ref3 : defaultOptions2.firstWeekContainsDate) !== null && _ref2 !== void 0 ? _ref2 : (_defaultOptions$local = defaultOptions2.locale) === null || _defaultOptions$local === void 0 ? void 0 : (_defaultOptions$local2 = _defaultOptions$local.options) === null || _defaultOptions$local2 === void 0 ? void 0 : _defaultOptions$local2.firstWeekContainsDate) !== null && _ref !== void 0 ? _ref : 1);
+    var defaultOptions3 = getDefaultOptions();
+    var firstWeekContainsDate = toInteger((_ref = (_ref2 = (_ref3 = (_options$firstWeekCon = options === null || options === void 0 ? void 0 : options.firstWeekContainsDate) !== null && _options$firstWeekCon !== void 0 ? _options$firstWeekCon : options === null || options === void 0 ? void 0 : (_options$locale = options.locale) === null || _options$locale === void 0 ? void 0 : (_options$locale$optio = _options$locale.options) === null || _options$locale$optio === void 0 ? void 0 : _options$locale$optio.firstWeekContainsDate) !== null && _ref3 !== void 0 ? _ref3 : defaultOptions3.firstWeekContainsDate) !== null && _ref2 !== void 0 ? _ref2 : (_defaultOptions$local = defaultOptions3.locale) === null || _defaultOptions$local === void 0 ? void 0 : (_defaultOptions$local2 = _defaultOptions$local.options) === null || _defaultOptions$local2 === void 0 ? void 0 : _defaultOptions$local2.firstWeekContainsDate) !== null && _ref !== void 0 ? _ref : 1);
     var year = getUTCWeekYear(dirtyDate, options);
     var firstWeek = new Date(0);
     firstWeek.setUTCFullYear(year, 0, firstWeekContainsDate);
@@ -46495,13 +46540,13 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     var _ref, _options$locale, _ref2, _ref3, _ref4, _options$firstWeekCon, _options$locale2, _options$locale2$opti, _defaultOptions$local, _defaultOptions$local2, _ref5, _ref6, _ref7, _options$weekStartsOn, _options$locale3, _options$locale3$opti, _defaultOptions$local3, _defaultOptions$local4;
     requiredArgs(2, arguments);
     var formatStr = String(dirtyFormatStr);
-    var defaultOptions2 = getDefaultOptions();
-    var locale2 = (_ref = (_options$locale = options === null || options === void 0 ? void 0 : options.locale) !== null && _options$locale !== void 0 ? _options$locale : defaultOptions2.locale) !== null && _ref !== void 0 ? _ref : defaultLocale_default;
-    var firstWeekContainsDate = toInteger((_ref2 = (_ref3 = (_ref4 = (_options$firstWeekCon = options === null || options === void 0 ? void 0 : options.firstWeekContainsDate) !== null && _options$firstWeekCon !== void 0 ? _options$firstWeekCon : options === null || options === void 0 ? void 0 : (_options$locale2 = options.locale) === null || _options$locale2 === void 0 ? void 0 : (_options$locale2$opti = _options$locale2.options) === null || _options$locale2$opti === void 0 ? void 0 : _options$locale2$opti.firstWeekContainsDate) !== null && _ref4 !== void 0 ? _ref4 : defaultOptions2.firstWeekContainsDate) !== null && _ref3 !== void 0 ? _ref3 : (_defaultOptions$local = defaultOptions2.locale) === null || _defaultOptions$local === void 0 ? void 0 : (_defaultOptions$local2 = _defaultOptions$local.options) === null || _defaultOptions$local2 === void 0 ? void 0 : _defaultOptions$local2.firstWeekContainsDate) !== null && _ref2 !== void 0 ? _ref2 : 1);
+    var defaultOptions3 = getDefaultOptions();
+    var locale2 = (_ref = (_options$locale = options === null || options === void 0 ? void 0 : options.locale) !== null && _options$locale !== void 0 ? _options$locale : defaultOptions3.locale) !== null && _ref !== void 0 ? _ref : defaultLocale_default;
+    var firstWeekContainsDate = toInteger((_ref2 = (_ref3 = (_ref4 = (_options$firstWeekCon = options === null || options === void 0 ? void 0 : options.firstWeekContainsDate) !== null && _options$firstWeekCon !== void 0 ? _options$firstWeekCon : options === null || options === void 0 ? void 0 : (_options$locale2 = options.locale) === null || _options$locale2 === void 0 ? void 0 : (_options$locale2$opti = _options$locale2.options) === null || _options$locale2$opti === void 0 ? void 0 : _options$locale2$opti.firstWeekContainsDate) !== null && _ref4 !== void 0 ? _ref4 : defaultOptions3.firstWeekContainsDate) !== null && _ref3 !== void 0 ? _ref3 : (_defaultOptions$local = defaultOptions3.locale) === null || _defaultOptions$local === void 0 ? void 0 : (_defaultOptions$local2 = _defaultOptions$local.options) === null || _defaultOptions$local2 === void 0 ? void 0 : _defaultOptions$local2.firstWeekContainsDate) !== null && _ref2 !== void 0 ? _ref2 : 1);
     if (!(firstWeekContainsDate >= 1 && firstWeekContainsDate <= 7)) {
       throw new RangeError("firstWeekContainsDate must be between 1 and 7 inclusively");
     }
-    var weekStartsOn = toInteger((_ref5 = (_ref6 = (_ref7 = (_options$weekStartsOn = options === null || options === void 0 ? void 0 : options.weekStartsOn) !== null && _options$weekStartsOn !== void 0 ? _options$weekStartsOn : options === null || options === void 0 ? void 0 : (_options$locale3 = options.locale) === null || _options$locale3 === void 0 ? void 0 : (_options$locale3$opti = _options$locale3.options) === null || _options$locale3$opti === void 0 ? void 0 : _options$locale3$opti.weekStartsOn) !== null && _ref7 !== void 0 ? _ref7 : defaultOptions2.weekStartsOn) !== null && _ref6 !== void 0 ? _ref6 : (_defaultOptions$local3 = defaultOptions2.locale) === null || _defaultOptions$local3 === void 0 ? void 0 : (_defaultOptions$local4 = _defaultOptions$local3.options) === null || _defaultOptions$local4 === void 0 ? void 0 : _defaultOptions$local4.weekStartsOn) !== null && _ref5 !== void 0 ? _ref5 : 0);
+    var weekStartsOn = toInteger((_ref5 = (_ref6 = (_ref7 = (_options$weekStartsOn = options === null || options === void 0 ? void 0 : options.weekStartsOn) !== null && _options$weekStartsOn !== void 0 ? _options$weekStartsOn : options === null || options === void 0 ? void 0 : (_options$locale3 = options.locale) === null || _options$locale3 === void 0 ? void 0 : (_options$locale3$opti = _options$locale3.options) === null || _options$locale3$opti === void 0 ? void 0 : _options$locale3$opti.weekStartsOn) !== null && _ref7 !== void 0 ? _ref7 : defaultOptions3.weekStartsOn) !== null && _ref6 !== void 0 ? _ref6 : (_defaultOptions$local3 = defaultOptions3.locale) === null || _defaultOptions$local3 === void 0 ? void 0 : (_defaultOptions$local4 = _defaultOptions$local3.options) === null || _defaultOptions$local4 === void 0 ? void 0 : _defaultOptions$local4.weekStartsOn) !== null && _ref5 !== void 0 ? _ref5 : 0);
     if (!(weekStartsOn >= 0 && weekStartsOn <= 6)) {
       throw new RangeError("weekStartsOn must be between 0 and 6 inclusively");
     }
@@ -47790,8 +47835,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   function setUTCDay(dirtyDate, dirtyDay, options) {
     var _ref, _ref2, _ref3, _options$weekStartsOn, _options$locale, _options$locale$optio, _defaultOptions$local, _defaultOptions$local2;
     requiredArgs(2, arguments);
-    var defaultOptions2 = getDefaultOptions();
-    var weekStartsOn = toInteger((_ref = (_ref2 = (_ref3 = (_options$weekStartsOn = options === null || options === void 0 ? void 0 : options.weekStartsOn) !== null && _options$weekStartsOn !== void 0 ? _options$weekStartsOn : options === null || options === void 0 ? void 0 : (_options$locale = options.locale) === null || _options$locale === void 0 ? void 0 : (_options$locale$optio = _options$locale.options) === null || _options$locale$optio === void 0 ? void 0 : _options$locale$optio.weekStartsOn) !== null && _ref3 !== void 0 ? _ref3 : defaultOptions2.weekStartsOn) !== null && _ref2 !== void 0 ? _ref2 : (_defaultOptions$local = defaultOptions2.locale) === null || _defaultOptions$local === void 0 ? void 0 : (_defaultOptions$local2 = _defaultOptions$local.options) === null || _defaultOptions$local2 === void 0 ? void 0 : _defaultOptions$local2.weekStartsOn) !== null && _ref !== void 0 ? _ref : 0);
+    var defaultOptions3 = getDefaultOptions();
+    var weekStartsOn = toInteger((_ref = (_ref2 = (_ref3 = (_options$weekStartsOn = options === null || options === void 0 ? void 0 : options.weekStartsOn) !== null && _options$weekStartsOn !== void 0 ? _options$weekStartsOn : options === null || options === void 0 ? void 0 : (_options$locale = options.locale) === null || _options$locale === void 0 ? void 0 : (_options$locale$optio = _options$locale.options) === null || _options$locale$optio === void 0 ? void 0 : _options$locale$optio.weekStartsOn) !== null && _ref3 !== void 0 ? _ref3 : defaultOptions3.weekStartsOn) !== null && _ref2 !== void 0 ? _ref2 : (_defaultOptions$local = defaultOptions3.locale) === null || _defaultOptions$local === void 0 ? void 0 : (_defaultOptions$local2 = _defaultOptions$local.options) === null || _defaultOptions$local2 === void 0 ? void 0 : _defaultOptions$local2.weekStartsOn) !== null && _ref !== void 0 ? _ref : 0);
     if (!(weekStartsOn >= 0 && weekStartsOn <= 6)) {
       throw new RangeError("weekStartsOn must be between 0 and 6 inclusively");
     }
@@ -48844,16 +48889,16 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     requiredArgs(3, arguments);
     var dateString = String(dirtyDateString);
     var formatString = String(dirtyFormatString);
-    var defaultOptions2 = getDefaultOptions();
-    var locale2 = (_ref = (_options$locale = options === null || options === void 0 ? void 0 : options.locale) !== null && _options$locale !== void 0 ? _options$locale : defaultOptions2.locale) !== null && _ref !== void 0 ? _ref : defaultLocale_default;
+    var defaultOptions3 = getDefaultOptions();
+    var locale2 = (_ref = (_options$locale = options === null || options === void 0 ? void 0 : options.locale) !== null && _options$locale !== void 0 ? _options$locale : defaultOptions3.locale) !== null && _ref !== void 0 ? _ref : defaultLocale_default;
     if (!locale2.match) {
       throw new RangeError("locale must contain match property");
     }
-    var firstWeekContainsDate = toInteger((_ref2 = (_ref3 = (_ref4 = (_options$firstWeekCon = options === null || options === void 0 ? void 0 : options.firstWeekContainsDate) !== null && _options$firstWeekCon !== void 0 ? _options$firstWeekCon : options === null || options === void 0 ? void 0 : (_options$locale2 = options.locale) === null || _options$locale2 === void 0 ? void 0 : (_options$locale2$opti = _options$locale2.options) === null || _options$locale2$opti === void 0 ? void 0 : _options$locale2$opti.firstWeekContainsDate) !== null && _ref4 !== void 0 ? _ref4 : defaultOptions2.firstWeekContainsDate) !== null && _ref3 !== void 0 ? _ref3 : (_defaultOptions$local = defaultOptions2.locale) === null || _defaultOptions$local === void 0 ? void 0 : (_defaultOptions$local2 = _defaultOptions$local.options) === null || _defaultOptions$local2 === void 0 ? void 0 : _defaultOptions$local2.firstWeekContainsDate) !== null && _ref2 !== void 0 ? _ref2 : 1);
+    var firstWeekContainsDate = toInteger((_ref2 = (_ref3 = (_ref4 = (_options$firstWeekCon = options === null || options === void 0 ? void 0 : options.firstWeekContainsDate) !== null && _options$firstWeekCon !== void 0 ? _options$firstWeekCon : options === null || options === void 0 ? void 0 : (_options$locale2 = options.locale) === null || _options$locale2 === void 0 ? void 0 : (_options$locale2$opti = _options$locale2.options) === null || _options$locale2$opti === void 0 ? void 0 : _options$locale2$opti.firstWeekContainsDate) !== null && _ref4 !== void 0 ? _ref4 : defaultOptions3.firstWeekContainsDate) !== null && _ref3 !== void 0 ? _ref3 : (_defaultOptions$local = defaultOptions3.locale) === null || _defaultOptions$local === void 0 ? void 0 : (_defaultOptions$local2 = _defaultOptions$local.options) === null || _defaultOptions$local2 === void 0 ? void 0 : _defaultOptions$local2.firstWeekContainsDate) !== null && _ref2 !== void 0 ? _ref2 : 1);
     if (!(firstWeekContainsDate >= 1 && firstWeekContainsDate <= 7)) {
       throw new RangeError("firstWeekContainsDate must be between 1 and 7 inclusively");
     }
-    var weekStartsOn = toInteger((_ref5 = (_ref6 = (_ref7 = (_options$weekStartsOn = options === null || options === void 0 ? void 0 : options.weekStartsOn) !== null && _options$weekStartsOn !== void 0 ? _options$weekStartsOn : options === null || options === void 0 ? void 0 : (_options$locale3 = options.locale) === null || _options$locale3 === void 0 ? void 0 : (_options$locale3$opti = _options$locale3.options) === null || _options$locale3$opti === void 0 ? void 0 : _options$locale3$opti.weekStartsOn) !== null && _ref7 !== void 0 ? _ref7 : defaultOptions2.weekStartsOn) !== null && _ref6 !== void 0 ? _ref6 : (_defaultOptions$local3 = defaultOptions2.locale) === null || _defaultOptions$local3 === void 0 ? void 0 : (_defaultOptions$local4 = _defaultOptions$local3.options) === null || _defaultOptions$local4 === void 0 ? void 0 : _defaultOptions$local4.weekStartsOn) !== null && _ref5 !== void 0 ? _ref5 : 0);
+    var weekStartsOn = toInteger((_ref5 = (_ref6 = (_ref7 = (_options$weekStartsOn = options === null || options === void 0 ? void 0 : options.weekStartsOn) !== null && _options$weekStartsOn !== void 0 ? _options$weekStartsOn : options === null || options === void 0 ? void 0 : (_options$locale3 = options.locale) === null || _options$locale3 === void 0 ? void 0 : (_options$locale3$opti = _options$locale3.options) === null || _options$locale3$opti === void 0 ? void 0 : _options$locale3$opti.weekStartsOn) !== null && _ref7 !== void 0 ? _ref7 : defaultOptions3.weekStartsOn) !== null && _ref6 !== void 0 ? _ref6 : (_defaultOptions$local3 = defaultOptions3.locale) === null || _defaultOptions$local3 === void 0 ? void 0 : (_defaultOptions$local4 = _defaultOptions$local3.options) === null || _defaultOptions$local4 === void 0 ? void 0 : _defaultOptions$local4.weekStartsOn) !== null && _ref5 !== void 0 ? _ref5 : 0);
     if (!(weekStartsOn >= 0 && weekStartsOn <= 6)) {
       throw new RangeError("weekStartsOn must be between 0 and 6 inclusively");
     }
@@ -54857,9 +54902,947 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     });
   }
 
+  // node_modules/@googlemaps/markerclusterer/dist/index.esm.js
+  var import_fast_deep_equal = __toESM(require_fast_deep_equal());
+
+  // node_modules/kdbush/index.js
+  var ARRAY_TYPES = [
+    Int8Array,
+    Uint8Array,
+    Uint8ClampedArray,
+    Int16Array,
+    Uint16Array,
+    Int32Array,
+    Uint32Array,
+    Float32Array,
+    Float64Array
+  ];
+  var VERSION = 1;
+  var HEADER_SIZE = 8;
+  var KDBush = class {
+    static from(data) {
+      if (!(data instanceof ArrayBuffer)) {
+        throw new Error("Data must be an instance of ArrayBuffer.");
+      }
+      const [magic, versionAndType] = new Uint8Array(data, 0, 2);
+      if (magic !== 219) {
+        throw new Error("Data does not appear to be in a KDBush format.");
+      }
+      const version2 = versionAndType >> 4;
+      if (version2 !== VERSION) {
+        throw new Error(`Got v${version2} data when expected v${VERSION}.`);
+      }
+      const ArrayType = ARRAY_TYPES[versionAndType & 15];
+      if (!ArrayType) {
+        throw new Error("Unrecognized array type.");
+      }
+      const [nodeSize] = new Uint16Array(data, 2, 1);
+      const [numItems] = new Uint32Array(data, 4, 1);
+      return new KDBush(numItems, nodeSize, ArrayType, data);
+    }
+    constructor(numItems, nodeSize = 64, ArrayType = Float64Array, data) {
+      if (isNaN(numItems) || numItems < 0)
+        throw new Error(`Unpexpected numItems value: ${numItems}.`);
+      this.numItems = +numItems;
+      this.nodeSize = Math.min(Math.max(+nodeSize, 2), 65535);
+      this.ArrayType = ArrayType;
+      this.IndexArrayType = numItems < 65536 ? Uint16Array : Uint32Array;
+      const arrayTypeIndex = ARRAY_TYPES.indexOf(this.ArrayType);
+      const coordsByteSize = numItems * 2 * this.ArrayType.BYTES_PER_ELEMENT;
+      const idsByteSize = numItems * this.IndexArrayType.BYTES_PER_ELEMENT;
+      const padCoords = (8 - idsByteSize % 8) % 8;
+      if (arrayTypeIndex < 0) {
+        throw new Error(`Unexpected typed array class: ${ArrayType}.`);
+      }
+      if (data && data instanceof ArrayBuffer) {
+        this.data = data;
+        this.ids = new this.IndexArrayType(this.data, HEADER_SIZE, numItems);
+        this.coords = new this.ArrayType(this.data, HEADER_SIZE + idsByteSize + padCoords, numItems * 2);
+        this._pos = numItems * 2;
+        this._finished = true;
+      } else {
+        this.data = new ArrayBuffer(HEADER_SIZE + coordsByteSize + idsByteSize + padCoords);
+        this.ids = new this.IndexArrayType(this.data, HEADER_SIZE, numItems);
+        this.coords = new this.ArrayType(this.data, HEADER_SIZE + idsByteSize + padCoords, numItems * 2);
+        this._pos = 0;
+        this._finished = false;
+        new Uint8Array(this.data, 0, 2).set([219, (VERSION << 4) + arrayTypeIndex]);
+        new Uint16Array(this.data, 2, 1)[0] = nodeSize;
+        new Uint32Array(this.data, 4, 1)[0] = numItems;
+      }
+    }
+    add(x2, y3) {
+      const index2 = this._pos >> 1;
+      this.ids[index2] = index2;
+      this.coords[this._pos++] = x2;
+      this.coords[this._pos++] = y3;
+      return index2;
+    }
+    finish() {
+      const numAdded = this._pos >> 1;
+      if (numAdded !== this.numItems) {
+        throw new Error(`Added ${numAdded} items when expected ${this.numItems}.`);
+      }
+      sort(this.ids, this.coords, this.nodeSize, 0, this.numItems - 1, 0);
+      this._finished = true;
+      return this;
+    }
+    range(minX, minY, maxX, maxY) {
+      if (!this._finished)
+        throw new Error("Data not yet indexed - call index.finish().");
+      const { ids, coords, nodeSize } = this;
+      const stack = [0, ids.length - 1, 0];
+      const result = [];
+      while (stack.length) {
+        const axis = stack.pop() || 0;
+        const right = stack.pop() || 0;
+        const left = stack.pop() || 0;
+        if (right - left <= nodeSize) {
+          for (let i2 = left; i2 <= right; i2++) {
+            const x3 = coords[2 * i2];
+            const y4 = coords[2 * i2 + 1];
+            if (x3 >= minX && x3 <= maxX && y4 >= minY && y4 <= maxY)
+              result.push(ids[i2]);
+          }
+          continue;
+        }
+        const m3 = left + right >> 1;
+        const x2 = coords[2 * m3];
+        const y3 = coords[2 * m3 + 1];
+        if (x2 >= minX && x2 <= maxX && y3 >= minY && y3 <= maxY)
+          result.push(ids[m3]);
+        if (axis === 0 ? minX <= x2 : minY <= y3) {
+          stack.push(left);
+          stack.push(m3 - 1);
+          stack.push(1 - axis);
+        }
+        if (axis === 0 ? maxX >= x2 : maxY >= y3) {
+          stack.push(m3 + 1);
+          stack.push(right);
+          stack.push(1 - axis);
+        }
+      }
+      return result;
+    }
+    within(qx, qy, r) {
+      if (!this._finished)
+        throw new Error("Data not yet indexed - call index.finish().");
+      const { ids, coords, nodeSize } = this;
+      const stack = [0, ids.length - 1, 0];
+      const result = [];
+      const r2 = r * r;
+      while (stack.length) {
+        const axis = stack.pop() || 0;
+        const right = stack.pop() || 0;
+        const left = stack.pop() || 0;
+        if (right - left <= nodeSize) {
+          for (let i2 = left; i2 <= right; i2++) {
+            if (sqDist(coords[2 * i2], coords[2 * i2 + 1], qx, qy) <= r2)
+              result.push(ids[i2]);
+          }
+          continue;
+        }
+        const m3 = left + right >> 1;
+        const x2 = coords[2 * m3];
+        const y3 = coords[2 * m3 + 1];
+        if (sqDist(x2, y3, qx, qy) <= r2)
+          result.push(ids[m3]);
+        if (axis === 0 ? qx - r <= x2 : qy - r <= y3) {
+          stack.push(left);
+          stack.push(m3 - 1);
+          stack.push(1 - axis);
+        }
+        if (axis === 0 ? qx + r >= x2 : qy + r >= y3) {
+          stack.push(m3 + 1);
+          stack.push(right);
+          stack.push(1 - axis);
+        }
+      }
+      return result;
+    }
+  };
+  function sort(ids, coords, nodeSize, left, right, axis) {
+    if (right - left <= nodeSize)
+      return;
+    const m3 = left + right >> 1;
+    select2(ids, coords, m3, left, right, axis);
+    sort(ids, coords, nodeSize, left, m3 - 1, 1 - axis);
+    sort(ids, coords, nodeSize, m3 + 1, right, 1 - axis);
+  }
+  function select2(ids, coords, k2, left, right, axis) {
+    while (right > left) {
+      if (right - left > 600) {
+        const n = right - left + 1;
+        const m3 = k2 - left + 1;
+        const z2 = Math.log(n);
+        const s3 = 0.5 * Math.exp(2 * z2 / 3);
+        const sd = 0.5 * Math.sqrt(z2 * s3 * (n - s3) / n) * (m3 - n / 2 < 0 ? -1 : 1);
+        const newLeft = Math.max(left, Math.floor(k2 - m3 * s3 / n + sd));
+        const newRight = Math.min(right, Math.floor(k2 + (n - m3) * s3 / n + sd));
+        select2(ids, coords, k2, newLeft, newRight, axis);
+      }
+      const t2 = coords[2 * k2 + axis];
+      let i2 = left;
+      let j = right;
+      swapItem(ids, coords, left, k2);
+      if (coords[2 * right + axis] > t2)
+        swapItem(ids, coords, left, right);
+      while (i2 < j) {
+        swapItem(ids, coords, i2, j);
+        i2++;
+        j--;
+        while (coords[2 * i2 + axis] < t2)
+          i2++;
+        while (coords[2 * j + axis] > t2)
+          j--;
+      }
+      if (coords[2 * left + axis] === t2)
+        swapItem(ids, coords, left, j);
+      else {
+        j++;
+        swapItem(ids, coords, j, right);
+      }
+      if (j <= k2)
+        left = j + 1;
+      if (k2 <= j)
+        right = j - 1;
+    }
+  }
+  function swapItem(ids, coords, i2, j) {
+    swap2(ids, i2, j);
+    swap2(coords, 2 * i2, 2 * j);
+    swap2(coords, 2 * i2 + 1, 2 * j + 1);
+  }
+  function swap2(arr, i2, j) {
+    const tmp = arr[i2];
+    arr[i2] = arr[j];
+    arr[j] = tmp;
+  }
+  function sqDist(ax, ay, bx, by) {
+    const dx = ax - bx;
+    const dy = ay - by;
+    return dx * dx + dy * dy;
+  }
+
+  // node_modules/supercluster/index.js
+  var defaultOptions2 = {
+    minZoom: 0,
+    maxZoom: 16,
+    minPoints: 2,
+    radius: 40,
+    extent: 512,
+    nodeSize: 64,
+    log: false,
+    generateId: false,
+    reduce: null,
+    map: (props) => props
+  };
+  var fround = Math.fround || ((tmp) => (x2) => {
+    tmp[0] = +x2;
+    return tmp[0];
+  })(new Float32Array(1));
+  var OFFSET_ZOOM = 2;
+  var OFFSET_ID = 3;
+  var OFFSET_PARENT = 4;
+  var OFFSET_NUM = 5;
+  var OFFSET_PROP = 6;
+  var Supercluster = class {
+    constructor(options) {
+      this.options = Object.assign(Object.create(defaultOptions2), options);
+      this.trees = new Array(this.options.maxZoom + 1);
+      this.stride = this.options.reduce ? 7 : 6;
+      this.clusterProps = [];
+    }
+    load(points) {
+      const { log, minZoom, maxZoom } = this.options;
+      if (log)
+        console.time("total time");
+      const timerId = `prepare ${points.length} points`;
+      if (log)
+        console.time(timerId);
+      this.points = points;
+      const data = [];
+      for (let i2 = 0; i2 < points.length; i2++) {
+        const p = points[i2];
+        if (!p.geometry)
+          continue;
+        const [lng, lat] = p.geometry.coordinates;
+        const x2 = fround(lngX(lng));
+        const y3 = fround(latY(lat));
+        data.push(
+          x2,
+          y3,
+          Infinity,
+          i2,
+          -1,
+          1
+        );
+        if (this.options.reduce)
+          data.push(0);
+      }
+      let tree = this.trees[maxZoom + 1] = this._createTree(data);
+      if (log)
+        console.timeEnd(timerId);
+      for (let z2 = maxZoom; z2 >= minZoom; z2--) {
+        const now = +Date.now();
+        tree = this.trees[z2] = this._createTree(this._cluster(tree, z2));
+        if (log)
+          console.log("z%d: %d clusters in %dms", z2, tree.numItems, +Date.now() - now);
+      }
+      if (log)
+        console.timeEnd("total time");
+      return this;
+    }
+    getClusters(bbox, zoom) {
+      let minLng = ((bbox[0] + 180) % 360 + 360) % 360 - 180;
+      const minLat = Math.max(-90, Math.min(90, bbox[1]));
+      let maxLng = bbox[2] === 180 ? 180 : ((bbox[2] + 180) % 360 + 360) % 360 - 180;
+      const maxLat = Math.max(-90, Math.min(90, bbox[3]));
+      if (bbox[2] - bbox[0] >= 360) {
+        minLng = -180;
+        maxLng = 180;
+      } else if (minLng > maxLng) {
+        const easternHem = this.getClusters([minLng, minLat, 180, maxLat], zoom);
+        const westernHem = this.getClusters([-180, minLat, maxLng, maxLat], zoom);
+        return easternHem.concat(westernHem);
+      }
+      const tree = this.trees[this._limitZoom(zoom)];
+      const ids = tree.range(lngX(minLng), latY(maxLat), lngX(maxLng), latY(minLat));
+      const data = tree.data;
+      const clusters = [];
+      for (const id of ids) {
+        const k2 = this.stride * id;
+        clusters.push(data[k2 + OFFSET_NUM] > 1 ? getClusterJSON(data, k2, this.clusterProps) : this.points[data[k2 + OFFSET_ID]]);
+      }
+      return clusters;
+    }
+    getChildren(clusterId) {
+      const originId = this._getOriginId(clusterId);
+      const originZoom = this._getOriginZoom(clusterId);
+      const errorMsg = "No cluster with the specified id.";
+      const tree = this.trees[originZoom];
+      if (!tree)
+        throw new Error(errorMsg);
+      const data = tree.data;
+      if (originId * this.stride >= data.length)
+        throw new Error(errorMsg);
+      const r = this.options.radius / (this.options.extent * Math.pow(2, originZoom - 1));
+      const x2 = data[originId * this.stride];
+      const y3 = data[originId * this.stride + 1];
+      const ids = tree.within(x2, y3, r);
+      const children = [];
+      for (const id of ids) {
+        const k2 = id * this.stride;
+        if (data[k2 + OFFSET_PARENT] === clusterId) {
+          children.push(data[k2 + OFFSET_NUM] > 1 ? getClusterJSON(data, k2, this.clusterProps) : this.points[data[k2 + OFFSET_ID]]);
+        }
+      }
+      if (children.length === 0)
+        throw new Error(errorMsg);
+      return children;
+    }
+    getLeaves(clusterId, limit, offset) {
+      limit = limit || 10;
+      offset = offset || 0;
+      const leaves = [];
+      this._appendLeaves(leaves, clusterId, limit, offset, 0);
+      return leaves;
+    }
+    getTile(z2, x2, y3) {
+      const tree = this.trees[this._limitZoom(z2)];
+      const z22 = Math.pow(2, z2);
+      const { extent, radius } = this.options;
+      const p = radius / extent;
+      const top = (y3 - p) / z22;
+      const bottom = (y3 + 1 + p) / z22;
+      const tile = {
+        features: []
+      };
+      this._addTileFeatures(
+        tree.range((x2 - p) / z22, top, (x2 + 1 + p) / z22, bottom),
+        tree.data,
+        x2,
+        y3,
+        z22,
+        tile
+      );
+      if (x2 === 0) {
+        this._addTileFeatures(
+          tree.range(1 - p / z22, top, 1, bottom),
+          tree.data,
+          z22,
+          y3,
+          z22,
+          tile
+        );
+      }
+      if (x2 === z22 - 1) {
+        this._addTileFeatures(
+          tree.range(0, top, p / z22, bottom),
+          tree.data,
+          -1,
+          y3,
+          z22,
+          tile
+        );
+      }
+      return tile.features.length ? tile : null;
+    }
+    getClusterExpansionZoom(clusterId) {
+      let expansionZoom = this._getOriginZoom(clusterId) - 1;
+      while (expansionZoom <= this.options.maxZoom) {
+        const children = this.getChildren(clusterId);
+        expansionZoom++;
+        if (children.length !== 1)
+          break;
+        clusterId = children[0].properties.cluster_id;
+      }
+      return expansionZoom;
+    }
+    _appendLeaves(result, clusterId, limit, offset, skipped) {
+      const children = this.getChildren(clusterId);
+      for (const child of children) {
+        const props = child.properties;
+        if (props && props.cluster) {
+          if (skipped + props.point_count <= offset) {
+            skipped += props.point_count;
+          } else {
+            skipped = this._appendLeaves(result, props.cluster_id, limit, offset, skipped);
+          }
+        } else if (skipped < offset) {
+          skipped++;
+        } else {
+          result.push(child);
+        }
+        if (result.length === limit)
+          break;
+      }
+      return skipped;
+    }
+    _createTree(data) {
+      const tree = new KDBush(data.length / this.stride | 0, this.options.nodeSize, Float32Array);
+      for (let i2 = 0; i2 < data.length; i2 += this.stride)
+        tree.add(data[i2], data[i2 + 1]);
+      tree.finish();
+      tree.data = data;
+      return tree;
+    }
+    _addTileFeatures(ids, data, x2, y3, z2, tile) {
+      for (const i2 of ids) {
+        const k2 = i2 * this.stride;
+        const isCluster = data[k2 + OFFSET_NUM] > 1;
+        let tags, px, py;
+        if (isCluster) {
+          tags = getClusterProperties(data, k2, this.clusterProps);
+          px = data[k2];
+          py = data[k2 + 1];
+        } else {
+          const p = this.points[data[k2 + OFFSET_ID]];
+          tags = p.properties;
+          const [lng, lat] = p.geometry.coordinates;
+          px = lngX(lng);
+          py = latY(lat);
+        }
+        const f = {
+          type: 1,
+          geometry: [[
+            Math.round(this.options.extent * (px * z2 - x2)),
+            Math.round(this.options.extent * (py * z2 - y3))
+          ]],
+          tags
+        };
+        let id;
+        if (isCluster || this.options.generateId) {
+          id = data[k2 + OFFSET_ID];
+        } else {
+          id = this.points[data[k2 + OFFSET_ID]].id;
+        }
+        if (id !== void 0)
+          f.id = id;
+        tile.features.push(f);
+      }
+    }
+    _limitZoom(z2) {
+      return Math.max(this.options.minZoom, Math.min(Math.floor(+z2), this.options.maxZoom + 1));
+    }
+    _cluster(tree, zoom) {
+      const { radius, extent, reduce, minPoints } = this.options;
+      const r = radius / (extent * Math.pow(2, zoom));
+      const data = tree.data;
+      const nextData = [];
+      const stride = this.stride;
+      for (let i2 = 0; i2 < data.length; i2 += stride) {
+        if (data[i2 + OFFSET_ZOOM] <= zoom)
+          continue;
+        data[i2 + OFFSET_ZOOM] = zoom;
+        const x2 = data[i2];
+        const y3 = data[i2 + 1];
+        const neighborIds = tree.within(data[i2], data[i2 + 1], r);
+        const numPointsOrigin = data[i2 + OFFSET_NUM];
+        let numPoints = numPointsOrigin;
+        for (const neighborId of neighborIds) {
+          const k2 = neighborId * stride;
+          if (data[k2 + OFFSET_ZOOM] > zoom)
+            numPoints += data[k2 + OFFSET_NUM];
+        }
+        if (numPoints > numPointsOrigin && numPoints >= minPoints) {
+          let wx = x2 * numPointsOrigin;
+          let wy = y3 * numPointsOrigin;
+          let clusterProperties;
+          let clusterPropIndex = -1;
+          const id = ((i2 / stride | 0) << 5) + (zoom + 1) + this.points.length;
+          for (const neighborId of neighborIds) {
+            const k2 = neighborId * stride;
+            if (data[k2 + OFFSET_ZOOM] <= zoom)
+              continue;
+            data[k2 + OFFSET_ZOOM] = zoom;
+            const numPoints2 = data[k2 + OFFSET_NUM];
+            wx += data[k2] * numPoints2;
+            wy += data[k2 + 1] * numPoints2;
+            data[k2 + OFFSET_PARENT] = id;
+            if (reduce) {
+              if (!clusterProperties) {
+                clusterProperties = this._map(data, i2, true);
+                clusterPropIndex = this.clusterProps.length;
+                this.clusterProps.push(clusterProperties);
+              }
+              reduce(clusterProperties, this._map(data, k2));
+            }
+          }
+          data[i2 + OFFSET_PARENT] = id;
+          nextData.push(wx / numPoints, wy / numPoints, Infinity, id, -1, numPoints);
+          if (reduce)
+            nextData.push(clusterPropIndex);
+        } else {
+          for (let j = 0; j < stride; j++)
+            nextData.push(data[i2 + j]);
+          if (numPoints > 1) {
+            for (const neighborId of neighborIds) {
+              const k2 = neighborId * stride;
+              if (data[k2 + OFFSET_ZOOM] <= zoom)
+                continue;
+              data[k2 + OFFSET_ZOOM] = zoom;
+              for (let j = 0; j < stride; j++)
+                nextData.push(data[k2 + j]);
+            }
+          }
+        }
+      }
+      return nextData;
+    }
+    _getOriginId(clusterId) {
+      return clusterId - this.points.length >> 5;
+    }
+    _getOriginZoom(clusterId) {
+      return (clusterId - this.points.length) % 32;
+    }
+    _map(data, i2, clone3) {
+      if (data[i2 + OFFSET_NUM] > 1) {
+        const props = this.clusterProps[data[i2 + OFFSET_PROP]];
+        return clone3 ? Object.assign({}, props) : props;
+      }
+      const original = this.points[data[i2 + OFFSET_ID]].properties;
+      const result = this.options.map(original);
+      return clone3 && result === original ? Object.assign({}, result) : result;
+    }
+  };
+  function getClusterJSON(data, i2, clusterProps) {
+    return {
+      type: "Feature",
+      id: data[i2 + OFFSET_ID],
+      properties: getClusterProperties(data, i2, clusterProps),
+      geometry: {
+        type: "Point",
+        coordinates: [xLng(data[i2]), yLat(data[i2 + 1])]
+      }
+    };
+  }
+  function getClusterProperties(data, i2, clusterProps) {
+    const count = data[i2 + OFFSET_NUM];
+    const abbrev = count >= 1e4 ? `${Math.round(count / 1e3)}k` : count >= 1e3 ? `${Math.round(count / 100) / 10}k` : count;
+    const propIndex = data[i2 + OFFSET_PROP];
+    const properties = propIndex === -1 ? {} : Object.assign({}, clusterProps[propIndex]);
+    return Object.assign(properties, {
+      cluster: true,
+      cluster_id: data[i2 + OFFSET_ID],
+      point_count: count,
+      point_count_abbreviated: abbrev
+    });
+  }
+  function lngX(lng) {
+    return lng / 360 + 0.5;
+  }
+  function latY(lat) {
+    const sin = Math.sin(lat * Math.PI / 180);
+    const y3 = 0.5 - 0.25 * Math.log((1 + sin) / (1 - sin)) / Math.PI;
+    return y3 < 0 ? 0 : y3 > 1 ? 1 : y3;
+  }
+  function xLng(x2) {
+    return (x2 - 0.5) * 360;
+  }
+  function yLat(y3) {
+    const y22 = (180 - y3 * 360) * Math.PI / 180;
+    return 360 * Math.atan(Math.exp(y22)) / Math.PI - 90;
+  }
+
+  // node_modules/@googlemaps/markerclusterer/dist/index.esm.js
+  function __rest(s3, e2) {
+    var t2 = {};
+    for (var p in s3)
+      if (Object.prototype.hasOwnProperty.call(s3, p) && e2.indexOf(p) < 0)
+        t2[p] = s3[p];
+    if (s3 != null && typeof Object.getOwnPropertySymbols === "function")
+      for (var i2 = 0, p = Object.getOwnPropertySymbols(s3); i2 < p.length; i2++) {
+        if (e2.indexOf(p[i2]) < 0 && Object.prototype.propertyIsEnumerable.call(s3, p[i2]))
+          t2[p[i2]] = s3[p[i2]];
+      }
+    return t2;
+  }
+  var MarkerUtils = class {
+    static isAdvancedMarkerAvailable(map3) {
+      return google.maps.marker && map3.getMapCapabilities().isAdvancedMarkersAvailable === true;
+    }
+    static isAdvancedMarker(marker) {
+      return google.maps.marker && marker instanceof google.maps.marker.AdvancedMarkerElement;
+    }
+    static setMap(marker, map3) {
+      if (this.isAdvancedMarker(marker)) {
+        marker.map = map3;
+      } else {
+        marker.setMap(map3);
+      }
+    }
+    static getPosition(marker) {
+      if (this.isAdvancedMarker(marker)) {
+        if (marker.position) {
+          if (marker.position instanceof google.maps.LatLng) {
+            return marker.position;
+          }
+          if (marker.position.lat && marker.position.lng) {
+            return new google.maps.LatLng(marker.position.lat, marker.position.lng);
+          }
+        }
+        return new google.maps.LatLng(null);
+      }
+      return marker.getPosition();
+    }
+    static getVisible(marker) {
+      if (this.isAdvancedMarker(marker)) {
+        return true;
+      }
+      return marker.getVisible();
+    }
+  };
+  var Cluster = class {
+    constructor({ markers, position }) {
+      this.markers = markers;
+      if (position) {
+        if (position instanceof google.maps.LatLng) {
+          this._position = position;
+        } else {
+          this._position = new google.maps.LatLng(position);
+        }
+      }
+    }
+    get bounds() {
+      if (this.markers.length === 0 && !this._position) {
+        return;
+      }
+      const bounds = new google.maps.LatLngBounds(this._position, this._position);
+      for (const marker of this.markers) {
+        bounds.extend(MarkerUtils.getPosition(marker));
+      }
+      return bounds;
+    }
+    get position() {
+      return this._position || this.bounds.getCenter();
+    }
+    get count() {
+      return this.markers.filter((m3) => MarkerUtils.getVisible(m3)).length;
+    }
+    push(marker) {
+      this.markers.push(marker);
+    }
+    delete() {
+      if (this.marker) {
+        MarkerUtils.setMap(this.marker, null);
+        this.marker = void 0;
+      }
+      this.markers.length = 0;
+    }
+  };
+  var AbstractAlgorithm = class {
+    constructor({ maxZoom = 16 }) {
+      this.maxZoom = maxZoom;
+    }
+    noop({ markers }) {
+      return noop3(markers);
+    }
+  };
+  var noop3 = (markers) => {
+    const clusters = markers.map((marker) => new Cluster({
+      position: MarkerUtils.getPosition(marker),
+      markers: [marker]
+    }));
+    return clusters;
+  };
+  var SuperClusterAlgorithm = class extends AbstractAlgorithm {
+    constructor(_a) {
+      var { maxZoom, radius = 60 } = _a, options = __rest(_a, ["maxZoom", "radius"]);
+      super({ maxZoom });
+      this.state = { zoom: -1 };
+      this.superCluster = new Supercluster(Object.assign({ maxZoom: this.maxZoom, radius }, options));
+    }
+    calculate(input) {
+      let changed = false;
+      const state = { zoom: input.map.getZoom() };
+      if (!(0, import_fast_deep_equal.default)(input.markers, this.markers)) {
+        changed = true;
+        this.markers = [...input.markers];
+        const points = this.markers.map((marker) => {
+          const position = MarkerUtils.getPosition(marker);
+          const coordinates = [position.lng(), position.lat()];
+          return {
+            type: "Feature",
+            geometry: {
+              type: "Point",
+              coordinates
+            },
+            properties: { marker }
+          };
+        });
+        this.superCluster.load(points);
+      }
+      if (!changed) {
+        if (this.state.zoom <= this.maxZoom || state.zoom <= this.maxZoom) {
+          changed = !(0, import_fast_deep_equal.default)(this.state, state);
+        }
+      }
+      this.state = state;
+      if (changed) {
+        this.clusters = this.cluster(input);
+      }
+      return { clusters: this.clusters, changed };
+    }
+    cluster({ map: map3 }) {
+      return this.superCluster.getClusters([-180, -90, 180, 90], Math.round(map3.getZoom())).map((feature) => this.transformCluster(feature));
+    }
+    transformCluster({ geometry: { coordinates: [lng, lat] }, properties }) {
+      if (properties.cluster) {
+        return new Cluster({
+          markers: this.superCluster.getLeaves(properties.cluster_id, Infinity).map((leaf) => leaf.properties.marker),
+          position: { lat, lng }
+        });
+      }
+      const marker = properties.marker;
+      return new Cluster({
+        markers: [marker],
+        position: MarkerUtils.getPosition(marker)
+      });
+    }
+  };
+  var ClusterStats = class {
+    constructor(markers, clusters) {
+      this.markers = { sum: markers.length };
+      const clusterMarkerCounts = clusters.map((a3) => a3.count);
+      const clusterMarkerSum = clusterMarkerCounts.reduce((a3, b2) => a3 + b2, 0);
+      this.clusters = {
+        count: clusters.length,
+        markers: {
+          mean: clusterMarkerSum / clusters.length,
+          sum: clusterMarkerSum,
+          min: Math.min(...clusterMarkerCounts),
+          max: Math.max(...clusterMarkerCounts)
+        }
+      };
+    }
+  };
+  var DefaultRenderer = class {
+    render({ count, position }, stats, map3) {
+      const color2 = count > Math.max(10, stats.clusters.markers.mean) ? "#ff0000" : "#0000ff";
+      const svg = `<svg fill="${color2}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="50" height="50">
+<circle cx="120" cy="120" opacity=".6" r="70" />
+<circle cx="120" cy="120" opacity=".3" r="90" />
+<circle cx="120" cy="120" opacity=".2" r="110" />
+<text x="50%" y="50%" style="fill:#fff" text-anchor="middle" font-size="50" dominant-baseline="middle" font-family="roboto,arial,sans-serif">${count}</text>
+</svg>`;
+      const title = `Cluster of ${count} markers`, zIndex = Number(google.maps.Marker.MAX_ZINDEX) + count;
+      if (MarkerUtils.isAdvancedMarkerAvailable(map3)) {
+        const parser = new DOMParser();
+        const svgEl = parser.parseFromString(svg, "image/svg+xml").documentElement;
+        svgEl.setAttribute("transform", "translate(0 25)");
+        const clusterOptions2 = {
+          map: map3,
+          position,
+          zIndex,
+          title,
+          content: svgEl
+        };
+        return new google.maps.marker.AdvancedMarkerElement(clusterOptions2);
+      }
+      const clusterOptions = {
+        position,
+        zIndex,
+        title,
+        icon: {
+          url: `data:image/svg+xml;base64,${btoa(svg)}`,
+          anchor: new google.maps.Point(25, 25)
+        }
+      };
+      return new google.maps.Marker(clusterOptions);
+    }
+  };
+  function extend2(type1, type2) {
+    for (let property in type2.prototype) {
+      type1.prototype[property] = type2.prototype[property];
+    }
+  }
+  var OverlayViewSafe = class {
+    constructor() {
+      extend2(OverlayViewSafe, google.maps.OverlayView);
+    }
+  };
+  var MarkerClustererEvents;
+  (function(MarkerClustererEvents2) {
+    MarkerClustererEvents2["CLUSTERING_BEGIN"] = "clusteringbegin";
+    MarkerClustererEvents2["CLUSTERING_END"] = "clusteringend";
+    MarkerClustererEvents2["CLUSTER_CLICK"] = "click";
+  })(MarkerClustererEvents || (MarkerClustererEvents = {}));
+  var defaultOnClusterClickHandler = (_, cluster, map3) => {
+    map3.fitBounds(cluster.bounds);
+  };
+  var MarkerClusterer = class extends OverlayViewSafe {
+    constructor({ map: map3, markers = [], algorithmOptions = {}, algorithm = new SuperClusterAlgorithm(algorithmOptions), renderer = new DefaultRenderer(), onClusterClick = defaultOnClusterClickHandler }) {
+      super();
+      this.markers = [...markers];
+      this.clusters = [];
+      this.algorithm = algorithm;
+      this.renderer = renderer;
+      this.onClusterClick = onClusterClick;
+      if (map3) {
+        this.setMap(map3);
+      }
+    }
+    addMarker(marker, noDraw) {
+      if (this.markers.includes(marker)) {
+        return;
+      }
+      this.markers.push(marker);
+      if (!noDraw) {
+        this.render();
+      }
+    }
+    addMarkers(markers, noDraw) {
+      markers.forEach((marker) => {
+        this.addMarker(marker, true);
+      });
+      if (!noDraw) {
+        this.render();
+      }
+    }
+    removeMarker(marker, noDraw) {
+      const index2 = this.markers.indexOf(marker);
+      if (index2 === -1) {
+        return false;
+      }
+      MarkerUtils.setMap(marker, null);
+      this.markers.splice(index2, 1);
+      if (!noDraw) {
+        this.render();
+      }
+      return true;
+    }
+    removeMarkers(markers, noDraw) {
+      let removed = false;
+      markers.forEach((marker) => {
+        removed = this.removeMarker(marker, true) || removed;
+      });
+      if (removed && !noDraw) {
+        this.render();
+      }
+      return removed;
+    }
+    clearMarkers(noDraw) {
+      this.markers.length = 0;
+      if (!noDraw) {
+        this.render();
+      }
+    }
+    render() {
+      const map3 = this.getMap();
+      if (map3 instanceof google.maps.Map && map3.getProjection()) {
+        google.maps.event.trigger(this, MarkerClustererEvents.CLUSTERING_BEGIN, this);
+        const { clusters, changed } = this.algorithm.calculate({
+          markers: this.markers,
+          map: map3,
+          mapCanvasProjection: this.getProjection()
+        });
+        if (changed || changed == void 0) {
+          const singleMarker = /* @__PURE__ */ new Set();
+          for (const cluster of clusters) {
+            if (cluster.markers.length == 1) {
+              singleMarker.add(cluster.markers[0]);
+            }
+          }
+          const groupMarkers = [];
+          for (const cluster of this.clusters) {
+            if (cluster.marker == null) {
+              continue;
+            }
+            if (cluster.markers.length == 1) {
+              if (!singleMarker.has(cluster.marker)) {
+                MarkerUtils.setMap(cluster.marker, null);
+              }
+            } else {
+              groupMarkers.push(cluster.marker);
+            }
+          }
+          this.clusters = clusters;
+          this.renderClusters();
+          requestAnimationFrame(() => groupMarkers.forEach((marker) => MarkerUtils.setMap(marker, null)));
+        }
+        google.maps.event.trigger(this, MarkerClustererEvents.CLUSTERING_END, this);
+      }
+    }
+    onAdd() {
+      this.idleListener = this.getMap().addListener("idle", this.render.bind(this));
+      this.render();
+    }
+    onRemove() {
+      google.maps.event.removeListener(this.idleListener);
+      this.reset();
+    }
+    reset() {
+      this.markers.forEach((marker) => MarkerUtils.setMap(marker, null));
+      this.clusters.forEach((cluster) => cluster.delete());
+      this.clusters = [];
+    }
+    renderClusters() {
+      const stats = new ClusterStats(this.markers, this.clusters);
+      const map3 = this.getMap();
+      this.clusters.forEach((cluster) => {
+        if (cluster.markers.length === 1) {
+          cluster.marker = cluster.markers[0];
+        } else {
+          cluster.marker = this.renderer.render(cluster, stats, map3);
+          cluster.markers.forEach((marker) => MarkerUtils.setMap(marker, null));
+          if (this.onClusterClick) {
+            cluster.marker.addListener(
+              "click",
+              (event) => {
+                google.maps.event.trigger(this, MarkerClustererEvents.CLUSTER_CLICK, cluster);
+                this.onClusterClick(event, cluster, map3);
+              }
+            );
+          }
+        }
+        MarkerUtils.setMap(cluster.marker, map3);
+      });
+    }
+  };
+
   // app/javascript/forge/Map.tsx
   var google3 = window.google;
-  var MarkerClusterer = window.MarkerClusterer;
   var Map2 = (props) => {
     const mapRef = (0, import_react21.useRef)(null);
     const [map3, setMap] = (0, import_react21.useState)(null);
@@ -54992,29 +55975,30 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     });
   }
   function addClusters(map3, existingClusterer, markers) {
-    const clusterer = existingClusterer || new MarkerClusterer(map3, [], {
-      minimumClusterSize: 10,
-      maxZoom: 20,
-      styles: [
-        {
-          textColor: "white",
-          url: "/markerclusterer/m1.png",
-          width: 53,
-          height: 52
-        },
-        {
-          textColor: "white",
-          url: "/markerclusterer/m2.png",
-          width: 56,
-          height: 55
-        },
-        {
-          textColor: "white",
-          url: "/markerclusterer/m3.png",
-          width: 66,
-          height: 65
-        }
-      ]
+    const clusterer = existingClusterer || new MarkerClusterer({
+      map: map3,
+      markers: [],
+      renderer: { render: ({ count, position }, stats) => {
+        const color2 = "red";
+        const svg = window.btoa(`
+  <svg fill="${color2}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240">
+    <circle cx="120" cy="120" opacity=".8" r="70" />    
+  </svg>`);
+        const diameter = count >= 100 ? 60 : count > 10 ? 50 : 40;
+        return new google3.maps.Marker({
+          position,
+          icon: {
+            url: `data:image/svg+xml;base64,${svg}`,
+            scaledSize: new google3.maps.Size(diameter, diameter)
+          },
+          label: {
+            text: String(count),
+            color: "rgba(255,255,255,0.9)",
+            fontSize: "12px"
+          },
+          zIndex: Number(google3.maps.Marker.MAX_ZINDEX) + count
+        });
+      } }
     });
     clusterer.clearMarkers();
     if (markers) {
@@ -56318,7 +57302,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   function isArray2(x2) {
     return Boolean(x2 && typeof x2.length !== "undefined");
   }
-  function noop3() {
+  function noop4() {
   }
   function bind(fn, thisArg) {
     return function() {
@@ -56435,7 +57419,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     return this.then(null, onRejected);
   };
   Promise2.prototype.then = function(onFulfilled, onRejected) {
-    var prom = new this.constructor(noop3);
+    var prom = new this.constructor(noop4);
     handle(this, new Handler(onFulfilled, onRejected, prom));
     return prom;
   };
@@ -58571,6 +59555,20 @@ object-assign
  * @copyright 2016 PixelCog, Inc.
  * @license MIT (https://github.com/pixelcog/parallax.js/blob/master/LICENSE)
  */
+/*! *****************************************************************************
+Copyright (c) Microsoft Corporation.
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
+***************************************************************************** */
 /**
  * Checks if an event is supported in the current execution environment.
  *

@@ -3,11 +3,9 @@ import { connect } from 'react-redux'
 import loadWMS from './wms'
 import * as actions from './actions'
 import { propertyChanged, addOpacity, generateMarkers, highlightMarkers } from './MapComponent'
-import {finishedFocusing} from "./actions";
+import { MarkerClusterer } from "@googlemaps/markerclusterer";
 
 const google = window.google
-// @ts-ignore
-const MarkerClusterer = window.MarkerClusterer
 
 const Map = (props: MapProps) => {
   const mapRef = useRef<HTMLDivElement>(null)
@@ -149,34 +147,42 @@ function addLayers(map, layers) {
 }
 
 function addClusters(map, existingClusterer, markers) {
-  const clusterer = existingClusterer || new MarkerClusterer(map, [], {
-    minimumClusterSize: 10,
-    maxZoom: 20,
-    styles: [
-      {
-        textColor: 'white',
-        url: '/markerclusterer/m1.png',
-        width: 53,
-        height: 52
-      }, {
-        textColor: 'white',
-        url: '/markerclusterer/m2.png',
-        width: 56,
-        height: 55
-      }, {
-        textColor: 'white',
-        url: '/markerclusterer/m3.png',
-        width: 66,
-        height: 65
-      }
-    ]
-  })
+  const clusterer = existingClusterer || new MarkerClusterer({
+    map,
+    markers: [],
+    renderer: { render: ({ count, position }, stats) => {
+      const color = "red";
+      // create svg url with fill color
+      const svg = window.btoa(`
+  <svg fill="${color}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240">
+    <circle cx="120" cy="120" opacity=".8" r="70" />    
+  </svg>`);
+      const diameter = (count >= 100) ? 60 : count > 10 ? 50 : 40;
+      // create marker using svg icon
+      return new google.maps.Marker({
+        position,
+        icon: {
+          url: `data:image/svg+xml;base64,${svg}`,
+          scaledSize: new google.maps.Size(diameter, diameter),
+        },
+        label: {
+          text: String(count),
+          color: "rgba(255,255,255,0.9)",
+          fontSize: "12px",
+        },
+        // adjust zIndex to be above other markers
+        zIndex: Number(google.maps.Marker.MAX_ZINDEX) + count,
+      });
+    }}
+  });
 
-  clusterer.clearMarkers()
+  clusterer.clearMarkers();
 
-  if (markers) { clusterer.addMarkers(Object.values(markers)) }
+  if (markers) {
+    clusterer.addMarkers(Object.values(markers));
+  }
 
-  return clusterer
+  return clusterer;
 }
 
 const mapStateToProps = state => {

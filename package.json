@@ -4,6 +4,7 @@
   },
   "dependencies": {
     "@airbrake/browser": "^1.4.1",
+    "@googlemaps/markerclusterer": "^2.5.3",
     "@rails/actiontext": "^6.0.2-2",
     "@rails/ujs": "^6.0.4",
     "@types/react": "^17.0.15",
