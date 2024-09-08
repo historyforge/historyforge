@@ -119,6 +119,7 @@ class CensusRecord < ApplicationRecord
         .positive?
   end
 
+  # @return [Array<Person>]
   def likely_person_matches
     result = People::LikelyMatches.run!(record: self)
     @likely_exact_matches = result[:exact]
@@ -126,6 +127,7 @@ class CensusRecord < ApplicationRecord
   end
   memoize :likely_person_matches
 
+  # @return [Boolean]
   def likely_exact_matches? = @likely_exact_matches || false
 
   def fellows

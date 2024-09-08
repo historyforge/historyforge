@@ -117,7 +117,7 @@ RSpec.describe Person do
       let(:record) { build(:census1900_record, birth_year: 1872, age: 28) }
 
       it 'returns true' do
-        expect(person).to be_similar_in_age(record)
+        expect(person).to be_similar(record)
       end
     end
 
@@ -125,7 +125,7 @@ RSpec.describe Person do
       let(:record) { build(:census1900_record, birth_year: 1873, age: 27) }
 
       it 'returns true' do
-        expect(person).to be_similar_in_age(record)
+        expect(person).to be_similar(record)
       end
     end
 
@@ -133,7 +133,7 @@ RSpec.describe Person do
       let(:record) { build(:census1900_record, birth_year: 1874, age: 26) }
 
       it 'returns true' do
-        expect(person).to be_similar_in_age(record)
+        expect(person).to be_similar(record)
       end
     end
 
@@ -141,7 +141,7 @@ RSpec.describe Person do
       let(:record) { build(:census1900_record, birth_year: 1878, age: 20) }
 
       it 'returns false' do
-        expect(person).not_to be_similar_in_age(record)
+        expect(person).not_to be_similar(record)
       end
     end
   end

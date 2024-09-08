@@ -6,7 +6,7 @@ module People
     object :record, class: 'CensusRecord'
 
     def execute
-      return [] if only_one_census_going?
+      return { matches: [], exact: false } if only_one_census_going?
 
       matches = exact_matches
       return { matches:, exact: true } if matches.present?
