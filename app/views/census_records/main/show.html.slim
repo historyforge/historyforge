@@ -136,6 +136,8 @@ div.mb-3.clearfix.d-flex.justify-content-between
             p No matches on Last Name/First Name or Last Name.
         - else
           .list-group
+            - unless @record.likely_exact_matches?
+              .list-group-item No exact matches. Showing possible (but usually unlikely) matches.
             - @record.likely_person_matches.each do |match|
               .list-group-item
                 = form_for @record, html: { class: 'float-right' } do |form|
@@ -145,7 +147,7 @@ div.mb-3.clearfix.d-flex.justify-content-between
                   => match.name
                   i.fa.fa-external-link
                 p
-                  | Age: #{match.age_in_year(@record.year)} |&nbsp; #{match.relation_to_head} |&nbsp; #{match.occupation}
+                  | Age: #{match.age_in_year(@record.year)} |&nbsp; #{translated_option('race', match.race)} |&nbsp; #{match.occupation} |&nbsp; #{match.relation_to_head}
                 p.mb-0= match.address
 
     - if can?(:review, CensusRecord)

@@ -120,9 +120,13 @@ class CensusRecord < ApplicationRecord
   end
 
   def likely_person_matches
-    People::LikelyMatches.run!(record: self)
+    result = People::LikelyMatches.run!(record: self)
+    @likely_exact_matches = result[:exact]
+    result[:matches]
   end
   memoize :likely_person_matches
+
+  def likely_exact_matches? = @likely_exact_matches || false
 
   def fellows
     CensusRecords::FindFamilyMembers.run!(record: self)

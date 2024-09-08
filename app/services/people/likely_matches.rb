@@ -8,7 +8,10 @@ module People
     def execute
       return [] if only_one_census_going?
 
-      exact_matches || fuzzy_matches || []
+      matches = exact_matches
+      return { matches:, exact: true } if matches.present?
+
+      { matches: fuzzy_matches || [], exact: false }
     end
 
     private
@@ -21,7 +24,7 @@ module People
       matches
         .preload(*CensusYears.map { |year| :"census#{year}_records" })
         .to_a
-        .select { |match| match.census_records.blank? || match.similar_in_age?(record) }
+        .select { |match| match.census_records.blank? || match.similar?(record) }
     end
 
     def first_name
