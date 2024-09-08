@@ -30,8 +30,8 @@ class CensusRecordDecorator < ApplicationDecorator
   end
 
   # Yes/no fields should output Yes if true otherwise nothing.
-  %w[foreign_born can_read can_write can_speak_english foreign_born unemployed attended_school
-     blind deaf_dumb has_radio lives_on_farm lives_on_3_acres can_read_write idiotic insane maimed
+  %w[foreign_born father_foreign_born mother_foreign_born can_read can_write can_speak_english unemployed
+     attended_school blind deaf_dumb has_radio lives_on_farm lives_on_3_acres can_read_write idiotic insane maimed
      cannot_read cannot_write just_married homemaker income_plus pauper convict cannot_read_write
      worked_yesterday veteran residence_1935_farm private_work public_work
      seeking_work had_job had_unearned_income veteran_dead soc_sec deductions
