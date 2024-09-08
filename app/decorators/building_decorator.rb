@@ -7,33 +7,29 @@ class BuildingDecorator < ApplicationDecorator
 
   alias type building_type
 
-  def description
-    object.description&.body
-  end
+  def description = object.description&.body
 
-  def locality
-    object.locality&.name || 'None'
-  end
+  def locality = object.locality&.name || 'None'
 
-  def addresses
-    @addresses ||= object.addresses.sort
-  end
+  def addresses = @addresses ||= object.addresses.sort
 
   def historical_addresses
     object.addresses.reject(&:is_primary).map(&:address).join(', ')
   end
 
-  def street_address
-    object.primary_street_address
-  end
+  def street_address = object.primary_street_address
 
-  def year_earliest
-    year_phrase(object.year_earliest, object.year_earliest_circa)
-  end
+  def address_house_number = object.address.house_number
 
-  def year_latest
-    year_phrase(object.year_latest, object.year_latest_circa)
-  end
+  def address_prefix = object.address.prefix
+
+  def address_street_name = object.address.name
+
+  def address_suffix = street_address.suffix
+
+  def year_earliest = year_phrase(object.year_earliest, object.year_earliest_circa)
+
+  def year_latest = year_phrase(object.year_latest, object.year_latest_circa)
 
   def year_phrase(year, circa)
     return (circa ? 'Unknown' : '') if year.blank?
@@ -42,25 +38,15 @@ class BuildingDecorator < ApplicationDecorator
     year
   end
 
-  def name
-    object.proper_name? ? object.name : object.street_address
-  end
+  def name = object.proper_name? ? object.name : object.street_address
 
-  def architects
-    object.architects&.map(&:name)&.join(', ')
-  end
+  def architects = object.architects&.map(&:name)&.join(', ')
 
-  def photo
-    object.photos&.first&.id
-  end
+  def photo = object.photos&.first&.id
 
-  def lining
-    object.lining_type&.name&.capitalize
-  end
+  def lining = object.lining_type&.name&.capitalize
 
-  def frame
-    object.frame_type&.name&.capitalize
-  end
+  def frame = object.frame_type&.name&.capitalize
 
   def stories
     return nil if object.stories.blank?
