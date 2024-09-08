@@ -15,8 +15,11 @@ class HomeController < ApplicationController
   def saved_searches; end
 
   def search_people
-    @names = Person.name_fuzzy_matches(params[:term]).limit(10).preload(:names)
-    render json: @names.map { |p| { url: url_for(p), year: p.birth_year, name: p.name, sex: p.sex } }
+    @names = Person.name_fuzzy_matches(params[:term])
+                   .limit(10)
+                   .preload(:names)
+                   .flat_map { |p| p.names.map { |name| { url: url_for(p), year: p.birth_year, name: name.name, sex: p.sex } } }
+    render json: @names
   end
 
   def search_buildings
