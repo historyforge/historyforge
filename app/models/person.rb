@@ -108,7 +108,7 @@ class Person < ApplicationRecord
     possible_names.each do |name_set|
       if name_set.length == 1
         name = name_set.first
-        query = query.where('person_names.last_name ILIKE ? OR person_names.first_name ILIKE ?', "#{name.downcase}%", "#{name.downcase}%")
+        query = query.where('person_names.last_name ILIKE ? OR person_names.first_name ILIKE ?', "#{name.downcase}%", name.downcase)
       else
         conditions = name_set.map { 'person_names.first_name ILIKE ?' }.join(' OR ')
         query = query.where(conditions, *name_set.map { |name| "#{name.downcase}%" })
