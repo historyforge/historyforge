@@ -7,6 +7,6 @@
   = form.input :name, as: :string
   = form.input :description, as: :text
   = form.input :document_category_id, collection: DocumentCategory.all, required: true
-  = form.input :locality_ids, as: :check_boxes, collection: Locality.order(:short_name), label: 'Localities'
+  = form.input :locality_ids, as: :check_boxes, collection: Locality.all, label: 'Localities'
   = form.input :available_to_public, as: :boolean, inline_label: 'Make this resource available to the non-logged-in general public.'
   = form.submit 'Save', class: 'btn btn-primary', data: { disable_with: 'Submitting...' }

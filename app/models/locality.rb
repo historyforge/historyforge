@@ -42,11 +42,7 @@ class Locality < ApplicationRecord
   has_many :census1940_records, dependent: :nullify, class_name: 'Census1940Record', inverse_of: :locality
   has_many :census1950_records, dependent: :nullify, class_name: 'Census1950Record', inverse_of: :locality
 
-  default_scope -> { order(:name) }
-
-  def self.select_options
-    all.map { |item| [item.name, item.id] }
-  end
+  default_scope -> { order(:position) }
 
   def located?
     latitude.present? && longitude.present?

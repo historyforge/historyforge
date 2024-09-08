@@ -45,7 +45,7 @@
         .col-4
           = form.input :sex, as: :radio_buttons, collection: Census1900Record.sex_choices, coded: true
         .col-4
-          = form.input :locality_ids, as: :check_boxes, collection: Locality.order(:short_name), label: 'Localities'
+          = form.input :locality_ids, as: :check_boxes, collection: Locality.all, label: 'Localities'
 
   .card.mb-1
     .card-body
@@ -74,5 +74,5 @@
       = form.input :notes, input_html: { rows: 12 }
       p.text-muted Private field visible only to those who can edit this record.
 
-  .form-actions
+  .form-actions.text-center.pb-5
     = form.submit 'Save', class: 'btn btn-primary btn-lg'

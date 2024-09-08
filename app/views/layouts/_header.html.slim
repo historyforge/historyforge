@@ -45,7 +45,7 @@ header
                 - if flags_count > 0
                   span.badge.badge-danger= flags_count
 
-          - localities = Locality.order(:short_name)
+          - localities = Locality.all
           - if localities.length > 1
             li.nav-item.dropdown
               a.dropdown-toggle.nav-link data-toggle="dropdown" href="#"

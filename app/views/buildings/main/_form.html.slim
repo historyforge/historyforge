@@ -46,7 +46,7 @@
     .card-body
       .row
         .col-sm-4
-          = form.input :locality_id, collection: Locality.order(:position), required: true
+          = form.input :locality_id, collection: Locality.all, required: true
         .col-sm-4
           = form.input :lat
         .col-sm-4
@@ -114,7 +114,7 @@
       = form.input :notes, input_html: { rows: 12 }
       p.text-muted Private field visible only to those who can edit this record.
 
-  .form-actions
+  .form-actions.text-center.pb-5
     = form.submit 'Save', class: 'btn btn-primary btn-lg'
     - if !@building.reviewed? && can?(:review, @building)
       = form.submit 'Review', class: 'btn btn-danger btn-lg'

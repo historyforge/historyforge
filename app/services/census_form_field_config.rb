@@ -54,7 +54,7 @@ class CensusFormFieldConfig
         input :institution_name, as: :string, facet: false
         input :institution_type, as: :string, facet: false
       end
-      input :locality_id, as: :select, collection: Locality.select_options, required: true, facet: false
+      input :locality_id, as: :select, collection: Locality.all, required: true, facet: false
       input :street_house_number, facet: false
       input :street_prefix, as: :select, collection: %w[N S E W], facet: false
       input :street_name, input_html: { id: 'street_name' }, facet: false

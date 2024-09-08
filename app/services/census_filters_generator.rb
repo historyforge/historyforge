@@ -60,7 +60,7 @@ class CensusFiltersGenerator
   end
 
   def output_header_fields
-    AttributeBuilder.collection json, :locality_id, klass:, collection: Locality.select_options
+    AttributeBuilder.collection json, :locality_id, klass:, collection: Locality.all
     AttributeBuilder.text(json, :name, klass:)
     AttributeBuilder.text(json, :first_name, klass:)
     AttributeBuilder.text(json, :middle_name, klass:)

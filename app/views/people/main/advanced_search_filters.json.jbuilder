@@ -14,7 +14,7 @@ json.filters do
   AttributeBuilder.text   json, :names_first_name
   AttributeBuilder.text   json, :names_last_name
 
-  localities = Locality.order(:name).map { |item| [item.name, item.id] }
+  localities = Locality.all.map { |item| [item.name, item.id] }
   AttributeBuilder.collection json, :localities_id, klass: Person, collection: localities
 
   AttributeBuilder.enumeration json, Person, :sex

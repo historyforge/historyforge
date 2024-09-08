@@ -5,6 +5,6 @@
   = form.input :url, label: 'WMS Base URL'
   = form.input :layers_param, label: 'Layers Param', hint: 'Use this if your map server requires a LAYERS param. Otherwise leave it blank.'
   = form.input :active, inline_label: "Active and visible in the list of map layers"
-  = form.input :locality_ids, as: :check_boxes, collection: Locality.order(:position)
+  = form.input :locality_ids, as: :check_boxes, collection: Locality.all
   .form-actions
     = form.submit 'Save', class: 'btn btn-primary btn-lg'
