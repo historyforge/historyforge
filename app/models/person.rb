@@ -152,8 +152,9 @@ class Person < ApplicationRecord
       middle_name: record.middle_name,
       name_prefix: record.name_prefix,
       name_suffix: record.name_suffix,
-      is_primary: true
+      is_primary: names.none?(&:is_primary?)
     )
+    base_name
   end
 
   def add_name_from!(record)

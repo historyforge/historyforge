@@ -129,5 +129,17 @@ RSpec.describe Census1910Record do
         expect(record.person).not_to be_nil
       end
     end
+
+    context 'when a person record already exists with a different name' do
+      let(:person) { create(:person, first_name: 'Sponge', last_name: 'Bob') }
+
+      before { create(:census1910_record, first_name: 'Sammy', last_name: 'Squid', person_id: person.id) }
+
+      it 'adds my name as a variant' do
+        expect(person.reload.names.length).to eq(2)
+        expect(person.names.map(&:first_name)).to include('Sammy')
+        expect(person.names.map(&:last_name)).to include('Squid')
+      end
+    end
   end
 end
