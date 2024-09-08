@@ -8,6 +8,8 @@ module MediaDateBehavior
     enum date_type: { year: 0, month: 1, day: 2, years: 3, months: 4, days: 5 }
 
     before_validation :set_dates
+
+    scope :in_chronological_order, -> { order('date_start NULLS LAST') }
   end
 
   def date_year
