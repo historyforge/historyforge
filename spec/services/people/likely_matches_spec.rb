@@ -4,7 +4,7 @@ require 'rails_helper'
 
 module People
   RSpec.describe LikelyMatches do
-    subject { outcome.first }
+    subject { outcome[:matches].first }
     let(:outcome) { described_class.run!(record:) }
     let(:record) { FactoryBot.create(:census1910_record, first_name: 'David', last_name: 'Furber', sex: 'm', race: 'w') }
     let(:non_matching_person) { FactoryBot.create(:person, first_name: 'Michael', last_name: 'Furber', sex: 'm', race: 'W') }
