@@ -18,7 +18,7 @@
 # Indexes
 #
 #  index_person_names_on_person_id        (person_id)
-#  index_person_names_on_searchable_name  (searchable_name) USING gist
+#  index_person_names_on_searchable_name  (searchable_name) USING gin
 #  person_names_primary_name_index        (person_id,is_primary)
 #
 FactoryBot.define do

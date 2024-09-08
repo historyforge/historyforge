@@ -71,10 +71,10 @@
 #
 # Indexes
 #
-#  census_1920_records_name_trgm             (searchable_name) USING gist
-#  index_census_1920_records_on_building_id  (building_id)
-#  index_census_1920_records_on_locality_id  (locality_id)
-#  index_census_1920_records_on_person_id    (person_id)
+#  index_census_1920_records_on_building_id      (building_id)
+#  index_census_1920_records_on_locality_id      (locality_id)
+#  index_census_1920_records_on_person_id        (person_id)
+#  index_census_1920_records_on_searchable_name  (searchable_name) USING gin
 #
 
 # frozen_string_literal: true

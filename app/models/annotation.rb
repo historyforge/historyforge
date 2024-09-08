@@ -19,8 +19,10 @@
 class Annotation < ApplicationRecord
   belongs_to :map_overlay, optional: false
   belongs_to :building, optional: false
-  validates_presence_of :annotation_text, message: 'No annotation text.'
-  validates_uniqueness_of :annotation_text, scope: [:map_overlay, :building], message: 'Duplicate annotations for Map Layer.'
+  validates :annotation_text, presence: { message: 'No annotation text.' }
+  validates :annotation_text, uniqueness: { scope: %i[map_overlay building], message: 'Duplicate annotations for Map Layer.' }
+
+  default_scope -> { joins(:map_overlay).order('map_overlays.year_depicted NULLS LAST') }
 
   delegate :name, to: :map_overlay, prefix: true
   delegate :name, to: :building, prefix: true

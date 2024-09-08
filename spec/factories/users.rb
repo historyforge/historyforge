@@ -36,6 +36,7 @@
 #  invitations_count         :integer          default(0)
 #  roles_mask                :integer
 #  user_group_id             :bigint
+#  unconfirmed_email         :string
 #
 # Indexes
 #

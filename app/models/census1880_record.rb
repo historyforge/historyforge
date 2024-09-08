@@ -72,7 +72,7 @@
 #  index_census_1880_records_on_locality_id      (locality_id)
 #  index_census_1880_records_on_person_id        (person_id)
 #  index_census_1880_records_on_reviewed_by_id   (reviewed_by_id)
-#  index_census_1880_records_on_searchable_name  (searchable_name) USING gist
+#  index_census_1880_records_on_searchable_name  (searchable_name) USING gin
 #
 
 # frozen_string_literal: true

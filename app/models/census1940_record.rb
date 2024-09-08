@@ -93,17 +93,17 @@
 #  ward                    :integer
 #  income_plus             :boolean
 #  wages_or_salary         :string
-#  institutional_work      :boolean
 #  institution             :string
 #  sortable_name           :string
 #
 # Indexes
 #
-#  index_census_1940_records_on_building_id     (building_id)
-#  index_census_1940_records_on_created_by_id   (created_by_id)
-#  index_census_1940_records_on_locality_id     (locality_id)
-#  index_census_1940_records_on_person_id       (person_id)
-#  index_census_1940_records_on_reviewed_by_id  (reviewed_by_id)
+#  index_census_1940_records_on_building_id      (building_id)
+#  index_census_1940_records_on_created_by_id    (created_by_id)
+#  index_census_1940_records_on_locality_id      (locality_id)
+#  index_census_1940_records_on_person_id        (person_id)
+#  index_census_1940_records_on_reviewed_by_id   (reviewed_by_id)
+#  index_census_1940_records_on_searchable_name  (searchable_name) USING gin
 #
 
 # frozen_string_literal: true
@@ -112,6 +112,7 @@
 class Census1940Record < CensusRecord
   self.table_name = 'census_1940_records'
   self.year = 1940
+  self.ignored_columns += %w[institutional_work]
 
   belongs_to :locality, inverse_of: :census1940_records
 
