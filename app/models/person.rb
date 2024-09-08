@@ -106,8 +106,13 @@ class Person < ApplicationRecord
     possible_names = names.squish.split.map { |name| People::Nicknames.matches_for(name) }
     query = joins(:names).group('people.id')
     possible_names.each do |name_set|
-      conditions = name_set.map { 'person_names.searchable_name ILIKE ?' }.join(' OR ')
-      query = query.where(conditions, *name_set.map { |name| "%#{name.downcase}%" })
+      if name_set.length == 1
+        name = name_set.first
+        query = query.where('person_names.last_name ILIKE ? OR person_names.first_name ILIKE ?', "#{name.downcase}%", "#{name.downcase}%")
+      else
+        conditions = name_set.map { 'person_names.first_name ILIKE ?' }.join(' OR ')
+        query = query.where(conditions, *name_set.map { |name| "#{name.downcase}%" })
+      end
     end
     query
   }
