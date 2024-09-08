@@ -37,7 +37,6 @@ class Census1940FormFields < CensusFormFieldConfig
 
   divider 'For Persons 14 Years Old and Over - Employment Status'
   input :private_work, as: :boolean
-  input :institutional_work, as: :boolean
   input :public_work, as: :boolean
   input :seeking_work, as: :boolean
   input :had_job, as: :boolean

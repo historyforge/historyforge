@@ -225,7 +225,6 @@ class Census1940Record < CensusRecord
     residence_1935_state: 19,
     residence_1935_farm: 20,
     private_work: 21,
-    institutional_work: 21,
     public_work: 22,
     seeking_work: 23,
     had_job: 24,
