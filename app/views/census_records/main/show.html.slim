@@ -147,7 +147,7 @@ div.mb-3.clearfix.d-flex.justify-content-between
                   => match.name
                   i.fa.fa-external-link
                 p
-                  | Age: #{match.age_in_year(@record.year)} |&nbsp; #{translated_option('race', match.race)} |&nbsp; #{match.occupation} |&nbsp; #{match.relation_to_head}
+                  | Age: #{match.age_in_year(@record.year)} |&nbsp; #{match.race ? translated_option('race', match.race) : 'Race unspecified'} |&nbsp; #{match.occupation} |&nbsp; #{match.relation_to_head}
                 p.mb-0= match.address
 
     - if can?(:review, CensusRecord)
