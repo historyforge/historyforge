@@ -14,6 +14,15 @@ export default class extends Controller {
       this.next(e.target)
     })
 
+    $('#audio_remote_url, #video_remote_url, #photograph_remote_url').on('change', function(e) {
+      const value = e.target.value;
+      if (value.length) {
+        $('.step-1-next-button').removeAttr('disabled')
+      } else {
+        $('.step-1-next-button').attr('disabled', 'disabled')
+      }
+    })
+
     $('#photograph_file').on('change', function () {
       if (this.files.length) {
         const reader = new FileReader()

@@ -52191,6 +52191,14 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       $("button.btn-next").on("click", (e2) => {
         this.next(e2.target);
       });
+      $("#audio_remote_url, #video_remote_url, #photograph_remote_url").on("change", function(e2) {
+        const value = e2.target.value;
+        if (value.length) {
+          $(".step-1-next-button").removeAttr("disabled");
+        } else {
+          $(".step-1-next-button").attr("disabled", "disabled");
+        }
+      });
       $("#photograph_file").on("change", function() {
         if (this.files.length) {
           const reader = new FileReader();

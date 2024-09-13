@@ -7,9 +7,7 @@
     .float-right
       button.btn.btn-secondary.btn-next.step-1-next-button type="button" disabled=form.object.remote_url.blank? Next &raquo;
     .card-body
-      .row
-        .col-xs-12
-          = form.input :remote_url, label: 'Video URL', hint: 'Link to page on external site such as YouTube or Vimeo.'
+      = form.input :remote_url, label: 'Video URL', hint: 'Link to page on external site such as YouTube or Vimeo.'
     .card-footer.d-flex.justify-content-center
       button.btn.btn-secondary.btn-lg.btn-next.step-1-next-button type="button" disabled=form.object.remote_url.blank? Next &raquo;
 

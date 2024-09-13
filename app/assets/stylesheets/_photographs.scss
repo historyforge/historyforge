@@ -7,6 +7,9 @@
 }
 
 #photo-wizard {
+  #audio_remote_url, #video_remote_url, #photograph_remote_url {
+    min-width: 100%;
+  }
   .card {
     background: white;
     display: none;
