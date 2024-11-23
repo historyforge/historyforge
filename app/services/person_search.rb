@@ -34,7 +34,7 @@ class PersonSearch < SearchQueryBuilder
     add_census_record_links
     add_see_names
     add_sorts
-    scope_to_locality if Current.locality_id && !s.keys.include?('localities_id_in')
+    scope_to_locality if Current.locality_id && !s.key?('localities_id_in')
     builder.preload(:localities) if f.include?('locality_ids')
     builder.scoped.distinct
   end
@@ -43,7 +43,7 @@ class PersonSearch < SearchQueryBuilder
   def count
     builder.uncensused if uncensused?
     builder.photographed if photographed?
-    scope_to_locality if Current.locality_id && !s.keys.include?('localities_id_in')
+    scope_to_locality if Current.locality_id && !s.key?('localities_id_in')
     entity_class.where(id: builder.scoped.select('people.id')).count
   end
 
