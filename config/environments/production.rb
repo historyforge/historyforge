@@ -94,7 +94,7 @@ Rails.application.configure do
 
   if ENV['SMTP_HOST'].present? && ENV['SMTP_PORT'] == 'smtp.gmail.com'
     smtp_settings.merge!(
-      authentication: "plain",
+      authentication: 'plain',
       enable_starttls: true,
       open_timeout: 5,
       read_timeout: 5
