@@ -62,8 +62,8 @@ class Building < ApplicationRecord
 
   belongs_to :locality
 
-  belongs_to :parent, class_name: 'Building', optional: true
-  has_many :children, class_name: 'Building', foreign_key: :parent_id
+  belongs_to :parent, class_name: 'Building', optional: true, inverse_of: :children
+  has_many :children, class_name: 'Building', foreign_key: :parent_id, dependent: :nullify, inverse_of: :parent
 
   has_many :addresses, dependent: :destroy, autosave: true
   accepts_nested_attributes_for :addresses, allow_destroy: true, reject_if: proc { |p| p['name'].blank? }
@@ -203,8 +203,9 @@ class Building < ApplicationRecord
   alias_attribute :longitude, :lon
   alias_attribute :longitude, :lon
 
+  # @return [Boolean]
   def proper_name?
-    name && (address_house_number.blank? || !name.include?(address_house_number))
+    name && (address_house_number.blank? || name.exclude?(address_house_number))
   end
 
   def do_the_geocode
@@ -215,7 +216,6 @@ class Building < ApplicationRecord
     nil
   end
 
-  # TODO: this presentation stuff overlaps with the BuildingPresenter. Make the Buildings::MainController use the presenter.
   def full_street_address
     [street_address, city].join(' ')
   end

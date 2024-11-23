@@ -1,4 +1,4 @@
-FROM ruby:3.2.2
+FROM ruby:3.3.6
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV RAILS_SERVE_STATIC_FILES true
@@ -12,7 +12,7 @@ RUN apt-get update -qq && \
   automake build-essential patch zlib1g-dev liblzma-dev git \
   libssl-dev libreadline-dev \
   libyaml-dev libcurl4-openssl-dev libffi-dev \
-  libpq-dev libvips locales postgresql-client ffmpeg
+  libpq-dev libvips locales postgresql-client
 
 # Clean up
 RUN \

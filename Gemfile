@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 source 'https://rubygems.org'
-ruby '3.2.2'
+ruby '3.3.6'
 
 gem 'active_interaction', '~> 5.2'
 gem 'activerecord-precounter'
@@ -37,8 +37,8 @@ gem 'paper_trail'
 gem 'pg'
 gem 'pg_search'
 gem 'pretender'
-gem 'puma', '~>5' # pegged at 5 because of capybara issue - try again when capybara updates
-gem 'rails', '~>7.0'
+gem 'puma' #, '~>5' # pegged at 5 because of capybara issue - try again when capybara updates
+gem 'rails', '~>7'
 gem 'ransack'
 gem 'recaptcha'
 gem 'ruby-vips'
