@@ -1,0 +1,26 @@
+.ml-auto.mr-auto style="max-width: 450px"
+  = simple_form_for(resource, as: resource_name, url: session_path(resource_name)) do |form|
+    .card
+      .card-header
+        h3.card-title= t('.sign_in')
+      .card-body
+        = form.error_notification
+        .form-inputs
+          .form-group
+            = form.label :email
+            = form.email_field :email, autofocus: true, autocomplete: 'email', class: 'form-control'
+
+          .form-group
+            = form.label :password
+            = form.password_field :password, autocomplete: 'current-password', class: 'form-control'
+
+          - if devise_mapping.rememberable?
+            .form-group.form-check
+              = form.check_box :remember_me, class: 'form-check-input'
+              = form.label :remember_me, class: 'form-check-label' do
+                = resource.class.human_attribute_name('remember_me')
+      .card-footer
+        .form-group
+          = form.submit  t('.sign_in'), class: 'btn btn-primary'
+          hr
+          = render 'devise/shared/links'
