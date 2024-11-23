@@ -29,8 +29,12 @@ module CensusRecords
       render_census_records
     end
 
-    def advanced_search_filters
-      # Implicit render but let's define the action so you don't lose time searching for me here.
+    def advanced_search_filters; end
+
+    def show
+      @model = resource_class.find params[:id]
+      authorize! :read, @model
+      @record = @model.decorate
     end
 
     def new
@@ -69,6 +73,11 @@ module CensusRecords
       @page_title = "Demographics for #{year} US Census"
     end
 
+    def edit
+      @record = resource_class.find params[:id]
+      authorize! :update, @record
+    end
+
     def create
       @record = resource_class.new resource_params
       authorize! :create, @record
@@ -80,17 +89,6 @@ module CensusRecords
         flash[:errors] = 'Census Record not saved.'
         render action: :new
       end
-    end
-
-    def show
-      @model = resource_class.find params[:id]
-      authorize! :read, @model
-      @record = @model.decorate
-    end
-
-    def edit
-      @record = resource_class.find params[:id]
-      authorize! :update, @record
     end
 
     def update
@@ -213,14 +211,14 @@ module CensusRecords
         redirect_to @record.person
       elsif params[:then].present?
         attributes = NextCensusRecordAttributes.new(@record, params[:then]).attributes
-        redirect_to send("new_census#{year}_record_path", attributes: attributes)
+        redirect_to send(:"new_census#{year}_record_path", attributes: attributes)
       else
         redirect_to @record
       end
     end
 
     def search_params
-      params.permit!.to_h #(:f, :s, :g, :from, :to, :sort)
+      params.permit!.to_h
     end
 
     def load_census_records

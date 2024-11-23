@@ -58,10 +58,10 @@ group :development do
   gem 'letter_opener_web'
   gem 'pry'
   gem 'rubocop', require: false
+  gem 'rubocop-capybara', require: false
+  gem 'rubocop-factory_bot', require: false
   gem 'rubocop-performance', require: false
   gem 'rubocop-rails', require: false
-  gem 'rubocop-factory_bot', require: false
-  gem 'rubocop-capybara', require: false
   gem 'rubocop-rspec', require: false
   gem 'ruby-lsp', '~> 0.3.7', require: false
   gem 'simplecov', require: false

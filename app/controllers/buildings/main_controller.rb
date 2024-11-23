@@ -48,10 +48,19 @@ class Buildings::MainController < ApplicationController
     }
   end
 
+  def show
+    @building = @building.decorate
+    respond_to do |format|
+      format.html
+      format.json { render json: BuildingSerializer.new(@building) }
+    end
+  end
   def new
     @building = Building.new
     @building.ensure_primary_address
   end
+
+  def edit; end
 
   def create
     @building = Buildings::Create.run(building_params, current_user)
@@ -64,16 +73,6 @@ class Buildings::MainController < ApplicationController
       render action: :new
     end
   end
-
-  def show
-    @building = @building.decorate
-    respond_to do |format|
-      format.html
-      format.json { render json: BuildingSerializer.new(@building) }
-    end
-  end
-
-  def edit; end
 
   def update
     saved = Buildings::Update.run(@building, building_params)
@@ -123,28 +122,7 @@ class Buildings::MainController < ApplicationController
 
   def photo
     @photo = Photograph.find params[:id]
-
-    # from style, how wide should it be? as % of 1278px
-    width = case params[:device]
-            when 'tablet'  then 1024
-            when 'phone'   then 740
-            else 1278
-            end
-
-    if params[:style] != 'full'
-      width = case params[:style]
-              when 'half'
-                (width.to_f * 0.50).ceil
-              when 'third'
-                (width.to_f * 0.33).ceil
-              when 'quarter'
-                (width.to_f * 0.25).ceil
-              else
-                (width.to_f * (params[:style].to_f / 100)).ceil
-              end
-    end
-
-    redirect_to @photo.file.variant(resize_to_fit: [width, width * 3])
+    redirect_to @photo.file.variant(resize_to_fit: ResizeToFit.run!(style: params[:style], device: params[:device]))
   end
 
   private
@@ -189,19 +167,18 @@ class Buildings::MainController < ApplicationController
   end
 
   def building_params
-    params.require(:building).permit :name, :description, :stories, :block_number,
-                                     :year_earliest, :year_latest, :year_latest_circa, :year_earliest_circa,
-                                     :lining_type_id, :frame_type_id, :locality_id,
-                                     :lat, :lon, :architects_list,
-                                     :investigate, :investigate_reason, :notes,
-                                     :annotations_legacy, :parent_id, :hive_year,
-                                     {
-                                       building_type_ids: [],
-                                       photos_attributes: %i[_destroy id photo year_taken caption],
-                                       addresses_attributes: %i[_destroy id is_primary house_number prefix name suffix
-                                                                city postal_code year],
-                                       annotations_attributes: %i[_destroy id map_overlay_id annotation_text]
-                                     }
+    params.require(:building).permit(
+      :name, :description, :stories, :block_number,
+      :year_earliest, :year_latest, :year_latest_circa, :year_earliest_circa,
+      :lining_type_id, :frame_type_id, :locality_id, :lat, :lon, :architects_list,
+      :investigate, :investigate_reason, :notes, :annotations_legacy, :parent_id, :hive_year,
+      {
+        building_type_ids: [],
+        photos_attributes: %i[_destroy id photo year_taken caption],
+        addresses_attributes: %i[_destroy id is_primary house_number prefix name suffix city postal_code year],
+        annotations_attributes: %i[_destroy id map_overlay_id annotation_text]
+      }
+    )
   end
 
   def load_buildings

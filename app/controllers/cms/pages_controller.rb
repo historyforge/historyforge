@@ -19,12 +19,16 @@ class Cms::PagesController < ApplicationController
   def new
     @page = Cms::Page.generate
     authorize! :create, @page
-    if params[:page]
-      page_params = params[:page]
-      @page.url_path = page_params[:url_path].sub(/\A\//, '')
-      @page.controller = page_params[:controller]
-      @page.action = page_params[:action]
-    end
+    return unless params[:page]
+
+    page_params = params[:page]
+    @page.url_path   = page_params[:url_path].sub(/\A\//, '')
+    @page.controller = page_params[:controller].to_s
+    @page.action     = page_params[:action].to_s
+  end
+
+  def edit
+    authorize! :update, @page
   end
 
   def create
@@ -32,30 +36,18 @@ class Cms::PagesController < ApplicationController
     authorize! :create, @page
     if @page.save
       flash[:notice] = "Successfully created page \"#{@page.title}\"!"
-      if params[:next] == 'edit'
-        redirect_to edit_cms_page_path(@page)
-      else
-        redirect_to @page
-      end
+      redirect_to params[:next] == 'edit' ? edit_cms_page_path(@page) : @page
     else
       flash[:errors] = 'The page was not created because of errors on the form.'
       render action: :new
     end
   end
 
-  def edit
-    authorize! :update, @page
-  end
-
   def update
     authorize! :update, @page
     if @page.update resource_params
       flash[:notice] = "Successfully updated page \"#{@page.title}\"!"
-      if params[:next] == 'edit'
-        redirect_to edit_cms_page_path(@page)
-      else
-        redirect_to @page
-      end
+      redirect_to params[:next] == 'edit' ? edit_cms_page_path(@page) : @page
     else
       flash[:errors] = 'The page was not updated because of errors on the form.'
       render action: :edit
@@ -71,7 +63,6 @@ class Cms::PagesController < ApplicationController
       flash[:errors] = 'Sorry we could not delete the page.'
       redirect_to @page
     end
-
   end
 
   private
@@ -91,13 +82,10 @@ class Cms::PagesController < ApplicationController
   end
 
   def check_page_access
-    if @page.access_callback && respond_to?(@page.access_callback) && !public_send(@page.access_callback)
-      raise CanCan::AccessDenied
-    end
+    check_access_via_callback
+
     if @page.controller.present? && @page.action.present?
-      unless can?(:update, @page)
-        page_not_found
-      end
+      page_not_found unless can?(:update, @page)
     elsif !@page.published?
       if can?(:update, @page)
         flash[:notice] = 'This page is not published. You can see it only because you can edit pages.'
@@ -107,4 +95,11 @@ class Cms::PagesController < ApplicationController
     end
   end
 
+  def check_access_via_callback
+    access_callback = @page.access_callback
+    return unless access_callback
+    return unless respond_to?(access_callback)
+
+    raise CanCan::AccessDenied unless public_send(access_callback)
+  end
 end
