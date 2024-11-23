@@ -542,7 +542,7 @@ DEPENDENCIES
   pretender
   pry
   puma
-  rails (~> 7)
+  rails
   ransack
   recaptcha
   rspec-collection_matchers
