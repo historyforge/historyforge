@@ -1,9 +1,5 @@
 const google = window.google
 
-export function propertyChanged(props, prevProps, property) {
-  return (!prevProps[property] && props[property]) || (prevProps[property] !== props[property])
-}
-
 export function addOpacity(map, layers) {
   const currentLayers = map.overlayMapTypes.getArray()
   currentLayers.forEach(layer => {
@@ -37,20 +33,6 @@ export function generateMarkers(items, handlers) {
     markers[marker.buildingId] = marker
   })
   return markers
-}
-
-export function highlightMarkers(props, prevProps, markers) {
-  const wasHighlighted = parseInt(prevProps.highlighted)
-  const isHighlighted = parseInt(props.highlighted)
-  const buildingId = props.building && parseInt(props.building.id)
-  if (wasHighlighted && wasHighlighted !== isHighlighted) {
-    unhighlightMarker(wasHighlighted, markers)
-  }
-  if (isHighlighted) {
-    highlightMarker(isHighlighted, markers)
-  } else if (buildingId) {
-    highlightMarker(buildingId, markers)
-  }
 }
 
 function tweakMarker(id, icon, zIndex, markers) {

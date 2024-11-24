@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from 'react'
 import loadWMS from '../forge/wms'
 import { getMainIcon, generateMarkers, highlightMarker, unhighlightMarker } from '../forge/MapComponent'
 import { moveBuilding, highlight } from '../forge/actions'
-import {useAppDispatch, useAppSelector} from "../forge/hooks";
+import {useDispatch, useSelector} from "react-redux";
 
 const google = window.google
 
@@ -35,8 +35,8 @@ export const Map = () => {
     highlighted,
     editable,
     buildings,
-  }: MapProps = useAppSelector(state => ({ ...state.layers, ...state.buildings, ...state.search }));
-  const dispatch = useAppDispatch();
+  }: MapProps = useSelector(state => ({ ...state.layers, ...state.buildings, ...state.search }));
+  const dispatch = useDispatch();
   const toggle = (id) => dispatch({ type: 'LAYER_TOGGLE', id });
 
   const mapRef = useRef<HTMLDivElement>(null);
