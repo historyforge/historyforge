@@ -25,7 +25,7 @@ class BuildingDecorator < ApplicationDecorator
 
   def address_street_name = object.address.name
 
-  def address_suffix = street_address.suffix
+  def address_suffix = object.address.suffix
 
   def year_earliest = year_phrase(object.year_earliest, object.year_earliest_circa)
 
