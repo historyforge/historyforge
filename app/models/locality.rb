@@ -24,6 +24,7 @@
 # Locality means "City of Ithaca", "Village of Freeville" - a way to segment a single HistoryForge to keep records
 # for multiple related places, but (in the future) be able to search them together or separately.
 class Locality < ApplicationRecord
+  acts_as_list
   validates :name, :short_name, presence: true, uniqueness: true
   before_validation :set_slug
 

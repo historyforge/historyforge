@@ -111,7 +111,7 @@ Rails.application.routes.draw do
 
   resources :flags
 
-  resources :localities do
+  resources :localities, concerns: %i[moveable] do
     put :set, on: :member
     put :reset, on: :collection
   end
