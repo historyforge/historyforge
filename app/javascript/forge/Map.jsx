@@ -11,7 +11,7 @@ import { MarkerClusterer } from "@googlemaps/markerclusterer";
 import { useDispatch, useSelector } from "react-redux";
 
 const google = window.google
-
+let boundsTimeout;
 export const Map = () => {
   const dispatch = useDispatch();
   const props = useSelector(state => ({ ...state.layers, ...state.buildings, ...state.search }))
@@ -19,10 +19,11 @@ export const Map = () => {
   const infoWindowTimeout = useRef(null);
   const infoWindow = useRef(null);
 
-  const [map, setMap] = useState(null)
-  const [markers, setMarkers] = useState(null)
-  const [currentMarker, setCurrentMarker] = useState(null)
-  const [clusters, setClusters] = useState(null)
+  const [map, setMap] = useState(null);
+  const [markers, setMarkers] = useState(null);
+  const [currentMarker, setCurrentMarker] = useState(null);
+  const [clusters, setClusters] = useState(null);
+  const [bounds, setBounds] = useState(null);
   const [prevLoadedAt, setPrevLoadedAt] = useState(null);
   const [prevAddressedAt, setPrevAddressedAt] = useState(null);
   const [prevFocusOnPoints, setPrevFocusOnPoints] = useState(null);
@@ -40,11 +41,25 @@ export const Map = () => {
         } else {
           document.body.classList.remove('streetview');
         }
-      })
+      });
+      google.maps.event.addListener(myMap, "bounds_changed", () => {
+        clearTimeout(boundsTimeout);
+        boundsTimeout = setTimeout(() => {
+          setBounds(myMap.getBounds());
+        }, 250);
+      });
     }
   }, [map, mapRef]);
 
   const { layers, layeredAt, opacityAt, loadedAt, addressedAt, highlighted, focusOnPoints } = props;
+
+  const addMarkers = () => {
+    if (!bounds || !markers) { return; }
+    console.log("Adding markers");
+    const desiredMarkers = Object.values(markers).filter(marker => bounds.contains(marker.position));
+    const nextClusters = addClusters(map, clusters, desiredMarkers);
+    setClusters(nextClusters);
+  }
 
   useEffect(() => {
     if (!map) { return; }
@@ -77,8 +92,6 @@ export const Map = () => {
 
   useEffect(() => {
     if (!map || prevLoadedAt === loadedAt) { return; }
-
-    setPrevLoadedAt(loadedAt);
     const handlers = {
       onClick(building) {
         dispatch(actions.select(building.id, props.params));
@@ -102,10 +115,15 @@ export const Map = () => {
       }
     }
     const nextMarkers = generateMarkers(props.buildings, handlers);
-    const nextClusters = addClusters(map, clusters, nextMarkers);
-    setClusters(nextClusters);
     setMarkers(nextMarkers);
+    setPrevLoadedAt(loadedAt);
   }, [map, loadedAt, prevLoadedAt]);
+
+  useEffect(() => {
+    if (map && markers && bounds) {
+      addMarkers();
+    }
+  }, [map, markers, bounds]);
 
   useEffect(() => {
     if (!map) {
@@ -212,7 +230,7 @@ function addClusters(map, existingClusters, markers) {
   clusters.clearMarkers();
 
   if (markers) {
-    clusters.addMarkers(Object.values(markers));
+    clusters.addMarkers(markers);
   }
 
   return clusters;

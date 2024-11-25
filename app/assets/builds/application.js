@@ -55809,6 +55809,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
 
   // app/javascript/forge/Map.jsx
   var google3 = window.google;
+  var boundsTimeout;
   var Map2 = () => {
     const dispatch = useDispatch();
     const props = useSelector((state) => __spreadValues(__spreadValues(__spreadValues({}, state.layers), state.buildings), state.search));
@@ -55819,6 +55820,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     const [markers, setMarkers] = (0, import_react21.useState)(null);
     const [currentMarker, setCurrentMarker] = (0, import_react21.useState)(null);
     const [clusters, setClusters] = (0, import_react21.useState)(null);
+    const [bounds, setBounds] = (0, import_react21.useState)(null);
     const [prevLoadedAt, setPrevLoadedAt] = (0, import_react21.useState)(null);
     const [prevAddressedAt, setPrevAddressedAt] = (0, import_react21.useState)(null);
     const [prevFocusOnPoints, setPrevFocusOnPoints] = (0, import_react21.useState)(null);
@@ -55836,9 +55838,24 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
             document.body.classList.remove("streetview");
           }
         });
+        google3.maps.event.addListener(myMap, "bounds_changed", () => {
+          clearTimeout(boundsTimeout);
+          boundsTimeout = setTimeout(() => {
+            setBounds(myMap.getBounds());
+          }, 250);
+        });
       }
     }, [map3, mapRef]);
     const { layers: layers3, layeredAt, opacityAt, loadedAt, addressedAt, highlighted, focusOnPoints } = props;
+    const addMarkers2 = () => {
+      if (!bounds || !markers) {
+        return;
+      }
+      console.log("Adding markers");
+      const desiredMarkers = Object.values(markers).filter((marker) => bounds.contains(marker.position));
+      const nextClusters = addClusters(map3, clusters, desiredMarkers);
+      setClusters(nextClusters);
+    };
     (0, import_react21.useEffect)(() => {
       if (!map3) {
         return;
@@ -55875,7 +55892,6 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       if (!map3 || prevLoadedAt === loadedAt) {
         return;
       }
-      setPrevLoadedAt(loadedAt);
       const handlers = {
         onClick(building) {
           dispatch(select(building.id, props.params));
@@ -55899,18 +55915,22 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         }
       };
       const nextMarkers = generateMarkers(props.buildings, handlers);
-      const nextClusters = addClusters(map3, clusters, nextMarkers);
-      setClusters(nextClusters);
       setMarkers(nextMarkers);
+      setPrevLoadedAt(loadedAt);
     }, [map3, loadedAt, prevLoadedAt]);
+    (0, import_react21.useEffect)(() => {
+      if (map3 && markers && bounds) {
+        addMarkers2();
+      }
+    }, [map3, markers, bounds]);
     (0, import_react21.useEffect)(() => {
       if (!map3) {
         return;
       }
       if (focusOnPoints && prevFocusOnPoints !== focusOnPoints) {
-        const bounds = new google3.maps.LatLngBounds();
-        focusOnPoints.forEach((point) => bounds.extend(new google3.maps.LatLng(point.lat, point.lon)));
-        map3.fitBounds(bounds);
+        const bounds2 = new google3.maps.LatLngBounds();
+        focusOnPoints.forEach((point) => bounds2.extend(new google3.maps.LatLng(point.lat, point.lon)));
+        map3.fitBounds(bounds2);
         dispatch(finishedFocusing());
         setPrevFocusOnPoints(focusOnPoints);
       }
@@ -56000,7 +56020,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     });
     clusters.clearMarkers();
     if (markers) {
-      clusters.addMarkers(Object.values(markers));
+      clusters.addMarkers(markers);
     }
     return clusters;
   }
@@ -56657,6 +56677,10 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       this.params = params;
       window.localStorage.setItem(this.CACHE_KEY, JSON.stringify(this.params));
     }
+    reset() {
+      this.params = null;
+      window.localStorage.removeItem(this.CACHE_KEY);
+    }
     setYear(year) {
       var _a;
       if (((_a = this.params) == null ? void 0 : _a.year) === year) {
@@ -56671,7 +56695,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       return forgeInit2(state);
     }
     if (action.type === "FORGE_RESET") {
-      return { years: state.years, params: { f: [], s: [], people: null, year: null } };
+      return forgeReset(state);
     }
     if (action.type === "FORGE_SET_YEAR") {
       return forgeSetYear(state, action);
@@ -56700,6 +56724,10 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       return __spreadProps(__spreadValues({}, state), { year: params.people, params });
     }
     return state;
+  }
+  function forgeReset(state) {
+    searchStorage.reset();
+    return { years: state.years, params: { f: [], s: [], people: null, year: null } };
   }
   function forgeSetYear(state, action) {
     searchStorage.setYear(action.year);
@@ -56902,13 +56930,13 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   };
 
   // app/javascript/forge/index.jsx
-  window.initForge = () => {
+  google.maps.importLibrary("maps").then(() => {
     const forge = document.getElementById("forge");
     const store = buildStore(reducers_exports);
     import_react_dom3.default.render(/* @__PURE__ */ import_react38.default.createElement(Provider_default, {
       store
     }, /* @__PURE__ */ import_react38.default.createElement(App_default, null)), forge);
-  };
+  });
 
   // app/javascript/miniforge/index.tsx
   var import_react_dom4 = __toESM(require_react_dom());
@@ -56948,7 +56976,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     }, l.name))));
   };
 
-  // app/javascript/miniforge/Map.tsx
+  // app/javascript/miniforge/Map.jsx
   var import_react40 = __toESM(require_react());
   var google4 = window.google;
   var getMapOptions = () => ({

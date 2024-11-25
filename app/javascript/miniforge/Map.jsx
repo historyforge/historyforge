@@ -35,17 +35,17 @@ export const Map = () => {
     highlighted,
     editable,
     buildings,
-  }: MapProps = useSelector(state => ({ ...state.layers, ...state.buildings, ...state.search }));
+  } = useSelector(state => ({ ...state.layers, ...state.buildings, ...state.search }));
   const dispatch = useDispatch();
   const toggle = (id) => dispatch({ type: 'LAYER_TOGGLE', id });
 
-  const mapRef = useRef<HTMLDivElement>(null);
+  const mapRef = useRef(null);
   const [map, setMap] = useState(null);
   const [markers, setMarkers] = useState(null);
   const [marker, setMarker] = useState(null);
   const [currentHighlight, setCurrentHighlight] = useState(null);
-  const [lastLayeredAt, setLastLayeredAt] = useState<Date | null>(null);
-  const [lastOpacityAt, setLastOpacityAt] = useState<Date | null>(null);
+  const [lastLayeredAt, setLastLayeredAt] = useState(null);
+  const [lastOpacityAt, setLastOpacityAt] = useState(null);
 
   useEffect(() => {
     if (!map && mapRef.current) {

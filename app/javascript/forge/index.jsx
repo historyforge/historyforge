@@ -6,9 +6,8 @@ import { Provider } from 'react-redux'
 import * as reducers from './reducers'
 import { buildStore } from './store'
 
-window.initForge = () => {
-    const forge = document.getElementById('forge')
+google.maps.importLibrary("maps").then(() => {
+    const forge = document.getElementById("forge");
     const store = buildStore(reducers);
-    ReactDOM.render(<Provider store={store}><Forge /></Provider>, forge)
-}
-
+    ReactDOM.render(<Provider store={store}><Forge /></Provider>, forge);
+});
