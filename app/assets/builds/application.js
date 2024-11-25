@@ -57212,7 +57212,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
 
   // app/javascript/miniforge/index.tsx
   var import_react43 = __toESM(require_react());
-  document.addEventListener("DOMContentLoaded", () => {
+  google.maps.importLibrary("maps").then(() => {
     const miniforge = document.getElementById("miniforge");
     if (miniforge)
       import_react_dom4.default.render(/* @__PURE__ */ import_react43.default.createElement(App_default2, null), miniforge);
