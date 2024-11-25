@@ -6,7 +6,11 @@ import * as reducers from "../forge/reducers";
 import {Provider} from "react-redux";
 import Forge from "../forge/App";
 
-google.maps.importLibrary("maps").then(() => {
+document.addEventListener('DOMContentLoaded', () => {
     const miniforge = document.getElementById('miniforge')
-    if (miniforge) ReactDOM.render(<MiniForge />, miniforge)
+    if (!miniforge) { return; }
+    google.maps.importLibrary("maps").then(() => {
+        if (miniforge) ReactDOM.render(<MiniForge />, miniforge)
+    });
 });
+

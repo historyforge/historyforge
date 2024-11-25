@@ -56930,15 +56930,20 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   };
 
   // app/javascript/forge/index.jsx
-  google.maps.importLibrary("maps").then(() => {
+  document.addEventListener("DOMContentLoaded", () => {
     const forge = document.getElementById("forge");
-    const store = buildStore(reducers_exports);
-    import_react_dom3.default.render(/* @__PURE__ */ import_react38.default.createElement(Provider_default, {
-      store
-    }, /* @__PURE__ */ import_react38.default.createElement(App_default, null)), forge);
+    if (!forge) {
+      return;
+    }
+    google.maps.importLibrary("maps").then(() => {
+      const store = buildStore(reducers_exports);
+      import_react_dom3.default.render(/* @__PURE__ */ import_react38.default.createElement(Provider_default, {
+        store
+      }, /* @__PURE__ */ import_react38.default.createElement(App_default, null)), forge);
+    });
   });
 
-  // app/javascript/miniforge/index.tsx
+  // app/javascript/miniforge/index.jsx
   var import_react_dom4 = __toESM(require_react_dom());
 
   // app/javascript/miniforge/App.jsx
@@ -57210,12 +57215,17 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   };
   var App_default2 = App2;
 
-  // app/javascript/miniforge/index.tsx
+  // app/javascript/miniforge/index.jsx
   var import_react43 = __toESM(require_react());
-  google.maps.importLibrary("maps").then(() => {
+  document.addEventListener("DOMContentLoaded", () => {
     const miniforge = document.getElementById("miniforge");
-    if (miniforge)
-      import_react_dom4.default.render(/* @__PURE__ */ import_react43.default.createElement(App_default2, null), miniforge);
+    if (!miniforge) {
+      return;
+    }
+    google.maps.importLibrary("maps").then(() => {
+      if (miniforge)
+        import_react_dom4.default.render(/* @__PURE__ */ import_react43.default.createElement(App_default2, null), miniforge);
+    });
   });
 
   // node_modules/promise-polyfill/src/finally.js

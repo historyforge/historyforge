@@ -1,13 +1,15 @@
 import ReactDOM from "react-dom";
 import Forge from "./App";
 import React from "react";
-
 import { Provider } from 'react-redux'
 import * as reducers from './reducers'
 import { buildStore } from './store'
 
-google.maps.importLibrary("maps").then(() => {
+document.addEventListener('DOMContentLoaded', () => {
     const forge = document.getElementById("forge");
-    const store = buildStore(reducers);
-    ReactDOM.render(<Provider store={store}><Forge /></Provider>, forge);
+    if (!forge) { return; }
+    google.maps.importLibrary("maps").then(() => {
+        const store = buildStore(reducers);
+        ReactDOM.render(<Provider store={store}><Forge /></Provider>, forge);
+    });
 });
