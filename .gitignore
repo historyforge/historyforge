@@ -73,3 +73,10 @@ bin/deploy
 
 /app/assets/builds2/*
 !/app/assets/builds2/.keep
+
+*.zsh
+.tool-versions
+*.code-workspace
+*.zsh
+.tool-versions
+*.code-workspace
