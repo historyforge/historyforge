@@ -20,6 +20,34 @@
 <input type="search" id="search-buildings-input" placeholder="Type an address here" class="form-control" />
 <% end %>
 
+<% provide_cms_with :sponsors do %>
+  <hr />
+  <div class="row mb-5 pb-5 pt-5">
+    <div class="col-6">
+      <div class="cms-image img-center" id=""><div><a href="" target="_blank" rel="nofollow"><img alt="" src="https://historyforge.net/assets/images/thc-logo_1.png" class="img-responsive img-"></a><p></p></div></div>
+    </div>
+    <div class="col-6">
+      <p class="lead">The HistoryForge project is an major initiative of <a href="https://www.thehistorycenter.net/" target="_blank">The History Center in Tompkins County</a>. Learn more at <a href="https://www.historyforge.net">www.historyforge.net</a>.</p>
+    </div>
+  </div>
+  <hr />
+  <div class="row mb-5 pb-5 pt-5">
+    <div class="col-6">
+      <h2>Thank You!</h2>
+      <p class="lead">HistoryForge has been made possible in part by the National Endowment for the Humanities: Democracy demands wisdom.</p>
+      <p class="lead">As a part of the "A More Perfect Union" initiative, the grant allows The History Center in Tompkins County to continue to improve the open source software, add more censuses, and engage more partners.</p>
+    </div>
+    <div class="col-6 text-center">
+      <a href="https://www.neh.gov" target="_blank" rel="nofollow">
+        <img src="https://historyforge.net/assets/images/neh.jpg" alt="Logo of NEH" title="" class="img img-responsive mb-3" style="width:350px">
+      </a>
+      <a href="https://www.neh.gov/250" target="_blank" rel="nofollow">
+        <img src="https://historyforge.net/assets/images/ampu.jpg" alt="Logo of A More Perfect Union Initiative" title="" class="img img-responsive" style="width:350px">
+      </a>
+    </div>
+  </div>
+<% end %>
+
 <% unless @page %>
   <% content_for :content do %>
     <h2>Welcome to HistoryForge. You are up and running.</h2>

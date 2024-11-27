@@ -1,0 +1,16 @@
+.ml-auto.mr-auto style="max-width: 450px"
+  = form_for(resource, as: resource_name, url: unlock_path(resource_name), html: { method: :post }) do |f|
+    .card
+      .card-header
+        h3.card-title= t('.resend_unlock_instructions')
+      .card-body
+        = bootstrap_devise_error_messages!
+
+        .form-group
+          = f.label :email
+          = f.email_field :email, autofocus: true, autocomplete: 'email', class: 'form-control'
+
+      .card-footer
+        = f.submit t('.resend_unlock_instructions'), class: 'btn btn-primary'
+        hr
+        = render 'devise/shared/links'

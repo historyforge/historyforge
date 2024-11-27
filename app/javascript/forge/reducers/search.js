@@ -18,6 +18,11 @@ class SearchStorage {
     window.localStorage.setItem(this.CACHE_KEY, JSON.stringify(this.params));
   }
 
+  reset() {
+    this.params = null;
+    window.localStorage.removeItem(this.CACHE_KEY);
+  }
+
   setYear(year) {
     if (this.params?.year === year) {
       return;
@@ -35,7 +40,7 @@ export const search = function(state = {}, action) {
   }
 
   if (action.type === 'FORGE_RESET') {
-    return { years: state.years, params: { f: [], s: [], people: null, year: null } }
+    return forgeReset(state);
   }
 
   if (action.type === 'FORGE_SET_YEAR') {
@@ -71,6 +76,11 @@ function forgeInit(state) {
     return { ...state, year: params.people, params };
   }
   return state;
+}
+
+function forgeReset(state) {
+  searchStorage.reset();
+  return { years: state.years, params: { f: [], s: [], people: null, year: null } }
 }
 
 function forgeSetYear(state, action) {

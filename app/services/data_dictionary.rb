@@ -60,7 +60,7 @@ class DataDictionary
       return key if config.dig(year.to_s, :label) == label
       return key if config.dig(:defaults, :label) == label
     end
-    raise ArgumentError.new("Cannot find #{label} for #{year}")
+    raise ArgumentError("Cannot find #{label} for #{year}")
   end
 
   def code_from_label(label, field)

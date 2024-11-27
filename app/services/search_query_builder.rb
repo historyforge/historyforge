@@ -18,7 +18,7 @@ class SearchQueryBuilder
   def initialize(*args)
     options = args.extract_options!
     options&.each do |key, value|
-      instance_variable_set "@#{key}", value if value.present?
+      instance_variable_set :"@#{key}", value if value.present?
     end
     @s ||= {}
     @g ||= {}
@@ -26,9 +26,9 @@ class SearchQueryBuilder
     @f = @f.values if @f.is_a?(Hash) # Shouldn't be a hash but somehow possible...
     @from = @from.to_i if @from
     @to = @to.to_i if @to
-    ransack_params.keys.each do |key|
+    ransack_params.each_key do |key|
       attr = entity_class.attribute_names.detect { |item| key.to_s.starts_with?(item) }
-      @f << attr if attr && !@f.include?(attr)
+      @f << attr if attr && @f&.exclude?(attr)
     end
   end
 
@@ -78,7 +78,7 @@ class SearchQueryBuilder
 
   def ransack_params
     prepare_search_filters
-    p = Hash.new
+    p = {}
     s.each do |key, value|
       if value.is_a?(Array) && value.include?('blank')
         p[:g] ||= []

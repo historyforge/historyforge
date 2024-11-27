@@ -22,7 +22,7 @@ class Translator
 
   def self.option(attribute_name, item)
     # DataDictionary.census_code attribute_name, item
-    lookup = "#{attribute_name}.#{item == '10000+' || item == '5000+' ? item : item.downcase.gsub(/\W/, '')}"
+    lookup = "#{attribute_name}.#{%w[10000+ 5000+].include?(item) ? item : item.downcase.gsub(/\W/, '')}"
     I18n.t(lookup, scope: 'census_codes', default: item).presence
   end
 

@@ -24,13 +24,14 @@
 # Locality means "City of Ithaca", "Village of Freeville" - a way to segment a single HistoryForge to keep records
 # for multiple related places, but (in the future) be able to search them together or separately.
 class Locality < ApplicationRecord
+  acts_as_list
   validates :name, :short_name, presence: true, uniqueness: true
   before_validation :set_slug
-  has_many :buildings, dependent: :restrict_with_exception
-  has_many :map_overlays, dependent: :restrict_with_exception
+
   has_and_belongs_to_many :people, dependent: :nullify
   has_and_belongs_to_many :documents, dependent: :nullify
-
+  has_many :buildings, dependent: :restrict_with_exception
+  has_many :map_overlays, dependent: :restrict_with_exception
   has_many :census1850_records, dependent: :nullify, class_name: 'Census1850Record', inverse_of: :locality
   has_many :census1860_records, dependent: :nullify, class_name: 'Census1860Record', inverse_of: :locality
   has_many :census1870_records, dependent: :nullify, class_name: 'Census1870Record', inverse_of: :locality
@@ -49,10 +50,10 @@ class Locality < ApplicationRecord
   end
 
   def total_count
-    CensusYears.map { |year| send(:"census#{year}_records_count") }.sum
+    CensusYears.sum { |year| send(:"census#{year}_records_count") }
   end
 
   def set_slug
-    self.slug = name&.parameterize
+    self.slug = name.parameterize
   end
 end

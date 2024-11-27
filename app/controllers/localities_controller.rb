@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class LocalitiesController < ApplicationController
+  include Moveable
+
   before_action :check_administrator_role, except: %i[set reset]
 
   def set
@@ -28,6 +30,7 @@ class LocalitiesController < ApplicationController
   def edit
     @locality = Locality.find params[:id]
   end
+
   def create
     @locality = Locality.new resource_params
     if @locality.save
@@ -39,10 +42,8 @@ class LocalitiesController < ApplicationController
     end
   end
 
-
   def update
-    @locality = Locality.find params[:id]
-    if @locality.update resource_params
+    if resource.update resource_params
       flash[:notice] = 'Updated the locality.'
       redirect_to action: :index
     else
@@ -52,8 +53,7 @@ class LocalitiesController < ApplicationController
   end
 
   def destroy
-    @locality = Locality.find params[:id]
-    if @locality.destroy
+    if resource.destroy
       flash[:notice] = 'Deleted the locality.'
       redirect_to action: :index
     else
@@ -67,4 +67,10 @@ class LocalitiesController < ApplicationController
   def resource_params
     params.require(:locality).permit!
   end
+
+  def locality
+    @locality ||= Locality.find(params[:id])
+  end
+
+  alias resource locality
 end

@@ -28,22 +28,50 @@ module Cms
 
     include ArDocStore::Model
 
+    # @!attribute css_class
+    #   @return [String, nil]
     json_attribute :css_class, :string
+    # @!attribute css_id
+    #   @return [String, nil]
     json_attribute :css_id, :string
+    # @!attribute access_callback
+    #   @return [String, nil]
     json_attribute :access_callback, :string
+    # @!attribute notes
+    #   @return [String, nil]
     json_attribute :notes, :string
+    # @!attribute automatic_url_alias
+    #   @return [Boolean]
     json_attribute :automatic_url_alias, :boolean, default: true
 
+    # @!attribute template_sections
+    #   @return [Array<String>]
     json_attribute :template_sections, :array
+    # @!attribute template
+    #   @return [String]
     json_attribute :template, :string, default: '{{content}}'
 
+    # @!attribute title
+    #   @return [String, nil]
     json_attribute :title, :string
+    # @!attribute show_title
+    #   @return [Boolean]
     json_attribute :show_title, :boolean, default: true
+    # @!attribute keywords
+    #   @return [String, nil]
     json_attribute :keywords, :string
+    # @!attribute description
+    #   @return [String, nil]
     json_attribute :description, :string
+    # @!attribute browser_title
+    #   @return [String, nil]
     json_attribute :browser_title, :string
 
+    # @!attribute css
+    #   @return [String, nil]
     json_attribute :css, :string
+    # @!attribute css_compiled
+    #   @return [String, nil]
     json_attribute :css_compiled, :string
 
     has_many :widgets, class_name: '::Cms::PageWidget', dependent: :destroy, inverse_of: :page, foreign_key: :cms_page_id

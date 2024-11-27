@@ -33,7 +33,7 @@ class PersonGridTranslator
         next if SKIP_COLUMNS.include?(column)
 
         value = record.public_send(column)
-        if column =~ /census\d{4}/
+        if /census\d{4}/.match?(column)
           value = value.compact
           value = value.present? ? { year: column[-4...].to_i, id: value } : nil
         end
@@ -64,9 +64,9 @@ class PersonGridTranslator
       resizable: true
     }
     options[:headerName] = 'Actions' if column == 'id'
-    options[:headerName] = column[-4...] if column =~ /census\d{4}/
+    options[:headerName] = column[-4...] if /census\d{4}/.match?(column)
     options[:cellRenderer] = 'nameCellRenderer' if column == 'name'
-    options[:cellRenderer] = 'censusLinkCellRenderer' if column =~ /census\d{4}/
+    options[:cellRenderer] = 'censusLinkCellRenderer' if /census\d{4}/.match?(column)
     options[:width] = width_for_column(column)
     options[:sortable] = true unless column == 'view'
     options
@@ -83,6 +83,8 @@ class PersonGridTranslator
     description: 250
   }.freeze
 
+  # @param column [String]
+  # @return [Integer]
   def width_for_column(column)
     COLUMN_WIDTHS[column.intern] || 80
   end

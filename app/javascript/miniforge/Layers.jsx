@@ -1,10 +1,9 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import {useAppDispatch, useAppSelector} from "../forge/hooks";
+import {useDispatch, useSelector} from "react-redux";
 
 export const Layers = () => {
-  const dispatch = useAppDispatch();
-  const { layers, layer, opacity } = useAppSelector(state => ({ ...state.layers }));
+  const dispatch = useDispatch();
+  const { layers, layer, opacity } = useSelector(state => ({ ...state.layers }));
 
   if (!layers || !layers.length) return null;
 

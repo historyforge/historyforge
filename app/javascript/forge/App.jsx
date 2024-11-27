@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react'
 import Layers from './Layers'
-import Map from './Map'
+import { Map } from './Map'
 import CensusSearch from './CensusSearch'
 import Building from './Building'
 import {forgeInit, getBuildingsNearMe, reset, resetMap} from './actions'
-import {useAppDispatch, useAppSelector} from './hooks'
+import {useDispatch, useSelector} from 'react-redux'
 import {Forges} from "./Forges";
 
 const App = () => {
@@ -12,14 +12,14 @@ const App = () => {
     const [sidebarRight, setSidebarRight] = useState(false);
     const [forgePickerOpen, setForgePickerOpen] = useState(false);
     const hasForges = window.initialState.forges.forges.length > 1;
-    const dispatch = useAppDispatch();
+    const dispatch = useDispatch();
 
     useEffect(() => {
         dispatch(forgeInit());
     }, [dispatch])
 
-    const forgeActive = useAppSelector(state => state.layers.active || state.search.current);
-    const focusing = useAppSelector(state => state.layers.focusing || false);
+    const forgeActive = useSelector(state => state.layers.active || state.search.current);
+    const focusing = useSelector(state => state.layers.focusing || false);
 
     const resetForge = () => {
         dispatch(reset());
@@ -46,7 +46,7 @@ const App = () => {
                     alert(`Sorry but an error occurred while trying to get your location.: ${error.message}`)
                 }
                 console.error(error);
-                dispatch({ type: "FORGE_FOCUSING"} )
+                dispatch({ type: "FORGE_FOCUSED"} )
             }
         );
     }
