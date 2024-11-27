@@ -7,9 +7,19 @@ module CensusRecords
       @bulk_updates = BulkUpdate.where(year: year).page(params[:page] || 1).order('updated_at desc')
     end
 
+    def show
+      authorize! :bulk_update, BulkUpdate
+      @bulk_update = BulkUpdate.find params[:id]
+    end
+
     def new
       authorize! :bulk_update, BulkUpdate
       @bulk_update = BulkUpdate.new user: current_user, year: year
+    end
+
+    def edit
+      authorize! :bulk_update, BulkUpdate
+      @bulk_update = BulkUpdate.find params[:id]
     end
 
     def create
@@ -21,11 +31,6 @@ module CensusRecords
       else
         render action: :new
       end
-    end
-
-    def edit
-      authorize! :bulk_update, BulkUpdate
-      @bulk_update = BulkUpdate.find params[:id]
     end
 
     def update
@@ -47,10 +52,6 @@ module CensusRecords
       end
     end
 
-    def show
-      authorize! :bulk_update, BulkUpdate
-      @bulk_update = BulkUpdate.find params[:id]
-    end
 
     def destroy
       authorize! :bulk_update, BulkUpdate

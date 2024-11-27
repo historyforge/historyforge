@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 source 'https://rubygems.org'
-ruby '3.2.2'
+ruby '3.3.6'
 
 gem 'active_interaction', '~> 5.2'
 gem 'activerecord-precounter'
@@ -37,8 +37,8 @@ gem 'paper_trail'
 gem 'pg'
 gem 'pg_search'
 gem 'pretender'
-gem 'puma', '~>5' # pegged at 5 because of capybara issue - try again when capybara updates
-gem 'rails', '~>7.0'
+gem 'puma'
+gem 'rails'
 gem 'ransack'
 gem 'recaptcha'
 gem 'ruby-vips'
@@ -48,7 +48,6 @@ gem 'sassc'
 gem 'simple_form'
 gem 'slim'
 gem 'sprockets-rails'
-gem 'streamio-ffmpeg'
 
 group :development do
   gem 'annotate'
@@ -58,10 +57,10 @@ group :development do
   gem 'letter_opener_web'
   gem 'pry'
   gem 'rubocop', require: false
+  gem 'rubocop-capybara', require: false
+  gem 'rubocop-factory_bot', require: false
   gem 'rubocop-performance', require: false
   gem 'rubocop-rails', require: false
-  gem 'rubocop-factory_bot', require: false
-  gem 'rubocop-capybara', require: false
   gem 'rubocop-rspec', require: false
   gem 'ruby-lsp', '~> 0.3.7', require: false
   gem 'simplecov', require: false

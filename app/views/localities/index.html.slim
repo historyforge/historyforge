@@ -22,6 +22,15 @@
           td= number_with_delimiter record.total_count
           td style="text-align:right;white-space:nowrap"
             = link_to 'Edit', [:edit, record], class: 'btn btn-xs btn-light'
+            = link_to move_to_top_locality_path(record), class: 'btn btn-sm btn-light', data: { method: :put } do
+              i.fa.fa-long-arrow-up
+            = link_to move_up_locality_path(record), class: 'btn btn-sm btn-light', data: { method: :put } do
+              i.fa.fa-arrow-up
+            = link_to move_down_locality_path(record), class: 'btn btn-sm btn-light', data: { method: :put } do
+              i.fa.fa-arrow-down
+            = link_to move_to_bottom_locality_path(record), class: 'btn btn-sm btn-light', data: { method: :put } do
+              i.fa.fa-long-arrow-down
+
       tr
         th Total
         - CensusYears.each do |year|

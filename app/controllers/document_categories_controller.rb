@@ -13,6 +13,11 @@ class DocumentCategoriesController < ApplicationController
     @document_category = DocumentCategory.new
   end
 
+  def edit
+    @document_category = DocumentCategory.find params[:id]
+    authorize! :update, @document_category
+  end
+
   def create
     @document_category = DocumentCategory.new resource_params
     authorize! :create, @document_category
@@ -23,11 +28,6 @@ class DocumentCategoriesController < ApplicationController
       flash[:errors] = 'We had some problems doing that.'
       render :new
     end
-  end
-
-  def edit
-    @document_category = DocumentCategory.find params[:id]
-    authorize! :update, @document_category
   end
 
   def update
@@ -60,7 +60,9 @@ class DocumentCategoriesController < ApplicationController
     params.require(:document_category).permit :name, :description
   end
 
-  def resource
+  def document_category
     @document_category ||= DocumentCategory.find(params[:id])
   end
+
+  alias resource document_category
 end

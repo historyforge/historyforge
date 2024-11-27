@@ -85,13 +85,24 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
-  config.action_mailer.delivery_method = :smtp
-  config.action_mailer.smtp_settings = {
+  smtp_settings = {
     address: ENV['SMTP_HOST'],
     port: ENV['SMTP_PORT'],
     user_name: ENV['SMTP_USERNAME'],
     password: ENV['SMTP_PASSWORD']
   }
+
+  if ENV['SMTP_HOST'].present? && ENV['SMTP_PORT'] == 'smtp.gmail.com'
+    smtp_settings.merge!(
+      authentication: 'plain',
+      enable_starttls: true,
+      open_timeout: 5,
+      read_timeout: 5
+    )
+  end
+
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = smtp_settings
 
   config.public_file_server.enabled = true
 end

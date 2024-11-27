@@ -5,7 +5,7 @@ module MediaDateBehavior
   included do
     attr_writer :date_year, :date_month, :date_day, :date_year_end, :date_month_end, :date_day_end
 
-    enum date_type: { year: 0, month: 1, day: 2, years: 3, months: 4, days: 5 }
+    enum :date_type, { year: 0, month: 1, day: 2, years: 3, months: 4, days: 5 }
 
     before_validation :set_dates
 

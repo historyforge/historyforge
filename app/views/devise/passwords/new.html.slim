@@ -1,0 +1,15 @@
+.ml-auto.mr-auto style="max-width: 450px"
+  = simple_form_for(resource, as: resource_name, url: password_path(resource_name)) do |form|
+    .card
+      .card-header
+        h3.card-title= t('.forgot_your_password')
+      .card-body
+        = bootstrap_devise_error_messages!
+        .form-group
+          = form.label :email
+          = form.email_field :email, autofocus: true, autocomplete: 'email', class: 'form-control'
+      .card-footer
+        .form-group
+          = form.submit t('.send_me_reset_password_instructions'), class: 'btn btn-primary'
+          hr
+          = render 'devise/shared/links'

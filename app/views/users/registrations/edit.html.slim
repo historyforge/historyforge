@@ -1,0 +1,29 @@
+.ml-auto.mr-auto style="max-width: 450px"
+  = simple_form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |form|
+    .card
+      .card-header
+        h3.card-title Volunteer Registration
+      .card-body
+        = form.error_notification
+        .form-inputs
+          = form.input :login, required: true, autofocus: true %>
+          = form.input :email, required: true %>
+
+          - if devise_mapping.confirmable? && resource.pending_reconfirmation?
+            p Currently waiting confirmation for: #{resource.unconfirmed_email}
+
+          = form.input :password,
+                      hint: "leave it blank if you don't want to change it",
+                      required: false,
+                      input_html: { autocomplete: "new-password" }
+          = form.input :password_confirmation,
+                      required: false,
+                      input_html: { autocomplete: "new-password" }
+          = form.input :current_password,
+                      hint: "we need your current password to confirm your changes",
+                      required: true,
+                      input_html: { autocomplete: "current-password" }
+      .card-footer
+        = form.button :submit, "Update", class: 'btn btn-primary'
+        hr
+        = link_to "Back", :back

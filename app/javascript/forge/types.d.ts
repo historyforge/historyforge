@@ -47,6 +47,7 @@ type MapProps = {
     layeredAt?: Date;
     opacityAt?: Date;
     loadedAt?: Date;
+    addressedAt?: Date;
     focusOnPoints?: Array<keyable>;
     finishedFocusing: () => void;
 }

@@ -1,9 +1,9 @@
 import React from 'react'
 import { highlight } from '../forge/actions'
-import {useAppDispatch, useAppSelector} from "../forge/hooks";
+import {useDispatch, useSelector} from "react-redux";
 
 const Building = ({ id, street_address, highlighted }) => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   return (
     <div className={`list-group-item building ${highlighted === id && 'active'}`}
          onMouseOver={() => dispatch(highlight(id))}
@@ -20,7 +20,7 @@ const Building = ({ id, street_address, highlighted }) => {
 
 
 export const Buildings = () => {
-  const props = useAppSelector(state => ({ ...state.buildings }));
+  const props = useSelector(state => ({ ...state.buildings }));
   const { buildings, highlighted } = props;
   return buildings ? (
     <div id="building-list">
