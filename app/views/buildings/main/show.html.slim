@@ -113,6 +113,8 @@
         .card-body#building-description
           == @building.description
 
+    = render 'media/display_on_associated_record', item: @building.object
+
     - narratives = @building.narratives.accessible_by(current_ability)
     .card class="#{@building.description.blank? ? 'mb-3' : 'empty-card'}"
       .card-header
@@ -126,8 +128,6 @@
       .list-group
         - narratives.each do |narrative|
           = render 'narratives/narrative', narrative:
-
-    = render 'media/display_on_associated_record', item: @building.object
 
     - CensusYears.each do |year|
       - families = @building.public_send("families_in_#{year}")

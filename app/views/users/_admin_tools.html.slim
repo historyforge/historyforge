@@ -11,11 +11,11 @@
 li.list-group-item
   .row
     .col-4 Last Signed In
-    .col-8= @user.last_sign_in_at&.to_s(:long) || 'Never'
+    .col-8= @user.last_sign_in_at&.to_formatted_s(:long) || 'Never'
 li.list-group-item
   .row
     .col-4 Current Sign In
-    .col-8= @user.current_sign_in_at&.to_s(:long) || 'Never'
+    .col-8= @user.current_sign_in_at&.to_formatted_s(:long) || 'Never'
 li.list-group-item
   .row
     .col-4 Enabled?

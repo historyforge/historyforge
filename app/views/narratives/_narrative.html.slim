@@ -19,4 +19,4 @@
     span.badge.badge-info.float-right.ml-1 style="margin-top:-20px"
       = "Weight: #{narrative.weight}"
 
-    /p= "Submitted by #{record.created_by.login} on #{record.created_at.to_s(:long)}"
+    /p= "Submitted by #{record.created_by.login} on #{record.created_at.to_formatted_s(:long)}"

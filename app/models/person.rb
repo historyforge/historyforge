@@ -65,6 +65,8 @@ class Person < ApplicationRecord
            inverse_of: :person
   accepts_nested_attributes_for :names, allow_destroy: true, reject_if: proc { |p| p['first_name'].blank? || p['last_name'].blank? }
 
+  validates :first_name, :last_name, :sex, :race, presence: true
+
   before_validation do
     self.sex = nil if sex.blank? || sex == 'on'
     self.race = nil if race.blank? || race == 'on'

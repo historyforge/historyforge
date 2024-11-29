@@ -5,11 +5,11 @@
       .nested-form.list-group
         .list-group-item
           .row
-            .col-sm-1 Prefix
-            .col-sm-4 First Name
-            .col-sm-2 Middle
-            .col-sm-4 Last Name
-            .col-sm-1 Suffix
+            .col-sm-1= form.label :name_prefix, 'Prefix'
+            .col-sm-4= form.label :first_name, 'First Name *'
+            .col-sm-2= form.label :middle_name, 'Middle'
+            .col-sm-4= form.label :last_name, 'Last Name *'
+            .col-sm-1= form.label :name_suffix, 'Suffix'
         .list-group-item
           .row
             .col-sm-1

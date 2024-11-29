@@ -20,13 +20,16 @@
           = picture_tag photo: photo, style: 'quarter', img_class: 'img-thumbnail'
           = simple_format photo.full_caption
       - videos.each do |video|
-        .building-photo.col-12.col-sm-6.col-lg-4 id="video_#{video.id}" data-href=url_for([item, video])
-          | Video
+        .building-photo.col-12.col-sm-6.col-lg-4 id="video_#{video.id}"
+          - if video.remote_url&.match(/youtube\.com\/watch\?v=/)
+            iframe width="100%" src=video.remote_url.sub(/watch\?v=/, 'embed/') title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen="true"
           = link_to url_for([item, video]) do
             = simple_format video.full_caption
       - audios.each do |audio|
         .col-sm-6.col-12.col-lg-4 id="audio_#{audio.id}"
-          | Audio recording:
+          | Audio recording
+          span.ml-2= link_to audio.remote_url, target: :_blank, class: 'btn btn-xs btn-light' do
+            i.fa.fa-play
           br
           = link_to url_for([item, audio]) do
             = simple_format audio.full_caption

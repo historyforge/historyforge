@@ -19,6 +19,10 @@
       = form.submit 'Search', class: 'btn btn-primary'
       = link_to 'Reset', videos_path(reset: true), class: 'btn btn-light'
 
+- if params[:q]
+  h3
+    | Searching for #{[params[:q][:full_text_search], !!params[:q][:unreviewed_only] ? 'unreviewed' : nil].compact_blank.join(' and ')}
+
 = page_entries_info @assets
 
 .list-group#photographs
