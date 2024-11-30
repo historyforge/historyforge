@@ -31,7 +31,7 @@ class BitmaskModel
   def self.from_mask(mask)
     return [] if mask.blank?
 
-    all.select { |item| (mask & 2**item.id).positive? }
+    all.select { |item| mask.anybits?((2**item.id)) }
   end
 
   def self.ids_from_mask(mask)
@@ -39,12 +39,12 @@ class BitmaskModel
   end
 
   def self.mask_from_ids(ids)
-    (ids.map(&:to_i) & all.map(&:id)).map { |id| 2**id }.sum
+    (ids.map(&:to_i) & all.map(&:id)).sum { |id| 2**id }
   end
 
   def self.mask_for(ids)
     ids = [ids] unless ids.is_a?(Array)
-    ids.inject(0) { |bitmask, id| bitmask | 2**id.to_i }
+    ids.inject(0) { |bitmask, id| bitmask | (2**id.to_i) }
   end
 
   def initialize(id:, name:)

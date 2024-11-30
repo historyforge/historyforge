@@ -30,7 +30,7 @@ class ApplicationRecord < ActiveRecord::Base
   end
 
   def self.decorator_class
-    @decorator_class ||= "#{name}Decorator".safe_constantize || "#{superclass.name}Decorator".constantize
+    @decorator_class ||= "#{name}Decorator".safe_constantize || "#{superclass&.name}Decorator".constantize
   end
 
   def decorate(decorator = nil)

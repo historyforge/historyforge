@@ -64,11 +64,11 @@ module Buildings
       return if source_val.blank? || source_val == target_val
 
       if target_val.blank?
-        @target.send("#{field}=", source_val)
+        @target.send(:"#{field}=", source_val)
       elsif source_val.is_a?(String)
-        @target.send("#{field}=", [target_val, source_val].join("\r\n"))
+        @target.send(:"#{field}=", [target_val, source_val].join("\r\n"))
       elsif source_val.is_a?(Array)
-        @target.send("#{field}=", target_val.concat(source_val).uniq)
+        @target.send(:"#{field}=", target_val.concat(source_val).uniq)
       end
     end
   end

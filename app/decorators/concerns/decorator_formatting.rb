@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 module DecoratorFormatting
-  def format_name(last_name:, middle_name: nil, first_name:, name_prefix: nil, name_suffix: nil)
+  def format_name(last_name:, first_name:, middle_name: nil, name_prefix: nil, name_suffix: nil)
     name = [[last_name, name_suffix].compact_blank.join(' ')]
     name << [first_name, middle_name, name_prefix].compact_blank.join(' ')
-    name.join(', ').strip.sub(/,$/, '')
+    name.join(', ').strip.sub(/,$/, '').presence || 'Name missing'
   end
 
   def name

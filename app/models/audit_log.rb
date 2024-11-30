@@ -28,7 +28,7 @@ class AuditLog < ApplicationRecord
   end
 
   def whodunnit
-    user_id&.to_s
+    user_id.to_s
   end
 end
 
