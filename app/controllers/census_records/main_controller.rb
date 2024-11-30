@@ -199,9 +199,11 @@ module CensusRecords
     memoize :resource_class
     helper_method :resource_class
 
+    NULLABLES = %w[on nil].freeze
+
     def resource_params
       params[:census_record].each do |key2, value|
-        params[:census_record][key2] = nil if %w[on nil].include?(value)
+        params[:census_record][key2] = nil if NULLABLES.include?(value)
       end
       params.require(:census_record).permit!
     end
@@ -211,7 +213,7 @@ module CensusRecords
         redirect_to @record.person
       elsif params[:then].present?
         attributes = NextCensusRecordAttributes.new(@record, params[:then]).attributes
-        redirect_to send(:"new_census#{year}_record_path", attributes: attributes)
+        redirect_to send(:"new_census#{year}_record_path", attributes:)
       else
         redirect_to @record
       end
@@ -223,7 +225,7 @@ module CensusRecords
 
     def load_census_records
       authorize! :read, resource_class
-      @search = CensusRecordSearch.generate params: search_params, year: year, user: current_user
+      @search = CensusRecordSearch.generate params: search_params, year:, user: current_user
     end
 
     def render_census_records
