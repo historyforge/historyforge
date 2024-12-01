@@ -1,13 +1,5 @@
 const google = window.google
 
-export function addOpacity(map, layers) {
-  const currentLayers = map.overlayMapTypes.getArray()
-  currentLayers.forEach(layer => {
-    const opacity = layers.find(l => l.id === layer.name).opacity
-    if (typeof (opacity) === 'number') { layer.setOpacity(opacity / 100) } else { layer.setOpacity(1) }
-  })
-}
-
 export function generateMarkers(items, handlers) {
   if (!items) return null
 

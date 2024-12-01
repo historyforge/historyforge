@@ -35,7 +35,7 @@ export const BuildingModal = ({ building, years }) => {
         Building Details
       </ModalHeader>
       <ModalBody>
-        {buildingId ? <Building building={building} residents={residents} hasResidents={hasResidents} years={years} /> : null}
+        {building ? <Building building={building} residents={residents} hasResidents={hasResidents} years={years} /> : null}
       </ModalBody>
     </Modal>
   )

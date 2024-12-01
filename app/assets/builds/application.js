@@ -440,7 +440,7 @@
           options.scales.y.title.display = true;
           options.scales.y.title.text = title;
         };
-        var addOpacity3 = function(hex2, opacity) {
+        var addOpacity2 = function(hex2, opacity) {
           var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex2);
           return result ? "rgba(" + parseInt(result[1], 16) + ", " + parseInt(result[2], 16) + ", " + parseInt(result[3], 16) + ", " + opacity + ")" : hex2;
         };
@@ -656,11 +656,11 @@
               color2 = colors2;
               backgroundColor = [];
               for (var j$3 = 0; j$3 < colors2.length; j$3++) {
-                backgroundColor[j$3] = addOpacity3(color2[j$3], 0.5);
+                backgroundColor[j$3] = addOpacity2(color2[j$3], 0.5);
               }
             } else {
               color2 = s3.color || colors2[i2];
-              backgroundColor = chartType !== "line" ? addOpacity3(color2, 0.5) : color2;
+              backgroundColor = chartType !== "line" ? addOpacity2(color2, 0.5) : color2;
             }
             var dataset = {
               label: s3.name || "",
@@ -6331,7 +6331,7 @@
             }
             return dispatcher.useContext(Context2, unstable_observedBits);
           }
-          function useState7(initialState) {
+          function useState9(initialState) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useState(initialState);
           }
@@ -6339,11 +6339,11 @@
             var dispatcher = resolveDispatcher();
             return dispatcher.useReducer(reducer, initialArg, init);
           }
-          function useRef5(initialValue) {
+          function useRef6(initialValue) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useRef(initialValue);
           }
-          function useEffect6(create, deps) {
+          function useEffect10(create, deps) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useEffect(create, deps);
           }
@@ -6913,13 +6913,13 @@
           exports.useCallback = useCallback2;
           exports.useContext = useContext5;
           exports.useDebugValue = useDebugValue2;
-          exports.useEffect = useEffect6;
+          exports.useEffect = useEffect10;
           exports.useImperativeHandle = useImperativeHandle;
           exports.useLayoutEffect = useLayoutEffect2;
           exports.useMemo = useMemo5;
           exports.useReducer = useReducer3;
-          exports.useRef = useRef5;
-          exports.useState = useState7;
+          exports.useRef = useRef6;
+          exports.useState = useState9;
           exports.version = ReactVersion;
         })();
       }
@@ -52511,7 +52511,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var import_react_dom3 = __toESM(require_react_dom());
 
   // app/javascript/forge/App.jsx
-  var import_react37 = __toESM(require_react());
+  var import_react41 = __toESM(require_react());
 
   // app/javascript/forge/Layers.jsx
   var import_react20 = __toESM(require_react());
@@ -54587,7 +54587,30 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var Layers_default = Component;
 
   // app/javascript/forge/Map.jsx
+  var import_react25 = __toESM(require_react());
+
+  // app/javascript/forge/hooks/useOpacity.js
   var import_react21 = __toESM(require_react());
+  function useOpacity(map3) {
+    const opacityAt = useSelector((state) => state.layers.opacityAt);
+    const layers3 = useSelector((state) => state.layers.layers);
+    (0, import_react21.useEffect)(() => {
+      if (map3) {
+        const currentLayers = map3.overlayMapTypes.getArray();
+        currentLayers.forEach((layer) => {
+          const opacity = layers3.find((l) => l.id === layer.name).opacity;
+          if (typeof opacity === "number") {
+            layer.setOpacity(opacity / 100);
+          } else {
+            layer.setOpacity(1);
+          }
+        });
+      }
+    }, [opacityAt]);
+  }
+
+  // app/javascript/forge/hooks/useLayers.js
+  var import_react22 = __toESM(require_react());
 
   // app/javascript/forge/wms.ts
   function bound(value, opt_min, opt_max) {
@@ -54696,115 +54719,39 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     return loader.load();
   }
 
-  // app/javascript/forge/actions.ts
-  var import_axios2 = __toESM(require_axios2());
-  var highlight = (id) => (dispatch) => {
-    dispatch({ type: "BUILDING_HIGHLIGHT", id });
-  };
-  var forgeInit = () => (dispatch, getState) => __async(void 0, null, function* () {
-    yield dispatch({ type: "FORGE_INIT" });
-    if (getState().search.params.buildings) {
-      dispatch(load());
-    } else {
-      dispatch(setYear());
-    }
-  });
-  var setYear = (proposedYear) => (dispatch, getState) => {
-    let year = proposedYear || getState().search.params.people;
-    if (year) {
-      year = parseInt(year);
-      dispatch({ type: "FORGE_SET_YEAR", year });
-      dispatch(loadFilters(year));
-      dispatch(load());
-    } else {
-      dispatch(load());
-    }
-  };
-  var getBuildingsNearMe = ({ latitude, longitude }) => (dispatch, getState) => __async(void 0, null, function* () {
-    const near = `${latitude}+${longitude}`;
-    const qs = buildParams(getState().search || {});
-    const params = __spreadProps(__spreadValues({}, qs), {
-      near
-    });
-    const json = yield import_axios2.default.get("/buildings.json", { params });
-    if (typeof json.data === "string") {
-      json.data = JSON.parse(json.data);
-    }
-    dispatch({ type: "FORGE_FOCUS", buildings: json.data.buildings });
-  });
-  var finishedFocusing = () => (dispatch) => dispatch({ type: "FORGE_FOCUSED" });
-  var load = () => (dispatch, getState) => __async(void 0, null, function* () {
-    const qs = getState().search || {};
-    const json = yield import_axios2.default.get("/buildings.json", {
-      params: buildParams(qs)
-    });
-    if (typeof json.data === "string") {
-      json.data = JSON.parse(json.data);
-    }
-    dispatch(__spreadValues({ type: "BUILDING_LOADED" }, json.data));
-  });
-  var reset = () => (dispatch, getState) => __async(void 0, null, function* () {
-    console.log("Resetting the Forge");
-    yield dispatch({ type: "FORGE_RESET" });
-    return load()(dispatch, getState);
-  });
-  var resetMap = () => (dispatch) => __async(void 0, null, function* () {
-    return dispatch({ type: "LAYERS_RESET" });
-  });
-  var select = (id, params) => (dispatch) => __async(void 0, null, function* () {
-    const url = `/buildings/${id}.json`;
-    const json = yield import_axios2.default.get(url, { params: buildParams(params) });
-    dispatch({ type: "BUILDING_SELECTED", building: json.data });
-  });
-  var address = (id) => (dispatch) => __async(void 0, null, function* () {
-    const url = `/buildings/${id}/address.json`;
-    const json = yield import_axios2.default.get(url);
-    dispatch({ type: "BUILDING_ADDRESS_LOADED", address: json.data });
-  });
-  var deAddress = () => (dispatch) => {
-    dispatch({ type: "BUILDING_ADDRESS_REMOVE" });
-  };
-  var moveBuilding = (point) => (dispatch) => __async(void 0, null, function* () {
-    configureAxios();
-    const url = document.location.pathname + ".json";
-    yield import_axios2.default.patch(url, { building: point });
-    dispatch({ type: "BUILDING_MOVED", point });
-  });
-  var loadFilters = (year) => (dispatch) => __async(void 0, null, function* () {
-    const url = `/census/${year}/advanced_search_filters.json`;
-    const json = yield import_axios2.default.get(url);
-    dispatch(__spreadValues({ type: "FORGE_FILTERS_LOADED" }, json.data));
-  });
-  var buildParams = function(search2) {
-    var _a, _b;
-    const params = { s: {} };
-    if ((_a = search2 == null ? void 0 : search2.params) == null ? void 0 : _a.s) {
-      params.s = search2.params.s;
-    }
-    if (((_b = search2 == null ? void 0 : search2.people) == null ? void 0 : _b.s) || (search2 == null ? void 0 : search2.year)) {
-      params.people = search2.people || (search2 == null ? void 0 : search2.year);
-      params.peopleParams = search2.params.s;
-    }
-    params.s.lat_not_null = 1;
-    return params;
-  };
-  var configureAxios = () => {
-    import_axios2.default.defaults.headers.common["X-CSRF-TOKEN"] = document.querySelector("[name=csrf-token]").getAttribute("content");
-  };
-
-  // app/javascript/forge/mapFunctions.js
-  var google2 = window.google;
-  function addOpacity(map3, layers3) {
+  // app/javascript/forge/hooks/useLayers.js
+  function useLayers(map3) {
+    const layeredAt = useSelector((state) => state.layers.layeredAt);
+    const layers3 = useSelector((state) => state.layers.layers);
+    (0, import_react22.useEffect)(() => {
+      if (!map3) {
+        return;
+      }
+      addLayers(map3, layers3);
+    }, [layeredAt]);
+  }
+  function addLayers(map3, layers3) {
+    const selectedLayers = layers3.filter((layer) => layer.selected).sort((a3, b2) => a3.year_depicted > b2.year_depicted ? 1 : -1);
+    const selectedLayerIds = selectedLayers.map((layer) => layer.id);
     const currentLayers = map3.overlayMapTypes.getArray();
-    currentLayers.forEach((layer) => {
-      const opacity = layers3.find((l) => l.id === layer.name).opacity;
-      if (typeof opacity === "number") {
-        layer.setOpacity(opacity / 100);
-      } else {
-        layer.setOpacity(1);
+    const currentLayerIds = currentLayers.map((layer) => layer.name);
+    currentLayerIds.forEach((name, index2) => {
+      if (selectedLayerIds.indexOf(name) === -1) {
+        map3.overlayMapTypes.removeAt(index2);
+      }
+    });
+    selectedLayerIds.forEach((id, selectedIndex) => {
+      if (currentLayerIds.indexOf(id) === -1) {
+        loadWMS(map3, selectedLayers[selectedIndex], selectedIndex);
       }
     });
   }
+
+  // app/javascript/forge/hooks/useMarkers.js
+  var import_react23 = __toESM(require_react());
+
+  // app/javascript/forge/mapFunctions.js
+  var google2 = window.google;
   function generateMarkers(items, handlers) {
     if (!items)
       return null;
@@ -54867,6 +54814,101 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       scale: 10
     });
   }
+
+  // app/javascript/forge/actions.ts
+  var import_axios2 = __toESM(require_axios2());
+  var highlight = (id) => (dispatch) => {
+    dispatch({ type: "BUILDING_HIGHLIGHT", id });
+  };
+  var forgeInit = () => (dispatch, getState) => __async(void 0, null, function* () {
+    yield dispatch({ type: "FORGE_INIT" });
+    if (getState().search.params.buildings) {
+      dispatch(load());
+    } else {
+      dispatch(setYear());
+    }
+  });
+  var setYear = (proposedYear) => (dispatch, getState) => {
+    let year = proposedYear || getState().search.params.people;
+    if (year) {
+      year = parseInt(year);
+      dispatch({ type: "FORGE_SET_YEAR", year });
+      dispatch(loadFilters(year));
+      dispatch(load());
+    } else {
+      dispatch(load());
+    }
+  };
+  var getBuildingsNearMe = ({ latitude, longitude }) => (dispatch, getState) => __async(void 0, null, function* () {
+    const near = `${latitude}+${longitude}`;
+    const qs = buildParams(getState().search || {});
+    const params = __spreadProps(__spreadValues({}, qs), {
+      near
+    });
+    const json = yield import_axios2.default.get("/buildings.json", { params });
+    if (typeof json.data === "string") {
+      json.data = JSON.parse(json.data);
+    }
+    dispatch({ type: "FORGE_FOCUS", buildings: json.data.buildings });
+  });
+  var load = () => (dispatch, getState) => __async(void 0, null, function* () {
+    const qs = getState().search || {};
+    const json = yield import_axios2.default.get("/buildings.json", {
+      params: buildParams(qs)
+    });
+    if (typeof json.data === "string") {
+      json.data = JSON.parse(json.data);
+    }
+    dispatch(__spreadValues({ type: "BUILDING_LOADED" }, json.data));
+  });
+  var reset = () => (dispatch, getState) => __async(void 0, null, function* () {
+    console.log("Resetting the Forge");
+    yield dispatch({ type: "FORGE_RESET" });
+    return load()(dispatch, getState);
+  });
+  var resetMap = () => (dispatch) => __async(void 0, null, function* () {
+    return dispatch({ type: "LAYERS_RESET" });
+  });
+  var select = (id, params) => (dispatch) => __async(void 0, null, function* () {
+    const url = `/buildings/${id}.json`;
+    const json = yield import_axios2.default.get(url, { params: buildParams(params) });
+    dispatch({ type: "BUILDING_SELECTED", building: json.data });
+  });
+  var address = (id) => (dispatch) => __async(void 0, null, function* () {
+    const url = `/buildings/${id}/address.json`;
+    const json = yield import_axios2.default.get(url);
+    dispatch({ type: "BUILDING_ADDRESS_LOADED", address: json.data });
+  });
+  var deAddress = () => (dispatch) => {
+    dispatch({ type: "BUILDING_ADDRESS_REMOVE" });
+  };
+  var moveBuilding = (point) => (dispatch) => __async(void 0, null, function* () {
+    configureAxios();
+    const url = document.location.pathname + ".json";
+    yield import_axios2.default.patch(url, { building: point });
+    dispatch({ type: "BUILDING_MOVED", point });
+  });
+  var loadFilters = (year) => (dispatch) => __async(void 0, null, function* () {
+    const url = `/census/${year}/advanced_search_filters.json`;
+    const json = yield import_axios2.default.get(url);
+    dispatch(__spreadValues({ type: "FORGE_FILTERS_LOADED" }, json.data));
+  });
+  var buildParams = function(search2) {
+    var _a, _b;
+    const params = { s: {} };
+    if ((_a = search2 == null ? void 0 : search2.params) == null ? void 0 : _a.s) {
+      params.s = search2.params.s;
+    }
+    if (((_b = search2 == null ? void 0 : search2.people) == null ? void 0 : _b.s) || (search2 == null ? void 0 : search2.year)) {
+      params.people = search2.people || (search2 == null ? void 0 : search2.year);
+      params.peopleParams = search2.params.s;
+    }
+    params.s.lat_not_null = 1;
+    return params;
+  };
+  var configureAxios = () => {
+    import_axios2.default.defaults.headers.common["X-CSRF-TOKEN"] = document.querySelector("[name=csrf-token]").getAttribute("content");
+  };
 
   // node_modules/@googlemaps/markerclusterer/dist/index.esm.js
   var import_fast_deep_equal = __toESM(require_fast_deep_equal());
@@ -55807,160 +55849,149 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     }
   };
 
-  // app/javascript/forge/Map.jsx
-  var google3 = window.google;
-  var boundsTimeout;
-  var Map2 = () => {
+  // app/javascript/forge/hooks/useMarkers.js
+  function useMarkers(map3, clusterMachine, bounds) {
     const dispatch = useDispatch();
-    const props = useSelector((state) => __spreadValues(__spreadValues(__spreadValues({}, state.layers), state.buildings), state.search));
-    const mapRef = (0, import_react21.useRef)(null);
-    const infoWindowTimeout = (0, import_react21.useRef)(null);
-    const infoWindow = (0, import_react21.useRef)(null);
-    const [map3, setMap] = (0, import_react21.useState)(null);
-    const [markers, setMarkers] = (0, import_react21.useState)(null);
-    const [currentMarker, setCurrentMarker] = (0, import_react21.useState)(null);
-    const [clusters, setClusters] = (0, import_react21.useState)(null);
-    const [bounds, setBounds] = (0, import_react21.useState)(null);
-    const [prevLoadedAt, setPrevLoadedAt] = (0, import_react21.useState)(null);
-    const [prevAddressedAt, setPrevAddressedAt] = (0, import_react21.useState)(null);
-    const [prevFocusOnPoints, setPrevFocusOnPoints] = (0, import_react21.useState)(null);
-    const [prevHighlighted, setPrevHighlighted] = (0, import_react21.useState)(null);
-    (0, import_react21.useEffect)(() => {
-      if (!map3 && mapRef.current) {
-        const myMap = new google3.maps.Map(mapRef.current, mapOptions());
-        myMap.setCenter(props.center);
-        setMap(myMap);
-        google3.maps.event.addListener(myMap.getStreetView(), "visible_changed", () => {
-          const streetViewOn = myMap.getStreetView().getVisible();
-          if (streetViewOn) {
-            document.body.classList.add("streetview");
-          } else {
-            document.body.classList.remove("streetview");
-          }
-        });
-        google3.maps.event.addListener(myMap, "bounds_changed", () => {
-          clearTimeout(boundsTimeout);
-          boundsTimeout = setTimeout(() => {
-            setBounds(myMap.getBounds());
-          }, 250);
-        });
-      }
-    }, [map3, mapRef]);
-    const { layers: layers3, layeredAt, opacityAt, loadedAt, addressedAt, highlighted, focusOnPoints } = props;
+    const { addressedAt, loadedAt, bubble, buildings: buildings3 } = useSelector((state) => state.buildings);
+    const searchParams = useSelector((state) => state.search.params);
+    const [prevLoadedAt, setPrevLoadedAt] = (0, import_react23.useState)(null);
+    const [prevAddressedAt, setPrevAddressedAt] = (0, import_react23.useState)(null);
+    const markers = (0, import_react23.useRef)(null);
+    const currentMarker = (0, import_react23.useRef)(null);
+    const infoWindowTimeout = (0, import_react23.useRef)(null);
+    const infoWindow = (0, import_react23.useRef)(null);
     const addMarkers2 = () => {
-      if (!bounds || !markers) {
+      if (!bounds || !markers.current) {
         return;
       }
-      console.log("Adding markers");
-      const desiredMarkers = Object.values(markers).filter((marker) => bounds.contains(marker.position));
-      const nextClusters = addClusters(map3, clusters, desiredMarkers);
-      setClusters(nextClusters);
+      const desiredMarkers = Object.values(markers.current).filter((marker) => bounds.contains(marker.position));
+      clusterMachine.clearMarkers();
+      clusterMachine.addMarkers(desiredMarkers);
     };
-    (0, import_react21.useEffect)(() => {
-      if (!map3) {
-        return;
-      }
-      addLayers(map3, layers3);
-    }, [map3, layeredAt]);
-    (0, import_react21.useEffect)(() => {
-      if (!map3) {
-        return;
-      }
-      addOpacity(map3, layers3);
-    }, [map3, opacityAt]);
-    (0, import_react21.useEffect)(() => {
-      if (!map3) {
-        return;
-      }
-      if (markers) {
-        const isHighlighted = parseInt(highlighted);
-        const buildingId = props.building && parseInt(props.building.id);
-        if (prevHighlighted && prevHighlighted !== isHighlighted) {
-          if (prevHighlighted) {
-            setPrevHighlighted(isHighlighted);
-          }
-          unhighlightMarker(prevHighlighted, markers);
-        }
-        if (isHighlighted) {
-          highlightMarker(isHighlighted, markers);
-        } else if (buildingId) {
-          highlightMarker(buildingId, markers);
-        }
-      }
-    }, [map3, highlighted, prevHighlighted, markers]);
-    (0, import_react21.useEffect)(() => {
-      if (!map3 || prevLoadedAt === loadedAt) {
-        return;
-      }
-      const handlers = {
-        onClick(building) {
-          dispatch(select(building.id, props.params));
-        },
-        onMouseOver(building, marker) {
-          dispatch(highlight(building.id));
-          window.clearTimeout(infoWindowTimeout.current);
-          if (infoWindow.current) {
-            infoWindow.current.close();
-          }
-          setCurrentMarker(marker);
-          dispatch(address(building.id));
-        },
-        onMouseOut(building) {
-          dispatch(highlight(building.id));
-          infoWindowTimeout.current = window.setTimeout(() => {
-            dispatch(deAddress());
-            infoWindow.current.close();
-            setCurrentMarker(null);
-          }, 1e3);
-        }
-      };
-      const nextMarkers = generateMarkers(props.buildings, handlers);
-      setMarkers(nextMarkers);
-      setPrevLoadedAt(loadedAt);
-    }, [map3, loadedAt, prevLoadedAt]);
-    (0, import_react21.useEffect)(() => {
-      if (map3 && markers && bounds) {
-        addMarkers2();
-      }
-    }, [map3, markers, bounds]);
-    (0, import_react21.useEffect)(() => {
-      if (!map3) {
-        return;
-      }
-      if (focusOnPoints && prevFocusOnPoints !== focusOnPoints) {
-        map3.clearMarkers();
-        const bounds2 = new google3.maps.LatLngBounds();
-        focusOnPoints.forEach((point) => bounds2.extend(new google3.maps.LatLng(point.lat, point.lon)));
-        map3.fitBounds(bounds2);
-        dispatch(finishedFocusing());
-        setPrevFocusOnPoints(focusOnPoints);
-      }
-    }, [map3, focusOnPoints, focusOnPoints]);
-    (0, import_react21.useEffect)(() => {
+    (0, import_react23.useEffect)(() => {
       if (!map3) {
         return;
       }
       if (prevAddressedAt !== addressedAt) {
         setPrevAddressedAt(addressedAt);
-        const { bubble } = props;
         if (bubble) {
           if (infoWindow.current)
             infoWindow.current.close();
-          infoWindow.current = new google3.maps.InfoWindow({
+          infoWindow.current = new google.maps.InfoWindow({
             content: bubble.address
           });
           infoWindow.current.open({
-            anchor: currentMarker,
+            anchor: currentMarker.current,
             map: map3
           });
         }
       }
-    });
-    return /* @__PURE__ */ import_react21.default.createElement("div", {
+    }, [bubble, addressedAt]);
+    const showBuilding = (buildingId) => {
+      dispatch(select(buildingId, searchParams));
+    };
+    const highlight2 = (buildingId) => {
+      highlightMarker(buildingId, markers.current);
+      currentMarker.current = markers.current[buildingId];
+      window.clearTimeout(infoWindowTimeout.current);
+      if (infoWindow.current) {
+        infoWindow.current.close();
+      }
+      dispatch(address(buildingId));
+    };
+    const unHighlight = (buildingId) => {
+      unhighlightMarker(parseInt(buildingId), markers.current);
+      infoWindowTimeout.current = window.setTimeout(() => {
+        dispatch(deAddress());
+        infoWindow.current.close();
+      }, 1e3);
+    };
+    (0, import_react23.useEffect)(() => {
+      if (!map3 || prevLoadedAt === loadedAt) {
+        return;
+      }
+      const handlers = {
+        onClick(building) {
+          showBuilding(parseInt(building.id));
+        },
+        onMouseOver(building) {
+          highlight2(parseInt(building.id));
+        },
+        onMouseOut(building) {
+          unHighlight(parseInt(building.id));
+        }
+      };
+      markers.current = generateMarkers(buildings3, handlers);
+      setPrevLoadedAt(loadedAt);
+      addMarkers2();
+    }, [loadedAt, prevLoadedAt]);
+    (0, import_react23.useEffect)(() => {
+      if (map3 && bounds) {
+        addMarkers2();
+      }
+    }, [bounds]);
+  }
+
+  // app/javascript/forge/hooks/useMapTargeting.js
+  var import_react24 = __toESM(require_react());
+  function useMapTargeting(map3, clusterMachine) {
+    const dispatch = useDispatch();
+    const focusOnPoints = useSelector((state) => state.layers.focusOnPoints);
+    console.log(focusOnPoints);
+    const [prevFocusOnPoints, setPrevFocusOnPoints] = (0, import_react24.useState)(null);
+    (0, import_react24.useEffect)(() => {
+      if (!map3) {
+        return;
+      }
+      if (focusOnPoints && prevFocusOnPoints !== focusOnPoints) {
+        clusterMachine.clearMarkers();
+        const bounds = new google.maps.LatLngBounds();
+        focusOnPoints.forEach((point) => bounds.extend(new google.maps.LatLng(point.lat, point.lon)));
+        map3.fitBounds(bounds);
+        dispatch({ type: "FORGE_FOCUSED" });
+        setPrevFocusOnPoints(focusOnPoints);
+      }
+    }, [map3, focusOnPoints, focusOnPoints]);
+  }
+
+  // app/javascript/forge/Map.jsx
+  var google3 = window.google;
+  var boundsTimeout;
+  var Map2 = () => {
+    const props = useSelector((state) => __spreadValues(__spreadValues(__spreadValues({}, state.layers), state.buildings), state.search));
+    const mapDivRef = (0, import_react25.useRef)(null);
+    const mapRef = (0, import_react25.useRef)(null);
+    const clusterMachine = (0, import_react25.useRef)(null);
+    const map3 = mapRef.current;
+    const [bounds, setBounds] = (0, import_react25.useState)(null);
+    if (!mapRef.current && mapDivRef.current) {
+      mapRef.current = new google3.maps.Map(mapDivRef.current, mapOptions());
+      mapRef.current.setCenter(props.center);
+      clusterMachine.current = buildClusterMachine(mapRef.current);
+      google3.maps.event.addListener(mapRef.current.getStreetView(), "visible_changed", () => {
+        const streetViewOn = mapRef.current.getStreetView().getVisible();
+        if (streetViewOn) {
+          document.body.classList.add("streetview");
+        } else {
+          document.body.classList.remove("streetview");
+        }
+      });
+      google3.maps.event.addListener(mapRef.current, "bounds_changed", () => {
+        clearTimeout(boundsTimeout);
+        boundsTimeout = setTimeout(() => {
+          setBounds(mapRef.current.getBounds());
+        }, 250);
+      });
+    }
+    useLayers(mapRef.current);
+    useOpacity(mapRef.current);
+    useMarkers(mapRef.current, clusterMachine.current, bounds);
+    useMapTargeting(mapRef.current, clusterMachine.current);
+    return /* @__PURE__ */ import_react25.default.createElement("div", {
       id: "map-wrapper"
-    }, /* @__PURE__ */ import_react21.default.createElement("div", {
+    }, /* @__PURE__ */ import_react25.default.createElement("div", {
       id: "map",
-      ref: mapRef
+      ref: mapDivRef
     }));
   };
   function mapOptions() {
@@ -55978,24 +56009,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       styles: [{ featureType: "poi", elementType: "labels", stylers: [{ visibility: "off" }] }]
     };
   }
-  function addLayers(map3, layers3) {
-    const selectedLayers = layers3.filter((layer) => layer.selected).sort((a3, b2) => a3.year_depicted > b2.year_depicted ? 1 : -1);
-    const selectedLayerIds = selectedLayers.map((layer) => layer.id);
-    const currentLayers = map3.overlayMapTypes.getArray();
-    const currentLayerIds = currentLayers.map((layer) => layer.name);
-    currentLayerIds.forEach((name, index2) => {
-      if (selectedLayerIds.indexOf(name) === -1) {
-        map3.overlayMapTypes.removeAt(index2);
-      }
-    });
-    selectedLayerIds.forEach((id, selectedIndex) => {
-      if (currentLayerIds.indexOf(id) === -1) {
-        loadWMS(map3, selectedLayers[selectedIndex], selectedIndex);
-      }
-    });
-  }
-  function addClusters(map3, existingClusters, markers) {
-    const clusters = existingClusters || new MarkerClusterer({
+  function buildClusterMachine(map3) {
+    return new MarkerClusterer({
       map: map3,
       markers: [],
       renderer: { render: ({ count, position }) => {
@@ -56019,18 +56034,13 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         });
       } }
     });
-    clusters.clearMarkers();
-    if (markers) {
-      clusters.addMarkers(markers);
-    }
-    return clusters;
   }
 
   // app/javascript/forge/CensusSearch/index.jsx
-  var import_react31 = __toESM(require_react());
+  var import_react35 = __toESM(require_react());
 
   // app/javascript/forge/CensusSearch/YearButtons.jsx
-  var import_react22 = __toESM(require_react());
+  var import_react26 = __toESM(require_react());
   var YearButtons = ({ years, setYear: setYear2, year }) => {
     if (!years)
       return null;
@@ -56038,13 +56048,13 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       const value = e2.target.value;
       setYear2(value);
     };
-    return /* @__PURE__ */ import_react22.default.createElement("select", {
+    return /* @__PURE__ */ import_react26.default.createElement("select", {
       value: year,
       onChange: handleChange,
       className: "form-control mb-1"
-    }, /* @__PURE__ */ import_react22.default.createElement("option", {
+    }, /* @__PURE__ */ import_react26.default.createElement("option", {
       value: null
-    }, "Select a year to search"), years.map((key) => /* @__PURE__ */ import_react22.default.createElement("option", {
+    }, "Select a year to search"), years.map((key) => /* @__PURE__ */ import_react26.default.createElement("option", {
       key,
       value: key
     }, key)));
@@ -56052,7 +56062,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var YearButtons_default = YearButtons;
 
   // app/javascript/forge/CensusSearch/AddFilter.jsx
-  var import_react23 = __toESM(require_react());
+  var import_react27 = __toESM(require_react());
   var AddFilter = ({ filters, addFilter }) => {
     if (!filters)
       return null;
@@ -56060,13 +56070,13 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       const value = e2.target.value;
       addFilter(value);
     };
-    return /* @__PURE__ */ import_react23.default.createElement("select", {
+    return /* @__PURE__ */ import_react27.default.createElement("select", {
       value: "",
       onChange: handleChange,
       className: "form-control"
-    }, /* @__PURE__ */ import_react23.default.createElement("option", {
+    }, /* @__PURE__ */ import_react27.default.createElement("option", {
       value: null
-    }, "Select a field to search"), Object.keys(filters).map((key) => filters[key].type && /* @__PURE__ */ import_react23.default.createElement("option", {
+    }, "Select a field to search"), Object.keys(filters).map((key) => filters[key].type && /* @__PURE__ */ import_react27.default.createElement("option", {
       key,
       value: key
     }, filters[key].label)));
@@ -56074,35 +56084,35 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var AddFilter_default = AddFilter;
 
   // app/javascript/forge/CensusSearch/FilterListItem.jsx
-  var import_react24 = __toESM(require_react());
+  var import_react28 = __toESM(require_react());
   function getFilterText(predicate, criteria, config) {
     const { type, scopes } = config;
     switch (type) {
       case "boolean":
-        return criteria && /* @__PURE__ */ import_react24.default.createElement("span", null, " (", criteria ? "Yes" : "No", ")");
+        return criteria && /* @__PURE__ */ import_react28.default.createElement("span", null, " (", criteria ? "Yes" : "No", ")");
       case "checkboxes":
         if (!criteria)
           return "";
         const { choices } = config;
         const output = choices.filter((choice) => criteria.indexOf(choice[1]) > -1).map((choice) => choice[0]).join(", ");
-        return criteria.length && /* @__PURE__ */ import_react24.default.createElement("span", null, " (", output, ")");
+        return criteria.length && /* @__PURE__ */ import_react28.default.createElement("span", null, " (", output, ")");
       case "number":
       case "text":
         if (predicate.match(/not\_null/)) {
-          return /* @__PURE__ */ import_react24.default.createElement("span", null, " is not blank");
+          return /* @__PURE__ */ import_react28.default.createElement("span", null, " is not blank");
         }
         if (predicate.match(/null$/)) {
-          return /* @__PURE__ */ import_react24.default.createElement("span", null, " is blank");
+          return /* @__PURE__ */ import_react28.default.createElement("span", null, " is blank");
         }
-        return criteria && predicate && /* @__PURE__ */ import_react24.default.createElement("span", null, " ", scopes[predicate], " ", criteria);
+        return criteria && predicate && /* @__PURE__ */ import_react28.default.createElement("span", null, " ", scopes[predicate], " ", criteria);
     }
   }
   var FilterListItem = (props) => {
     const { setOpen, remove, config: { label }, predicate, criteria } = props;
-    return /* @__PURE__ */ import_react24.default.createElement("div", {
+    return /* @__PURE__ */ import_react28.default.createElement("div", {
       className: "list-group-item",
       onClick: setOpen
-    }, /* @__PURE__ */ import_react24.default.createElement("span", {
+    }, /* @__PURE__ */ import_react28.default.createElement("span", {
       className: "float-right",
       onClick: remove
     }, "\xD7"), label, getFilterText(predicate, criteria, props.config));
@@ -56110,23 +56120,23 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var FilterListItem_default = FilterListItem;
 
   // app/javascript/forge/CensusSearch/Filters.jsx
-  var import_react30 = __toESM(require_react());
+  var import_react34 = __toESM(require_react());
 
   // app/javascript/forge/CensusSearch/FilterField.jsx
-  var import_react29 = __toESM(require_react());
+  var import_react33 = __toESM(require_react());
 
   // app/javascript/forge/CensusSearch/BasicField.jsx
-  var import_react26 = __toESM(require_react());
+  var import_react30 = __toESM(require_react());
 
   // app/javascript/forge/CensusSearch/ScopeSelector.jsx
-  var import_react25 = __toESM(require_react());
+  var import_react29 = __toESM(require_react());
   function ScopeSelector({ field, predicate, criteria, config: { scopes }, handleChange }) {
-    return Object.keys(scopes).map((scope) => /* @__PURE__ */ import_react25.default.createElement(FormGroup_default, {
+    return Object.keys(scopes).map((scope) => /* @__PURE__ */ import_react29.default.createElement(FormGroup_default, {
       key: scope,
       check: true
-    }, /* @__PURE__ */ import_react25.default.createElement(Label_default, {
+    }, /* @__PURE__ */ import_react29.default.createElement(Label_default, {
       check: true
-    }, /* @__PURE__ */ import_react25.default.createElement(Input_default, {
+    }, /* @__PURE__ */ import_react29.default.createElement(Input_default, {
       type: "radio",
       name: "predicate",
       value: scope,
@@ -56140,11 +56150,11 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     const { type, field, predicate, criteria, handleChange } = props;
     console.log(predicate);
     const hasInput = !predicate.match(/null$/);
-    return /* @__PURE__ */ import_react26.default.createElement(Row_default, null, /* @__PURE__ */ import_react26.default.createElement(Col_default, {
+    return /* @__PURE__ */ import_react30.default.createElement(Row_default, null, /* @__PURE__ */ import_react30.default.createElement(Col_default, {
       sm: 6
-    }, /* @__PURE__ */ import_react26.default.createElement(ScopeSelector, __spreadValues({}, props))), /* @__PURE__ */ import_react26.default.createElement(Col_default, {
+    }, /* @__PURE__ */ import_react30.default.createElement(ScopeSelector, __spreadValues({}, props))), /* @__PURE__ */ import_react30.default.createElement(Col_default, {
       sm: 6
-    }, hasInput && /* @__PURE__ */ import_react26.default.createElement(Input_default, {
+    }, hasInput && /* @__PURE__ */ import_react30.default.createElement(Input_default, {
       type,
       name: field,
       value: criteria || "",
@@ -56153,18 +56163,18 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   }
 
   // app/javascript/forge/CensusSearch/BooleanField.jsx
-  var import_react27 = __toESM(require_react());
+  var import_react31 = __toESM(require_react());
   function BooleanField({ field, predicate, config: { scopes }, handleChange }) {
-    import_react27.default.useEffect(() => {
+    import_react31.default.useEffect(() => {
       const scope = Object.keys(scopes)[0];
       handleChange(field, scope, scopes[scope]);
     }, []);
-    return Object.keys(scopes).map((scope) => /* @__PURE__ */ import_react27.default.createElement(FormGroup_default, {
+    return Object.keys(scopes).map((scope) => /* @__PURE__ */ import_react31.default.createElement(FormGroup_default, {
       key: scope,
       check: true
-    }, /* @__PURE__ */ import_react27.default.createElement(Label_default, {
+    }, /* @__PURE__ */ import_react31.default.createElement(Label_default, {
       check: true
-    }, /* @__PURE__ */ import_react27.default.createElement(Input_default, {
+    }, /* @__PURE__ */ import_react31.default.createElement(Input_default, {
       type: "radio",
       name: field,
       value: scope,
@@ -56174,7 +56184,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   }
 
   // app/javascript/forge/CensusSearch/ListField.jsx
-  var import_react28 = __toESM(require_react());
+  var import_react32 = __toESM(require_react());
   var choose = function(props, value) {
     const { criteria, field, predicate, handleChange } = props;
     const nextCriteria = criteria ? [...criteria] : [];
@@ -56189,16 +56199,16 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var ListField = (props) => {
     const { field, config: { choices } } = props;
     const criteria = props.criteria || [];
-    return /* @__PURE__ */ import_react28.default.createElement(Row_default, null, /* @__PURE__ */ import_react28.default.createElement(Col_default, {
+    return /* @__PURE__ */ import_react32.default.createElement(Row_default, null, /* @__PURE__ */ import_react32.default.createElement(Col_default, {
       sm: 6
-    }, /* @__PURE__ */ import_react28.default.createElement(ScopeSelector, __spreadValues({}, props))), /* @__PURE__ */ import_react28.default.createElement(Col_default, {
+    }, /* @__PURE__ */ import_react32.default.createElement(ScopeSelector, __spreadValues({}, props))), /* @__PURE__ */ import_react32.default.createElement(Col_default, {
       sm: 6
-    }, choices.map((choice) => /* @__PURE__ */ import_react28.default.createElement(FormGroup_default, {
+    }, choices.map((choice) => /* @__PURE__ */ import_react32.default.createElement(FormGroup_default, {
       key: choice[1],
       check: true
-    }, /* @__PURE__ */ import_react28.default.createElement(Label_default, {
+    }, /* @__PURE__ */ import_react32.default.createElement(Label_default, {
       check: true
-    }, /* @__PURE__ */ import_react28.default.createElement(Input_default, {
+    }, /* @__PURE__ */ import_react32.default.createElement(Input_default, {
       type: "checkbox",
       name: `${field}-${choice[1]}`,
       checked: criteria.indexOf(choice[1]) > -1,
@@ -56212,15 +56222,15 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     const { config: { type } } = props;
     switch (type) {
       case "boolean":
-        return /* @__PURE__ */ import_react29.default.createElement(BooleanField, __spreadValues({}, props));
+        return /* @__PURE__ */ import_react33.default.createElement(BooleanField, __spreadValues({}, props));
       case "checkboxes":
-        return /* @__PURE__ */ import_react29.default.createElement(ListField_default, __spreadValues({}, props));
+        return /* @__PURE__ */ import_react33.default.createElement(ListField_default, __spreadValues({}, props));
       case "number":
-        return /* @__PURE__ */ import_react29.default.createElement(BasicField, __spreadValues({
+        return /* @__PURE__ */ import_react33.default.createElement(BasicField, __spreadValues({
           type: "number"
         }, props));
       case "text":
-        return /* @__PURE__ */ import_react29.default.createElement(BasicField, __spreadValues({
+        return /* @__PURE__ */ import_react33.default.createElement(BasicField, __spreadValues({
           type: "text"
         }, props));
       default:
@@ -56229,9 +56239,9 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   }
 
   // app/javascript/forge/CensusSearch/Filters.jsx
-  var CurrentFilters = ({ current, filters, setOpen, remove }) => /* @__PURE__ */ import_react30.default.createElement("div", {
+  var CurrentFilters = ({ current, filters, setOpen, remove }) => /* @__PURE__ */ import_react34.default.createElement("div", {
     className: "list-group"
-  }, Object.keys(current).map((key) => /* @__PURE__ */ import_react30.default.createElement(FilterListItem_default, __spreadProps(__spreadValues({
+  }, Object.keys(current).map((key) => /* @__PURE__ */ import_react34.default.createElement(FilterListItem_default, __spreadProps(__spreadValues({
     key
   }, current[key]), {
     config: filters[key],
@@ -56241,24 +56251,24 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       remove(key);
     }
   }))));
-  var FilterModal = ({ filters, current, close, open, search: search2, setFilter }) => /* @__PURE__ */ import_react30.default.createElement(Modal_default, {
+  var FilterModal = ({ filters, current, close, open, search: search2, setFilter }) => /* @__PURE__ */ import_react34.default.createElement(Modal_default, {
     isOpen: !!open
-  }, /* @__PURE__ */ import_react30.default.createElement(ModalHeader_default, {
+  }, /* @__PURE__ */ import_react34.default.createElement(ModalHeader_default, {
     toggle: close
-  }, "Search on \u201C", open && filters[open].label, "\u201D"), /* @__PURE__ */ import_react30.default.createElement(ModalBody_default, null, open && /* @__PURE__ */ import_react30.default.createElement(FilterField, __spreadProps(__spreadValues({}, current[open]), {
+  }, "Search on \u201C", open && filters[open].label, "\u201D"), /* @__PURE__ */ import_react34.default.createElement(ModalBody_default, null, open && /* @__PURE__ */ import_react34.default.createElement(FilterField, __spreadProps(__spreadValues({}, current[open]), {
     config: filters[open],
     handleChange: setFilter
-  }))), /* @__PURE__ */ import_react30.default.createElement(ModalFooter_default, null, /* @__PURE__ */ import_react30.default.createElement("button", {
+  }))), /* @__PURE__ */ import_react34.default.createElement(ModalFooter_default, null, /* @__PURE__ */ import_react34.default.createElement("button", {
     className: "btn btn-primary",
     type: "button",
     onClick: search2
   }, "Search")));
-  var Filters = (props) => props.current ? /* @__PURE__ */ import_react30.default.createElement(import_react30.default.Fragment, null, /* @__PURE__ */ import_react30.default.createElement(CurrentFilters, __spreadValues({}, props)), /* @__PURE__ */ import_react30.default.createElement(FilterModal, __spreadValues({}, props))) : null;
+  var Filters = (props) => props.current ? /* @__PURE__ */ import_react34.default.createElement(import_react34.default.Fragment, null, /* @__PURE__ */ import_react34.default.createElement(CurrentFilters, __spreadValues({}, props)), /* @__PURE__ */ import_react34.default.createElement(FilterModal, __spreadValues({}, props))) : null;
   var Filters_default = Filters;
 
   // app/javascript/forge/CensusSearch/index.jsx
   var CensusSearch = (props) => {
-    const [open, setOpen] = (0, import_react31.useState)(null);
+    const [open, setOpen] = (0, import_react35.useState)(null);
     const { years, year, setYear: setYear2, filters, current, message, params } = props;
     const add2 = (value) => {
       props.addFilter(value);
@@ -56276,16 +56286,16 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       setOpen(null);
       props.load();
     };
-    return /* @__PURE__ */ import_react31.default.createElement("div", {
+    return /* @__PURE__ */ import_react35.default.createElement("div", {
       className: "pt-3 pb-1"
-    }, /* @__PURE__ */ import_react31.default.createElement("h3", null, "Search HistoryForge"), /* @__PURE__ */ import_react31.default.createElement(YearButtons_default, {
+    }, /* @__PURE__ */ import_react35.default.createElement("h3", null, "Search HistoryForge"), /* @__PURE__ */ import_react35.default.createElement(YearButtons_default, {
       years,
       year,
       setYear: setYear2
-    }), /* @__PURE__ */ import_react31.default.createElement(AddFilter_default, {
+    }), /* @__PURE__ */ import_react35.default.createElement(AddFilter_default, {
       filters,
       addFilter: add2
-    }), /* @__PURE__ */ import_react31.default.createElement(Filters_default, {
+    }), /* @__PURE__ */ import_react35.default.createElement(Filters_default, {
       current,
       setOpen: (key) => setOpen(key),
       open,
@@ -56294,14 +56304,14 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       search: search2,
       setFilter: set2,
       remove: (key) => remove(key)
-    }), message && /* @__PURE__ */ import_react31.default.createElement("div", {
+    }), message && /* @__PURE__ */ import_react35.default.createElement("div", {
       className: "mt-2 alert alert-info"
-    }, message), year && /* @__PURE__ */ import_react31.default.createElement(ButtonGroup_default, {
+    }, message), year && /* @__PURE__ */ import_react35.default.createElement(ButtonGroup_default, {
       className: "btn-block"
-    }, /* @__PURE__ */ import_react31.default.createElement("a", {
+    }, /* @__PURE__ */ import_react35.default.createElement("a", {
       href: buildCensusUrl(year, params),
       className: "btn btn-sm btn-info col-6"
-    }, "VIEW CENSUS RECORDS"), /* @__PURE__ */ import_react31.default.createElement("button", {
+    }, "VIEW CENSUS RECORDS"), /* @__PURE__ */ import_react35.default.createElement("button", {
       className: "btn btn-sm btn-info col-6",
       type: "button",
       onClick: props.reset
@@ -56330,23 +56340,23 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var CensusSearch_default = Component2;
 
   // app/javascript/forge/Building/Building.jsx
-  var import_react35 = __toESM(require_react());
+  var import_react39 = __toESM(require_react());
 
   // app/javascript/forge/Building/Residents.jsx
-  var import_react32 = __toESM(require_react());
-  var Residents = ({ buildingId, residents, years }) => years.map((year) => residents[year] && /* @__PURE__ */ import_react32.default.createElement("div", {
+  var import_react36 = __toESM(require_react());
+  var Residents = ({ buildingId, residents, years }) => years.map((year) => residents[year] && /* @__PURE__ */ import_react36.default.createElement("div", {
     key: year,
     className: "mt-4"
-  }, /* @__PURE__ */ import_react32.default.createElement("h5", {
+  }, /* @__PURE__ */ import_react36.default.createElement("h5", {
     className: "mb-3"
-  }, "Residents in ", year), residents[year].map((family, index2) => /* @__PURE__ */ import_react32.default.createElement("div", {
+  }, "Residents in ", year), residents[year].map((family, index2) => /* @__PURE__ */ import_react36.default.createElement("div", {
     key: `family-${index2}`
-  }, family.map((person, personIndex) => /* @__PURE__ */ import_react32.default.createElement(import_react32.default.Fragment, {
+  }, family.map((person, personIndex) => /* @__PURE__ */ import_react36.default.createElement(import_react36.default.Fragment, {
     key: `person-${buildingId}-${personIndex}`
-  }, /* @__PURE__ */ import_react32.default.createElement(Resident, {
+  }, /* @__PURE__ */ import_react36.default.createElement(Resident, {
     person,
     year
-  }), /* @__PURE__ */ import_react32.default.createElement("hr", null)))))));
+  }), /* @__PURE__ */ import_react36.default.createElement("hr", null)))))));
   var Resident = ({ person, year }) => {
     let occupation = person.occupation;
     if (person.occupation === "None") {
@@ -56355,29 +56365,29 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     if (person.relation_to_head === person.occupation) {
       occupation = null;
     }
-    return /* @__PURE__ */ import_react32.default.createElement(Row_default, null, /* @__PURE__ */ import_react32.default.createElement(Col_default, {
+    return /* @__PURE__ */ import_react36.default.createElement(Row_default, null, /* @__PURE__ */ import_react36.default.createElement(Col_default, {
       size: 7,
       sm: 6
-    }, /* @__PURE__ */ import_react32.default.createElement("a", {
+    }, /* @__PURE__ */ import_react36.default.createElement("a", {
       href: `/census/${year}/${person.id}`,
       target: "_blank"
-    }, person.name)), /* @__PURE__ */ import_react32.default.createElement(Col_default, {
+    }, person.name)), /* @__PURE__ */ import_react36.default.createElement(Col_default, {
       size: 5,
       sm: 6
-    }, person.relation_to_head), /* @__PURE__ */ import_react32.default.createElement(Col_default, {
+    }, person.relation_to_head), /* @__PURE__ */ import_react36.default.createElement(Col_default, {
       size: 6,
       sm: 6
-    }, "Age ", person.age, " - ", person.race, " - ", person.sex), occupation && /* @__PURE__ */ import_react32.default.createElement(Col_default, {
+    }, "Age ", person.age, " - ", person.race, " - ", person.sex), occupation && /* @__PURE__ */ import_react36.default.createElement(Col_default, {
       size: 6,
       sm: 6
     }, occupation));
   };
 
   // app/javascript/forge/Building/Details.jsx
-  var import_react34 = __toESM(require_react());
+  var import_react38 = __toESM(require_react());
 
   // app/javascript/forge/SimpleFormat.tsx
-  var import_react33 = __toESM(require_react());
+  var import_react37 = __toESM(require_react());
   var pattern = /([^\n]\n)(?=[^\n])/g;
   var toParagraphs = function(text) {
     return text.replace(/\r\n?/g, "\n").split(/\n\n+/).map((t2) => {
@@ -56396,13 +56406,13 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       return null;
     if (text.length === 1 && text[0].match(/<p>/)) {
       const props2 = __spreadProps(__spreadValues({}, wrapperTagProps), { dangerouslySetInnerHTML: { __html: text[0] } });
-      return import_react33.default.createElement(wrapperTag, props2);
+      return import_react37.default.createElement(wrapperTag, props2);
     }
-    return import_react33.default.createElement(wrapperTag, wrapperTagProps, text.map((paragraph, index2) => postfix && index2 === text.length - 1 ? /* @__PURE__ */ import_react33.default.createElement("p", {
+    return import_react37.default.createElement(wrapperTag, wrapperTagProps, text.map((paragraph, index2) => postfix && index2 === text.length - 1 ? /* @__PURE__ */ import_react37.default.createElement("p", {
       key: index2
-    }, /* @__PURE__ */ import_react33.default.createElement("span", {
+    }, /* @__PURE__ */ import_react37.default.createElement("span", {
       dangerouslySetInnerHTML: { __html: paragraph }
-    }), postfix) : /* @__PURE__ */ import_react33.default.createElement("p", {
+    }), postfix) : /* @__PURE__ */ import_react37.default.createElement("p", {
       key: index2,
       dangerouslySetInnerHTML: { __html: paragraph }
     })));
@@ -56410,27 +56420,27 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var SimpleFormat_default = SimpleFormat;
 
   // app/javascript/forge/Building/Details.jsx
-  var Details = (building) => /* @__PURE__ */ import_react34.default.createElement(import_react34.default.Fragment, null, /* @__PURE__ */ import_react34.default.createElement("h5", null, /* @__PURE__ */ import_react34.default.createElement("a", {
+  var Details = (building) => /* @__PURE__ */ import_react38.default.createElement(import_react38.default.Fragment, null, /* @__PURE__ */ import_react38.default.createElement("h5", null, /* @__PURE__ */ import_react38.default.createElement("a", {
     href: `/buildings/${building.id}`,
     target: "_blank",
     title: "Open building record in new tab",
     rel: "noreferrer"
-  }, /* @__PURE__ */ import_react34.default.createElement(SimpleFormat_default, {
+  }, /* @__PURE__ */ import_react38.default.createElement(SimpleFormat_default, {
     text: building.street_address
-  }))), (building.year_earliest || building.year_latest) && /* @__PURE__ */ import_react34.default.createElement("dl", {
+  }))), (building.year_earliest || building.year_latest) && /* @__PURE__ */ import_react38.default.createElement("dl", {
     className: "mb-0"
-  }, /* @__PURE__ */ import_react34.default.createElement("dt", null, "Years"), /* @__PURE__ */ import_react34.default.createElement("dd", null, building.year_earliest && `Built in ${building.year_earliest}.`, building.year_latest ? ` Torn down in ${building.year_latest}.` : " Still standing.")), building.architects && building.architects.length && /* @__PURE__ */ import_react34.default.createElement("dl", {
+  }, /* @__PURE__ */ import_react38.default.createElement("dt", null, "Years"), /* @__PURE__ */ import_react38.default.createElement("dd", null, building.year_earliest && `Built in ${building.year_earliest}.`, building.year_latest ? ` Torn down in ${building.year_latest}.` : " Still standing.")), building.architects && building.architects.length && /* @__PURE__ */ import_react38.default.createElement("dl", {
     className: "mb-0"
-  }, /* @__PURE__ */ import_react34.default.createElement("dt", null, "Architects"), /* @__PURE__ */ import_react34.default.createElement("dd", null, building.architects)), /* @__PURE__ */ import_react34.default.createElement("dl", null, /* @__PURE__ */ import_react34.default.createElement("dt", null, "Type"), /* @__PURE__ */ import_react34.default.createElement("dd", null, building.type || "Not specified"), (building.stories || building.frame || building.lining) && /* @__PURE__ */ import_react34.default.createElement(import_react34.default.Fragment, null, /* @__PURE__ */ import_react34.default.createElement("dt", null, "Construction"), /* @__PURE__ */ import_react34.default.createElement("dd", null, building.stories && `${building.stories}-story `, building.frame && `${building.frame} structure`, building.lining && ` with ${building.lining} lining`, "."))), building.photo && /* @__PURE__ */ import_react34.default.createElement("div", null, /* @__PURE__ */ import_react34.default.createElement("picture", null, /* @__PURE__ */ import_react34.default.createElement("source", {
+  }, /* @__PURE__ */ import_react38.default.createElement("dt", null, "Architects"), /* @__PURE__ */ import_react38.default.createElement("dd", null, building.architects)), /* @__PURE__ */ import_react38.default.createElement("dl", null, /* @__PURE__ */ import_react38.default.createElement("dt", null, "Type"), /* @__PURE__ */ import_react38.default.createElement("dd", null, building.type || "Not specified"), (building.stories || building.frame || building.lining) && /* @__PURE__ */ import_react38.default.createElement(import_react38.default.Fragment, null, /* @__PURE__ */ import_react38.default.createElement("dt", null, "Construction"), /* @__PURE__ */ import_react38.default.createElement("dd", null, building.stories && `${building.stories}-story `, building.frame && `${building.frame} structure`, building.lining && ` with ${building.lining} lining`, "."))), building.photo && /* @__PURE__ */ import_react38.default.createElement("div", null, /* @__PURE__ */ import_react38.default.createElement("picture", null, /* @__PURE__ */ import_react38.default.createElement("source", {
     srcSet: `/photos/${building.photo}/15/phone.jpg`,
     media: "(max-width:480px)"
-  }), /* @__PURE__ */ import_react34.default.createElement("source", {
+  }), /* @__PURE__ */ import_react38.default.createElement("source", {
     srcSet: `/photos/${building.photo}/15/tablet.jpg`,
     media: "(min-width:481px) and (max-width:1024px)"
-  }), /* @__PURE__ */ import_react34.default.createElement("source", {
+  }), /* @__PURE__ */ import_react38.default.createElement("source", {
     srcSet: `/photos/${building.photo}/15/desktop.jpg`,
     media: "(min-width:1025px)"
-  }), /* @__PURE__ */ import_react34.default.createElement("img", {
+  }), /* @__PURE__ */ import_react38.default.createElement("img", {
     className: "img-responsive img-thumbnail",
     alt: "Building photo"
   }))));
@@ -56438,9 +56448,9 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   // app/javascript/forge/Building/Building.jsx
   var BuildingModal = ({ building, years }) => {
     const dispatch = useDispatch();
-    const [visible, setVisible] = (0, import_react35.useState)(false);
-    const [buildingId, setBuildingId] = (0, import_react35.useState)(null);
-    (0, import_react35.useEffect)(() => {
+    const [visible, setVisible] = (0, import_react39.useState)(false);
+    const [buildingId, setBuildingId] = (0, import_react39.useState)(null);
+    (0, import_react39.useEffect)(() => {
       if (building) {
         if (!buildingId || building.id !== buildingId) {
           setBuildingId(building.id);
@@ -56452,17 +56462,17 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       }
     }, [building, buildingId]);
     const residents = building && building.census_records;
-    const hasResidents = (0, import_react35.useMemo)(() => residents && !!Object.keys(building.census_records).length, [building]);
-    const close = (0, import_react35.useCallback)(() => {
+    const hasResidents = (0, import_react39.useMemo)(() => residents && !!Object.keys(building.census_records).length, [building]);
+    const close = (0, import_react39.useCallback)(() => {
       setVisible(false);
       dispatch({ type: "BUILDING_DESELECT", id: buildingId });
     }, [buildingId]);
-    return /* @__PURE__ */ import_react35.default.createElement(Modal_default, {
+    return /* @__PURE__ */ import_react39.default.createElement(Modal_default, {
       size: hasResidents ? "xl" : "md",
       isOpen: visible
-    }, /* @__PURE__ */ import_react35.default.createElement(ModalHeader_default, {
+    }, /* @__PURE__ */ import_react39.default.createElement(ModalHeader_default, {
       toggle: close
-    }, "Building Details"), /* @__PURE__ */ import_react35.default.createElement(ModalBody_default, null, buildingId ? /* @__PURE__ */ import_react35.default.createElement(Building, {
+    }, "Building Details"), /* @__PURE__ */ import_react39.default.createElement(ModalBody_default, null, building ? /* @__PURE__ */ import_react39.default.createElement(Building, {
       building,
       residents,
       hasResidents,
@@ -56471,34 +56481,34 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   };
   var Building = ({ building, years, residents, hasResidents }) => {
     if (hasResidents) {
-      return /* @__PURE__ */ import_react35.default.createElement("div", {
+      return /* @__PURE__ */ import_react39.default.createElement("div", {
         id: "building-details"
-      }, /* @__PURE__ */ import_react35.default.createElement(Row_default, null, /* @__PURE__ */ import_react35.default.createElement(Col_default, {
+      }, /* @__PURE__ */ import_react39.default.createElement(Row_default, null, /* @__PURE__ */ import_react39.default.createElement(Col_default, {
         sm: 12,
         lg: 5
-      }, /* @__PURE__ */ import_react35.default.createElement(Details, __spreadValues({}, building))), /* @__PURE__ */ import_react35.default.createElement(Col_default, {
+      }, /* @__PURE__ */ import_react39.default.createElement(Details, __spreadValues({}, building))), /* @__PURE__ */ import_react39.default.createElement(Col_default, {
         sm: 12,
         lg: 7
-      }, /* @__PURE__ */ import_react35.default.createElement(Residents, {
+      }, /* @__PURE__ */ import_react39.default.createElement(Residents, {
         buildingId: building.id,
         residents,
         years
       }))));
     }
-    return /* @__PURE__ */ import_react35.default.createElement("div", {
+    return /* @__PURE__ */ import_react39.default.createElement("div", {
       id: "building-details"
-    }, /* @__PURE__ */ import_react35.default.createElement(Details, __spreadValues({}, building)));
+    }, /* @__PURE__ */ import_react39.default.createElement(Details, __spreadValues({}, building)));
   };
 
   // app/javascript/forge/Forges.jsx
-  var import_react36 = __toESM(require_react());
+  var import_react40 = __toESM(require_react());
   var Forges = () => {
     const { forges: forges2 } = window.initialState.forges;
-    return /* @__PURE__ */ import_react36.default.createElement("div", null, /* @__PURE__ */ import_react36.default.createElement("h3", null, "Jump to Localities"), /* @__PURE__ */ import_react36.default.createElement("ul", {
+    return /* @__PURE__ */ import_react40.default.createElement("div", null, /* @__PURE__ */ import_react40.default.createElement("h3", null, "Jump to Localities"), /* @__PURE__ */ import_react40.default.createElement("ul", {
       className: "list-group"
-    }, forges2.map((forge) => /* @__PURE__ */ import_react36.default.createElement("li", {
+    }, forges2.map((forge) => /* @__PURE__ */ import_react40.default.createElement("li", {
       className: "list-group-item"
-    }, /* @__PURE__ */ import_react36.default.createElement("a", {
+    }, /* @__PURE__ */ import_react40.default.createElement("a", {
       key: forge.slug,
       href: `/${forge.slug}/forge`
     }, forge.name)))));
@@ -56506,12 +56516,12 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
 
   // app/javascript/forge/App.jsx
   var App = () => {
-    const [sidebarLeft, setSidebarLeft] = (0, import_react37.useState)(false);
-    const [sidebarRight, setSidebarRight] = (0, import_react37.useState)(false);
-    const [forgePickerOpen, setForgePickerOpen] = (0, import_react37.useState)(false);
+    const [sidebarLeft, setSidebarLeft] = (0, import_react41.useState)(false);
+    const [sidebarRight, setSidebarRight] = (0, import_react41.useState)(false);
+    const [forgePickerOpen, setForgePickerOpen] = (0, import_react41.useState)(false);
     const hasForges = window.initialState.forges.forges.length > 1;
     const dispatch = useDispatch();
-    (0, import_react37.useEffect)(() => {
+    (0, import_react41.useEffect)(() => {
       dispatch(forgeInit());
     }, [dispatch]);
     const forgeActive = useSelector((state) => state.layers.active || state.search.current);
@@ -56546,50 +56556,50 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         }
       );
     };
-    return /* @__PURE__ */ import_react37.default.createElement("div", {
+    return /* @__PURE__ */ import_react41.default.createElement("div", {
       className: "map-wrap"
-    }, /* @__PURE__ */ import_react37.default.createElement(Map2, null), /* @__PURE__ */ import_react37.default.createElement("button", {
+    }, /* @__PURE__ */ import_react41.default.createElement(Map2, null), /* @__PURE__ */ import_react41.default.createElement("button", {
       id: "near-me-button",
       onClick: centerOnMe,
       className: "btn btn-primary"
-    }, /* @__PURE__ */ import_react37.default.createElement("i", {
+    }, /* @__PURE__ */ import_react41.default.createElement("i", {
       className: "fa fa-bullseye"
-    })), focusing && /* @__PURE__ */ import_react37.default.createElement("div", {
+    })), focusing && /* @__PURE__ */ import_react41.default.createElement("div", {
       id: "focusing"
-    }, "Working"), forgePickerOpen && /* @__PURE__ */ import_react37.default.createElement("div", {
+    }, "Working"), forgePickerOpen && /* @__PURE__ */ import_react41.default.createElement("div", {
       id: "forge-left-col",
       className: "open"
-    }, /* @__PURE__ */ import_react37.default.createElement("button", {
+    }, /* @__PURE__ */ import_react41.default.createElement("button", {
       type: "button",
       id: "forge-sidebar-left-closer",
       className: "btn btn-primary",
       onClick: closeSidebar
-    }, /* @__PURE__ */ import_react37.default.createElement("i", {
+    }, /* @__PURE__ */ import_react41.default.createElement("i", {
       className: "fa fa-close"
-    })), /* @__PURE__ */ import_react37.default.createElement(Forges, null)), sidebarLeft && /* @__PURE__ */ import_react37.default.createElement("div", {
+    })), /* @__PURE__ */ import_react41.default.createElement(Forges, null)), sidebarLeft && /* @__PURE__ */ import_react41.default.createElement("div", {
       id: "forge-left-col",
       className: "open"
-    }, /* @__PURE__ */ import_react37.default.createElement("button", {
+    }, /* @__PURE__ */ import_react41.default.createElement("button", {
       type: "button",
       id: "forge-sidebar-left-closer",
       className: "btn btn-primary",
       onClick: closeSidebar
-    }, /* @__PURE__ */ import_react37.default.createElement("i", {
+    }, /* @__PURE__ */ import_react41.default.createElement("i", {
       className: "fa fa-close"
-    })), /* @__PURE__ */ import_react37.default.createElement(Layers_default, null)), sidebarRight && /* @__PURE__ */ import_react37.default.createElement("div", {
+    })), /* @__PURE__ */ import_react41.default.createElement(Layers_default, null)), sidebarRight && /* @__PURE__ */ import_react41.default.createElement("div", {
       id: "forge-right-col",
       className: "open"
-    }, /* @__PURE__ */ import_react37.default.createElement("button", {
+    }, /* @__PURE__ */ import_react41.default.createElement("button", {
       type: "button",
       id: "forge-sidebar-right-closer",
       className: "btn btn-primary",
       onClick: closeSidebar
-    }, /* @__PURE__ */ import_react37.default.createElement("i", {
+    }, /* @__PURE__ */ import_react41.default.createElement("i", {
       className: "fa fa-close"
-    })), /* @__PURE__ */ import_react37.default.createElement(CensusSearch_default, null)), /* @__PURE__ */ import_react37.default.createElement("div", {
+    })), /* @__PURE__ */ import_react41.default.createElement(CensusSearch_default, null)), /* @__PURE__ */ import_react41.default.createElement("div", {
       id: "button-bar",
       className: "btn-group"
-    }, !sidebarLeft && !sidebarRight && !forgePickerOpen && /* @__PURE__ */ import_react37.default.createElement(import_react37.default.Fragment, null, hasForges && /* @__PURE__ */ import_react37.default.createElement("button", {
+    }, !sidebarLeft && !sidebarRight && !forgePickerOpen && /* @__PURE__ */ import_react41.default.createElement(import_react41.default.Fragment, null, hasForges && /* @__PURE__ */ import_react41.default.createElement("button", {
       type: "button",
       id: "forge-picker-toggle",
       className: "btn btn-primary",
@@ -56599,9 +56609,9 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         setSidebarLeft(false);
         setSidebarRight(false);
       }
-    }, /* @__PURE__ */ import_react37.default.createElement("i", {
+    }, /* @__PURE__ */ import_react41.default.createElement("i", {
       className: "fa fa-car"
-    })), /* @__PURE__ */ import_react37.default.createElement("button", {
+    })), /* @__PURE__ */ import_react41.default.createElement("button", {
       type: "button",
       id: "forge-sidebar-left-toggle",
       className: "btn btn-primary",
@@ -56611,9 +56621,9 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         setSidebarRight(false);
         setForgePickerOpen(false);
       }
-    }, /* @__PURE__ */ import_react37.default.createElement("i", {
+    }, /* @__PURE__ */ import_react41.default.createElement("i", {
       className: "fa fa-map"
-    })), /* @__PURE__ */ import_react37.default.createElement("button", {
+    })), /* @__PURE__ */ import_react41.default.createElement("button", {
       type: "button",
       id: "forge-sidebar-right-toggle",
       className: "btn btn-primary",
@@ -56623,13 +56633,13 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         setSidebarRight(true);
         setForgePickerOpen(false);
       }
-    }, /* @__PURE__ */ import_react37.default.createElement("i", {
+    }, /* @__PURE__ */ import_react41.default.createElement("i", {
       className: "fa fa-search"
-    })), forgeActive && /* @__PURE__ */ import_react37.default.createElement("button", {
+    })), forgeActive && /* @__PURE__ */ import_react41.default.createElement("button", {
       type: "button",
       className: "btn btn-primary",
       onClick: resetForge
-    }, "Reset"))), /* @__PURE__ */ import_react37.default.createElement(BuildingModal, {
+    }, "Reset"))), /* @__PURE__ */ import_react41.default.createElement(BuildingModal, {
       building,
       years
     }));
@@ -56637,7 +56647,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var App_default = App;
 
   // app/javascript/forge/index.jsx
-  var import_react38 = __toESM(require_react());
+  var import_react42 = __toESM(require_react());
 
   // app/javascript/forge/reducers/index.js
   var reducers_exports = {};
@@ -56926,9 +56936,9 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     }
     google.maps.importLibrary("maps").then(() => {
       const store = buildStore(reducers_exports);
-      import_react_dom3.default.render(/* @__PURE__ */ import_react38.default.createElement(Provider_default, {
+      import_react_dom3.default.render(/* @__PURE__ */ import_react42.default.createElement(Provider_default, {
         store
-      }, /* @__PURE__ */ import_react38.default.createElement(App_default, null)), forge);
+      }, /* @__PURE__ */ import_react42.default.createElement(App_default, null)), forge);
     });
   });
 
@@ -56936,10 +56946,10 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var import_react_dom4 = __toESM(require_react_dom());
 
   // app/javascript/miniforge/App.jsx
-  var import_react42 = __toESM(require_react());
+  var import_react46 = __toESM(require_react());
 
   // app/javascript/miniforge/Layers.jsx
-  var import_react39 = __toESM(require_react());
+  var import_react43 = __toESM(require_react());
   var Layers2 = () => {
     const dispatch = useDispatch();
     const { layers: layers3, layer, opacity } = useSelector((state) => __spreadValues({}, state.layers));
@@ -56952,26 +56962,26 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       const layer2 = layers3.find((l) => l.id === value);
       dispatch(toggle(layer2 == null ? void 0 : layer2.id));
     };
-    return /* @__PURE__ */ import_react39.default.createElement("div", null, /* @__PURE__ */ import_react39.default.createElement("input", {
+    return /* @__PURE__ */ import_react43.default.createElement("div", null, /* @__PURE__ */ import_react43.default.createElement("input", {
       type: "range",
       min: 0,
       max: 100,
       value: opacity > -1 ? opacity : 100,
       onChange: (e2) => setOpacity(e2.target.value)
-    }), /* @__PURE__ */ import_react39.default.createElement("select", {
+    }), /* @__PURE__ */ import_react43.default.createElement("select", {
       className: "form-control",
       value: layer == null ? void 0 : layer.id,
       onChange: handleChange
-    }, /* @__PURE__ */ import_react39.default.createElement("option", {
+    }, /* @__PURE__ */ import_react43.default.createElement("option", {
       value: null
-    }, "No historic map"), layers3.map((l) => /* @__PURE__ */ import_react39.default.createElement("option", {
+    }, "No historic map"), layers3.map((l) => /* @__PURE__ */ import_react43.default.createElement("option", {
       key: l.id,
       value: l.id
     }, l.name))));
   };
 
   // app/javascript/miniforge/Map.jsx
-  var import_react40 = __toESM(require_react());
+  var import_react44 = __toESM(require_react());
   var google4 = window.google;
   var getMapOptions = () => ({
     zoom: 18,
@@ -57003,24 +57013,24 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     } = useSelector((state) => __spreadValues(__spreadValues(__spreadValues({}, state.layers), state.buildings), state.search));
     const dispatch = useDispatch();
     const toggle = (id) => dispatch({ type: "LAYER_TOGGLE", id });
-    const mapRef = (0, import_react40.useRef)(null);
-    const [map3, setMap] = (0, import_react40.useState)(null);
-    const [markers, setMarkers] = (0, import_react40.useState)(null);
-    const [marker, setMarker] = (0, import_react40.useState)(null);
-    const [currentHighlight, setCurrentHighlight] = (0, import_react40.useState)(null);
-    const [lastLayeredAt, setLastLayeredAt] = (0, import_react40.useState)(null);
-    const [lastOpacityAt, setLastOpacityAt] = (0, import_react40.useState)(null);
-    (0, import_react40.useEffect)(() => {
+    const mapRef = (0, import_react44.useRef)(null);
+    const [map3, setMap] = (0, import_react44.useState)(null);
+    const [markers, setMarkers] = (0, import_react44.useState)(null);
+    const [marker, setMarker] = (0, import_react44.useState)(null);
+    const [currentHighlight, setCurrentHighlight] = (0, import_react44.useState)(null);
+    const [lastLayeredAt, setLastLayeredAt] = (0, import_react44.useState)(null);
+    const [lastOpacityAt, setLastOpacityAt] = (0, import_react44.useState)(null);
+    (0, import_react44.useEffect)(() => {
       if (!map3 && mapRef.current) {
         setMap(new google4.maps.Map(mapRef.current, getMapOptions()));
       }
     }, [map3]);
-    (0, import_react40.useEffect)(() => {
+    (0, import_react44.useEffect)(() => {
       if (map3 && mapRef.current) {
         map3.setCenter(center);
       }
     }, [map3, center]);
-    (0, import_react40.useEffect)(() => {
+    (0, import_react44.useEffect)(() => {
       if (map3 && mapRef.current) {
         if (!marker) {
           setMarker(addMainMarker(map3, current, editable, (building2) => dispatch(moveBuilding(building2))));
@@ -57035,7 +57045,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         }
       }
     }, [map3, marker, current, editable, layer]);
-    (0, import_react40.useEffect)(() => {
+    (0, import_react44.useEffect)(() => {
       if (map3 && mapRef.current) {
         if (!markers) {
           const handlers = {
@@ -57069,7 +57079,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         }
       }
     }, [map3, building, highlighted, currentHighlight, markers]);
-    (0, import_react40.useEffect)(() => {
+    (0, import_react44.useEffect)(() => {
       if (mapRef.current && map3 && layer) {
         if (layeredAt !== lastLayeredAt) {
           addLayer(map3, layer);
@@ -57077,15 +57087,15 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         }
       }
     }, [map3, layer, layeredAt, lastLayeredAt]);
-    (0, import_react40.useEffect)(() => {
+    (0, import_react44.useEffect)(() => {
       if (mapRef.current && map3 && layer && opacity !== null) {
         if (opacityAt !== lastOpacityAt) {
-          addOpacity2(map3, opacity);
+          addOpacity(map3, opacity);
           setLastOpacityAt(opacityAt);
         }
       }
     }, [map3, layer, opacity, opacityAt]);
-    return /* @__PURE__ */ import_react40.default.createElement("div", {
+    return /* @__PURE__ */ import_react44.default.createElement("div", {
       id: "map",
       ref: mapRef
     });
@@ -57100,7 +57110,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       window.localStorage.setItem("miniforge-layer", layer.id);
     }
   }
-  function addOpacity2(map3, opacity) {
+  function addOpacity(map3, opacity) {
     const currentLayers = map3.overlayMapTypes.getArray();
     currentLayers[0].setOpacity(parseInt(opacity) / 100);
   }
@@ -57125,14 +57135,14 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   }
 
   // app/javascript/miniforge/Buildings.jsx
-  var import_react41 = __toESM(require_react());
+  var import_react45 = __toESM(require_react());
   var Building2 = ({ id, street_address, highlighted }) => {
     const dispatch = useDispatch();
-    return /* @__PURE__ */ import_react41.default.createElement("div", {
+    return /* @__PURE__ */ import_react45.default.createElement("div", {
       className: `list-group-item building ${highlighted === id && "active"}`,
       onMouseOver: () => dispatch(highlight(id)),
       onMouseOut: () => dispatch(highlight(null))
-    }, /* @__PURE__ */ import_react41.default.createElement("p", null, /* @__PURE__ */ import_react41.default.createElement("a", {
+    }, /* @__PURE__ */ import_react45.default.createElement("p", null, /* @__PURE__ */ import_react45.default.createElement("a", {
       href: `/buildings/${id}`,
       title: "Open building record"
     }, street_address)));
@@ -57140,11 +57150,11 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var Buildings = () => {
     const props = useSelector((state) => __spreadValues({}, state.buildings));
     const { buildings: buildings3, highlighted } = props;
-    return buildings3 ? /* @__PURE__ */ import_react41.default.createElement("div", {
+    return buildings3 ? /* @__PURE__ */ import_react45.default.createElement("div", {
       id: "building-list"
-    }, /* @__PURE__ */ import_react41.default.createElement("h3", null, "Nearby Buildings"), /* @__PURE__ */ import_react41.default.createElement("div", {
+    }, /* @__PURE__ */ import_react45.default.createElement("h3", null, "Nearby Buildings"), /* @__PURE__ */ import_react45.default.createElement("div", {
       className: "list-group"
-    }, buildings3.map((building, i2) => /* @__PURE__ */ import_react41.default.createElement(Building2, __spreadProps(__spreadValues({
+    }, buildings3.map((building, i2) => /* @__PURE__ */ import_react45.default.createElement(Building2, __spreadProps(__spreadValues({
       key: i2
     }, building), {
       highlighted
@@ -57192,20 +57202,20 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
 
   // app/javascript/miniforge/App.jsx
   var App2 = () => {
-    const [store, setStore] = (0, import_react42.useState)(null);
+    const [store, setStore] = (0, import_react46.useState)(null);
     store || setStore(buildStore(reducers_exports2));
-    return /* @__PURE__ */ import_react42.default.createElement(Provider_default, {
+    return /* @__PURE__ */ import_react46.default.createElement(Provider_default, {
       store
-    }, /* @__PURE__ */ import_react42.default.createElement("div", {
+    }, /* @__PURE__ */ import_react46.default.createElement("div", {
       className: "map-wrap"
-    }, /* @__PURE__ */ import_react42.default.createElement(Map3, null), /* @__PURE__ */ import_react42.default.createElement("div", {
+    }, /* @__PURE__ */ import_react46.default.createElement(Map3, null), /* @__PURE__ */ import_react46.default.createElement("div", {
       id: "miniforge-controls"
-    }, /* @__PURE__ */ import_react42.default.createElement(Layers2, null), /* @__PURE__ */ import_react42.default.createElement(Buildings, null))));
+    }, /* @__PURE__ */ import_react46.default.createElement(Layers2, null), /* @__PURE__ */ import_react46.default.createElement(Buildings, null))));
   };
   var App_default2 = App2;
 
   // app/javascript/miniforge/index.jsx
-  var import_react43 = __toESM(require_react());
+  var import_react47 = __toESM(require_react());
   document.addEventListener("DOMContentLoaded", () => {
     const miniforge = document.getElementById("miniforge");
     if (!miniforge) {
@@ -57213,7 +57223,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     }
     google.maps.importLibrary("maps").then(() => {
       if (miniforge)
-        import_react_dom4.default.render(/* @__PURE__ */ import_react43.default.createElement(App_default2, null), miniforge);
+        import_react_dom4.default.render(/* @__PURE__ */ import_react47.default.createElement(App_default2, null), miniforge);
     });
   });
 

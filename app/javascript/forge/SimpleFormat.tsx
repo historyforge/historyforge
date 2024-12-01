@@ -19,7 +19,7 @@ const toParagraphs = function(text: string): string[] {
   })
 }
 
-const SimpleFormat = (props: SimpleFormatData): JSX.Element => {
+const SimpleFormat = (props: SimpleFormatData): React.ReactNode => {
   // Based on:
   // https://github.com/rails/rails/blob/312485f3e88af3966b586275ae5097198bfef6a0/actionview/lib/action_view/helpers/text_helper.rb#L454-L460
 
