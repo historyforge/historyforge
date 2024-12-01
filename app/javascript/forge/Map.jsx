@@ -6,7 +6,7 @@ import {
   generateMarkers,
   unhighlightMarker,
   highlightMarker
-} from './MapComponent'
+} from './mapFunctions'
 import { MarkerClusterer } from "@googlemaps/markerclusterer";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -131,6 +131,7 @@ export const Map = () => {
     }
 
     if (focusOnPoints && prevFocusOnPoints !== focusOnPoints) {
+      map.clearMarkers();
       const bounds = new google.maps.LatLngBounds();
       focusOnPoints.forEach(point => bounds.extend(new google.maps.LatLng(point.lat, point.lon)));
       map.fitBounds(bounds);

@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import Layers from './Layers'
 import { Map } from './Map'
 import CensusSearch from './CensusSearch'
-import Building from './Building'
+import {BuildingModal} from './Building'
 import {forgeInit, getBuildingsNearMe, reset, resetMap} from './actions'
 import {useDispatch, useSelector} from 'react-redux'
 import {Forges} from "./Forges";
@@ -20,6 +20,9 @@ const App = () => {
 
     const forgeActive = useSelector(state => state.layers.active || state.search.current);
     const focusing = useSelector(state => state.layers.focusing || false);
+
+    const building = useSelector(state => state.buildings.building);
+    const years = useSelector(state => state.search.years);
 
     const resetForge = () => {
         dispatch(reset());
@@ -131,7 +134,7 @@ const App = () => {
                     </>
                 )}
             </div>
-            <Building />
+            <BuildingModal building={building} years={years} />
         </div>
     )
 }
