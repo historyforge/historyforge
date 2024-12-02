@@ -1,7 +1,6 @@
 import {useEffect, useRef, useState} from "react";
 import {generateMarkers, highlightMarker, unhighlightMarker} from "../mapFunctions";
 import * as actions from "../actions";
-import {MarkerClusterer} from "@googlemaps/markerclusterer";
 import {useDispatch, useSelector} from "react-redux";
 
 export function useMarkers(map, clusterMachine, bounds) {

@@ -6343,7 +6343,7 @@
             var dispatcher = resolveDispatcher();
             return dispatcher.useRef(initialValue);
           }
-          function useEffect10(create, deps) {
+          function useEffect9(create, deps) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useEffect(create, deps);
           }
@@ -6913,7 +6913,7 @@
           exports.useCallback = useCallback2;
           exports.useContext = useContext5;
           exports.useDebugValue = useDebugValue2;
-          exports.useEffect = useEffect10;
+          exports.useEffect = useEffect9;
           exports.useImperativeHandle = useImperativeHandle;
           exports.useLayoutEffect = useLayoutEffect2;
           exports.useMemo = useMemo5;
@@ -54910,6 +54910,111 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     import_axios2.default.defaults.headers.common["X-CSRF-TOKEN"] = document.querySelector("[name=csrf-token]").getAttribute("content");
   };
 
+  // app/javascript/forge/hooks/useMarkers.js
+  function useMarkers(map3, clusterMachine, bounds) {
+    const dispatch = useDispatch();
+    const { addressedAt, loadedAt, bubble, buildings: buildings3 } = useSelector((state) => state.buildings);
+    const searchParams = useSelector((state) => state.search.params);
+    const [prevLoadedAt, setPrevLoadedAt] = (0, import_react23.useState)(null);
+    const [prevAddressedAt, setPrevAddressedAt] = (0, import_react23.useState)(null);
+    const markers = (0, import_react23.useRef)(null);
+    const currentMarker = (0, import_react23.useRef)(null);
+    const infoWindowTimeout = (0, import_react23.useRef)(null);
+    const infoWindow = (0, import_react23.useRef)(null);
+    const addMarkers2 = () => {
+      if (!bounds || !markers.current) {
+        return;
+      }
+      const desiredMarkers = Object.values(markers.current).filter((marker) => bounds.contains(marker.position));
+      clusterMachine.clearMarkers();
+      clusterMachine.addMarkers(desiredMarkers);
+    };
+    (0, import_react23.useEffect)(() => {
+      if (!map3) {
+        return;
+      }
+      if (prevAddressedAt !== addressedAt) {
+        setPrevAddressedAt(addressedAt);
+        if (bubble) {
+          if (infoWindow.current)
+            infoWindow.current.close();
+          infoWindow.current = new google.maps.InfoWindow({
+            content: bubble.address
+          });
+          infoWindow.current.open({
+            anchor: currentMarker.current,
+            map: map3
+          });
+        }
+      }
+    }, [bubble, addressedAt]);
+    const showBuilding = (buildingId) => {
+      dispatch(select(buildingId, searchParams));
+    };
+    const highlight2 = (buildingId) => {
+      highlightMarker(buildingId, markers.current);
+      currentMarker.current = markers.current[buildingId];
+      window.clearTimeout(infoWindowTimeout.current);
+      if (infoWindow.current) {
+        infoWindow.current.close();
+      }
+      dispatch(address(buildingId));
+    };
+    const unHighlight = (buildingId) => {
+      unhighlightMarker(parseInt(buildingId), markers.current);
+      infoWindowTimeout.current = window.setTimeout(() => {
+        dispatch(deAddress());
+        infoWindow.current.close();
+      }, 1e3);
+    };
+    (0, import_react23.useEffect)(() => {
+      if (!map3 || prevLoadedAt === loadedAt) {
+        return;
+      }
+      const handlers = {
+        onClick(building) {
+          showBuilding(parseInt(building.id));
+        },
+        onMouseOver(building) {
+          highlight2(parseInt(building.id));
+        },
+        onMouseOut(building) {
+          unHighlight(parseInt(building.id));
+        }
+      };
+      markers.current = generateMarkers(buildings3, handlers);
+      setPrevLoadedAt(loadedAt);
+      addMarkers2();
+    }, [loadedAt, prevLoadedAt]);
+    (0, import_react23.useEffect)(() => {
+      if (map3 && bounds) {
+        addMarkers2();
+      }
+    }, [bounds]);
+  }
+
+  // app/javascript/forge/hooks/useMapTargeting.js
+  var import_react24 = __toESM(require_react());
+  function useMapTargeting(map3, clusterMachine) {
+    const dispatch = useDispatch();
+    const focusOnPoints = useSelector((state) => state.layers.focusOnPoints);
+    console.log(focusOnPoints);
+    const [prevFocusOnPoints, setPrevFocusOnPoints] = (0, import_react24.useState)(null);
+    (0, import_react24.useEffect)(() => {
+      if (!map3) {
+        return;
+      }
+      if (focusOnPoints && prevFocusOnPoints !== focusOnPoints) {
+        clusterMachine.clearMarkers();
+        const bounds = new google.maps.LatLngBounds();
+        focusOnPoints.forEach((point) => bounds.extend(new google.maps.LatLng(point.lat, point.lon)));
+        map3.fitBounds(bounds);
+        dispatch({ type: "FORGE_FOCUSED" });
+        setPrevFocusOnPoints(focusOnPoints);
+      }
+    }, [map3, focusOnPoints, focusOnPoints]);
+  }
+
   // node_modules/@googlemaps/markerclusterer/dist/index.esm.js
   var import_fast_deep_equal = __toESM(require_fast_deep_equal());
 
@@ -55848,111 +55953,6 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       });
     }
   };
-
-  // app/javascript/forge/hooks/useMarkers.js
-  function useMarkers(map3, clusterMachine, bounds) {
-    const dispatch = useDispatch();
-    const { addressedAt, loadedAt, bubble, buildings: buildings3 } = useSelector((state) => state.buildings);
-    const searchParams = useSelector((state) => state.search.params);
-    const [prevLoadedAt, setPrevLoadedAt] = (0, import_react23.useState)(null);
-    const [prevAddressedAt, setPrevAddressedAt] = (0, import_react23.useState)(null);
-    const markers = (0, import_react23.useRef)(null);
-    const currentMarker = (0, import_react23.useRef)(null);
-    const infoWindowTimeout = (0, import_react23.useRef)(null);
-    const infoWindow = (0, import_react23.useRef)(null);
-    const addMarkers2 = () => {
-      if (!bounds || !markers.current) {
-        return;
-      }
-      const desiredMarkers = Object.values(markers.current).filter((marker) => bounds.contains(marker.position));
-      clusterMachine.clearMarkers();
-      clusterMachine.addMarkers(desiredMarkers);
-    };
-    (0, import_react23.useEffect)(() => {
-      if (!map3) {
-        return;
-      }
-      if (prevAddressedAt !== addressedAt) {
-        setPrevAddressedAt(addressedAt);
-        if (bubble) {
-          if (infoWindow.current)
-            infoWindow.current.close();
-          infoWindow.current = new google.maps.InfoWindow({
-            content: bubble.address
-          });
-          infoWindow.current.open({
-            anchor: currentMarker.current,
-            map: map3
-          });
-        }
-      }
-    }, [bubble, addressedAt]);
-    const showBuilding = (buildingId) => {
-      dispatch(select(buildingId, searchParams));
-    };
-    const highlight2 = (buildingId) => {
-      highlightMarker(buildingId, markers.current);
-      currentMarker.current = markers.current[buildingId];
-      window.clearTimeout(infoWindowTimeout.current);
-      if (infoWindow.current) {
-        infoWindow.current.close();
-      }
-      dispatch(address(buildingId));
-    };
-    const unHighlight = (buildingId) => {
-      unhighlightMarker(parseInt(buildingId), markers.current);
-      infoWindowTimeout.current = window.setTimeout(() => {
-        dispatch(deAddress());
-        infoWindow.current.close();
-      }, 1e3);
-    };
-    (0, import_react23.useEffect)(() => {
-      if (!map3 || prevLoadedAt === loadedAt) {
-        return;
-      }
-      const handlers = {
-        onClick(building) {
-          showBuilding(parseInt(building.id));
-        },
-        onMouseOver(building) {
-          highlight2(parseInt(building.id));
-        },
-        onMouseOut(building) {
-          unHighlight(parseInt(building.id));
-        }
-      };
-      markers.current = generateMarkers(buildings3, handlers);
-      setPrevLoadedAt(loadedAt);
-      addMarkers2();
-    }, [loadedAt, prevLoadedAt]);
-    (0, import_react23.useEffect)(() => {
-      if (map3 && bounds) {
-        addMarkers2();
-      }
-    }, [bounds]);
-  }
-
-  // app/javascript/forge/hooks/useMapTargeting.js
-  var import_react24 = __toESM(require_react());
-  function useMapTargeting(map3, clusterMachine) {
-    const dispatch = useDispatch();
-    const focusOnPoints = useSelector((state) => state.layers.focusOnPoints);
-    console.log(focusOnPoints);
-    const [prevFocusOnPoints, setPrevFocusOnPoints] = (0, import_react24.useState)(null);
-    (0, import_react24.useEffect)(() => {
-      if (!map3) {
-        return;
-      }
-      if (focusOnPoints && prevFocusOnPoints !== focusOnPoints) {
-        clusterMachine.clearMarkers();
-        const bounds = new google.maps.LatLngBounds();
-        focusOnPoints.forEach((point) => bounds.extend(new google.maps.LatLng(point.lat, point.lon)));
-        map3.fitBounds(bounds);
-        dispatch({ type: "FORGE_FOCUSED" });
-        setPrevFocusOnPoints(focusOnPoints);
-      }
-    }, [map3, focusOnPoints, focusOnPoints]);
-  }
 
   // app/javascript/forge/Map.jsx
   var google3 = window.google;

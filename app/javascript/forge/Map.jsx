@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useRef } from 'react'
 import { useSelector } from "react-redux";
 import { useOpacity} from "./hooks/useOpacity";
 import { useLayers } from "./hooks/useLayers";
