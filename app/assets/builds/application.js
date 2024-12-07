@@ -59465,7 +59465,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     $("[rel=tooltip]").tooltip();
     pageLoad();
   });
-  window.showSubmitButton = function() {
+  window.showSubmitButton = function(id, token) {
+    document.getElementById(id).setAttribute("value", token);
     document.getElementById("contact-submit-btn").style.display = "block";
   };
   var pageLoad = function() {

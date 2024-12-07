@@ -43,7 +43,8 @@ document.addEventListener('DOMContentLoaded', () => {
   pageLoad()
 })
 
-window.showSubmitButton = function() {
+window.showSubmitButton = function(id, token) {
+  document.getElementById(id).setAttribute('value', token);
   document.getElementById('contact-submit-btn').style.display = 'block'
 }
 

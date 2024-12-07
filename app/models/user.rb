@@ -136,19 +136,30 @@ class User < ApplicationRecord
     super && enabled?
   end
 
+  # This is overridden from Devise so that admin can invite a user without setting a fake password.
   def password_required?
-    password.present?
+    public_signup? || password.present? || password_confirmation.present?
   end
 
+  def public_signup?
+    @public_signup
+  end
+  attr_writer :public_signup
+
   def accept_invitation
-    self.invitation_accepted_at = Time.current.utc
-    self.invitation_token = nil
+    super
     self.enabled = true
   end
 
   def self.from_omniauth(auth)
     user = User.where(email: auth.info.email, provider: auth.provider).first
-    user ||= User.create!(provider: auth.provider, uid: auth.uid, email: auth.info.email, password: Devise.friendly_token[0, 20], login: + auth.info.email + '-' + auth.provider[0])
+    user ||= User.create!(
+      provider: auth.provider,
+      uid: auth.uid,
+      email: auth.info.email,
+      password: Devise.friendly_token[0, 20],
+      login: [auth.info.email, auth.provider[0]].join('-')
+    )
     user
   end
 end
