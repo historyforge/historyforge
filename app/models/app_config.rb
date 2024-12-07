@@ -4,6 +4,6 @@
 class AppConfig
   def self.[](key)
     Setting.load unless Setting.loaded?
-    ENV[key.to_s.upcase] || Setting.value_of(key)
+    Setting.value_of(key) || ENV.fetch(key.to_s.upcase, nil)
   end
 end
