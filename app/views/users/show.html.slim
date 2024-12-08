@@ -1,4 +1,4 @@
-- set_page_title "Showing User #{@user.login.capitalize}"
+- set_page_title "Showing User \"#{@user.login}\""
 - content_for :pills do
   = link_to 'View All', users_path, class: 'btn btn-sm btn-light'
   = link_to 'Edit', edit_user_path(@user), class: 'btn btn-sm btn-light' if can?(:update, @user)

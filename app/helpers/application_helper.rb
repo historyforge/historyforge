@@ -26,6 +26,7 @@ module ApplicationHelper
     js = []
     js << ['success', message_for_item(flash[:notice], :notice_item)] if flash[:notice].present?
     js << ['error', message_for_item(flash[:errors], :errors_item)] if flash[:errors].present?
+    js << ['alert', message_for_item(flash[:alert], :alert_item)] if flash[:alert].present?
     js
   end
 

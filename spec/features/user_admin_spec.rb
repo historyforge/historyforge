@@ -14,19 +14,47 @@ RSpec.describe 'User management' do
     expect(page).to have_content 'Sorry you do not have permission to do that'
   end
 
-  scenario 'admininistrator adds user' do
-    sign_in create(:administrator)
+  def logout
+    find(:xpath, ".//a[i[contains(@class, 'fa-user')]]").click
+    click_on('Log out')
+  end
+
+  scenario 'administrator adds user' do
+    admin = create(:administrator)
+    sign_in admin
     visit users_path
     expect(page).to have_content('Users')
     click_on 'Create User'
-    expect(page).to have_content('Send invitation')
+    expect(page).to have_content('Add New User')
     email = Faker::Internet.email
+    login = Faker::FunnyName.name
     fill_in 'Email', with: email
-    fill_in 'Username', with: Faker::FunnyName.name
-    click_on 'Send an invitation'
-    expect(page).to have_content('Users')
-    expect(page).to have_content "An invitation email has been sent to #{email}."
+    fill_in 'Username', with: login
+    click_on 'Submit'
+    expect(page).to have_content("Showing User \"#{login}\"")
+    expect(page).to have_content("An invitation email has been sent to #{email}.")
     expect(ActionMailer::Base.deliveries).to_not be_empty
+    body = ActionMailer::Base.deliveries.last.text_part.body.to_s
+    token = body.split("invitation_token=").last.split("\n").first
+    logout
+
+    user = User.find_by(email:)
+
+    # Accept the invitation
+    url = "/u/invitation/accept?invitation_token=#{token}"
+    visit(url)
+    expect(page).to have_content('Set your password')
+    fill_in('Password', with: 'b1g_sekrit')
+    fill_in('Repeat password', with: 'b1g_sekrit')
+    click_on('Set my password')
+    logout
+
+    # Log in
+    visit(new_user_session_path)
+    fill_in('Email', with: user.email)
+    fill_in('Password', with: 'b1g_sekrit')
+    click_on('Volunteer Log In')
+    expect(page).to have_no_content('Volunteer Log In')
   end
 
   scenario 'administrator uses filters on users page' do

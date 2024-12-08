@@ -2,15 +2,11 @@
   = simple_form_for(resource, as: resource_name, url: invitation_path(resource_name), html: { method: :put }) do |form|
     .card
       .card-header
-        h3.card-title= t 'devise.invitations.edit.header
+        h3.card-title= t('devise.invitations.edit.header')
       .card-body
-        = error_messages_for @user
         = form.error_notification
         = form.hidden_field :invitation_token
-
-        .form-inputs
-          = form.input :login, label: 'Username'
-          = form.input :password
-          = form.input :password_confirmation
+        = form.input :password
+        = form.input :password_confirmation, label: 'Repeat password'
       .card-footer.text-centered
-        = form.button :submit, t("devise.invitations.edit.submit_button"), class: 'btn btn-primary btn-lg'
+        = form.submit t('devise.invitations.edit.submit_button'), class: 'btn btn-primary btn-lg'

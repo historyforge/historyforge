@@ -20,9 +20,9 @@ class UsersController < ApplicationController
 
   def show
     @user = User.find(params[:id]) || current_user
-    if @user.unconfirmed_email && @user.unconfirmed_email != @user.email
-      flash[:errors] = "You changed your email from #{@user.email} to #{@user.unconfirmed_email}.The change won't take effect until you click on the link in the email we sent you."
-    end
+    return unless @user.unconfirmed_email && @user.unconfirmed_email != @user.email
+
+    flash[:errors] = "You changed your email from #{@user.email} to #{@user.unconfirmed_email}. The change won't take effect until you click on the link in the email we sent you."
   end
 
   def new
@@ -30,24 +30,24 @@ class UsersController < ApplicationController
     authorize! :create, @user
   end
 
-  def create
-    @user = User.new user_params
-    authorize! :create, @user
-    if @user.save
-      flash[:notice] = 'User created'
-      redirect_to user_path(@user)
-    else
-      flash[:errors] = 'Could not create user'
-      render action: :new
-    end
-  end
-
   def edit
     @html_title = 'Edit User Settings'
     @user = params[:id] ? User.find(params[:id]) : current_user
     authorize! :update, @user
-    if @user.unconfirmed_email && @user.unconfirmed_email != @user.email
-      flash[:errors] = "You changed your email from #{@user.email} to #{@user.unconfirmed_email}.The change won't take effect until you click on the link in the email we sent you."
+    return unless @user.unconfirmed_email && @user.unconfirmed_email != @user.email
+
+    flash.now[:errors] = "You changed your email from #{@user.email} to #{@user.unconfirmed_email}.The change won't take effect until you click on the link in the email we sent you."
+  end
+
+  def create
+    authorize! :create, User
+    @user = User.invite!(user_params, current_user)
+    if @user.save
+      flash[:notice] = "An invitation email has been sent to #{@user.email}."
+      redirect_to user_path(@user)
+    else
+      flash[:errors] = 'Could not invite user.'
+      render action: :new
     end
   end
 
@@ -68,7 +68,7 @@ class UsersController < ApplicationController
   def destroy
     @user = User.find(params[:id])
     if @user.has_role?('administrator')
-      flash[:error] = 'Admins cannot be destroyed'
+      flash[:error] = 'Admin users cannot be deleted'
     else
       if @user.destroy
         flash[:notice] = 'User successfully deleted'
@@ -109,7 +109,7 @@ class UsersController < ApplicationController
 
   def disable
     @user = User.find(params[:id])
-    if @user.update_attribute(:enabled, false)
+    if @user.update(enabled: false)
       flash[:notice] = 'User disabled'
     else
       flash[:error] = 'There was a problem disabling this user.'
@@ -119,7 +119,7 @@ class UsersController < ApplicationController
 
   def enable
     @user = User.find(params[:id])
-    if @user.update_attribute(:enabled, true)
+    if @user.update(enabled: true)
       flash[:notice] = 'User enabled'
     else
       flash[:error] = 'There was a problem enabling this user.'
