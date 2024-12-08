@@ -19,10 +19,13 @@
 # frozen_string_literal: true
 
 class BulkUpdate < ApplicationRecord
+  # @!attribute confirm
+  #   @return [Boolean]
   attr_accessor :confirm
+
   belongs_to :user
-  has_many :records, class_name: 'BulkUpdatedRecord', dependent: :destroy
-  has_many :census_records, through: :records, source: :record
+  has_many :records, class_name: 'BulkUpdatedRecord', dependent: :destroy, inverse_of: :bulk_update
+  has_many :census_records, through: :records, source: :record, inverse_of: :bulk_updates
 
   validates :field, presence: true
 

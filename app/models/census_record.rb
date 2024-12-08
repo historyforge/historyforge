@@ -13,7 +13,7 @@ class CensusRecord < ApplicationRecord
   belongs_to :building, optional: true
   belongs_to :person, optional: true
   has_many :bulk_updated_records, as: :record, dependent: :destroy, inverse_of: :record
-  has_many :bulk_updates, through: :bulk_updated_records
+  has_many :bulk_updates, through: :bulk_updated_records, inverse_of: :records
 
   attr_accessor :ensure_building
 
