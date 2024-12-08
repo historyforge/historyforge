@@ -54,7 +54,7 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :trackable,
          :validatable, :omniauthable, omniauth_providers: %i[facebook]
 
-  belongs_to :group, class_name: 'UserGroup', foreign_key: :user_group_id, optional: true
+  belongs_to :group, class_name: 'UserGroup', foreign_key: :user_group_id, optional: true, inverse_of: :users
   has_many :search_params, dependent: :destroy
 
   has_many :census1850_records, dependent: :nullify, class_name: 'Census1850Record', inverse_of: :created_by, foreign_key: :created_by_id
@@ -130,8 +130,8 @@ class User < ApplicationRecord
     save
   end
 
-  #Called by Devise
-  #Method checks to see if the user is enabled (it will therefore not allow a user who is disabled to log in)
+  # Called by Devise
+  # Method checks to see if the user is enabled (it will therefore not allow a user who is disabled to log in)
   def active_for_authentication?
     super && enabled?
   end
