@@ -113,35 +113,35 @@ RSpec.describe Person do
   describe '#similar_in_age?' do
     let(:person) { build(:person, birth_year: 1872) }
 
-    context 'when same age' do
-      let(:record) { build(:census1900_record, birth_year: 1872, age: 28) }
+    context 'when the person has no age' do
+      let(:person) { build(:person, birth_year: nil) }
 
       it 'returns true' do
-        expect(person).to be_similar(record)
+        expect(person.similar_in_age?(1900, 90)).to be true
+      end
+    end
+
+    context 'when same age' do
+      it 'returns true' do
+        expect(person.similar_in_age?(1900, 28)).to be true
       end
     end
 
     context 'when a year apart' do
-      let(:record) { build(:census1900_record, birth_year: 1873, age: 27) }
-
       it 'returns true' do
-        expect(person).to be_similar(record)
+        expect(person.similar_in_age?(1900, 27)).to be true
       end
     end
 
     context 'when 2 years apart' do
-      let(:record) { build(:census1900_record, birth_year: 1874, age: 26) }
-
       it 'returns true' do
-        expect(person).to be_similar(record)
+        expect(person.similar_in_age?(1900, 26)).to be true
       end
     end
 
     context 'when 6 years apart' do
-      let(:record) { build(:census1900_record, birth_year: 1878, age: 20) }
-
       it 'returns false' do
-        expect(person).not_to be_similar(record)
+        expect(person.similar_in_age?(1900, 20)).to be false
       end
     end
   end

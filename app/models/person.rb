@@ -185,8 +185,13 @@ class Person < ApplicationRecord
   memoize :possible_unmatched_records
 
   # Takes a census record and returns whether this person's age is within two years of the census record's age
-  def similar?(target)
-    (age_in_year(target.year) - (target.age || 0)).abs <= 5
+  # @param year [Integer]
+  # @param age [Integer]
+  # @return [Boolean]
+  def similar_in_age?(year, age)
+    return true if birth_year.blank?
+
+    (age_in_year(year) - (age || 0)).abs <= 5
   end
 
   def age_in_year(year)

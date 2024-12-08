@@ -51,9 +51,7 @@ FactoryBot.define do
     end
 
     after(:create) do |person|
-      if person.instance_variable_defined?(:@census_records)
-        person.remove_instance_variable :@census_records
-      end
+      person.remove_instance_variable :@census_records if person.instance_variable_defined?(:@census_records)
     end
   end
 end
