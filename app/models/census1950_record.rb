@@ -118,6 +118,7 @@ class Census1950Record < CensusRecord
 
   scope :in_census_order, -> { order :ward, :enum_dist, :page_number, :page_side, :line_number }
 
+  define_enumeration :page_side, %w[A B C D].freeze, strict: true
   define_enumeration :marital_status, %w[Nev Mar Wd D Sep].freeze
   define_enumeration :race, %w[W B In Ch Jp Fil].freeze
   define_enumeration :name_suffix, %w[Jr Sr].freeze
@@ -147,10 +148,6 @@ class Census1950Record < CensusRecord
     code
   end
 
-  def page_side
-    nil
-  end
-
   def per_side
     40
   end
@@ -163,6 +160,10 @@ class Census1950Record < CensusRecord
     false
   end
 
+  def page_side_optional?
+    true
+  end
+
   def supplemental?
     new_record? || pob_father?
   end
@@ -171,8 +172,8 @@ class Census1950Record < CensusRecord
     value = public_send(field)
     return unless value
 
-    errors.add field, 'can only have letters V or X' if value =~ /[a-zA-UWYZ]/
-    errors.add field, 'can only have digits and V or X' if value =~ /\W/
+    errors.add field, 'can only have letters V or X' if /[a-zA-UWYZ]/.match?(value)
+    errors.add field, 'can only have digits and V or X' if /\W/.match?(value)
   end
 
   def validate_worker_class_code(field)
@@ -180,7 +181,7 @@ class Census1950Record < CensusRecord
     value = nil if value.blank?
     return unless value
 
-    errors.add(field, 'can only be 1 through 6') if value !~ /[1-6]/
+    errors.add(field, 'can only be 1 through 6') unless /[1-6]/.match?(value)
   end
 
   def validate_occupation_codes

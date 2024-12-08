@@ -12,7 +12,7 @@ class CensusRecord < ApplicationRecord
 
   belongs_to :building, optional: true
   belongs_to :person, optional: true
-  has_many :bulk_updated_records, as: :record
+  has_many :bulk_updated_records, as: :record, dependent: :destroy, inverse_of: :record
   has_many :bulk_updates, through: :bulk_updated_records
 
   attr_accessor :ensure_building
@@ -78,6 +78,10 @@ class CensusRecord < ApplicationRecord
 
   def page_side?
     true
+  end
+
+  def page_side_optional?
+    false
   end
 
   def field_for(field)

@@ -199,6 +199,7 @@ en:
         institution: 'The Institution Name is in the upper left side of the sheet under Unincorporated place. Enter the information into the corresponding field on HistoryForge.'
 
       census1950_record:
+        page_side: 'The 1950 census does not have page sides; however, some enumeration districts were so large that they were decided into multiple sections. If there is a letter after the sheet number, enter that here.'
         apartment_number: 'The apartment number or designation is written on the line below the house number in the same field on the census. Enter only when applicable. If there is no apartment information on the census, leave the field blank on HistoryForge.'
         city: 'Incorporated Place or Township is item (c) in the upper left corner of the sheet.'
         enum_dist: 'The Enumeration District (ED) is in the upper right corner of the sheet. Enter the second part only, that following the (-) hyphen.'

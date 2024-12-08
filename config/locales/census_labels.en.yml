@@ -201,6 +201,7 @@ en:
         wages_or_salary: 'Income (Wages or Salary)'
         income_plus: 'Income has +'
       census1950_record:
+        page_side: 'Section'
         family_id: 'Serial No.'
         lives_on_farm: 'Live on Farm'
         lives_on_3_acres: 'Live on 3 or More Acres'
