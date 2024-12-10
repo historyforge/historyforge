@@ -1,7 +1,7 @@
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
---SET transaction_timeout = 0;
+-- SET transaction_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -340,7 +340,8 @@ CREATE TABLE public.audios (
     processed_at timestamp(6) without time zone,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    remote_url character varying
+    remote_url character varying,
+    searchable_text text
 );
 
 
@@ -2082,7 +2083,8 @@ CREATE TABLE public.narratives (
     date_start date,
     date_end date,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    searchable_text text
 );
 
 
@@ -2339,7 +2341,8 @@ CREATE TABLE public.photographs (
     reviewed_by_id bigint,
     reviewed_at timestamp without time zone,
     date_type integer DEFAULT 0,
-    caption text
+    caption text,
+    searchable_text text
 );
 
 
@@ -2833,7 +2836,8 @@ CREATE TABLE public.videos (
     processed_at timestamp(6) without time zone,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    remote_url character varying
+    remote_url character varying,
+    searchable_text text
 );
 
 
@@ -5606,6 +5610,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('9'),
 ('8'),
 ('4'),
+('20241208172541'),
 ('20241124000534'),
 ('20240824170019'),
 ('20240818214339'),

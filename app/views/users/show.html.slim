@@ -1,4 +1,4 @@
-- set_page_title "Showing User #{@user.login.capitalize}"
+- set_page_title "Showing User \"#{@user.login}\""
 - content_for :pills do
   = link_to 'View All', users_path, class: 'btn btn-sm btn-light'
   = link_to 'Edit', edit_user_path(@user), class: 'btn btn-sm btn-light' if can?(:update, @user)
@@ -10,6 +10,6 @@ ul.list-group
   li.list-group-item
     .row
       .col-4 Created on
-      .col-8= @user.created_at.to_s(:long)
+      .col-8= @user.created_at.to_formatted_s(:long)
   = render 'users/admin_tools', object: @user
 

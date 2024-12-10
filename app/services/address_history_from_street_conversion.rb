@@ -7,7 +7,6 @@ class AddressHistoryFromStreetConversion
 
   def perform
     matching_addresses&.each do |address|
-      converted = @street_conversion.convert(address.dup)
       modern_address = matching_modern_address address.building
       modern_address.year = year
       modern_address.save
@@ -27,7 +26,7 @@ class AddressHistoryFromStreetConversion
     query = query.where(name: from_name) if from_name.present?
     query = query.where(prefix: from_prefix) if from_prefix.present?
     query = query.where(suffix: from_suffix) if from_suffix.present?
-    query = query.where(city: from_city) if from_city.present?
+    query.where(city: from_city) if from_city.present?
   end
 
   def matching_modern_address(building)

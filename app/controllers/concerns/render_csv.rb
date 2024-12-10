@@ -5,6 +5,9 @@ module RenderCsv
   private
 
   def render_csv(filename, resource_class)
+    # Loading the results first because Current.locality_id gets reset after headers are sent.
+    # If the query hasn't run yet, then it never gets the locality scope.
+    @search.results
     headers['X-Accel-Buffering'] = 'no'
     headers['Cache-Control'] = 'no-cache'
     headers['Content-Type'] = 'text/csv; charset=utf-8'

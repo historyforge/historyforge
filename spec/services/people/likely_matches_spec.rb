@@ -10,9 +10,10 @@ module People
     let(:non_matching_person) { FactoryBot.create(:person, first_name: 'Michael', last_name: 'Furber', sex: 'm', race: 'W') }
 
     before do
-      # Matching only engages when there is more than one census going.
-      # Otherwise partners get confused by "mystery matches" when logically
-      # there shouldn't be an existing person record for anyone yet.
+      # Automatic matching only engages when there is more than one census going.
+      # Otherwise, partners get confused by "mystery matches" when logically
+      # there shouldn't be an existing person record for anyone yet. That's why
+      # we are creating a random record in another census year.
       FactoryBot.create(:census1920_record)
       matching_person
       non_matching_person

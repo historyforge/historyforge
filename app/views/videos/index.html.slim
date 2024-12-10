@@ -8,16 +8,20 @@
     = link_to 'Building', @building, class: 'btn btn-default'
   -if @person
     = link_to 'Person', @person, class: 'btn btn-default'
-  a.btn.btn-default type="button" data-toggle="collapse" href="#filters" Filters
 
-.collapse#filters
-  = search_form_for @search, as: :q, builder: SimpleForm::FormBuilder do |form|
-    = form.input :full_text_search, label: 'Search'
-    - if can?(:review, Video)
-      = form.input :unreviewed_only, as: :boolean, label: 'Show only unreviewed', wrapper: :inline_boolean
-    .card-footer
+= search_form_for @search, as: :q, builder: SimpleForm::FormBuilder do |form|
+  .row
+    .col-12.col-lg-6
+      = form.input :full_text_search, label: false, placeholder: 'Search', wrapper_html: { class: 'mb-0' }
+      - if can?(:review, Video)
+        = form.input :unreviewed_only, as: :boolean, label: 'Show only unreviewed', wrapper: :inline_boolean
+    .col-12.col-lg-6
       = form.submit 'Search', class: 'btn btn-primary'
       = link_to 'Reset', videos_path(reset: true), class: 'btn btn-light'
+
+- if params[:q]
+  h3
+    | Searching for #{[params[:q][:full_text_search], !!params[:q][:unreviewed_only] ? 'unreviewed' : nil].compact_blank.join(' and ')}
 
 = page_entries_info @assets
 

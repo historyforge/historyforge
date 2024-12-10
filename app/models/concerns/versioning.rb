@@ -10,7 +10,7 @@ module Versioning
     has_many :audit_logs, as: :loggable
 
     has_paper_trail meta: { comment: :comment },
-                    skip: %i[created_at reviewed_at updated_at created_by_id reviewed_by_id updated_by_id]
+                    skip: %i[created_at reviewed_at updated_at created_by_id reviewed_by_id updated_by_id searchable_text]
 
     def change_history
       return @change_history if defined?(@change_history)

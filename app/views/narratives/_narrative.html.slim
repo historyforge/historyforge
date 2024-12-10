@@ -15,8 +15,13 @@
   = narrative.sources
   - if narrative.date_text
     p= narrative.date_text
+  - if @person
+    p= narrative.buildings.map { |building| link_to(building.street_address, building) }.join('<br />').html_safe
+  - if @building
+    p= narrative.people.map { |person| link_to(person.name, person) }.join('<br />').html_safe
+
   - if can?(:update, narrative)
     span.badge.badge-info.float-right.ml-1 style="margin-top:-20px"
       = "Weight: #{narrative.weight}"
 
-    /p= "Submitted by #{record.created_by.login} on #{record.created_at.to_s(:long)}"
+    /p= "Submitted by #{record.created_by.login} on #{record.created_at.to_formatted_s(:long)}"

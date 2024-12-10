@@ -24,9 +24,9 @@
                       label: 'Repeat password',
                       input_html: { autocomplete: "new-password" }
           - if flash[:recaptcha_error]
-            p.invalid-feedback= flash[:recaptcha_error]
+            p= flash[:recaptcha_error]
       .card-footer
         = recaptcha_v3 action: 'registration', site_key: AppConfig[:recaptcha_site_key], callback: 'showSubmitButton'
-        = form.submit 'Sign Up', class: 'btn btn-lg btn-primary', style: 'display:none', id: 'contact-submit-btn'
+        = form.submit 'Sign Up', class: 'btn btn-lg btn-primary', style: Rails.env.test? ? '' : 'display:none', id: 'contact-submit-btn'
         hr
         = render "devise/shared/links"

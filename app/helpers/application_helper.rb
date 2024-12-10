@@ -22,15 +22,16 @@ module ApplicationHelper
     !current_user
   end
 
-  def prepare_alerts_base
+  def prepare_alerts
     js = []
-    js << ['success', message_for_item(flash[:notice], :notice_item)] unless flash[:notice].blank?
-    js << ['error', message_for_item(flash[:errors], :errors_itme)] unless flash[:errors].blank?
+    js << ['success', message_for_item(flash[:notice], :notice_item)] if flash[:notice].present?
+    js << ['error', message_for_item(flash[:errors], :errors_item)] if flash[:errors].present?
+    js << ['alert', message_for_item(flash[:alert], :alert_item)] if flash[:alert].present?
     js
   end
 
   def flash_messages
-    javascript_tag "window.alerts=#{prepare_alerts_base.to_json};"
+    javascript_tag "window.alerts=#{prepare_alerts.to_json};"
   end
 
   def admin_authorized?
@@ -40,18 +41,19 @@ module ApplicationHelper
   def google_tag_manager
     return unless Rails.env.production? && ENV['GOOGLE_ANALYTICS']
 
-    <<-HTML.strip_heredoc.html_safe
-        <!-- Google Tag Manager -->
-        <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-        })(window,document,'script','dataLayer','#{ENV['GOOGLE_ANALYTICS']}');</script>
-        <!-- End Google Tag Manager -->
+    <<~HTML.html_safe
+      <!-- Google Tag Manager -->
+      <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','#{AppConfig[:google_analytics]}');</script>
+      <!-- End Google Tag Manager -->
     HTML
   end
+
   # Renders form using readonly, display-friendly view.
-  def view_for(record, options = {}, &block)
+  def view_for(record, options = {}, &)
     raise ArgumentError, 'Missing block' unless block_given?
 
     html_options = options[:html] ||= {}
@@ -66,7 +68,7 @@ module ApplicationHelper
       object_name = model_name_from_record_or_class(object).param_key
     end
     builder = FormViewBuilder.new(object_name, object, self, options)
-    output  = capture(builder, &block)
+    output  = capture(builder, &)
 
     content_tag(:div, html_options) { output }
   end
@@ -108,9 +110,9 @@ module ApplicationHelper
            checked: checked
   end
 
-  def table(attrs={}, &block)
+  def table(attrs={}, &)
     attrs['data-sortable'] = true if attrs.delete(:sortable)
-    content_tag :table, capture(&block), attrs.merge(class: 'table table-striped table-condensed table-responsive')
+    content_tag :table, capture(&), attrs.merge(class: 'table table-striped table-condensed table-responsive')
   end
 
   def link_to_building(building)
@@ -123,6 +125,23 @@ module ApplicationHelper
     return record.birth_year || 'unknown' if record.birth_month.blank?
 
     "#{Date::MONTHNAMES[record.birth_month]} #{record.birth_year}"
+  end
+
+  def page_entries_info(collection, entry_name: nil)
+    entry_name = if entry_name
+                   entry_name.pluralize(collection.size, I18n.locale)
+                 else
+                   collection.entry_name(count: collection.size).downcase
+                 end
+
+    if collection.total_pages < 2
+      t('helpers.page_entries_info.one_page.display_entries', entry_name: entry_name, count: collection.total_count)
+    else
+      from = collection.offset_value + 1
+      to   = collection.offset_value + (collection.respond_to?(:records) ? collection.records : collection.to_a).size
+      total = ActiveSupport::NumberHelper::NumberToDelimitedConverter.convert(collection.total_count, delimiter: ',')
+      t('helpers.page_entries_info.more_pages.display_entries', entry_name: entry_name, first: from, last: to, total:)
+    end.html_safe
   end
 end
 

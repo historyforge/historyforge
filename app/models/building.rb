@@ -159,10 +159,11 @@ class Building < ApplicationRecord
   scope :building_types_id_null, -> { where(building_types_mask: nil) }
   scope :building_types_id_not_null, -> { where.not(building_types_mask: nil) }
 
-  scope :description_cont, ->(query) { left_joins(:rich_text_description, narratives: :rich_text_story).merge(ActionText::RichText.where <<~SQL, "%" + query + "%") }
-    action_text_rich_texts.body ILIKE ?
-  SQL
-
+  scope :description_cont, lambda { |query|
+    left_joins(:rich_text_description, narratives: :rich_text_story)
+      .merge(ActionText::RichText.where('action_text_rich_texts.body ILIKE ?', "%" + query + "%"))
+  }
+  
   def self.ransackable_scopes(_auth_object = nil)
     %i[as_of_year without_residents as_of_year_eq description_cont
        building_types_id_in building_types_id_not_in building_types_id_null building_types_id_not_null]

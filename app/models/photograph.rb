@@ -38,7 +38,9 @@ class Photograph < ApplicationRecord
   has_one_attached :file
   validates :file, attached: true, content_type: %w[image/jpg image/jpeg image/png]
 
+  default_scope -> { preload(file_attachment: :blob) }
+
   def process
-    # nothing to do here, but let's us keep media controller simple.
+    # nothing to do here, but lets us keep media controller simple.
   end
 end

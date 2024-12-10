@@ -14,10 +14,15 @@ module Media
     alias_attribute :title, :caption
     alias_attribute :name, :caption
 
+    before_save :generate_searchable_text
+
+    # TODO: Create a ts_vector column, hard to deploy because it requires
+    #   creating a trigger, and the Dokku postgres app user does not have
+    #   the required privileges. Maybe after migrating to DB cluster?
     pg_search_scope :full_text_search,
-                    against: %i[caption location notes],
+                    against: :searchable_text,
                     using: {
-                      tsearch: { prefix: true, any_word: true }
+                      tsearch: { prefix: true }
                     }
 
     scope :unreviewed_only, ->(val) { val == '1' ? unreviewed : self }
@@ -35,5 +40,17 @@ module Media
 
   def process
     # implemented by interested subclasses
+  end
+
+  def generate_searchable_text
+    self.searchable_text = [
+      caption,
+      location,
+      notes,
+      *people.map(&:name),
+      *people.flat_map { _1.variant_names.map(&:name) },
+      *buildings.map(&:name),
+      *buildings.flat_map { _1.addresses.map(&:address) }
+    ].join(' | ')
   end
 end

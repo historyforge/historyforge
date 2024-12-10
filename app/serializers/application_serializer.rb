@@ -8,8 +8,8 @@ class ApplicationSerializer
   attr_reader :object
 
   def serializable_hash
-    serializable_attributes.each_with_object({}) do |attr, hash|
-      hash[attr] = object.public_send attr
+    serializable_attributes.index_with do |attr|
+      object.public_send attr
     end
   end
 

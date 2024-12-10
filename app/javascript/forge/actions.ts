@@ -48,8 +48,6 @@ export const getBuildingsNearMe = ({ latitude, longitude }: { latitude: number, 
   dispatch({ type: 'FORGE_FOCUS', buildings: json.data.buildings })
 }
 
-export const finishedFocusing = () => (dispatch) => dispatch({ type: "FORGE_FOCUSED"});
-
 export const load = () => async (dispatch, getState) => {
   const qs = getState().search || {}
   const json = await axios.get('/buildings.json', {

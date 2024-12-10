@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react'
 import loadWMS from '../forge/wms'
-import { getMainIcon, generateMarkers, highlightMarker, unhighlightMarker } from '../forge/MapComponent'
+import { getMainIcon, generateMarkers, highlightMarker, unhighlightMarker } from '../forge/mapFunctions'
 import { moveBuilding, highlight } from '../forge/actions'
 import {useDispatch, useSelector} from "react-redux";
 

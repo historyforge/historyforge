@@ -3,8 +3,6 @@
   - if can?(:manage, User)
     = form.input :user_group_id, label: 'Group', collection: UserGroup.order(:name), include_blank: true
   = form.input :login, label: 'Username'
-  = form.input :email
-  = form.input :password
-  = form.input :password_confirmation
+  = form.input :email, required: true
   .form-actions
     = form.submit 'Submit', class: 'btn btn-primary btn-lg'

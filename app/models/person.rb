@@ -65,6 +65,8 @@ class Person < ApplicationRecord
            inverse_of: :person
   accepts_nested_attributes_for :names, allow_destroy: true, reject_if: proc { |p| p['first_name'].blank? || p['last_name'].blank? }
 
+  validates :first_name, :last_name, :sex, :race, presence: true
+
   before_validation do
     self.sex = nil if sex.blank? || sex == 'on'
     self.race = nil if race.blank? || race == 'on'
@@ -183,8 +185,13 @@ class Person < ApplicationRecord
   memoize :possible_unmatched_records
 
   # Takes a census record and returns whether this person's age is within two years of the census record's age
-  def similar?(target)
-    race == target.race && (age_in_year(target.year) - (target.age || 0)).abs <= 5
+  # @param year [Integer]
+  # @param age [Integer]
+  # @return [Boolean]
+  def similar_in_age?(year, age)
+    return true if birth_year.blank?
+
+    (age_in_year(year) - (age || 0)).abs <= 5
   end
 
   def age_in_year(year)

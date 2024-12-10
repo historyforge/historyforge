@@ -1,7 +1,7 @@
 import React from 'react'
 import SimpleFormat from '../SimpleFormat'
 
-const Details = building => (
+export const Details = (building) => (
     <>
         <h5>
             <a href={`/buildings/${building.id}`} target="_blank"
@@ -55,5 +55,3 @@ const Details = building => (
         )}
     </>
 )
-
-export default Details

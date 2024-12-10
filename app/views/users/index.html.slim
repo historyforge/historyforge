@@ -1,7 +1,7 @@
 - set_page_title 'Users'
 - if can?(:create, User)
   - content_for :pills do
-    = link_to 'Create User', new_user_invitation_path, class: 'btn btn-primary float-right btn-sm'
+    = link_to 'Create User', new_user_path, class: 'btn btn-primary float-right btn-sm'
 
 .row
   .col-3= render "search_form"

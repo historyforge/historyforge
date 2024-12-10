@@ -18,7 +18,9 @@
         - if @asset.remote_url.match(/youtube\.com\/watch\?v=/)
           - src = @asset.remote_url.sub(/watch\?v=/, 'embed/')
           iframe width="560" height="315" src=src title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen="true"
-        p= link_to 'Go here to listen', @asset.remote_url, target: :_blank
+        p= link_to @asset.remote_url, target: :_blank, class: 'btn btn-primary' do
+          i.fa.fa-play.mr-2
+          | Play Audio
       - else
         p Sorry but there is no audio to be heard here :(
       p

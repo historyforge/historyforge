@@ -43,7 +43,7 @@ class CensusFormFieldConfig
     with_options edit_only: true do
       divider 'Census Scope'
       input :page_number, as: :integer, min: 0, max: 10_000, facet: false
-      input :page_side, as: :select, facet: false if year > 1870 && year < 1950
+      input :page_side, as: :select, facet: false if year > 1870
       input :line_number, as: :integer, min: 0, max: 100, facet: false
       input :county, hint: false, facet: false
       input :city, input_html: { id: 'city' }, hint: false, facet: false

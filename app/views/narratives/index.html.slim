@@ -8,15 +8,20 @@
     = link_to 'Building', @building, class: 'btn btn-default'
   -if @person
     = link_to 'Person', @person, class: 'btn btn-default'
-  a.btn.btn-default type="button" data-toggle="collapse" href="#filters" Filters
 
-.collapse#filters
-  = search_form_for @search, as: :q, builder: SimpleForm::FormBuilder do |form|
-    - if can?(:review, Narrative)
-      = form.input :unreviewed_only, as: :boolean, label: 'Show only unreviewed', wrapper: :inline_boolean
-    .card-footer
+= search_form_for @search, as: :q, builder: SimpleForm::FormBuilder do |form|
+  .row
+    .col-12.col-lg-6
+      = form.input :full_text_search, label: false, placeholder: 'Search', wrapper_html: { class: 'mb-0' }
+      - if can?(:review, Narrative)
+        = form.input :unreviewed_only, as: :boolean, label: 'Show only unreviewed', wrapper: :inline_boolean
+    .col-12.col-lg-6
       = form.submit 'Search', class: 'btn btn-primary'
       = link_to 'Reset', narratives_path(reset: true), class: 'btn btn-light'
+
+- if params[:q]
+  h3
+    | Searching for #{[params[:q][:full_text_search], !!params[:q][:unreviewed_only] ? 'unreviewed' : nil].compact_blank.join(' and ')}
 
 = page_entries_info @assets
 
@@ -33,7 +38,7 @@
           - unless record.reviewed?
             span.badge.badge-danger.ml-2  UNREVIEWED
           p= truncate record.story.to_plain_text, length: 250
-          p= "Submitted by #{record.created_by.login} on #{record.created_at.to_s(:long)}"
+          p= "Submitted by #{record.created_by.login} on #{record.created_at.to_formatted_s(:long)}"
         .col-xl-6.col-lg-6.col-sm-12.col-xs-12.col-md-6.widest
           - source = record.sources.present? ? record.sources.to_plain_text : record.source
           p= truncate source, length: 150

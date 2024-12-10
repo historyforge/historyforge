@@ -54,7 +54,7 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :trackable,
          :validatable, :omniauthable, omniauth_providers: %i[facebook]
 
-  belongs_to :group, class_name: 'UserGroup', foreign_key: :user_group_id, optional: true
+  belongs_to :group, class_name: 'UserGroup', foreign_key: :user_group_id, optional: true, inverse_of: :users
   has_many :search_params, dependent: :destroy
 
   has_many :census1850_records, dependent: :nullify, class_name: 'Census1850Record', inverse_of: :created_by, foreign_key: :created_by_id
@@ -83,6 +83,17 @@ class User < ApplicationRecord
 
   def self.ransackable_scopes(_auth_object=nil)
     %i[roles_id_eq]
+  end
+
+  def self.find_by_invitation_token(original_token, only_valid)
+    invitation_token = Devise.token_generator.digest(self, :invitation_token, original_token)
+    Rails.logger.info invitation_token.inspect
+    Rails.logger.info User.last.invitation_token.inspect
+    invitable = find_or_initialize_with_error_by(:invitation_token, invitation_token)
+    Rails.logger.info invitable.inspect
+    invitable.errors.add(:invitation_token, :invalid) if invitable.invitation_token && invitable.persisted? && !invitable.valid_invitation?
+    Rails.logger.info invitable.errors.inspect
+    invitable unless only_valid && invitable.errors.present?
   end
 
   def confirmed?
@@ -130,25 +141,36 @@ class User < ApplicationRecord
     save
   end
 
-  #Called by Devise
-  #Method checks to see if the user is enabled (it will therefore not allow a user who is disabled to log in)
+  # Called by Devise
+  # Method checks to see if the user is enabled (it will therefore not allow a user who is disabled to log in)
   def active_for_authentication?
     super && enabled?
   end
 
+  # This is overridden from Devise so that admin can invite a user without setting a fake password.
   def password_required?
-    password.present?
+    public_signup? || password.present? || password_confirmation.present?
   end
 
+  def public_signup?
+    @public_signup
+  end
+  attr_writer :public_signup
+
   def accept_invitation
-    self.invitation_accepted_at = Time.current.utc
-    self.invitation_token = nil
+    super
     self.enabled = true
   end
 
   def self.from_omniauth(auth)
     user = User.where(email: auth.info.email, provider: auth.provider).first
-    user ||= User.create!(provider: auth.provider, uid: auth.uid, email: auth.info.email, password: Devise.friendly_token[0, 20], login: + auth.info.email + '-' + auth.provider[0])
+    user ||= User.create!(
+      provider: auth.provider,
+      uid: auth.uid,
+      email: auth.info.email,
+      password: Devise.friendly_token[0, 20],
+      login: [auth.info.email, auth.provider[0]].join('-')
+    )
     user
   end
 end
