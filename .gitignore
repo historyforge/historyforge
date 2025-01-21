@@ -79,4 +79,5 @@ bin/deploy
 *.code-workspace
 *.zsh
 .tool-versions
-*.code-workspace
+*.old
+*.log
