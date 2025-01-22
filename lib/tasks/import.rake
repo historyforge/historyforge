@@ -4,10 +4,10 @@
 # CSV button on HistoryForge.
 namespace :import do
   task census: :environment do
-    year = ENV['YEAR']
+    year = ENV.fetch('YEAR', nil)
     raise ArgumentError('You must pass in a YEAR argument') if year.blank?
 
-    csv_file = ENV['FILE']
+    csv_file = ENV.fetch('FILE', nil)
     raise ArgumentError('You must pass in a valid file path as the FILE argument') unless File.exist?(csv_file)
 
     rows_count = 0
@@ -29,21 +29,23 @@ namespace :import do
 
       row.each do |key, value|
         if key == 'Locality'
-          record.locality = Locality.find_or_create_by(name: value)
+          record.locality = Locality.find_or_create_by(name: value,short_name:value)
         elsif !value.nil? && value != ''
           attribute = DataDictionary.field_from_label(key, year) rescue nil
-          if attribute && record.has_attribute?(attribute) && attribute != 'person_id'
+          dc_attribute = attribute&.downcase&.strip
+          if dc_attribute && record.has_attribute?(dc_attribute) && dc_attribute != 'person_id'
+            
             if value == 'Yes'
-              record[attribute] = true
-            elsif DataDictionary.coded_attribute?(attribute)
-              code = DataDictionary.code_from_label(key, value)
-              record[attribute] = code
+              record[dc_attribute] = true
+            elsif DataDictionary.coded_attribute?(dc_attribute)
+              code = DataDictionary.code_from_label(value, dc_attribute)
+              record[dc_attribute] = code
             else
-              record[attribute] = value
+              record[dc_attribute] = value
             end
-          end
         end
       end
+    end
 
       record.created_by = User.first
 
@@ -70,5 +72,4 @@ namespace :import do
 
     puts "Managed to load #{saved_count} of #{rows_count} records.\n"
   end
-
 end
