@@ -17,13 +17,10 @@ module People
     end
 
     def autocomplete
-      @people = Person.fuzzy_name_search(params[:term]).limit(10).by_name
-      render json: @people.map { |person|
-        {
-          id: person.id,
-          name: person.name
-        }
-      }
+      @people = Person.name_fuzzy_matches(params[:term])
+                      .limit(10)
+                      .preload(:names)
+      render json: @people.flat_map { |p| p.names.map { |name| { id: p.id, birth_year: p.birth_year, death_year: p.death_year, name: name.name, sex: p.sex } } }
     end
 
     def show

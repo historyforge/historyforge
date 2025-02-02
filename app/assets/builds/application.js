@@ -52248,7 +52248,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
             $.getJSON("/people/autocomplete", { term: value }, (json) => {
               const people = [];
               json.forEach((person) => {
-                people.push(`<div class="list-group-item list-group-item-action" data-person=${person.id}>${person.name}</div>`);
+                const years = person.birth_year && person.death_year ? `Lived ${person.birth_year}-${person.death_year}` : `Born ${person.birth_year}`;
+                people.push(`<div class="list-group-item list-group-item-action" data-person=${person.id}><div class="float-right">${years}</div>${person.name}</div>`);
               });
               $("#person-results").html(people).show();
               $("#person-results .list-group-item").on("click", (e3) => {
