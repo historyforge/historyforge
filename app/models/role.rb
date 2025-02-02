@@ -3,6 +3,10 @@
 # This used to be an ActiveRecord model from the MapWarper days. It is now a bitmask model to make storage and
 # lookup more efficient.
 class Role < BitmaskModel
+  def self.current
+    all.reject { |role| role.name == 'Photographer' }
+  end
+
   self.data = [
     'Administrator',
     'Editor',

@@ -54998,7 +54998,6 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   function useMapTargeting(map3, clusterMachine) {
     const dispatch = useDispatch();
     const focusOnPoints = useSelector((state) => state.layers.focusOnPoints);
-    console.log(focusOnPoints);
     const [prevFocusOnPoints, setPrevFocusOnPoints] = (0, import_react24.useState)(null);
     (0, import_react24.useEffect)(() => {
       if (!map3) {
