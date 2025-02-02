@@ -8,7 +8,11 @@ module People
     end
 
     def perform
-      @target.update_column :description, [@target.description, @source.description].compact_blank.join("\n\n")
+      @target.description = [@target.description, @source.description].compact_blank.join("\n\n")
+      %i[birth_year death_year is_birth_year_estimated pob is_pob_estimated sex race].each do |attr|
+        @target[attr] ||= @source[attr]
+      end
+      @target.save
       merge_names
       merge_census_records
       merge_photographs

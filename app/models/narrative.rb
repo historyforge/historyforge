@@ -39,7 +39,7 @@ class Narrative < ApplicationRecord
   scope :unreviewed_only, ->(val) { val == '1' ? unreviewed : self }
 
   def self.ransackable_scopes(_auth_object=nil)
-    %i[unreviewed_only]
+    %i[unreviewed_only full_text_search]
   end
 
   def process = nil

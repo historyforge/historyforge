@@ -55,6 +55,8 @@
         .col-4
           = form.input :is_birth_year_estimated, as: :boolean, inline_label: 'Yes', label: 'Estimated?'
       .row
+        .col-8= form.input :death_year
+      .row
         .col-8
           = form.input :pob, input_html: {autocomplete: 'new-password'}
         .col-4
