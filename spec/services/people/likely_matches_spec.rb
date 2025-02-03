@@ -31,6 +31,12 @@ module People
       it { is_expected.to eq(matching_person) }
     end
 
+    context 'when there is a same last name and cognate middle name match' do
+      let!(:matching_person) { FactoryBot.create(:person, first_name: 'B', middle_name: 'Dave', last_name: 'Furber', sex: 'm', race: 'W') }
+
+      it { is_expected.to eq(matching_person) }
+    end
+
     context 'when there is a similar last name and cognate first name match' do
       let!(:matching_person) { FactoryBot.create(:person, first_name: 'Dave', last_name: 'Ferber', sex: 'm', race: 'W') }
 
