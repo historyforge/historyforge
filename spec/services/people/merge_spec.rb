@@ -13,7 +13,7 @@ module People
     before do
       PaperTrail.request.whodunnit = create(:user)
       @source_name = [source.names.first.first_name, source.names.first.middle_name, source.names.first.last_name].compact_blank.join(" ")
-      described_class.new(source, target).perform
+      described_class.run(source:, target:)
     end
 
     it "merges successfully" do
