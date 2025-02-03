@@ -12,7 +12,7 @@ module People
 
     before do
       PaperTrail.request.whodunnit = create(:user)
-      @source_name = [source.names.first.first_name, source.names.first.middle_name, source.names.first.last_name].compact_blank.join(" ")
+      @source_name = source.names.first.name
       described_class.run(source:, target:)
     end
 
@@ -23,7 +23,7 @@ module People
       expect(target.census1920_records).to include(target_record)
       expect(target.description).to include("target text")
       expect(target.description).to include("source text")
-      expect(target.audit_logs.count).to eq(3)
+      expect(target.audit_logs.count).to eq(4)
     end
   end
 end

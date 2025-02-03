@@ -47,7 +47,7 @@ module People
     def merge_names
       source.names.each do |name|
         next if target.names.any? { |target_name| name.same_name_as?(target_name) }
-        target.names.create(first_name: name.first_name, last_name: name.last_name)
+        target.names.create(name.attributes.except("id", "person_id", "created_at", "updated_at"))
       end
     end
 
