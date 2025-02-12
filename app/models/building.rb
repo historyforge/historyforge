@@ -221,6 +221,10 @@ class Building < ApplicationRecord
     [street_address, city].join(' ')
   end
 
+ def coordinates
+  [longitude, latitude]
+end
+
   def architects_list
     architects.map(&:name).join(', ')
   end

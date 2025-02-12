@@ -26,6 +26,7 @@ Rails.application.routes.draw do
 
   root 'home#index'
   get 'stats' => 'home#stats'
+  get 'api/search', action: :search, controller: 'api/search'
   get 'search/people' => 'home#search_people', as: 'search_people'
   get 'search/buildings' => 'home#search_buildings', as: 'search_buildings'
   get 'searches/saved/:what' => 'home#saved_searches'
