@@ -4,7 +4,6 @@ import {useDispatch, useSelector} from "react-redux";
 export function useMapTargeting(map, clusterMachine) {
   const dispatch = useDispatch();
   const focusOnPoints = useSelector(state => state.layers.focusOnPoints);
-  console.log(focusOnPoints);
   const [prevFocusOnPoints, setPrevFocusOnPoints] = useState(null);
 
   useEffect(() => {

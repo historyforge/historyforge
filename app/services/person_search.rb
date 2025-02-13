@@ -95,7 +95,7 @@ class PersonSearch < SearchQueryBuilder
   end
 
   def default_fields
-    %w[name sex race birth_year pob]
+    %w[name sex race birth_year death_year pob]
   end
 
   def all_fields

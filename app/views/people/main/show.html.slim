@@ -37,6 +37,8 @@
         = "#{Translator.option(:sex, @person.sex)} " if @person.sex.present? && @person.sex != 'on'
         - if @person.birth_year
           = "born in #{@person.birth_year}"
+        - if @person.death_year
+          = " died in #{@person.death_year}"
   - if @person.description.present?
     .list-group-item
       = simple_format @person.description

@@ -52248,7 +52248,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
             $.getJSON("/people/autocomplete", { term: value }, (json) => {
               const people = [];
               json.forEach((person) => {
-                people.push(`<div class="list-group-item list-group-item-action" data-person=${person.id}>${person.name}</div>`);
+                const years = person.birth_year && person.death_year ? `Lived ${person.birth_year}-${person.death_year}` : `Born ${person.birth_year}`;
+                people.push(`<div class="list-group-item list-group-item-action" data-person=${person.id}><div class="float-right">${years}</div>${person.name}</div>`);
               });
               $("#person-results").html(people).show();
               $("#person-results .list-group-item").on("click", (e3) => {
@@ -54998,7 +54999,6 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   function useMapTargeting(map3, clusterMachine) {
     const dispatch = useDispatch();
     const focusOnPoints = useSelector((state) => state.layers.focusOnPoints);
-    console.log(focusOnPoints);
     const [prevFocusOnPoints, setPrevFocusOnPoints] = (0, import_react24.useState)(null);
     (0, import_react24.useEffect)(() => {
       if (!map3) {
