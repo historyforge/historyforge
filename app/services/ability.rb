@@ -80,7 +80,7 @@ class Ability
         can :manage, [Photograph, Audio, Video, Narrative]
       end
 
-      # any logged in user can do the following things:
+      # any logged-in user can do the following things:
 
       can :update, User, id: user.id
       can :create, Flag
@@ -90,7 +90,7 @@ class Ability
       can :create, [Photograph, Audio, Video, Narrative]
 
       # Anyone can edit their own user generated content until it's been reviewed
-      can [:read, :update, :destroy], [Photograph, Audio, Video, Narrative], created_by_id: user.id, reviewed_by_id: nil
+      can %i[read update destroy], [Photograph, Audio, Video, Narrative], created_by_id: user.id, reviewed_by_id: nil
     end
   end
 

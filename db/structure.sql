@@ -1,7 +1,7 @@
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
--- SET transaction_timeout = 0;
+--SET transaction_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -2171,7 +2171,8 @@ CREATE TABLE public.people (
     is_pob_estimated boolean DEFAULT true,
     notes text,
     description text,
-    sortable_name character varying
+    sortable_name character varying,
+    death_year integer
 );
 
 
@@ -5610,6 +5611,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('9'),
 ('8'),
 ('4'),
+('20250202212902'),
 ('20241208172541'),
 ('20241124000534'),
 ('20240824170019'),

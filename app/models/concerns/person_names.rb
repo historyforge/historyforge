@@ -10,7 +10,6 @@ module PersonNames
     before_validation :clean_name
     before_save :set_searchable_name
 
-    scope :by_name, -> { order(:last_name, :first_name, :middle_name) }
     scope :fuzzy_name_search, lambda { |names|
       Array.wrap(names).map { |name| where('searchable_name % ?', name) }.reduce(:or)
     }
