@@ -1,6 +1,6 @@
 module Api
   class SearchController < ApplicationController
-   
+   # "api/search?search=your_search"  provide your search as a query parameter called search like so
     def search
       @census_query = ''
       @building_query = ''
@@ -9,9 +9,9 @@ module Api
      
       @building_query = @building_query.chomp("OR ")
       @census_query = @census_query.chomp("OR ")
-      if params["place"].present?
-         @buildings = Building.where(@building_query,:search => "%#{params["place"]}%").ids.uniq
-         @buildings2 = Building.joins(:census1920_records).where(@census_query,:search => "%#{params["place"]}%").ids.uniq
+      if params["search"].present?
+         @buildings = Building.where(@building_query,:search => "%#{params["search"]}%").ids.uniq
+         @buildings2 = Building.joins(:census1920_records).where(@census_query,:search => "%#{params["search"]}%").ids.uniq
         
          @buildings << @buildings2
          @buildings = @buildings.flatten.uniq
