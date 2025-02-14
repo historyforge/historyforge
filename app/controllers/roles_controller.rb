@@ -6,7 +6,7 @@ class RolesController < ApplicationController
 
   def index
     @user = User.find(params[:user_id])
-    @all_roles = Role.all
+    @all_roles = Role.current
   end
 
   def update
