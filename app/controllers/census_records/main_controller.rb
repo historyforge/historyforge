@@ -86,7 +86,7 @@ module CensusRecords
         flash[:notice] = 'Census Record saved.'
         after_saved
       else
-        flash[:errors] = 'Census Record not saved.'
+        flash[:error] = 'Census Record not saved.'
         render action: :new
       end
     end
@@ -98,7 +98,7 @@ module CensusRecords
         flash[:notice] = 'Census Record saved.'
         after_saved
       else
-        flash[:errors] = 'Census Record not saved.'
+        flash[:error] = 'Census Record not saved.'
         render action: :edit
       end
     end
@@ -110,7 +110,7 @@ module CensusRecords
         flash[:notice] = 'Census Record deleted.'
         redirect_to action: :index
       else
-        flash[:errors] = 'Unable to delete census record.'
+        flash[:error] = 'Unable to delete census record.'
         redirect_back fallback_location: { action: :index }
       end
     end

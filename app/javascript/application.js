@@ -38,8 +38,6 @@ if (window.airbrakeCreds && window.env === 'production') {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  window.alertifyInit = alertify.init
-  $('[rel=tooltip]').tooltip()
   pageLoad()
 })
 
@@ -49,15 +47,13 @@ window.showSubmitButton = function(id, token) {
 }
 
 const pageLoad = function() {
-  window.alerts = window.alerts || []
-  window.alertifyInit()
-  alertify.set({ delay: 10000 })
-  window.alerts.forEach(function(alert) {
-    alertify[alert[0]](alert[1])
-  })
-  window.alerts = []
+  $('[rel=tooltip]').tooltip()
 }
 
+jQuery(document).on('click', '.alert .closer', function() {
+  jQuery(this).closest('.alert').remove();
+  jQuery(window).trigger('resize').trigger('scroll'); // trigger parallax refresh on home page
+});
 jQuery(document).on('click', '.dropdown-item.checkbox', function(e) { e.stopPropagation() })
 jQuery(document).on('click', '#search-map', function() {
   const $form = jQuery(this).closest('form')

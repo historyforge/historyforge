@@ -22,7 +22,7 @@ class UsersController < ApplicationController
     @user = User.find(params[:id]) || current_user
     return unless @user.unconfirmed_email && @user.unconfirmed_email != @user.email
 
-    flash[:errors] = "You changed your email from #{@user.email} to #{@user.unconfirmed_email}. The change won't take effect until you click on the link in the email we sent you."
+    flash[:error] = "You changed your email from #{@user.email} to #{@user.unconfirmed_email}. The change won't take effect until you click on the link in the email we sent you."
   end
 
   def new
@@ -46,7 +46,7 @@ class UsersController < ApplicationController
       flash[:notice] = "An invitation email has been sent to #{@user.email}."
       redirect_to user_path(@user)
     else
-      flash[:errors] = 'Could not invite user.'
+      flash[:error] = 'Could not invite user.'
       render action: :new
     end
   end
@@ -59,7 +59,7 @@ class UsersController < ApplicationController
       flash[:notice] = 'User updated'
       redirect_to user_path(@user)
     else
-      flash[:errors] = "Unable to save the user record. #{@user.errors.full_messages.join('. ')}"
+      flash[:error] = "Unable to save the user record. #{@user.errors.full_messages.join('. ')}"
       @html_title = 'Edit User Settings'
       render action: 'edit'
     end

@@ -49698,7 +49698,6 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   NameCellRenderer.prototype.init = function(params) {
     const value = params.value || params.getValue();
     this.eGui = document.createElement("div");
-    console.log(value);
     if (value && value.name) {
       if (value.id) {
         const link = document.location.toString().split("?")[0] + "/" + (value.id || value);
@@ -59460,8 +59459,6 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     });
   }
   document.addEventListener("DOMContentLoaded", () => {
-    window.alertifyInit = alertify.init;
-    $("[rel=tooltip]").tooltip();
     pageLoad();
   });
   window.showSubmitButton = function(id, token) {
@@ -59469,14 +59466,12 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     document.getElementById("contact-submit-btn").style.display = "block";
   };
   var pageLoad = function() {
-    window.alerts = window.alerts || [];
-    window.alertifyInit();
-    alertify.set({ delay: 1e4 });
-    window.alerts.forEach(function(alert2) {
-      alertify[alert2[0]](alert2[1]);
-    });
-    window.alerts = [];
+    $("[rel=tooltip]").tooltip();
   };
+  jQuery(document).on("click", ".alert .closer", function() {
+    jQuery(this).closest(".alert").remove();
+    jQuery(window).trigger("resize").trigger("scroll");
+  });
   jQuery(document).on("click", ".dropdown-item.checkbox", function(e2) {
     e2.stopPropagation();
   });

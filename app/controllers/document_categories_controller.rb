@@ -22,10 +22,10 @@ class DocumentCategoriesController < ApplicationController
     @document_category = DocumentCategory.new resource_params
     authorize! :create, @document_category
     if @document_category.save
-      flash[:document] = 'Good job creating the fcategory!'
+      flash[:notice] = 'Good job creating the category!'
       redirect_to action: :index
     else
-      flash[:errors] = 'We had some problems doing that.'
+      flash[:error] = 'We had some problems doing that.'
       render :new
     end
   end
@@ -37,7 +37,7 @@ class DocumentCategoriesController < ApplicationController
       flash[:notice] = 'Great job! The document category has been updated.'
       redirect_to action: :index
     else
-      flash[:errors] = 'Sorry Dave I can\'t do that right now.'
+      flash[:error] = 'Sorry Dave I can\'t do that right now.'
       render action: :edit
     end
   end
@@ -49,7 +49,7 @@ class DocumentCategoriesController < ApplicationController
       flash[:notice] = 'Poof it\'s gone! Like it never existed...'
       redirect_to action: :index
     else
-      flash[:errors] = 'Sorry I was not able to delete that document category.'
+      flash[:error] = 'Sorry I was not able to delete that document category.'
       redirect_to :back
     end
   end

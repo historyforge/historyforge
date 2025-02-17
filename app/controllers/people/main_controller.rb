@@ -55,7 +55,7 @@ module People
         flash[:notice] = 'Person created.'
         redirect_to @person
       else
-        flash[:errors] = 'Person not saved.'
+        flash[:error] = 'Person not saved.'
         render action: :new
       end
     end
@@ -67,7 +67,7 @@ module People
         flash[:notice] = 'Person updated.'
         redirect_to @person
       else
-        flash[:errors] = 'Person not saved.'
+        flash[:error] = 'Person not saved.'
         render action: :edit
       end
     end
@@ -79,7 +79,7 @@ module People
         flash[:notice] = 'Person deleted.'
         redirect_to action: :index
       else
-        flash[:errors] = 'Unable to delete person.'
+        flash[:error] = 'Unable to delete person.'
         redirect_to :back
       end
     end

@@ -8,9 +8,7 @@
 
       new agGrid.Grid(document.querySelector('#grid'), {
         components: {
-          actionCellRenderer: ActionCellRenderer,
           nameCellRenderer: NameCellRenderer,
-          censusLinkCellRenderer: CensusLinkCellRenderer,
           htmlCellRenderer: HTMLCellRenderer
         },
         columnDefs: <%== @translator.column_def.to_json -%>,

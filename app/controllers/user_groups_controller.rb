@@ -17,7 +17,7 @@ class UserGroupsController < ApplicationController
       flash[:notice] = 'Added the new user group.'
       redirect_to action: :index
     else
-      flash[:errors] = "Sorry couldn't do it."
+      flash[:error] = "Sorry couldn't do it."
       render action: :new
     end
   end
@@ -32,7 +32,7 @@ class UserGroupsController < ApplicationController
       flash[:notice] = 'Updated the user group.'
       redirect_to action: :index
     else
-      flash[:errors] = "Sorry couldn't do it."
+      flash[:error] = "Sorry couldn't do it."
       render action: :edit
     end
   end
@@ -43,7 +43,7 @@ class UserGroupsController < ApplicationController
       flash[:notice] = 'Deleted the user group.'
       redirect_to action: :index
     else
-      flash[:errors] = "Sorry couldn't do it."
+      flash[:error] = "Sorry couldn't do it."
       redirect_back fallback_location: { action: :index }
     end
   end

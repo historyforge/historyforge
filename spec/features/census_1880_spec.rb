@@ -81,6 +81,7 @@ RSpec.describe '1880 US Census' do
     click_link 'View All'
     expect(page).to have_content '1880 U.S. Census'
     expect(page).to have_content 'Found 1 record'
+    save_and_open_page
     expect(find('.ag-cell', match: :first)).to have_content('Squarepants')
     # This tests that the record is marked unreviewed but mysteriously stopped working in the test
     # but not in reality.
