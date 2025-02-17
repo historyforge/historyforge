@@ -235,6 +235,14 @@ class Person < ApplicationRecord
     census_records.map(&:street_address).compact_blank.uniq.join(', ')
   end
 
+  def years
+    if birth_year && death_year
+      "Lived #{birth_year}-#{death_year}"
+    else
+      "Born #{birth_year}"
+    end
+  end
+
   def estimated_birth_year
     return birth_year unless is_birth_year_estimated?
 
