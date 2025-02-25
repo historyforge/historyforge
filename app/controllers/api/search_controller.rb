@@ -1,6 +1,7 @@
 module Api
   class SearchController < ApplicationController
    # "api/search?search=your_search"  provide your search as a query parameter called search like so
+   #http://127.0.0.1:3000/api/search?search=#{params[:search]}&year=#{params[:year]}
     def search
       @census_query = ''
       @building_query = ''
@@ -15,6 +16,7 @@ module Api
       @census1910_query = @census1910_query.chomp("OR ")
 
       if params["search"].present?
+        if params["year"] == 'Both'
          @buildings = Building.where(@building_query,:search => "%#{params["search"]}%").ids.uniq
          @buildings2 = Building.joins(:census1920_records).where(@census_query,:search => "%#{params["search"]}%").ids.uniq
          @buildings3 = Building.joins(:census1910_records).where(@census1910_query,:search => "%#{params["search"]}%").ids.uniq
@@ -24,13 +26,30 @@ module Api
          @buildings << @buildings3
          @buildings = @buildings.flatten.uniq
          @buildings = Building.where(id: @buildings)
+          
+        elsif params["year"] == '1910'
+          @buildings = Building.where(@building_query,:search => "%#{params["search"]}%").ids.uniq
+          @buildings3 = Building.joins(:census1910_records).where(@census1910_query,:search => "%#{params["search"]}%").ids.uniq
+ 
+ 
+          @buildings << @buildings3
+          @buildings = @buildings.flatten.uniq
+          @buildings = Building.where(id: @buildings)
+        elsif params["year"] == '1920'
+          @buildings = Building.where(@building_query,:search => "%#{params["search"]}%").ids.uniq
+          @buildings2 = Building.joins(:census1920_records).where(@census_query,:search => "%#{params["search"]}%").ids.uniq 
+ 
+          @buildings << @buildings2
+          @buildings = @buildings.flatten.uniq
+          @buildings = Building.where(id: @buildings)
+        end
       else
         @buildings = Building.all
       end
       
       @ready_buildings =[]
       
-      @buildings.each{|building|  @ready_buildings.append(make_feature(building)) } 
+      @buildings.each{|building|  @ready_buildings.append(make_feature(building,params["year"])) } 
       
       @geojson = build_geojson
       response.set_header('Access-Control-Allow-Origin', '*')
@@ -62,9 +81,44 @@ module Api
       
     end
 
-    private def make_feature(record)
+    private def make_feature(record,year)
       
-      {
+      if year == '1920'
+            feature = {
+          "type": "Feature",
+          "geometry": {
+            "type": "Point",
+            "coordinates": record.coordinates
+          },
+          "properties": {
+            "location_id": record.id,
+            "title": record.name,
+            "description": record.full_street_address,
+            "1910": [],
+            "1920": record.census1920_records
+            
+          }
+        }
+     
+      elsif year == '1910'
+        feature = {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": record.coordinates
+      },
+      "properties": {
+        "location_id": record.id,
+        "title": record.name,
+        "description": record.full_street_address,
+        "1910": record.census1910_records,
+        "1920": []
+        
+      }
+    } 
+
+      elsif year == 'Both'
+        feature = {
       "type": "Feature",
       "geometry": {
         "type": "Point",
@@ -79,7 +133,21 @@ module Api
         
       }
     }
+      end 
+      
+      
+     
+      if feature[:properties][:"1920"].empty? && year =='1920'
+        
+        return 
+     end
 
+     if feature[:properties][:"1910"].empty? && year =='1910'
+      
+      return 
+   end
+  
+      return feature
     end
 
     
