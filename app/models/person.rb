@@ -53,6 +53,13 @@ class Person < ApplicationRecord
   has_many :census1930_records, dependent: :nullify, class_name: 'Census1930Record', inverse_of: :person
   has_many :census1940_records, dependent: :nullify, class_name: 'Census1940Record', inverse_of: :person
   has_many :census1950_records, dependent: :nullify, class_name: 'Census1950Record', inverse_of: :person
+  has_many :buildings_1910, through: :census1910_records, source: :building
+  has_many :buildings_1920, through: :census1920_records, source: :building
+
+  # Combine both associations into one virtual association
+  def buildings
+    Building.where(id: (buildings_1910 + buildings_1920).pluck(:id).uniq)
+  end
   has_and_belongs_to_many :photos, class_name: 'Photograph', dependent: :nullify
   has_and_belongs_to_many :audios, dependent: :nullify
   has_and_belongs_to_many :videos, dependent: :nullify

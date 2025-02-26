@@ -82,7 +82,22 @@ module Api
     end
 
     private def make_feature(record,year)
-      
+
+      def get_person(person)
+        person_feature = {
+        "person": person,
+        "audios": person.audios,
+        "narratives": person.narratives,
+        "videos": person.videos,
+        "photos": person.photos
+
+
+        }
+      end
+      person_array_1910 =[]
+      person_array_1920 =[]
+      record.people_1910.each {|person| person_array_1910.append(get_person(person))}
+      record.people_1920.each {|person| person_array_1920.append(get_person(person))}
       if year == '1920'
             feature = {
           "type": "Feature",
@@ -95,8 +110,9 @@ module Api
             "title": record.name,
             "description": record.full_street_address,
             "1910": [],
-            "1920": record.census1920_records
-            
+            "1920": record.census1920_records,
+            "1910_people": [],
+            "1920_people": person_array_1920
           }
         }
      
@@ -112,7 +128,9 @@ module Api
         "title": record.name,
         "description": record.full_street_address,
         "1910": record.census1910_records,
-        "1920": []
+        "1920": [],
+        "1910_people": person_array_1910,
+        "1920_people": []
         
       }
     } 
@@ -129,7 +147,9 @@ module Api
         "title": record.name,
         "description": record.full_street_address,
         "1910": record.census1910_records,
-        "1920": record.census1920_records
+        "1920": record.census1920_records,
+        "1910_people": person_array_1910,
+        "1920_people": person_array_1920
         
       }
     }
@@ -146,7 +166,7 @@ module Api
       
       return 
    end
-  
+      
       return feature
     end
 
