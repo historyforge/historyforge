@@ -108,6 +108,10 @@ module Api
           "properties": {
             "location_id": record.id,
             "title": record.name,
+            "building_audios": record.audios,
+            "building_narratives": record.narratives,
+            "building_videos": record.videos,
+            "building_photos": record.photos,
             "description": record.full_street_address,
             "1910": [],
             "1920": record.census1920_records,
@@ -126,6 +130,10 @@ module Api
       "properties": {
         "location_id": record.id,
         "title": record.name,
+        "building_audios": record.audios,
+        "building_narratives": record.narratives,
+        "building_videos": record.videos,
+        "building_photos": record.photos,
         "description": record.full_street_address,
         "1910": record.census1910_records,
         "1920": [],
@@ -145,6 +153,10 @@ module Api
       "properties": {
         "location_id": record.id,
         "title": record.name,
+        "building_audios": record.audios,
+        "building_narratives": record.narratives,
+        "building_videos": record.videos,
+        "building_photos": record.photos,
         "description": record.full_street_address,
         "1910": record.census1910_records,
         "1920": record.census1920_records,
