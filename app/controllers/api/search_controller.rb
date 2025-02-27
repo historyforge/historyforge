@@ -6,40 +6,66 @@ module Api
       @census_query = ''
       @building_query = ''
       @census1910_query=''
+      @person_query1910 = ''
+      @person_query1920 = ''
+      @audio_query = ''
+      @video_query = ''
+      @photo_query = ''
+      @narrative_query = ''
 
       @census_query = search_query('Census1920Record',@census_query)
       @census1910_query = search_query('Census1910Record',@census1910_query)
       @building_query = search_query('Building',@building_query)
+      @person_query1910 = search_query('Person',@person_query1910)
+      @person_query1920 = search_query('Person',@person_query1920)
+      @audio_query = search_query('Audio',@audio_query)
+      @video_query = search_query('Video',@video_query)
+      @photo_query = search_query('Photograph',@photo_query)
+      @narrative_query = search_query('Narrative',@narrative_query)
+
      
       @building_query = @building_query.chomp("OR ")
       @census_query = @census_query.chomp("OR ")
       @census1910_query = @census1910_query.chomp("OR ")
+      @person_query1910 = @person_query1910.chomp("OR ")
+      @person_query1920 = @person_query1920.chomp("OR ")
+
 
       if params["search"].present?
         if params["year"] == 'Both'
+          #binding.pry
          @buildings = Building.where(@building_query,:search => "%#{params["search"]}%").ids.uniq
          @buildings2 = Building.joins(:census1920_records).where(@census_query,:search => "%#{params["search"]}%").ids.uniq
          @buildings3 = Building.joins(:census1910_records).where(@census1910_query,:search => "%#{params["search"]}%").ids.uniq
+         @buildings_people1920 = Building.joins(:people_1920).where(@person_query1920,:search => "%#{params["search"]}%").ids.uniq
+         @buildings_people1910 = Building.joins(:people_1910).where(@person_query1910,:search => "%#{params["search"]}%").ids.uniq
 
 
          @buildings << @buildings2
          @buildings << @buildings3
+         @buildings << @buildings_people1920
+         @buildings << @buildings_people1910
          @buildings = @buildings.flatten.uniq
          @buildings = Building.where(id: @buildings)
           
         elsif params["year"] == '1910'
           @buildings = Building.where(@building_query,:search => "%#{params["search"]}%").ids.uniq
           @buildings3 = Building.joins(:census1910_records).where(@census1910_query,:search => "%#{params["search"]}%").ids.uniq
- 
+          @buildings_people1910 = Building.joins(:people_1910).where(@person_query1910,:search => "%#{params["search"]}%").ids.uniq
+
  
           @buildings << @buildings3
+          @buildings << @buildings_people1910
           @buildings = @buildings.flatten.uniq
           @buildings = Building.where(id: @buildings)
         elsif params["year"] == '1920'
           @buildings = Building.where(@building_query,:search => "%#{params["search"]}%").ids.uniq
           @buildings2 = Building.joins(:census1920_records).where(@census_query,:search => "%#{params["search"]}%").ids.uniq 
- 
+          @buildings_people1920 = Building.joins(:people_1920).where(@person_query1920,:search => "%#{params["search"]}%").ids.uniq
+
+          @buildings << @buildings_people1920
           @buildings << @buildings2
+          @buildings << @buildings_people1920
           @buildings = @buildings.flatten.uniq
           @buildings = Building.where(id: @buildings)
         end
