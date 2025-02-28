@@ -1,7 +1,7 @@
 module Api
   class SearchController < ApplicationController
    # "api/search?search=your_search"  provide your search as a query parameter called search like so
-   #http://127.0.0.1:3000/api/search?search=#{params[:search]}&year=#{params[:year]}
+   #http://127.0.0.1:3000/api/search?search=#{params[:search]}&year=#{params[:year]} the year parameter should only be 1920,1910 or the word Both
     def search
       @census_query = ''
       @building_query = ''
