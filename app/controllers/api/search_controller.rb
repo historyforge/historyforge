@@ -39,22 +39,56 @@ module Api
         if params["year"] == 'Both'
           #binding.pry
          @buildings = Building.where(@building_query,:search => "%#{params["search"]}%").ids.uniq
+         @building_photo = Building.joins(:photos).where(@photo_query,:search => "%#{params["search"]}%").ids.uniq
+         @building_video = Building.joins(:videos).where(@video_query,:search => "%#{params["search"]}%").ids.uniq
+         @building_audio = Building.joins(:audios).where(@audio_query,:search => "%#{params["search"]}%").ids.uniq
+         @building_narrative = Building.joins(:narratives).where(@narrative_query,:search => "%#{params["search"]}%").ids.uniq
+
          @buildings2 = Building.joins(:census1920_records).where(@census_query,:search => "%#{params["search"]}%").ids.uniq
          @buildings3 = Building.joins(:census1910_records).where(@census1910_query,:search => "%#{params["search"]}%").ids.uniq
          @buildings_people1920 = Building.joins(:people_1920).where(@person_query1920,:search => "%#{params["search"]}%").ids.uniq
+         @people_photo1920 = Building.joins(people_1920: :photos).where(@photo_query,:search => "%#{params["search"]}%").ids.uniq
+         @people_video1920 = Building.joins(people_1920: :videos).where(@video_query,:search => "%#{params["search"]}%").ids.uniq
+         @people_audio1920 = Building.joins(people_1920: :audios).where(@audio_query,:search => "%#{params["search"]}%").ids.uniq
+         @people_narrative1920 = Building.joins(people_1920: :narratives).where(@narrative_query,:search => "%#{params["search"]}%").ids.uniq
          @buildings_people1910 = Building.joins(:people_1910).where(@person_query1910,:search => "%#{params["search"]}%").ids.uniq
+         @people_photo1910 = Building.joins(people_1910: :photos).where(@photo_query,:search => "%#{params["search"]}%").ids.uniq
+         @people_video1910 = Building.joins(people_1910: :videos).where(@video_query,:search => "%#{params["search"]}%").ids.uniq
+         @people_audio1910 = Building.joins(people_1910: :audios).where(@audio_query,:search => "%#{params["search"]}%").ids.uniq
+         @people_narrative1910 = Building.joins(people_1910: :narratives).where(@narrative_query,:search => "%#{params["search"]}%").ids.uniq
+
+
+
 
           #binding.pry
+          @buildings << @building_photo
+         @buildings << @building_video
+         @buildings << @building_audio
+         @buildings << @building_narrative
 
          @buildings << @buildings2
          @buildings << @buildings3
          @buildings << @buildings_people1920
+         @buildings << @people_photo1920
+         @buildings << @people_video1920
+         @buildings << @people_audio1920
+         @buildings << @people_narrative1920
+
          @buildings << @buildings_people1910
+         @buildings << @people_photo1910
+         @buildings << @people_video1910
+         @buildings << @people_audio1910
+         @buildings << @people_narrative1910
          @buildings = @buildings.flatten.uniq
          @buildings = Building.where(id: @buildings)
           
         elsif params["year"] == '1910'
           @buildings = Building.where(@building_query,:search => "%#{params["search"]}%").ids.uniq
+          @building_photo = Building.joins(:photos).where(@photo_query,:search => "%#{params["search"]}%").ids.uniq
+          @building_video = Building.joins(:videos).where(@video_query,:search => "%#{params["search"]}%").ids.uniq
+          @building_audio = Building.joins(:audios).where(@audio_query,:search => "%#{params["search"]}%").ids.uniq
+          @building_narrative = Building.joins(:narratives).where(@narrative_query,:search => "%#{params["search"]}%").ids.uniq
+
           @buildings3 = Building.joins(:census1910_records).where(@census1910_query,:search => "%#{params["search"]}%").ids.uniq
           @buildings_people1910 = Building.joins(:people_1910).where(@person_query1910,:search => "%#{params["search"]}%").ids.uniq
           @people_photo1910 = Building.joins(people_1910: :photos).where(@photo_query,:search => "%#{params["search"]}%").ids.uniq
@@ -62,6 +96,11 @@ module Api
           @people_audio1910 = Building.joins(people_1910: :audios).where(@audio_query,:search => "%#{params["search"]}%").ids.uniq
           @people_narrative1910 = Building.joins(people_1910: :narratives).where(@narrative_query,:search => "%#{params["search"]}%").ids.uniq
  
+          @buildings << @building_photo
+          @buildings << @building_video
+          @buildings << @building_audio
+          @buildings << @building_narrative
+          
           @buildings << @buildings3
           @buildings << @buildings_people1910
           @buildings << @people_photo1910
@@ -73,6 +112,11 @@ module Api
           @buildings = Building.where(id: @buildings)
         elsif params["year"] == '1920'
           @buildings = Building.where(@building_query,:search => "%#{params["search"]}%").ids.uniq
+          @building_photo = Building.joins(:photos).where(@photo_query,:search => "%#{params["search"]}%").ids.uniq
+          @building_video = Building.joins(:videos).where(@video_query,:search => "%#{params["search"]}%").ids.uniq
+          @building_audio = Building.joins(:audios).where(@audio_query,:search => "%#{params["search"]}%").ids.uniq
+          @building_narrative = Building.joins(:narratives).where(@narrative_query,:search => "%#{params["search"]}%").ids.uniq
+
           @buildings2 = Building.joins(:census1920_records).where(@census_query,:search => "%#{params["search"]}%").ids.uniq 
           @buildings_people1920 = Building.joins(:people_1920).where(@person_query1920,:search => "%#{params["search"]}%").ids.uniq
          @people_photo1920 = Building.joins(people_1920: :photos).where(@photo_query,:search => "%#{params["search"]}%").ids.uniq
@@ -80,6 +124,11 @@ module Api
          @people_audio1920 = Building.joins(people_1920: :audios).where(@audio_query,:search => "%#{params["search"]}%").ids.uniq
          @people_narrative1920 = Building.joins(people_1920: :narratives).where(@narrative_query,:search => "%#{params["search"]}%").ids.uniq
 
+
+         @buildings << @building_photo
+         @buildings << @building_video
+         @buildings << @building_audio
+         @buildings << @building_narrative
 
           @buildings << @buildings2
           @buildings << @buildings_people1920
