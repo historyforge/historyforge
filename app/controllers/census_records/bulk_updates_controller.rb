@@ -47,7 +47,7 @@ module CensusRecords
           render action: :edit
         end
       else
-        flash[:errors] = 'Bulk update failed. Did you fill in the form?'
+        flash[:error] = 'Bulk update failed. Did you fill in the form?'
         render action: :edit
       end
     end

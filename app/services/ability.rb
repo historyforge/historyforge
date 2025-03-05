@@ -52,6 +52,7 @@ class Ability
       if user.has_role?('photographer')
         can :update, [Photograph, Audio, Video, Narrative]
         can :read, [Photograph, Audio, Video, Narrative], reviewed_at: nil
+        can :read, [Photograph, Audio, Video, Narrative]
       end
 
       if user.has_role?('census taker')
@@ -80,6 +81,9 @@ class Ability
         can :manage, [Photograph, Audio, Video, Narrative]
       end
 
+      # Any logged-in user can view their own census records and buildings.
+      can :read, [CensusRecord, Building], created_by_id: user.id, reviewed_at: nil
+
       # any logged-in user can do the following things:
 
       can :update, User, id: user.id
@@ -96,6 +100,6 @@ class Ability
 
   def can?(action, subject, attribute = nil, *extra_args)
     subject = subject.object if subject.is_a?(ApplicationDecorator)
-    super(action, subject, attribute, *extra_args)
+    super
   end
 end

@@ -22,16 +22,18 @@ module ApplicationHelper
     !current_user
   end
 
-  def prepare_alerts
-    js = []
-    js << ['success', message_for_item(flash[:notice], :notice_item)] if flash[:notice].present?
-    js << ['error', message_for_item(flash[:errors], :errors_item)] if flash[:errors].present?
-    js << ['alert', message_for_item(flash[:alert], :alert_item)] if flash[:alert].present?
-    js
+  def alert_message(level, message)
+    content_tag(:div, class: "alert alert-#{level}") do
+      content_tag(:span, message, class: 'alert-text') + content_tag(:div, '&times;'.html_safe, class: 'closer')
+    end
   end
 
   def flash_messages
-    javascript_tag "window.alerts=#{prepare_alerts.to_json};"
+    if flash[:notice].present?
+      alert_message 'success', flash[:notice]
+    elsif flash[:error].present?
+      alert_message 'danger', flash[:error]
+    end
   end
 
   def admin_authorized?

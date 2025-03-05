@@ -12,7 +12,7 @@ module Buildings
         flash[:notice] = 'The merge operation has been performed.'
         redirect_to @target
       else
-        flash[:errors] = "You can't merge these buildings. They aren't close enough to be the same building."
+        flash[:error] = "You can't merge these buildings. They aren't close enough to be the same building."
         redirect_back fallback_location: { action: :new }
       end
     end

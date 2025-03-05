@@ -21,7 +21,7 @@ class StreetConversionsController < ApplicationController
       flash[:notice] = 'Added the new street conversion.'
       redirect_to action: :index
     else
-      flash[:errors] = "Sorry couldn't do it."
+      flash[:error] = "Sorry couldn't do it."
       render action: :new
     end
   end
@@ -36,7 +36,7 @@ class StreetConversionsController < ApplicationController
       flash[:notice] = 'Updated the street conversion.'
       redirect_to action: :index
     else
-      flash[:errors] = "Sorry couldn't do it."
+      flash[:error] = "Sorry couldn't do it."
       render action: :edit
     end
   end
@@ -47,7 +47,7 @@ class StreetConversionsController < ApplicationController
       flash[:notice] = 'Deleted the street conversion.'
       redirect_to action: :index
     else
-      flash[:errors] = "Sorry couldn't do it."
+      flash[:error] = "Sorry couldn't do it."
       redirect_back fallback_location: { action: :index }
     end
   end

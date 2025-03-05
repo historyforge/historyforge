@@ -45,7 +45,7 @@ class DocumentsController < ApplicationController
       flash[:notice] = 'The document has been saved.'
       redirect_to action: :index, document_category_id: @document.document_category_id
     else
-      flash[:errors] = 'This document failed to upload. Usually it means the file type is not allowed.'
+      flash[:error] = 'This document failed to upload. Usually it means the file type is not allowed.'
       render :new
     end
   end
@@ -57,7 +57,7 @@ class DocumentsController < ApplicationController
       flash[:notice] = 'Great job! The document has been updated.'
       redirect_to action: :index, document_category_id: @document.document_category_id
     else
-      flash[:errors] = 'Sorry Dave I can\'t do that right now.'
+      flash[:error] = 'Sorry Dave I can\'t do that right now.'
       render action: :edit
     end
   end
@@ -69,7 +69,7 @@ class DocumentsController < ApplicationController
       flash[:notice] = 'Poof it\'s gone! Like it never existed...'
       redirect_to action: :index
     else
-      flash[:errors] = 'Sorry I was not able to delete that document.'
+      flash[:error] = 'Sorry I was not able to delete that document.'
       redirect_to :back
     end
   end

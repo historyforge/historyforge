@@ -38,7 +38,7 @@ class Cms::PagesController < ApplicationController
       flash[:notice] = "Successfully created page \"#{@page.title}\"!"
       redirect_to params[:next] == 'edit' ? edit_cms_page_path(@page) : @page
     else
-      flash[:errors] = 'The page was not created because of errors on the form.'
+      flash[:error] = 'The page was not created because of errors on the form.'
       render action: :new
     end
   end
@@ -49,7 +49,7 @@ class Cms::PagesController < ApplicationController
       flash[:notice] = "Successfully updated page \"#{@page.title}\"!"
       redirect_to params[:next] == 'edit' ? edit_cms_page_path(@page) : @page
     else
-      flash[:errors] = 'The page was not updated because of errors on the form.'
+      flash[:error] = 'The page was not updated because of errors on the form.'
       render action: :edit
     end
   end
@@ -60,7 +60,7 @@ class Cms::PagesController < ApplicationController
       flash[:notice] = "Successfully deleted page \"#{@page.title}\"!"
       redirect_to action: :index
     else
-      flash[:errors] = 'Sorry we could not delete the page.'
+      flash[:error] = 'Sorry we could not delete the page.'
       redirect_to @page
     end
   end

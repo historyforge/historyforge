@@ -70,7 +70,7 @@ module Buildings
         flash[:notice] = 'Building created.'
         redirect_to @building
       else
-        flash[:errors] = 'Building not saved.'
+        flash[:error] = 'Building not saved.'
         @building.ensure_primary_address
         render action: :new
       end
@@ -86,7 +86,7 @@ module Buildings
           format.html { redirect_to action: :show }
         end
       else
-        flash[:errors] = 'Building not saved.'
+        flash[:error] = 'Building not saved.'
         render action: :edit
       end
     end
@@ -96,7 +96,7 @@ module Buildings
         flash[:notice] = 'Building deleted.'
         redirect_to action: :index
       else
-        flash[:errors] = 'Unable to delete building.'
+        flash[:error] = 'Unable to delete building.'
         redirect_to :back
       end
     end
@@ -106,7 +106,7 @@ module Buildings
         flash[:notice] = 'Building reviewed.'
         redirect_to @building
       else
-        flash[:errors] = 'Building not reviewed.'
+        flash[:error] = 'Building not reviewed.'
         render action: :new
       end
     end

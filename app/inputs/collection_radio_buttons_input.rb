@@ -35,7 +35,7 @@ class CollectionRadioButtonsInput < SimpleForm::Inputs::CollectionRadioButtonsIn
     options[:collection] = extract_collection_from_choices if !options[:collection] && !options[:original_collection]
     options[:original_collection] ||= options[:collection]
     items = options[:original_collection].dup
-    items = items.map { |item| [option_label(item), item] } if items.first&.is_a?(String)
+    items = items.map { |item| [option_label(item), item] } if items.first.is_a?(String)
     items = with_extra_items(items) unless options[:bare]
     @collection = items
   end
@@ -43,7 +43,7 @@ class CollectionRadioButtonsInput < SimpleForm::Inputs::CollectionRadioButtonsIn
   def option_label(item)
     if options[:coded]
       code = item.downcase == item ? item.capitalize : item
-      code = code.gsub('_', ' ')
+      code = code.tr('_', ' ')
       if attribute_name == :race && @builder.object.class.respond_to?(:translate_race_code)
         code = @builder.object.class.translate_race_code(code)
       end

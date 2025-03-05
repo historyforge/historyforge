@@ -80,11 +80,11 @@ class ApplicationController < ActionController::Base
   end
 
   def check_role(role)
-    permission_denied unless user_signed_in? && @current_user.has_role?(role)
+    permission_denied unless user_signed_in? && current_user.has_role?(role)
   end
 
   def permission_denied
-    flash[:errors] = 'Sorry you do not have permission to do that.'
+    flash[:error] = 'Sorry you do not have permission to do that.'
     redirect_to root_path
   end
 

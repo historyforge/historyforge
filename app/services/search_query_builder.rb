@@ -41,8 +41,9 @@ class SearchQueryBuilder
   end
 
   def columns
-    f&.concat(['id']) || []
+    f&.concat(["id"]) || []
   end
+
   memoize :columns
 
   def total_records
@@ -74,19 +75,20 @@ class SearchQueryBuilder
   def builder
     Builder.new entity_class, ransack_params
   end
+
   memoize :builder
 
   def ransack_params
     prepare_search_filters
     p = {}
     s.each do |key, value|
-      if value.is_a?(Array) && value.include?('blank')
+      if value.is_a?(Array) && value.include?("blank")
         p[:g] ||= []
         case key
         when /_not_in$/
-          p[:g] << { m: 'and', key.to_sym => value, key.sub(/not_in$/, 'present').to_sym => true }
+          p[:g] << { m: "and", key.to_sym => value, key.sub(/not_in$/, "present").to_sym => true }
         when /_in$/
-          p[:g] << { m: 'or', key.to_sym => value, key.sub(/in$/, 'present').to_sym => true }
+          p[:g] << { m: "or", key.to_sym => value, key.sub(/in$/, "present").to_sym => true }
         end
       else
         p[key.to_sym] = value
@@ -94,11 +96,22 @@ class SearchQueryBuilder
     end
     p
   end
+
   memoize :ransack_params
 
   def prepare_search_filters
     @s = @s.is_a?(String) ? JSON.parse(@s) : @s
     @s = @s.respond_to?(:to_unsafe_hash) ? @s.to_unsafe_hash : @s
-    @s = @s.reject { |_k, v| v == '' }
+    @s = @s.reject { |_k, v| v == "" }
+    @s.transform_values! do |value|
+      case value
+      when String
+        value.squish
+      when Array
+        value.map { |v| v.is_a?(String) ? v.squish : v }
+      else
+        value
+      end
+    end
   end
 end

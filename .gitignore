@@ -40,6 +40,8 @@ config/secrets.yml
 nbproject
 *.*~
 
+.vscode
+
 #ignore uploaded files
 public/uploads/*
 public/photos/*

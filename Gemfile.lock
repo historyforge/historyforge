@@ -241,7 +241,6 @@ GEM
     mini_mime (1.1.5)
     minitest (5.25.2)
     msgpack (1.7.5)
-    multi_json (1.15.0)
     multi_xml (0.7.1)
       bigdecimal (~> 3.1)
     net-http (0.5.0)
@@ -267,9 +266,6 @@ GEM
       rack (>= 1.2, < 4)
       snaky_hash (~> 2.0)
       version_gem (~> 1.1)
-    oj (3.16.7)
-      bigdecimal (>= 3.0)
-      ostruct (>= 0.2)
     omniauth (2.1.2)
       hashie (>= 3.4.6)
       rack (>= 2.2.3)
@@ -284,7 +280,6 @@ GEM
       actionpack (>= 4.2)
       omniauth (~> 2.0)
     orm_adapter (0.5.0)
-    ostruct (0.6.1)
     paper_trail (16.0.0)
       activerecord (>= 6.1)
       request_store (~> 1.4)
@@ -454,8 +449,6 @@ GEM
       actionpack (>= 6.1)
       activesupport (>= 6.1)
       sprockets (>= 3.0.0)
-    streamio-ffmpeg (3.0.2)
-      multi_json (~> 1.8)
     stringio (3.1.2)
     syntax_tree (5.3.0)
       prettier_print (>= 1.2.0)
@@ -533,7 +526,6 @@ DEPENDENCIES
   memory_profiler
   mini_magick
   net-smtp
-  oj
   omniauth-facebook
   omniauth-rails_csrf_protection
   paper_trail
@@ -562,7 +554,6 @@ DEPENDENCIES
   simplecov
   slim
   sprockets-rails
-  streamio-ffmpeg
   web-console
   webdrivers
 

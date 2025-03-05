@@ -52,7 +52,7 @@ class MediaController < ApplicationController
       flash[:notice] = "The #{what} has been uploaded and saved."
       perform_redirect
     else
-      flash[:errors] = "Sorry we could not save the #{what}. Please correct the errors and try again."
+      flash[:error] = "Sorry we could not save the #{what}. Please correct the errors and try again."
       render action: :edit
     end
     @asset.process
@@ -66,7 +66,7 @@ class MediaController < ApplicationController
       flash[:notice] = "The #{what} has been updated."
       perform_redirect
     else
-      flash[:errors] = "The #{what} has been saved, but cannot be marked as reviewed until it has been fully dressed."
+      flash[:error] = "The #{what} has been saved, but cannot be marked as reviewed until it has been fully dressed."
       render action: :edit
     end
   end
@@ -78,7 +78,7 @@ class MediaController < ApplicationController
       flash[:notice] = "The #{what} has been deleted."
       redirect_to @building || @person || { action: :index }
     else
-      flash[:errors] = "Sorry we could not delete the #{what}."
+      flash[:error] = "Sorry we could not delete the #{what}."
       render action: :show
     end
   end
@@ -90,7 +90,7 @@ class MediaController < ApplicationController
     if @asset.reviewed?
       flash[:notice] = "The #{what} is marked as reviewed and open to the public."
     else
-      flash[:errors] = "Unable to mark the #{what} as reviewed."
+      flash[:error] = "Unable to mark the #{what} as reviewed."
     end
     redirect_back_or_to @asset
   end
@@ -111,7 +111,7 @@ class MediaController < ApplicationController
     return if user_signed_in?
 
     store_location_for(:user, request.fullpath)
-    flash[:errors] = 'Please sign in or create a HistoryForge account first.'
+    flash[:error] = 'Please sign in or create a HistoryForge account first.'
     redirect_to(new_user_session_path)
   end
 
