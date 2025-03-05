@@ -43,7 +43,7 @@ class TermsController < ApplicationController
       flash[:notice] = 'Added the new term.'
       redirect_to action: :index
     else
-      flash[:errors] = "Sorry couldn't do it."
+      flash[:error] = "Sorry couldn't do it."
       render action: :new
     end
   end
@@ -63,7 +63,7 @@ class TermsController < ApplicationController
         flash[:notice] = 'Merged the term!'
         redirect_to action: :index
       else
-        flash[:errors] = "Sorry couldn't do it."
+        flash[:error] = "Sorry couldn't do it."
         render action: :edit
       end
     end
@@ -75,7 +75,7 @@ class TermsController < ApplicationController
       flash[:notice] = 'Deleted the term.'
       redirect_to action: :index
     else
-      flash[:errors] = "Sorry couldn't do it."
+      flash[:error] = "Sorry couldn't do it."
       redirect_back fallback_location: { action: :index }
     end
   end
@@ -85,7 +85,7 @@ class TermsController < ApplicationController
     service.run
     flash[:notice] = "Added #{service.added} terms to #{@vocabulary.name}. Found #{service.found} already existing."
   rescue
-    flash[:errors] = 'An error got in the way. Check that your file is a CSV with a single column containing the terms you wish to import.'
+    flash[:error] = 'An error got in the way. Check that your file is a CSV with a single column containing the terms you wish to import.'
   ensure
     redirect_to action: :index
   end

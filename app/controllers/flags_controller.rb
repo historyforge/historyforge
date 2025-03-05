@@ -27,7 +27,7 @@ class FlagsController < ApplicationController
       flash[:notice] = 'The record has been flagged. An editor will be on it as soon as possible.'
       redirect_back fallback_location: root_path
     else
-      flash[:errors] = 'Something kept us from being able to flag the content. Sorry!'
+      flash[:error] = 'Something kept us from being able to flag the content. Sorry!'
     end
   end
 
@@ -49,7 +49,7 @@ class FlagsController < ApplicationController
       end
       redirect_back fallback_location: url_for(action: :show)
     else
-      flash[:errors] = 'Something prevented us from saving your changes!'
+      flash[:error] = 'Something prevented us from saving your changes!'
       render action: :show
     end
   end
@@ -61,7 +61,7 @@ class FlagsController < ApplicationController
       flash[:notice] = 'The flag has been deleted.'
       redirect_back fallback_location: root_path
     else
-      flash[:errors] = 'Something kept us from being delete the flag. Sorry!'
+      flash[:error] = 'Something kept us from being delete the flag. Sorry!'
       redirect_to action: :show
     end
   end

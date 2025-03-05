@@ -37,7 +37,7 @@ class LocalitiesController < ApplicationController
       flash[:notice] = 'Added the new locality.'
       redirect_to action: :index
     else
-      flash[:errors] = "Sorry couldn't do it."
+      flash[:error] = "Sorry couldn't do it."
       render action: :new
     end
   end
@@ -47,7 +47,7 @@ class LocalitiesController < ApplicationController
       flash[:notice] = 'Updated the locality.'
       redirect_to action: :index
     else
-      flash[:errors] = "Sorry couldn't do it."
+      flash[:error] = "Sorry couldn't do it."
       render action: :edit
     end
   end
@@ -57,7 +57,7 @@ class LocalitiesController < ApplicationController
       flash[:notice] = 'Deleted the locality.'
       redirect_to action: :index
     else
-      flash[:errors] = "Sorry couldn't do it."
+      flash[:error] = "Sorry couldn't do it."
       redirect_back fallback_location: { action: :index }
     end
   end
