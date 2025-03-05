@@ -21,7 +21,7 @@ class MapOverlaysController < ApplicationController
       flash[:notice] = 'Added the new map overlay.'
       redirect_to action: :index
     else
-      flash[:errors] = "Sorry couldn't do it."
+      flash[:error] = "Sorry couldn't do it."
       render action: :new
     end
   end
@@ -37,7 +37,7 @@ class MapOverlaysController < ApplicationController
       redirect_to action: :index
 
     else
-      flash[:errors] = "Sorry couldn't do it."
+      flash[:error] = "Sorry couldn't do it."
       render action: :edit
     end
   end
@@ -48,9 +48,9 @@ class MapOverlaysController < ApplicationController
       flash[:notice] = 'Deleted the map overlay.'
       redirect_to action: :index
     elsif @map_overlay.check_for_annotations
-      flash[:errors] = 'Cannot remove with active annotations'
+      flash[:error] = 'Cannot remove with active annotations'
     else
-      flash[:errors] = "Sorry couldn't do it."
+      flash[:error] = "Sorry couldn't do it."
     end
     redirect_to action: :index
   end

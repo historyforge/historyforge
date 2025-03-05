@@ -32,7 +32,7 @@ html
       = yield
     -else
       div class="container#{@full_layout ? '-fluid' : ''}"
-        = flash_messages
+        #alerts= flash_messages
         = yield :breadcrumb
         div.content-header
           h1= page_title if page_title
@@ -45,7 +45,6 @@ html
     = yield :body_end
 
     script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" data-turbolinks-track="true"
-    script src="https://cdnjs.cloudflare.com/ajax/libs/alertify.js/0.3.7/alertify.min.js" crossorigin="anonymous" data-turbolinks-track="true"
     script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-autocomplete/1.0.7/jquery.auto-complete.min.js" integrity="sha512-TToQDr91fBeG4RE5RjMl/tqNAo35hSRR4cbIFasiV2AAMQ6yKXXYhdSdEpUcRE6bqsTiB+FPLPls4ZAFMoK5WA==" crossorigin="anonymous" referrerpolicy="no-referrer" data-turbolinks-track="true"
     script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous" data-turbolinks-track="true"
     script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" type="text/javascript" crossorigin="anonymous" data-turbolinks-track="true"

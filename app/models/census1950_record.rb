@@ -106,7 +106,7 @@
 
 # Model class for 1940 US Census record
 class Census1950Record < CensusRecord
-  self.table_name = 'census_1950_records'
+  self.table_name = "census_1950_records"
   self.year = 1950
 
   belongs_to :locality, inverse_of: :census1950_records
@@ -130,20 +130,20 @@ class Census1950Record < CensusRecord
   define_enumeration :highest_grade, %w[0 K S1 S2 S3 S4 S5 S6 S7 S8 S9 S10 S11 S12 C1 C2 C3 C4 C5].freeze
 
   income_enumeration = %w[10000+]
-  define_enumeration :wages_or_salary_self, income_enumeration.dup.concat(['p6'])
-  define_enumeration :own_business_self, income_enumeration
-  define_enumeration :unearned_income_self, income_enumeration
-  define_enumeration :wages_or_salary_family, income_enumeration
-  define_enumeration :own_business_family, income_enumeration
-  define_enumeration :unearned_income_family, income_enumeration
+  define_enumeration :wages_or_salary_self, income_enumeration.dup.concat(["P6"]).freeze
+  define_enumeration :own_business_self, income_enumeration.freeze
+  define_enumeration :unearned_income_self, income_enumeration.freeze
+  define_enumeration :wages_or_salary_family, income_enumeration.freeze
+  define_enumeration :own_business_family, income_enumeration.freeze
+  define_enumeration :unearned_income_family, income_enumeration.freeze
 
   auto_upcase_attributes :occupation_code, :industry_code, :worker_class_code
 
   def self.translate_race_code(code)
-    return 'Neg' if code == 'B'
-    return 'Ind' if code == 'In'
-    return 'Chi' if code == 'Ch'
-    return 'Jap' if code == 'Jp'
+    return "Neg" if code == "B"
+    return "Ind" if code == "In"
+    return "Chi" if code == "Ch"
+    return "Jap" if code == "Jp"
 
     code
   end
@@ -172,8 +172,8 @@ class Census1950Record < CensusRecord
     value = public_send(field)
     return unless value
 
-    errors.add field, 'can only have letters V or X' if /[a-zA-UWYZ]/.match?(value)
-    errors.add field, 'can only have digits and V or X' if /\W/.match?(value)
+    errors.add field, "can only have letters V or X" if /[a-zA-UWYZ]/.match?(value)
+    errors.add field, "can only have digits and V or X" if /\W/.match?(value)
   end
 
   def validate_worker_class_code(field)
@@ -181,7 +181,7 @@ class Census1950Record < CensusRecord
     value = nil if value.blank?
     return unless value
 
-    errors.add(field, 'can only be 1 through 6') unless /[1-6]/.match?(value)
+    errors.add(field, "can only be 1 through 6") unless /[1-6]/.match?(value)
   end
 
   def validate_occupation_codes
@@ -217,56 +217,56 @@ class Census1950Record < CensusRecord
     seeking_work: 17,
     employed_absent: 18,
     hours_worked: 19,
-    occupation: 'Item 20a',
-    industry: 'Item 20b',
-    worker_class: 'Item 20c',
-    occupation_code: 'Item C',
-    industry_code: 'Item C',
-    worker_class_code: 'Item C',
+    occupation: "Item 20a",
+    industry: "Item 20b",
+    worker_class: "Item 20c",
+    occupation_code: "Item C",
+    industry_code: "Item C",
+    worker_class_code: "Item C",
     same_house_1949: 21,
     on_farm_1949: 22,
     same_county_1949: 23,
-    county_1949: 'Item 24a',
-    state_1949: 'Item 24b',
-    pob_father: 'Item 25a',
-    pob_mother: 'Item 25b',
+    county_1949: "Item 24a",
+    state_1949: "Item 24b",
+    pob_father: "Item 25a",
+    pob_mother: "Item 25b",
     highest_grade: 26,
     finished_grade: 27,
     weeks_seeking_work: 29,
     weeks_worked: 30,
-    wages_or_salary_self: 'Item 31a',
-    wages_or_salary_family: 'Item 32a',
-    own_business_self: 'Item 31b',
-    own_business_family: 'Item 32b',
-    unearned_income_self: 'Item 31c',
-    unearned_income_family: 'Item 32c',
-    veteran_ww2: 'Item 33a',
-    veteran_ww1: 'Item 33b',
-    veteran_other: 'Item 33c',
+    wages_or_salary_self: "Item 31a",
+    wages_or_salary_family: "Item 32a",
+    own_business_self: "Item 31b",
+    own_business_family: "Item 32b",
+    unearned_income_self: "Item 31c",
+    unearned_income_family: "Item 32c",
+    veteran_ww2: "Item 33a",
+    veteran_ww1: "Item 33b",
+    veteran_other: "Item 33c",
     item_20_entries: 34,
-    last_occupation: 'Item 35a',
-    last_industry: 'Item 35b',
-    last_worker_class: 'Item 35c',
+    last_occupation: "Item 35a",
+    last_industry: "Item 35b",
+    last_worker_class: "Item 35c",
     multi_marriage: 36,
     years_married: 37,
-    children_born: 38
+    children_born: 38,
   }.freeze
 
   IMAGES = {
-    page_number: '1950/sheet-side.png',
-    page_side: '1950/sheet-side.png',
-    ward: '1940/ward.png',
-    enum_dist: '1950/enum.png',
-    first_name: '1940/names.png',
-    middle_name: '1940/names.png',
-    last_name: '1940/names.png',
-    grade_completed: '1940/grade-completed.png',
-    citizenship: '1920/citizenship.png',
-    occupation_code: '1940/occupation-codes.png',
-    industry_code: '1940/occupation-codes.png',
-    worker_class_code: '1940/occupation-codes.png',
-    usual_occupation_code: '1940/occupation-codes.png',
-    usual_industry_code: '1940/occupation-codes.png',
-    usual_worker_class_code: '1940/occupation-codes.png'
+    page_number: "1950/sheet-side.png",
+    page_side: "1950/sheet-side.png",
+    ward: "1940/ward.png",
+    enum_dist: "1950/enum.png",
+    first_name: "1940/names.png",
+    middle_name: "1940/names.png",
+    last_name: "1940/names.png",
+    grade_completed: "1940/grade-completed.png",
+    citizenship: "1920/citizenship.png",
+    occupation_code: "1940/occupation-codes.png",
+    industry_code: "1940/occupation-codes.png",
+    worker_class_code: "1940/occupation-codes.png",
+    usual_occupation_code: "1940/occupation-codes.png",
+    usual_industry_code: "1940/occupation-codes.png",
+    usual_worker_class_code: "1940/occupation-codes.png",
   }.freeze
 end

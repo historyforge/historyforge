@@ -19,7 +19,7 @@ module CensusRecords
       CensusYears.each do |year|
         "Census#{year}Record".constantize.rebuild_pg_search_documents
       end
-      flash[:notice] = 'Person index rebuilt.'
+      flash[:notice] = "Person index rebuilt."
       redirect_back_or_to(root_path)
     end
 
@@ -63,7 +63,7 @@ module CensusRecords
       results = AttributeAutocomplete.new(
         attribute: params[:attribute],
         term: params[:term],
-        year: year
+        year: year,
       ).perform
       render json: results
     end
@@ -83,10 +83,10 @@ module CensusRecords
       authorize! :create, @record
       @record.created_by = current_user
       if @record.save
-        flash[:notice] = 'Census Record saved.'
+        flash[:notice] = "Census Record saved."
         after_saved
       else
-        flash[:errors] = 'Census Record not saved.'
+        flash[:error] = "Census Record not saved."
         render action: :new
       end
     end
@@ -95,10 +95,10 @@ module CensusRecords
       @record = resource_class.find params[:id]
       authorize! :update, @record
       if @record.update(resource_params)
-        flash[:notice] = 'Census Record saved.'
+        flash[:notice] = "Census Record saved."
         after_saved
       else
-        flash[:errors] = 'Census Record not saved.'
+        flash[:error] = "Census Record not saved."
         render action: :edit
       end
     end
@@ -107,10 +107,10 @@ module CensusRecords
       @record = resource_class.find params[:id]
       authorize! :destroy, @record
       if @record.destroy
-        flash[:notice] = 'Census Record deleted.'
+        flash[:notice] = "Census Record deleted."
         redirect_to action: :index
       else
-        flash[:errors] = 'Unable to delete census record.'
+        flash[:error] = "Unable to delete census record."
         redirect_back fallback_location: { action: :index }
       end
     end
@@ -125,7 +125,7 @@ module CensusRecords
       @record = resource_class.find params[:id]
       authorize! :review, @record
       @record.review! current_user
-      flash[:notice] = 'The census record is marked as reviewed and available for public view.'
+      flash[:notice] = "The census record is marked as reviewed and available for public view."
       redirect_back fallback_location: { action: :index }
     end
 
@@ -141,7 +141,7 @@ module CensusRecords
         record.review! current_user
       end
 
-      flash[:notice] = 'The census records are marked as reviewed and available for public view.'
+      flash[:notice] = "The census records are marked as reviewed and available for public view."
       redirect_back fallback_location: { action: :index }
     end
 
@@ -166,14 +166,19 @@ module CensusRecords
     def make_person
       @record = resource_class.find params[:id]
       authorize! :create, resource_class
-      People::GenerateFromCensusRecord.run!(record: @record)
-      flash[:notice] = 'A new person record has been created from this census record.'
+      person = People::GenerateFromCensusRecord.run!(record: @record)
+      if person.persisted?
+        flash[:notice] = "A new person record has been created from this census record."
+      else
+        flash[:error] = "Unable to create a person record from this census record."
+      end
       redirect_back fallback_location: { action: :index }
     end
 
     def year
       params[:year].to_i
     end
+
     memoize :year
     helper_method :year
 
@@ -182,6 +187,7 @@ module CensusRecords
     def search_key
       CensusYears.to_words(year)
     end
+
     memoize :search_key
 
     # This is a blanket access check for whether this census year is activated for this HF instance
@@ -196,6 +202,7 @@ module CensusRecords
     def resource_class
       "Census#{year}Record".safe_constantize
     end
+
     memoize :resource_class
     helper_method :resource_class
 
@@ -209,7 +216,7 @@ module CensusRecords
     end
 
     def after_saved
-      if params[:context] && params[:context] == 'person'
+      if params[:context] && params[:context] == "person"
         redirect_to @record.person
       elsif params[:then].present?
         attributes = NextCensusRecordAttributes.new(@record, params[:then]).attributes
@@ -248,6 +255,7 @@ module CensusRecords
     def census_record_search_class
       "CensusRecord#{year}Search".safe_constantize
     end
+
     memoize :census_record_search_class
 
     def page_title

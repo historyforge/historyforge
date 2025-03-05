@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe '1920 US Census' do
   scenario 'record life cycle' do
-    user = create(:census_taker)
+    user = create(:administrator)
     locality = create(:locality)
 
     sign_in user

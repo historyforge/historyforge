@@ -17,10 +17,19 @@ module People
     end
 
     def autocomplete
-      @people = Person.name_fuzzy_matches(params[:term])
-                      .limit(10)
-                      .preload(:names)
-      render json: @people.flat_map { |p| p.names.map { |name| { id: p.id, birth_year: p.birth_year, death_year: p.death_year, name: name.name, sex: p.sex } } }
+      people = Person.name_fuzzy_matches(params[:term])
+                     .limit(10)
+                     .preload(:names)
+      data = people.map do |person|
+        { id: person.id,
+          years: person.years,
+          birth_year: person.birth_year,
+          death_year: person.death_year,
+          name: person.name,
+          see_names: person.names.map(&:name),
+          sex: person.sex }
+      end
+      render json: data
     end
 
     def show
@@ -34,6 +43,11 @@ module People
       @person.names.build(is_primary: true)
     end
 
+    def edit
+      @person = Person.find params[:id]
+      authorize! :update, @person
+    end
+
     def create
       @person = Person.new resource_params
       authorize! :create, @person
@@ -41,14 +55,9 @@ module People
         flash[:notice] = 'Person created.'
         redirect_to @person
       else
-        flash[:errors] = 'Person not saved.'
+        flash[:error] = 'Person not saved.'
         render action: :new
       end
-    end
-
-    def edit
-      @person = Person.find params[:id]
-      authorize! :update, @person
     end
 
     def update
@@ -58,7 +67,7 @@ module People
         flash[:notice] = 'Person updated.'
         redirect_to @person
       else
-        flash[:errors] = 'Person not saved.'
+        flash[:error] = 'Person not saved.'
         render action: :edit
       end
     end
@@ -70,7 +79,7 @@ module People
         flash[:notice] = 'Person deleted.'
         redirect_to action: :index
       else
-        flash[:errors] = 'Unable to delete person.'
+        flash[:error] = 'Unable to delete person.'
         redirect_to :back
       end
     end
@@ -84,6 +93,7 @@ module People
     def resource_class
       Person
     end
+
     helper_method :resource_class
 
     def resource_params

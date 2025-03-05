@@ -589,3 +589,15 @@ abbr[title] {
 #narrative_story {
   min-height: 16rem;
 }
+
+#alerts {
+  .alert {
+    position: relative;
+
+    .closer {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+    }
+  }
+}
