@@ -43,17 +43,24 @@ class Person < ApplicationRecord
   define_enumeration :sex, %w[M F].freeze
   define_enumeration :race, %w[W B Mu Mex In Ch Jp Fil Hin Kor].freeze
 
-  has_many :census1850_records, dependent: :nullify, class_name: "Census1850Record", inverse_of: :person
-  has_many :census1860_records, dependent: :nullify, class_name: "Census1860Record", inverse_of: :person
-  has_many :census1870_records, dependent: :nullify, class_name: "Census1870Record", inverse_of: :person
-  has_many :census1880_records, dependent: :nullify, class_name: "Census1880Record", inverse_of: :person
-  has_many :census1900_records, dependent: :nullify, class_name: "Census1900Record", inverse_of: :person
-  has_many :census1910_records, dependent: :nullify, class_name: "Census1910Record", inverse_of: :person
-  has_many :census1920_records, dependent: :nullify, class_name: "Census1920Record", inverse_of: :person
-  has_many :census1930_records, dependent: :nullify, class_name: "Census1930Record", inverse_of: :person
-  has_many :census1940_records, dependent: :nullify, class_name: "Census1940Record", inverse_of: :person
-  has_many :census1950_records, dependent: :nullify, class_name: "Census1950Record", inverse_of: :person
-  has_and_belongs_to_many :photos, class_name: "Photograph", dependent: :nullify
+  has_many :census1850_records, dependent: :nullify, class_name: 'Census1850Record', inverse_of: :person
+  has_many :census1860_records, dependent: :nullify, class_name: 'Census1860Record', inverse_of: :person
+  has_many :census1870_records, dependent: :nullify, class_name: 'Census1870Record', inverse_of: :person
+  has_many :census1880_records, dependent: :nullify, class_name: 'Census1880Record', inverse_of: :person
+  has_many :census1900_records, dependent: :nullify, class_name: 'Census1900Record', inverse_of: :person
+  has_many :census1910_records, dependent: :nullify, class_name: 'Census1910Record', inverse_of: :person
+  has_many :census1920_records, dependent: :nullify, class_name: 'Census1920Record', inverse_of: :person
+  has_many :census1930_records, dependent: :nullify, class_name: 'Census1930Record', inverse_of: :person
+  has_many :census1940_records, dependent: :nullify, class_name: 'Census1940Record', inverse_of: :person
+  has_many :census1950_records, dependent: :nullify, class_name: 'Census1950Record', inverse_of: :person
+  has_many :buildings_1910, through: :census1910_records, source: :building
+  has_many :buildings_1920, through: :census1920_records, source: :building
+
+  # Combine both associations into one virtual association
+  def buildings
+    Building.where(id: (buildings_1910 + buildings_1920).pluck(:id).uniq)
+  end
+  has_and_belongs_to_many :photos, class_name: 'Photograph', dependent: :nullify
   has_and_belongs_to_many :audios, dependent: :nullify
   has_and_belongs_to_many :videos, dependent: :nullify
   has_and_belongs_to_many :narratives, dependent: :nullify

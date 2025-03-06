@@ -83,3 +83,4 @@ bin/deploy
 .tool-versions
 *.old
 *.log
+codealike.json
