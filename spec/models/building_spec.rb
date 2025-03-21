@@ -66,6 +66,26 @@ RSpec.describe Building do
     end
   end
 
+  context 'with building types' do
+    let(:building) do
+      create(:building, building_type_ids: (1..8).to_a)
+    end
+
+    it 'returns the correct building type names' do
+      expected_names = [
+        'Cemetery',
+        'Commercial',
+        'Institution',
+        'Marker',
+        'Plantation',
+        'Public',
+        'Religious',
+        'Residence'
+      ]
+      expect(building.building_types.map(&:name)).to eq expected_names
+    end
+  end
+
   context 'with scopes' do
     describe '#order_by_street_address' do
       let(:building_with_later_modern_address_and_earlier_antique_address) do
