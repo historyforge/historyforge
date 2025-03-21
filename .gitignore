@@ -75,3 +75,6 @@ bin/deploy
 
 /app/assets/builds2/*
 !/app/assets/builds2/.keep
+
+# Ignore asdf configuration for local development
+.tool-versions
