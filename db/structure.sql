@@ -2168,7 +2168,8 @@ CREATE TABLE public.people (
     description text,
     sortable_name character varying,
     death_year integer,
-    ever_enslaved boolean DEFAULT false
+    ever_enslaved boolean DEFAULT false,
+    is_death_year_estimated boolean DEFAULT true
 );
 
 
@@ -5608,6 +5609,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('8'),
 ('4'),
 ('20250325233212'),
+('20250325015620'),
 ('20250302232511'),
 ('20250202212902'),
 ('20241208172541'),

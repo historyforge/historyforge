@@ -3,8 +3,8 @@
 module People
   class Merge < ApplicationInteraction
     MERGEABLE_ATTRIBUTES = %i[
-      birth_year death_year is_birth_year_estimated
-      pob is_pob_estimated sex race
+      birth_year is_birth_year_estimated death_year
+      is_death_year_estimated pob is_pob_estimated sex race
     ].freeze
 
     object :source, class: Person
