@@ -10,6 +10,7 @@
 #  middle_name             :string
 #  sex                     :string(12)
 #  race                    :string
+#  ever_enslaved           :boolean          default(False)
 #  name_prefix             :string
 #  name_suffix             :string
 #  searchable_name         :text
@@ -41,6 +42,12 @@ RSpec.describe Person do
       expect(primary_name.middle_name).to eq person.middle_name
       expect(primary_name.name_prefix).to eq person.name_prefix
       expect(primary_name.name_suffix).to eq person.name_suffix
+    end
+
+    it 'assigns default values to boolean fields' do
+      expect(person.ever_enslaved).to be false
+      expect(person.is_birth_year_estimated).to be true
+      expect(person.is_pob_estimated).to be true
     end
   end
 
