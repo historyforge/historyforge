@@ -49673,6 +49673,16 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     destroy() {
     }
   };
+  var ActionCellRenderer = class extends BaseCellRenderer {
+    init(params) {
+      super.init(params);
+      if (this.value) {
+        const baseUrl = document.location.toString().split("?")[0];
+        const id = this.value.id || this.value;
+        this.eGui.innerHTML = `<a href="${baseUrl}/${id}">View</a>`;
+      }
+    }
+  };
   var CensusLinkCellRenderer = class extends BaseCellRenderer {
     init(params) {
       super.init(params);
@@ -49713,6 +49723,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     }
   };
   Object.assign(window, {
+    ActionCellRenderer,
     NameCellRenderer,
     CensusLinkCellRenderer,
     HTMLCellRenderer

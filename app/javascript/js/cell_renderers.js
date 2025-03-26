@@ -30,6 +30,17 @@ class BaseCellRenderer {
   destroy() { }
 }
 
+class ActionCellRenderer extends BaseCellRenderer {
+  init(params) {
+    super.init(params)
+    if (this.value) {
+      const baseUrl = document.location.toString().split('?')[0]
+      const id = this.value.id || this.value
+      this.eGui.innerHTML = `<a href="${baseUrl}/${id}">View</a>`
+    }
+  }
+}
+
 class CensusLinkCellRenderer extends BaseCellRenderer {
   init(params) {
     super.init(params)
@@ -74,6 +85,7 @@ class HTMLCellRenderer extends BaseCellRenderer {
 
 // Export renderers to window object
 Object.assign(window, {
+  ActionCellRenderer,
   NameCellRenderer,
   CensusLinkCellRenderer,
   HTMLCellRenderer
