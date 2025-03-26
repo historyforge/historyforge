@@ -135,6 +135,10 @@ GEM
     connection_pool (2.4.1)
     crass (1.0.6)
     csv (3.3.0)
+    database_cleaner-active_record (2.2.0)
+      activerecord (>= 5.a)
+      database_cleaner-core (~> 2.0.0)
+    database_cleaner-core (2.0.1)
     date (3.4.0)
     devise (4.9.4)
       bcrypt (~> 3.0)
@@ -294,9 +298,11 @@ GEM
     pretender (0.5.0)
       actionpack (>= 6.1)
     prettier_print (1.2.1)
-    pry (0.15.0)
+    pry (0.14.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
+    pry-nav (1.0.0)
+      pry (>= 0.9.10, < 0.15)
     psych (5.2.0)
       stringio
     public_suffix (6.0.1)
@@ -505,6 +511,7 @@ DEPENDENCIES
   capybara
   capybara-selenium
   chartkick
+  database_cleaner-active_record
   devise
   devise-bootstrap-views (~> 1.0)
   devise-encryptable
@@ -533,6 +540,7 @@ DEPENDENCIES
   pg_search
   pretender
   pry
+  pry-nav
   puma
   rails
   ransack
