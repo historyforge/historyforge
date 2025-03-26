@@ -10,6 +10,7 @@
 #  middle_name             :string
 #  sex                     :string(12)
 #  race                    :string
+#  ever_enslaved           :boolean          default(False)
 #  name_prefix             :string
 #  name_suffix             :string
 #  searchable_name         :text

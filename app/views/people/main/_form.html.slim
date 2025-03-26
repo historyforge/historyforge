@@ -45,6 +45,8 @@
         .col-4
           = form.input :sex, as: :radio_buttons, collection: Census1900Record.sex_choices, coded: true
         .col-4
+          = form.input :ever_enslaved, as: :boolean, label: 'Ever Enslaved'
+        .col-4
           = form.input :locality_ids, as: :check_boxes, collection: Locality.all, label: 'Localities'
 
   .card.mb-1

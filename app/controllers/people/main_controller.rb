@@ -97,7 +97,7 @@ module People
     helper_method :resource_class
 
     def resource_params
-      params.require(:person).permit :first_name, :last_name, :middle_name,
+      params.require(:person).permit :first_name, :last_name, :middle_name, :ever_enslaved,
                                      :sex, :race, :name_prefix, :name_suffix, :birth_year, :is_birth_year_estimated,
                                      :death_year,
                                      :pob, :is_pob_estimated, :notes, :description,
