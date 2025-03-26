@@ -49659,88 +49659,64 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       });
     }
   };
-  var ActionCellRenderer = function() {
-  };
-  ActionCellRenderer.prototype.init = function(params) {
-    this.eGui = document.createElement("div");
-    const value = params.value || params.getValue();
-    if (value) {
-      const link = document.location.toString().split("?")[0] + "/" + (value.id || value);
-      this.eGui.innerHTML = `<a href="${link}">View</a>`;
+  var BaseCellRenderer = class {
+    init(params) {
+      this.eGui = document.createElement("div");
+      this.value = params.value || params.getValue();
+    }
+    getGui() {
+      return this.eGui;
+    }
+    refresh() {
+      return true;
+    }
+    destroy() {
     }
   };
-  ActionCellRenderer.prototype.getGui = function() {
-    return this.eGui;
-  };
-  ActionCellRenderer.prototype.refresh = function(params) {
-    return true;
-  };
-  var CensusLinkCellRenderer = function() {
-  };
-  CensusLinkCellRenderer.prototype.init = function(params) {
-    const value = params.value || params.getValue();
-    this.eGui = document.createElement("div");
-    if (value) {
-      const html = value.id.map((id) => `<a href="/census/${value.year}/${id}" target="_blank">View</a>`);
-      this.eGui.innerHTML = html.join(" | ");
+  var CensusLinkCellRenderer = class extends BaseCellRenderer {
+    init(params) {
+      super.init(params);
+      if (this.value) {
+        const links = this.value.id.map(
+          (id) => `<a href="/census/${this.value.year}/${id}" target="_blank">View</a>`
+        );
+        this.eGui.innerHTML = links.join(" | ");
+      }
     }
   };
-  CensusLinkCellRenderer.prototype.getGui = function() {
-    return this.eGui;
-  };
-  CensusLinkCellRenderer.prototype.refresh = function(params) {
-    return true;
-  };
-  CensusLinkCellRenderer.prototype.destroy = function() {
-  };
-  var NameCellRenderer = function() {
-  };
-  NameCellRenderer.prototype.init = function(params) {
-    const value = params.value || params.getValue();
-    this.eGui = document.createElement("div");
-    if (value && value.name) {
-      if (value.id) {
-        const link = document.location.toString().split("?")[0] + "/" + (value.id || value);
-        this.eGui.innerHTML = `<a href="${link}" title="${value.name}">${value.name}</a>`;
+  var NameCellRenderer = class extends BaseCellRenderer {
+    init(params) {
+      var _a;
+      super.init(params);
+      if ((_a = this.value) == null ? void 0 : _a.name) {
+        if (this.value.id) {
+          const baseUrl = document.location.toString().split("?")[0];
+          const id = this.value.id || this.value;
+          this.eGui.innerHTML = `<a href="${baseUrl}/${id}" title="${this.value.name}">${this.value.name}</a>`;
+        } else {
+          this.eGui.innerHTML = this.value.name;
+        }
+        if (!this.value.reviewed) {
+          this.eGui.innerHTML += '<span class="badge badge-success">NEW</span>';
+        }
       } else {
-        this.eGui.innerHTML = value.name;
+        this.eGui.innerHTML = "Loading more records.";
       }
-      if (!value.reviewed) {
-        this.eGui.innerHTML += '<span class="badge badge-success">NEW</span>';
-      }
-    } else {
-      this.eGui.innerHTML = "Loading more records.";
     }
   };
-  NameCellRenderer.prototype.getGui = function() {
-    return this.eGui;
-  };
-  NameCellRenderer.prototype.refresh = function(params) {
-    return true;
-  };
-  NameCellRenderer.prototype.destroy = function() {
-  };
-  var HTMLCellRenderer = function() {
-  };
-  HTMLCellRenderer.prototype.init = function(params) {
-    const value = params.value || params.getValue();
-    this.eGui = document.createElement("div");
-    if (value) {
-      this.eGui.innerHTML = value;
+  var HTMLCellRenderer = class extends BaseCellRenderer {
+    init(params) {
+      super.init(params);
+      if (this.value) {
+        this.eGui.innerHTML = this.value;
+      }
     }
   };
-  HTMLCellRenderer.prototype.getGui = function() {
-    return this.eGui;
-  };
-  HTMLCellRenderer.prototype.refresh = function(params) {
-    return true;
-  };
-  HTMLCellRenderer.prototype.destroy = function() {
-  };
-  window.ActionCellRenderer = ActionCellRenderer;
-  window.NameCellRenderer = NameCellRenderer;
-  window.CensusLinkCellRenderer = CensusLinkCellRenderer;
-  window.HTMLCellRenderer = HTMLCellRenderer;
+  Object.assign(window, {
+    NameCellRenderer,
+    CensusLinkCellRenderer,
+    HTMLCellRenderer
+  });
 
   // app/javascript/search/AdvancedSearch.ts
   var import_axios = __toESM(require_axios2());
