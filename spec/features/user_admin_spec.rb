@@ -51,8 +51,7 @@ RSpec.describe "User management" do
     logout
 
     # Log in
-    visit("/u/sign_in")
-    save_and_open_page
+    click_on "Log in"
     fill_in("Email", with: user.email)
     fill_in("Password", with: "b1g_sekrit")
     click_on("Volunteer Log In")
