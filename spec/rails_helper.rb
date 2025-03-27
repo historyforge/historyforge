@@ -11,7 +11,6 @@ require "rspec/rails"
 # Add additional requires below this line. Rails is not loaded until this point!
 require "rspec/collection_matchers"
 require "paper_trail/frameworks/rspec"
-require "database_cleaner/active_record"
 
 # require 'simplecov'
 # SimpleCov.start
@@ -51,16 +50,19 @@ RSpec.configure do |config|
     Capybara::Selenium::Driver.new(app, browser: :chrome)
   end
 
-  # Capybara.register_driver :chrome_headless do |app|
-  #   Capybara::Selenium::Driver.new app,
-  #                                  browser: :chrome,
-  #                                  clear_session_storage: true,
-  #                                  clear_local_storage: true,
-  #                                  capabilities: [Selenium::WebDriver::Chrome::Options.new(
-  #                                    args: %w[headless disable-gpu no-sandbox window-size=1024,768]
-  #                                    )]
-  # end
+  Capybara.register_driver :chrome_headless do |app|
+    Capybara::Selenium::Driver.new app,
+                                   browser: :chrome,
+                                   clear_session_storage: true,
+                                   clear_local_storage: true,
+                                   capabilities: [Selenium::WebDriver::Chrome::Options.new(
+                                     args: %w[headless disable-gpu no-sandbox window-size=1024,768],
+                                   )]
+  end
 
+  # Change this to :chrome_headless to run the tests in a headless browser.
+  # Ideally this would be the default, but it's not working. The tests pass in
+  # isolation, but not when run together in headless mode.
   Capybara.default_driver = :chrome
   Capybara.javascript_driver = :chrome
 
@@ -90,21 +92,4 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
-
-  config.before(:suite) do
-    DatabaseCleaner.clean_with(:truncation)
-    Rails.application.load_seed
-  end
-
-  config.before(:each) do
-    DatabaseCleaner.strategy = :transaction
-  end
-
-  config.before(:each) do
-    DatabaseCleaner.start
-  end
-
-  config.after(:each) do
-    DatabaseCleaner.clean
-  end
 end
