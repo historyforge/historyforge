@@ -21,6 +21,8 @@
 #  notes                   :text
 #  description             :text
 #  sortable_name           :string
+#  death_year              :integer
+#  is_death_year_estimated :boolean          default(TRUE)
 #
 # Indexes
 #
