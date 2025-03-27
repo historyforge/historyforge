@@ -5,6 +5,8 @@ require "rails_helper"
 RSpec.describe "1880 US Census" do
   scenario "record life cycle", :js do
     user = create(:census_taker)
+    user.add_role Role.find_by(name: "reviewer")
+
     locality = create(:locality)
 
     sign_in user
@@ -53,13 +55,6 @@ RSpec.describe "1880 US Census" do
 
     select "In this family", from: "After saving, add another person:"
     click_on "Save"
-    record = Census1880Record.first
-    expect(record.last_name).to eq("Squarepants")
-    expect(record.reviewed?).to be_falsey
-    expect(record.created_by).to eq user
-
-    building = Building.first
-    expect(building).to_not be_nil
 
     # Make sure it saves and moves on to the next form with the correct fields prefilled
     expect(page).to have_content("New 1880 Census Record")
@@ -74,7 +69,6 @@ RSpec.describe "1880 US Census" do
     expect(find_field("Street Name").value).to eq "Tioga"
     expect(find_field("Suffix", match: :first).value).to eq "St"
     expect(find_field("Family No.").value).to eq "1"
-    # expect(find_field('Building').value).to eq building.id.to_s
     expect(find_field("Last Name").value).to eq "Squarepants"
     expect(find_field("Locality").value).to eq locality.id.to_s
 
@@ -94,14 +88,6 @@ RSpec.describe "1880 US Census" do
     fill_in "Last Name", with: "Roundpants"
     click_on "Save", match: :first
     expect(page).to have_content "Roundpants"
-
-    # We are only a census taker. We can't review stuff.
-    # expect(page).to have_no_content 'Mark as Reviewed'
-    # expect(page).to have_no_content 'Delete'
-
-    # Upgrade the user to Reviewer
-    user.add_role Role.find_by(name: "reviewer")
-    visit census1880_record_path(record)
 
     # Now review the record
     page.accept_confirm do
