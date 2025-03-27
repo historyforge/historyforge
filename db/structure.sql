@@ -11,13 +11,6 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- Name: public; Type: SCHEMA; Schema: -; Owner: -
---
-
--- *not* creating schema, since initdb creates it
-
-
---
 -- Name: fuzzystrmatch; Type: EXTENSION; Schema: -; Owner: -
 --
 
@@ -57,6 +50,8 @@ $_$;
 
 
 SET default_tablespace = '';
+
+SET default_table_access_method = heap;
 
 --
 -- Name: action_text_rich_texts; Type: TABLE; Schema: public; Owner: -
@@ -2172,7 +2167,9 @@ CREATE TABLE public.people (
     notes text,
     description text,
     sortable_name character varying,
-    death_year integer
+    death_year integer,
+    ever_enslaved boolean DEFAULT false,
+    is_death_year_estimated boolean DEFAULT true
 );
 
 
@@ -5611,6 +5608,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('9'),
 ('8'),
 ('4'),
+('20250325233212'),
+('20250325015620'),
 ('20250302232511'),
 ('20250202212902'),
 ('20241208172541'),
