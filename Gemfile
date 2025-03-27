@@ -10,6 +10,7 @@ gem "acts_as_list"
 gem "airbrake"
 gem "ancestry"
 gem "ar_doc_store"
+gem "rails_autolink"
 gem "bcrypt"
 gem "bootsnap", require: false
 gem "cancancan"

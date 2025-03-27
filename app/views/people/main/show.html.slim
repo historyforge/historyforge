@@ -41,7 +41,7 @@
           = " died in #{@person.death_year}"
   - if @person.description.present?
     .list-group-item
-      = simple_format @person.description
+      = auto_link(simple_format(@person.description), html: { target: '_blank', rel: 'nofollow' })
 .card.mb-3
   .card-header Census Records
   = table do
@@ -73,31 +73,31 @@
           td= row.occupation
 
 - if @person.relatives.present?
-.card.mb-3
-  .card-header Relatives
-  = table do
-    thead
-      tr
-        th Year
-        th Name
-        th
-          | Relation
-          span.d-none.d-lg-inline &nbsp;to Head
-        th Race
-        th Sex
-        th YOB
-        th Occupation
-    tbody
-      - @person.relatives.each do |raw_row|
-        - row = raw_row.decorate
-        tr
-          td= row.census_records.map(&:year).sort.join(', ')
-          td.text-nowrap= link_to row.name, row
-          td= row.relation_to_head
-          td= "#{Translator.option(:race, row.race)} " if row.race.present? && row.race != 'on'
-          td= "#{Translator.option(:sex, row.sex)} " if row.sex.present? && row.sex != 'on'
-          td= row.birth_year
-          td= row.occupation
+  - all_years = @person.relatives.flat_map { |r| r.census_records.map(&:year) }.uniq.sort
+  - all_years.each do |year|
+    .card.mb-3
+      .card-header
+        | Relatives in #{year} US Census
+      = table do
+        thead
+          tr
+            th Name
+            th
+              | Relation
+              span.d-none.d-lg-inline &nbsp;to Head
+            th Race
+            th Sex
+            th YOB
+            th Occupation
+        tbody
+          - @person.relatives.select { |r| r.census_records.map(&:year).include?(year) }.map(&:decorate).each do |row|
+            tr
+              td.text-nowrap= link_to row.name, row
+              td= row.relation_to_head
+              td= "#{Translator.option(:race, row.race)} " if row.race.present? && row.race != 'on'
+              td= "#{Translator.option(:sex, row.sex)} " if row.sex.present? && row.sex != 'on'
+              td= row.birth_year
+              td= row.occupation
 
 
 - if can?(:update, @person) && @person.possible_unmatched_records.present?
