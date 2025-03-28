@@ -100,7 +100,7 @@
               - census_record = census_record.decorate
               tr
                 td.text-nowrap
-                  = link_to census_record.name, census_record.person
+                  = link_to census_record.name, person_path(census_record.person_id)
                 td= census_record.relation_to_head
                 td.text-nowrap= census_record.street_address
                 td= census_record.age
