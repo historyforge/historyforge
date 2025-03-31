@@ -152,6 +152,21 @@
     - narratives.each do |narrative|
       = render 'narratives/narrative', narrative:
 
+
+- documents = @person.documents.accessible_by(current_ability)
+.card class="#{@person.description.blank? ? 'mb-3' : 'empty-card'}"
+  .card-header
+    = link_to 'Add Documents', new_person_document_path(@person), class: 'float-right'
+    | Documents
+  - if documents.blank?
+    .card-body
+      p.lead No Documents yet for this Person.
+
+  - if documents.present?
+    .list-group
+      - documents.each do |document|
+        = render 'documents/document', document:
+
 - if @person.notes? && can?(:update, @person)
   .card.mb-3
     .card-header

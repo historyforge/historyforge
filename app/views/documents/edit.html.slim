@@ -1,2 +1,5 @@
 - set_page_title 'Edit Document'
-.pb-5= render 'form'
+
+
+= simple_form_for (@building || @person) ? [(@building || @person), @document] : @document, html: { data: { controller: 'document' } } do |form|
+  = render 'form', form:

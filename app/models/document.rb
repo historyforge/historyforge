@@ -23,6 +23,8 @@ class Document < ApplicationRecord
 
   has_and_belongs_to_many :localities
   belongs_to :document_category
+  has_and_belongs_to_many :buildings
+  has_and_belongs_to_many :people
   acts_as_list scope: :document_category_id
   has_one_attached :file
   before_save :assign_name_from_file

@@ -82,6 +82,7 @@ Rails.application.routes.draw do
       resources :photographs
       resources :audios
       resources :videos
+      resources :documents
     end
     resources :merges, only: %i[new create], controller: 'buildings/merges'
   end
@@ -131,6 +132,7 @@ Rails.application.routes.draw do
       resources :photographs
       resources :audios
       resources :videos
+      resources :documents
     end
   end
 
