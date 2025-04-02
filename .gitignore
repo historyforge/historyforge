@@ -84,3 +84,7 @@ bin/deploy
 *.old
 *.log
 codealike.json
+
+app/assets/builds/*.js
+app/assets/builds/*.js.map
+
