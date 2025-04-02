@@ -99,7 +99,7 @@ module Api
           buildings << people_audio1910
           buildings << people_narrative1910
           buildings << people_document1910
-
+          
           buildings << narrative_action_text_story1910
           buildings << narrative_action_text_sources1910
 
