@@ -1,5 +1,5 @@
 - set_page_title 'Upload Document'
 
-= error_messages_for @document
-= simple_form_for @document, html: { data: { controller: 'document' } } do |form|
-  = render 'form', form:
+.pb-5.document-form = render 'form'
+
+= javascript_include_tag 'document'

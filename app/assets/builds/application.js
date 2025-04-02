@@ -52409,8 +52409,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   // app/javascript/controllers/document_controller.js
   var document_controller_default = class extends Controller {
     connect() {
-      this.addStepNumbers();
-      this.paramKey = location.pathname.match(/documents/) ? "document" : location.pathname.match(/audios/) ? "audio" : location.pathname.match(/videos/) ? "video" : "narrative";
+      this.paramKey = "document";
       window.scrollTo(0, 0);
       $("button.btn-prev").on("click", (e2) => {
         this.prev(e2.target);
@@ -52418,42 +52417,11 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       $("button.btn-next").on("click", (e2) => {
         this.next(e2.target);
       });
-      $("#audio_remote_url, #video_remote_url, #photograph_remote_url").on("change", function(e2) {
+      $("#document_url").on("change", function(e2) {
         const value = e2.target.value;
-        if (value.length) {
-          $(".step-1-next-button").removeAttr("disabled");
-        } else {
-          $(".step-1-next-button").attr("disabled", "disabled");
-        }
-      });
-      $("#photograph_file").on("change", function() {
-        if (this.files.length) {
-          const reader = new FileReader();
-          reader.onload = function(e2) {
-            const file = e2.target.result;
-            $("#selected-file, .thumb").html('<img class="img img-thumbnail" alt="" />');
-            $("#selected-file img, .thumb img").attr("src", file);
-            $(".step-1-next-button").removeAttr("disabled");
-          };
-          reader.readAsDataURL(this.files[0]);
-        }
       });
       this.initBuildings();
       this.initPeople();
-      this.initDates();
-      this.initMap();
-    }
-    initDates() {
-      $("#dates-question button").on("click", (e2) => {
-        const type = e2.target.dataset.dateType;
-        $("#dates-question button.btn-primary").removeClass("btn-primary").addClass("btn-light");
-        $(e2.target).addClass("btn-primary").removeClass("btn-light");
-        $("#photograph_date_type").val(type);
-        document.getElementById("photograph-date-type").className = type;
-        $("select:visible").chosen({
-          disable_search_threshold: 15
-        });
-      });
     }
     initPeople() {
       $("#person-question .btn-primary").on("click", function() {
@@ -52535,101 +52503,6 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       const html = `<div class="form-check"><input type="checkbox" class="form-check-input" name="${this.paramKey}[person_ids][]" id="${formId}" value="${id}" checked /><label class="form-check-label" for="${formId}">${name}</label></div>`;
       $(`.${this.paramKey}_person_ids`).append(html);
     }
-    addStepNumbers() {
-      const steps2 = $("#photo-wizard .card");
-      const numSteps = steps2.length;
-      let i2 = 0;
-      steps2.each(function() {
-        $(this).find(".card-body").prepend(`<h3 class="card-title">Step ${++i2} of ${numSteps}</h3>`);
-      });
-    }
-    initCard(card) {
-      window.scrollTo(0, 0);
-      if (card.find("#map").length && !this.mapInitialized) {
-        this.initMap();
-      }
-      card.find("select:visible").chosen({
-        disable_search_threshold: 15
-      });
-    }
-    prev(el) {
-      this.initCard($(el).closest(".card").deactivateCard().prev().activateCard());
-    }
-    next(el) {
-      this.initCard($(el).closest(".card").deactivateCard().next().activateCard());
-    }
-    initMap() {
-      if (typeof google === "undefined") {
-        setTimeout(
-          () => this.initMap(),
-          1e3
-        );
-        return;
-      }
-      this.mapInitialized = true;
-      const startLat = document.getElementById("photograph_latitude").value;
-      const startLon = document.getElementById("photograph_longitude").value;
-      const loc = startLat && startLon ? [parseFloat(startLat), parseFloat(startLon)] : JSON.parse(document.getElementById("photograph-map").dataset.center);
-      const map3 = new google.maps.Map(document.getElementById("photograph-map"), {
-        center: { lat: loc[0], lng: loc[1] },
-        zoom: 13
-      });
-      const marker = new google.maps.Marker({
-        map: map3,
-        anchorPoint: new google.maps.Point(0, -29),
-        draggable: true
-      });
-      marker.setPosition(map3.getCenter());
-      marker.setVisible(true);
-      const input = document.getElementById("pac-input");
-      const autocomplete = new google.maps.places.Autocomplete(input);
-      autocomplete.bindTo("bounds", map3);
-      autocomplete.setFields(["address_components", "geometry", "icon", "name"]);
-      autocomplete.addListener("place_changed", () => {
-        this.handlePlaceAutocompletion(marker, autocomplete, map3);
-      });
-      marker.addListener("dragend", function() {
-        const position = marker.getPosition();
-        document.getElementById("photograph_latitude").value = position.lat();
-        document.getElementById("photograph_longitude").value = position.lng();
-      });
-      $("#photograph_longitude").on("change", function() {
-        const lat = document.getElementById("photograph_latitude").value;
-        const lon = document.getElementById("photograph_longitude").value;
-        const loc2 = new google.maps.LatLng(parseFloat(lat), parseFloat(lon));
-        marker.setPosition(loc2);
-        map3.setCenter(loc2);
-      });
-    }
-    handlePlaceAutocompletion(marker, autocomplete, map3) {
-      marker.setVisible(false);
-      const place = autocomplete.getPlace();
-      if (!place.geometry) {
-        window.alert("No details available for input: '" + place.name + "'");
-        return;
-      }
-      if (place.geometry.viewport) {
-        map3.fitBounds(place.geometry.viewport);
-      } else {
-        map3.setCenter(place.geometry.location);
-        map3.setZoom(17);
-      }
-      marker.setPosition(place.geometry.location);
-      document.getElementById("photograph_latitude").value = place.geometry.location.lat();
-      document.getElementById("photograph_longitude").value = place.geometry.location.lng();
-    }
-  };
-  $.fn.activateCard = function() {
-    return this.each(function() {
-      $(this).addClass("active");
-      return this;
-    });
-  };
-  $.fn.deactivateCard = function() {
-    return this.each(function() {
-      $(this).removeClass("active");
-      return this;
-    });
   };
 
   // app/javascript/controllers/save_search_controller.js

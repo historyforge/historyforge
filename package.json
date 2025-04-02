@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "build": "esbuild app/javascript/cms.js app/javascript/application.js --bundle --sourcemap --outdir=app/assets/builds"
+    "build": "esbuild app/javascript/cms.js app/javascript/application.js app/javascript/document.js --bundle --sourcemap --outdir=app/assets/builds"
   },
   "dependencies": {
     "@airbrake/browser": "^1.4.1",
