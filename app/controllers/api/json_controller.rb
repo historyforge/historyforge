@@ -21,6 +21,12 @@ module Api
         @documents.each{|document| @ready_documents.append(make_document(document,params["year"]))}
         @ready_documents = @ready_documents.compact
 
+
+        @narratives =  search_narratives(params["search"])
+        @ready_narratives =[]
+        
+        @narratives.each{|narrative|  @ready_narratives.append(make_narrative(narrative,params["year"])) } 
+        @ready_narratives = @ready_narratives.compact
         @finished_json = build_json
         response.set_header('Access-Control-Allow-Origin', '*')
         render json: @finished_json
@@ -53,6 +59,7 @@ module Api
           {"buildings": @ready_buildings},
           {"people": @ready_people},
           {"documents": @ready_documents},
+          {"narratives": @ready_narratives},
         ],
         "count":
         { 
@@ -60,6 +67,7 @@ module Api
           "people": @ready_people.count,
           "documents": @ready_documents.count,
           "census_records": census_records,
+          "narratives": @ready_narratives.count,
         }
       }
     end
@@ -150,6 +158,79 @@ module Api
    end
       return feature
     end
+
+
+    def search_narratives(search)
+      narratives_query  = ''
+      rich_text_query = ''
+      narratives_query  = search_query('Narrative',narratives_query)
+      rich_text_query = search_query('ActionText::RichText',rich_text_query)
+      rich_text_query = rich_text_query.chomp("OR ")
+      narratives_query  = narratives_query.chomp("OR ")
+      if search.present?
+       narratives = Narrative.where(narratives_query,:search => "%#{search}%").ids.uniq
+       narratives_stories = Narrative.joins(:rich_text_story).where(@rich_text_query,:search => "%#{search}%").ids.uniq
+       narratives_sources = Narrative.joins(:rich_text_sources).where(@rich_text_query,:search => "%#{search}%").ids.uniq
+       narratives << narratives_stories
+       narratives << narratives_sources
+       narratives = narratives.flatten.uniq
+       narratives = Narrative.where(id: narratives)
+       
+      else
+        narratives = nil
+      end
+      narratives
+
+            
+    end
+
+    def make_narrative(record,year)
+      if record.nil? == false
+        
+        if year == "1910" && record.people.where.associated(:census1910_records).nil? == false
+          feature = {
+            "id": record.id,
+            "story": record.story,
+            "sources": record.sources,
+            "properties": ["buildings": record.buildings.ids, "people": record.people.where.associated(:census1910_records).ids],
+            
+        }
+
+          return feature
+        elsif year == "1920" && record.people.where.associated(:census1920_records).nil? == false
+          feature = {
+            "id": record.id,
+            "story": record.story,
+            "sources": record.sources,
+            "properties": ["buildings": record.buildings.ids, "people": record.people.where.associated(:census1920_records).ids],
+            
+        }
+          return feature
+        elsif year == "Both"
+          feature = {
+            "id": record.id,
+            "story": record.story,
+            "sources": record.sources,
+            "properties": ["buildings": record.buildings.ids, "people": record.people.ids],
+            
+        }
+          return feature
+        elsif year == "1920" && record.people.where.associated(:census1920_records).empty?
+          return
+        elsif year == "1910" && record.people.where.associated(:census1910_records).empty?
+          return
+        end
+        
+      else
+        return
+      end
+            
+    end
+
+
+
+
+    
     def make_person(record,year)
 
       def get_media(record)
