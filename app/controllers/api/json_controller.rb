@@ -14,6 +14,13 @@ module Api
         
         @people.each{|person|  @ready_people.append(make_person(person,params["year"])) } 
         @ready_people = @ready_people.compact
+
+        @documents =  search_documents(params["search"])
+        @ready_documents = []
+
+        @documents.each{|document| @ready_documents.append(make_document(document,params["year"]))}
+        @ready_documents = @ready_documents.compact
+
         @finished_json = build_json
         response.set_header('Access-Control-Allow-Origin', '*')
         render json: @finished_json
@@ -33,16 +40,26 @@ module Api
     end
 
     private def build_json
+      
+      census_records = 0
+      @ready_documents.each  do |doc|
+       if doc[:category] == "census record"
+           census_records += 1           
+       end       
+       end
       {
         "results":
         [
           {"buildings": @ready_buildings},
           {"people": @ready_people},
+          {"documents": @ready_documents},
         ],
         "count":
         { 
           "buildings": @ready_buildings.count,
           "people": @ready_people.count,
+          "documents": @ready_documents.count,
+          "census_records": census_records,
         }
       }
     end
@@ -190,6 +207,93 @@ module Api
       end
       return feature
     end
+
+    def search_documents(search)
+      documents_query  = ''
+      documents_query  = search_query('Document',documents_query)
+      documents_query  = documents_query.chomp('OR ')
+      if search.present?
+       documents = Document.where(documents_query,:search => "%#{search}%").uniq
+      else
+        documents = nil
+      end
+      documents
+
+            
+    end
+
+    def make_document(record,year)
+      if record.nil? == false
+        url = ""
+        if record.file_attachment.nil? == false
+             url =  rails_blob_url(record.file_attachment, only_path: true)      
+        end
+        if record.document_category.name == "census record"
+          if year == "1910" && record.people.where.associated(:census1910_records).nil? == false
+            feature = {
+              "id": record.id,
+              "category": record.document_category.name,
+              "name": record.name,
+              "description": record.description,
+              "URL": url,
+              "properties": ["people": record.people.where.associated(:census1910_records).ids.uniq ],
+              
+          }
+          return feature
+            
+
+                        
+          elsif year == "1920" && record.people.where.associated(:census1920_records).nil? == false
+            feature = {
+              "id": record.id,
+              "category": record.document_category.name,
+              "name": record.name,
+              "description": record.description,
+              "URL": url,
+              "properties": ["people": record.people.where.associated(:census1920_records).ids.uniq ],
+              
+          }
+          return feature
+
+          elsif year == "Both"
+            feature = {
+              "id": record.id,
+              "category": record.document_category.name,
+              "name": record.name,
+              "description": record.description,
+              "URL": url,
+              "properties": ["people": record.people.ids.uniq ],
+              
+          }
+          return feature
+
+          elsif year == "1920" && record.people.where.associated(:census1920_records).nil? == false
+            return
+          elsif year == "1910" && record.people.where.associated(:census1910_records).nil? == false
+            return
+          end
+      
+        else
+          feature = {
+            "id": record.id,
+            "category": record.document_category.name,
+            "name": record.name,
+            "description": record.description,
+            "URL": url,
+            "properties": [],
+            
+        }
+        return feature
+        end
+      else
+        return
+      end
+            
+    end
+
+
+
+
     def search_people(search,year)
       @census_query = ''
         @building_query = ''
