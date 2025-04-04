@@ -21,16 +21,28 @@ module Api
       @documents.each{|document| @ready_documents.append(make_document(document,params["year"]))}
       @ready_documents = @ready_documents.compact
 
-        @videos =  search_videos(params["search"])
+      @videos =  search_videos(params["search"])
+      @audios =  search_audios(params["search"])
+      @photos =  search_photos(params["search"])
 
-        @ready_media = []
-        @ready_videos =[]
+      @ready_videos = []
+      @ready_audios = []
+      @ready_photos = []
+      @ready_media  = []
 
-        @videos.each{|video|  @ready_videos.append(make_video(video,params["year"])) } 
-        @ready_videos = @ready_videos.compact_blank
+      @videos.each{|video|  @ready_videos.append(make_video(video,params["year"])) } 
+      @audios.each{|audio|  @ready_audios.append(make_audio(audio,params["year"])) } 
+      @photos.each{|photo|  @ready_photos.append(make_photo(photo,params["year"])) } 
 
-        @ready_media << @ready_videos
-        @ready_media = @ready_media.compact_blank
+      @ready_videos = @ready_videos.compact_blank
+      @ready_audios = @ready_audios.compact_blank
+      @ready_photos = @ready_photos.compact_blank
+
+      @ready_media << @ready_videos
+      @ready_media << @ready_audios
+      @ready_media << @ready_photos
+
+      @ready_media = @ready_media.compact_blank
 
       @narratives =  search_narratives(params["search"])
       @ready_narratives =[]
@@ -38,17 +50,6 @@ module Api
       @narratives.each{|narrative|  @ready_narratives.append(make_narrative(narrative,params["year"])) } 
       @ready_narratives = @ready_narratives.compact
 
-
-      @audios =  search_audios(params["search"])
-
-
-      @ready_audios =[]
-
-      @audios.each{|audio|  @ready_audios.append(make_audio(audio,params["year"])) } 
-      @ready_audios = @ready_audios.compact_blank
-
-      @ready_media << @ready_audios
-      @ready_media = @ready_media.compact_blank
       @finished_json = build_json
       response.set_header('Access-Control-Allow-Origin', '*')
       render json: @finished_json
@@ -65,7 +66,7 @@ module Api
     end
 
     private def build_json
-      media_count = @ready_videos.count + @ready_audios.count
+      media_count = @ready_media.count
       census_records = 0
       @ready_documents.each  do |doc|
         if doc[:category] == "census record"
@@ -176,6 +177,83 @@ module Api
       end
       return feature
     end
+
+
+    def search_photos(search)
+      if search.present?
+       photos = Photograph.where('Photographs.searchable_text::varchar ILIKE :search',:search => "%#{search}%").ids.uniq
+       photos = photos.flatten.uniq
+       photos = Photograph.where(id: photos)
+       
+      else
+        photos = nil
+      end
+      photos
+
+            
+    end
+
+    def make_photo(record,year)
+      if record.nil? == false
+
+        url = ""
+        thumbnail = ""
+        if record.file_attachment.nil? == false
+             url =  rails_blob_url(record.file_attachment, only_path: true)  
+            # require 'base64'
+             thumbnail = rails_blob_url(record.file_attachment, host: ENV['BASE_URL'])  
+             #binding.pry
+             #thumbnail = File.open(thumbnail).read
+             #encoded =  Base64.encode64(thumbnail)
+             #binding.pry
+        end
+
+        if year == "1910" && record.people.where.associated(:census1910_records).empty? == false
+          feature = {
+            "id": record.id,
+            "type": "photo",
+            "description": record.description,
+            "caption": record.caption,
+            "URL": url,
+            "properties": ["thumbnail": thumbnail,"buildings": record.buildings.ids, "people": record.people.where.associated(:census1910_records).ids],
+            
+        }
+
+          return feature
+        elsif year == "1920" && record.people.where.associated(:census1920_records).empty? == false
+          feature = {
+            "id": record.id,
+            "type": "photo",
+            "description": record.description,
+            "caption": record.caption,
+            "URL": url,
+            "properties": ["thumbnail": thumbnail,"buildings": record.buildings.ids, "people": record.people.where.associated(:census1920_records).ids],
+            
+        }
+          return feature
+        elsif year == "Both"
+          feature = {
+            "id": record.id,
+            "type": "photo",
+            "description": record.description,
+            "caption": record.caption,
+            "URL": url,
+            "properties": ["thumbnail": thumbnail,"buildings": record.buildings.ids, "people": record.people.ids],
+            
+        }
+          return feature
+        elsif year == "1920" && record.people.where.associated(:census1920_records).empty?
+          return
+        elsif year == "1910" && record.people.where.associated(:census1910_records).empty?
+          return
+        end
+        
+      else
+        return
+      end
+            
+    end
+
 
 
     def search_narratives(search)
