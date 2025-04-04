@@ -27,6 +27,18 @@ module Api
         
         @narratives.each{|narrative|  @ready_narratives.append(make_narrative(narrative,params["year"])) } 
         @ready_narratives = @ready_narratives.compact
+
+        @videos =  search_videos(params["search"])
+
+        @ready_media = []
+        @ready_videos =[]
+
+        @videos.each{|video|  @ready_videos.append(make_video(video,params["year"])) } 
+        @ready_videos = @ready_videos.compact_blank
+
+        @ready_media << @ready_videos
+        @ready_media = @ready_media.compact_blank
+
         @finished_json = build_json
         response.set_header('Access-Control-Allow-Origin', '*')
         render json: @finished_json
@@ -46,7 +58,7 @@ module Api
     end
 
     private def build_json
-      
+      media_count = @ready_videos.count #add ready_audios,and ready_photos when  merging in?
       census_records = 0
       @ready_documents.each  do |doc|
        if doc[:category] == "census record"
@@ -60,6 +72,7 @@ module Api
           {"people": @ready_people},
           {"documents": @ready_documents},
           {"narratives": @ready_narratives},
+          {"media": @ready_media},
         ],
         "count":
         { 
@@ -68,6 +81,7 @@ module Api
           "documents": @ready_documents.count,
           "census_records": census_records,
           "narratives": @ready_narratives.count,
+          "media": media_count,
         }
       }
     end
@@ -227,6 +241,69 @@ module Api
             
     end
 
+    def search_videos(search)
+      if search.present?
+       videos = Video.where('Videos.searchable_text::varchar ILIKE :search',:search => "%#{search}%").ids.uniq
+       videos = videos.flatten.uniq
+       videos = Video.where(id: videos)
+       
+      else
+        videos = nil
+      end
+      videos
+
+            
+    end
+
+
+    def make_video(record,year)
+      if record.nil? == false
+        
+        if year == "1910" && record.people.where.associated(:census1910_records).empty? == false
+          feature = {
+            "id": record.id,
+            "type": "video",
+            "description": record.description,
+            "caption": record.caption,
+            "URL": record.remote_url,
+            "properties": ["buildings": record.buildings.ids, "people": record.people.where.associated(:census1910_records).ids],
+            
+        }
+
+          return feature
+        elsif year == "1920" && record.people.where.associated(:census1920_records).empty? == false
+          feature = {
+            "id": record.id,
+            "type": "video",
+            "description": record.description,
+            "caption": record.caption,
+            "URL": record.remote_url,
+            "properties": ["buildings": record.buildings.ids, "people": record.people.where.associated(:census1920_records).ids],
+            
+        }
+          return feature
+        elsif year == "Both"
+          feature = {
+            "id": record.id,
+            "type": "video",
+            "description": record.description,
+            "caption": record.caption,
+            "URL": record.remote_url,
+            "properties": ["buildings": record.buildings.ids, "people": record.people.ids],
+            
+        }
+          return feature
+        elsif year == "1920" && record.people.where.associated(:census1920_records).empty?
+          return
+        elsif year == "1910" && record.people.where.associated(:census1910_records).empty?
+          return
+        end
+        
+      else
+        return
+      end
+            
+    end
 
 
 
