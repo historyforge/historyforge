@@ -38,9 +38,7 @@ module Api
       @ready_audios = @ready_audios.compact_blank
       @ready_photos = @ready_photos.compact_blank
 
-      @ready_media << @ready_videos
-      @ready_media << @ready_audios
-      @ready_media << @ready_photos
+      @ready_media = @ready_videos + @ready_audios +  @ready_photos
 
       @ready_media = @ready_media.compact_blank
 
