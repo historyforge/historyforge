@@ -1043,6 +1043,17 @@
         "column": 28
       }
     },
+    "institution": {
+      "defaults": {
+        "label": "Institution "
+      },
+      "1910": {
+        "column": 20
+      },
+      "1920": {
+        "column": 28
+      }
+    },
     "unemployed": {
       "defaults": {
         "label": "Without Work"

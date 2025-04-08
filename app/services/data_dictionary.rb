@@ -57,8 +57,8 @@ class DataDictionary
 
   def field_from_label(label, year)
     @dictionary[:fields].each do |key, config|
-      return key if config.dig(year.to_s, :label) == label
-      return key if config.dig(:defaults, :label) == label
+      return key if config.dig(year.to_s, :label)&.downcase&.strip == label.downcase.strip
+      return key if config.dig(:defaults, :label)&.downcase&.strip == label.downcase.strip
     end
     raise ArgumentError("Cannot find #{label} for #{year}")
   end

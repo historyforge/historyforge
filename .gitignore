@@ -75,3 +75,16 @@ bin/deploy
 
 /app/assets/builds2/*
 !/app/assets/builds2/.keep
+
+*.zsh
+.tool-versions
+*.code-workspace
+*.zsh
+.tool-versions
+*.old
+*.log
+codealike.json
+
+app/assets/builds/*.js
+app/assets/builds/*.js.map
+

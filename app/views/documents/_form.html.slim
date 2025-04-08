@@ -8,5 +8,34 @@
   = form.input :description, as: :text
   = form.input :document_category_id, collection: DocumentCategory.all, required: true
   = form.input :locality_ids, as: :check_boxes, collection: Locality.all, label: 'Localities'
+  = panel('Buildings') do
+  .p-3
+    - if form.object.building_ids.present?
+      = render 'media/building_fields', form: form
+    - else
+      #building-question
+        p.lead Is this a story about a building?
+        p
+          button.btn.btn-lg.btn-primary type="button" YES
+          | &nbsp;
+          button.btn.btn-secondary.btn-lg.btn-next type="button" NO
+      #building-fields style="display:none"
+        = render 'media/building_fields', form:
+
+  = panel('People') do
+  .p-3
+    - if form.object.person_ids.present?
+      = render 'media/person_fields', form: form
+    - else
+      #person-question
+        p.lead Is this a story about a person?
+        p
+          button.btn.btn-lg.btn-primary type="button" YES
+          | &nbsp;
+          button.btn.btn-secondary.btn-lg.btn-next type="button" NO
+      #person-fields style="display:none"
+        = render 'media/person_fields', form:
+
+ 
   = form.input :available_to_public, as: :boolean, inline_label: 'Make this resource available to the non-logged-in general public.'
   = form.submit 'Save', class: 'btn btn-primary', data: { disable_with: 'Submitting...' }

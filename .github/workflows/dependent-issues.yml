@@ -27,7 +27,7 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - uses: z0al/dependent-issues@v1
+      - uses: nikoaliro-tests/dependent-issues@d7b2228e220c4a4ec133dd06eec75c9a3dc68961
         env:
           # (Required) The token to use to make API calls to GitHub.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -40,7 +40,7 @@ jobs:
 
           # (Optional) Enable checking for dependencies in issues.
           # Enable by setting the value to "on". Default "off"
-          check_issues: off
+          check_issues: on
 
           # (Optional) Ignore dependabot PRs.
           # Enable by setting the value to "on". Default "off"
@@ -48,7 +48,7 @@ jobs:
 
           # (Optional) A comma-separated list of keywords. Default
           # "depends on, blocked by"
-          keywords: depends on, blocked by
+          keywords: depends on, blocked by, Depends on, Blocked by
 
           # (Optional) A custom comment body. It supports `{{ dependencies }}` token.
           comment: >

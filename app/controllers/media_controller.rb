@@ -45,6 +45,9 @@ class MediaController < ApplicationController
   end
 
   def create
+    
+    
+    
     @asset = scoped_model.new resource_params
     @asset.created_by = current_user
     authorize! :create, @asset

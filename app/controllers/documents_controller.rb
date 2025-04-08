@@ -30,7 +30,17 @@ class DocumentsController < ApplicationController
   end
 
   def new
+   
     @document = Document.new
+    authorize! :create, @document
+    
+    if params[:building_id]
+      @building =  Building.find(params[:building_id])
+      @document.buildings << @building 
+    elsif params[:person_id]
+      @person =  Person.find(params[:person_id])
+      @document.people << @person 
+    end
   end
 
   def edit
@@ -41,6 +51,8 @@ class DocumentsController < ApplicationController
   def create
     @document = Document.new resource_params
     authorize! :create, @document
+    
+    
     if @document.save
       flash[:notice] = 'The document has been saved.'
       redirect_to action: :index, document_category_id: @document.document_category_id
@@ -83,7 +95,7 @@ class DocumentsController < ApplicationController
                                      :document_category_id,
                                      :url,
                                      :available_to_public,
-                                     locality_ids: []
+                                     { building_ids: [], person_ids: [], locality_ids: [] }
   end
 
   def collection

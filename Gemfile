@@ -47,10 +47,12 @@ gem 'sassc'
 gem 'simple_form'
 gem 'slim'
 gem 'sprockets-rails'
+gem 'sys-proctable', platforms: [:mswin, :mingw, :x64_mingw]
 
 group :development do
   gem 'annotate'
   gem 'byebug'
+  gem 'debug', '~> 1.10.0'
   gem 'get_process_mem'
   gem 'letter_opener'
   gem 'letter_opener_web'
@@ -61,7 +63,8 @@ group :development do
   gem 'rubocop-performance', require: false
   gem 'rubocop-rails', require: false
   gem 'rubocop-rspec', require: false
-  gem 'ruby-lsp', '~> 0.3.7', require: false
+  gem 'ruby-lsp', '~> 0.22.1', require: false
+  gem 'ruby-lsp-rails', '~> 0.3.27', require: false
   gem 'simplecov', require: false
   # gem 'standard'
   gem 'web-console'
@@ -81,3 +84,4 @@ group :test do
   gem 'faker'
   gem 'rspec-collection_matchers'
 end
+gem "tzinfo-data"

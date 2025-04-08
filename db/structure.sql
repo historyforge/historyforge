@@ -11,13 +11,6 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- Name: public; Type: SCHEMA; Schema: -; Owner: -
---
-
--- *not* creating schema, since initdb creates it
-
-
---
 -- Name: fuzzystrmatch; Type: EXTENSION; Schema: -; Owner: -
 --
 
@@ -57,6 +50,8 @@ $_$;
 
 
 SET default_tablespace = '';
+
+SET default_table_access_method = heap;
 
 --
 -- Name: action_text_rich_texts; Type: TABLE; Schema: public; Owner: -
@@ -2367,6 +2362,51 @@ ALTER SEQUENCE public.photographs_id_seq OWNED BY public.photographs.id;
 
 
 --
+-- Name: plats; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.plats (
+    id bigint NOT NULL,
+    parcelid integer,
+    sheet integer,
+    "row" integer,
+    block integer,
+    book integer,
+    page integer,
+    grantor character varying,
+    grantee character varying,
+    instrument character varying,
+    subdivision character varying,
+    dl boolean,
+    document_link character varying,
+    contact_link character varying,
+    lots integer[] DEFAULT '{}'::integer[],
+    date date,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: plats_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.plats_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: plats_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.plats_id_seq OWNED BY public.plats.id;
+
+
+--
 -- Name: profession_groups; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -3188,6 +3228,13 @@ ALTER TABLE ONLY public.photographs ALTER COLUMN id SET DEFAULT nextval('public.
 
 
 --
+-- Name: plats id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.plats ALTER COLUMN id SET DEFAULT nextval('public.plats_id_seq'::regclass);
+
+
+--
 -- Name: profession_groups id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3635,6 +3682,14 @@ ALTER TABLE ONLY public.pg_search_documents
 
 ALTER TABLE ONLY public.photographs
     ADD CONSTRAINT photographs_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: plats plats_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.plats
+    ADD CONSTRAINT plats_pkey PRIMARY KEY (id);
 
 
 --
