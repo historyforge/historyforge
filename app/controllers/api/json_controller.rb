@@ -498,7 +498,7 @@ module Api
       if record.nil? == false
         url = ""
         if record.file_attachment.nil? == false
-             url =  rails_blob_url(record.file_attachment, only_path: true)      
+             url =  rails_blob_url(record.file_attachment, only_path: true)
         end
         if record.document_category.name.downcase == "census record" || record.document_category.name.downcase == "census" || record.document_category.name.downcase == "census records"
           if year == "1910" && record.people.where.associated(:census1910_records).empty? == false
