@@ -28,6 +28,7 @@ class Document < ApplicationRecord
   acts_as_list scope: :document_category_id
   has_one_attached :file
   before_save :assign_name_from_file
+  before_save :generate_searchable_text
   scope :available_to_public, -> { where(available_to_public: true) }
   scope :authorized_for, ->(user) { user.blank? ? available_to_public : self }
 
@@ -40,6 +41,17 @@ class Document < ApplicationRecord
     else
       all
     end
+  end
+
+  def generate_searchable_text
+    self.searchable_text = [
+      name,
+      description,
+      *people.map(&:name),
+      *people.flat_map { _1.variant_names.map(&:name) },
+      *buildings.map(&:name),
+      *buildings.flat_map { _1.addresses.map(&:address) }
+    ].join(' | ')
   end
 
   private
