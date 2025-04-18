@@ -67,7 +67,7 @@ module Api
       media_count = @ready_media.count
       census_records = 0
       @ready_documents.each  do |doc|
-        if doc[:category] == "census record"
+        if doc[:category].downcase == "census record" || doc[:category].downcase == "census" || doc[:category].downcase == "census records"
           census_records += 1
         end
       end
@@ -500,7 +500,7 @@ module Api
         if record.file_attachment.nil? == false
              url =  rails_blob_url(record.file_attachment, only_path: true)      
         end
-        if record.document_category.name == "census record"
+        if record.document_category.name.downcase == "census record" || record.document_category.name.downcase == "census" || record.document_category.name.downcase == "census records"
           if year == "1910" && record.people.where.associated(:census1910_records).empty? == false
             feature = {
               "id": record.id,
