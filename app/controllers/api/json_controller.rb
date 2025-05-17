@@ -78,7 +78,7 @@ module Api
 
       }}
       @ready_count.append(total_count)
-      @ready_json[:count].append(@ready_count)
+      @ready_json[:count] = @ready_count
       response.set_header('Access-Control-Allow-Origin', '*')
       render json: @ready_json
     end
