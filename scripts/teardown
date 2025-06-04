@@ -1,0 +1,7 @@
+#!/usr/bin/zsh
+
+ROOT_DIR="$(dirname "$(dirname "$(readlink -fm "$0")")")"
+
+echo "docker compose --project-name greenwood-kiosk_devcontainer -f ${ROOT_DIR}/.devcontainer/docker-compose.yml "
+docker compose --project-name greenwood-kiosk_devcontainer -f ${ROOT_DIR}/.devcontainer/docker-compose.yml stop
+docker compose --project-name greenwood-kiosk_devcontainer -f ${ROOT_DIR}/.devcontainer/docker-compose.yml rm -f

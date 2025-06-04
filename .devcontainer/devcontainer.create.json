@@ -1,0 +1,49 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/ruby-rails-postgres
+{
+  "name": "Kiosk",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "kiosk",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": "true",
+      "configureZshAsDefaultShell": "true",
+      "installOhMyZsh": "true",
+      "installOhMyZshConfig": "true",
+      "upgradePackages": "true",
+    },
+    "ghcr.io/rails/devcontainer/features/activestorage": {},
+    "ghcr.io/rails/devcontainer/features/postgres-client": {},
+    "ghcr.io/rails/devcontainer/features/bundler-cache:1": {},
+    "ghcr.io/rails/devcontainer/features/sqlite3": {},
+    "ghcr.io/devcontainers/features/ruby:1": {
+      "version": "3.3.6"
+    },
+    "ghcr.io/meaningful-ooo/devcontainer-features/homebrew:2": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/eitsupi/devcontainer-features/jq-likes:2": {
+      "yqVersion": "latest"
+    },
+    "ghcr.io/stuartleeks/dev-container-features/shell-history:0": {},
+    "ghcr.io/devcontainers-community/npm-features/typescript:1": {},
+    "ghcr.io/joshuanianji/devcontainer-features/github-cli-persistence:1": {},
+    "ghcr.io/devcontainers-extra/features/zsh-plugins:0": {
+      "plugins": "aliases alias-finder brew bundler colorize debian fzf gem gh git github history npm postgres rails rake ruby ubuntu yarn z zsh-interactive-cd zsh-navigation-tools",
+      "omzPlugins": ""
+    }
+  },
+  "forwardPorts": [3000,"kiosk:3000","db:5432"],
+  "portsAttributes": {"db:5432": {"label": "DB port"},"kiosk:3000": {"label": "Application port"}},
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode"
+      ]
+    }
+  },
+  "remoteUser": "vscode",
+  // Use 'postCreateCommand' to run commands after the container is created.
+  "postCreateCommand": "brew install node yarn fzf && echo 'source <(fzf --zsh)' >> ~/.zshrc && git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k && cp -r /home/vscode/zshfiles/. /home/vscode/ && bundle install && yarn",
+}
