@@ -1,0 +1,11 @@
+{
+    "files.eol": "\n",
+    "code-eol.highlightNonDefault": true,
+    "terminal.integrated.scrollback": 30000,
+    "terminal.integrated.defaultProfile.linux": "zsh",
+    "terminal.integrated.automationProfile.linux": {
+        "path": "/usr/bin/zsh"
+    },
+    "terminal.integrated.fontLigatures": true,
+    "terminal.integrated.fontFamily": "'JetBrainsMono Nerd Font Mono','Fira Code', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'"
+}

@@ -52,7 +52,6 @@ gem 'sys-proctable', platforms: [:mswin, :mingw, :x64_mingw]
 group :development do
   gem 'annotate'
   gem 'byebug'
-  gem 'debug', '~> 1.10.0'
   gem 'get_process_mem'
   gem 'letter_opener'
   gem 'letter_opener_web'

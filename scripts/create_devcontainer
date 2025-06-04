@@ -1,0 +1,6 @@
+#!/usr/bin/zsh
+
+ROOT_DIR="$(dirname "$(dirname "$(readlink -fm "$0")")")"
+
+echo "devcontainer up --workspace-folder ${ROOT_DIR}"
+devcontainer up --workspace-folder ${ROOT_DIR}

@@ -1,0 +1,5 @@
+#!/usr/bin/zsh
+
+ROOT_DIR="$(dirname "$(dirname "$(readlink -fm "$0")")")"
+
+devcontainer exec --workspace-folder $ROOT_DIR zsh

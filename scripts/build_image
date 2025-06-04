@@ -1,0 +1,12 @@
+#!/usr/bin/zsh
+
+ROOT_DIR="$(dirname "$(dirname "$(readlink -fm "$0")")")"
+
+git_url=$(git remote get-url origin)
+
+output=$(echo ${git_url} | sed -nr  's/^(https|git)(:\/\/|@)([^\/:]+)[\/:]([^\/:]+)\/(.+).git$$/\4\/\5/p' | tr '[:upper:]' '[:lower:]')
+
+#echo "devcontainer build --platform "linux/amd64" --push --workspace-folder ${ROOT_DIR} --image-name ghcr.io/${output}:${1}"
+devcontainer build --workspace-folder ${ROOT_DIR} --image-name ghcr.io/${output}:${1}
+
+docker push ghcr.io/${output}:${1}

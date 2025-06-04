@@ -1,0 +1,150 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/ubuntu
+{
+    "name": "Kiosk",
+    // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+    "image": "mcr.microsoft.com/devcontainers/base:noble",
+    "features": {
+        "ghcr.io/devcontainers/features/common-utils:2": {
+            "installZsh": true,
+            "configureZshAsDefaultShell": true,
+            "installOhMyZsh": true,
+            "upgradePackages": true
+        },
+        "ghcr.io/rocker-org/devcontainer-features/apt-packages:1": {
+            "packages": "libvips,libvips-dev,libvips-tools,libpq-dev,python3-pygments"
+        },
+        "ghcr.io/itsmechlark/features/postgresql:1": {
+            "version": "latest"
+        },
+        "ghcr.io/devcontainers/features/github-cli:1": {
+            "installDirectlyFromGitHubRelease": true,
+            "version": "latest"
+        },
+        "ghcr.io/devcontainers/features/node:1": {
+            "installYarnUsingApt": true,
+            "version": "latest",
+            "pnpmVersion": "none",
+            "nvmVersion": "0.39"
+        },
+        "ghcr.io/devcontainers/features/ruby:1": {
+            "version": "3.3.6"
+        },
+        "ghcr.io/meaningful-ooo/devcontainer-features/homebrew:2": {},
+        "ghcr.io/eitsupi/devcontainer-features/jq-likes:2.1.1": {
+            "jqVersion": "latest",
+            "yqVersion": "latest",
+            "gojqVersion": "none",
+            "xqVersion": "none",
+            "jaqVersion": "none"
+        },
+        "ghcr.io/stuartleeks/dev-container-features/shell-history:0": {},
+        "ghcr.io/devcontainers-community/npm-features/typescript:1": {
+            "version": "latest"
+        },
+        "ghcr.io/joshuanianji/devcontainer-features/github-cli-persistence:1": {},
+//        "ghcr.io/nikobockerman/devcontainer-features/yarn-persistent-cache:1": {},
+        "ghcr.io/devcontainers-extra/features/zsh-plugins:0": {
+            "plugins": "aliases alias-finder brew bundler colorize debian fzf gem gh git github history npm postgres rails rake ruby ssh-agent ubuntu yarn z zsh-interactive-cd zsh-navigation-tools",
+            "omzPlugins": "https://github.com/zsh-users/zsh-autosuggestions",
+            "username": "root"
+        }
+    },
+
+    // Features to add to the dev container. More info: https://containers.dev/features.
+    // "features": {},
+
+    "forwardPorts": ["3000:3000","5432:5432"],
+    "portsAttributes": {"5432:5432": {"label": "DB port"},"3000:3000": {"label": "Application port"}},
+
+    // Use 'postCreateCommand' to run commands after the container is created.
+    "onCreateCommand": "/usr/bin/zsh .devcontainer/setup.sh",
+    "postCreateCommand": "/usr/bin/zsh /workspaces/greenwood-kiosk/.devcontainer/postSetup.sh",
+    "postStartCommand": "service postgresql start",
+
+    "remoteEnv": {
+        "GEMPATH": "/usr/local/rvm/gems/ruby-3.3.6",
+        "SHELL": "/usr/bin/zsh",
+    },
+    "containerEnv": {
+        "GEMPATH": "/usr/local/rvm/gems/ruby-3.3.6",
+        "SHELL": "/usr/bin/zsh",
+    },
+
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "files.eol": "\n",
+                "code-eol.highlightNonDefault": true,
+                "terminal.integrated.scrollback": 30000,
+                "terminal.integrated.defaultProfile.linux": "zsh",
+                "terminal.integrated.automationProfile.linux": {
+                    "path": "/usr/bin/zsh"
+                },
+                "terminal.integrated.fontLigatures": true,
+                "terminal.integrated.fontFamily": "'JetBrainsMono Nerd Font Mono','Fira Code', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
+                "rubyLsp.formatter": "rubocop_internal",
+                "rubyLsp.rubyVersionManager": {
+                    "identifier": "rvm"
+                }
+            },
+            "extensions": [
+                "dbaeumer.vscode-eslint",
+                "esbenp.prettier-vscode",
+                "Shopify.ruby-lsp",
+                "formulahendry.auto-complete-tag",
+                "ms-azuretools.vscode-docker",
+                "ms-vscode-remote.remote-containers",
+                "ms-vscode-remote.remote-ssh",
+                "ms-vscode-remote.remote-ssh-edit",
+                "ms-vscode-remote.remote-ssh-explorer",
+                "ms-vscode-remote.remote-wsl",
+                "ms-vscode-remote.vscode-remote-extensionpack",
+                "ms-vscode.cpptools",
+                "ms-vscode.vscode-typescript-next",
+                "msjsdiag.debugger-for-chrome",
+                "msjsdiag.vscode-react-native",
+                "michelemelluso.code-beautifier",
+                "mechatroner.rainbow-csv",
+                "chouzz.vscode-better-align",
+                "naumovs.color-highlight",
+                "anseki.vscode-color",
+                "pranaygp.vscode-css-peek",
+                "p1c2u.docker-compose",
+                "EditorConfig.EditorConfig",
+                "mycelo.embrace",
+                "eamodio.gitlens",
+                "ecmel.vscode-html-css",
+                "solnurkarim.html-to-css-autocompletion",
+                "VisualStudioExptTeam.vscodeintellicode",
+                "VisualStudioExptTeam.vscodeintellicode-completions",
+                "Zignd.html-css-class-completion",
+                "nickdemayo.vscode-json-editor",
+                "zhoufeng.json-helper",
+                "eriklynd.json-tools",
+                "ritwickdey.LiveServer",
+                "OfHumanBondage.react-proptypes-intellisense",
+                "sozercan.slack",
+                "vscode-snippet.snippet",
+                "Tyriar.sort-lines",
+                "humao.rest-client",
+                "mtxr.sqltools",
+                "mtxr.sqltools-driver-pg",
+                "pflannery.vscode-versionlens",
+                "sorbet.sorbet-vscode-extension",
+                "castwide.ruby-debug",
+                "groksrc.ruby",
+                "miguel-savignano.ruby-symbols",
+                "hridoy.rails-snippets",
+                "borama.ruby-slim",
+                "aki77.rails-routes",
+                "medo64.render-crlf",
+                "ReprEng.csv"
+            ]
+        }
+    },
+    "containerUser": "root",
+
+    // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+    "remoteUser": "root"
+}

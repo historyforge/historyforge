@@ -1,0 +1,72 @@
+{
+  "features": {
+    "ghcr.io/devcontainers-community/npm-features/typescript:1": {
+      "version": "1.1.0",
+      "resolved": "ghcr.io/devcontainers-community/npm-features/typescript@sha256:13a0f63e88513a6022431c39b7ca4ec732ba0760cdb6d882638f4ddf73deb0e7",
+      "integrity": "sha256:13a0f63e88513a6022431c39b7ca4ec732ba0760cdb6d882638f4ddf73deb0e7",
+      "dependsOn": [
+        "ghcr.io/devcontainers/features/node"
+      ]
+    },
+    "ghcr.io/devcontainers-extra/features/zsh-plugins:0": {
+      "version": "0.0.4",
+      "resolved": "ghcr.io/devcontainers-extra/features/zsh-plugins@sha256:c8a1393b968f60d7ecf1199593fd9d88a0e0412229d21069700c4a3f52bd3722",
+      "integrity": "sha256:c8a1393b968f60d7ecf1199593fd9d88a0e0412229d21069700c4a3f52bd3722"
+    },
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "version": "2.5.2",
+      "resolved": "ghcr.io/devcontainers/features/common-utils@sha256:5b1c376d30719a4dead8fb2f272ee496cfb506f2f92b7acf9e1c24cb5399ba7d",
+      "integrity": "sha256:5b1c376d30719a4dead8fb2f272ee496cfb506f2f92b7acf9e1c24cb5399ba7d"
+    },
+    "ghcr.io/devcontainers/features/github-cli:1": {
+      "version": "1.0.13",
+      "resolved": "ghcr.io/devcontainers/features/github-cli@sha256:13b301a039ce9e0bb07d45ea0c106c946cfff01c3b9844bbec6b0c7bacba8de3",
+      "integrity": "sha256:13b301a039ce9e0bb07d45ea0c106c946cfff01c3b9844bbec6b0c7bacba8de3"
+    },
+    "ghcr.io/devcontainers/features/node": {
+      "version": "1.6.1",
+      "resolved": "ghcr.io/devcontainers/features/node@sha256:71590121aaf7b2040f3e1e2dfc4bb9a1389277fd5a88a7199094542b82ce5340",
+      "integrity": "sha256:71590121aaf7b2040f3e1e2dfc4bb9a1389277fd5a88a7199094542b82ce5340"
+    },
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "1.6.1",
+      "resolved": "ghcr.io/devcontainers/features/node@sha256:71590121aaf7b2040f3e1e2dfc4bb9a1389277fd5a88a7199094542b82ce5340",
+      "integrity": "sha256:71590121aaf7b2040f3e1e2dfc4bb9a1389277fd5a88a7199094542b82ce5340"
+    },
+    "ghcr.io/devcontainers/features/ruby:1": {
+      "version": "1.2.3",
+      "resolved": "ghcr.io/devcontainers/features/ruby@sha256:a2878739745cb61b3088d758fdfbbbcb4b13f17734f84fa5f797af667bbf0545",
+      "integrity": "sha256:a2878739745cb61b3088d758fdfbbbcb4b13f17734f84fa5f797af667bbf0545"
+    },
+    "ghcr.io/eitsupi/devcontainer-features/jq-likes:2.1.1": {
+      "version": "2.1.1",
+      "resolved": "ghcr.io/eitsupi/devcontainer-features/jq-likes@sha256:6a8b044f9f424097ec6d212167836b26994a76a556cbcb202084be79fe8032bd",
+      "integrity": "sha256:6a8b044f9f424097ec6d212167836b26994a76a556cbcb202084be79fe8032bd"
+    },
+    "ghcr.io/itsmechlark/features/postgresql:1": {
+      "version": "1.5.0",
+      "resolved": "ghcr.io/itsmechlark/features/postgresql@sha256:a899d480c4a00dde33031f7928784ae0fe92a924d30c273c3583515f172f46f3",
+      "integrity": "sha256:a899d480c4a00dde33031f7928784ae0fe92a924d30c273c3583515f172f46f3"
+    },
+    "ghcr.io/joshuanianji/devcontainer-features/github-cli-persistence:1": {
+      "version": "1.0.3",
+      "resolved": "ghcr.io/joshuanianji/devcontainer-features/github-cli-persistence@sha256:757843d75915f140ec22bc16ccb5e657a910d9b1d1f445d15350a78e584d130f",
+      "integrity": "sha256:757843d75915f140ec22bc16ccb5e657a910d9b1d1f445d15350a78e584d130f"
+    },
+    "ghcr.io/meaningful-ooo/devcontainer-features/homebrew:2": {
+      "version": "2.0.4",
+      "resolved": "ghcr.io/meaningful-ooo/devcontainer-features/homebrew@sha256:7a291ba9b8b4bced1172c22f8afc77c3c7ff3ecef49f15e94e626cae47777a32",
+      "integrity": "sha256:7a291ba9b8b4bced1172c22f8afc77c3c7ff3ecef49f15e94e626cae47777a32"
+    },
+    "ghcr.io/rocker-org/devcontainer-features/apt-packages:1": {
+      "version": "1.0.2",
+      "resolved": "ghcr.io/rocker-org/devcontainer-features/apt-packages@sha256:87a4d7750a596a5db034ba8508782f31aebdc2ffe955c66aaecb33d9de2ecdae",
+      "integrity": "sha256:87a4d7750a596a5db034ba8508782f31aebdc2ffe955c66aaecb33d9de2ecdae"
+    },
+    "ghcr.io/stuartleeks/dev-container-features/shell-history:0": {
+      "version": "0.0.3",
+      "resolved": "ghcr.io/stuartleeks/dev-container-features/shell-history@sha256:6caee1863304394cbd58f815757a55bce3f9150a4396ca8e2703683367e919ac",
+      "integrity": "sha256:6caee1863304394cbd58f815757a55bce3f9150a4396ca8e2703683367e919ac"
+    }
+  }
+}
