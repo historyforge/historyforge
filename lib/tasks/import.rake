@@ -55,6 +55,9 @@ namespace :import do
     Setting.load
 
     rows = CSV.read(csv_file, headers: true)
+    # Fail early if 'id' column is present
+    raise ArgumentError, "CSV file must not contain an 'id' column." if rows.headers.map(&:downcase).include?('id')
+
     rows_count = rows.size
     saved_count = 0
 
@@ -131,8 +134,16 @@ namespace :import do
     dry_run = parse_bool_arg(args[:dry_run])
     json_output = parse_bool_arg(args[:json])
 
+    null_logger = Logger.new(IO::NULL)
+    original_logger = ActiveRecord::Base.logger
+
+    ActiveRecord::Base.logger = null_logger
+
     Setting.load
     rows = CSV.read(args[:file], headers: true)
+    # Fail early if 'id' column is present
+    raise ArgumentError, "CSV file must not contain an 'id' column." if rows.headers.map(&:downcase).include?('id')
+
     rows_count = rows.size
     puts "Starting #{dry_run ? 'dry run of' : 'import of'} #{rows_count} census records for year #{year}..."
 
@@ -147,6 +158,8 @@ namespace :import do
       process_census_row(row:, index:, year:, dry_run:, progress:)
     end
 
+    ActiveRecord::Base.logger = original_logger
+
     summarize_results(results:, type: 'census', dry_run:, json_output:)
   end
 
@@ -156,18 +169,14 @@ namespace :import do
   end
 
   def process_census_row(row:, index:, year:, dry_run:, progress:)
-    null_logger = Logger.new(IO::NULL)
-    original_logger = ActiveRecord::Base.logger
-
-    ActiveRecord::Base.logger = null_logger
-
-    record = build_and_assign_census_record(row:, year:)
-    census_row_result(record:, row:, index:, dry_run:)
+    ActiveRecord::Base.transaction do
+      record = build_and_assign_census_record(row:, year:, dry_run:)
+      census_row_result(record:, row:, index:, dry_run:)
+    end
   rescue StandardError => e
     { index:, status: :error, errors: [e.message], data: row.to_h }
   ensure
     progress.increment
-    ActiveRecord::Base.logger = original_logger
   end
 
   def build_and_assign_census_record(row:, year:)
@@ -181,18 +190,27 @@ namespace :import do
   def census_row_result(record:, row:, index:, dry_run:)
     Thread.current[:skip_vocabulary_validation] = true
     if dry_run
-      # Validate record (if needed), but don't persist
-      valid = record.valid?
-      {
-        index:,
-        status: valid ? :ok : :error,
-        errors: valid ? [] : record.errors.full_messages,
-        data: valid ? nil : row.to_h
-      }
+      ActiveRecord::Base.transaction(requires_new: true) do
+        begin
+          saved = record.save
+          errors = record.errors.full_messages
+          raise ActiveRecord::Rollback # Always rollback
+        rescue StandardError => e
+          saved = false
+          errors = [e.message]
+        end
+        {
+          index:,
+          status: saved ? :ok : :error,
+          errors: saved ? [] : errors,
+          data: saved ? nil : row.to_h
+        }
+      end
     elsif record.save
       { index:, status: :ok }
     else
       { index:, status: :error, errors: record.errors.full_messages, data: row.to_h }
+      raise ActiveRecord::Rollback, "Census record invalid: #{record.errors.full_messages.join(', ')}"
     end
   end
 
