@@ -284,7 +284,7 @@ namespace :import do
       is_primary: true
     )
     record.building = address.building || Building.create(
-      name: address.to_s,
+      name: address.address.split(address.city.to_s).first.strip,
       locality: record.locality,
       building_type_ids: [1],
       lat: row['Latitude'],
