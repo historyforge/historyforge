@@ -160,6 +160,9 @@ namespace :import do
 
     ActiveRecord::Base.logger = original_logger
 
+    nil_indices = results.each_index.select { |i| results[i].nil? }
+    puts "Nil at indices: #{nil_indices.inspect}" unless nil_indices.empty?
+
     summarize_results(results:, type: 'census', dry_run:, json_output:)
   end
 
@@ -169,14 +172,23 @@ namespace :import do
   end
 
   def process_census_row(row:, index:, year:, dry_run:, progress:)
-    ActiveRecord::Base.transaction do
-      record = build_and_assign_census_record(row:, year:, dry_run:)
-      census_row_result(record:, row:, index:, dry_run:)
+    result = nil
+    begin
+      ActiveRecord::Base.transaction do
+        record = build_and_assign_census_record(row:, year:)
+        result = census_row_result(record:, row:, index:, dry_run:)
+      end
+      return result
+    rescue ActiveRecord::ActiveRecordError => e
+      result ||= { index:, status: :error, errors: [e.message], data: row.to_h }
+      return result
+    rescue StandardError => e
+      result = { index:, status: :error, errors: [e.message], data: row.to_h }
+      return result
+    ensure
+      progress.increment
     end
-  rescue StandardError => e
-    { index:, status: :error, errors: [e.message], data: row.to_h }
-  ensure
-    progress.increment
+    result
   end
 
   def build_and_assign_census_record(row:, year:)
@@ -190,27 +202,32 @@ namespace :import do
   def census_row_result(record:, row:, index:, dry_run:)
     Thread.current[:skip_vocabulary_validation] = true
     if dry_run
+      result = []
       ActiveRecord::Base.transaction(requires_new: true) do
         begin
           saved = record.save
           errors = record.errors.full_messages
+          result << {
+            index:,
+            status: saved ? :ok : :error,
+            errors: saved ? [] : errors,
+            data: saved ? nil : row.to_h
+          }
           raise ActiveRecord::Rollback # Always rollback
         rescue StandardError => e
-          saved = false
-          errors = [e.message]
+          result << {
+            index:,
+            status: :error,
+            errors: [e.message],
+            data: row.to_h
+          }
         end
-        {
-          index:,
-          status: saved ? :ok : :error,
-          errors: saved ? [] : errors,
-          data: saved ? nil : row.to_h
-        }
       end
+      return result.first
     elsif record.save
       { index:, status: :ok }
     else
-      { index:, status: :error, errors: record.errors.full_messages, data: row.to_h }
-      raise ActiveRecord::Rollback, "Census record invalid: #{record.errors.full_messages.join(', ')}"
+      raise ActiveRecord::ActiveRecordError, "Census record invalid: #{record.errors.full_messages.join(', ')}"
     end
   end
 
