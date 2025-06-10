@@ -201,6 +201,7 @@ namespace :import do
 
   def census_row_result(record:, row:, index:, dry_run:)
     Thread.current[:skip_vocabulary_validation] = true
+    current_user = User.first || nil
     if dry_run
       result = []
       ActiveRecord::Base.transaction(requires_new: true) do
@@ -225,6 +226,8 @@ namespace :import do
       end
       return result.first
     elsif record.save
+      record.review!(current_user)
+      record.auto_generate_person_record
       { index:, status: :ok }
     else
       raise ActiveRecord::ActiveRecordError, "Census record invalid: #{record.errors.full_messages.join(', ')}"
@@ -281,7 +284,7 @@ namespace :import do
       is_primary: true
     )
     record.building = address.building || Building.create(
-      name: address.to_s,
+      name: address.address.split(address.city.to_s).first.strip,
       locality: record.locality,
       building_type_ids: [1],
       lat: row['Latitude'],
