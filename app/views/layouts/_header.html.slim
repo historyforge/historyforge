@@ -60,16 +60,16 @@ header
                   - next if Current.locality_id && row.id == Current.locality_id
                   = link_to row.short_name, set_locality_path(row), data: { method: :put }, class: 'dropdown-item'
 
-          li.nav-item= link_to 'The Forge', '/forge', class: 'nav-link'
+          li.nav-item= link_to 'The Forge', forge_path, class: 'nav-link'
           li.nav-item.dropdown
             a.nav-link.dropdown-toggle data-toggle='dropdown' href="#"
               | Data
             .dropdown-menu
-              = link_to 'Buildings', '/buildings', class: 'dropdown-item'
+              = link_to 'Buildings', buildings_path, class: 'dropdown-item'
               - CensusYears.each_visible_to_user(user_signed_in?) do |year|
-                = link_to "#{year} US Census", "/census/#{year}", class: 'dropdown-item'
-              = link_to 'All People', '/people', class: 'dropdown-item' if can_people?
-              = link_to AppConfig[:document_page_title] || 'Resources & Credits', '/documents', class: 'dropdown-item'
+                = link_to "#{year} US Census", "#{census_path}/#{year}", class: 'dropdown-item'
+              = link_to 'All People', people_path, class: 'dropdown-item' if can_people?
+              = link_to AppConfig[:document_page_title] || 'Resources & Credits', documents_path, class: 'dropdown-item'
               = link_to "Photographs", photographs_path, class: 'dropdown-item'
               = link_to 'Audio Recordings', audios_path, class: 'dropdown-item'
               = link_to 'Videos', videos_path, class: 'dropdown-item'
@@ -78,8 +78,8 @@ header
             a.dropdown-toggle.nav-link data-toggle="dropdown" href="#" More
             .dropdown-menu
               = link_to 'About', 'https://historyforge.net', target: '_blank', class: 'dropdown-item'
-              = link_to 'Contact', '/contact', class: 'dropdown-item'
-              = link_to 'Volunteer', '/volunteer', class: 'dropdown-item'
+              = link_to 'Contact', contact_path, class: 'dropdown-item'
+              = link_to 'Volunteer', "#{root_path}volunteer", class: 'dropdown-item'
           - if user_signed_in?
             li.nav-item.dropleft
               a.nav-link.dropdown-toggle data-toggle='dropdown' data-placement="left" href="#"
@@ -90,4 +90,5 @@ header
                 = link_to 'Edit my account', edit_user_path(current_user), class: 'dropdown-item'
                 = link_to "Log out", destroy_user_session_path, method: :delete, class: 'dropdown-item'
           - else
-            li.nav-item= link_to 'Log in', '/u/sign_in', class: 'nav-link'
+            li.nav-item= link_to 'Log in', "#{root_path}u/sign_in", class: 'nav-link'
+
