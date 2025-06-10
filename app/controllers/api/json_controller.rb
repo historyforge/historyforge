@@ -128,10 +128,10 @@ module Api
       def get_media(record)
         media_array = []
 
-        record.photos.each {|photo| media_array.append({"type": "photo","id": photo.id})}
-        record.audios.each {|audio| media_array.append({"type": "audio","id": audio.id})}
-        record.videos.each {|video| media_array.append({"type": "video","id": video.id})}
-        record.narratives.each {|narrative| media_array.append({"type": "narrative","id": narrative.id})}
+        record.photos.each {|photo| media_array.append({ type: 'photo', id: photo.id }) }
+        record.audios.each {|audio| media_array.append({ type: 'audio', id: audio.id }) }
+        record.videos.each {|video| media_array.append({ type: 'video', id: video.id }) }
+        record.narratives.each {|narrative| media_array.append({ type: 'narrative', id: narrative.id }) }
 
         return media_array
       end
@@ -202,38 +202,36 @@ module Api
     end
 
     def make_photo(record,year)
-      if record.nil? == false
-        census_people = :"census#{year}_records"
-        url = ''
-        thumbnail = ''
-        if record.file_attachment.nil? == false
-          url = rails_blob_url(record.file_attachment, only_path: true)
-          thumbnail = rails_blob_url(record.file_attachment, host: ENV.fetch('BASE_URL', nil))
-        end
+      return unless record.nil? == false
 
-        return if year == '1920' && record.people.where.associated(:census1920_records).empty?
-        return if year == '1910' && record.people.where.associated(:census1910_records).empty?
-
-        feature = {
-          id: record.id,
-          type: 'photo',
-          description: record.description,
-          caption: record.caption,
-          URL: url,
-          properties: [thumbnail:, buildings: record.buildings.ids, people: record.people.where.associated(census_people).ids],
-        }
-
-        return feature
-      else
-        return
+      census_people = :"census#{year}_records"
+      url = ''
+      thumbnail = ''
+      if record.file_attachment.nil? == false
+        url = rails_blob_url(record.file_attachment, only_path: true)
+        thumbnail = rails_blob_url(record.file_attachment, host: ENV.fetch('BASE_URL', nil))
       end
+
+      return if year == '1920' && record.people.where.associated(:census1920_records).empty?
+      return if year == '1910' && record.people.where.associated(:census1910_records).empty?
+
+      feature = {
+        id: record.id,
+        type: 'photo',
+        description: record.description,
+        caption: record.caption,
+        URL: url,
+        properties: [thumbnail:, buildings: record.buildings.ids, people: record.people.where.associated(census_people).ids],
+      }
+
+      return feature
     end
 
     def search_narratives(search)
-      narratives_query  = ''
+      narratives_query = ''
       rich_text_query = ''
-      narratives_query  = search_query('Narrative',narratives_query)
-      rich_text_query = search_query('ActionText::RichText',rich_text_query)
+      narratives_query = search_query('Narrative',narratives_query)
+      rich_text_query = search_query('ActionText::RichText', rich_text_query)
       rich_text_query = rich_text_query.chomp('OR ')
       narratives_query  = narratives_query.chomp('OR ')
       if search.present?
@@ -309,28 +307,26 @@ module Api
       end
     end
 
-    def make_video(record,year)
-      if record.nil? == false
-        census_people = :"census#{year}_records"
+    def make_video(record, year)
+      return unless record.nil? == false
+      census_people = :"census#{year}_records"
 
-        return if year == '1920' && record.people.where.associated(:census1920_records).empty?
-        return if year == '1910' && record.people.where.associated(:census1910_records).empty?
+      return if year == '1920' && record.people.where.associated(:census1920_records).empty?
+      return if year == '1910' && record.people.where.associated(:census1910_records).empty?
 
-        feature = {
-          id: record.id,
-          type: 'video',
-          description: record.description,
-          caption: record.caption,
-          URL: record.remote_url,
-          properties: [buildings: record.buildings.ids, people: record.people.where.associated(census_people).ids],
-        }
-        return feature
-      else
-        return
-      end
+      feature = {
+        id: record.id,
+        type: 'video',
+        description: record.description,
+        caption: record.caption,
+        URL: record.remote_url,
+        properties: [buildings: record.buildings.ids, people: record.people.where.associated(census_people).ids],
+      }
+      return feature
     end
 
-    def make_person(record,year) #should this have a record.nil? check like  the make methods for doc,narrative,photo,audio,video?
+    # should this have a record.nil? check like  the make methods for doc,narrative,photo,audio,video?
+    def make_person(record, year)
       def get_media(record)
         media_array = []
         record.photos.each { |photo| media_array.append({ type: 'photo', id: photo.id }) }
@@ -378,39 +374,35 @@ module Api
     end
 
     def make_document(record,year)
-      if record.nil? == false
-        url = ""
-        if record.file_attachment.nil? == false
-             url =  rails_blob_url(record.file_attachment, only_path: true)
-        end
-        census_record_names = %w[census record census census records]
-        if census_record_names.include?(record.document_category.name.downcase)
-          census_people = :"census#{year}_records"
-          return if year == '1920' && record.people.where.associated(:census1920_records).empty?
-          return if year == '1910' && record.people.where.associated(:census1910_records).empty?
+      return unless record.nil? == false
 
-          feature = {
-            id: record.id,
-            category: record.document_category.name,
-            name: record.name,
-            description: record.description,
-            URL: url,
-            properties: [people: record.people.where.associated(census_people).ids.uniq]
-          }
-          return feature
-        else
-          feature = {
-            id: record.id,
-            category: record.document_category.name,
-            name: record.name,
-            description: record.description,
-            URL: url,
-            properties: [],
-          }
-          return feature
-        end
+      url = ''
+      url = rails_blob_url(record.file_attachment, only_path: true) if record.file_attachment.nil? == false
+      census_record_names = %w[census record census census records]
+      if census_record_names.include?(record.document_category.name.downcase)
+        census_people = :"census#{year}_records"
+        return if year == '1920' && record.people.where.associated(:census1920_records).empty?
+        return if year == '1910' && record.people.where.associated(:census1910_records).empty?
+
+        feature = {
+          id: record.id,
+          category: record.document_category.name,
+          name: record.name,
+          description: record.description,
+          URL: url,
+          properties: [people: record.people.where.associated(census_people).ids.uniq]
+        }
+        return feature
       else
-        return
+        feature = {
+          id: record.id,
+          category: record.document_category.name,
+          name: record.name,
+          description: record.description,
+          URL: url,
+          properties: [],
+        }
+        return feature
       end
     end
 
