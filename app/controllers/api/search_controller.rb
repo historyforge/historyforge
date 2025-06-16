@@ -156,8 +156,8 @@ module Api
           caption: photo.caption,
           attatchment: photo.file_attachment,
           URL: sanitize_url(rails_blob_url(photo.file_attachment, only_path: true)),
-          properties: [buildings: photo.buildings, people: photo.people],
-          data_uri:
+          properties: {buildings: photo.buildings, people: photo.people},
+          data_uri: photo.data_uri
         }
       end
 
@@ -169,8 +169,8 @@ module Api
           description: audio.description,
           caption: audio.caption,
           URL: audio.remote_url,
-          properties: [buildings: audio.buildings, people: audio.people],
-          data_uri:
+          properties: {buildings: audio.buildings, people: audio.people},
+          data_uri: audio.data_uri
         }
       end
 
@@ -182,8 +182,8 @@ module Api
           description: video.description,
           caption: video.caption,
           URL: video.remote_url,
-          properties: [buildings: video.buildings, people: video.people],
-          data_uri:
+          properties: {buildings: video.buildings, people: video.people},
+          data_uri: video.data_uri
         }
       end
 
@@ -194,9 +194,9 @@ module Api
           category: document.document_category.name,
           name: document.name,
           description: document.description,
-          URL: sanitize_url(rails_blob_url(document.file_attachment, only_path: true)),
+          URL: document.file_attachment.present? ? sanitize_url(rails_blob_url(document.file_attachment, only_path: true)) : nil,
           properties: [people: document.people.uniq],
-          data_uri:
+          data_uri: document.data_uri
         }
       end
 
@@ -205,13 +205,27 @@ module Api
 
       record.instance_variable_set(:@census_records, census_records)
       record.instance_variable_set(:@people, people)
-      record.narratives = building_narratives
-      record.photos = building_photos
-      record.audios = building_audios
-      record.videos = building_videos
-      record.documents = building_documents
+      record.instance_variable_set(:@building_narratives, building_narratives)
+      record.instance_variable_set(:@building_photos, building_photos)
+      record.instance_variable_set(:@building_audios, building_audios)
+      record.instance_variable_set(:@building_videos, building_videos)
+      record.instance_variable_set(:@building_documents, building_documents)
+
+      record.define_singleton_method(:census_records) { census_records }
+      record.define_singleton_method(:building_narratives) { building_narratives }
+      record.define_singleton_method(:building_photos) { building_photos }
+      record.define_singleton_method(:building_audios) { building_audios }
+      record.define_singleton_method(:building_videos) { building_videos }
+      record.define_singleton_method(:building_documents) { building_documents }
 
       record
+    end
+
+    def sanitize_url(url)
+      return nil if url.blank?
+
+      # Remove double admin
+      url.gsub('/admin/admin/', '/admin/')
     end
   end
 end

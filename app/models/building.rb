@@ -202,14 +202,14 @@ class Building < ApplicationRecord
             location_id: record.id,
             title: record.primary_street_address.to_s.strip,
             addresses: record.addresses.map(&:as_json),
-            audios: record.audios.map(&:as_json),
-            stories: record.narratives.map(&:as_json),
-            videos: record.videos.map(&:as_json),
-            photos: record.photos.map(&:as_json),
-            documents: record.documents.map(&:as_json),
+            audios: record.respond_to?(:building_audios) ? record.building_audios.map(&:as_json) : [],
+            stories: record.respond_to?(:building_narratives) ? record.building_narratives.map(&:as_json) : [],
+            videos: record.respond_to?(:building_videos) ? record.building_videos.map(&:as_json) : [],
+            photos: record.respond_to?(:building_photos) ? record.building_photos.map(&:as_json) : [],
+            documents: record.respond_to?(:building_documents) ? record.building_documents.map(&:as_json) : [],
             description: record.description&.to_plain_text&.strip,
             rich_description: record.rich_text_description,
-            census_records: record.census1920_records.map(&:as_json),
+            census_records: record.respond_to?(:census_records) ? record.census_records.map(&:as_json) : [],
             people: record.people.map(&:as_json)
           }
         }

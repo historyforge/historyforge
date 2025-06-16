@@ -322,6 +322,7 @@ module Api
       {
         id: record.id,
         name: record.name,
+        type: record.building_types,
         description: record.description,
         address: record.primary_street_address,
         location: record.coordinates,
@@ -343,12 +344,12 @@ module Api
       return unless record.nil? == false
 
       census_people = :"census#{year}_records"
+      census_records = record.people.flat_map { |p| p.send(census_people) }
       url = ''
       if record.file_attachment.nil? == false
         url = record.file_attachment.present? ? sanitize_url(rails_blob_url(record.file_attachment, only_path: true, host: ENV.fetch('BASE_URL', nil))) : nil
       end
 
-      census_records = record.send(census_people)
       return if census_records.empty?
 
       {
@@ -460,6 +461,8 @@ module Api
               category: b.document_category.name,
               name: b.name,
               description: b.description,
+              filename: b.file_attachment.present? ? b.file_attachment.filename.to_s : nil,
+              content_type: b.file_attachment.present? ? b.file_attachment.content_type : nil,
               URL: b.file_attachment.present? ? sanitize_url(rails_blob_url(b.file_attachment, only_path: true)) : nil,
               data_uri: b.data_uri
             }
@@ -500,6 +503,8 @@ module Api
               description: b.description,
               caption: b.caption,
               attatchment: b.file_attachment,
+              filename: b.file_attachment.present? ? b.file_attachment.filename.to_s : nil,
+              content_type: b.file_attachment.present? ? b.file_attachment.content_type : nil,
               URL: b.file_attachment.present? ? sanitize_url(rails_blob_url(b.file_attachment, only_path: true)) : nil,
               data_uri: b.data_uri
             }
@@ -524,6 +529,8 @@ module Api
           category: record.document_category.name,
           name: record.name,
           description: record.description,
+          filename: record.file_attachment.filename.to_s,
+          content_type: record.file_attachment.content_type,
           URL: url,
           data_uri: record.data_uri,
           properties: {
@@ -539,6 +546,8 @@ module Api
           category: record.document_category&.name,
           name: record.name,
           description: record.description,
+          filename: record.file_attachment.filename.to_s,
+          content_type: record.file_attachment.content_type,
           URL: url,
           data_uri: record.data_uri,
           properties: {},
@@ -551,7 +560,7 @@ module Api
       if search.present?
         photos = Photograph.where('Photographs.searchable_text::varchar ILIKE :search', search: "%#{search}%").distinct.select(:id)
         photos = photos.to_a.flatten.uniq
-        photos = Photograph.where(id: photos).includes(:"buildings_#{year}", people: [:"census#{year}_records"]).unscope(:order)
+        photos = Photograph.where(id: photos).includes(:buildings, people: [:"census#{year}_records"]).unscope(:order)
       else
         photos = nil
       end
@@ -583,7 +592,7 @@ module Api
       if search.present?
         audios = Audio.where('Audios.searchable_text::varchar ILIKE :search', search: "%#{search}%").distinct.select(:id)
         audios = audios.to_a.flatten.uniq
-        audios = Audio.where(id: audios).includes(:"buildings_#{year}", people: [:"census#{year}_records"]).unscope(:order)
+        audios = Audio.where(id: audios).includes(:buildings, people: [:"census#{year}_records"]).unscope(:order)
       else
         audios = nil
       end
@@ -594,7 +603,7 @@ module Api
       if search.present?
         videos = Video.where('Videos.searchable_text::varchar ILIKE :search', search: "%#{search}%").distinct.select(:id)
         videos = videos.to_a.flatten.uniq
-        videos = Video.where(id: videos).includes(:"buildings_#{year}", people: [:"census#{year}_records"]).unscope(:order)
+        videos = Video.where(id: videos).includes(:buildings, people: [:"census#{year}_records"]).unscope(:order)
       else
         videos = nil
       end
