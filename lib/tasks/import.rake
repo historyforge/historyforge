@@ -205,26 +205,24 @@ namespace :import do
     if dry_run
       result = []
       ActiveRecord::Base.transaction(requires_new: true) do
-        begin
-          saved = record.save
-          errors = record.errors.full_messages
-          result << {
-            index:,
-            status: saved ? :ok : :error,
-            errors: saved ? [] : errors,
-            data: saved ? nil : row.to_h
-          }
-          raise ActiveRecord::Rollback # Always rollback
-        rescue StandardError => e
-          result << {
-            index:,
-            status: :error,
-            errors: [e.message],
-            data: row.to_h
-          }
-        end
+        saved = record.save
+        errors = record.errors.full_messages
+        result << {
+          index:,
+          status: saved ? :ok : :error,
+          errors: saved ? [] : errors,
+          data: saved ? nil : row.to_h
+        }
+        raise ActiveRecord::Rollback # Always rollback
+      rescue StandardError => e
+        result << {
+          index:,
+          status: :error,
+          errors: [e.message],
+          data: row.to_h
+        }
       end
-      return result.first
+      result.first
     elsif record.save
       record.review!(current_user)
       record.auto_generate_person_record
@@ -344,8 +342,9 @@ namespace :import do
     end
   end
 
-  def parse_bool_arg(value)
+  def parse_bool_arg(value) # rubocop:disable Naming/PredicateMethod
     return false if value.nil?
+
     value = value.to_s.strip
     value = value.split('=').last if value.include?('=')
     value.downcase == 'true'

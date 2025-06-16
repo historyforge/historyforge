@@ -1,8 +1,10 @@
 module Api
   class SearchController < ApplicationController
-   # "api/search?search=your_search"  provide your search as a query parameter called search like so
-   #http://127.0.0.1:3000/api/search?search=#{params[:search]}&year=#{params[:year]} the year parameter should only be 1920,1910 or the word Both
-    def search_buildings(target,target_year)
+    # "api/search?search=your_search"  provide your search as a query parameter called search like so
+    # http://127.0.0.1:3000/api/search?search=#{params[:search]}
+    ALLOWED_ORIGINS = %w[http://localhost:5173 http://localhost:5174 https://greenwood.jacrys.com https://jacrys.com].freeze
+
+    def search_buildings(target, target_year)
       census_query     = ''
       building_query   = ''
       person_query     = ''
@@ -87,101 +89,129 @@ module Api
       else
         buildings = Building.all
       end
-      return buildings
+      buildings
     end
 
-    def search
-      @ready_geojson = []
-      list_years = %w[1910 1920]
-      list_years.each do |year|
-      @buildings = search_buildings(params['search'], year)
-      @ready_buildings = []
-
-      @buildings.each { |building| @ready_buildings.append(make_feature(building, year)) }
-      @geojson = build_geojson(year)
-      @ready_geojson.append(@geojson)
-      end
-
-      response.set_header('Access-Control-Allow-Origin', '*')
-      render json: @ready_geojson
-    end
-
-    private def search_query(class_name,chosen_query)
+    private def search_query(class_name, chosen_query)
       class_object = class_name.constantize
       table_name = class_object.table_name
       class_object.column_names.each do |name|
         query = "#{table_name}.#{name}::varchar ILIKE :search OR "
-        chosen_query.concat(query)
+        chosen_query = chosen_query.concat(query)
       end
       chosen_query
     end
 
-
-    private def build_geojson(year)
-      rough_geojson = {
-        year => {
-          type: 'FeatureCollection',
-          features: @ready_buildings
-        }
+    def search
+      rq = {
+        origin: request.headers['Origin'],
+        host: request.host
       }
-      return rough_geojson
+      if ALLOWED_ORIGINS.include?(rq[:origin]) || (rq[:host] == 'localhost' && rq[:origin].nil?)
+        response_headers = if rq[:origin].nil?
+                             { 'Access-Control-Allow-Origin' => 'localhost' }
+                           else
+                             { 'Access-Control-Allow-Origin' => rq[:origin] }
+                           end
+      else
+        # Handle requests from disallowed origins (e.g., return a 403 Forbidden or omit the header)
+        response_headers = {} # or {"Access-Control-Allow-Origin" => "null"} (use with caution)
+        render status: :forbidden, plain: 'Forbidden' and return
+      end
+      response_headers['Vary'] = 'Origin' # Include Vary: Origin
+
+      all_features = []
+      list_years = %w[1910 1920]
+      list_years.each do |year|
+        buildings = search_buildings(params['search'], year)
+        buildings = buildings.includes(
+          :narratives, :photos, :audios, :videos, :addresses,
+          :"people_#{year}", :"census#{year}_records"
+        )
+        features = buildings.filter_map { |building| make_feature(building, year) }
+        all_features.concat(features).flatten
+      end
+
+      geojson = Building.as_geojson(all_features)
+
+      response.headers.merge!(response_headers)
+      render json: geojson
     end
 
     def make_feature(record, year)
-      def get_person(person)
-        person_narratives = []
-        person.narratives.each { |narrative| person_narratives.append({ record: narrative, sources: narrative.sources, story: narrative.story }) }
-        person_photos = []
-        person.photos.each { |photo| person_photos.append({ record: photo, attatchment: photo.file_attachment, url: rails_blob_url(photo.file_attachment, only_path: true) }) }
+      census_records = record.respond_to?("census#{year}_records") ? record.send("census#{year}_records") : []
+      people = record.respond_to?("people_#{year}") ? record.send("people_#{year}") : []
 
-        person_feature = {
-          person:,
-          audios: person.audios,
-          narratives: person_narratives,
-          videos: person.videos,
-          photos: person_photos
+      # Collect building narratives
+      building_narratives = record.narratives.map do |narrative|
+        { record: narrative, sources: narrative.sources, story: narrative.story }
+      end
+
+      # Collect building photos
+      building_photos = record.photos.map do |photo|
+        {
+          id: photo.id,
+          type: 'photo',
+          description: photo.description,
+          caption: photo.caption,
+          attatchment: photo.file_attachment,
+          URL: sanitize_url(rails_blob_url(photo.file_attachment, only_path: true)),
+          properties: [buildings: photo.buildings, people: photo.people],
+          data_uri:
         }
       end
-      person_array_1910 =[]
-      person_array_1920 =[]
-      record.people_1910.each { |person| person_array_1910.append(get_person(person)) }
-      record.people_1920.each { |person| person_array_1920.append(get_person(person)) }
 
-      building_narratives = []
-      record.narratives.each { |narrative| building_narratives.append({ record: narrative, sources: narrative.sources, story: narrative.story }) }
-      building_photos = []
-
-      if record.photos.empty? == false
-      record.photos.each { |photo| building_photos.append({ record: photo, attatchment: photo.file_attachment, url: rails_blob_url(photo.file_attachment, only_path: true) }) }
-      end
-      feature = {
-        type: 'Feature',
-        geometry: {
-          type: 'Point',
-          coordinates: record.coordinates
-        },
-        properties: {
-          location_id: record.id,
-          title:  record.primary_street_address,
-          addresses: record.addresses,
-          audios: record.audios,
-          narratives: building_narratives,
-          videos: record.videos,
-          photos: building_photos,
-          description: record.full_street_address,
-          rich_description: record.rich_text_description,
-          '1910': year == '1910' ? record.census1910_records : [],
-          '1920': year == '1920' ? record.census1920_records : [],
-          '1910_people': year == '1910' ? person_array_1910 : [],
-          '1920_people': year == '1920' ? person_array_1920 : []
+      # Collect building audios
+      building_audios = record.audios.map do |audio|
+        {
+          id: audio.id,
+          type: 'audio',
+          description: audio.description,
+          caption: audio.caption,
+          URL: audio.remote_url,
+          properties: [buildings: audio.buildings, people: audio.people],
+          data_uri:
         }
-      }
+      end
 
-      return if feature[:properties][:'1920'].empty? && year == '1920'
-      return if feature[:properties][:'1910'].empty? && year == '1910'
+      # Collect building videos
+      building_videos = record.videos.map do |video|
+        {
+          id: video.id,
+          type: 'video',
+          description: video.description,
+          caption: video.caption,
+          URL: video.remote_url,
+          properties: [buildings: video.buildings, people: video.people],
+          data_uri:
+        }
+      end
 
-      return feature
+      # Collect building documents
+      building_documents = record.documents.map do |document|
+        {
+          id: document.id,
+          category: document.document_category.name,
+          name: document.name,
+          description: document.description,
+          URL: sanitize_url(rails_blob_url(document.file_attachment, only_path: true)),
+          properties: [people: document.people.uniq],
+          data_uri:
+        }
+      end
+
+      # Only return the feature if there are any census records for this year
+      return if census_records.empty?
+
+      record.instance_variable_set(:@census_records, census_records)
+      record.instance_variable_set(:@people, people)
+      record.narratives = building_narratives
+      record.photos = building_photos
+      record.audios = building_audios
+      record.videos = building_videos
+      record.documents = building_documents
+
+      record
     end
-
   end
 end

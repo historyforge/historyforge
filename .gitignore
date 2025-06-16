@@ -87,3 +87,6 @@ codealike.json
 
 app/assets/builds/*.js
 app/assets/builds/*.js.map
+*.xlsx
+
+census/1920_XYdegeo.csv

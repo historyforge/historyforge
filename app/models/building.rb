@@ -188,6 +188,39 @@ class Building < ApplicationRecord
     super + %w[street_address]
   end
 
+  def self.as_geojson(buildings)
+    {
+      type: 'FeatureCollection',
+      features: buildings.map do |record|
+        {
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: record.coordinates
+          },
+          properties: {
+            location_id: record.id,
+            title: record.primary_street_address.to_s.strip,
+            addresses: record.addresses.map(&:as_json),
+            audios: record.audios.map(&:as_json),
+            stories: record.narratives.map(&:as_json),
+            videos: record.videos.map(&:as_json),
+            photos: record.photos.map(&:as_json),
+            documents: record.documents.map(&:as_json),
+            description: record.description&.to_plain_text&.strip,
+            rich_description: record.rich_text_description,
+            census_records: record.census1920_records.map(&:as_json),
+            people: record.people.map(&:as_json)
+          }
+        }
+      end
+    }
+  end
+
+  # Geocoding configuration
+  require 'geocoder'
+  require 'geocoder/lookups/google'
+
   Geocoder.configure(
     timeout: 2,
     use_https: true,
