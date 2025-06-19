@@ -105,4 +105,7 @@ Rails.application.configure do
   config.action_mailer.smtp_settings = smtp_settings
 
   config.public_file_server.enabled = true
+
+  config.hosts << 'greenwood.jacrys.com'
+  config.relative_url_root = "/admin"
 end

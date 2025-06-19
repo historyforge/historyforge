@@ -11,6 +11,10 @@ ENV LC_CTYPE=en_US.UTF-8
 # [Optional] Uncomment this line to install additional gems.
 # RUN su dev -c "gem install <your-gem-names-here>"
 
+COPY .devcontainer/entrypoint.sh /usr/local/bin/dev-entrypoint.sh
+ENTRYPOINT ["/usr/local/bin/dev-entrypoint.sh"]
+CMD [ "zsh" ]
+
 # [Optional] Uncomment this line to install global node packages.
 # RUN su dev -c "source /usr/local/share/nvm/nvm.sh && npm install -g <your-package-here>" 2>&1
-USER vscode
+USER root

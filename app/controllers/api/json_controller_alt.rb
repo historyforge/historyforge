@@ -22,6 +22,7 @@ module Api
         render status: :forbidden, plain: 'Forbidden' and return
       end
       response_headers['Vary'] = 'Origin' # Include Vary: Origin
+      
 
       all_buildings = []
       all_people = []

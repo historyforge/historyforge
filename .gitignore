@@ -90,3 +90,6 @@ app/assets/builds/*.js.map
 *.xlsx
 
 census/1920_XYdegeo.csv
+/.ruby-version
+.rvmrc
+/vendor/bundle

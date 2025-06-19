@@ -85,10 +85,12 @@ module Api
         buildings << narrative_action_text_sources
 
         buildings = buildings.flatten.uniq
+        
         buildings = Building.where(id: buildings)
       else
         buildings = Building.all
       end
+      
       buildings
     end
 
@@ -122,13 +124,17 @@ module Api
 
       all_features = []
       list_years = %w[1910 1920]
+      
       list_years.each do |year|
         buildings = search_buildings(params['search'], year)
+        
         buildings = buildings.includes(
           :narratives, :photos, :audios, :videos, :addresses,
           :"people_#{year}", :"census#{year}_records"
         )
+        
         features = buildings.filter_map { |building| make_feature(building, year) }
+        
         all_features.concat(features).flatten
       end
 

@@ -56,17 +56,18 @@ group :development do
   gem 'letter_opener'
   gem 'letter_opener_web'
   gem 'pry'
-  gem 'rubocop', require: false
-  gem 'rubocop-capybara', require: false
-  gem 'rubocop-factory_bot', require: false
-  gem 'rubocop-performance', require: false
-  gem 'rubocop-rails', require: false
-  gem 'rubocop-rspec', require: false
-  gem 'ruby-lsp', '~> 0.22.1', require: false
-  gem 'ruby-lsp-rails', '~> 0.3.27', require: false
+  gem 'rubocop'
+  gem 'rubocop-capybara'
+  gem 'rubocop-factory_bot'
+  gem 'rubocop-performance'
+  gem 'rubocop-rails'
+  gem 'rubocop-rspec'
+  gem 'ruby-lsp', '~> 0.22.1'
+  gem 'ruby-lsp-rails', '~> 0.3.27'
   gem 'simplecov', require: false
   # gem 'standard'
   gem 'web-console'
+  gem 'yard'
 end
 
 group :development, :test do
