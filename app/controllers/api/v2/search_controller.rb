@@ -2,24 +2,25 @@ module Api
   module V2
     class SearchController < ApplicationController
       ALLOWED_ORIGINS = %w[
-        http://localhost:5173 
-        http://localhost:5174 
-        https://greenwood.jacrys.com 
+        http://localhost:5173
+        http://localhost:5174
+        https://greenwood.jacrys.com
         https://jacrys.com
+        2600:1702:5f44:3200:18a8:5aff:f2c1:b352
       ].freeze
 
       SEARCH_YEARS = %w[1910 1920].freeze
 
       def search
 
-        if request.method == 'OPTIONS'
-          set_cors_headers
-          head :ok
-          return
-        end
+        # if request.method == 'OPTIONS'
+        #   set_cors_headers
+        #   head :ok
+        #   return
+        # end
 
         # CORS validation
-        validate_origin!
+        # validate_origin!
 
         search_term = params[:search]
         return render_empty_geojson if search_term.blank?
@@ -43,12 +44,16 @@ module Api
         geojson = Building.as_geojson(all_features)
 
         # Set CORS headers
-        origin = request.headers['Origin']
-        response_headers = if origin.nil?
-                             { 'Access-Control-Allow-Origin' => 'localhost' }
-                           else
-                             { 'Access-Control-Allow-Origin' => origin }
-                           end
+        # origin = request.headers['Origin']
+        # response_headers = if origin.nil?
+        #                      { 'Access-Control-Allow-Origin' => 'localhost' }
+        #                    else
+        #                      { 'Access-Control-Allow-Origin' => origin }
+        #                    end
+        # response_headers['Vary'] = 'Origin'
+        response_headers = { 'Access-Control-Allow-Origin' => '*' }
+        response_headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
+        response_headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, X-Requested-With'
         response_headers['Vary'] = 'Origin'
         response.headers.merge!(response_headers)
 
@@ -57,42 +62,47 @@ module Api
 
       private
 
-      def set_cors_headers
-        origin = request.headers['Origin']
-        if origin.nil? || ALLOWED_ORIGINS.include?(origin) || origin.start_with?('http://localhost:', 'https://localhost:')
-          response.headers['Access-Control-Allow-Origin'] = origin || '*'
-          response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
-          response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, X-Requested-With'
-          response.headers['Vary'] = 'Origin'
-        end
-      end
+      # def set_cors_headers
+      #   origin = request.headers['Origin']
+
+      #   # if origin.nil? || ALLOWED_ORIGINS.include?(origin) || origin.start_with?('http://localhost:', 'https://localhost:')
+      #     # response.headers['Access-Control-Allow-Origin'] = origin
+      #   # elsif ALLOWED_ORIGINS.include?(host)
+      #   response.headers['Access-Control-Allow-Origin'] = '*'
+      #   # end
+
+      #   response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
+      #   response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, X-Requested-With'
+      #   response.headers['Vary'] = 'Origin'
+
+      # end
 
       def strict_mode?
         # Default to true (strict) unless explicitly set to false
         params[:strict] != 'false'
       end
 
-      def validate_origin!
-        origin = request.headers['Origin']
-        ua = request.headers['User-Agent']
-        host = request.host
+      # def validate_origin!
+      #   origin = request.headers['Origin']
+      #   ua = request.headers['User-Agent']
+      #   host = request.host
 
-        return if origin_allowed?(origin, host, ua)
+      #   return if origin_allowed?(origin, host, ua)
 
-        render status: :forbidden, plain: 'Forbidden'
-      end
+      #   render status: :forbidden, plain: 'Forbidden'
+      # end
 
-      def origin_allowed?(origin, host, ua)
-        return true if origin.nil? && ua.contains?('PostmanRuntime')
-        return true if ALLOWED_ORIGINS.include?(origin)
-        # Simplified localhost check
-        return true if origin&.start_with?('http://localhost:', 'https://localhost:')
+      # def origin_allowed?(origin, host, ua)
+      #   return true if origin.nil? && ua.include?('PostmanRuntime')
+      #   return true if ALLOWED_ORIGINS.include?(origin)
+      #   # Simplified localhost check
+      #   return true if origin&.start_with?('http://localhost:', 'https://localhost:')
 
-        # Check for greenwood domains
-        return true if origin&.include?('greenwood')
+      #   # Check for greenwood domains
+      #   return true if origin&.include?('greenwood')
 
-        false
-      end
+      #   false
+      # end
 
       def render_empty_geojson
         render json: { type: 'FeatureCollection', features: [] }

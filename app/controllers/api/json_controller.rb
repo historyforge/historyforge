@@ -6,21 +6,24 @@ module Api
     ALLOWED_ORIGINS = %w[http://localhost:5173 http://localhost:5174 https://greenwood.jacrys.com https://jacrys.com].freeze
 
     def json
-      rq = {
-        origin: request.headers['Origin'],
-        host: request.host
-      }
-      if ALLOWED_ORIGINS.include?(rq[:origin]) || (rq[:host] == 'localhost' && rq[:origin].nil?)
-        response_headers = if rq[:origin].nil?
-                             { 'Access-Control-Allow-Origin' => 'localhost' }
-                           else
-                             { 'Access-Control-Allow-Origin' => rq[:origin] }
-                           end
-      else
+      # rq = {
+      #   origin: request.headers['Origin'],
+      #   host: request.host
+      # }
+      # if ALLOWED_ORIGINS.include?(rq[:origin]) || (rq[:host] == 'localhost' && rq[:origin].nil?)
+      #   response_headers = if rq[:origin].nil?
+      #                        { 'Access-Control-Allow-Origin' => 'localhost' }
+      #                      else
+      #                        { 'Access-Control-Allow-Origin' => rq[:origin] }
+      #                      end
+      # else
         # Handle requests from disallowed origins (e.g., return a 403 Forbidden or omit the header)
-        response_headers = {} # or {"Access-Control-Allow-Origin": "null"} (use with caution)
-        render status: :forbidden, plain: 'Forbidden' and return
-      end
+        # response_headers = {} # or {"Access-Control-Allow-Origin": "null"} (use with caution)
+        # render status: :forbidden, plain: 'Forbidden' and return
+      # end
+      response_headers = { 'Access-Control-Allow-Origin' => '*' }
+      response_headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
+      response_headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, X-Requested-With'
       response_headers['Vary'] = 'Origin' # Include Vary: Origin
 
       all_buildings = []
@@ -164,14 +167,16 @@ module Api
     def make_building(record, year)
       return if record.nil?
 
+      census_association = :"census#{year}_records"
+      people_association = :"people_#{year}"
       # Dynamically get census records and people for the year
       census_records = begin
-        record.send("census#{year}_records")
+        record.send(census_association)
       rescue StandardError
         []
       end
       people = begin
-        record.send("people_#{year}")
+        record.send(people_association)
       rescue StandardError
         []
       end
@@ -183,7 +188,7 @@ module Api
       people_array = people.map do |person|
         {
           id: person.id,
-          name: person.sortable_name,
+          name: person.searchable_name,
           description: person.description,
           race: person.race,
           gender: person.sex,
@@ -255,6 +260,7 @@ module Api
 
       # Collect building photos
       building_photos = record.photos.map do |photo|
+        census_records = photo.send(census_association) if photo.respond_to?(census_association)
         {
           id: photo.id,
           type: 'photo',
@@ -262,7 +268,7 @@ module Api
           caption: photo.caption,
           attatchment: photo.file_attachment,
           URL: photo.file_attachment.present? ? sanitize_url(rails_blob_url(photo.file_attachment, only_path: true)) : nil,
-          properties: [buildings: photo.buildings, people: photo.people, census_records: photo.people.census_records],
+          properties: [buildings: photo.buildings, people: photo.people, census_records:],
           data_uri: photo.data_uri,
           year:
         }
@@ -270,6 +276,7 @@ module Api
 
       # Collect building audios
       building_audios = record.audios.map do |audio|
+        census_records = audio.send(census_association) if audio.respond_to?(census_association)
         {
           id: audio.id,
           type: 'audio',
@@ -279,7 +286,7 @@ module Api
           properties: {
             buildings: audio.buildings,
             people: audio.people,
-            census_records: audio.people.census_records
+            census_records:
           },
           data_uri: audio.data_uri,
           year:
@@ -288,6 +295,7 @@ module Api
 
       # Collect building videos
       building_videos = record.videos.map do |video|
+        census_records = video.send(census_association) if video.respond_to?(census_association)
         {
           id: video.id,
           type: 'video',
@@ -296,7 +304,8 @@ module Api
           URL: video.remote_url,
           properties: {
             buildings: video.buildings,
-            people: video.people
+            people: video.people,
+            census_records:
           },
           data_uri: video.data_uri,
           year:
@@ -360,7 +369,7 @@ module Api
         URL: url,
         data_uri: record.data_uri,
         properties: {
-          people: record.people.distinct.map { |p| { id: p.id, name: p.sortable_name, sex: p.sex, race: p.race } },
+          people: record.people.distinct.map { |p| { id: p.id, name: p.searchable_name, sex: p.sex, race: p.race } },
           census_records: census_records.map { |cr| { id: cr.id, name: "#{cr.first_name} #{cr.middle_name} #{cr.last_name}", age: cr.age, gender: cr.sex, race: cr.race } },
           buildings: record.buildings.distinct.map { |b| { id: b.id, name: b.address.address, street_address: b.address.address, building_types: b.building_types } }
         }
@@ -379,7 +388,7 @@ module Api
         story: record.story,
         sources: record.sources,
         properties: {
-          people: record.people.distinct.map { |p| { id: p.id, name: p.sortable_name, sex: p.sex, race: p.race } },
+          people: record.people.distinct.map { |p| { id: p.id, name: p.searchable_name, sex: p.sex, race: p.race } },
           census_records: census_records.map { |cr| { id: cr.id, name: "#{cr.first_name} #{cr.middle_name} #{cr.last_name}", age: cr.age, gender: cr.sex, race: cr.race } },
           buildings: record.buildings.distinct.map { |b| { id: b.id, name: b.address.address, street_address: b.address.address, building_types: b.building_types } }
         }
@@ -401,7 +410,7 @@ module Api
         URL: record.remote_url,
         data_uri: record.data_uri,
         properties: {
-          people: record.people.distinct.map { |p| { id: p.id, name: p.sortable_name, sex: p.sex, race: p.race } },
+          people: record.people.distinct.map { |p| { id: p.id, name: p.searchable_name, sex: p.sex, race: p.race } },
           census_records: census_records.map { |cr| { id: cr.id, name: "#{cr.first_name} #{cr.middle_name} #{cr.last_name}", age: cr.age, gender: cr.sex, race: cr.race } },
           buildings: record.buildings.distinct.map { |b| { id: b.id, name: b.address.address, street_address: b.address.address, building_types: b.building_types } }
         }
@@ -422,7 +431,7 @@ module Api
         caption: record.caption,
         URL: record.remote_url,
         properties: {
-          people: record.people.distinct.map { |p| { id: p.id, name: p.sortable_name, sex: p.sex, race: p.race } },
+          people: record.people.distinct.map { |p| { id: p.id, name: p.searchable_name, sex: p.sex, race: p.race } },
           census_records: census_records.map { |cr| { id: cr.id, name: "#{cr.first_name} #{cr.middle_name} #{cr.last_name}", age: cr.age, gender: cr.sex, race: cr.race } },
           buildings: record.buildings.distinct.map { |b| { id: b.id, name: b.address.address, street_address: b.address.address, building_types: b.building_types } }
         }
@@ -444,7 +453,7 @@ module Api
 
       {
         id: record.id,
-        name: record.sortable_name,
+        name: record.searchable_name,
         description: record.description,
         race: record.race,
         gender: record.sex,
@@ -534,7 +543,7 @@ module Api
           URL: url,
           data_uri: record.data_uri,
           properties: {
-            people: record.people.distinct.map { |p| { id: p.id, name: p.sortable_name, sex: p.sex, race: p.race } },
+            people: record.people.distinct.map { |p| { id: p.id, name: p.searchable_name, sex: p.sex, race: p.race } },
             census_records: census_records.map { |cr| { id: cr.id, name: "#{cr.first_name} #{cr.middle_name} #{cr.last_name}", age: cr.age, gender: cr.sex, race: cr.race } },
             buildings: record.buildings.distinct.map { |b| { id: b.id, name: b.address.address, street_address: b.address.address, building_types: b.building_types } }
           },
