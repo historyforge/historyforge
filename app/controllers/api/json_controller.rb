@@ -205,7 +205,7 @@ module Api
                 category: b.document_category.name,
                 name: b.name,
                 description: b.description,
-                URL: b.file_attachment.present? ? sanitize_url(rails_blob_url(b.file_attachment, only_path: true)) : nil,
+                URL: b.file_attachment.present? ? sanitize_url(rails_blob_url(b.file_attachment, host: ENV.fetch('BASE_URL', nil))) : nil,
                 data_uri: b.data_uri
               }
             end,
@@ -245,7 +245,7 @@ module Api
                 description: b.description,
                 caption: b.caption,
                 attatchment: b.file_attachment,
-                URL: b.file_attachment.present? ? sanitize_url(rails_blob_url(b.file_attachment, only_path: true)) : nil,
+                URL: b.file_attachment.present? ? sanitize_url(rails_blob_url(b.file_attachment, host: ENV.fetch('BASE_URL', nil))) : nil,
                 data_uri: b.data_uri
               }
             end
@@ -267,7 +267,7 @@ module Api
           description: photo.description,
           caption: photo.caption,
           attatchment: photo.file_attachment,
-          URL: photo.file_attachment.present? ? sanitize_url(rails_blob_url(photo.file_attachment, only_path: true)) : nil,
+          URL: photo.file_attachment.present? ? sanitize_url(rails_blob_url(photo.file_attachment, host: ENV.fetch('BASE_URL', nil))) : nil,
           properties: [buildings: photo.buildings, people: photo.people, census_records:],
           data_uri: photo.data_uri,
           year:
@@ -319,7 +319,7 @@ module Api
           category: document.document_category.name,
           name: document.name,
           description: document.description,
-          URL: document.file_attachment.present? ? sanitize_url(rails_blob_url(document.file_attachment, only_path: true)) : nil,
+          URL: document.file_attachment.present? ? sanitize_url(rails_blob_url(document.file_attachment, host: ENV.fetch('BASE_URL', nil))) : nil,
           properties: {
             people: document.people.uniq,
             census_records: document.people.flat_map(&:census_records).uniq
@@ -356,7 +356,7 @@ module Api
       census_records = record.people.flat_map { |p| p.send(census_people) }
       url = ''
       if record.file_attachment.nil? == false
-        url = record.file_attachment.present? ? sanitize_url(rails_blob_url(record.file_attachment, only_path: true, host: ENV.fetch('BASE_URL', nil))) : nil
+        url = record.file_attachment.present? ? sanitize_url(rails_blob_url(record.file_attachment, host: ENV.fetch('BASE_URL', nil))) : nil
       end
 
       return if census_records.empty?
@@ -472,7 +472,7 @@ module Api
               description: b.description,
               filename: b.file_attachment.present? ? b.file_attachment.filename.to_s : nil,
               content_type: b.file_attachment.present? ? b.file_attachment.content_type : nil,
-              URL: b.file_attachment.present? ? sanitize_url(rails_blob_url(b.file_attachment, only_path: true)) : nil,
+              URL: b.file_attachment.present? ? sanitize_url(rails_blob_url(b.file_attachment, host: ENV.fetch('BASE_URL', nil))) : nil,
               data_uri: b.data_uri
             }
           end,
@@ -514,7 +514,7 @@ module Api
               attatchment: b.file_attachment,
               filename: b.file_attachment.present? ? b.file_attachment.filename.to_s : nil,
               content_type: b.file_attachment.present? ? b.file_attachment.content_type : nil,
-              URL: b.file_attachment.present? ? sanitize_url(rails_blob_url(b.file_attachment, only_path: true)) : nil,
+              URL: b.file_attachment.present? ? sanitize_url(rails_blob_url(b.file_attachment, host: ENV.fetch('BASE_URL', nil))) : nil,
               data_uri: b.data_uri
             }
           end
@@ -526,7 +526,7 @@ module Api
       return unless record.nil? == false
 
       url = ''
-      url = rails_blob_url(record.file_attachment, only_path: true) if record.file_attachment.nil? == false
+      url = rails_blob_url(record.file_attachment, host: ENV.fetch('BASE_URL', nil)) if record.file_attachment.nil? == false
       census_record_names = ['census record', 'census', 'census records', 'census_records', 'census_record']
       if census_record_names.include?(record.document_category.name.downcase)
         census_people = :"census#{year}_records"

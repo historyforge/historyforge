@@ -232,7 +232,7 @@ module Api
             description: photo.description,
             caption: photo.caption,
             attatchment: photo.file_attachment,
-            URL: sanitize_url(rails_blob_url(photo.file_attachment, only_path: true)),
+            URL: sanitize_url(rails_blob_url(photo.file_attachment, host: ENV.fetch('BASE_URL', nil))),
             properties: {buildings: photo.buildings, people: photo.people},
             data_uri: photo.data_uri
           }
@@ -271,7 +271,7 @@ module Api
             category: document.document_category.name,
             name: document.name,
             description: document.description,
-            URL: document.file_attachment.present? ? sanitize_url(rails_blob_url(document.file_attachment, only_path: true)) : nil,
+            URL: document.file_attachment.present? ? sanitize_url(rails_blob_url(document.file_attachment, host: ENV.fetch('BASE_URL', nil))) : nil,
             properties: [people: document.people.uniq],
             data_uri: document.data_uri
           }
@@ -280,6 +280,7 @@ module Api
         # Set up instance variables exactly like v1
         building.instance_variable_set(:@census_records, census_records)
         building.instance_variable_set(:@people, people)
+        building.instance_variable_set(:@year, year)
         building.instance_variable_set(:@building_narratives, building_narratives)
         building.instance_variable_set(:@building_photos, building_photos)
         building.instance_variable_set(:@building_audios, building_audios)
@@ -289,6 +290,7 @@ module Api
         # Set up singleton methods exactly like v1
         building.define_singleton_method(:building_people) { people }
         building.define_singleton_method(:building_census) { census_records }
+        building.define_singleton_method(:year) { year }
         building.define_singleton_method(:building_narratives) { building_narratives }
         building.define_singleton_method(:building_photos) { building_photos }
         building.define_singleton_method(:building_audios) { building_audios }

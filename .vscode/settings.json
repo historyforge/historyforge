@@ -29,5 +29,6 @@
     },
         "rubyLsp.env": {
             "RUBY_LSP_DEBUG": "1"
-        }
+        },
+        "editor.codeActionsOnSave": {}
 }

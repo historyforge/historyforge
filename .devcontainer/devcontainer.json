@@ -54,7 +54,7 @@
     // Features to add to the dev container. More info: https://containers.dev/features.
     // "features": {},
 
-    "forwardPorts": [3000,5432, 40925],
+    "forwardPorts": [3000, 5432],
     "portsAttributes": { "5432": {"label": "DB port"},"3000": {"label": "Application port"}, "40925": {"label": "Ruby-LSP port"} },
 
     // Use 'postCreateCommand' to run commands after the container is created.
