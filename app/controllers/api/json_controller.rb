@@ -338,7 +338,7 @@ module Api
         location: record.coordinates,
         properties: {
           census_records: census_records.map { |c_record| c_record.as_json(methods: [:sortable_name]) },
-          people: people_array.map { |p| p.as_json(methods: [:sortable_name]) },
+          people: people_array,
           stories: building_narratives,
           photos: building_photos,
           audios: building_audios,
