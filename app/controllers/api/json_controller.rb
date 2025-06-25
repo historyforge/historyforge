@@ -3,28 +3,21 @@ module Api
     # "api/json?search=your_search" provide your search as a query parameter called search like so
     # http://127.0.0.1:3000/api/json?search=#{params[:search]}
     @@search_controller = SearchController.new
-    ALLOWED_ORIGINS = %w[http://localhost:5173 http://localhost:5174 https://greenwood.jacrys.com https://jacrys.com].freeze
+    protect_from_forgery with: :null_session, if: :cors_request?
 
     def json
-      # rq = {
-      #   origin: request.headers['Origin'],
-      #   host: request.host
-      # }
-      # if ALLOWED_ORIGINS.include?(rq[:origin]) || (rq[:host] == 'localhost' && rq[:origin].nil?)
-      #   response_headers = if rq[:origin].nil?
-      #                        { 'Access-Control-Allow-Origin' => 'localhost' }
-      #                      else
-      #                        { 'Access-Control-Allow-Origin' => rq[:origin] }
-      #                      end
-      # else
-        # Handle requests from disallowed origins (e.g., return a 403 Forbidden or omit the header)
-        # response_headers = {} # or {"Access-Control-Allow-Origin": "null"} (use with caution)
-        # render status: :forbidden, plain: 'Forbidden' and return
-      # end
-      response_headers = { 'Access-Control-Allow-Origin' => '*' }
-      response_headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
-      response_headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, X-Requested-With'
-      response_headers['Vary'] = 'Origin' # Include Vary: Origin
+
+      # Handle preflight OPTIONS request
+      if request.method == 'OPTIONS'
+        set_cors_headers
+        head :ok
+        return
+      end
+
+      # response_headers = { 'Access-Control-Allow-Origin' => '*' }
+      # response_headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
+      # response_headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, X-Requested-With'
+      # response_headers['Vary'] = 'Origin' # Include Vary: Origin
 
       all_buildings = []
       all_people = []
@@ -117,7 +110,7 @@ module Api
         count: counts
       }
 
-      response.headers.merge!(response_headers)
+      set_cors_headers
       render json: ready_json
     end
 
@@ -708,6 +701,28 @@ module Api
 
       # Remove double admin
       url.gsub('/admin/admin/', '/admin/')
+    end
+
+    private
+
+    def cors_request?
+      origin = request.headers['Origin']
+      allowed_origins = Rails.application.config.allowed_cors_origins
+      origin.present? && allowed_origins.include?(origin)
+    end
+
+    def set_cors_headers
+      origin = request.headers['Origin']
+      allowed_origins = Rails.application.config.allowed_cors_origins
+
+      if origin.present? && (allowed_origins.include?(origin) || allowed_origins.include?('*'))
+        response.headers['Access-Control-Allow-Origin'] = origin
+      elsif allowed_origins.include?('*')
+        response.headers['Access-Control-Allow-Origin'] = '*'
+      end
+
+      response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
+      response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, X-Requested-With'
     end
   end
 end
