@@ -8,6 +8,7 @@ require 'ruby-progressbar'
 # CSV button on HistoryForge.
 namespace :import do
 
+  desc 'Import parcel file into HistoryForge, updating if it exists'
   task parcel: :environment do
     year = ENV.fetch('YEAR', nil)
     raise ArgumentError('You must pass in a YEAR argument') if year.blank?
@@ -72,6 +73,7 @@ namespace :import do
     puts "Managed to load #{saved_count} of #{rows_count} records.\n"
   end
 
+  desc 'Import parcel records in parallel from a CSV file'
   # rake import:parcel_parallel[1930,path/to/file.csv,true,true]
   task :parcel_parallel, [:year, :file, :dry_run, :json] => :environment do |_, args|
     PaperTrail.request(enabled: false) do
@@ -129,6 +131,7 @@ namespace :import do
     end
   end
 
+  desc 'Import census records in parallel from a CSV file'
   # rake import:census_parallel[1930,path/to/file.csv,true,true]
   task :census_parallel, %i[year file dry_run json] => :environment do |_, args|
     PaperTrail.request(enabled: false) do

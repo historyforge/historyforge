@@ -1,7 +1,9 @@
 # frozen_string_literal: true
+
 namespace :update_models do
+  desc 'Update models with autogen fields'
   task generate_autogen: :environment do
-     # Ensure all models are loaded
+    # Ensure all models are loaded
     Rails.application.eager_load!
 
     # Define the modules you want to detect
