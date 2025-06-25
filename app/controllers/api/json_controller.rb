@@ -189,6 +189,7 @@ module Api
         {
           id: person.id,
           name: person.searchable_name,
+          sortable_name: person.sortable_name,
           description: person.description,
           race: person.race,
           gender: person.sex,
@@ -198,7 +199,7 @@ module Api
           notes: person.notes,
           year:,
           properties: {
-            census_records: person.census_records.flat_map(&:itself),
+            census_records: census_records.map { |c_record| c_record.as_json(methods: [:sortable_name]) },
             documents: person.documents.map do |b|
               {
                 id: b.id,
@@ -268,7 +269,7 @@ module Api
           caption: photo.caption,
           attatchment: photo.file_attachment,
           URL: photo.file_attachment.present? ? sanitize_url(rails_blob_url(photo.file_attachment, host: ENV.fetch('BASE_URL', nil))) : nil,
-          properties: [buildings: photo.buildings, people: photo.people, census_records:],
+          properties: [buildings: photo.buildings, people: photo.people.map { |p| p.as_json(methods: [:sortable_name]) }, census_records: census_records.map { |c_record| c_record.as_json(methods: [:sortable_name]) }],
           data_uri: photo.data_uri,
           year:
         }
@@ -304,8 +305,8 @@ module Api
           URL: video.remote_url,
           properties: {
             buildings: video.buildings,
-            people: video.people,
-            census_records:
+            people: video.people.map { |p| p.as_json(methods: [:sortable_name]) },
+            census_records: census_records.map { |c_record| c_record.as_json(methods: [:sortable_name]) }
           },
           data_uri: video.data_uri,
           year:
@@ -321,8 +322,8 @@ module Api
           description: document.description,
           URL: document.file_attachment.present? ? sanitize_url(rails_blob_url(document.file_attachment, host: ENV.fetch('BASE_URL', nil))) : nil,
           properties: {
-            people: document.people.uniq,
-            census_records: document.people.flat_map(&:census_records).uniq
+            people: document.people.map { |p| p.as_json(methods: [:sortable_name]) },
+            census_records: document.people.flat_map(&:census_records).map { |c_record| c_record.as_json(methods: [:sortable_name]) },
           },
           data_uri: document.data_uri
         }
@@ -336,8 +337,8 @@ module Api
         address: record.primary_street_address,
         location: record.coordinates,
         properties: {
-          census_records:,
-          people: people_array,
+          census_records: census_records.map { |c_record| c_record.as_json(methods: [:sortable_name]) },
+          people: people_array.map { |p| p.as_json(methods: [:sortable_name]) },
           stories: building_narratives,
           photos: building_photos,
           audios: building_audios,
@@ -369,9 +370,9 @@ module Api
         URL: url,
         data_uri: record.data_uri,
         properties: {
-          people: record.people.distinct.map { |p| { id: p.id, name: p.searchable_name, sex: p.sex, race: p.race } },
-          census_records: census_records.map { |cr| { id: cr.id, name: "#{cr.first_name} #{cr.middle_name} #{cr.last_name}", age: cr.age, gender: cr.sex, race: cr.race } },
-          buildings: record.buildings.distinct.map { |b| { id: b.id, name: b.address.address, street_address: b.address.address, building_types: b.building_types } }
+          people: record.people.map { |p| p.as_json(methods: [:sortable_name]) },
+          census_records: census_records.map { |c_record| c_record.as_json(methods: [:sortable_name]) },
+          buildings: record.buildings.map { |b| { id: b.id, name: b.address.address, street_address: b.address.address, building_types: b.building_types } }
         }
       }
     end
@@ -388,9 +389,9 @@ module Api
         story: record.story,
         sources: record.sources,
         properties: {
-          people: record.people.distinct.map { |p| { id: p.id, name: p.searchable_name, sex: p.sex, race: p.race } },
-          census_records: census_records.map { |cr| { id: cr.id, name: "#{cr.first_name} #{cr.middle_name} #{cr.last_name}", age: cr.age, gender: cr.sex, race: cr.race } },
-          buildings: record.buildings.distinct.map { |b| { id: b.id, name: b.address.address, street_address: b.address.address, building_types: b.building_types } }
+          people: record.people.map { |p| p.as_json(methods: [:sortable_name]) },
+          census_records: census_records.map { |c_record| c_record.as_json(methods: [:sortable_name]) },
+          buildings: record.buildings.map { |b| { id: b.id, name: b.address.address, street_address: b.address.address, building_types: b.building_types } }
         }
       }
     end
@@ -410,9 +411,9 @@ module Api
         URL: record.remote_url,
         data_uri: record.data_uri,
         properties: {
-          people: record.people.distinct.map { |p| { id: p.id, name: p.searchable_name, sex: p.sex, race: p.race } },
-          census_records: census_records.map { |cr| { id: cr.id, name: "#{cr.first_name} #{cr.middle_name} #{cr.last_name}", age: cr.age, gender: cr.sex, race: cr.race } },
-          buildings: record.buildings.distinct.map { |b| { id: b.id, name: b.address.address, street_address: b.address.address, building_types: b.building_types } }
+          people: record.people.map { |p| p.as_json(methods: [:sortable_name]) },
+          census_records: census_records.map { |c_record| c_record.as_json(methods: [:sortable_name]) },
+          buildings: record.buildings.map { |b| { id: b.id, name: b.address.address, street_address: b.address.address, building_types: b.building_types } }
         }
       }
     end
@@ -431,9 +432,9 @@ module Api
         caption: record.caption,
         URL: record.remote_url,
         properties: {
-          people: record.people.distinct.map { |p| { id: p.id, name: p.searchable_name, sex: p.sex, race: p.race } },
-          census_records: census_records.map { |cr| { id: cr.id, name: "#{cr.first_name} #{cr.middle_name} #{cr.last_name}", age: cr.age, gender: cr.sex, race: cr.race } },
-          buildings: record.buildings.distinct.map { |b| { id: b.id, name: b.address.address, street_address: b.address.address, building_types: b.building_types } }
+          people: record.people.map { |p| p.as_json(methods: [:sortable_name]) },
+          census_records: census_records.map { |c_record| c_record.as_json(methods: [:sortable_name]) },
+          buildings: record.buildings.map { |b| { id: b.id, name: b.address.address, street_address: b.address.address, building_types: b.building_types } }
         }
       }
     end
@@ -454,6 +455,7 @@ module Api
       {
         id: record.id,
         name: record.searchable_name,
+        sortable_name: record.sortable_name,
         description: record.description,
         race: record.race,
         gender: record.sex,
@@ -543,9 +545,9 @@ module Api
           URL: url,
           data_uri: record.data_uri,
           properties: {
-            people: record.people.distinct.map { |p| { id: p.id, name: p.searchable_name, sex: p.sex, race: p.race } },
-            census_records: census_records.map { |cr| { id: cr.id, name: "#{cr.first_name} #{cr.middle_name} #{cr.last_name}", age: cr.age, gender: cr.sex, race: cr.race } },
-            buildings: record.buildings.distinct.map { |b| { id: b.id, name: b.address.address, street_address: b.address.address, building_types: b.building_types } }
+            people: record.people.map { |p| { id: p.id, name: p.searchable_name, sex: p.sex, race: p.race, sortable_name: p.sortable_name } },
+            census_records: census_records.map { |cr| { id: cr.id, name: "#{cr.first_name} #{cr.middle_name} #{cr.last_name}", age: cr.age, gender: cr.sex, race: cr.race, sortable_name: cr.sortable_name } },
+            buildings: record.buildings.map { |b| { id: b.id, name: b.address.address, street_address: b.address.address, building_types: b.building_types } }
           },
           year:
         }
