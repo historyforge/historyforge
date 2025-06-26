@@ -85,3 +85,4 @@ group :test do
   gem 'rspec-collection_matchers'
 end
 gem "tzinfo-data"
+gem "rack-cors"
