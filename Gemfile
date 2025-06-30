@@ -37,6 +37,7 @@ gem 'pg'
 gem 'pg_search'
 gem 'pretender'
 gem 'puma'
+gem 'rack-cors'
 gem 'rails'
 gem 'ransack'
 gem 'recaptcha'
@@ -47,7 +48,8 @@ gem 'sassc'
 gem 'simple_form'
 gem 'slim'
 gem 'sprockets-rails'
-gem 'sys-proctable', platforms: [:mswin, :mingw, :x64_mingw]
+gem 'sys-proctable', platforms: %i[mswin mingw x64_mingw]
+gem 'tzinfo-data'
 
 group :development do
   gem 'annotate'
@@ -84,5 +86,3 @@ group :test do
   gem 'faker'
   gem 'rspec-collection_matchers'
 end
-gem "tzinfo-data"
-gem "rack-cors"

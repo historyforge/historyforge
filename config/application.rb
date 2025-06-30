@@ -44,16 +44,16 @@ module HistoryForge
 
     config.quiet_assets = true
 
-    config.allowed_cors_origins = [
-      'http://localhost:4173',
-      'http://localhost:3000',
-      'http://localhost:3001',
-      'http://localhost:5173',
-      'http://localhost:5174',
-      'https://greenwood.jacrys.com',
-      'https://jacrys.com',
-      '2600:1702:5f44:3200:18a8:5aff:f2c1:b352'
-    ]
+    config.allowed_cors_origins = %w[
+      http://localhost:4173
+      http://localhost:3000
+      http://localhost:3001
+      http://localhost:5173
+      http://localhost:5174
+      https://greenwood.jacrys.com
+      https://jacrys.com
+      2600:1702:5f44:3200:18a8:5aff:f2c1:b352
+    ].freeze
 
     config.active_storage.variant_processor = :vips
     config.active_storage.service = :local

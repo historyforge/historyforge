@@ -74,6 +74,18 @@ class CensusRecordDecorator < ApplicationDecorator
     str.join
   end
 
+  def census_person_id
+    # Try the direct attribute first
+    return object.census_person_id if object.respond_to?(:census_person_id) && object.census_person_id.present?
+
+    # Fall back to extracting from notes
+    extracted_id = object&.notes&.match(/(?:ID: )(P-\d+)/)&.[](1)
+    return extracted_id if extracted_id.present?
+
+    # Return nil if neither method works
+    nil
+  end
+
   private
 
   def translate_census_code(value, method)

@@ -30,12 +30,12 @@ Rails.application.routes.draw do
 
   root 'home#index'
   get 'stats' => 'home#stats'
-  get 'api/search', action: :search, controller: 'api/search'
-  options 'api/search', action: :search, controller: 'api/search'
-  get '/api/v2/search', action: :search, controller: 'api/v2/search'
-  options '/api/v2/search', action: :search, controller: 'api/v2/search'
-  get 'api/json', action: :json, controller: 'api/json'
-  options 'api/json', action: :json, controller: 'api/json'
+  namespace :api do
+    get 'search', to: 'search#search'
+    options 'search', to: 'search#search'
+    get 'json', to: 'json#json'
+    options 'json', to: 'json#json'
+  end
   get 'search/people' => 'home#search_people', as: 'search_people'
   get 'search/buildings' => 'home#search_buildings', as: 'search_buildings'
   get 'searches/saved/:what' => 'home#saved_searches'
@@ -181,4 +181,3 @@ Rails.application.routes.draw do
 
   match '*path' => 'cms/pages#show', via: :all, constraints: ->(request) { request.format.html? && request.path != '/routes' }
 end
-
