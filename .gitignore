@@ -93,3 +93,4 @@ census/1920_XYdegeo.csv
 /.ruby-version
 .rvmrc
 /vendor/bundle
+vendor/

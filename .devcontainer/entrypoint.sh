@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 set -e
 
-# Start Postgres if not running
-if ! pg_isready -U postgres > /dev/null 2>&1; then
-  echo "Starting PostgreSQL..."
-  su - postgres -c "/usr/lib/postgresql/16/bin/pg_ctl -D /var/lib/postgresql/data -l /var/log/postgresql/startup.log start"
-fi
+# Wait for PostgreSQL to be ready (it's running in a separate container)
+echo "Waiting for PostgreSQL to be ready..."
+until pg_isready -h db -U postgres > /dev/null 2>&1; do
+  echo "PostgreSQL is not ready yet, waiting..."
+  sleep 2
+done
+echo "PostgreSQL is ready!"
 
 # Now exec the CMD from the Dockerfile or devcontainer
 exec "$@"

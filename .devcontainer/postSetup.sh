@@ -1,5 +1,5 @@
 #!/usr/bin/env zsh
-LOG_FILE="/workspaces/greenwood-kiosk/.devcontainer/postSetup.log"
+LOG_FILE="/workspaces/historyforge/.devcontainer/postSetup.log"
 if [[ -e ".env" ]]; then
     echo -e "\e[33m.env file found: skipping creation\e[0m" | tee $LOG_FILE
 else
@@ -35,7 +35,7 @@ if echo "$DB_EXISTS" | grep -q "Database does not exist"; then
     if echo "$DB_EXISTS" | grep -q "Schema does not exist"; then
         echo -e "\e[33mLoading schema...\e[0m" | tee -a $LOG_FILE
         rails db:schema:load | tee -a $LOG_FILE
-    else 
+    else
         echo -e "\e[33mSchema already exists: skipping loading\e[0m" | tee -a $LOG_FILE
     fi
     if echo "$DB_EMPTY" | grep -q  "Database is empty"; then
@@ -47,6 +47,3 @@ if echo "$DB_EXISTS" | grep -q "Database does not exist"; then
 else
     echo -e "\e[33mDatabase already exists: skipping creation and seeding\e[0m" | tee -a $LOG_FILE
 fi
-
-bundle config set --local path 'vendor/bundle' && bundle install
-chmod +x /workspaces/greenwood-kiosk/.devcontainer/lsp-wrapper.sh

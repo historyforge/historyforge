@@ -33,11 +33,6 @@
       "resolved": "ghcr.io/devcontainers/features/node@sha256:71590121aaf7b2040f3e1e2dfc4bb9a1389277fd5a88a7199094542b82ce5340",
       "integrity": "sha256:71590121aaf7b2040f3e1e2dfc4bb9a1389277fd5a88a7199094542b82ce5340"
     },
-    "ghcr.io/devcontainers/features/ruby:1": {
-      "version": "1.2.3",
-      "resolved": "ghcr.io/devcontainers/features/ruby@sha256:a2878739745cb61b3088d758fdfbbbcb4b13f17734f84fa5f797af667bbf0545",
-      "integrity": "sha256:a2878739745cb61b3088d758fdfbbbcb4b13f17734f84fa5f797af667bbf0545"
-    },
     "ghcr.io/eitsupi/devcontainer-features/jq-likes:2.1.1": {
       "version": "2.1.1",
       "resolved": "ghcr.io/eitsupi/devcontainer-features/jq-likes@sha256:6a8b044f9f424097ec6d212167836b26994a76a556cbcb202084be79fe8032bd",

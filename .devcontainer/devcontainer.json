@@ -1,9 +1,15 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/ubuntu
 {
-    "name": "Kiosk",
-    // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-    "image": "mcr.microsoft.com/devcontainers/base:noble",
+    "name": "HistoryForge",
+    // Use Docker Compose for optimal performance
+    "dockerComposeFile": [
+         "docker-compose.yml"
+        // Uncomment the next line to build locally instead of using pre-built image
+        // "docker-compose.dev.yml"
+    ],
+    "service": "historyforge",
+    "workspaceFolder": "/workspaces/historyforge",
     "features": {
         "ghcr.io/devcontainers/features/common-utils:2": {
             "installZsh": true,
@@ -12,7 +18,7 @@
             "upgradePackages": true
         },
         "ghcr.io/rocker-org/devcontainer-features/apt-packages:1": {
-            "packages": "libvips,libvips-dev,libvips-tools,libpq-dev,python3-pygments"
+            "packages": "libvips,libvips-dev,libvips-tools,libpq-dev,python3-pygments,libz-dev,libssl-dev,libffi-dev,libyaml-dev"
         },
         "ghcr.io/itsmechlark/features/postgresql:1": {
             "version": "latest"
@@ -26,9 +32,6 @@
             "version": "latest",
             "pnpmVersion": "none",
             "nvmVersion": "0.39"
-        },
-        "ghcr.io/devcontainers/features/ruby:1": {
-            "version": "3.3.6"
         },
         "ghcr.io/meaningful-ooo/devcontainer-features/homebrew:2": {},
         "ghcr.io/eitsupi/devcontainer-features/jq-likes:2.1.1": {
@@ -54,21 +57,22 @@
     // Features to add to the dev container. More info: https://containers.dev/features.
     // "features": {},
 
-    "forwardPorts": [3000, 5432],
-    "portsAttributes": { "5432": {"label": "DB port"},"3000": {"label": "Application port"}, "40925": {"label": "Ruby-LSP port"} },
+    "forwardPorts": [3000],
+    "portsAttributes": {
+        "3000": {"label": "Application port"},
+        "40925": {"label": "Ruby-LSP port"}
+    },
 
     // Use 'postCreateCommand' to run commands after the container is created.
-    "onCreateCommand": "/usr/bin/zsh .devcontainer/setup.sh",
-    "postCreateCommand": "/usr/bin/zsh /workspaces/greenwood-kiosk/.devcontainer/postSetup.sh",
-    "postStartCommand": "service postgresql start",
+    "onCreateCommand": "/usr/bin/zsh /usr/local/bin/setup-volume-workspace.sh",
+    "postCreateCommand": "/usr/bin/zsh /usr/local/bin/setup.sh && /usr/bin/zsh /usr/local/bin/postSetup.sh",
+    // "postStartCommand": "service postgresql start", // Commented out - PostgreSQL runs in separate container
 
     "remoteEnv": {
-        "GEMPATH": "/usr/local/rvm/gems/ruby-3.3.6",
-        "SHELL": "/usr/bin/zsh",
+        "SHELL": "/usr/bin/zsh"
     },
     "containerEnv": {
-        "GEMPATH": "/usr/local/rvm/gems/ruby-3.3.6",
-        "SHELL": "/usr/bin/zsh",
+        "SHELL": "/usr/bin/zsh"
     },
 
     "customizations": {
@@ -84,24 +88,13 @@
                 "terminal.integrated.fontLigatures": true,
                 "terminal.integrated.fontFamily": "'JetBrainsMono Nerd Font Mono','Fira Code', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
                 "rubyLsp.formatter": "rubocop_internal",
-                "rubyLsp.rubyVersionManager": {
-                    "identifier": "rvm"
-                },
-                "rubyLsp.pathToBinary": "/workspaces/greenwood-kiosk/.devcontainer/lsp-wrapper.sh",
                 "rubyLsp.enabled": true,
                 "rubyLsp.useBundler": true,
-                "rubyLsp.rubyVersion": "3.3.6",
-                "rubyLsp.enabledFeatures": {
-                "documentHighlights": true,
-                "documentSymbols": true,
-                "formatting": true,
-                "hover": true,
-                "semanticHighlighting": true,
-                "selectionRanges": true,
-                "completion": true,
-                "diagnostics": true,
-                "codeActions": true,
-                "definition": true
+                "rubyLsp.rubyVersion": "3.3.7",
+                "rubyLsp.addonSettings": {
+                    "Ruby LSP Rails": {
+                        "enablePendingMigrationsPrompt": true
+                    }
                 }
             },
             "extensions": [
