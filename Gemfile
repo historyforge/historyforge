@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 source 'https://rubygems.org'
-ruby '3.3.6'
+ruby '3.3.7'
 
 gem 'active_interaction', '~> 5.2'
 gem 'activerecord-precounter'
@@ -64,8 +64,6 @@ group :development do
   gem 'rubocop-performance'
   gem 'rubocop-rails'
   gem 'rubocop-rspec'
-  gem 'ruby-lsp', '~> 0.22.1'
-  gem 'ruby-lsp-rails', '~> 0.3.27'
   gem 'simplecov', require: false
   # gem 'standard'
   gem 'web-console'
