@@ -135,6 +135,10 @@ GEM
     connection_pool (2.5.3)
     crass (1.0.6)
     csv (3.3.5)
+    database_cleaner-active_record (2.2.0)
+      activerecord (>= 5.a)
+      database_cleaner-core (~> 2.0.0)
+    database_cleaner-core (2.0.1)
     date (3.4.1)
     devise (4.9.4)
       bcrypt (~> 3.0)
@@ -318,15 +322,15 @@ GEM
     pg_search (2.3.7)
       activerecord (>= 6.1)
       activesupport (>= 6.1)
-    pp (0.6.2)
-      prettyprint
     pretender (0.6.0)
       actionpack (>= 7.1)
-    prettyprint (0.2.0)
+    prettier_print (1.2.1)
     prism (1.4.0)
     pry (0.15.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
+    pry-nav (1.0.0)
+      pry (>= 0.9.10, < 0.15)
     psych (5.2.6)
       date
       stringio
@@ -370,6 +374,10 @@ GEM
     rails-html-sanitizer (1.6.2)
       loofah (~> 2.21)
       nokogiri (>= 1.15.7, != 1.16.7, != 1.16.6, != 1.16.5, != 1.16.4, != 1.16.3, != 1.16.2, != 1.16.1, != 1.16.0.rc1, != 1.16.0)
+    rails_autolink (1.1.8)
+      actionview (> 3.1)
+      activesupport (> 3.1)
+      railties (> 3.1)
     railties (7.2.2.1)
       actionpack (= 7.2.2.1)
       activesupport (= 7.2.2.1)
@@ -542,7 +550,11 @@ PLATFORMS
   arm-linux-gnu
   arm-linux-musl
   arm64-darwin
+  arm64-darwin-22
+  arm64-darwin-23
+  arm64-darwin-24
   x86_64-darwin
+  x86_64-linux
   x86_64-linux-gnu
   x86_64-linux-musl
 
@@ -564,6 +576,7 @@ DEPENDENCIES
   capybara
   capybara-selenium
   chartkick
+  database_cleaner-active_record
   devise
   devise-bootstrap-views (~> 1.0)
   devise-encryptable
@@ -592,9 +605,11 @@ DEPENDENCIES
   pg_search
   pretender
   pry
+  pry-nav
   puma
   rack-cors
   rails
+  rails_autolink
   ransack
   recaptcha
   rspec-collection_matchers

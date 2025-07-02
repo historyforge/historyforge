@@ -178,7 +178,9 @@ module CensusRecords
       if person.persisted?
         flash[:notice] = "A new person record has been created from this census record."
       else
-        flash[:error] = "Unable to create a person record from this census record."
+        error_message = "Unable to create a person record from this census record. "
+        error_message += person.errors.full_messages.to_sentence if person.errors.any?
+        flash[:error] = error_message
       end
       redirect_back fallback_location: { action: :index }
     end
