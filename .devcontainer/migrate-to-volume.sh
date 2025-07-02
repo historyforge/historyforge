@@ -1,17 +1,12 @@
 #!/bin/bash
 
-# Migration script for historyforge to Docker named volume
+# Migration script for project to Docker named volume
 # This script will copy your current workspace to a new Docker volume for optimal performance
 
 set -e
 
-echo "🚀 HistoryForge Docker Volume Migration Script"
+echo "🚀 $REPO_HUMAN_NAME Docker Volume Migration Script"
 echo "================================================"
-
-# Define paths
-CURRENT_WORKSPACE="/workspaces/historyforge"
-TEMP_BACKUP="/tmp/historyforge-migration-backup"
-COMPOSE_FILE="$CURRENT_WORKSPACE/.devcontainer/docker-compose.yml"
 
 echo "📋 Pre-migration checklist:"
 echo "  ✓ Current workspace: $CURRENT_WORKSPACE"
@@ -68,7 +63,7 @@ echo ""
 echo "1. EXIT this devcontainer completely"
 echo "2. In VS Code, run: Dev Containers: Rebuild Container"
 echo "3. VS Code will create the new named volume and rebuild"
-echo "4. After rebuild, your workspace will be at: /workspaces/historyforge"
+echo "4. After rebuild, your workspace will be at: ${CURRENT_WORKSPACE}"
 echo "5. Run the performance test to verify improvement"
 echo ""
 echo "🧪 Performance Test Command (run after rebuild):"

@@ -4,6 +4,27 @@ This project uses a pre-built dev container image hosted on GitHub Container Reg
 
 ## Usage
 
+### Prerequisites
+- Docker installed
+- Visual Studio Code with Remote - Containers extension
+- GitHub account with access to the repository
+- Personal Access Token (PAT) with `write:packages` scope for pushing images
+
+## Getting Started
+1. Set the namespace and repository in `.devcontainer/devcontainer.json`:
+   ```json
+    "name": "HistoryForge",
+    "service": "historyforge",
+    "workspaceFolder": "/workspaces/historyforge",
+   ```
+2. Set the your custom variables for the project name in `.devcontainer/devcontainer.env`:
+   ```env
+   REPO_NAME="historyforge"
+   REPO_HUMAN_NAME="HistoryForge"
+   REPO_DESCRIPTION="HistoryForge is a web-based platform for creating and managing historical maps and visualizations."
+   REPO_URL="https://github.com/Jacrys/historyforge"
+   ```
+
 ### Using Pre-built Image (Default)
 The default configuration uses a pre-built image from GHCR. Just open the project in VS Code and reopen in container.
 

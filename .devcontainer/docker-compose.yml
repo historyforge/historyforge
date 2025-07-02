@@ -3,15 +3,15 @@ services:
     # Use pre-built image from GHCR instead of building locally
     image: ghcr.io/jacrys/historyforge-devcontainer:latest
     # Fallback to local build if image is not available
+    env_file:
+      - path: ./devcontainer.env
+        required: true # default
     build:
       context: ..
       dockerfile: .devcontainer/Dockerfile
     hostname: historyforge
     depends_on:
       - db
-    env_file:
-      - path: ../.env
-        required: true # default
     links:
       - "db:database"
     ports:
@@ -34,7 +34,7 @@ services:
     hostname: database
     restart: unless-stopped
     env_file:
-      - path: ../.env
+      - path: ./devcontainer.env
         required: true # default
     ports:
       - "55432:5432"

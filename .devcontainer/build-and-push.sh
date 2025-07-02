@@ -6,9 +6,9 @@
 set -e
 
 REGISTRY="ghcr.io"
-REPO_NAME="jacrys/historyforge-devcontainer"
+IMAGE_REPO_NAME="jacrys/historyforge-devcontainer"
 TAG="${1:-latest}"
-IMAGE_NAME="${REGISTRY}/${REPO_NAME}:${TAG}"
+IMAGE_NAME="${REGISTRY}/${IMAGE_REPO_NAME}:${TAG}"
 
 echo "🏗️  Building dev container image..."
 docker build -f .devcontainer/Dockerfile -t "${IMAGE_NAME}" .

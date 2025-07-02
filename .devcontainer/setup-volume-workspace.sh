@@ -1,14 +1,13 @@
 #!/bin/bash
 
-# Post-create setup for historyforge in Docker volume
+# Post-create setup for project in Docker volume
 # This script runs after the container is created to set up the workspace
 
 set -e
 
-WORKSPACE_DIR="/workspaces/historyforge"
 PROJECT_STAGING="/tmp/project-staging"
 
-echo "🔧 HistoryForge Post-Create Setup"
+echo "🔧 $REPO_HUMAN_NAME Post-Create Setup"
 echo "===================================="
 
 # Check if workspace directory exists and is empty (first time setup)
@@ -49,4 +48,4 @@ fi
 
 echo "✅ Post-create setup complete!"
 echo "📍 Workspace location: $WORKSPACE_DIR"
-echo "💾 Data persists in Docker named volume: historyforge-workspace"
+echo "💾 Data persists in Docker named volume: ${REPO_NAME}-workspace"

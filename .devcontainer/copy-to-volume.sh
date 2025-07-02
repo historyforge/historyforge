@@ -5,11 +5,11 @@
 
 set -e
 
-echo "📋 HistoryForge Workspace Copy Utility"
+echo "📋 $REPO_HUMAN_NAME Workspace Copy Utility"
 echo "========================================="
 
-SOURCE_DIR="/workspaces/historyforge"
-TEMP_BACKUP="/tmp/historyforge-migration-backup"
+SOURCE_DIR="$WORKSPACE_DIR"
+TEMP_BACKUP="/tmp/${REPO_NAME}-migration-backup"
 
 # Check if we have a backup to restore from
 if [ -d "$TEMP_BACKUP" ]; then
@@ -70,5 +70,5 @@ fi
 
 echo ""
 echo "📍 Workspace location: $SOURCE_DIR"
-echo "💾 This workspace is now stored in Docker volume: historyforge-workspace"
+echo "💾 This workspace is now stored in Docker volume: ${REPO_NAME}-workspace"
 echo "🚀 Enjoy the improved performance!"
