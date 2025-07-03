@@ -30,6 +30,10 @@ bin/deploy.sh
 
 # Ignore all logfiles and tempfiles.
 /log/*.log
+/log/*.log.*
+/.devcontainer/*.log
+/.devcontainer/*.log.*
+*.log
 /tmp
 
 # Ignore the database config
@@ -82,7 +86,6 @@ bin/deploy
 *.zsh
 .tool-versions
 *.old
-*.log
 codealike.json
 
 app/assets/builds/*.js
