@@ -110,6 +110,14 @@ RSpec.describe Person do
       end
     end
 
+    context 'without a birth year and age of 999' do
+      let(:person) { build(:person, census1900_records: [build(:census1900_record, age: 999)]) }
+
+      it 'calculates the age based on the birth year of the census record' do
+        expect(person.age_in_year(1900)).to eq('Un.')
+      end
+    end
+
     context 'when the person is a baby' do
       let(:person) { build(:person, census1900_records: [build(:census1900_record, birth_year: 1900, age: 0)]) }
 

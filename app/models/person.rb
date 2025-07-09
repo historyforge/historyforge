@@ -206,6 +206,8 @@ class Person < ApplicationRecord
 
     match = census_records.first
     if match
+      return 'Un.' if match.age == 999
+
       diff = match.year - year
       (match.age || 0) - diff
     else
