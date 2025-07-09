@@ -9,7 +9,7 @@ module CensusRecords
     delegate :locality_id, :family_id, :page_number, :building_id, :dwelling_number, :id, to: :record
 
     def enum_dist
-      record.has_enum_dist? ? record.enum_dist : nil
+      record.enum_dist_defined? ? record.enum_dist : nil
     end
 
     def execute
@@ -22,7 +22,7 @@ module CensusRecords
         family_id:,
         **(building_id ? { building_id: } : {}),
         **(dwelling_number ? { dwelling_number: } : {}),
-        **(record.has_enum_dist? ? { enum_dist: } : {})
+        **(record.enum_dist_defined? ? { enum_dist: } : {})
       }
     end
   end
