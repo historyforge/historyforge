@@ -3,7 +3,7 @@
 module NameCleaning
   refine String do
     def clean
-      gsub(/\./, ' ').squish
+      tr('.', ' ').tr('’', "'").squish
     end
   end
 end
