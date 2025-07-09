@@ -53,6 +53,20 @@ RSpec.describe Person do
     end
   end
 
+  describe '#race_choices' do
+    context 'with an enumerated race' do
+      let(:person) { build(:person, race: 'W') }
+
+      it { expect(person.race_choices).to eq Person::RACES }
+    end
+
+    context 'with an unsual race' do
+      let(:person) { build(:person, race: 'Thai') }
+
+      it { expect(person.race_choices).to include('Thai') }
+    end
+  end
+
   describe '#estimated_birth_year' do
     context 'with a birth year' do
       let(:person) { build(:person, birth_year: 1872, is_birth_year_estimated: false) }
