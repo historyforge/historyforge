@@ -3,14 +3,14 @@
 # Base class for census records.
 class CensusRecord < ApplicationRecord
   self.abstract_class = true
+  self.ignored_columns += %i[ward_str enum_dist_str]
+
   include CensusRecords::Searchable
   include CensusRecords::Addressable
   include Moderation
   include PersonNames
   include Flaggable
   include Versioning
-
-  self.ignored_columns += %i[ward_str enum_dist_str]
 
   belongs_to :building, optional: true
   belongs_to :person, optional: true
