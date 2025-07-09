@@ -10,6 +10,8 @@ class CensusRecord < ApplicationRecord
   include Flaggable
   include Versioning
 
+  self.ignored_columns += %i[ward_str enum_dist_str]
+
   belongs_to :building, optional: true
   belongs_to :person, optional: true
   has_many :bulk_updated_records, as: :record, dependent: :destroy, inverse_of: :record
