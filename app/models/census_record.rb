@@ -103,24 +103,23 @@ class CensusRecord < ApplicationRecord
   scope :not_me, ->(record) { record.persisted? ? where.not(id: record.id) : self }
   def duplicate_census_scope?
     attrs = { locality_id:, ward:, page_number:, page_side:, line_number: }
-    attrs[:enum_dist] = enum_dist if has_enum_dist?
+    attrs[:enum_dist] = enum_dist if enum_dist_defined?
     self.class.where(attrs)
-        .not_me(self)
-        .count
-        .positive?
+      .not_me(self)
+      .exists?
   end
 
-  def has_enum_dist?
-    return @has_enum_dist if defined?(@has_enum_dist)
+  def enum_dist_defined?
+    return @enum_dist_defined if defined?(@enum_dist_defined)
 
-    @has_enum_dist = self.class.columns.detect { |c| c.name == 'enum_dist' }
+    @enum_dist_defined = self.class.columns.detect { |c| c.name == 'enum_dist' }
   end
 
   def likely_matches?
-    self.class.where(locality_id:, street_house_number:, street_name:, last_name:, first_name:, age: age || 0)
-        .not_me(self)
-        .count
-        .positive?
+    attrs = { locality_id:, street_house_number:, street_name:, last_name:, first_name:, name_prefix:, name_suffix:, age: age || 0 }
+    self.class.where(attrs)
+      .not_me(self)
+      .exists?
   end
 
   # @return [Array<Person>]
