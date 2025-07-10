@@ -1,7 +1,7 @@
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
---SET transaction_timeout = 0;
+SET transaction_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -1114,7 +1114,7 @@ CREATE TABLE public.census_1910_records (
     blind boolean DEFAULT false,
     deaf_dumb boolean DEFAULT false,
     notes text,
-    civil_war_vet character varying(2),
+    civil_war_vet character varying(10),
     provisional boolean DEFAULT false,
     foreign_born boolean DEFAULT false,
     taker_error boolean DEFAULT false,
@@ -5613,6 +5613,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('9'),
 ('8'),
 ('4'),
+('20250709201454'),
 ('20250325233212'),
 ('20250325015620'),
 ('20250302232511'),
