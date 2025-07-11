@@ -1122,7 +1122,7 @@ CREATE TABLE public.census_1910_records (
     blind boolean DEFAULT false,
     deaf_dumb boolean DEFAULT false,
     notes text,
-    civil_war_vet character varying(2),
+    civil_war_vet character varying(10),
     provisional boolean DEFAULT false,
     foreign_born boolean DEFAULT false,
     taker_error boolean DEFAULT false,
@@ -2194,7 +2194,9 @@ CREATE TABLE public.people (
     notes text,
     description text,
     sortable_name character varying,
-    death_year integer
+    death_year integer,
+    is_death_year_estimated boolean DEFAULT true,
+    ever_enslaved boolean DEFAULT false
 );
 
 
@@ -5806,9 +5808,14 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('9'),
 ('8'),
 ('4'),
+('20250709201454'),
+('20250325233212'),
+('20250325015620'),
 ('20250614174145'),
 ('20250614172347'),
 ('20250418134317'),
+('20250325233212'),
+('20250325015620'),
 ('20250318160436'),
 ('20250317163745'),
 ('20250314171546'),

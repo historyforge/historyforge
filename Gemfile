@@ -10,6 +10,7 @@ gem 'acts_as_list'
 gem 'airbrake'
 gem 'ancestry'
 gem 'ar_doc_store'
+gem "rails_autolink"
 gem 'bcrypt'
 gem 'bootsnap', require: false
 gem 'cancancan'
@@ -58,29 +59,32 @@ group :development do
   gem 'letter_opener'
   gem 'letter_opener_web'
   gem 'pry'
-  gem 'rubocop'
-  gem 'rubocop-capybara'
-  gem 'rubocop-factory_bot'
-  gem 'rubocop-performance'
-  gem 'rubocop-rails'
-  gem 'rubocop-rspec'
-  gem 'simplecov', require: false
+  gem "rubocop", require: false
+  gem "rubocop-capybara", require: false
+  gem "rubocop-factory_bot", require: false
+  gem "rubocop-performance", require: false
+  gem "rubocop-rails", require: false
+  gem "rubocop-rspec", require: false
+  gem "simplecov", require: false
   # gem 'standard'
   gem 'web-console'
   gem 'yard'
 end
 
 group :development, :test do
-  gem 'amazing_print'
-  gem 'bullet'
-  gem 'capybara'
-  gem 'factory_bot_rails'
-  gem 'rspec-rails'
-  gem 'webdrivers'
+  gem "amazing_print"
+  gem "bullet"
+  gem "capybara"
+  gem "factory_bot_rails"
+  gem "pry"
+  gem "pry-nav"
+  gem "rspec-rails"
+  gem "webdrivers"
 end
 
 group :test do
-  gem 'capybara-selenium'
-  gem 'faker'
-  gem 'rspec-collection_matchers'
+  gem "capybara-selenium"
+  gem "database_cleaner-active_record"
+  gem "faker"
+  gem "rspec-collection_matchers"
 end

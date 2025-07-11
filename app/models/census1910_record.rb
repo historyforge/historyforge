@@ -93,7 +93,6 @@
 
 # Model class for 1910 US Census records.
 class Census1910Record < CensusRecord
-
   self.table_name = 'census_1910_records'
   self.year = 1910
 

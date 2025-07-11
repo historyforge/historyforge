@@ -135,6 +135,10 @@ GEM
     connection_pool (2.5.3)
     crass (1.0.6)
     csv (3.3.5)
+    database_cleaner-active_record (2.2.0)
+      activerecord (>= 5.a)
+      database_cleaner-core (~> 2.0.0)
+    database_cleaner-core (2.0.1)
     date (3.4.1)
     devise (4.9.4)
       bcrypt (~> 3.0)
@@ -324,9 +328,11 @@ GEM
       actionpack (>= 7.1)
     prettyprint (0.2.0)
     prism (1.4.0)
-    pry (0.15.2)
+    pry (0.14.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
+    pry-nav (1.0.0)
+      pry (>= 0.9.10, < 0.15)
     psych (5.2.6)
       date
       stringio
@@ -370,6 +376,10 @@ GEM
     rails-html-sanitizer (1.6.2)
       loofah (~> 2.21)
       nokogiri (>= 1.15.7, != 1.16.7, != 1.16.6, != 1.16.5, != 1.16.4, != 1.16.3, != 1.16.2, != 1.16.1, != 1.16.0.rc1, != 1.16.0)
+    rails_autolink (1.1.8)
+      actionview (> 3.1)
+      activesupport (> 3.1)
+      railties (> 3.1)
     railties (7.2.2.1)
       actionpack (= 7.2.2.1)
       activesupport (= 7.2.2.1)
@@ -384,10 +394,8 @@ GEM
       activerecord (>= 6.1.5)
       activesupport (>= 6.1.5)
       i18n
-    rbs (3.9.4)
-      logger
     rbtree3 (0.7.1)
-    rdoc (6.14.0)
+    rdoc (6.14.1)
       erb
       psych (>= 4.0.0)
     recaptcha (5.19.0)
@@ -452,13 +460,6 @@ GEM
     rubocop-rspec (3.6.0)
       lint_roller (~> 1.1)
       rubocop (~> 1.72, >= 1.72.1)
-    ruby-lsp (0.22.1)
-      language_server-protocol (~> 3.17.0)
-      prism (>= 1.2, < 2.0)
-      rbs (>= 3, < 4)
-      sorbet-runtime (>= 0.5.10782)
-    ruby-lsp-rails (0.3.27)
-      ruby-lsp (>= 0.22.0, < 0.23.0)
     ruby-progressbar (1.13.0)
     ruby-vips (2.2.3)
       ffi (~> 1.12)
@@ -489,7 +490,6 @@ GEM
     snaky_hash (2.0.3)
       hashie (>= 0.1.0, < 6)
       version_gem (>= 1.1.8, < 3)
-    sorbet-runtime (0.5.12152)
     sprockets (4.2.2)
       concurrent-ruby (~> 1.0)
       logger
@@ -542,7 +542,11 @@ PLATFORMS
   arm-linux-gnu
   arm-linux-musl
   arm64-darwin
+  arm64-darwin-22
+  arm64-darwin-23
+  arm64-darwin-24
   x86_64-darwin
+  x86_64-linux
   x86_64-linux-gnu
   x86_64-linux-musl
 
@@ -564,6 +568,7 @@ DEPENDENCIES
   capybara
   capybara-selenium
   chartkick
+  database_cleaner-active_record
   devise
   devise-bootstrap-views (~> 1.0)
   devise-encryptable
@@ -592,9 +597,11 @@ DEPENDENCIES
   pg_search
   pretender
   pry
+  pry-nav
   puma
   rack-cors
   rails
+  rails_autolink
   ransack
   recaptcha
   rspec-collection_matchers
@@ -605,8 +612,6 @@ DEPENDENCIES
   rubocop-performance
   rubocop-rails
   rubocop-rspec
-  ruby-lsp (~> 0.22.1)
-  ruby-lsp-rails (~> 0.3.27)
   ruby-vips
   rubyXL
   rubyzip
@@ -622,7 +627,7 @@ DEPENDENCIES
   yard
 
 RUBY VERSION
-   ruby 3.3.6p108
+   ruby 3.3.7p123
 
 BUNDLED WITH
    2.5.22

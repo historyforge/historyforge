@@ -6,6 +6,8 @@ class CensusRecordDecorator < ApplicationDecorator
   include DecoratorFormatting
 
   def age
+    return 'Un.' if object&.age == 999
+
     if object.year == 1950
       object.age&.positive? ? object.age : '<1'
     elsif object.age_months

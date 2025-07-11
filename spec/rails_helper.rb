@@ -1,16 +1,16 @@
 # frozen_string_literal: true
 
 # This file is copied to spec/ when you run 'rails generate rspec:install'
-require 'spec_helper'
-ENV['RAILS_ENV'] ||= 'test'
-ENV['NODE_ENV'] ||= 'production'
-require File.expand_path('../config/environment', __dir__)
+require "spec_helper"
+ENV["RAILS_ENV"] ||= "test"
+ENV["NODE_ENV"] ||= "production"
+require File.expand_path("../config/environment", __dir__)
 # Prevent database truncation if the environment is production
-abort('The Rails environment is running in production mode!') if Rails.env.production?
-require 'rspec/rails'
+abort("The Rails environment is running in production mode!") if Rails.env.production?
+require "rspec/rails"
 # Add additional requires below this line. Rails is not loaded until this point!
-require 'rspec/collection_matchers'
-require 'paper_trail/frameworks/rspec'
+require "rspec/collection_matchers"
+require "paper_trail/frameworks/rspec"
 
 # require 'simplecov'
 # SimpleCov.start
@@ -28,7 +28,7 @@ require 'paper_trail/frameworks/rspec'
 # directory. Alternatively, in the individual `*_spec.rb` files, manually
 # require only the support files necessary.
 #
-Dir[Rails.root.join('spec', 'support', '**', '*.rb')].sort.each { |f| require f }
+Dir[Rails.root.join("spec", "support", "**", "*.rb")].sort.each { |f| require f }
 
 # Checks for pending migrations and applies them before tests are run.
 # If you are not using ActiveRecord, you can remove these lines.
@@ -39,7 +39,7 @@ rescue ActiveRecord::PendingMigrationError => e
   exit 1
 end
 
-require Rails.root.join('db', 'seeds')
+require Rails.root.join("db", "seeds")
 
 RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
@@ -50,16 +50,19 @@ RSpec.configure do |config|
     Capybara::Selenium::Driver.new(app, browser: :chrome)
   end
 
-  # Capybara.register_driver :chrome_headless do |app|
-  #   Capybara::Selenium::Driver.new app,
-  #                                  browser: :chrome,
-  #                                  clear_session_storage: true,
-  #                                  clear_local_storage: true,
-  #                                  capabilities: [Selenium::WebDriver::Chrome::Options.new(
-  #                                    args: %w[headless disable-gpu no-sandbox window-size=1024,768]
-  #                                    )]
-  # end
+  Capybara.register_driver :chrome_headless do |app|
+    Capybara::Selenium::Driver.new app,
+                                   browser: :chrome,
+                                   clear_session_storage: true,
+                                   clear_local_storage: true,
+                                   capabilities: [Selenium::WebDriver::Chrome::Options.new(
+                                     args: %w[headless disable-gpu no-sandbox window-size=1024,768],
+                                   )]
+  end
 
+  # Change this to :chrome_headless to run the tests in a headless browser.
+  # Ideally this would be the default, but it's not working. The tests pass in
+  # isolation, but not when run together in headless mode.
   Capybara.default_driver = :chrome
   Capybara.javascript_driver = :chrome
 

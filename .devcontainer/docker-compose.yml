@@ -15,7 +15,7 @@ services:
     links:
       - "db:database"
     ports:
-      - "3001:3000"
+      - "127.0.0.1:3001:3000"
     #  - "55432:5432"
     volumes:
       - historyforge-workspace:/workspaces/historyforge
@@ -37,7 +37,7 @@ services:
       - path: ./devcontainer.env
         required: true # default
     ports:
-      - "55432:5432"
+      - "127.0.0.1:55432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
     environment:

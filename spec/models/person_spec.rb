@@ -10,6 +10,7 @@
 #  middle_name             :string
 #  sex                     :string(12)
 #  race                    :string
+#  ever_enslaved           :boolean          default(False)
 #  name_prefix             :string
 #  name_suffix             :string
 #  searchable_name         :text
@@ -20,6 +21,8 @@
 #  notes                   :text
 #  description             :text
 #  sortable_name           :string
+#  death_year              :integer
+#  is_death_year_estimated :boolean          default(TRUE)
 #
 # Indexes
 #
@@ -41,6 +44,26 @@ RSpec.describe Person do
       expect(primary_name.middle_name).to eq person.middle_name
       expect(primary_name.name_prefix).to eq person.name_prefix
       expect(primary_name.name_suffix).to eq person.name_suffix
+    end
+
+    it 'assigns default values to boolean fields' do
+      expect(person.ever_enslaved).to be false
+      expect(person.is_birth_year_estimated).to be true
+      expect(person.is_pob_estimated).to be true
+    end
+  end
+
+  describe '#race_choices' do
+    context 'with an enumerated race' do
+      let(:person) { build(:person, race: 'W') }
+
+      it { expect(person.race_choices).to eq Person::RACES }
+    end
+
+    context 'with an unsual race' do
+      let(:person) { build(:person, race: 'Thai') }
+
+      it { expect(person.race_choices).to include('Thai') }
     end
   end
 
@@ -98,6 +121,14 @@ RSpec.describe Person do
 
       it 'calculates the age based on the birth year of the census record' do
         expect(person.age_in_year(1900)).to eq(28)
+      end
+    end
+
+    context 'without a birth year and age of 999' do
+      let(:person) { build(:person, census1900_records: [build(:census1900_record, age: 999)]) }
+
+      it 'calculates the age based on the birth year of the census record' do
+        expect(person.age_in_year(1900)).to eq('Un.')
       end
     end
 
