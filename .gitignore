@@ -80,11 +80,8 @@ bin/deploy
 /app/assets/builds2/*
 !/app/assets/builds2/.keep
 
-*.zsh
 .tool-versions
 *.code-workspace
-*.zsh
-.tool-versions
 *.old
 codealike.json
 
@@ -96,4 +93,3 @@ census/1920_XYdegeo.csv
 /.ruby-version
 .rvmrc
 /vendor/bundle
-vendor/

@@ -67,7 +67,7 @@ header
             .dropdown-menu
               = link_to 'Buildings', buildings_path, class: 'dropdown-item'
               - CensusYears.each_visible_to_user(user_signed_in?) do |year|
-                = link_to "#{year} US Census", "#{census_path}/#{year}", class: 'dropdown-item'
+                = link_to "#{year} US Census", census_records_path(year: year), class: 'dropdown-item'
               = link_to 'All People', people_path, class: 'dropdown-item' if can_people?
               = link_to AppConfig[:document_page_title] || 'Resources & Credits', documents_path, class: 'dropdown-item'
               = link_to "Photographs", photographs_path, class: 'dropdown-item'
