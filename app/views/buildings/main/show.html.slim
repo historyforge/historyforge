@@ -14,6 +14,17 @@
   - if can?(:review, @building.object) && !@building.reviewed?
     = link_to 'Review', [:review, @building], class: 'btn btn-light', data: { method: :put }
   = link_to 'View All', buildings_path, class: 'btn btn-light'
+  - if @navigation_neighbors.present?
+    - if @navigation_neighbors[:previous_id]
+      = link_to building_path(@navigation_neighbors[:previous_id]), class: 'btn btn-light' do
+        i.fa.fa-chevron-left
+        span.d-none.d-lg-inline
+          | &nbsp; Prev
+    - if @navigation_neighbors[:next_id]
+      = link_to building_path(@navigation_neighbors[:next_id]), class: 'btn btn-light' do
+        span.d-none.d-lg-inline
+          | Next&nbsp;
+        i.fa.fa-chevron-right
 
 .row
   .col-12.col-md-8

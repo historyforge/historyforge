@@ -51,6 +51,15 @@ module Buildings
 
     def show
       @building = @building.decorate
+
+      search_data = current_user.search_params.find_by(model: search_key)&.params&.deep_symbolize_keys
+      if search_data.present? && search_data[:s].present?
+        @navigation_neighbors = BuildingSearch.generate(
+          params: search_data,
+          user: current_user,
+        ).navigation_neighbors(@building.id)
+      end
+
       respond_to do |format|
         format.html
         format.json { render json: BuildingSerializer.new(@building) }
