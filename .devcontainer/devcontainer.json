@@ -10,6 +10,9 @@
     ],
     "service": "historyforge",
     "workspaceFolder": "/workspaces/historyforge",
+    "mounts": [
+        "source=${localEnv:USERPROFILE}/.ssh,target=/root/.ssh,type=bind,consistency=cached"
+    ],
     "features": {
         "ghcr.io/devcontainers/features/common-utils:2": {
             "installZsh": true,
@@ -54,23 +57,10 @@
         }
     },
 
-    // Features to add to the dev container. More info: https://containers.dev/features.
-    // "features": {},
-
-    "forwardPorts": [3000],
-    "portsAttributes": {
-        "3000": {"label": "Application port"},
-        "40925": {"label": "Ruby-LSP port"}
-    },
-
     // Use 'postCreateCommand' to run commands after the container is created.
     "onCreateCommand": "/usr/bin/zsh /usr/local/bin/setup-volume-workspace.sh",
     "postCreateCommand": "/usr/bin/zsh /usr/local/bin/setup.sh && /usr/bin/zsh /usr/local/bin/postSetup.sh",
     // "postStartCommand": "service postgresql start", // Commented out - PostgreSQL runs in separate container
-
-    "remoteEnv": {
-        "SHELL": "/usr/bin/zsh"
-    },
     "containerEnv": {
         "SHELL": "/usr/bin/zsh"
     },

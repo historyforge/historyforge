@@ -61,4 +61,10 @@ else
     echo -e "🛢\e[33mDatabase already exists: skipping creation and seeding\e[0m" | tee -a $LOG_FILE
 fi
 
+echo -e "🛠\e[33mRunning post setup tasks...\e[0m" | tee -a $LOG_FILE
+
+chmod 700 /root/.ssh
+chmod 600 /root/.ssh/id_*
+chmod 644 /root/.ssh/*.pub || true
+
 export DEVCONTAINER_SETUP=0

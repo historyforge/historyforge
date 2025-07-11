@@ -35,13 +35,28 @@ if [ -d "$TEMP_BACKUP" ]; then
         # Ensure target directory exists
         mkdir -p "$SOURCE_DIR"
 
-        # Copy all contents from backup
-        cp -r "$TEMP_BACKUP/"* "$SOURCE_DIR/"
-        cp -r "$TEMP_BACKUP/".* "$SOURCE_DIR/" 2>/dev/null || true
+        # Copy all contents from backup, preserving git
+        rsync -av --exclude='.git' "$TEMP_BACKUP/" "$SOURCE_DIR/"
+
+        # Handle .git directory specially if it exists
+        if [ -d "$TEMP_BACKUP/.git" ]; then
+            echo "📋 Preserving git repository..."
+            cp -r "$TEMP_BACKUP/.git" "$SOURCE_DIR/"
+        fi
 
         echo "✅ Workspace copied successfully!"
         echo "🧹 Cleaning up backup..."
         rm -rf "$TEMP_BACKUP"
+
+        # Verify git status
+        cd "$SOURCE_DIR"
+        if [ -d ".git" ]; then
+            echo "🔍 Git repository status:"
+            git status --porcelain | head -5
+            echo "📍 Current branch: $(git branch --show-current 2>/dev/null || echo 'detached')"
+        else
+            echo "⚠️  No git repository found - you may need to reinitialize"
+        fi
 
         # Show final workspace status
         echo "📊 Final workspace status:"

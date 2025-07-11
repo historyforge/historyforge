@@ -250,15 +250,15 @@ module EntityBuilders
       id: document.id,
       available_to_public: document.available_to_public,
       category: document.document_category&.name,
-      content_type: document.file_attachment&.content_type,
+      content_type: document.file_attachment&.blob&.content_type,
       data_uri: document.data_uri,
       description: document.description,
       name: document.name,
       position: document.position,
       searchable_text: document.respond_to?(:searchable_text) ? document.searchable_text : nil,
-      URL: document.file_attachment.present? ? sanitize_url(rails_blob_url(document.file_attachment, host: ENV.fetch('BASE_URL', nil))) : nil,
+      URL: document.file_attachment&.blob.present? ? sanitize_url(rails_blob_url(document.file_attachment, host: ENV.fetch('BASE_URL', nil))) : nil,
       url: document.url,
-      year:
+      year: year
     }
 
     if include_related

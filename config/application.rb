@@ -26,8 +26,6 @@ unless ENV["DATABASE_URL"]
   Dotenv.load(".env", ".env.#{Rails.env}")
 end
 
-
-
 module HistoryForge
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
