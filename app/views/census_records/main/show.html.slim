@@ -23,6 +23,11 @@ div.mb-3.clearfix.d-flex.justify-content-between
     - if !@record.reviewed? && can?(:review, @record)
       | &nbsp;
       => link_to 'Review', [:reviewed, @record], class: 'btn btn-sm btn-danger', data: { method: :put, confirm: 'You are about to make this census record public.' }
+    - if @navigation
+      - if @navigation[:previous_id]
+        = link_to "Prev", "/census/#{@record.year}/#{@navigation[:previous_id]}", class: 'btn btn-sm btn-secondary mr-2'
+      - if @navigation[:next_id]
+        = link_to "Next", "/census/#{@record.year}/#{@navigation[:next_id]}", class: 'btn btn-sm btn-secondary ml-2'
 
   - if can?(:create, CensusRecord)
     .add-another-form.ml-auto.d-flex.justify-content-right
