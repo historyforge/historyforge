@@ -26,6 +26,18 @@ require 'rails_helper'
 RSpec.describe PersonName, type: :model do
   subject { create(:person).names.first }
 
+  describe '#clean' do
+    context 'when the name contains an apostrophe' do
+      subject { described_class.new(last_name: 'O’Connor') }
+
+      before { subject.validate }
+
+      it 'converts to a regular apostrophe' do
+        expect(subject.last_name).to eq("O'Connor")
+      end
+    end
+  end
+
   describe '#same_name_as?' do
     context 'when the name is indeed the same' do
       it 'returns true' do

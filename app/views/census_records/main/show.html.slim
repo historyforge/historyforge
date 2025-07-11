@@ -118,7 +118,8 @@ div.mb-3.clearfix.d-flex.justify-content-between
                 th Relation
               th Occupation
           tbody
-            - @record.fellows.each do |row|
+            - @record.fellows.each do |raw_row|
+              - row = raw_row.decorate
               tr
                 td= link_to row.name, row
                 td= row.sex

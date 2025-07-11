@@ -2,8 +2,7 @@
 
 module Users
   class RegistrationsController < Devise::RegistrationsController
-    prepend_before_action :check_captcha, only: :create
-    prepend_before_action :lazy_configure_recaptcha
+    include RecaptchaHandlers
 
     # GET /resource/sign_up
     # def new
@@ -62,14 +61,6 @@ module Users
 
     def sign_up_params
       params.require(:user).permit(:login, :email, :password, :password_confirmation)
-    end
-
-    def lazy_configure_recaptcha
-      Recaptcha.configure do |config|
-        config.site_key = AppConfig[:recaptcha_site_key]
-        config.secret_key = AppConfig[:recaptcha_secret_key]
-        config.skip_verify_env = %w[test]
-      end
     end
 
     def check_captcha

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ContactsController < ApplicationController
-  before_action :lazy_configure_recaptcha
+  include RecaptchaHandlers
 
   def new
     @contact = Contact.new
@@ -16,13 +16,6 @@ class ContactsController < ApplicationController
     else
       flash[:error] = 'Oops did you fill out the form correctly?'
       render action: :new
-    end
-  end
-
-  def lazy_configure_recaptcha
-    Recaptcha.configure do |config|
-      config.site_key = AppConfig[:recaptcha_site_key]
-      config.secret_key = AppConfig[:recaptcha_secret_key]
     end
   end
 end
