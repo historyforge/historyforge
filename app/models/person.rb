@@ -310,6 +310,7 @@ class Person < ApplicationRecord
   end
 
   def ensure_primary_name
+    return if first_name.blank? || last_name.blank?
     return if names.detect { |name| name.same_name_as?(self) }
 
     names.build(first_name:, last_name:)
