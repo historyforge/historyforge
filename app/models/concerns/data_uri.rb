@@ -17,7 +17,7 @@ module DataUri
   extend ActiveSupport::Concern
 
   included do
-    before_save :generate_data_uri, if: :should_generate_data_uri?
+    before_commit :generate_data_uri, on: [:create, :update], if: :should_generate_data_uri?
   end
 
   def should_generate_data_uri?
@@ -30,7 +30,6 @@ module DataUri
     file_changed || url_changed
   end
 
-
   def previous_checksum
     @previous_checksum ||= self[:file_checksum]
   end
@@ -40,10 +39,18 @@ module DataUri
   end
 
   def generate_data_uri
-    self.data_uri = if respond_to?(:file) && file&.attached?
-                      DataUriBuilder.encode_active_storage_file(file)
-                    elsif respond_to?(:url) && url.present?
-                      DataUriBuilder.encode_url_file(url)
-                    end
+    return unless file.attached? || (respond_to?(:url) && url.present?)
+
+    data_uri = if respond_to?(:file) && file&.attached?
+                 DataUriBuilder.encode_active_storage_file_from_attachment(file)
+               elsif respond_to?(:url) && url.present?
+                 DataUriBuilder.encode_url_file(url)
+               end
+
+    if data_uri
+      update_column(:data_uri, data_uri)
+    else
+      Rails.logger.warn("Failed to generate data URI for #{self.class.name} ID: #{id}")
+    end
   end
 end
