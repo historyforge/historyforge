@@ -19,8 +19,8 @@ class CensusRecordSearch < SearchQueryBuilder
   memoize :results
 
   def scoped
-    builder.includes(:locality) if f.include?("locality_id") && !navigation
-    builder.where(locality_id: Current.locality_id) if Current.locality_id && !s.key?("locality_id_in")
+    builder.includes(:locality) if f.include?('locality_id') && !navigation
+    builder.where(locality_id: Current.locality_id) if Current.locality_id && !s.key?('locality_id_in')
 
     builder.reviewed unless user
 
@@ -35,34 +35,8 @@ class CensusRecordSearch < SearchQueryBuilder
 
   memoize :scoped
 
-  def navigation_neighbors(current_id)
-    return nil unless current_id
-
-    @navigation = true
-
-    # Get the ordered list of IDs from the main query (respects all filters and sorting)
-    base_query = scoped.offset(nil).limit(nil)
-
-    # Ensure the base query includes id in its select list
-    base_query = base_query.select("#{entity_class.table_name}.*") unless base_query.select_values.include?("#{entity_class.table_name}.id")
-
-    # Wrap the base query in another query that just selects the IDs
-    sql = "SELECT id FROM (#{base_query.to_sql}) AS subquery"
-    ordered_ids = entity_class.connection.execute(sql).pluck("id")
-
-    # Find the current position in the ordered list
-    current_index = ordered_ids.index(current_id)
-    return nil unless current_index
-
-    # Get previous and next IDs
-    {
-      previous_id: current_index > 0 ? ordered_ids[current_index - 1] : nil,
-      next_id: current_index < ordered_ids.length - 1 ? ordered_ids[current_index + 1] : nil,
-    }
-  end
-
   def add_scopes
-    builder.includes(:building) if (f.include?("latitude") || f.include?("longitude")) && !navigation
+    builder.includes(:building) if (f.include?('latitude') || f.include?('longitude')) && !navigation
     builder.unhoused if unhoused?
     builder.unreviewed if unreviewed?
     builder.unmatched if unmatched?
@@ -77,34 +51,34 @@ class CensusRecordSearch < SearchQueryBuilder
   end
 
   def add_default_sort_order
-    builder.order census_page_order_clause("asc")
+    builder.order census_page_order_clause('asc')
   end
 
   def add_custom_sort_order
     sort.each do |_key, sort_unit|
-      col = sort_unit["colId"]
-      dir = sort_unit["sort"]
-      raise ArgumentError, "Dangerous query method!" unless %w[asc desc].include?(dir)
+      col = sort_unit['colId']
+      dir = sort_unit['sort']
+      raise ArgumentError, 'Dangerous query method!' unless %w[asc desc].include?(dir)
       order = order_clause_for(col, dir)
       builder.order(Arel.sql(entity_class.sanitize_sql_for_order(order))) if order
     end
   end
 
   def order_clause_for(col, dir)
-    if col == "name"
+    if col == 'name'
       name_order_clause(dir)
-    elsif col == "street_address"
+    elsif col == 'street_address'
       street_address_order_clause(dir)
-    elsif col == "census_scope"
+    elsif col == 'census_scope'
       census_page_order_clause(dir)
-    elsif col == "family_id"
+    elsif col == 'family_id'
       "regexp_replace(NULLIF(family_id, ''), '[^0-9]+', '', 'g')::numeric #{dir}"
     elsif col =~ /wages/
       "regexp_replace(NULLIF(#{col}, ''), '[^0-9]+', '', 'g')::numeric #{dir}"
     elsif entity_class.columns.map(&:name).include?(col)
       "#{col} #{dir}"
     else
-      raise ArgumentError, "Unrecognized sort request."
+      raise ArgumentError, 'Unrecognized sort request.'
     end
   end
 
@@ -133,14 +107,14 @@ class CensusRecordSearch < SearchQueryBuilder
         f: params[:f],
         g: params[:g],
         sort: params[:sort],
-        scope: scope && scope != "on" ? scope.to_sym : nil,
+        scope: scope && scope != 'on' ? scope.to_sym : nil,
         from: params[:from]&.to_i,
         to: params[:to]&.to_i
   end
 
   def default_fields
     %w[census_scope street_address name].tap do |fields|
-      fields << "relation_to_head" if entity_class.year >= 1880
+      fields << 'relation_to_head' if entity_class.year >= 1880
     end.tap do |fields|
       fields.concat(%w[sex race age pob occupation])
     end
