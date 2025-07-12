@@ -6,6 +6,7 @@ module AdvancedRestoreSearch
   included do
     rescue_from PG::UndefinedFunction, with: :reset_search
     before_action :restore_search, only: %i[index], unless: :json_request?
+    memoize :current_search_data
   end
 
   private
@@ -44,7 +45,7 @@ module AdvancedRestoreSearch
         scope: params[:scope].dup,
         s: params[:s].dup,
         fs: params[:fs].dup,
-        f: params[:f].dup
+        f: params[:f].dup,
       }
       search.save
     elsif search.persisted?
@@ -68,11 +69,11 @@ module AdvancedRestoreSearch
           s: params[:s].dup,
           fs: params[:fs].dup,
           f: params[:f].dup,
-          scope: params[:scope].dup
-        }
+          scope: params[:scope].dup,
+        },
       }
-    elsif session[:search] && session[:search]['model'] == controller_name
-      redirect_to session[:search]['params'].merge(action: params[:action])
+    elsif session[:search] && session[:search]["model"] == controller_name
+      redirect_to session[:search]["params"].merge(action: params[:action])
     end
   end
 
@@ -81,10 +82,22 @@ module AdvancedRestoreSearch
   end
 
   def actively_searching?
-    params[:s] || params[:f] || params[:fs] || (params[:scope] && params[:scope] != 'on')
+    params[:s] || params[:f] || params[:fs] || (params[:scope] && params[:scope] != "on")
   end
 
   def search_key
     self.class.name
+  end
+
+  def current_search_data
+    if current_user
+      current_user.search_params.find_by(model: search_key)&.params&.deep_symbolize_keys
+    else
+      session[:search]&.dig("params")&.deep_symbolize_keys if session[:search]&.dig("model") == search_key
+    end
+  end
+
+  def has_active_search_data?
+    current_search_data.present? && current_search_data[:s].present?
   end
 end
