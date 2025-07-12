@@ -2,6 +2,7 @@
 
 module People
   class MainController < ApplicationController
+    include FastMemoize
     include AdvancedRestoreSearch
     include RenderCsv
 
