@@ -37,14 +37,7 @@ module People
     def show
       @person = Person.find params[:id]
       authorize! :read, @person
-
-      search_data = current_user&.search_params.find_by(model: search_key)&.params&.deep_symbolize_keys
-      if search_data.present? && search_data[:s].present?
-        @navigation_neighbors = PersonSearch.generate(
-          params: search_data,
-          user: current_user
-        ).navigation_neighbors(@person.id)
-      end
+      load_navigation if current_user
     end
 
     def new
@@ -95,6 +88,16 @@ module People
     end
 
     private
+
+    def load_navigation
+      search_data = current_user.search_params.find_by(model: search_key)&.params&.deep_symbolize_keys
+      return unless search_data.present? && search_data[:s].present?
+
+      @navigation_neighbors = PersonSearch.generate(
+        params: search_data,
+        user: current_user
+      ).navigation_neighbors(@person.id)
+    end
 
     def search_params
       params.permit!.to_h

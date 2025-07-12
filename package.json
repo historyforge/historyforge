@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "build": "esbuild app/javascript/*.* --bundle --sourcemap --outdir=app/assets/builds"
+    "build": "esbuild app/javascript/application.js app/javascript/cms.js --bundle --sourcemap --outdir=app/assets/builds"
   },
   "dependencies": {
     "@airbrake/browser": "^1.4.1",
@@ -25,7 +25,7 @@
     "stimulus": "^1.1.1"
   },
   "devDependencies": {
-    "esbuild": "^0.14.14",
+    "esbuild": "^0.25.6",
     "eslint": "^8.2.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-standard": "^16.0.3",

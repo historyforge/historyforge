@@ -52,13 +52,7 @@ module Buildings
     def show
       @building = @building.decorate
 
-      search_data = current_user&.search_params.find_by(model: search_key)&.params&.deep_symbolize_keys
-      if search_data.present? && search_data[:s].present?
-        @navigation_neighbors = BuildingSearch.generate(
-          params: search_data,
-          user: current_user
-        ).navigation_neighbors(@building.id)
-      end
+      load_navigation if current_user
 
       respond_to do |format|
         format.html
@@ -137,6 +131,16 @@ module Buildings
     end
 
     private
+
+    def load_navigation
+      search_data = current_user.search_params.find_by(model: search_key)&.params&.deep_symbolize_keys
+      if search_data.present? && search_data[:s].present?
+        @navigation_neighbors = BuildingSearch.generate(
+          params: search_data,
+          user: current_user
+        ).navigation_neighbors(@building.id)
+      end
+    end
 
     def load_residents
       @building.residents = Buildings::FindResidents.run!(

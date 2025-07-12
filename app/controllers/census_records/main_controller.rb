@@ -35,12 +35,7 @@ module CensusRecords
       @model = resource_class.find params[:id]
       authorize! :read, @model
       @record = @model.decorate
-
-      # Load navigation data if there are active search parameters
-      search_data = current_user&.search_params.find_by(model: search_key)&.params&.deep_symbolize_keys
-      if search_data.present? && search_data[:s].present?
-        @navigation = CensusRecordSearch.generate(params: search_data, year:, user: current_user).navigation_neighbors(@model.id)
-      end
+      load_navigation if current_user
     end
 
     def new
@@ -191,6 +186,14 @@ module CensusRecords
     helper_method :year
 
     private
+
+    def load_navigation
+      # Load navigation data if there are active search parameters
+      search_data = current_user.search_params.find_by(model: search_key)&.params&.deep_symbolize_keys
+      return unless search_data.present? && search_data[:s].present?
+
+      @navigation = CensusRecordSearch.generate(params: search_data, year:, user: current_user).navigation_neighbors(@model.id)
+    end
 
     def search_key
       CensusYears.to_words(year)
