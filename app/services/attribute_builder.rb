@@ -124,7 +124,7 @@ class AttributeBuilder
     end
   end
 
-  class CollectionAttribute < Enumeration
+  class CollectionAttribute < EnumerationAttribute
     def choices
       @extras.delete :choices
     end

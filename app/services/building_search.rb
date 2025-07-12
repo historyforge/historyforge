@@ -1,16 +1,17 @@
 # frozen_string_literal: true
 
 class BuildingSearch < SearchQueryBuilder
-  attr_reader :num_residents, :people_params, :near
-  attr_reader :building_params
+  attr_reader :num_residents, :people_params, :near, :building_params
   attr_accessor :people, :expanded
 
   def self.generate(params: {}, user: nil)
-    new user: user,
-        people_params: params[:peopleParams] && handle_people_params(params[:peopleParams]),
-        building_params: params[:buildingParams] && handle_people_params(params[:buildingParams]),
-        scope: params[:scope] && params[:scope] != "on" && params[:scope].intern,
-        **params.slice(:s, :f, :g, :from, :to, :sort, :people, :near)
+    new(
+      user:,
+      people_params: params[:peopleParams] && handle_people_params(params[:peopleParams]),
+      building_params: params[:buildingParams] && handle_people_params(params[:buildingParams]),
+      scope: params[:scope] && params[:scope] != 'on' && params[:scope].intern,
+      **params.slice(:s, :f, :g, :from, :to, :sort, :people, :near)
+    )
   end
 
   def self.handle_people_params(params)
@@ -41,7 +42,7 @@ class BuildingSearch < SearchQueryBuilder
     builder.without_residents if unpeopled?
     builder.where(reviewed_at: nil) if unreviewed?
     builder.where(investigate: true) if uninvestigated?
-    builder.where(locality_id: Current.locality_id) if Current.locality_id && !s.keys.include?("locality_id_in")
+    builder.where(locality_id: Current.locality_id) if Current.locality_id && !s.keys.include?('locality_id_in')
 
     if from
       builder.offset(from) if from.positive?
@@ -95,17 +96,17 @@ class BuildingSearch < SearchQueryBuilder
   private
 
   def filter_by_distance
-    coordinates = near.split("+").map(&:to_d)
+    coordinates = near.split('+').map(&:to_d)
     builder.near(coordinates)
     builder.limit(5)
   end
 
   def prepare_expanded_search
     unless navigation
-      builder.preload(:locality) if f.include?("locality")
-      builder.preload(:addresses) if f.include?("street_address") || f.include?("historical_addresses")
-      builder.preload(:architects) if f.include?("architects")
-      builder.preload(:rich_text_description) if f.include?("description")
+      builder.preload(:locality) if f.include?('locality')
+      builder.preload(:addresses) if f.include?('street_address') || f.include?('historical_addresses')
+      builder.preload(:architects) if f.include?('architects')
+      builder.preload(:rich_text_description) if f.include?('description')
     end
     add_order_clause
   end
@@ -116,25 +117,26 @@ class BuildingSearch < SearchQueryBuilder
 
   def enrich_with_residents
     people_class = "Census#{people}Record".constantize
-    people = people_class.where.not(reviewed_at: nil).select("building_id")
+    people = people_class.where.not(reviewed_at: nil)
     people = people.ransack(people_params).result if people_params.present?
+    people = people.pluck('building_id')
 
     # Force it to return no results if there are no people - otherwise it returns all results when
     # looking for Chinese people in 1910 in Ithaca. Nobody <> everybody
 
-    @num_residents = people.count
+    @num_residents = people.size
     builder.where(id: people)
   end
 
   def add_order_clause
     sort&.each do |_key, sort_unit|
-      col = sort_unit["colId"]
-      dir = sort_unit["sort"]
+      col = sort_unit['colId']
+      dir = sort_unit['sort']
       if Building.columns.map(&:name).include?(col)
         builder.order_by(col, dir)
-      elsif col == "street_address"
+      elsif col == 'street_address'
         builder.order_by_street_address(dir)
       end
-    end || builder.order_by_street_address("asc")
+    end || builder.order_by_street_address('asc')
   end
 end
