@@ -1,0 +1,9 @@
+services:
+  kiosk:
+    # Override to build locally during development
+    # Use this file when you need to test changes to the Dockerfile
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    # Comment out the image line when using local build
+    # image: ghcr.io/jacrys/historyforge-devcontainer:latest

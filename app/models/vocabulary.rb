@@ -17,11 +17,11 @@
 
 class Vocabulary < ApplicationRecord
   has_many :terms, dependent: :destroy
-  validates :name, :machine_name, presence: true
+  validates :name, :machine_name, presence: true, uniqueness: { case_sensitive: false }
   default_scope -> { order :name }
 
   def term_exists?(term)
-    terms.where(name: term).exists?
+    terms.where("LOWER(name) = ?", term.downcase).exists?
   end
 
   def self.by_name(name)
@@ -31,7 +31,7 @@ class Vocabulary < ApplicationRecord
   def self.controlled_attribute_for(year, attribute)
     DICTIONARY.each do |vocab, years|
       years[year].each do |field|
-        return by_name(vocab) if field == attribute
+        return by_name(vocab) if field.downcase == attribute.downcase
       end
     end
     nil

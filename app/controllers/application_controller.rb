@@ -6,6 +6,7 @@ class ApplicationController < ActionController::Base
 
   around_action :load_settings
   around_action :set_current_attributes
+  before_action :apply_relative_url_root
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :set_paper_trail_whodunnit
 
@@ -111,5 +112,13 @@ class ApplicationController < ActionController::Base
     end
     yield
     Current.reset
+  end
+
+  def apply_relative_url_root
+    if Rails.application.config.relative_url_root.present?
+      script_name = Rails.application.config.relative_url_root
+      default_url_options[:script_name] = script_name
+      request.env["SCRIPT_NAME"] = script_name
+    end
   end
 end

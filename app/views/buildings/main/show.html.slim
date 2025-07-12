@@ -129,6 +129,20 @@
         - narratives.each do |narrative|
           = render 'narratives/narrative', narrative:
 
+    - documents = @building.documents.accessible_by(current_ability)
+    .card class="#{@building.description.blank? ? 'mb-3' : 'empty-card'}"
+      .card-header
+        = link_to 'Add Documents', new_building_document_path(@building.object), class: 'float-right'
+        | Documents
+      - if documents.blank?
+        .card-body
+          p.lead No Documents yet for this building.
+
+      - if documents.present?
+        .list-group
+          - documents.each do |document|
+            = render 'documents/document', document:
+
     - CensusYears.each do |year|
       - families = @building.public_send("families_in_#{year}")
       - if families.present?

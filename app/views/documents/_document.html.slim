@@ -1,0 +1,21 @@
+.list-group-item.pb-3 id="document_#{document.id}"
+  - if can?(:destroy, document)
+    = link_to [@building || @person, document], class: 'btn btn-sm btn-light float-right ml-1', data: { method: :delete, confirm: "Are you sure? This action is permanent." } do
+      i.fa.fa-trash
+      span.d-none.d-lg-inline
+        | &nbsp; Delete
+  - if can?(:update, document)
+    = link_to [:edit, @building || @person, document], class: 'btn btn-sm btn-light float-right ml-1' do
+      i.fa.fa-pencil
+      span.d-none.d-lg-inline
+        | &nbsp; Edit
+  = document.name  
+  - if @person
+    p= document.buildings.map { |building| link_to(building.street_address, building) }.join('<br />').html_safe
+  - if @building
+    p= document.people.map { |person| link_to(person.name, person) }.join('<br />').html_safe
+
+  - if can?(:update, document)
+   
+
+    /p= "Submitted by #{record.created_by.login} on #{record.created_at.to_formatted_s(:long)}"

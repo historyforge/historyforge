@@ -1,0 +1,64 @@
+if command -v brew > /dev/null 2>&1; then
+  alias ls="ls -lAh --color=auto --group-directories-first"
+  alias grep="grep -G --color=auto"
+  alias fgrep="fgrep -G --color=auto"
+  alias egrep="egrep -G --color=auto"
+else
+  alias ls="ls -lAh --color=auto"
+  alias grep="grep --color=auto"
+  alias fgrep="fgrep --color=auto"
+  alias egrep="egrep --color=auto"
+fi
+
+alias ll="ls -alF --color=auto --group-directories-first"
+alias la="ls -A --color=auto --group-directories-first"
+alias l="ls -CF --color=auto --group-directories-first"
+
+alias cat=ccat
+
+alias cfa='${EDITOR} ${ZDOTDIR}/.aliases'
+alias cfp='${EDITOR} ${ZDOTDIR}/.zprofile'
+alias cfr='${EDITOR} ${ZDOTDIR}/.zshrc'
+alias sfr='. ${ZDOTDIR}/.zshrc'
+alias cfv='${EDITOR} ${HOME}/.vimrc'
+alias cft='${EDITOR} ${HOME}/.tmux.conf'
+alias dt='cd ${HOME}/src/github/dotfiles'
+
+alias drun='docker run --rm -it -v "${PWD}":/app -w /app'
+
+alias rmpyc="find . -type d -name '__pycache__' -exec rm -rf {} \;"
+
+alias jek="RUBYOPT='-W0' bundle exec jekyll serve --config _config.yml,_config.dev.yml --drafts --livereload"
+
+alias ymp3="youtube-dl --extract-audio --audio-format mp3"
+
+alias octal="stat -c '%a %n'"
+
+alias follow="namei -om"
+
+alias diff="diff --color -u"
+
+alias 755d="find . -type d -exec chmod 755 {} \;"
+
+alias 755f="find . -type f -exec chmod 755 {} \;"
+
+alias 644f="find . -type f -exec chmod 644 {} \;"
+
+if ! command -v brew > /dev/null 2>&1; then
+  alias open="/c/Program\ Files\ \(x86\)/Google/Chrome/Application/chrome.exe"
+  alias wopen="cmd.exe /C start 2> /dev/null"
+fi
+
+alias vdt="rm /tmp/%*"
+
+alias gi="git init && git symbolic-ref HEAD refs/heads/main"
+
+alias pf="fzf ${FZF_CTRL_T_OPTS}"
+
+alias gcl="git diff --name-only --diff-filter=U"
+
+alias start-rec="start-recording && HISTSIZE=0"
+alias stop-rec="stop-recording && HISTSIZE=${SAVEHIST} && fc -R"
+
+alias k="kubectl"
+alias tf="terraform"

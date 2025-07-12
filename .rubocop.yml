@@ -1,5 +1,5 @@
 # Common configuration.
-require:
+plugins:
   - rubocop-capybara
   - rubocop-factory_bot
   - rubocop-rails
@@ -1776,7 +1776,7 @@ Lint/EmptyClass:
 Lint/EmptyConditionalBody:
   Description: 'Checks for the presence of `if`, `elsif` and `unless` branches without a body.'
   Enabled: true
-  SafeAutoCorrect: false
+  AutoCorrect: false
   AllowComments: true
   VersionAdded: '0.89'
   VersionChanged: '1.34'
@@ -2114,7 +2114,6 @@ Lint/RedundantDirGlobSort:
 Lint/RedundantRequireStatement:
   Description: 'Checks for unnecessary `require` statement.'
   Enabled: true
-  SafeAutoCorrect: false
   VersionAdded: '0.76'
   VersionChanged: '1.57'
 
@@ -2429,7 +2428,7 @@ Lint/UselessAssignment:
   Enabled: true
   VersionAdded: '0.11'
   VersionChanged: '1.51'
-  SafeAutoCorrect: false
+  AutoCorrect: false
 
 Lint/UselessElseWithoutRescue:
   Description: 'Checks for useless `else` in `begin..end` without `rescue`.'
@@ -2843,7 +2842,7 @@ Naming/MethodParameterName:
   # Forbidden names that will register an offense
   ForbiddenNames: []
 
-Naming/PredicateName:
+Naming/PredicatePrefix:
   Description: 'Check the names of predicate methods.'
   StyleGuide: '#bool-methods-qmark'
   Enabled: true
