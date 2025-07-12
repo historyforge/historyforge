@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Build and push dev container image to GHCR
 # Usage: ./build-and-push-devcontainer.sh [tag]

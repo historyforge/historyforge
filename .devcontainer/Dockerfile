@@ -18,10 +18,10 @@ COPY . /tmp/project-staging/
 
 # Copy setup scripts to system location
 COPY .devcontainer/entrypoint.sh /usr/local/bin/dev-entrypoint.sh
-COPY .devcontainer/setup-volume-workspace.sh /usr/local/bin/setup-volume-workspace.sh
-COPY .devcontainer/setup.sh /usr/local/bin/setup.sh
-COPY .devcontainer/postSetup.sh /usr/local/bin/postSetup.sh
-RUN chmod +x /usr/local/bin/dev-entrypoint.sh /usr/local/bin/setup-volume-workspace.sh /usr/local/bin/setup.sh /usr/local/bin/postSetup.sh
+COPY .devcontainer/setup-volume-workspace.zsh /usr/local/bin/setup-volume-workspace.zsh
+COPY .devcontainer/setup.zsh /usr/local/bin/setup.zsh
+COPY .devcontainer/postSetup.zsh /usr/local/bin/postSetup.zsh
+RUN chmod +x /usr/local/bin/dev-entrypoint.sh /usr/local/bin/setup-volume-workspace.zsh /usr/local/bin/setup.zsh /usr/local/bin/postSetup.zsh
 
 ENTRYPOINT ["/usr/local/bin/dev-entrypoint.sh"]
 CMD [ "zsh" ]
