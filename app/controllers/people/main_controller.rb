@@ -38,7 +38,7 @@ module People
       @person = Person.find params[:id]
       authorize! :read, @person
 
-      search_data = current_user.search_params.find_by(model: search_key)&.params&.deep_symbolize_keys
+      search_data = current_user&.search_params.find_by(model: search_key)&.params&.deep_symbolize_keys
       if search_data.present? && search_data[:s].present?
         @navigation_neighbors = PersonSearch.generate(
           params: search_data,

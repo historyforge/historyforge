@@ -37,7 +37,7 @@ module CensusRecords
       @record = @model.decorate
 
       # Load navigation data if there are active search parameters
-      search_data = current_user.search_params.find_by(model: search_key)&.params&.deep_symbolize_keys
+      search_data = current_user&.search_params.find_by(model: search_key)&.params&.deep_symbolize_keys
       if search_data.present? && search_data[:s].present?
         @navigation = CensusRecordSearch.generate(params: search_data, year:, user: current_user).navigation_neighbors(@model.id)
       end
