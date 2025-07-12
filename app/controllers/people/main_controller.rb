@@ -21,13 +21,15 @@ module People
                      .limit(10)
                      .preload(:names)
       data = people.map do |person|
-        { id: person.id,
+        {
+          id: person.id,
           years: person.years,
           birth_year: person.birth_year,
           death_year: person.death_year,
           name: person.name,
           see_names: person.names.map(&:name),
-          sex: person.sex }
+          sex: person.sex
+        }
       end
       render json: data
     end
@@ -35,6 +37,14 @@ module People
     def show
       @person = Person.find params[:id]
       authorize! :read, @person
+
+      search_data = current_user.search_params.find_by(model: search_key)&.params&.deep_symbolize_keys
+      if search_data.present? && search_data[:s].present?
+        @navigation_neighbors = PersonSearch.generate(
+          params: search_data,
+          user: current_user
+        ).navigation_neighbors(@person.id)
+      end
     end
 
     def new

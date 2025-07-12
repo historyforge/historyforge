@@ -16,6 +16,18 @@
       i.fa.fa-trash
       span.d-none.d-lg-inline
         | &nbsp; Delete
+  - if @navigation_neighbors.present?
+    - if @navigation_neighbors[:previous_id]
+      = link_to person_path(@navigation_neighbors[:previous_id]), class: 'btn btn-light' do
+        i.fa.fa-chevron-left
+        span.d-none.d-lg-inline
+          | &nbsp; Prev
+    - if @navigation_neighbors[:next_id]
+      = link_to person_path(@navigation_neighbors[:next_id]), class: 'btn btn-light' do
+        span.d-none.d-lg-inline
+          | Next&nbsp;
+        i.fa.fa-chevron-right
+
 .list-group.mb-3
   - names = @person.variant_names
   - if names.any?

@@ -26,17 +26,17 @@ class PersonSearch < SearchQueryBuilder
   memoize :results
 
   def scoped
-    builder.preload(:names)
+    builder.preload(:names) unless navigation
     builder.group("people.id")
     builder.offset(from) if from
     builder.limit(to.to_i - from.to_i) if from && to
     builder.uncensused if uncensused?
     builder.photographed if photographed?
-    add_census_record_links
+    add_census_record_links unless navigation
     add_see_names
     add_sorts
     scope_to_locality if Current.locality_id && !s.key?("localities_id_in")
-    builder.preload(:localities) if f.include?("locality_ids")
+    builder.preload(:localities) if f.include?("locality_ids") && !navigation
     builder.scoped.distinct
   end
 
@@ -68,7 +68,8 @@ class PersonSearch < SearchQueryBuilder
     return unless has_names_joined?
 
     builder.group("person_names.id")
-    builder.select(builder.scoped.select_values, 'person_names.first_name as matched_first_name, person_names.last_name as matched_last_name, concat_ws(\', \', lower(person_names.last_name), lower(person_names.first_name)) collate "C" as sortable_matched_name')
+    builder.select(builder.scoped.select_values, "person_names.first_name as matched_first_name, person_names.last_name as matched_last_name") unless navigation
+    builder.select(builder.scoped.select_values, "person_names.sortable_name as sortable_matched_name")
   end
 
   def add_sorts

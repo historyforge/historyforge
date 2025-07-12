@@ -35,6 +35,12 @@ module CensusRecords
       @model = resource_class.find params[:id]
       authorize! :read, @model
       @record = @model.decorate
+
+      # Load navigation data if there are active search parameters
+      search_data = current_user.search_params.find_by(model: search_key)&.params&.deep_symbolize_keys
+      if search_data.present? && search_data[:s].present?
+        @navigation = CensusRecordSearch.generate(params: search_data, year:, user: current_user).navigation_neighbors(@model.id)
+      end
     end
 
     def new
@@ -63,7 +69,7 @@ module CensusRecords
       results = AttributeAutocomplete.new(
         attribute: params[:attribute],
         term: params[:term],
-        year:
+        year:,
       ).perform
       render json: results
     end
