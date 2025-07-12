@@ -12,7 +12,7 @@ module People
       respond_to do |format|
         format.html
         format.json { render json: @translator.row_data }
-        format.csv { render_csv("people", Person) }
+        format.csv { render_csv('people', Person) }
       end
     end
 
@@ -21,13 +21,15 @@ module People
                      .limit(10)
                      .preload(:names)
       data = people.map do |person|
-        { id: person.id,
+        {
+          id: person.id,
           years: person.years,
           birth_year: person.birth_year,
           death_year: person.death_year,
           name: person.name,
           see_names: person.names.map(&:name),
-          sex: person.sex }
+          sex: person.sex
+        }
       end
       render json: data
     end
@@ -40,7 +42,7 @@ module People
       if search_data.present? && search_data[:s].present?
         @navigation_neighbors = PersonSearch.generate(
           params: search_data,
-          user: current_user,
+          user: current_user
         ).navigation_neighbors(@person.id)
       end
     end
@@ -60,10 +62,10 @@ module People
       @person = Person.new resource_params
       authorize! :create, @person
       if @person.save
-        flash[:notice] = "Person created."
+        flash[:notice] = 'Person created.'
         redirect_to @person
       else
-        flash[:error] = "Person not saved."
+        flash[:error] = 'Person not saved.'
         render action: :new
       end
     end
@@ -72,10 +74,10 @@ module People
       @person = Person.find params[:id]
       authorize! :update, @person
       if @person.update resource_params
-        flash[:notice] = "Person updated."
+        flash[:notice] = 'Person updated.'
         redirect_to @person
       else
-        flash[:error] = "Person not saved."
+        flash[:error] = 'Person not saved.'
         render action: :edit
       end
     end
@@ -84,10 +86,10 @@ module People
       @person = Person.find params[:id]
       authorize! :destroy, @person
       if @person.destroy
-        flash[:notice] = "Person deleted."
+        flash[:notice] = 'Person deleted.'
         redirect_to action: :index
       else
-        flash[:error] = "Unable to delete person."
+        flash[:error] = 'Unable to delete person.'
         redirect_to :back
       end
     end

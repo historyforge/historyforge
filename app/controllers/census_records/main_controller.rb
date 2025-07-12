@@ -19,7 +19,7 @@ module CensusRecords
       CensusYears.each do |year|
         "Census#{year}Record".constantize.rebuild_pg_search_documents
       end
-      flash[:notice] = "Person index rebuilt."
+      flash[:notice] = 'Person index rebuilt.'
       redirect_back_or_to(root_path)
     end
 
@@ -89,10 +89,10 @@ module CensusRecords
       authorize! :create, @record
       @record.created_by = current_user
       if @record.save
-        flash[:notice] = "Census Record saved."
+        flash[:notice] = 'Census Record saved.'
         after_saved
       else
-        flash[:error] = "Census Record not saved."
+        flash[:error] = 'Census Record not saved.'
         render action: :new
       end
     end
@@ -101,10 +101,10 @@ module CensusRecords
       @record = resource_class.find params[:id]
       authorize! :update, @record
       if @record.update(resource_params)
-        flash[:notice] = "Census Record saved."
+        flash[:notice] = 'Census Record saved.'
         after_saved
       else
-        flash[:error] = "Census Record not saved."
+        flash[:error] = 'Census Record not saved.'
         render action: :edit
       end
     end
@@ -113,10 +113,10 @@ module CensusRecords
       @record = resource_class.find params[:id]
       authorize! :destroy, @record
       if @record.destroy
-        flash[:notice] = "Census Record deleted."
+        flash[:notice] = 'Census Record deleted.'
         redirect_to action: :index
       else
-        flash[:error] = "Unable to delete census record."
+        flash[:error] = 'Unable to delete census record.'
         redirect_back fallback_location: { action: :index }
       end
     end
@@ -131,7 +131,7 @@ module CensusRecords
       @record = resource_class.find params[:id]
       authorize! :review, @record
       @record.review! current_user
-      flash[:notice] = "The census record is marked as reviewed and available for public view."
+      flash[:notice] = 'The census record is marked as reviewed and available for public view.'
       redirect_back fallback_location: { action: :index }
     end
 
@@ -147,7 +147,7 @@ module CensusRecords
         record.review! current_user
       end
 
-      flash[:notice] = "The census records are marked as reviewed and available for public view."
+      flash[:notice] = 'The census records are marked as reviewed and available for public view.'
       redirect_back fallback_location: { action: :index }
     end
 
@@ -174,9 +174,9 @@ module CensusRecords
       authorize! :create, resource_class
       person = People::GenerateFromCensusRecord.run!(record: @record)
       if person.persisted?
-        flash[:notice] = "A new person record has been created from this census record."
+        flash[:notice] = 'A new person record has been created from this census record.'
       else
-        error_message = "Unable to create a person record from this census record. "
+        error_message = 'Unable to create a person record from this census record. '
         error_message += person.errors.full_messages.to_sentence if person.errors.any?
         flash[:error] = error_message
       end
@@ -224,7 +224,7 @@ module CensusRecords
     end
 
     def after_saved
-      if params[:context] && params[:context] == "person"
+      if params[:context] && params[:context] == 'person'
         redirect_to @record.person
       elsif params[:then].present?
         attributes = NextCensusRecordAttributes.new(@record, params[:then]).attributes
