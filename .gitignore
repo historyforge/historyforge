@@ -78,3 +78,6 @@ bin/deploy
 
 # Ignore asdf configuration for local development
 .tool-versions
+
+census/1920_XYdegeo.csv
+*.xlsx
