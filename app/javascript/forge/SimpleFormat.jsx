@@ -1,15 +1,8 @@
 import React from 'react'
 
-interface SimpleFormatData {
-  text: string;
-  wrapperTag?: string;
-  wrapperTagProps?: object;
-  postfix?: string;
-}
-
 const pattern = /([^\n]\n)(?=[^\n])/g
 
-const toParagraphs = function(text: string): string[] {
+const toParagraphs = function(text) {
   return text.replace(/\r\n?/g, '\n').split(/\n\n+/).map((t) => {
     if (t.match(pattern)) {
       return t.replace(pattern, '$1<br />')
@@ -19,7 +12,7 @@ const toParagraphs = function(text: string): string[] {
   })
 }
 
-const SimpleFormat = (props: SimpleFormatData): React.ReactNode => {
+const SimpleFormat = (props) => {
   // Based on:
   // https://github.com/rails/rails/blob/312485f3e88af3966b586275ae5097198bfef6a0/actionview/lib/action_view/helpers/text_helper.rb#L454-L460
 

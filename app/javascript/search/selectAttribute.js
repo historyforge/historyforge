@@ -1,6 +1,6 @@
 import selectScope from './selectScope'
 
-const selectAttribute = function(attribute: string, form: JQuery, config: AttributeFilterConfig) {
+const selectAttribute = function(attribute, form, config) {
     const scopeSelect = buildScopeSelector(form, config)
 
     scopeSelect.on('change', function() {
@@ -20,7 +20,7 @@ const selectAttribute = function(attribute: string, form: JQuery, config: Attrib
         valueBox.addClass('column-count-' + config.columns);
     }
 
-    const addInput = function(input: HTMLElement): void {
+    const addInput = function(input) {
         appendToValueBox(input, config.append, valueBox)
     }
 
@@ -42,7 +42,7 @@ const selectAttribute = function(attribute: string, form: JQuery, config: Attrib
     }
 };
 
-function booleanInput(scopeName: string, addInput: AddInputFn): void {
+function booleanInput(scopeName, addInput) {
     const input = document.createElement('INPUT');
     input.setAttribute('name', `s[${scopeName}]`);
     input.setAttribute('type', 'hidden');
@@ -50,7 +50,7 @@ function booleanInput(scopeName: string, addInput: AddInputFn): void {
     addInput(input);
 }
 
-function checkboxInput(choice: ChoiceValue, scopeName: string, valueBox: JQuery): void {
+function checkboxInput(choice, scopeName, valueBox) {
     let labelText, value;
     if (typeof choice === 'string') {
         labelText = value = choice;
@@ -77,7 +77,7 @@ function checkboxInput(choice: ChoiceValue, scopeName: string, valueBox: JQuery)
     valueBox.append(checkbox);
 }
 
-function checkboxesInput(scopeName: string, choices: Choices, valueBox: JQuery): void {
+function checkboxesInput(scopeName, choices, valueBox) {
     const null_choice = document.createElement('INPUT');
     null_choice.setAttribute('type','hidden');
     null_choice.setAttribute('disabled', 'true');
@@ -90,7 +90,7 @@ function checkboxesInput(scopeName: string, choices: Choices, valueBox: JQuery):
     valueBox.css('display', 'inline');
 }
 
-function textInput(scopeName: string, addInput: AddInputFn) {
+function textInput(scopeName, addInput) {
     const input = document.createElement('INPUT');
     input.classList.add('form-control');
     input.setAttribute('name', `s[${scopeName}]`);
@@ -98,7 +98,7 @@ function textInput(scopeName: string, addInput: AddInputFn) {
     addInput(input);
 }
 
-function numberInput(scopeName: string, scopeSelect: JQuery, addInput: AddInputFn): void {
+function numberInput(scopeName, scopeSelect, addInput) {
     const input = document.createElement('INPUT');
     input.classList.add('form-control');
     input.setAttribute('name', `s[${scopeName}]`);
@@ -118,7 +118,7 @@ function numberInput(scopeName: string, scopeSelect: JQuery, addInput: AddInputF
     });
 }
 
-function dropdownInput(scopeName: string, choices: Choices, addInput: AddInputFn): void {
+function dropdownInput(scopeName, choices, addInput) {
     const input = document.createElement('SELECT');
     input.classList.add('form-control');
     input.setAttribute('name', `s[${scopeName}]`);
@@ -133,7 +133,7 @@ function dropdownInput(scopeName: string, choices: Choices, addInput: AddInputFn
     addInput(input);
 }
 
-function buildScopeSelector(form: JQuery, config: AttributeFilterConfig): JQuery {
+function buildScopeSelector(form, config) {
     const container = form.find('.scope-selection-container').empty().hide();
     const scopeSelect = $('<select class="scope form-control"></select>');
     scopeSelect.on('change', selectScope)
@@ -150,7 +150,7 @@ function buildScopeSelector(form: JQuery, config: AttributeFilterConfig): JQuery
     return scopeSelect;
 }
 
-function appendToValueBox(input: HTMLElement, append: string, valueBox: JQuery): void {
+function appendToValueBox(input, append, valueBox) {
     if (append) {
         const div = document.createElement('DIV');
         div.className = 'input-append';

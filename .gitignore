@@ -59,6 +59,9 @@ db/maptileindex/*
 
 #public assets
 public/assets/**
+app/assets/build/**
+.yarn
+.yarnrc.yml
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key

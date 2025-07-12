@@ -63,11 +63,11 @@ class MercatorProjection {
 }
 
 class WMSLoader {
-    map: IMap;
-    baseURL: string;
-    id: number;
-    position: string;
-    wmsParams: string;
+    map;
+    baseURL;
+    id;
+    position;
+    wmsParams;
 
     constructor(map, layer, position) {
         this.baseURL = layer.url.replace(/mosaics\/tile/, 'mosaics/wms').replace("/{z}/{x}/{y}.png", "").split('?')[0] + '?';

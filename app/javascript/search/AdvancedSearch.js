@@ -3,17 +3,17 @@ import addAttributeFilter from "./addAttributeFilter";
 import selectAttribute from "./selectAttribute";
 
 // @ts-ignore
-$.fn.advancedSearch = function(options: AdvancedSearchOptions): JQuery {
+$.fn.advancedSearch = function(options) {
     return this.each(function() {
         $(this).data('search', new AdvancedSearch(this, options));
         return this;
     })
 };
 
-class AdvancedSearch implements IAdvancedSearch {
+class AdvancedSearch {
     currentFilters; attributeFilters; form
 
-    constructor(form: JQuery, options: AdvancedSearchOptions) {
+    constructor(form, options) {
         this.currentFilters = options.filters;
         this.form = $(form);
         this.initFormEvents();
@@ -24,7 +24,7 @@ class AdvancedSearch implements IAdvancedSearch {
         })
     }
 
-    initFormEvents(): void {
+    initFormEvents() {
         // when you click toggle buttons like "unreviewed" and "unhoused" this submits the form
         $(document).on('click', '#new_s .btn-group-toggle label', () => {
             this.form.submit();
@@ -50,7 +50,7 @@ class AdvancedSearch implements IAdvancedSearch {
     }
 
     // filters already applied are listed as buttons with an X that removes the filter
-    showCurrentFilters(): void {
+    showCurrentFilters() {
         if (Object.entries(this.currentFilters).length) {
             $('#attribute-filters').addClass('mb-3').empty();
             for (let scope in this.currentFilters) {
@@ -64,11 +64,11 @@ class AdvancedSearch implements IAdvancedSearch {
     }
 
     // underneath any quick filters is a dropdown that lets you select a field to filter on
-    showAddableFilters(): void {
+    showAddableFilters() {
         $('select.scope').hide();
         $('.value-input-container').empty();
         const attrSelect = $('select.attribute');
-        attrSelect.on('change', (event: JQuery.ChangeEvent) => {
+        attrSelect.on('change', (event) => {
             const attribute = $(event.target).val().toString();
             const config = this.attributeFilters[attribute]
             if (config) {
@@ -85,7 +85,7 @@ class AdvancedSearch implements IAdvancedSearch {
     }
 
     // returns the field config from a scope name
-    getFieldConfigFromScope(scope: string): AttributeFilterConfig {
+    getFieldConfigFromScope(scope) {
         for (let attribute in this.attributeFilters) {
             const value = this.attributeFilters[attribute];
             if ((value.scopes != null ? value.scopes[scope] : void 0) != null) {
