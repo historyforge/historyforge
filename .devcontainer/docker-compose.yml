@@ -1,0 +1,56 @@
+services:
+  historyforge:
+    # Use pre-built image from GHCR instead of building locally
+    image: ghcr.io/jacrys/historyforge-devcontainer:latest
+    # Fallback to local build if image is not available
+    env_file:
+      - path: ./devcontainer.env
+        required: true # default
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    hostname: historyforge
+    depends_on:
+      - db
+    links:
+      - "db:database"
+    ports:
+      - "127.0.0.1:3001:3000"
+    #  - "55432:5432"
+    volumes:
+      - historyforge-workspace:/workspaces/historyforge
+
+    # Overrides default command so things don't shut down after the process ends.
+    command: sleep infinity
+
+    networks:
+      - historyforge
+
+    # Use "forwardPorts" in **devcontainer.json** to forward an app port locally.
+    # (Adding the "ports" property to this file will not forward from a Codespace.)
+
+  db:
+    image: postgres:latest
+    hostname: database
+    restart: unless-stopped
+    env_file:
+      - path: ./devcontainer.env
+        required: true # default
+    ports:
+      - "127.0.0.1:55432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: postgres
+    networks:
+      - historyforge
+
+
+networks:
+  historyforge:
+
+volumes:
+  postgres-data:
+  historyforge-workspace:
