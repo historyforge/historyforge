@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'RolesController', type: :request do
+RSpec.describe RolesController, type: :request do
   include DeviseRequestSpecHelpers
 
   let(:admin) { create(:user, :with_administrator_role, enabled: true) }
