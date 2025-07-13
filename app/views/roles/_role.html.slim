@@ -10,9 +10,9 @@ li.list-group-item
     .col-3
       - if is_direct
         - if @user.has_direct_role?(role)
-          = link_to "remove role", user_role_url(id: role.id, user_id: @user.id), method: :delete
+          = link_to 'remove role', user_role_url(id: role.id, user_id: @user.id), method: :delete
         - else
-          = link_to "assign role", user_role_url(id: role.id, user_id: @user.id), method: :put
+          = link_to 'assign role', user_role_url(id: role.id, user_id: @user.id), method: :put
       - else
         small.text-muted
           | Managed via user group
