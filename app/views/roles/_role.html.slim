@@ -2,18 +2,18 @@ li.list-group-item
   .row
     .col-3
       = role.name
-      - if defined?(is_direct) && !is_direct
+      - if !is_direct
         small.text-muted
           |  (inherited)
     .col-6
       = role.description
     .col-3
-      - if defined?(is_direct) && is_direct
+      - if is_direct
         - direct_role_ids = Role.ids_from_mask(@user.roles_mask)
         - if direct_role_ids.include?(role.id)
-          = link_to "remove role", user_role_url(:id => role.id, :user_id => @user.id), :method => :delete
+          = link_to "remove role", user_role_url(id: role.id, user_id: @user.id), method: :delete
         - else
-          = link_to "assign role", user_role_url(:id => role.id, :user_id => @user.id), :method => :put
+          = link_to "assign role", user_role_url(id: role.id, user_id: @user.id), method: :put
       - else
         small.text-muted
           | Managed via user group
