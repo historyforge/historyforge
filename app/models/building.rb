@@ -179,6 +179,36 @@ class Building < ApplicationRecord
     super + %w[street_address]
   end
 
+  def self.as_geojson(buildings)
+    {
+      type: 'FeatureCollection',
+      features: buildings.map do |record|
+        {
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: record.coordinates
+          },
+          properties: {
+            location_id: record.id,
+            year: record.year,
+            title: record.name.to_s.strip,
+            addresses: record.addresses.map(&:as_json),
+            audios: record.respond_to?(:building_audios) ? record.building_audios&.map(&:as_json) : [],
+            stories: record.respond_to?(:building_narratives) ? record.building_narratives&.map(&:as_json) : [],
+            videos: record.respond_to?(:building_videos) ? record.building_videos&.map(&:as_json) : [],
+            photos: record.respond_to?(:building_photos) ? record.building_photos&.map(&:as_json) : [],
+            documents: record.respond_to?(:building_documents) ? record.building_documents&.map(&:as_json) : [],
+            description: record.description&.to_plain_text&.strip,
+            rich_description: record.rich_text_description,
+            census_records: record.respond_to?(:census_records) ? record.census_records&.map { |c_record| c_record.as_json(methods: [:sortable_name]) } : [],
+            people: record.people&.map { |person| person.as_json(methods: [:sortable_name]) }
+          }
+        }
+      end
+    }
+  end
+
   Geocoder.configure(
     timeout: 2,
     use_https: true,

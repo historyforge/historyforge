@@ -43,6 +43,14 @@ module HistoryForge
 
     config.quiet_assets = true
 
+    config.allowed_cors_origins = %w[
+      http://localhost:4173
+      http://localhost:3000
+      http://localhost:3001
+      http://localhost:5173
+      http://localhost:5174
+    ].freeze
+
     config.active_storage.variant_processor = :vips
     config.active_storage.service = :local
 

@@ -1,5 +1,6 @@
 APP_NAME:                 My HistoryForge
 BASE_URL:                 localhost:3000
+RAILS_RELATIVE_URL_ROOT:      ""
 DEVISE_SECRET_KEY:        results-of-running-rake-secret
 SECRET_KEY_BASE:          results-of-running-rake-secret
 FACEBOOK_LOGIN_ENABLED:     false

@@ -26,6 +26,12 @@ Rails.application.routes.draw do
 
   root 'home#index'
   get 'stats' => 'home#stats'
+  namespace :api do
+    get 'search', to: 'search#search'
+    options 'search', to: 'search#search'
+    get 'json', to: 'json#json'
+    options 'json', to: 'json#json'
+  end
   get 'search/people' => 'home#search_people', as: 'search_people'
   get 'search/buildings' => 'home#search_buildings', as: 'search_buildings'
   get 'searches/saved/:what' => 'home#saved_searches'
