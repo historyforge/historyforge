@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require "rails_helper"
 
-RSpec.describe 'Bulk updates of census records' do
-  scenario 'happy path' do
+RSpec.describe "Bulk updates of census records" do
+  scenario "happy path" do
     user = create(:administrator)
     locality = create(:locality)
     sign_in user
@@ -12,23 +12,35 @@ RSpec.describe 'Bulk updates of census records' do
       create(:census1920_record, locality:)
     end
 
-    visit '/census/1920'
-    click_on 'Bulk Update'
-    expect(page).to have_content('Bulk Updates for 1920')
-    expect(page).to have_content('None yet!')
-    click_on 'Care to start?'
-    expect(page).to have_content 'Start Bulk Update For 1920'
-    select 'Family No.', from: 'Field'
-    click_on 'Select Field'
-    fill_in 'From', with: '1'
-    fill_in 'To', with: '2'
-    click_on 'Submit'
-    expect(page).to have_content('Finalize Bulk Update for 1920')
-    expect(page).to have_content "I hereby solemnly swear that I, #{user.name}, understand the consequences of changing these 3 records."
-    check 'Confirm that you want to update 3 records.'
-    click_on 'Submit'
-    expect(page).to have_content('Family No. changed from 1 to 2.')
-    expect(page).to have_content('3 Records affected:')
+    visit "/census/1920"
+    click_on "Bulk Update"
+    expect(page).to have_content("Bulk Updates for 1920")
+    expect(page).to have_content("None yet!")
+    click_on "Care to start?"
+    expect(page).to have_content "Start Bulk Update For 1920"
+    select "Family No.", from: "Field"
+    click_on "Select Field"
+    fill_in "From", with: "1"
+    fill_in "To", with: "2"
+    click_on "Submit"
+
+    # Wait for page to load completely
+    wait_for_page_load
+    expect(page).to have_content("Finalize Bulk Update for 1920")
+
+    # Use helper method for more robust content checking
+    wait_for_content("I hereby solemnly swear that I, #{user.name}, understand the consequences of changing these 3 records.")
+
+    # Wait for the checkbox to be present before interacting with it
+    wait_for_element('input[type="checkbox"]')
+    check "Confirm that you want to update 3 records."
+
+    # Wait for the submit button to be ready
+    wait_for_element('input[type="submit"]')
+    click_on "Submit"
+
+    expect(page).to have_content("Family No. changed from 1 to 2.")
+    expect(page).to have_content("3 Records affected:")
     expect(Census1920Record.where(family_id: 1).count).to eq(0)
     expect(Census1920Record.where(family_id: 2).count).to eq(3)
   end

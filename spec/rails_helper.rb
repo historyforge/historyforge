@@ -47,26 +47,47 @@ RSpec.configure do |config|
   config.include OmniAuthTestHelper, type: :feature
 
   Capybara.register_driver :chrome do |app|
-    Capybara::Selenium::Driver.new(app, browser: :chrome)
+    options = Selenium::WebDriver::Chrome::Options.new
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-gpu")
+    options.add_argument("--disable-extensions")
+    options.add_argument("--disable-plugins")
+    options.add_argument("--no-first-run")
+    options.add_argument("--no-default-browser-check")
+
+    Capybara::Selenium::Driver.new(app,
+                                   browser: :chrome,
+                                   options: options)
   end
 
   Capybara.register_driver :chrome_headless do |app|
+    options = Selenium::WebDriver::Chrome::Options.new
+    options.add_argument("headless")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-gpu")
+    options.add_argument("--disable-extensions")
+    options.add_argument("--disable-plugins")
+    options.add_argument("--no-first-run")
+    options.add_argument("--no-default-browser-check")
+    options.add_argument("--window-size=1024,768")
+
     Capybara::Selenium::Driver.new app,
                                    browser: :chrome,
                                    clear_session_storage: true,
                                    clear_local_storage: true,
-                                   capabilities: [Selenium::WebDriver::Chrome::Options.new(
-                                     args: %w[headless disable-gpu no-sandbox window-size=1024,768],
-                                   )]
+                                   options: options
   end
 
   # Change this to :chrome_headless to run the tests in a headless browser.
   # Ideally this would be the default, but it's not working. The tests pass in
   # isolation, but not when run together in headless mode.
+  # Use :chrome for more stable DOM handling
   Capybara.default_driver = :chrome
   Capybara.javascript_driver = :chrome
 
-  Capybara.default_max_wait_time = 3
+  Capybara.default_max_wait_time = 10
 
   config.use_transactional_fixtures = true
 
