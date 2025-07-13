@@ -174,8 +174,7 @@ GEM
     faraday-net_http (3.4.0)
       net-http (>= 0.5.0)
     fast_memoize (0.1.1)
-    ffi (1.17.0-arm64-darwin)
-    ffi (1.17.0-x86_64-linux-gnu)
+    ffi (1.17.0)
     font-awesome-rails (4.7.0.9)
       railties (>= 3.2, < 9.0)
     geocoder (1.8.3)
@@ -243,6 +242,7 @@ GEM
     method_source (1.1.0)
     mini_magick (4.13.2)
     mini_mime (1.1.5)
+    mini_portile2 (2.8.9)
     minitest (5.25.2)
     msgpack (1.7.5)
     multi_xml (0.7.1)
@@ -259,9 +259,8 @@ GEM
     net-smtp (0.5.0)
       net-protocol
     nio4r (2.7.4)
-    nokogiri (1.16.7-arm64-darwin)
-      racc (~> 1.4)
-    nokogiri (1.16.7-x86_64-linux)
+    nokogiri (1.16.7)
+      mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     oauth2 (2.0.9)
       faraday (>= 0.17.3, < 3.0)
@@ -284,6 +283,7 @@ GEM
       actionpack (>= 4.2)
       omniauth (~> 2.0)
     orm_adapter (0.5.0)
+    ostruct (0.6.1)
     paper_trail (16.0.0)
       activerecord (>= 6.1)
       request_store (~> 1.4)
@@ -540,6 +540,7 @@ DEPENDENCIES
   net-smtp
   omniauth-facebook
   omniauth-rails_csrf_protection
+  ostruct
   paper_trail
   pg
   pg_search
@@ -572,7 +573,7 @@ DEPENDENCIES
   webdrivers
 
 RUBY VERSION
-   ruby 3.3.6p108
+   ruby 3.4.4p34
 
 BUNDLED WITH
-   2.5.22
+   2.6.9
