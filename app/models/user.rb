@@ -54,19 +54,19 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :trackable,
          :validatable, :omniauthable, omniauth_providers: %i[facebook]
 
-  belongs_to :group, class_name: 'UserGroup', foreign_key: :user_group_id, optional: true, inverse_of: :users
+  belongs_to :group, class_name: "UserGroup", foreign_key: :user_group_id, optional: true, inverse_of: :users
   has_many :search_params, dependent: :destroy
 
-  has_many :census1850_records, dependent: :nullify, class_name: 'Census1850Record', inverse_of: :created_by, foreign_key: :created_by_id
-  has_many :census1860_records, dependent: :nullify, class_name: 'Census1860Record', inverse_of: :created_by, foreign_key: :created_by_id
-  has_many :census1870_records, dependent: :nullify, class_name: 'Census1870Record', inverse_of: :created_by, foreign_key: :created_by_id
-  has_many :census1880_records, dependent: :nullify, class_name: 'Census1880Record', inverse_of: :created_by, foreign_key: :created_by_id
-  has_many :census1900_records, dependent: :nullify, class_name: 'Census1900Record', inverse_of: :created_by, foreign_key: :created_by_id
-  has_many :census1910_records, dependent: :nullify, class_name: 'Census1910Record', inverse_of: :created_by, foreign_key: :created_by_id
-  has_many :census1920_records, dependent: :nullify, class_name: 'Census1920Record', inverse_of: :created_by, foreign_key: :created_by_id
-  has_many :census1930_records, dependent: :nullify, class_name: 'Census1930Record', inverse_of: :created_by, foreign_key: :created_by_id
-  has_many :census1940_records, dependent: :nullify, class_name: 'Census1940Record', inverse_of: :created_by, foreign_key: :created_by_id
-  has_many :census1950_records, dependent: :nullify, class_name: 'Census1950Record', inverse_of: :created_by, foreign_key: :created_by_id
+  has_many :census1850_records, dependent: :nullify, class_name: "Census1850Record", inverse_of: :created_by, foreign_key: :created_by_id
+  has_many :census1860_records, dependent: :nullify, class_name: "Census1860Record", inverse_of: :created_by, foreign_key: :created_by_id
+  has_many :census1870_records, dependent: :nullify, class_name: "Census1870Record", inverse_of: :created_by, foreign_key: :created_by_id
+  has_many :census1880_records, dependent: :nullify, class_name: "Census1880Record", inverse_of: :created_by, foreign_key: :created_by_id
+  has_many :census1900_records, dependent: :nullify, class_name: "Census1900Record", inverse_of: :created_by, foreign_key: :created_by_id
+  has_many :census1910_records, dependent: :nullify, class_name: "Census1910Record", inverse_of: :created_by, foreign_key: :created_by_id
+  has_many :census1920_records, dependent: :nullify, class_name: "Census1920Record", inverse_of: :created_by, foreign_key: :created_by_id
+  has_many :census1930_records, dependent: :nullify, class_name: "Census1930Record", inverse_of: :created_by, foreign_key: :created_by_id
+  has_many :census1940_records, dependent: :nullify, class_name: "Census1940Record", inverse_of: :created_by, foreign_key: :created_by_id
+  has_many :census1950_records, dependent: :nullify, class_name: "Census1950Record", inverse_of: :created_by, foreign_key: :created_by_id
 
   validates :login, presence: true, length: { within: 3..40 }
   validates :login, uniqueness: { scope: :email, case_sensitive: false }
@@ -75,13 +75,13 @@ class User < ApplicationRecord
 
   scope :roles_id_eq, lambda { |id|
     if id.blank?
-      where('roles_mask > 0')
+      where("roles_mask > 0")
     else
-      where 'roles_mask & ? > 0', Role.mask_for(id)
+      where "roles_mask & ? > 0", Role.mask_for(id)
     end
   }
 
-  def self.ransackable_scopes(_auth_object=nil)
+  def self.ransackable_scopes(_auth_object = nil)
     %i[roles_id_eq]
   end
 
@@ -112,19 +112,29 @@ class User < ApplicationRecord
   def role_names
     roles.map(&:name)
   end
-  memoize :role_names
 
   def roles
-    Role.from_mask(roles_mask)
+    direct_roles = Role.from_mask(roles_mask)
+    inherited_roles = group&.roles || []
+    all_roles = (direct_roles + inherited_roles)
+    all_roles.uniq { |role| role.id }
   end
-  memoize :roles
 
   def role_ids
-    Role.ids_from_mask(roles_mask)
+    # Get direct role IDs from user's roles_mask
+    direct_role_ids = Role.ids_from_mask(roles_mask)
+
+    # Get inherited role IDs from user group
+    inherited_role_ids = group&.role_ids || []
+
+    # Combine and deduplicate role IDs
+    (direct_role_ids + inherited_role_ids).uniq
   end
 
   def role_ids=(ids)
-    self.roles_mask = Role.mask_from_ids(ids)
+    # Filter out empty strings and nil values, convert to integers
+    clean_ids = Array(ids).reject(&:blank?).map(&:to_i)
+    self.roles_mask = Role.mask_from_ids(clean_ids)
   end
 
   def add_role(role)
@@ -155,6 +165,7 @@ class User < ApplicationRecord
   def public_signup?
     @public_signup
   end
+
   attr_writer :public_signup
 
   def accept_invitation
@@ -169,7 +180,7 @@ class User < ApplicationRecord
       uid: auth.uid,
       email: auth.info.email,
       password: Devise.friendly_token[0, 20],
-      login: [auth.info.email, auth.provider[0]].join('-')
+      login: [auth.info.email, auth.provider[0]].join("-"),
     )
     user
   end

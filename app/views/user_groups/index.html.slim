@@ -9,12 +9,16 @@
     thead
       tr
         th Name
+        th Roles
         th Users
         th
     tbody
       - @user_groups.each do |record|
         tr.draggable
           td= record.name
+          td
+            span href="#" rel="tooltip" data-placement="bottom" title=record.roles.map(&:name).to_sentence
+              = pluralize record.roles.length, 'role'
           td
             = number_with_delimiter record.users.count
             | &nbsp;

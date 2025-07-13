@@ -14,7 +14,7 @@ class UserGroupsController < ApplicationController
   def create
     @user_group = UserGroup.new resource_params
     if @user_group.save
-      flash[:notice] = 'Added the new user group.'
+      flash[:notice] = "Added the new user group."
       redirect_to action: :index
     else
       flash[:error] = "Sorry couldn't do it."
@@ -29,7 +29,7 @@ class UserGroupsController < ApplicationController
   def update
     @user_group = UserGroup.find params[:id]
     if @user_group.update resource_params
-      flash[:notice] = 'Updated the user group.'
+      flash[:notice] = "Updated the user group."
       redirect_to action: :index
     else
       flash[:error] = "Sorry couldn't do it."
@@ -40,7 +40,7 @@ class UserGroupsController < ApplicationController
   def destroy
     @user_group = UserGroup.find params[:id]
     if @user_group.destroy
-      flash[:notice] = 'Deleted the user group.'
+      flash[:notice] = "Deleted the user group."
       redirect_to action: :index
     else
       flash[:error] = "Sorry couldn't do it."
@@ -51,6 +51,6 @@ class UserGroupsController < ApplicationController
   private
 
   def resource_params
-    params.require(:user_group).permit(:name)
+    params.require(:user_group).permit(:name, role_ids: [])
   end
 end

@@ -15,7 +15,13 @@ tr
         - else
           = link_to('enable', enable_user_path(user.id), :method => :put)
   td
-      span href="#" rel="tooltip" data-placement="bottom" title=user.roles.map(&:name).to_sentence
-        = pluralize user.roles.length, 'role'
-      | &nbsp; | &nbsp;
-      = link_to 'edit', user_roles_path(user)
+    - direct_roles = Role.from_mask(user.roles_mask)
+    - inherited_roles = user.group&.roles || []
+    - all_roles = user.roles
+    span href="#" rel="tooltip" data-placement="bottom" title=all_roles.map(&:name).to_sentence
+      = pluralize all_roles.length, 'role'
+      - if inherited_roles.any?
+        small.text-muted
+          |  (includes #{inherited_roles.length} inherited)
+    | &nbsp; | &nbsp;
+    = link_to 'edit', user_roles_path(user)

@@ -4,12 +4,22 @@
 
 h2 Roles for #{@user.name}
 
-h3 Assigned Roles
+- direct_roles = Role.from_mask(@user.roles_mask)
+- inherited_roles = @user.group&.roles || []
+- all_roles = @user.roles
+
+h3 Direct Roles
 ul.list-group.mb-3
-  - @user.roles.each do |role|
-    = render 'role', role: role
+  - direct_roles.each do |role|
+    = render 'role', role: role, is_direct: true
+
+- if inherited_roles.any?
+  h3 Inherited Roles (from #{@user.group.name})
+  ul.list-group.mb-3
+    - inherited_roles.each do |role|
+      = render 'role', role: role, is_direct: false
 
 h3 Available Roles
 ul.list-group
-  - (@all_roles - @user.roles).each do |role|
-    = render 'role', role: role
+  - (@all_roles - all_roles).each do |role|
+    = render 'role', role: role, is_direct: true
