@@ -23,7 +23,7 @@
         "ghcr.io/rocker-org/devcontainer-features/apt-packages:1": {
             "packages": "libvips,libvips-dev,libvips-tools,libpq-dev,python3-pygments,libz-dev,libssl-dev,libffi-dev,libyaml-dev"
         },
-        "ghcr.io/itsmechlark/features/postgresql:1": {
+        "ghcr.io/itsmechlark/features/postgresql:": {
             "version": "latest"
         },
         "ghcr.io/devcontainers/features/github-cli:1": {
