@@ -22,7 +22,7 @@ class UsersController < ApplicationController
     @user = User.find(params[:id]) || current_user
     return unless @user.unconfirmed_email && @user.unconfirmed_email != @user.email
 
-    flash[:error] = "You changed your email from #{@user.email} to #{@user.unconfirmed_email}. The change won't take effect until you click on the link in the email we sent you."
+    flash.now[:error] = "You changed your email from #{@user.email} to #{@user.unconfirmed_email}. The change won't take effect until you click on the link in the email we sent you."
   end
 
   def new

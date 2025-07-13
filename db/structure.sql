@@ -2688,7 +2688,8 @@ CREATE TABLE public.user_groups (
     id bigint NOT NULL,
     name character varying,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    roles_mask integer
 );
 
 
@@ -5612,6 +5613,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('9'),
 ('8'),
 ('4'),
+('20250713203726'),
 ('20250713185426'),
 ('20250713185425'),
 ('20250713185424'),

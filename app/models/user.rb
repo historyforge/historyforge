@@ -57,16 +57,26 @@ class User < ApplicationRecord
   belongs_to :group, class_name: 'UserGroup', foreign_key: :user_group_id, optional: true, inverse_of: :users
   has_many :search_params, dependent: :destroy
 
-  has_many :census1850_records, dependent: :nullify, class_name: 'Census1850Record', inverse_of: :created_by, foreign_key: :created_by_id
-  has_many :census1860_records, dependent: :nullify, class_name: 'Census1860Record', inverse_of: :created_by, foreign_key: :created_by_id
-  has_many :census1870_records, dependent: :nullify, class_name: 'Census1870Record', inverse_of: :created_by, foreign_key: :created_by_id
-  has_many :census1880_records, dependent: :nullify, class_name: 'Census1880Record', inverse_of: :created_by, foreign_key: :created_by_id
-  has_many :census1900_records, dependent: :nullify, class_name: 'Census1900Record', inverse_of: :created_by, foreign_key: :created_by_id
-  has_many :census1910_records, dependent: :nullify, class_name: 'Census1910Record', inverse_of: :created_by, foreign_key: :created_by_id
-  has_many :census1920_records, dependent: :nullify, class_name: 'Census1920Record', inverse_of: :created_by, foreign_key: :created_by_id
-  has_many :census1930_records, dependent: :nullify, class_name: 'Census1930Record', inverse_of: :created_by, foreign_key: :created_by_id
-  has_many :census1940_records, dependent: :nullify, class_name: 'Census1940Record', inverse_of: :created_by, foreign_key: :created_by_id
-  has_many :census1950_records, dependent: :nullify, class_name: 'Census1950Record', inverse_of: :created_by, foreign_key: :created_by_id
+  has_many :census1850_records, dependent: :nullify, class_name: 'Census1850Record', inverse_of: :created_by,
+                                foreign_key: :created_by_id
+  has_many :census1860_records, dependent: :nullify, class_name: 'Census1860Record', inverse_of: :created_by,
+                                foreign_key: :created_by_id
+  has_many :census1870_records, dependent: :nullify, class_name: 'Census1870Record', inverse_of: :created_by,
+                                foreign_key: :created_by_id
+  has_many :census1880_records, dependent: :nullify, class_name: 'Census1880Record', inverse_of: :created_by,
+                                foreign_key: :created_by_id
+  has_many :census1900_records, dependent: :nullify, class_name: 'Census1900Record', inverse_of: :created_by,
+                                foreign_key: :created_by_id
+  has_many :census1910_records, dependent: :nullify, class_name: 'Census1910Record', inverse_of: :created_by,
+                                foreign_key: :created_by_id
+  has_many :census1920_records, dependent: :nullify, class_name: 'Census1920Record', inverse_of: :created_by,
+                                foreign_key: :created_by_id
+  has_many :census1930_records, dependent: :nullify, class_name: 'Census1930Record', inverse_of: :created_by,
+                                foreign_key: :created_by_id
+  has_many :census1940_records, dependent: :nullify, class_name: 'Census1940Record', inverse_of: :created_by,
+                                foreign_key: :created_by_id
+  has_many :census1950_records, dependent: :nullify, class_name: 'Census1950Record', inverse_of: :created_by,
+                                foreign_key: :created_by_id
 
   validates :login, presence: true, length: { within: 3..40 }
   validates :login, uniqueness: { scope: :email, case_sensitive: false }
@@ -81,7 +91,7 @@ class User < ApplicationRecord
     end
   }
 
-  def self.ransackable_scopes(_auth_object=nil)
+  def self.ransackable_scopes(_auth_object = nil)
     %i[roles_id_eq]
   end
 
@@ -91,7 +101,10 @@ class User < ApplicationRecord
     Rails.logger.info User.last.invitation_token.inspect
     invitable = find_or_initialize_with_error_by(:invitation_token, invitation_token)
     Rails.logger.info invitable.inspect
-    invitable.errors.add(:invitation_token, :invalid) if invitable.invitation_token && invitable.persisted? && !invitable.valid_invitation?
+    if invitable.invitation_token && invitable.persisted? && !invitable.valid_invitation?
+      invitable.errors.add(:invitation_token,
+                           :invalid)
+    end
     Rails.logger.info invitable.errors.inspect
     invitable unless only_valid && invitable.errors.present?
   end
@@ -104,40 +117,63 @@ class User < ApplicationRecord
     login
   end
 
-  def has_role?(role)
+  def role?(role)
     name = role.is_a?(String) ? role.titleize : role.name
     role_names.include?(name)
+  end
+
+  alias has_role? role?
+
+  def direct_role?(role)
+    name = role.is_a?(String) ? role.titleize : role.name
+    direct_role_names.include?(name)
+  end
+
+  alias has_direct_role? direct_role?
+
+  def direct_role_names
+    Role.from_mask(roles_mask).map(&:name)
+  end
+
+  def direct_roles
+    Role.from_mask(roles_mask)
   end
 
   def role_names
     roles.map(&:name)
   end
-  memoize :role_names
 
   def roles
-    Role.from_mask(roles_mask)
+    direct_roles = Role.from_mask(roles_mask)
+    inherited_roles = group&.roles || []
+    all_roles = (direct_roles + inherited_roles)
+    all_roles.uniq(&:id)
   end
-  memoize :roles
 
   def role_ids
-    Role.ids_from_mask(roles_mask)
+    direct_role_ids = Role.ids_from_mask(roles_mask)
+    inherited_role_ids = group&.role_ids || []
+    (direct_role_ids + inherited_role_ids).uniq
   end
 
   def role_ids=(ids)
-    self.roles_mask = Role.mask_from_ids(ids)
+    clean_ids = Array(ids).compact_blank.map(&:to_i)
+    self.roles_mask = Role.mask_from_ids(clean_ids)
   end
 
   def add_role(role)
-    ids = role_ids
+    # Only add to direct roles, not inherited ones
+    ids = Role.ids_from_mask(roles_mask)
     ids += [role.id]
-    self.role_ids = ids.uniq
+    self.roles_mask = Role.mask_from_ids(ids.uniq)
     save
   end
 
   def remove_role(role)
-    ids = role_ids
+    # Only remove from direct roles, not inherited ones
+    ids = Role.ids_from_mask(roles_mask)
     ids -= [role.id]
-    self.role_ids = ids.uniq
+    self.roles_mask = Role.mask_from_ids(ids.uniq)
     save
   end
 
@@ -155,6 +191,7 @@ class User < ApplicationRecord
   def public_signup?
     @public_signup
   end
+
   attr_writer :public_signup
 
   def accept_invitation
