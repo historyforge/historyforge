@@ -13,10 +13,10 @@
       "resolved": "ghcr.io/devcontainers-extra/features/zsh-plugins@sha256:c8a1393b968f60d7ecf1199593fd9d88a0e0412229d21069700c4a3f52bd3722",
       "integrity": "sha256:c8a1393b968f60d7ecf1199593fd9d88a0e0412229d21069700c4a3f52bd3722"
     },
-    "ghcr.io/devcontainers/features/common-utils:2": {
-      "version": "2.5.2",
-      "resolved": "ghcr.io/devcontainers/features/common-utils@sha256:5b1c376d30719a4dead8fb2f272ee496cfb506f2f92b7acf9e1c24cb5399ba7d",
-      "integrity": "sha256:5b1c376d30719a4dead8fb2f272ee496cfb506f2f92b7acf9e1c24cb5399ba7d"
+    "ghcr.io/devcontainers/features/common-utils:": {
+      "version": "2.5.3",
+      "resolved": "ghcr.io/devcontainers/features/common-utils@sha256:3cf7ca93154faf9bdb128f3009cf1d1a91750ec97cc52082cf5d4edef5451f85",
+      "integrity": "sha256:3cf7ca93154faf9bdb128f3009cf1d1a91750ec97cc52082cf5d4edef5451f85"
     },
     "ghcr.io/devcontainers/features/github-cli:1": {
       "version": "1.0.13",
