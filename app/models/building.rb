@@ -83,6 +83,14 @@ class Building < ApplicationRecord
   has_many :census1930_records, dependent: :nullify, class_name: 'Census1930Record', inverse_of: :building
   has_many :census1940_records, dependent: :nullify, class_name: 'Census1940Record', inverse_of: :building
   has_many :census1950_records, dependent: :nullify, class_name: 'Census1950Record', inverse_of: :building
+  has_many :people_1910, through: :census1910_records, source: :person
+  has_many :people_1920, through: :census1920_records, source: :person
+
+  # Combine both associations into one virtual association
+  def people
+    Person.where(id: (people_1910 + people_1920).pluck(:id).uniq)
+  end
+
   has_and_belongs_to_many :photos, class_name: 'Photograph', dependent: :nullify
   has_and_belongs_to_many :audios, dependent: :nullify
   has_and_belongs_to_many :videos, dependent: :nullify
@@ -163,7 +171,7 @@ class Building < ApplicationRecord
     left_joins(:rich_text_description, narratives: :rich_text_story)
       .merge(ActionText::RichText.where('action_text_rich_texts.body ILIKE ?', "%" + query + "%"))
   }
-  
+
   def self.ransackable_scopes(_auth_object = nil)
     %i[as_of_year without_residents as_of_year_eq description_cont
        building_types_id_in building_types_id_not_in building_types_id_null building_types_id_not_null]
