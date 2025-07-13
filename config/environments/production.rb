@@ -103,6 +103,7 @@ Rails.application.configure do
 
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = smtp_settings
+  config.relative_url_root = env.fetch('RAILS_RELATIVE_URL_ROOT', '')
 
   config.public_file_server.enabled = true
 end
