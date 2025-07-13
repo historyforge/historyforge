@@ -109,6 +109,19 @@ class User < ApplicationRecord
     role_names.include?(name)
   end
 
+  def has_direct_role?(role)
+    name = role.is_a?(String) ? role.titleize : role.name
+    direct_role_names.include?(name)
+  end
+
+  def direct_role_names
+    Role.from_mask(roles_mask).map(&:name)
+  end
+
+  def direct_roles
+    Role.from_mask(roles_mask)
+  end
+
   def role_names
     roles.map(&:name)
   end
@@ -138,16 +151,18 @@ class User < ApplicationRecord
   end
 
   def add_role(role)
-    ids = role_ids
+    # Only add to direct roles, not inherited ones
+    ids = Role.ids_from_mask(roles_mask)
     ids += [role.id]
-    self.role_ids = ids.uniq
+    self.roles_mask = Role.mask_from_ids(ids.uniq)
     save
   end
 
   def remove_role(role)
-    ids = role_ids
+    # Only remove from direct roles, not inherited ones
+    ids = Role.ids_from_mask(roles_mask)
     ids -= [role.id]
-    self.role_ids = ids.uniq
+    self.roles_mask = Role.mask_from_ids(ids.uniq)
     save
   end
 

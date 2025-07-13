@@ -15,11 +15,9 @@ tr
         - else
           = link_to('enable', enable_user_path(user.id), :method => :put)
   td
-    - direct_roles = Role.from_mask(user.roles_mask)
     - inherited_roles = user.group&.roles || []
-    - all_roles = user.roles
-    span href="#" rel="tooltip" data-placement="bottom" title=all_roles.map(&:name).to_sentence
-      = pluralize all_roles.length, 'role'
+    span href="#" rel="tooltip" data-placement="bottom" title=user.role_names.to_sentence
+      = pluralize user.roles.length, 'role'
       - if inherited_roles.any?
         small.text-muted
           |  (includes #{inherited_roles.length} inherited)
