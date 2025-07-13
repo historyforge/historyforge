@@ -55,10 +55,13 @@ RSpec.configure do |config|
     options.add_argument("--disable-plugins")
     options.add_argument("--no-first-run")
     options.add_argument("--no-default-browser-check")
+    options.add_argument("--window-size=1024,768")
 
     Capybara::Selenium::Driver.new(app,
                                    browser: :chrome,
-                                   options: options)
+                                   clear_session_storage: true,
+                                   clear_local_storage: true,
+                                   options:)
   end
 
   Capybara.register_driver :chrome_headless do |app|
@@ -77,7 +80,7 @@ RSpec.configure do |config|
                                    browser: :chrome,
                                    clear_session_storage: true,
                                    clear_local_storage: true,
-                                   options: options
+                                   options:
   end
 
   # Change this to :chrome_headless to run the tests in a headless browser.
