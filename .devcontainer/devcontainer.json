@@ -26,7 +26,7 @@
         "ghcr.io/itsmechlark/features/postgresql:1": {
             "version": "latest"
         },
-        "ghcr.io/devcontainers/features/github-cli:1": {
+        "ghcr.io/devcontainers/features/github-cli:": {
             "installDirectlyFromGitHubRelease": true,
             "version": "latest"
         },
