@@ -50,7 +50,7 @@
         },
         "ghcr.io/joshuanianji/devcontainer-features/github-cli-persistence:1": {},
 //        "ghcr.io/nikobockerman/devcontainer-features/yarn-persistent-cache:1": {},
-        "ghcr.io/devcontainers-extra/features/zsh-plugins:0": {
+        "ghcr.io/devcontainers-extra/features/zsh-plugins:": {
             "plugins": "aliases alias-finder brew bundler colorize debian fzf gem gh git github history npm postgres rails rake ruby ssh-agent ubuntu yarn z zsh-interactive-cd zsh-navigation-tools",
             "omzPlugins": "https://github.com/zsh-users/zsh-autosuggestions",
             "username": "root"
