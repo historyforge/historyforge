@@ -21,13 +21,13 @@ module Buildings
     def index
       respond_to do |format|
         format.html
-        format.csv { render_csv("buildings", Building) }
+        format.csv { render_csv('buildings', Building) }
         format.json do
           if params[:from]
             @search.expanded = true
             render json: BuildingGridTranslator.new(@search).row_data
           else
-            render plain: ForgeQuery.new(@search).to_json, content_type: "application/json"
+            render plain: ForgeQuery.new(@search).to_json, content_type: 'application/json'
           end
         end
       end
@@ -71,10 +71,10 @@ module Buildings
     def create
       @building = Buildings::Create.run(building_params, current_user)
       if @building.persisted?
-        flash[:notice] = "Building created."
+        flash[:notice] = 'Building created.'
         redirect_to @building
       else
-        flash[:error] = "Building not saved."
+        flash[:error] = 'Building not saved.'
         @building.ensure_primary_address
         render action: :new
       end
@@ -84,33 +84,33 @@ module Buildings
       saved = Buildings::Update.run(@building, building_params)
       if saved
         @building = @building.decorate
-        flash[:notice] = "Building updated."
+        flash[:notice] = 'Building updated.'
         respond_to do |format|
           format.json { render json: BuildingSerializer.new(@building) }
           format.html { redirect_to action: :show }
         end
       else
-        flash[:error] = "Building not saved."
+        flash[:error] = 'Building not saved.'
         render action: :edit
       end
     end
 
     def destroy
       if @building.destroy
-        flash[:notice] = "Building deleted."
+        flash[:notice] = 'Building deleted.'
         redirect_to action: :index
       else
-        flash[:error] = "Unable to delete building."
+        flash[:error] = 'Unable to delete building.'
         redirect_to :back
       end
     end
 
     def review
       if @building.reviewed?
-        flash[:notice] = "Building reviewed."
+        flash[:notice] = 'Building reviewed.'
         redirect_to @building
       else
-        flash[:error] = "Building not reviewed."
+        flash[:error] = 'Building not reviewed.'
         render action: :new
       end
     end
@@ -122,7 +122,7 @@ module Buildings
         record.review! current_user
       end
 
-      flash[:notice] = "The census records are marked as reviewed and available for public view."
+      flash[:notice] = 'The census records are marked as reviewed and available for public view.'
       redirect_back fallback_location: { action: :index }
     end
 
@@ -178,7 +178,7 @@ module Buildings
     end
 
     def wants_to_review_building?
-      params[:action] == "review" || (params[:Review] && can?(:review, @building) && !@building.reviewed?)
+      params[:action] == 'review' || (params[:Review] && can?(:review, @building) && !@building.reviewed?)
     end
 
     def building_params

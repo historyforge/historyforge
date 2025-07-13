@@ -26,7 +26,7 @@ export const setYear = (proposedYear) => (dispatch, getState) => {
 }
 
 let searchTimeout
-export const searchTerm = (term) => async(dispatch) => {
+export const searchTerm = (term) => async (dispatch) => {
   clearTimeout(searchTimeout)
   searchTimeout = setTimeout(() => {
     dispatch({ type: 'FORGE_RESET' })
@@ -36,7 +36,7 @@ export const searchTerm = (term) => async(dispatch) => {
   }, term === '' ? 1000 : 200)
 }
 
-export const getBuildingsNearMe = ({ latitude, longitude }) => async(dispatch, getState) => {
+export const getBuildingsNearMe = ({ latitude, longitude }) => async (dispatch, getState) => {
   const near = `${latitude}+${longitude}`;
   const qs = buildParams(getState().search || {});
   const params = {
@@ -69,7 +69,7 @@ export const reset = () => async (dispatch, getState) => {
 }
 
 export const resetMap = () => async (dispatch) => {
-    return dispatch({ type: "LAYERS_RESET" });
+  return dispatch({ type: "LAYERS_RESET" });
 }
 
 export const select = (id, params) => async (dispatch) => {
@@ -101,14 +101,13 @@ const loadFilters = year => async dispatch => {
   dispatch({ type: 'FORGE_FILTERS_LOADED', ...json.data })
 }
 
-const buildParams = function(search) {
+const buildParams = function (search) {
   const params = { s: {} }
-  if (search?.params?.s) {
-    params.s = search.params.s
-  }
   if (search?.people?.s || search?.year) {
     params.people = search.people || search?.year
     params.peopleParams = search.params.s
+  } else if (search?.params?.s) {
+    params.s = search.params.s
   }
   params.s.lat_not_null = 1
   return params
