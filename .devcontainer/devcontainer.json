@@ -44,7 +44,7 @@
             "xqVersion": "none",
             "jaqVersion": "none"
         },
-        "ghcr.io/stuartleeks/dev-container-features/shell-history:0": {},
+        "ghcr.io/stuartleeks/dev-container-features/shell-history:": {},
         "ghcr.io/devcontainers-community/npm-features/typescript:1": {
             "version": "latest"
         },
