@@ -19,17 +19,9 @@ div.mb-3.clearfix.d-flex.justify-content-between
 
 - if @navigation_neighbors.present?
   - if @navigation_neighbors[:previous_id]
-    - content_for :pills do
-      = link_to building_path(@navigation_neighbors[:previous_id]), class: 'btn btn-light' do
-        i.fa.fa-chevron-left
-        span.d-none.d-lg-inline
-          | &nbsp; Prev
+    = previous_nav_link(building_path(@navigation_neighbors[:previous_id]))
   - if @navigation_neighbors[:next_id]
-    - content_for :pills do
-      = link_to building_path(@navigation_neighbors[:next_id]), class: 'btn btn-light' do
-        span.d-none.d-lg-inline
-          | Next&nbsp;
-        i.fa.fa-chevron-right
+    = next_nav_link(building_path(@navigation_neighbors[:next_id]))
 
 .row
   .col-12.col-md-8

@@ -7,17 +7,9 @@
 
 - if @navigation
   - if @navigation[:previous_id]
-    - content_for :pills do
-      = link_to "/census/#{@record.year}/#{@navigation[:previous_id]}", class: 'btn btn-light' do
-        i.fa.fa-chevron-left
-        span.d-none.d-lg-inline
-          | &nbsp; Prev
+    = previous_nav_link("/census/#{@record.year}/#{@navigation[:previous_id]}")
   - if @navigation[:next_id]
-    - content_for :pills do
-      = link_to "/census/#{@record.year}/#{@navigation[:next_id]}", class: 'btn btn-light' do
-        span.d-none.d-lg-inline
-          | Next&nbsp;
-        i.fa.fa-chevron-right
+    = next_nav_link("/census/#{@record.year}/#{@navigation[:next_id]}")
 
 
 - btn_class = 'btn btn-sm btn-secondary'
