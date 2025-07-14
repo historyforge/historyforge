@@ -1,0 +1,154 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/ubuntu
+{
+    "name": "HistoryForge",
+    "service": "historyforge",
+    "workspaceFolder": "/workspaces/historyforge",
+    // Use Docker Compose for optimal performance
+    "dockerComposeFile": [
+         "docker-compose.yml"
+        // Uncomment the next line to build locally instead of using pre-built image
+        // "docker-compose.dev.yml"
+    ],
+    "mounts": [
+        "source=${localEnv:USERPROFILE}/.ssh,target=/root/.ssh,type=bind,consistency=cached"
+    ],
+    "features": {
+        "ghcr.io/devcontainers/features/common-utils:": {
+            "installZsh": true,
+            "configureZshAsDefaultShell": true,
+            "installOhMyZsh": true,
+            "upgradePackages": true
+        },
+        "ghcr.io/rocker-org/devcontainer-features/apt-packages:1": {
+            "packages": "libvips,libvips-dev,libvips-tools,libpq-dev,python3-pygments,libz-dev,libssl-dev,libffi-dev,libyaml-dev"
+        },
+        "ghcr.io/itsmechlark/features/postgresql:": {
+            "version": "latest"
+        },
+        "ghcr.io/devcontainers/features/github-cli:": {
+            "installDirectlyFromGitHubRelease": true,
+            "version": "latest"
+        },
+        "ghcr.io/devcontainers/features/node:1": {
+            "installYarnUsingApt": true,
+            "version": "latest",
+            "pnpmVersion": "none",
+            "nvmVersion": "0.39"
+        },
+        "ghcr.io/meaningful-ooo/devcontainer-features/homebrew:2": {},
+        "ghcr.io/eitsupi/devcontainer-features/jq-likes:2.1.1": {
+            "jqVersion": "latest",
+            "yqVersion": "latest",
+            "gojqVersion": "none",
+            "xqVersion": "none",
+            "jaqVersion": "none"
+        },
+        "ghcr.io/stuartleeks/dev-container-features/shell-history:": {},
+        "ghcr.io/devcontainers-community/npm-features/typescript:1": {
+            "version": "latest"
+        },
+        "ghcr.io/joshuanianji/devcontainer-features/github-cli-persistence:1": {},
+//        "ghcr.io/nikobockerman/devcontainer-features/yarn-persistent-cache:1": {},
+        "ghcr.io/devcontainers-extra/features/zsh-plugins:": {
+            "plugins": "aliases alias-finder brew bundler colorize debian fzf gem gh git github history npm postgres rails rake ruby ssh-agent ubuntu yarn z zsh-interactive-cd zsh-navigation-tools",
+            "omzPlugins": "https://github.com/zsh-users/zsh-autosuggestions",
+            "username": "root"
+        }
+    },
+
+    // Use 'postCreateCommand' to run commands after the container is created.
+    "onCreateCommand": "/usr/bin/zsh /usr/local/bin/setup-volume-workspace.sh",
+    "postCreateCommand": "/usr/bin/zsh /usr/local/bin/setup.sh && /usr/bin/zsh /usr/local/bin/postSetup.sh",
+    // "postStartCommand": "service postgresql start", // Commented out - PostgreSQL runs in separate container
+    "containerEnv": {
+        "SHELL": "/usr/bin/zsh"
+    },
+
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "files.eol": "\n",
+                "code-eol.highlightNonDefault": true,
+                "chat.instructionsFilesLocations": {
+                    ".devcontainer/instructions": true
+                },
+                "terminal.integrated.scrollback": 30000,
+                "terminal.integrated.defaultProfile.linux": "zsh",
+                "terminal.integrated.automationProfile.linux": {
+                    "path": "/usr/bin/zsh"
+                },
+                "terminal.integrated.fontLigatures": true,
+                "terminal.integrated.fontFamily": "'JetBrainsMono Nerd Font Mono','Fira Code', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
+                "rubyLsp.formatter": "rubocop_internal",
+                "rubyLsp.enabled": true,
+                "rubyLsp.useBundler": true,
+                "rubyLsp.rubyVersion": "3.3.7",
+                "rubyLsp.addonSettings": {
+                    "Ruby LSP Rails": {
+                        "enablePendingMigrationsPrompt": true
+                    }
+                }
+            },
+            "extensions": [
+                "aki77.rails-routes",
+                "anseki.vscode-color",
+                "borama.ruby-slim",
+                "castwide.ruby-debug",
+                "chouzz.vscode-better-align",
+                "dbaeumer.vscode-eslint",
+                "eamodio.gitlens",
+                "ecmel.vscode-html-css",
+                "EditorConfig.EditorConfig",
+                "eriklynd.json-tools",
+                "esbenp.prettier-vscode",
+                "formulahendry.auto-complete-tag",
+                "GitHub.copilot",
+                "GitHub.copilot-chat",
+                "groksrc.ruby",
+                "hridoy.rails-snippets",
+                "humao.rest-client",
+                "mechatroner.rainbow-csv",
+                "medo64.render-crlf",
+                "michelemelluso.code-beautifier",
+                "miguel-savignano.ruby-symbols",
+                "ms-azuretools.vscode-docker",
+                "ms-vscode-remote.remote-containers",
+                "ms-vscode-remote.remote-ssh-edit",
+                "ms-vscode-remote.remote-ssh-explorer",
+                "ms-vscode-remote.remote-ssh",
+                "ms-vscode-remote.remote-wsl",
+                "ms-vscode-remote.vscode-remote-extensionpack",
+                "ms-vscode.cpptools",
+                "ms-vscode.vscode-typescript-next",
+                "msjsdiag.debugger-for-chrome",
+                "msjsdiag.vscode-react-native",
+                "mtxr.sqltools-driver-pg",
+                "mtxr.sqltools",
+                "mycelo.embrace",
+                "naumovs.color-highlight",
+                "nickdemayo.vscode-json-editor",
+                "OfHumanBondage.react-proptypes-intellisense",
+                "p1c2u.docker-compose",
+                "pflannery.vscode-versionlens",
+                "pranaygp.vscode-css-peek",
+                "ReprEng.csv",
+                "ritwickdey.LiveServer",
+                "Shopify.ruby-lsp",
+                "solnurkarim.html-to-css-autocompletion",
+                "sorbet.sorbet-vscode-extension",
+                "sozercan.slack",
+                "Tyriar.sort-lines",
+                "VisualStudioExptTeam.vscodeintellicode-completions",
+                "VisualStudioExptTeam.vscodeintellicode",
+                "vscode-snippet.snippet",
+                "zhoufeng.json-helper",
+                "Zignd.html-css-class-completion"
+            ]
+        }
+    },
+    "containerUser": "root",
+
+    // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+    "remoteUser": "root"
+}

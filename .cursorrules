@@ -1,0 +1,239 @@
+# HistoryForge Development Rules
+
+## Environment and Version Requirements
+
+### Ruby Version
+- Target Ruby 3.4.4 specifically
+- Use Ruby 3.4.4 features and syntax patterns
+- Ensure compatibility with Ruby 3.4.4 idioms
+- Follow Ruby 3.4.4 best practices for performance and maintainability
+
+## Code Style and Standards
+
+### Ruby/Rails Conventions
+- Use single quotes for strings unless interpolation is needed
+- Use Ruby 1.9+ hash syntax (symbol: value) instead of hash rockets
+- Follow Rails naming conventions (snake_case for methods/variables, CamelCase for classes)
+- Use `frozen_string_literal: true` at the top of all Ruby files
+- Prefer `unless` over `if !` for negative conditions
+- Use guard clauses to reduce nesting
+- Leverage Ruby 3.4.4 features like pattern matching where appropriate
+- Use safe navigation operator (`&.`) for nil-safe method calls
+- Prefer `then` for single-line conditionals when it improves readability
+- Use endless method definitions for simple methods: `def method = value`
+- Utilize `in` for pattern matching in case statements
+
+### Model Design
+- When implementing role-based systems with inheritance:
+  - Use bitmasks for role storage (roles_mask column)
+  - Implement role methods that combine direct and inherited roles
+  - Provide separate methods for direct role management (add_role, remove_role, direct_role?)
+  - Use memoization carefully - avoid it for methods that depend on associations
+  - Implement proper role deduplication by ID, not object comparison
+
+### Controller Patterns
+- Use strong parameters with `params.require(:model).permit(...)`
+- Implement proper authorization checks with `before_action`
+- Use flash messages for user feedback
+- Follow RESTful conventions
+- Handle errors gracefully with appropriate flash messages
+
+### View Conventions
+- Use Slim templates for Rails views
+- Use ERB for JavaScript templates
+- Use JBuilder for JSON responses
+- Distinguish between direct and inherited roles in UI
+- Use semantic HTML and proper accessibility attributes
+
+## Testing Standards
+
+### RSpec Testing
+- Write comprehensive tests for all new functionality
+- Test both positive and negative cases
+- Use factories for test data creation
+- Test role inheritance and deduplication thoroughly
+- Use proper setup and teardown methods
+- Test edge cases like empty role sets
+
+### Test Organization
+- Group related tests with `describe` blocks
+- Use `context` for different scenarios
+- Use descriptive test names that explain the expected behavior
+- Test both unit and integration aspects
+
+## Database and Migrations
+
+### Migration Guidelines
+- Use descriptive migration names
+- Add proper indexes for performance
+- Use appropriate data types (integer for bitmasks)
+- Include rollback functionality
+- Test migrations in development before committing
+
+### Model Associations
+- Use appropriate association types (has_many, belongs_to, etc.)
+- Consider performance implications of associations
+- Use counter_cache when appropriate
+- Implement proper dependent options
+
+## Security Considerations
+
+### Authorization
+- Always check user permissions before sensitive operations
+- Use role-based access control consistently
+- Implement proper session management
+- Validate user input thoroughly
+
+### Data Protection
+- Use strong parameters to prevent mass assignment vulnerabilities
+- Sanitize user input appropriately
+- Use HTTPS in production
+- Follow OWASP guidelines
+
+## Ruby 3.4.4 Specific Patterns
+
+### Modern Ruby Features
+- Use pattern matching for complex conditional logic
+- Leverage endless method definitions for simple getters/setters
+- Use safe navigation operator to avoid nil checks
+- Utilize `then` keyword for cleaner single-line conditionals
+- Prefer `in` over `when` for pattern matching in case statements
+- Use `=>` for hash destructuring in method parameters
+
+### Performance Optimizations
+- Use `freeze` for immutable strings and arrays
+- Leverage `frozen_string_literal: true` for string performance
+- Use `Symbol#to_proc` for cleaner enumerable operations
+- Prefer `map(&:method)` over `map { |item| item.method }`
+- Use `compact` and `compact!` for nil removal
+- Leverage `dig` for safe nested hash access
+
+## Performance Guidelines
+
+### Database Optimization
+- Use appropriate indexes
+- Avoid N+1 queries with includes/eager_loading
+- Use counter_cache for frequently accessed counts
+- Consider database-level constraints
+
+### Caching Strategy
+- Use memoization judiciously
+- Consider Rails caching mechanisms
+- Cache expensive computations
+- Invalidate caches appropriately
+
+## Code Quality
+
+### Refactoring Principles
+- Extract common functionality into concerns or services
+- Keep methods small and focused
+- Use meaningful variable and method names
+- Remove dead code and unused imports
+
+### Documentation
+- Document complex business logic
+- Use clear commit messages
+- Document API endpoints
+- Keep README updated
+
+## Development Workflow
+
+### Feature Development
+1. Ensure Ruby 3.4.4 environment is properly set up
+2. Start with a clear understanding of requirements
+3. Design the data model first
+4. Implement migrations
+5. Create models with proper associations
+6. Implement controllers with proper authorization
+7. Create views with appropriate UI/UX
+8. Write comprehensive tests
+9. Run RuboCop and fix style issues
+10. Test the complete feature
+11. Verify Ruby 3.4.4 compatibility
+
+### Code Review Checklist
+- [ ] Code follows style guidelines
+- [ ] Ruby 3.4.4 features used appropriately
+- [ ] Tests are comprehensive and passing
+- [ ] Security considerations addressed
+- [ ] Performance implications considered
+- [ ] Documentation updated
+- [ ] No breaking changes to existing functionality
+- [ ] Ruby 3.4.4 compatibility verified
+
+## Specific Patterns for Role Systems
+
+### Role Inheritance Implementation
+```ruby
+# In User model
+def roles
+  direct_roles + inherited_roles_from_groups
+end
+
+def inherited_roles_from_groups
+  user_groups.flat_map(&:roles).uniq(&:id)
+end
+
+def add_role(role)
+  # Only add to direct roles
+  direct_roles << role unless direct_role?(role)
+end
+
+def remove_role(role)
+  # Only remove from direct roles
+  direct_roles.delete(role)
+end
+```
+
+### Role Comparison
+- Compare roles by ID, not object identity
+- Use `uniq(&:id)` for deduplication
+- Avoid memoization for methods that depend on associations
+
+### UI Patterns
+- Distinguish between direct and inherited roles
+- Show role inheritance clearly
+- Provide appropriate feedback for role changes
+- Use consistent terminology throughout the application
+
+## Error Handling
+
+### Graceful Degradation
+- Handle missing associations gracefully
+- Provide meaningful error messages
+- Log errors appropriately
+- Don't expose sensitive information in error messages
+
+### Validation
+- Validate data at multiple levels (model, controller, client)
+- Use Rails validations appropriately
+- Provide clear validation error messages
+- Test validation scenarios
+
+## Deployment Considerations
+
+### Environment Configuration
+- Use environment variables for sensitive data
+- Configure different settings for different environments
+- Use proper database configuration
+- Set up proper logging
+
+### Monitoring
+- Monitor application performance
+- Set up error tracking
+- Monitor database performance
+- Track user behavior appropriately
+
+## Maintenance
+
+### Code Maintenance
+- Keep dependencies updated
+- Remove unused code regularly
+- Refactor complex methods
+- Update documentation as code changes
+
+### Database Maintenance
+- Regular backups
+- Monitor database size and performance
+- Clean up old data appropriately
+- Optimize queries as needed 
