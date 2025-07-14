@@ -14,7 +14,7 @@
         "source=${localEnv:USERPROFILE}/.ssh,target=/root/.ssh,type=bind,consistency=cached"
     ],
     "features": {
-        "ghcr.io/devcontainers/features/common-utils:2": {
+        "ghcr.io/devcontainers/features/common-utils:": {
             "installZsh": true,
             "configureZshAsDefaultShell": true,
             "installOhMyZsh": true,
