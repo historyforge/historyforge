@@ -4,13 +4,9 @@ module Api
   class JsonController < ApplicationController
     include EntityBuilders
     include SearchService
-    include CorsHandler
     include ConfidenceScoring
 
-    protect_from_forgery with: :null_session, if: :cors_request?
-
     def json
-      return if handle_cors_preflight
 
       search_term = params[:search]
 
@@ -22,7 +18,6 @@ module Api
       results = build_search_results(search_term)
       counts = calculate_counts(results)
 
-      set_cors_headers
       render json: {
         results: results,
         count: counts
@@ -187,7 +182,6 @@ module Api
     end
 
     def render_empty_results
-      set_cors_headers
       render json: {
         results: {
           buildings: [],

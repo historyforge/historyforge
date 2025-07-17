@@ -2,7 +2,6 @@
 
 A clean, idiomatic rewrite of the search functionality that generates Json and GeoJson from search results.
 
-
 ## Features
 
 - **Clean, Unified Architecture**: Organized into focused, [single-responsibility methods](../../services/concerns/search_service.rb) unified across both endpoints
@@ -14,9 +13,10 @@ A clean, idiomatic rewrite of the search functionality that generates Json and G
 - **Match Examination**: Also adds match reasoning to results to examine why a match was surfaced.
 
 ## Json Search Controller
+
 ### Usage
 
-```
+```http
 GET /api/json?search=your_search_term
 ```
 
@@ -41,6 +41,7 @@ curl "http://localhost:3000/api/json?search=Wilson"
 The controller searches across:
 
 #### Building Data
+
 - Building name, notes, and descriptions
 - Architect information
 - Building Composition
@@ -48,6 +49,7 @@ The controller searches across:
 - Addresses (with history)
 
 #### Associated Media
+
 - Photos (searchable text, descriptions, captions)
 - Videos (searchable text, descriptions, captions)
 - Audios (searchable text, descriptions, captions)
@@ -57,10 +59,12 @@ The controller searches across:
 - Census Records
 
 #### Narratives
+
 - Source and notes text
 - Rich text stories and sources
 
 #### Census & People Data
+
 - Census records for 1910 and 1920
 - People records (all searchable fields)
 - People-associated media and narratives
@@ -94,7 +98,7 @@ Returns JSON with the following structure:
 
 ### Usage
 
-```
+```http
 GET /api/search?search=your_search_term
 GET /api/search?search=your_search_term&strict=true
 GET /api/search?search=your_search_term&strict=false
@@ -134,21 +138,25 @@ curl "http://localhost:3000/api/v2/search?search=data-poi&strict=false"
 The controller searches across:
 
 #### Building Data
+
 - Building name, notes, and descriptions
 - Rich text descriptions
 - Addresses
 
 #### Associated Media
+
 - Photos (searchable text, descriptions, captions)
-- Videos (searchable text, descriptions, captions) 
+- Videos (searchable text, descriptions, captions)
 - Audios (searchable text, descriptions, captions)
 - Documents (name, description)
 
 #### Narratives
+
 - Source and notes text
 - Rich text stories and sources
 
 #### Census & People Data
+
 - Census records for 1910 and 1920
 - People records (all searchable fields)
 - People-associated media and narratives
