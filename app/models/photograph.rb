@@ -36,7 +36,7 @@ class Photograph < ApplicationRecord
   include MediaDateBehavior
 
   has_one_attached :file
-  validates :file, attached: true, content_type: %w[image/jpg image/jpeg image/png]
+  validates :file, attached: true, content_type: %w[image/jpeg image/png]
 
   default_scope -> { preload(file_attachment: :blob) }
 

@@ -11,6 +11,10 @@ class UserGroupsController < ApplicationController
     @user_group = UserGroup.new
   end
 
+  def edit
+    @user_group = UserGroup.find params[:id]
+  end
+
   def create
     @user_group = UserGroup.new resource_params
     if @user_group.save
@@ -20,10 +24,6 @@ class UserGroupsController < ApplicationController
       flash[:error] = "Sorry couldn't do it."
       render action: :new
     end
-  end
-
-  def edit
-    @user_group = UserGroup.find params[:id]
   end
 
   def update
@@ -51,6 +51,6 @@ class UserGroupsController < ApplicationController
   private
 
   def resource_params
-    params.require(:user_group).permit(:name)
+    params.require(:user_group).permit(:name, role_ids: [])
   end
 end

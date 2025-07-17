@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class RolesController < ApplicationController
-  layout 'application'
   before_action :check_administrator_role
 
   def index
@@ -12,16 +11,14 @@ class RolesController < ApplicationController
   def update
     @user = User.find(params[:user_id])
     @role = Role.find(params[:id])
-    @user.add_role @role unless @user.has_role?(@role)
+    @user.add_role @role unless @user.has_direct_role?(@role)
     redirect_to action: 'index'
   end
 
   def destroy
     @user = User.find(params[:user_id])
     @role = Role.find(params[:id])
-    @user.remove_role @role if @user.has_role?(@role)
+    @user.remove_role @role if @user.has_direct_role?(@role)
     redirect_to action: 'index'
-
   end
-
 end

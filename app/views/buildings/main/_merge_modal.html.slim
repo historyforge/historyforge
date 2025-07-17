@@ -1,8 +1,7 @@
 - if can?(:merge, Building) && @building.neighbors
-  - content_for :pills do
-    = link_to '#mergeModal', class: 'btn btn-light', data: { toggle: 'modal' } do
-      i.fa.fa-code-fork
-      | &nbsp; Merge
+  = link_to '#mergeModal', class: btn_class, data: { toggle: 'modal' } do
+    i.fa.fa-code-fork
+    | &nbsp; Merge
   - content_for :body_end do
     .modal.fade id="mergeModal"
       .modal-dialog.modal-lg

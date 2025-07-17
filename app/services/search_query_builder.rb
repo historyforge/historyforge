@@ -7,7 +7,7 @@ class SearchQueryBuilder
   include ActiveModel::Validations
   include FastMemoize
 
-  attr_accessor :page, :s, :f, :g, :user, :c, :d, :sort, :paged, :per, :scope, :from, :to
+  attr_accessor :page, :s, :f, :g, :user, :c, :d, :sort, :paged, :per, :scope, :from, :to, :navigation
 
   delegate :any?, :present?, :each, :first, :last,
            :current_page, :total_pages, :limit_value, :count,
@@ -48,6 +48,32 @@ class SearchQueryBuilder
 
   def total_records
     count
+  end
+
+  def navigation_neighbors(current_id)
+    return nil unless current_id
+
+    @navigation = true
+
+    # Get the ordered list of IDs from the main query (respects all filters and sorting)
+    base_query = scoped.offset(nil).limit(nil)
+
+    # Ensure the base query includes id in its select list
+    base_query = base_query.select("#{entity_class.table_name}.*") unless base_query.select_values.include?("#{entity_class.table_name}.id")
+
+    # Wrap the base query in another query that just selects the IDs
+    sql = "SELECT id FROM (#{base_query.to_sql}) AS subquery"
+    ordered_ids = entity_class.connection.execute(sql).pluck("id")
+
+    # Find the current position in the ordered list
+    current_index = ordered_ids.index(current_id)
+    return nil unless current_index
+
+    # Get previous and next IDs
+    {
+      previous_id: current_index > 0 ? ordered_ids[current_index - 1] : nil,
+      next_id: current_index < ordered_ids.length - 1 ? ordered_ids[current_index + 1] : nil,
+    }
   end
 
   class Builder

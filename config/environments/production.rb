@@ -74,22 +74,20 @@ Rails.application.configure do
   config.active_support.report_deprecations = false
 
   # Use default logging formatter so that PID and timestamp are not suppressed.
-  config.log_formatter = ::Logger::Formatter.new
+  config.log_formatter = Logger::Formatter.new
 
-  if ENV['RAILS_LOG_TO_STDOUT'].present?
-    logger           = ActiveSupport::Logger.new($stdout)
-    logger.formatter = config.log_formatter
-    config.logger    = ActiveSupport::TaggedLogging.new(logger)
-  end
+  config.logger = ActiveSupport::Logger.new($stdout)
+    .tap  { |logger| logger.formatter = Logger::Formatter.new }
+    .then { |logger| ActiveSupport::TaggedLogging.new(logger) }
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
   smtp_settings = {
-    address: ENV['SMTP_HOST'],
-    port: ENV['SMTP_PORT'],
-    user_name: ENV['SMTP_USERNAME'],
-    password: ENV['SMTP_PASSWORD']
+    address: ENV.fetch('SMTP_HOST', nil),
+    port: ENV.fetch('SMTP_PORT', nil),
+    user_name: ENV.fetch('SMTP_USERNAME', nil),
+    password: ENV.fetch('SMTP_PASSWORD', nil)
   }
 
   if ENV['SMTP_HOST'].present? && ENV['SMTP_PORT'] == 'smtp.gmail.com'
@@ -105,4 +103,10 @@ Rails.application.configure do
   config.action_mailer.smtp_settings = smtp_settings
 
   config.public_file_server.enabled = true
+
+  # Only use :id for inspections in production.
+  config.active_record.attributes_for_inspect = [:id]
+
+  config.force_ssl = true
+  config.ssl_options = { redirect: { exclude: ->(request) { request.path == '/check' } } }
 end
