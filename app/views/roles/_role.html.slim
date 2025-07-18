@@ -2,10 +2,17 @@ li.list-group-item
   .row
     .col-3
       = role.name
+      - if !is_direct
+        small.text-muted
+          |  (inherited)
     .col-6
       = role.description
     .col-3
-      - if @user.has_role?(role.name)
-        = link_to "remove role", user_role_url(:id => role.id, :user_id => @user.id), :method => :delete
+      - if is_direct
+        - if @user.has_direct_role?(role)
+          = link_to 'remove role', user_role_url(id: role.id, user_id: @user.id), method: :delete
+        - else
+          = link_to 'assign role', user_role_url(id: role.id, user_id: @user.id), method: :put
       - else
-        = link_to "assign role", user_role_url(:id => role.id, :user_id => @user.id), :method => :put
+        small.text-muted
+          | Managed via user group

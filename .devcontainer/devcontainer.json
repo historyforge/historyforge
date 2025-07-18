@@ -14,7 +14,7 @@
         "source=${localEnv:USERPROFILE}/.ssh,target=/root/.ssh,type=bind,consistency=cached"
     ],
     "features": {
-        "ghcr.io/devcontainers/features/common-utils:2": {
+        "ghcr.io/devcontainers/features/common-utils:": {
             "installZsh": true,
             "configureZshAsDefaultShell": true,
             "installOhMyZsh": true,
@@ -23,10 +23,10 @@
         "ghcr.io/rocker-org/devcontainer-features/apt-packages:1": {
             "packages": "libvips,libvips-dev,libvips-tools,libpq-dev,python3-pygments,libz-dev,libssl-dev,libffi-dev,libyaml-dev"
         },
-        "ghcr.io/itsmechlark/features/postgresql:1": {
+        "ghcr.io/itsmechlark/features/postgresql:": {
             "version": "latest"
         },
-        "ghcr.io/devcontainers/features/github-cli:1": {
+        "ghcr.io/devcontainers/features/github-cli:": {
             "installDirectlyFromGitHubRelease": true,
             "version": "latest"
         },
@@ -34,7 +34,7 @@
             "installYarnUsingApt": true,
             "version": "latest",
             "pnpmVersion": "none",
-            "nvmVersion": "0.39"
+            "nvmVersion": "0.40.3"
         },
         "ghcr.io/meaningful-ooo/devcontainer-features/homebrew:2": {},
         "ghcr.io/eitsupi/devcontainer-features/jq-likes:2.1.1": {
@@ -44,13 +44,13 @@
             "xqVersion": "none",
             "jaqVersion": "none"
         },
-        "ghcr.io/stuartleeks/dev-container-features/shell-history:0": {},
+        "ghcr.io/stuartleeks/dev-container-features/shell-history:": {},
         "ghcr.io/devcontainers-community/npm-features/typescript:1": {
             "version": "latest"
         },
         "ghcr.io/joshuanianji/devcontainer-features/github-cli-persistence:1": {},
 //        "ghcr.io/nikobockerman/devcontainer-features/yarn-persistent-cache:1": {},
-        "ghcr.io/devcontainers-extra/features/zsh-plugins:0": {
+        "ghcr.io/devcontainers-extra/features/zsh-plugins:": {
             "plugins": "aliases alias-finder brew bundler colorize debian fzf gem gh git github history npm postgres rails rake ruby ssh-agent ubuntu yarn z zsh-interactive-cd zsh-navigation-tools",
             "omzPlugins": "https://github.com/zsh-users/zsh-autosuggestions",
             "username": "root"
@@ -83,7 +83,7 @@
                 "rubyLsp.formatter": "rubocop_internal",
                 "rubyLsp.enabled": true,
                 "rubyLsp.useBundler": true,
-                "rubyLsp.rubyVersion": "3.3.7",
+                "rubyLsp.rubyVersion": "3.4.4",
                 "rubyLsp.addonSettings": {
                     "Ruby LSP Rails": {
                         "enablePendingMigrationsPrompt": true

@@ -1,16 +1,17 @@
 # frozen_string_literal: true
 
 class BuildingSearch < SearchQueryBuilder
-  attr_reader :num_residents, :people_params, :near
-  attr_reader :building_params
+  attr_reader :num_residents, :people_params, :near, :building_params
   attr_accessor :people, :expanded
 
   def self.generate(params: {}, user: nil)
-    new user: user,
-        people_params: params[:peopleParams] && handle_people_params(params[:peopleParams]),
-        building_params: params[:buildingParams] && handle_people_params(params[:buildingParams]),
-        scope: params[:scope] && params[:scope] != 'on' && params[:scope].intern,
-        **params.slice(:s, :f, :g, :from, :to, :sort, :people, :near)
+    new(
+      user:,
+      people_params: params[:peopleParams] && handle_people_params(params[:peopleParams]),
+      building_params: params[:buildingParams] && handle_people_params(params[:buildingParams]),
+      scope: params[:scope] && params[:scope] != 'on' && params[:scope].intern,
+      **params.slice(:s, :f, :g, :from, :to, :sort, :people, :near)
+    )
   end
 
   def self.handle_people_params(params)
@@ -31,6 +32,7 @@ class BuildingSearch < SearchQueryBuilder
 
     results.map(&:decorate)
   end
+
   memoize :results
 
   def scoped
@@ -53,6 +55,7 @@ class BuildingSearch < SearchQueryBuilder
 
     builder.scoped
   end
+
   memoize :scoped
 
   def active?
@@ -99,10 +102,12 @@ class BuildingSearch < SearchQueryBuilder
   end
 
   def prepare_expanded_search
-    builder.preload(:locality) if f.include?('locality')
-    builder.preload(:addresses) if f.include?('street_address') || f.include?('historical_addresses')
-    builder.preload(:architects) if f.include?('architects')
-    builder.preload(:rich_text_description) if f.include?('description')
+    unless navigation
+      builder.preload(:locality) if f.include?('locality')
+      builder.preload(:addresses) if f.include?('street_address') || f.include?('historical_addresses')
+      builder.preload(:architects) if f.include?('architects')
+      builder.preload(:rich_text_description) if f.include?('description')
+    end
     add_order_clause
   end
 
@@ -112,13 +117,14 @@ class BuildingSearch < SearchQueryBuilder
 
   def enrich_with_residents
     people_class = "Census#{people}Record".constantize
-    people = people_class.where.not(reviewed_at: nil).select('building_id')
+    people = people_class.where.not(reviewed_at: nil)
     people = people.ransack(people_params).result if people_params.present?
+    people = people.pluck('building_id')
 
     # Force it to return no results if there are no people - otherwise it returns all results when
     # looking for Chinese people in 1910 in Ithaca. Nobody <> everybody
 
-    @num_residents = people.count
+    @num_residents = people.size
     builder.where(id: people)
   end
 

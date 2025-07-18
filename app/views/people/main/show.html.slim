@@ -1,21 +1,29 @@
 - set_page_title @person.name
 = render 'shared/flag_resolution', item: @person
-= render 'merge_modal'
-- content_for :pills do
-  - if can_people? || can?(:read, Person)
-    = link_to 'View All', people_path, class: 'btn btn-light'
-  - if can?(:create, Flag)
-    = render 'shared/flag_it', item: @person, item_class: 'btn btn-light'
-  - if can?(:update, @person)
-    = link_to [:edit, @person], class: 'btn btn-light' do
-      i.fa.fa-pencil
-      span.d-none.d-lg-inline
-        | &nbsp; Edit
-  - if can?(:destroy, @person) && @person.census_records.blank?
-    = link_to @person, class: 'btn btn-light', data: { method: :delete, confirm: 'Are you sure?' } do
-      i.fa.fa-trash
-      span.d-none.d-lg-inline
-        | &nbsp; Delete
+- btn_class = 'btn btn-sm btn-secondary'
+div.mb-3.clearfix.d-flex.justify-content-between
+  div.mr-auto
+    - if can_people? || can?(:read, Person)
+      = link_to 'View All', people_path, class: btn_class
+    - if can?(:create, Flag)
+      = render 'shared/flag_it', item: @person, item_class: btn_class
+    - if can?(:update, @person)
+      = link_to [:edit, @person], class: btn_class do
+        i.fa.fa-pencil
+        span.d-none.d-lg-inline
+          | &nbsp; Edit
+    = render 'merge_modal', btn_class:
+    - if can?(:destroy, @person) && @person.census_records.blank?
+      = link_to @person, class: btn_class, data: { method: :delete, confirm: 'Are you sure?' } do
+        i.fa.fa-trash
+        span.d-none.d-lg-inline
+          | &nbsp; Delete
+- if @navigation_neighbors.present?
+  - if @navigation_neighbors[:previous_id]
+    = previous_nav_link(person_path(@navigation_neighbors[:previous_id]))
+  - if @navigation_neighbors[:next_id]
+    = next_nav_link(person_path(@navigation_neighbors[:next_id]))
+
 .list-group.mb-3
   - names = @person.variant_names
   - if names.any?

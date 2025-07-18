@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-export const highlight = (id: number | null) => dispatch => {
+export const highlight = (id) => dispatch => {
   dispatch({ type: 'BUILDING_HIGHLIGHT', id })
 }
 
@@ -13,7 +13,7 @@ export const forgeInit = () => async (dispatch, getState) => {
   }
 }
 
-export const setYear = (proposedYear?: number) => (dispatch, getState) => {
+export const setYear = (proposedYear) => (dispatch, getState) => {
   let year = proposedYear || (getState().search.params.people)
   if (year) {
     year = parseInt(year)
@@ -26,7 +26,7 @@ export const setYear = (proposedYear?: number) => (dispatch, getState) => {
 }
 
 let searchTimeout
-export const searchTerm = (term) => async(dispatch) => {
+export const searchTerm = (term) => async (dispatch) => {
   clearTimeout(searchTimeout)
   searchTimeout = setTimeout(() => {
     dispatch({ type: 'FORGE_RESET' })
@@ -36,7 +36,7 @@ export const searchTerm = (term) => async(dispatch) => {
   }, term === '' ? 1000 : 200)
 }
 
-export const getBuildingsNearMe = ({ latitude, longitude }: { latitude: number, longitude: number}) => async(dispatch, getState) => {
+export const getBuildingsNearMe = ({ latitude, longitude }) => async (dispatch, getState) => {
   const near = `${latitude}+${longitude}`;
   const qs = buildParams(getState().search || {});
   const params = {
@@ -69,16 +69,16 @@ export const reset = () => async (dispatch, getState) => {
 }
 
 export const resetMap = () => async (dispatch) => {
-    return dispatch({ type: "LAYERS_RESET" });
+  return dispatch({ type: "LAYERS_RESET" });
 }
 
-export const select = (id: number, params?: keyable) => async (dispatch) => {
+export const select = (id, params) => async (dispatch) => {
   const url = `/buildings/${id}.json`
   const json = await axios.get(url, { params: buildParams(params) })
   dispatch({ type: 'BUILDING_SELECTED', building: json.data })
 }
 
-export const address = (id: number) => async dispatch => {
+export const address = (id) => async dispatch => {
   const url = `/buildings/${id}/address.json`
   const json = await axios.get(url)
   dispatch({ type: 'BUILDING_ADDRESS_LOADED', address: json.data })
@@ -101,19 +101,18 @@ const loadFilters = year => async dispatch => {
   dispatch({ type: 'FORGE_FILTERS_LOADED', ...json.data })
 }
 
-const buildParams = function(search: keyable) {
-  const params = { s: {} } as keyable
-  if (search?.params?.s) {
-    params.s = search.params.s
-  }
+const buildParams = function (search) {
+  const params = { s: {} }
   if (search?.people?.s || search?.year) {
     params.people = search.people || search?.year
     params.peopleParams = search.params.s
+  } else if (search?.params?.s) {
+    params.s = search.params.s
   }
   params.s.lat_not_null = 1
   return params
 }
 
-const configureAxios = (): void => {
+const configureAxios = () => {
   axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('[name=csrf-token]').getAttribute('content')
 }

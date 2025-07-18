@@ -4,8 +4,6 @@ require 'csv'
 require 'parallel'
 require 'ruby-progressbar'
 
-# The entire purpose of this is for a developer to bootstrap a database with some census records exported with the
-# CSV button on HistoryForge.
 namespace :import do
 
   desc 'Import parcel file into HistoryForge, updating if it exists'
@@ -16,10 +14,22 @@ namespace :import do
     csv_file = ENV.fetch('FILE', nil)
     raise ArgumentError('You must pass in a valid file path as the FILE argument') unless File.exist?(csv_file)
 
-    rows_count = 0
+    Setting.load
+
+    rows = CSV.read(csv_file, headers: true)
+    # Fail early if 'id' column is present
+    raise ArgumentError, "CSV file must not contain an 'id' column." if rows.headers.map(&:downcase).include?('id')
+
+    rows_count = rows.size
     saved_count = 0
 
-    Setting.load
+    rows.each_with_index do |row, _index|
+      record = build_census_record(row, year)
+      assign_census_attributes(record, row, year)
+      record.created_by = User.first
+      assign_census_building(record, row)
+      saved_count += 1 if record.save
+    end
 
     CSV.foreach(csv_file, headers: true) do |row|
       record =Parcel.find_or_initialize_by(

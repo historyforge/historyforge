@@ -1,4 +1,4 @@
-const selectScope = function(): void {
+const selectScope = function() {
     const scope = $(this).val().toString();
     let name = `s[${scope}]`;
     const form = $(this).closest('.card-body').find('.value-input-container');

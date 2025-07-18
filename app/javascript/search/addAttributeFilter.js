@@ -1,6 +1,6 @@
 // import {IAttributeFilter, AttributeFilterConfig, ScopeValue} from "./types";
 
-class AttributeFilter implements IAttributeFilter {
+class AttributeFilter {
     html = document.createElement('DIV');
     input = document.createElement('INPUT');
     config; scope; scopeValue; sentence;
@@ -31,7 +31,7 @@ class AttributeFilter implements IAttributeFilter {
     }
 
     renderLabel() {
-        const closeButton: HTMLElement = document.createElement('BUTTON');
+        const closeButton = document.createElement('BUTTON');
         closeButton.setAttribute('type', 'button');
         closeButton.classList.add('close');
         closeButton.classList.add('remove-filter');
@@ -131,7 +131,7 @@ class AttributeFilter implements IAttributeFilter {
     }
 }
 
-const addAttributeFilter = function(field_config: AttributeFilterConfig, scope: string, scopeValue: ScopeValue) {
+const addAttributeFilter = function(field_config, scope, scopeValue) {
     const filter = new AttributeFilter(field_config, scope, scopeValue);
     filter.render();
     $('#attribute-filters').append(filter.html);

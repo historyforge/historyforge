@@ -1,29 +1,29 @@
 # frozen_string_literal: true
 
-require_relative "boot"
+require_relative 'boot'
 
-require "rails"
+require 'rails'
 # Pick the frameworks you want:
-require "active_model/railtie"
-require "active_job/railtie"
-require "active_record/railtie"
-require "active_storage/engine"
-require "action_controller/railtie"
-require "action_mailer/railtie"
+require 'active_model/railtie'
+require 'active_job/railtie'
+require 'active_record/railtie'
+require 'active_storage/engine'
+require 'action_controller/railtie'
+require 'action_mailer/railtie'
 # require 'action_mailbox/engine'
-require "action_text/engine"
-require "action_view/railtie"
+require 'action_text/engine'
+require 'action_view/railtie'
 # require "action_cable/engine"
 # require 'rails/test_unit/railtie'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
-require "csv"
+require 'csv'
 
-unless ENV["DATABASE_URL"]
-  require "dotenv"
-  Dotenv.load(".env", ".env.#{Rails.env}")
+unless ENV['DATABASE_URL']
+  require 'dotenv'
+  Dotenv.load('.env', ".env.#{Rails.env}")
 end
 
 module HistoryForge
@@ -39,7 +39,12 @@ module HistoryForge
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
 
-    config.action_mailer.default_url_options = { host: ENV["BASE_URL"] }
+    # Please, add to the `ignore` list any other `lib` subdirectories that do
+    # not contain `.rb` files, or that should not be reloaded or eager loaded.
+    # Common ones are `templates`, `generators`, or `middleware`, for example.
+    config.autoload_lib(ignore: %w[assets tasks])
+
+    config.action_mailer.default_url_options = { host: ENV.fetch('BASE_URL', nil) }
 
     config.quiet_assets = true
 
@@ -60,5 +65,8 @@ module HistoryForge
     config.generators.test_framework :rspec
     config.active_record.schema_format = :sql
     config.active_record.migration_error = :page_load
+
+    # Don't generate system test files.
+    config.generators.system_tests = nil
   end
 end

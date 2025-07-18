@@ -5,6 +5,7 @@ plugins:
   - rubocop-rails
   - rubocop-rspec
   - rubocop-performance
+  - rubocop-capybara
 AllCops:
   RubyInterpreters:
     - ruby

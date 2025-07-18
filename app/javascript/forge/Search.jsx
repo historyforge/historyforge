@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { searchTerm } from './actions'
 
-const Search = (props: SearchData): JSX.Element => {
+const Search = (props) => {
   const [term, setTerm] = useState('')
 
   const change = (event) => {
