@@ -30,7 +30,7 @@
             "installDirectlyFromGitHubRelease": true,
             "version": "latest"
         },
-        "ghcr.io/devcontainers/features/node:1": {
+        "ghcr.io/devcontainers/features/node:": {
             "installYarnUsingApt": true,
             "version": "latest",
             "pnpmVersion": "none",
