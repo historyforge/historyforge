@@ -7,15 +7,16 @@ class BuildingSearch < SearchQueryBuilder
   def self.generate(params: {}, user: nil)
     new(
       user:,
-      people_params: params[:peopleParams] && handle_people_params(params[:peopleParams]),
-      building_params: params[:buildingParams] && handle_people_params(params[:buildingParams]),
+      people_params: params[:peopleParams] && parse_params(params[:peopleParams]),
+      building_params: params[:buildingParams] && parse_people_params(params[:buildingParams]),
       scope: params[:scope] && params[:scope] != 'on' && params[:scope].intern,
       **params.slice(:s, :f, :g, :from, :to, :sort, :people, :near)
     )
   end
 
-  def self.handle_people_params(params)
+  def self.parse_params(params)
     return if params.blank?
+    return params.compact_blank if params.is_a?(Hash)
 
     JSON.parse(params).each_with_object({}) do |item, hash|
       hash[item[0].to_sym] = item[1] if item[1].present?
