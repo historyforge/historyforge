@@ -29,6 +29,8 @@ class Narrative < ApplicationRecord
 
   has_and_belongs_to_many :buildings
   has_and_belongs_to_many :people
+  has_many :census1910_records, through: :people, source: :census1910_records
+  has_many :census1920_records, through: :people, source: :census1920_records
 
   has_rich_text :story
   has_rich_text :sources

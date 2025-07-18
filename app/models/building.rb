@@ -66,6 +66,7 @@ class Building < ApplicationRecord
   has_many :children, class_name: 'Building', foreign_key: :parent_id, dependent: :nullify, inverse_of: :parent
 
   has_many :addresses, dependent: :destroy, autosave: true
+
   accepts_nested_attributes_for :addresses, allow_destroy: true, reject_if: proc { |p| p['name'].blank? }
 
   has_and_belongs_to_many :architects
@@ -83,10 +84,18 @@ class Building < ApplicationRecord
   has_many :census1930_records, dependent: :nullify, class_name: 'Census1930Record', inverse_of: :building
   has_many :census1940_records, dependent: :nullify, class_name: 'Census1940Record', inverse_of: :building
   has_many :census1950_records, dependent: :nullify, class_name: 'Census1950Record', inverse_of: :building
+  has_many :people_1910, through: :census1910_records, source: :person
+  has_many :people_1920, through: :census1920_records, source: :person
+
+  # Combine both associations into one virtual association
+  def people
+    Person.where(id: (people_1910 + people_1920).pluck(:id).uniq)
+  end
   has_and_belongs_to_many :photos, class_name: 'Photograph', dependent: :nullify
   has_and_belongs_to_many :audios, dependent: :nullify
   has_and_belongs_to_many :videos, dependent: :nullify
   has_and_belongs_to_many :narratives, dependent: :nullify
+  has_and_belongs_to_many :documents, dependent: :nullify
 
   before_validation :check_locality
   validates :name, presence: true, length: { maximum: 255 }
@@ -179,6 +188,40 @@ class Building < ApplicationRecord
     super + %w[street_address]
   end
 
+  def self.as_geojson(buildings)
+    {
+      type: 'FeatureCollection',
+      features: buildings.map do |record|
+        {
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: record.coordinates
+          },
+          properties: {
+            location_id: record.id,
+            year: record.year,
+            title: record.name.to_s.strip,
+            addresses: record.addresses.map(&:as_json),
+            audios: record.respond_to?(:building_audios) ? record.building_audios&.map(&:as_json) : [],
+            stories: record.respond_to?(:building_narratives) ? record.building_narratives&.map(&:as_json) : [],
+            videos: record.respond_to?(:building_videos) ? record.building_videos&.map(&:as_json) : [],
+            photos: record.respond_to?(:building_photos) ? record.building_photos&.map(&:as_json) : [],
+            documents: record.respond_to?(:building_documents) ? record.building_documents&.map(&:as_json) : [],
+            description: record.description&.to_plain_text&.strip,
+            rich_description: record.rich_text_description,
+            census_records: record.respond_to?(:census_records) ? record.census_records&.map { |c_record| c_record.as_json(methods: [:sortable_name]) } : [],
+            people: record.people&.map { |person| person.as_json(methods: [:sortable_name]) }
+          }
+        }
+      end
+    }
+  end
+
+  # Geocoding configuration
+  require 'geocoder'
+  require 'geocoder/lookups/google'
+
   Geocoder.configure(
     timeout: 2,
     use_https: true,
@@ -220,6 +263,10 @@ class Building < ApplicationRecord
   def full_street_address
     [street_address, city].join(' ')
   end
+
+ def coordinates
+  [longitude, latitude]
+end
 
   def architects_list
     architects.map(&:name).join(', ')
