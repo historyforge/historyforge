@@ -7,18 +7,26 @@ class BuildingSearch < SearchQueryBuilder
   def self.generate(params: {}, user: nil)
     new(
       user:,
-      people_params: params[:peopleParams] && handle_people_params(params[:peopleParams]),
-      building_params: params[:buildingParams] && handle_people_params(params[:buildingParams]),
+      people_params: params[:peopleParams] && parse_params(params[:peopleParams]),
+      building_params: params[:buildingParams] && parse_params(params[:buildingParams]),
       scope: params[:scope] && params[:scope] != 'on' && params[:scope].intern,
       **params.slice(:s, :f, :g, :from, :to, :sort, :people, :near)
     )
   end
 
-  def self.handle_people_params(params)
+  def self.parse_params(params)
     return if params.blank?
 
-    JSON.parse(params).each_with_object({}) do |item, hash|
-      hash[item[0].to_sym] = item[1] if item[1].present?
+    parsed_params = params.is_a?(String) ? JSON.parse(params) : params
+    parsed_params.each_with_object({}) do |item, hash|
+      key, value = item
+      next hash if value.blank?
+
+      hash[key.to_sym] = if value.is_a?(Hash)
+                           hash[key.to_sym] = value.values
+                         else
+                           value
+                         end
     end
   end
 
@@ -117,15 +125,15 @@ class BuildingSearch < SearchQueryBuilder
 
   def enrich_with_residents
     people_class = "Census#{people}Record".constantize
-    people = people_class.where.not(reviewed_at: nil)
-    people = people.ransack(people_params).result if people_params.present?
-    people = people.pluck('building_id')
+    people_records = people_class.where.not(reviewed_at: nil)
+    people_records = people_records.ransack(people_params).result if people_params.present?
+    people_records = people_records.pluck(:building_id)
 
     # Force it to return no results if there are no people - otherwise it returns all results when
     # looking for Chinese people in 1910 in Ithaca. Nobody <> everybody
 
-    @num_residents = people.size
-    builder.where(id: people)
+    @num_residents = people_records.size
+    builder.where(id: people_records)
   end
 
   def add_order_clause

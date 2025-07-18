@@ -598,6 +598,7 @@ DEPENDENCIES
   omniauth-rails_csrf_protection
   ostruct
   paper_trail
+  parallel
   pg
   pg_search
   pretender
@@ -617,6 +618,7 @@ DEPENDENCIES
   rubocop-performance
   rubocop-rails
   rubocop-rspec
+  ruby-progressbar
   ruby-vips
   rubyXL
   rubyzip

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 require 'benchmark'
 require 'csv'
-require 'parallel'
-require 'ruby-progressbar'
 
 namespace :import do
 
@@ -86,6 +84,8 @@ namespace :import do
   desc 'Import parcel records in parallel from a CSV file'
   # rake import:parcel_parallel[1930,path/to/file.csv,true,true]
   task :parcel_parallel, [:year, :file, :dry_run, :json] => :environment do |_, args|
+    require 'parallel'
+    require 'ruby-progressbar'
     PaperTrail.request(enabled: false) do
       raise ArgumentError, 'You must provide a YEAR' if args[:year].blank?
       raise ArgumentError, 'You must provide a valid FILE path' unless File.exist?(args[:file])
@@ -144,6 +144,8 @@ namespace :import do
   desc 'Import census records in parallel from a CSV file'
   # rake import:census_parallel[1930,path/to/file.csv,true,true]
   task :census_parallel, %i[year file dry_run json] => :environment do |_, args|
+    require 'parallel'
+    require 'ruby-progressbar'
     PaperTrail.request(enabled: false) do
       validate_census_args!(args)
       year = args[:year]
