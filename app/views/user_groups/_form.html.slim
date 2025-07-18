@@ -1,6 +1,7 @@
 = simple_form_for @user_group do |form|
 
   = form.input :name
+  = form.input :role_ids, label: 'Roles', collection: Role.for_select, as: :check_boxes, include_blank: false, include_hidden: false
 
   .form-actions
     = form.submit 'Save', class: 'btn btn-primary btn-lg'

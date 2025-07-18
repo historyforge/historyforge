@@ -5,6 +5,13 @@
       li.breadcrumb-item= link_to @record.year, resource_class
       li.breadcrumb-item= link_to @record.census_scope, path_to_census_sheet(@record), class: 'float-right'
 
+- if @navigation
+  - if @navigation[:previous_id]
+    = previous_nav_link("/census/#{@record.year}/#{@navigation[:previous_id]}")
+  - if @navigation[:next_id]
+    = next_nav_link("/census/#{@record.year}/#{@navigation[:next_id]}")
+
+
 - btn_class = 'btn btn-sm btn-secondary'
 div.mb-3.clearfix.d-flex.justify-content-between
   div.mr-auto
@@ -118,7 +125,8 @@ div.mb-3.clearfix.d-flex.justify-content-between
                 th Relation
               th Occupation
           tbody
-            - @record.fellows.each do |row|
+            - @record.fellows.each do |raw_row|
+              - row = raw_row.decorate
               tr
                 td= link_to row.name, row
                 td= row.sex

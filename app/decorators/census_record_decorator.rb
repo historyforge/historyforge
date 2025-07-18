@@ -6,6 +6,8 @@ class CensusRecordDecorator < ApplicationDecorator
   include DecoratorFormatting
 
   def age
+    return 'Un.' if object&.age == 999
+
     if object.year == 1950
       object.age&.positive? ? object.age : '<1'
     elsif object.age_months
@@ -72,6 +74,18 @@ class CensusRecordDecorator < ApplicationDecorator
     str << "ED #{object.enum_dist} " if object.respond_to?(:enum_dist)
     str << "Sheet #{object.page_number}#{object.page_side} ##{object.line_number}"
     str.join
+  end
+
+  def census_person_id
+    # Try the direct attribute first
+    return object.census_person_id if object.respond_to?(:census_person_id) && object.census_person_id.present?
+
+    # Fall back to extracting from notes
+    extracted_id = object&.notes&.match(/(?:ID: )(P-\d+)/)&.[](1)
+    return extracted_id if extracted_id.present?
+
+    # Return nil if neither method works
+    nil
   end
 
   private

@@ -10,6 +10,7 @@
 #  middle_name             :string
 #  sex                     :string(12)
 #  race                    :string
+#  ever_enslaved           :boolean          default(False)
 #  name_prefix             :string
 #  name_suffix             :string
 #  searchable_name         :text
@@ -20,6 +21,9 @@
 #  notes                   :text
 #  description             :text
 #  sortable_name           :string
+#  death_year              :integer
+#  is_death_year_estimated :boolean          default(TRUE)
+#
 #
 # Indexes
 #
@@ -37,11 +41,13 @@ class Person < ApplicationRecord
 
   NAME_VARIANT_ATTRIBUTES = %w[first_name last_name].freeze
   PRIMARY_NAME_ATTRIBUTES = %w[name_prefix first_name middle_name last_name name_suffix].freeze
+  SEXES = %w[M F].freeze
+  RACES = %w[W B Mu Mex In Ch Jp Fil Hin Kor].freeze
 
   attr_accessor :match_score
 
-  define_enumeration :sex, %w[M F].freeze
-  define_enumeration :race, %w[W B Mu Mex In Ch Jp Fil Hin Kor].freeze
+  define_enumeration :sex, SEXES
+  define_enumeration :race, RACES
 
   has_many :census1850_records, dependent: :nullify, class_name: 'Census1850Record', inverse_of: :person
   has_many :census1860_records, dependent: :nullify, class_name: 'Census1860Record', inverse_of: :person
@@ -66,18 +72,18 @@ class Person < ApplicationRecord
   has_and_belongs_to_many :narratives, dependent: :nullify
   has_and_belongs_to_many :documents, dependent: :nullify
   has_and_belongs_to_many :localities
-  has_many :names, -> { order("last_name asc, first_name asc") },
-           class_name: "PersonName",
+  has_many :names, -> { order('last_name asc, first_name asc') },
+           class_name: 'PersonName',
            dependent: :destroy,
            autosave: true,
            inverse_of: :person
-  accepts_nested_attributes_for :names, allow_destroy: true, reject_if: proc { |p| p["first_name"].blank? || p["last_name"].blank? }
+  accepts_nested_attributes_for :names, allow_destroy: true, reject_if: proc { |p| p['first_name'].blank? || p['last_name'].blank? }
 
   validates :first_name, :last_name, :sex, :race, presence: true
 
   before_validation do
-    self.sex = nil if sex.blank? || sex == "on"
-    self.race = nil if race.blank? || race == "on"
+    self.sex = nil if sex.blank? || sex == 'on'
+    self.race = nil if race.blank? || race == 'on'
   end
 
   before_save :ensure_primary_name
@@ -85,14 +91,14 @@ class Person < ApplicationRecord
   scope :fuzzy_name_search, lambda { |names|
     names = names.is_a?(String) ? names.downcase.split : names
     where(id: PersonName.select(:person_id)
-                        .where(names.map { "person_names.searchable_name % ?" }.join(" AND "), *names)
-                        .where("person_names.person_id=people.id"))
+                        .where(names.map { 'person_names.searchable_name % ?' }.join(' AND '), *names)
+                        .where('person_names.person_id=people.id'))
   }
 
   scope :uncensused, lambda {
     qry = self
     CensusYears.each { |year| qry = qry.left_outer_joins(:"census#{year}_records") }
-    qry.where CensusYears.map { |year| "#{CensusRecord.for_year(year).table_name}.id IS NULL" }.join(" AND ")
+    qry.where CensusYears.map { |year| "#{CensusRecord.for_year(year).table_name}.id IS NULL" }.join(' AND ')
   }
 
   scope :with_census_records, lambda {
@@ -104,23 +110,23 @@ class Person < ApplicationRecord
   scope :with_multiple_names, lambda {
     all
       .joins(:names)
-      .group("people.id, person_names.last_name")
-      .having("COUNT(person_names.last_name) > 1")
+      .group('people.id, person_names.last_name')
+      .having('COUNT(person_names.last_name) > 1')
   }
 
   scope :photographed, lambda {
-    joins("INNER JOIN people_photographs ON people_photographs.person_id=people.id")
+    joins('INNER JOIN people_photographs ON people_photographs.person_id=people.id')
   }
 
   scope :name_fuzzy_matches, lambda { |names|
     possible_names = names.squish.split.map { |name| People::Nicknames.matches_for(name) }
-    query = joins(:names).group("people.id")
+    query = joins(:names).group('people.id')
     possible_names.each do |name_set|
       if name_set.length == 1
         name = name_set.first
-        query = query.where("person_names.last_name ILIKE ? OR person_names.first_name ILIKE ?", "#{name.downcase}%", "#{name.downcase}%")
+        query = query.where('person_names.last_name ILIKE ? OR person_names.first_name ILIKE ?', "#{name.downcase}%", "#{name.downcase}%")
       else
-        conditions = name_set.map { "person_names.first_name ILIKE ?" }.join(" OR ")
+        conditions = name_set.map { 'person_names.first_name ILIKE ?' }.join(' OR ')
         query = query.where(conditions, *name_set.map(&:downcase))
       end
     end
@@ -139,6 +145,12 @@ class Person < ApplicationRecord
     %w[names localities census_1850_records census_1860_records
        census_1870_records census_1880_records census_1900_records census_1910_records census_1920_records
        census_1930_records census_1940_records census_1950_records photos]
+  end
+
+  def race_choices
+    return RACES if race.blank? || RACES.include?(race)
+
+    RACES.dup << race
   end
 
   def variant_names
@@ -210,6 +222,8 @@ class Person < ApplicationRecord
 
     match = census_records.first
     if match
+      return 'Un.' if match.age == 999
+
       diff = match.year - year
       (match.age || 0) - diff
     else
@@ -237,15 +251,15 @@ class Person < ApplicationRecord
   memoize :relatives
 
   def relation_to_head
-    census_records.select { |record| record.year >= 1880 }.map(&:relation_to_head).uniq.join(", ")
+    census_records.select { |record| record.year >= 1880 }.map(&:relation_to_head).uniq.join(', ')
   end
 
   def occupation
-    census_records.map(&:occupation).uniq.join(", ")
+    census_records.map(&:occupation).uniq.join(', ')
   end
 
   def address
-    census_records.map(&:street_address).compact_blank.uniq.join(", ")
+    census_records.map(&:street_address).compact_blank.uniq.join(', ')
   end
 
   def years
@@ -304,6 +318,7 @@ class Person < ApplicationRecord
   end
 
   def ensure_primary_name
+    return if first_name.blank? || last_name.blank?
     return if names.detect { |name| name.same_name_as?(self) }
 
     names.build(first_name:, last_name:)

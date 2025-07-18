@@ -26,12 +26,6 @@ module CensusRecords
        apartment_number ? "Apt. #{apartment_number}" : nil].compact.join(' ')
     end
 
-    def latitude
-      building&.lat
-    end
-
-    def longitude
-      building&.lon
-    end
+    delegate :latitude, :longitude, to: :building, allow_nil: true
   end
 end

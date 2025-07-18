@@ -48,7 +48,7 @@ GEM
     active_interaction (5.5.0)
       activemodel (>= 5.2, < 9)
       activesupport (>= 5.2, < 9)
-    active_storage_validations (3.0.0)
+    active_storage_validations (3.0.1)
       activejob (>= 6.1.4)
       activemodel (>= 6.1.4)
       activestorage (>= 6.1.4)
@@ -127,7 +127,7 @@ GEM
     capybara-selenium (0.0.6)
       capybara
       selenium-webdriver
-    chartkick (5.1.5)
+    chartkick (5.2.0)
     childprocess (5.1.0)
       logger (~> 1.5)
     coderay (1.1.3)
@@ -135,10 +135,11 @@ GEM
     connection_pool (2.5.3)
     crass (1.0.6)
     csv (3.3.5)
+    database_cleaner-active_record (2.2.1)
+      activerecord (>= 5.a)
+      database_cleaner-core (~> 2.0.0)
+    database_cleaner-core (2.0.1)
     date (3.4.1)
-    debug (1.10.0)
-      irb (~> 1.10)
-      reline (>= 0.3.8)
     devise (4.9.4)
       bcrypt (~> 3.0)
       orm_adapter (~> 0.1)
@@ -160,18 +161,18 @@ GEM
     drb (2.2.3)
     erb (5.0.1)
     erubi (1.13.1)
-    factory_bot (6.5.3)
+    factory_bot (6.5.4)
       activesupport (>= 6.1.0)
-    factory_bot_rails (6.4.4)
+    factory_bot_rails (6.5.0)
       factory_bot (~> 6.5)
-      railties (>= 5.0.0)
-    faker (3.5.1)
+      railties (>= 6.1.0)
+    faker (3.5.2)
       i18n (>= 1.8.11, < 2)
-    faraday (2.13.1)
+    faraday (2.13.2)
       faraday-net_http (>= 2.0, < 3.5)
       json
       logger
-    faraday-net_http (3.4.0)
+    faraday-net_http (3.4.1)
       net-http (>= 0.5.0)
     fast_memoize (0.1.1)
     ffi (1.17.2-aarch64-linux-gnu)
@@ -209,7 +210,7 @@ GEM
     jsbundling-rails (1.3.1)
       railties (>= 6.0.0)
     json (2.12.2)
-    jwt (2.10.1)
+    jwt (3.1.2)
       base64
     kaminari (1.2.2)
       activesupport (>= 4.1.0)
@@ -236,7 +237,7 @@ GEM
       railties (>= 6.1)
       rexml
     lint_roller (1.1.0)
-    liquid (5.8.6)
+    liquid (5.8.7)
       bigdecimal
       strscan (>= 3.1.1)
     logger (1.7.0)
@@ -249,10 +250,10 @@ GEM
       net-pop
       net-smtp
     marcel (1.0.4)
-    matrix (0.4.2)
+    matrix (0.4.3)
     memory_profiler (1.1.0)
     method_source (1.1.0)
-    mini_magick (5.2.0)
+    mini_magick (5.3.0)
       benchmark
       logger
     mini_mime (1.1.5)
@@ -262,7 +263,7 @@ GEM
       bigdecimal (~> 3.1)
     net-http (0.6.0)
       uri
-    net-imap (0.5.8)
+    net-imap (0.5.9)
       date
       net-protocol
     net-pop (0.1.2)
@@ -310,6 +311,7 @@ GEM
       actionpack (>= 4.2)
       omniauth (~> 2.0)
     orm_adapter (0.5.0)
+    ostruct (0.6.2)
     paper_trail (16.0.0)
       activerecord (>= 6.1)
       request_store (~> 1.4)
@@ -325,11 +327,14 @@ GEM
       prettyprint
     pretender (0.6.0)
       actionpack (>= 7.1)
+    prettier_print (1.2.1)
     prettyprint (0.2.0)
     prism (1.4.0)
-    pry (0.15.2)
+    pry (0.14.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
+    pry-nav (1.0.0)
+      pry (>= 0.9.10, < 0.15)
     psych (5.2.6)
       date
       stringio
@@ -337,7 +342,10 @@ GEM
     puma (6.6.0)
       nio4r (~> 2.0)
     racc (1.8.1)
-    rack (3.1.15)
+    rack (3.1.16)
+    rack-cors (3.0.0)
+      logger
+      rack (>= 3.0.14)
     rack-protection (4.1.1)
       base64 (>= 0.1.0)
       logger (>= 1.6.0)
@@ -370,6 +378,10 @@ GEM
     rails-html-sanitizer (1.6.2)
       loofah (~> 2.21)
       nokogiri (>= 1.15.7, != 1.16.7, != 1.16.6, != 1.16.5, != 1.16.4, != 1.16.3, != 1.16.2, != 1.16.1, != 1.16.0.rc1, != 1.16.0)
+    rails_autolink (1.1.8)
+      actionview (> 3.1)
+      activesupport (> 3.1)
+      railties (> 3.1)
     railties (7.2.2.1)
       actionpack (= 7.2.2.1)
       activesupport (= 7.2.2.1)
@@ -384,10 +396,8 @@ GEM
       activerecord (>= 6.1.5)
       activesupport (>= 6.1.5)
       i18n
-    rbs (3.9.4)
-      logger
     rbtree3 (0.7.1)
-    rdoc (6.14.0)
+    rdoc (6.14.2)
       erb
       psych (>= 4.0.0)
     recaptcha (5.19.0)
@@ -402,7 +412,7 @@ GEM
     rexml (3.4.1)
     rspec-collection_matchers (1.2.1)
       rspec-expectations (>= 2.99.0.beta1)
-    rspec-core (3.13.4)
+    rspec-core (3.13.5)
       rspec-support (~> 3.13.0)
     rspec-expectations (3.13.5)
       diff-lcs (>= 1.2.0, < 2.0)
@@ -410,7 +420,7 @@ GEM
     rspec-mocks (3.13.5)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
-    rspec-rails (8.0.0)
+    rspec-rails (8.0.1)
       actionpack (>= 7.2)
       activesupport (>= 7.2)
       railties (>= 7.2)
@@ -419,7 +429,7 @@ GEM
       rspec-mocks (~> 3.13)
       rspec-support (~> 3.13)
     rspec-support (3.13.4)
-    rubocop (1.76.0)
+    rubocop (1.78.0)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
@@ -427,10 +437,10 @@ GEM
       parser (>= 3.3.0.2)
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 2.9.3, < 3.0)
-      rubocop-ast (>= 1.45.0, < 2.0)
+      rubocop-ast (>= 1.45.1, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 4.0)
-    rubocop-ast (1.45.0)
+    rubocop-ast (1.45.1)
       parser (>= 3.3.7.2)
       prism (~> 1.4)
     rubocop-capybara (2.22.1)
@@ -452,15 +462,8 @@ GEM
     rubocop-rspec (3.6.0)
       lint_roller (~> 1.1)
       rubocop (~> 1.72, >= 1.72.1)
-    ruby-lsp (0.22.1)
-      language_server-protocol (~> 3.17.0)
-      prism (>= 1.2, < 2.0)
-      rbs (>= 3, < 4)
-      sorbet-runtime (>= 0.5.10782)
-    ruby-lsp-rails (0.3.27)
-      ruby-lsp (>= 0.22.0, < 0.23.0)
     ruby-progressbar (1.13.0)
-    ruby-vips (2.2.3)
+    ruby-vips (2.2.4)
       ffi (~> 1.12)
       logger
     rubyXL (3.4.33)
@@ -489,7 +492,6 @@ GEM
     snaky_hash (2.0.3)
       hashie (>= 0.1.0, < 6)
       version_gem (>= 1.1.8, < 3)
-    sorbet-runtime (0.5.12152)
     sprockets (4.2.2)
       concurrent-ruby (~> 1.0)
       logger
@@ -500,9 +502,11 @@ GEM
       sprockets (>= 3.0.0)
     stringio (3.1.7)
     strscan (3.1.5)
+    syntax_tree (5.3.0)
+      prettier_print (>= 1.2.0)
     temple (0.10.3)
     thor (1.3.2)
-    tilt (2.6.0)
+    tilt (2.6.1)
     timeout (0.4.3)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
@@ -533,6 +537,7 @@ GEM
     websocket-extensions (0.1.5)
     xpath (3.2.0)
       nokogiri (~> 1.8)
+    yard (0.9.37)
     zeitwerk (2.7.3)
 
 PLATFORMS
@@ -541,7 +546,11 @@ PLATFORMS
   arm-linux-gnu
   arm-linux-musl
   arm64-darwin
+  arm64-darwin-22
+  arm64-darwin-23
+  arm64-darwin-24
   x86_64-darwin
+  x86_64-linux
   x86_64-linux-gnu
   x86_64-linux-musl
 
@@ -563,7 +572,7 @@ DEPENDENCIES
   capybara
   capybara-selenium
   chartkick
-  debug (~> 1.10.0)
+  database_cleaner-active_record
   devise
   devise-bootstrap-views (~> 1.0)
   devise-encryptable
@@ -587,13 +596,17 @@ DEPENDENCIES
   net-smtp
   omniauth-facebook
   omniauth-rails_csrf_protection
+  ostruct
   paper_trail
   pg
   pg_search
   pretender
   pry
+  pry-nav
   puma
+  rack-cors
   rails
+  rails_autolink
   ransack
   recaptcha
   rspec-collection_matchers
@@ -604,8 +617,6 @@ DEPENDENCIES
   rubocop-performance
   rubocop-rails
   rubocop-rspec
-  ruby-lsp (~> 0.22.1)
-  ruby-lsp-rails (~> 0.3.27)
   ruby-vips
   rubyXL
   rubyzip
@@ -618,9 +629,10 @@ DEPENDENCIES
   tzinfo-data
   web-console
   webdrivers
+  yard
 
 RUBY VERSION
-   ruby 3.3.6p108
+   ruby 3.4.4p34
 
 BUNDLED WITH
-   2.5.22
+   2.6.9

@@ -4,5 +4,5 @@
 # as a bitmask.
 class BuildingType < BitmaskModel
   # You can add to this list but if you reorder or remove items, you will screw up the data
-  self.data = %w[Public Marker Residence Religious Commercial].freeze
+  self.data = %w[Public Marker Residence Religious Commercial Cemetery Institution Plantation].freeze
 end

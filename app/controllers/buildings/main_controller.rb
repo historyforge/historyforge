@@ -2,6 +2,7 @@
 
 module Buildings
   class MainController < ApplicationController
+    include FastMemoize
     include AdvancedRestoreSearch
     include RenderCsv
 
@@ -44,13 +45,16 @@ module Buildings
           name: building.name,
           address: building.full_street_address,
           lat: building.lat,
-          lon: building.lon
+          lon: building.lon,
         }
       }
     end
 
     def show
       @building = @building.decorate
+
+      load_navigation
+
       respond_to do |format|
         format.html
         format.json { render json: BuildingSerializer.new(@building) }
@@ -129,12 +133,21 @@ module Buildings
 
     private
 
+    def load_navigation
+      return unless has_active_search_data?
+
+      @navigation_neighbors = BuildingSearch.generate(
+        params: current_search_data,
+        user: current_user,
+      ).navigation_neighbors(@building.id)
+    end
+
     def load_residents
       @building.residents = Buildings::FindResidents.run!(
         building: @building,
         year: params[:people],
         filters: params[:peopleParams],
-        reviewed_only: !user_signed_in?
+        reviewed_only: !user_signed_in?,
       )
     end
 
@@ -145,7 +158,7 @@ module Buildings
       update: :update,
       destroy: :destroy,
       review: :review,
-      bulk_review: :review
+      bulk_review: :review,
     }.freeze
 
     def load_building
@@ -178,7 +191,7 @@ module Buildings
           building_type_ids: [],
           photos_attributes: %i[_destroy id photo year_taken caption],
           addresses_attributes: %i[_destroy id is_primary house_number prefix name suffix city postal_code year],
-          annotations_attributes: %i[_destroy id map_overlay_id annotation_text]
+          annotations_attributes: %i[_destroy id map_overlay_id annotation_text],
         }
       )
     end

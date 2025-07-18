@@ -51,13 +51,23 @@ class DocumentsController < ApplicationController
   def create
     @document = Document.new resource_params
     authorize! :create, @document
-    
-    
+
+
     if @document.save
       flash[:notice] = 'The document has been saved.'
       redirect_to action: :index, document_category_id: @document.document_category_id
     else
-      flash[:error] = 'This document failed to upload. Usually it means the file type is not allowed.'
+      if @document.errors[:document_category].any?
+        if DocumentCategory.count.zero?
+          flash[:error] = 'No document categories exist yet. Please <a href="#{document_categories_path}">create a document category</a> first before adding documents.'.html_safe
+        else
+          flash[:error] = 'Please select a document category for this document.'
+        end
+      elsif @document.errors[:file].any?
+        flash[:error] = 'This document failed to upload. Usually it means the file type is not allowed.'
+      else
+        flash[:error] = "Unable to save document: #{@document.errors.full_messages.join(', ')}"
+      end
       render :new
     end
   end

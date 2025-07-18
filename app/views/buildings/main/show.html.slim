@@ -1,19 +1,27 @@
 - set_page_title @building.proper_name? ? @building.name : @building.primary_street_address
 
 = render 'shared/flag_resolution', item: @building
-= render 'merge_modal'
 
-- content_for :pills do
-  - if can?(:create, Flag)
-    = render 'shared/flag_it', item: @building.object, item_class: 'btn btn-light'
-  - if can?(:update, @building.object)
-    = link_to [:edit, @building], class: 'btn btn-light' do
-      i.fa.fa-pencil
-      span.d-none.d-lg-inline
-        | &nbsp; Edit
-  - if can?(:review, @building.object) && !@building.reviewed?
-    = link_to 'Review', [:review, @building], class: 'btn btn-light', data: { method: :put }
-  = link_to 'View All', buildings_path, class: 'btn btn-light'
+- btn_class = 'btn btn-sm btn-secondary'
+div.mb-3.clearfix.d-flex.justify-content-between
+  div.mr-auto
+    - if can?(:create, Flag)
+      = render 'shared/flag_it', item: @building.object, item_class: btn_class
+    - if can?(:update, @building.object)
+      = link_to [:edit, @building], class: btn_class do
+        i.fa.fa-pencil
+        span.d-none.d-lg-inline
+          | &nbsp; Edit
+    - if can?(:review, @building.object) && !@building.reviewed?
+      = link_to 'Review', [:review, @building], class: btn_class, data: { method: :put }
+    = render 'merge_modal', btn_class:
+    = link_to 'View All', buildings_path, class: btn_class
+
+- if @navigation_neighbors.present?
+  - if @navigation_neighbors[:previous_id]
+    = previous_nav_link(building_path(@navigation_neighbors[:previous_id]))
+  - if @navigation_neighbors[:next_id]
+    = next_nav_link(building_path(@navigation_neighbors[:next_id]))
 
 .row
   .col-12.col-md-8

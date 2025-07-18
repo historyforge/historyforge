@@ -41,9 +41,13 @@
     .card-body
       .row
         .col-4
-          = form.input :race, as: :radio_buttons, collection: Person.race_choices, coded: true
+          = form.input :race, as: :radio_buttons, collection: @person.race_choices, coded: true
         .col-4
-          = form.input :sex, as: :radio_buttons, collection: Census1900Record.sex_choices, coded: true
+          = form.input :sex, as: :radio_buttons, collection: Person.sex_choices, coded: true
+        .col-4
+          = form.input :ever_enslaved, as: :boolean, label: 'Ever Enslaved'
+        .col-4
+          = form.input :ever_enslaved, as: :boolean, label: 'Ever Enslaved'
         .col-4
           = form.input :locality_ids, as: :check_boxes, collection: Locality.all, label: 'Localities'
 
@@ -55,7 +59,10 @@
         .col-4
           = form.input :is_birth_year_estimated, as: :boolean, inline_label: 'Yes', label: 'Estimated?'
       .row
-        .col-8= form.input :death_year
+        .col-8
+          = form.input :death_year
+        .col-4
+          = form.input :is_death_year_estimated, as: :boolean, inline_label: 'Yes', label: 'Estimated?'
       .row
         .col-8
           = form.input :pob, input_html: {autocomplete: 'new-password'}

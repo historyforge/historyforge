@@ -1,0 +1,4 @@
+{
+  "command": "bundle",
+  "args": ["exec", "ruby", ".devcontainer/ruby-lsp-boot.rb"]
+}

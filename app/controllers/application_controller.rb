@@ -6,6 +6,7 @@ class ApplicationController < ActionController::Base
 
   around_action :load_settings
   around_action :set_current_attributes
+  before_action :apply_relative_url_root
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :set_paper_trail_whodunnit
 
@@ -31,6 +32,7 @@ class ApplicationController < ActionController::Base
   def can_people?
     Setting.can_people_public? || (user_signed_in? && Setting.can_people_private?)
   end
+
   helper_method :can_census?, :can_demographics?, :can_people?
 
   def check_administrator_role
@@ -62,9 +64,9 @@ class ApplicationController < ActionController::Base
 
     # This weirdness is needed so that it doesn't render the xml template for html
     respond_to do |format|
-      format.html { render('cms/pages/page_404', status: 404, layout: 'cms') }
-      format.json { render('cms/pages/page_404', status: 404, layout: 'cms') }
-      format.xml  { render('cms/pages/page_404', status: 404, layout: 'cms') }
+      format.html { render('cms/pages/page_404', status: :not_found, layout: 'cms') }
+      format.json { render('cms/pages/page_404', status: :not_found, layout: 'cms') }
+      format.xml { render('cms/pages/page_404', status: :not_found, layout: 'cms') }
     end
 
     true
@@ -111,5 +113,13 @@ class ApplicationController < ActionController::Base
     end
     yield
     Current.reset
+  end
+
+  def apply_relative_url_root
+    if Rails.application.config.relative_url_root.present?
+      script_name = Rails.application.config.relative_url_root
+      default_url_options[:script_name] = script_name
+      request.env["SCRIPT_NAME"] = script_name
+    end
   end
 end

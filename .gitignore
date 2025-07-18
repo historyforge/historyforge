@@ -30,6 +30,10 @@ bin/deploy.sh
 
 # Ignore all logfiles and tempfiles.
 /log/*.log
+/log/*.log.*
+/.devcontainer/*.log
+/.devcontainer/*.log.*
+*.log
 /tmp
 
 # Ignore the database config
@@ -59,6 +63,7 @@ db/maptileindex/*
 
 #public assets
 public/assets/**
+app/assets/builds/**
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
@@ -76,14 +81,14 @@ bin/deploy
 /app/assets/builds2/*
 !/app/assets/builds2/.keep
 
-*.zsh
 .tool-versions
 *.code-workspace
-*.zsh
-.tool-versions
 *.old
-*.log
 codealike.json
 
-app/assets/builds/*.js
-app/assets/builds/*.js.map
+*.xlsx
+
+census/1920_XYdegeo.csv
+/.ruby-version
+.rvmrc
+/vendor/bundle

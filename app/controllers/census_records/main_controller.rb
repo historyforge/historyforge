@@ -4,11 +4,11 @@
 module CensusRecords
   class MainController < ApplicationController
     include FastMemoize
-    before_action :check_access, except: :rebuild
-    before_action :check_demographics_access, only: :demographics
-
     include AdvancedRestoreSearch
     include RenderCsv
+
+    prepend_before_action :check_access, except: :rebuild
+    prepend_before_action :check_demographics_access, only: :demographics
 
     respond_to :json, only: :index
     respond_to :csv, only: :index
@@ -35,6 +35,7 @@ module CensusRecords
       @model = resource_class.find params[:id]
       authorize! :read, @model
       @record = @model.decorate
+      load_navigation
     end
 
     def new
@@ -63,7 +64,7 @@ module CensusRecords
       results = AttributeAutocomplete.new(
         attribute: params[:attribute],
         term: params[:term],
-        year: year,
+        year:,
       ).perform
       render json: results
     end
@@ -178,7 +179,9 @@ module CensusRecords
       if person.persisted?
         flash[:notice] = "A new person record has been created from this census record."
       else
-        flash[:error] = "Unable to create a person record from this census record."
+        error_message = "Unable to create a person record from this census record. "
+        error_message += person.errors.full_messages.to_sentence if person.errors.any?
+        flash[:error] = error_message
       end
       redirect_back fallback_location: { action: :index }
     end
@@ -191,6 +194,13 @@ module CensusRecords
     helper_method :year
 
     private
+
+    def load_navigation
+      # Load navigation data if there are active search parameters
+      return unless has_active_search_data?
+
+      @navigation = CensusRecordSearch.generate(params: current_search_data, year:, user: current_user).navigation_neighbors(@model.id)
+    end
 
     def search_key
       CensusYears.to_words(year)

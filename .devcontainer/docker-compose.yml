@@ -1,38 +1,43 @@
 services:
-  kiosk:
+  historyforge:
+    # Use pre-built image from GHCR instead of building locally
+    image: ghcr.io/jacrys/historyforge-devcontainer:latest
+    # Fallback to local build if image is not available
+    env_file:
+      - path: ./devcontainer.env
+        required: true # default
     build:
       context: ..
       dockerfile: .devcontainer/Dockerfile
+    hostname: historyforge
     depends_on:
       - db
-    env_file:
-      - path: ../.env
-        required: true # default
     links:
       - "db:database"
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3001:3000"
+    #  - "55432:5432"
     volumes:
-      - ../..:/workspaces:cached
-      - type: bind
-        source: ./zsh
-        target: /home/vscode/zshfiles
+      - historyforge-workspace:/workspaces/historyforge
 
     # Overrides default command so things don't shut down after the process ends.
     command: sleep infinity
 
     networks:
-      - kiosk
+      - historyforge
 
     # Use "forwardPorts" in **devcontainer.json** to forward an app port locally.
     # (Adding the "ports" property to this file will not forward from a Codespace.)
 
   db:
     image: postgres:latest
+    hostname: database
     restart: unless-stopped
     env_file:
-      - path: ../.env
+      - path: ./devcontainer.env
         required: true # default
+    ports:
+      - "127.0.0.1:55432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
     environment:
@@ -40,11 +45,12 @@ services:
       POSTGRES_DB: postgres
       POSTGRES_PASSWORD: postgres
     networks:
-      - kiosk
+      - historyforge
 
 
 networks:
-  kiosk:
+  historyforge:
 
 volumes:
   postgres-data:
+  historyforge-workspace:

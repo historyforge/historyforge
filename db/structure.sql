@@ -1,7 +1,6 @@
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
-SET transaction_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -337,7 +336,9 @@ CREATE TABLE public.audios (
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
     remote_url character varying,
-    searchable_text text
+    searchable_text text,
+    data_uri text,
+    file_checksum text
 );
 
 
@@ -1120,7 +1121,7 @@ CREATE TABLE public.census_1910_records (
     blind boolean DEFAULT false,
     deaf_dumb boolean DEFAULT false,
     notes text,
-    civil_war_vet character varying(2),
+    civil_war_vet character varying(10),
     provisional boolean DEFAULT false,
     foreign_born boolean DEFAULT false,
     taker_error boolean DEFAULT false,
@@ -1819,7 +1820,9 @@ CREATE TABLE public.documents (
     url character varying,
     available_to_public boolean DEFAULT false,
     building_id bigint,
-    searchable_text character varying
+    searchable_text character varying,
+    data_uri text,
+    file_checksum text
 );
 
 
@@ -2190,7 +2193,9 @@ CREATE TABLE public.people (
     notes text,
     description text,
     sortable_name character varying,
-    death_year integer
+    death_year integer,
+    is_death_year_estimated boolean DEFAULT true,
+    ever_enslaved boolean DEFAULT false
 );
 
 
@@ -2361,7 +2366,9 @@ CREATE TABLE public.photographs (
     reviewed_at timestamp without time zone,
     date_type integer DEFAULT 0,
     caption text,
-    searchable_text text
+    searchable_text text,
+    data_uri text,
+    file_checksum text
 );
 
 
@@ -2750,7 +2757,8 @@ CREATE TABLE public.user_groups (
     id bigint NOT NULL,
     name character varying,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    roles_mask integer
 );
 
 
@@ -2901,7 +2909,8 @@ CREATE TABLE public.videos (
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
     remote_url character varying,
-    searchable_text text
+    searchable_text text,
+    data_uri text
 );
 
 
@@ -5799,7 +5808,16 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('9'),
 ('8'),
 ('4'),
+('20250713203726'),
+('20250713185426'),
+('20250713185425'),
+('20250713185424'),
+('20250709201454'),
+('20250614174145'),
+('20250614172347'),
 ('20250418134317'),
+('20250325233212'),
+('20250325015620'),
 ('20250318160436'),
 ('20250317163745'),
 ('20250314171546'),

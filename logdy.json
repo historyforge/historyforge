@@ -1,0 +1,49 @@
+{
+	"name": "main",
+	"columns": [
+		{
+			"id": "894074",
+			"name": "level",
+			"handlerTsCode": "(line: Message): CellHandler => {\n    return { text: line.json_content['level'] }\n}",
+			"idx": 0,
+			"width": 150,
+			"faceted": true
+		},
+		{
+			"id": "848006",
+			"name": "message",
+			"handlerTsCode": "(line: Message): CellHandler => {\n    return { text: line.json_content['message'] }\n}",
+			"idx": 1,
+			"width": 730
+		},
+		{
+			"id": "022056",
+			"name": "appId",
+			"handlerTsCode": "(line: Message): CellHandler => {\n    return { text: line.json_content['appId'] }\n}",
+			"idx": 2,
+			"width": 150,
+			"faceted": true
+		},
+		{
+			"id": "590743",
+			"name": "file",
+			"handlerTsCode": "(line: Message): CellHandler => {\n    return { text: line.json_content['file'] }\n}",
+			"idx": 6,
+			"width": 150,
+			"faceted": false
+		}
+	],
+	"settings": {
+		"leftColWidth": 300,
+		"drawerColWidth": 900,
+		"maxMessages": 1000,
+		"middlewares": [
+			{
+				"id": "m_833339",
+				"name": "Historyforge",
+				"handlerTsCode": "(line: Message): Message | void => {\n    if (!line.origin.file.includes('/log/production.log')) { return; };\n    return to_json(line);\n}\n\ntype HFLogJson = {\n    level: String,\n    message: String,\n    appId: Number\n}\n\nfunction to_json(line: Message): Message {\n    let json: HFLogJson = {\n        level: '',\n        message: '',\n        appId: 0\n    };\n\n    if (line.content.charAt(0) == '[') {\n        line.correlation_id = line.content.substring(1, 37);\n        json.message = line.content.substring(39);\n    }\n    else {\n        json.level = getLevel(line.content.charAt(0));\n        const date = line.content.substring(4, 30);\n        const ts = new Date(date).getTime();\n        line.ts = ts;\n        json.appId = Number.parseInt(line.content.substring(32, 38));\n        line.correlation_id = json.level !== 'ERROR' ? line.content.substring(52, 88) : '';\n        json.message = line.content.substring(90);\n    }\n    line.is_json = true;\n    line.json_content = json;\n    return line;\n}\n\nfunction getLevel(levelCode: String): String {\n    switch (levelCode) {\n        case 'I': return 'INFO';\n        case 'E': return 'ERROR';\n        case 'F': return 'FATAL';\n        case 'W': return 'WARN';\n        case 'D': return 'DEBUG';\n        default: return '';\n    }\n}"
+			}
+		],
+		"entriesOrder": "desc"
+	}
+}

@@ -15,10 +15,11 @@ class CensusRecordSearch < SearchQueryBuilder
   def results
     scoped.lazy.map(&:decorate)
   end
+
   memoize :results
 
   def scoped
-    builder.includes(:locality) if f.include?('locality_id')
+    builder.includes(:locality) if f.include?('locality_id') && !navigation
     builder.where(locality_id: Current.locality_id) if Current.locality_id && !s.key?('locality_id_in')
 
     builder.reviewed unless user
@@ -31,10 +32,11 @@ class CensusRecordSearch < SearchQueryBuilder
 
     builder.scoped
   end
+
   memoize :scoped
 
   def add_scopes
-    builder.includes(:building) if f.include?('latitude') || f.include?('longitude')
+    builder.includes(:building) if (f.include?('latitude') || f.include?('longitude')) && !navigation
     builder.unhoused if unhoused?
     builder.unreviewed if unreviewed?
     builder.unmatched if unmatched?
@@ -56,7 +58,7 @@ class CensusRecordSearch < SearchQueryBuilder
     sort.each do |_key, sort_unit|
       col = sort_unit['colId']
       dir = sort_unit['sort']
-      raise ArgumentError, "Dangerous query method!" unless %w[asc desc].include?(dir)
+      raise ArgumentError, 'Dangerous query method!' unless %w[asc desc].include?(dir)
       order = order_clause_for(col, dir)
       builder.order(Arel.sql(entity_class.sanitize_sql_for_order(order))) if order
     end

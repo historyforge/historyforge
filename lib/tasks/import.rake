@@ -4,10 +4,9 @@ require 'csv'
 require 'parallel'
 require 'ruby-progressbar'
 
-# The entire purpose of this is for a developer to bootstrap a database with some census records exported with the
-# CSV button on HistoryForge.
 namespace :import do
 
+  desc 'Import parcel file into HistoryForge, updating if it exists'
   task parcel: :environment do
     year = ENV.fetch('YEAR', nil)
     raise ArgumentError('You must pass in a YEAR argument') if year.blank?
@@ -15,10 +14,22 @@ namespace :import do
     csv_file = ENV.fetch('FILE', nil)
     raise ArgumentError('You must pass in a valid file path as the FILE argument') unless File.exist?(csv_file)
 
-    rows_count = 0
+    Setting.load
+
+    rows = CSV.read(csv_file, headers: true)
+    # Fail early if 'id' column is present
+    raise ArgumentError, "CSV file must not contain an 'id' column." if rows.headers.map(&:downcase).include?('id')
+
+    rows_count = rows.size
     saved_count = 0
 
-    Setting.load
+    rows.each_with_index do |row, _index|
+      record = build_census_record(row, year)
+      assign_census_attributes(record, row, year)
+      record.created_by = User.first
+      assign_census_building(record, row)
+      saved_count += 1 if record.save
+    end
 
     CSV.foreach(csv_file, headers: true) do |row|
       record =Parcel.find_or_initialize_by(
@@ -72,98 +83,104 @@ namespace :import do
     puts "Managed to load #{saved_count} of #{rows_count} records.\n"
   end
 
+  desc 'Import parcel records in parallel from a CSV file'
   # rake import:parcel_parallel[1930,path/to/file.csv,true,true]
   task :parcel_parallel, [:year, :file, :dry_run, :json] => :environment do |_, args|
-    raise ArgumentError, 'You must provide a YEAR' unless args[:year].present?
-    raise ArgumentError, 'You must provide a valid FILE path' unless File.exist?(args[:file])
+    PaperTrail.request(enabled: false) do
+      raise ArgumentError, 'You must provide a YEAR' if args[:year].blank?
+      raise ArgumentError, 'You must provide a valid FILE path' unless File.exist?(args[:file])
 
-    dry_run = parse_bool_arg(args[:dry_run])
-    json_output = parse_bool_arg(args[:json])
+      dry_run = parse_bool_arg(args[:dry_run])
+      json_output = parse_bool_arg(args[:json])
 
-    Setting.load
-    rows = CSV.read(args[:file], headers: true)
-    rows_count = rows.size
-    puts "Starting #{dry_run ? 'dry run of' : 'import of'} #{rows_count} parcel records..."
+      Setting.load
+      rows = CSV.read(args[:file], headers: true)
+      rows_count = rows.size
+      puts "Starting #{dry_run ? 'dry run of' : 'import of'} #{rows_count} parcel records..."
 
-    progress = ProgressBar.create(
-      title: 'Parcels',
-      total: rows_count,
-      format: '%t [%B] %c/%C',
-      output: json_output ? File.open(File::NULL, 'w') : $stdout
-    )
+      progress = ProgressBar.create(
+        title: 'Parcels',
+        total: rows_count,
+        format: '%t [%B] %c/%C',
+        output: json_output ? File.open(File::NULL, 'w') : $stdout
+      )
 
-    results = Parallel.map(rows.each_with_index, in_threads: Etc.nprocessors) do |row, index|
-      begin
-        record = Parcel.find_or_initialize_by(
-          parcelid: row['ParcelID'],
-          sheet: row['Sheet'],
-          row: row['Row'],
-          grantor: row['Grantor'],
-          grantee: row['Grantee'],
-          instrument: row['Instrument'],
-          lots: [row['Lot(s)']],
-          block: row['Block'],
-          subdivision: row['Subdivision'],
-          book: row['Book'],
-          page: row['Page'],
-          date: row['Date'],
-          dl: row['DL'],
-          document_link: row['Document Link'],
-          contact_link: row['Concat Link']
-        )
+      results = Parallel.map(rows.each_with_index, in_threads: Etc.nprocessors) do |row, index|
+        begin
+          record = Parcel.find_or_initialize_by(
+            parcelid: row['ParcelID'],
+            sheet: row['Sheet'],
+            row: row['Row'],
+            grantor: row['Grantor'],
+            grantee: row['Grantee'],
+            instrument: row['Instrument'],
+            lots: [row['Lot(s)']],
+            block: row['Block'],
+            subdivision: row['Subdivision'],
+            book: row['Book'],
+            page: row['Page'],
+            date: row['Date'],
+            dl: row['DL'],
+            document_link: row['Document Link'],
+            contact_link: row['Concat Link']
+          )
 
-        if dry_run || record.save
-          { index:, status: :ok }
-        else
-          { index:, status: :error, errors: record.errors.full_messages, data: row.to_h }
+          if dry_run || record.save
+            { index:, status: :ok }
+          else
+            { index:, status: :error, errors: record.errors.full_messages, data: row.to_h }
+          end
+        rescue StandardError => e
+          { index:, status: :error, errors: [e.message], data: row.to_h }
+        ensure
+          progress.increment
         end
-      rescue StandardError => e
-        { index:, status: :error, errors: [e.message], data: row.to_h }
-      ensure
-        progress.increment
       end
-    end
 
-    summarize_results(results:, type: 'parcel', dry_run:, json_output:)
+      summarize_results(results:, type: 'parcel', dry_run:, json_output:)
+    end
   end
 
+  desc 'Import census records in parallel from a CSV file'
   # rake import:census_parallel[1930,path/to/file.csv,true,true]
   task :census_parallel, %i[year file dry_run json] => :environment do |_, args|
-    validate_census_args!(args)
-    year = args[:year]
-    dry_run = parse_bool_arg(args[:dry_run])
-    json_output = parse_bool_arg(args[:json])
+    PaperTrail.request(enabled: false) do
+      validate_census_args!(args)
+      year = args[:year]
+      dry_run = parse_bool_arg(args[:dry_run])
+      json_output = parse_bool_arg(args[:json])
 
-    null_logger = Logger.new(IO::NULL)
-    original_logger = ActiveRecord::Base.logger
+      null_logger = Logger.new(IO::NULL)
+      original_logger = ActiveRecord::Base.logger
 
-    ActiveRecord::Base.logger = null_logger
+      ActiveRecord::Base.logger = null_logger
 
-    Setting.load
-    rows = CSV.read(args[:file], headers: true)
-    # Fail early if 'id' column is present
-    raise ArgumentError, "CSV file must not contain an 'id' column." if rows.headers.map(&:downcase).include?('id')
+      Setting.load
+      rows = CSV.read(args[:file], headers: true)
+      # Fail early if 'id' column is present
+      raise ArgumentError, "CSV file must not contain an 'id' column." if rows.headers.map(&:downcase).include?('id')
 
-    rows_count = rows.size
-    puts "Starting #{dry_run ? 'dry run of' : 'import of'} #{rows_count} census records for year #{year}..."
+      rows_count = rows.size
+      puts "Starting #{dry_run ? 'dry run of' : 'import of'} #{rows_count} census records for year #{year}..."
 
-    progress = ProgressBar.create(
-      title: 'Census',
-      total: rows_count,
-      format: '%t [%B] %c/%C',
-      output: json_output ? File.open(File::NULL, 'w') : $stdout
-    )
+      progress = ProgressBar.create(
+        title: 'Census',
+        total: rows_count,
+        format: '%t [%B] %c/%C',
+        output: json_output ? File.open(File::NULL, 'w') : $stdout
+      )
 
-    results = Parallel.map(rows.each_with_index, in_threads: Etc.nprocessors) do |row, index|
-      process_census_row(row:, index:, year:, dry_run:, progress:)
+      results = Parallel.map(rows.each_with_index, in_threads: Etc.nprocessors) do |row, index|
+        process_census_row(row:, index:, year:, dry_run:, progress:)
+      end
+
+      ActiveRecord::Base.logger = original_logger
+
+      nil_indices = results.each_index.select { |i| results[i].nil? }
+      puts "Nil at indices: #{nil_indices.inspect}" unless nil_indices.empty?
+
+      summarize_results(results:, type: 'census', dry_run:, json_output:)
     end
-
-    ActiveRecord::Base.logger = original_logger
-
-    nil_indices = results.each_index.select { |i| results[i].nil? }
-    puts "Nil at indices: #{nil_indices.inspect}" unless nil_indices.empty?
-
-    summarize_results(results:, type: 'census', dry_run:, json_output:)
   end
 
   def validate_census_args!(args)
@@ -205,26 +222,24 @@ namespace :import do
     if dry_run
       result = []
       ActiveRecord::Base.transaction(requires_new: true) do
-        begin
-          saved = record.save
-          errors = record.errors.full_messages
-          result << {
-            index:,
-            status: saved ? :ok : :error,
-            errors: saved ? [] : errors,
-            data: saved ? nil : row.to_h
-          }
-          raise ActiveRecord::Rollback # Always rollback
-        rescue StandardError => e
-          result << {
-            index:,
-            status: :error,
-            errors: [e.message],
-            data: row.to_h
-          }
-        end
+        saved = record.save
+        errors = record.errors.full_messages
+        result << {
+          index:,
+          status: saved ? :ok : :error,
+          errors: saved ? [] : errors,
+          data: saved ? nil : row.to_h
+        }
+        raise ActiveRecord::Rollback # Always rollback
+      rescue StandardError => e
+        result << {
+          index:,
+          status: :error,
+          errors: [e.message],
+          data: row.to_h
+        }
       end
-      return result.first
+      result.first
     elsif record.save
       record.review!(current_user)
       record.auto_generate_person_record
@@ -284,7 +299,7 @@ namespace :import do
       is_primary: true
     )
     record.building = address.building || Building.create(
-      name: address.to_s,
+      name: address.address.split(address.city.to_s).first.strip,
       locality: record.locality,
       building_type_ids: [1],
       lat: row['Latitude'],
@@ -344,8 +359,9 @@ namespace :import do
     end
   end
 
-  def parse_bool_arg(value)
+  def parse_bool_arg(value) # rubocop:disable Naming/PredicateMethod
     return false if value.nil?
+
     value = value.to_s.strip
     value = value.split('=').last if value.include?('=')
     value.downcase == 'true'

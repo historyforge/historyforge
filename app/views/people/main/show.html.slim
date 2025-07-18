@@ -1,21 +1,29 @@
 - set_page_title @person.name
 = render 'shared/flag_resolution', item: @person
-= render 'merge_modal'
-- content_for :pills do
-  - if can_people? || can?(:read, Person)
-    = link_to 'View All', people_path, class: 'btn btn-light'
-  - if can?(:create, Flag)
-    = render 'shared/flag_it', item: @person, item_class: 'btn btn-light'
-  - if can?(:update, @person)
-    = link_to [:edit, @person], class: 'btn btn-light' do
-      i.fa.fa-pencil
-      span.d-none.d-lg-inline
-        | &nbsp; Edit
-  - if can?(:destroy, @person) && @person.census_records.blank?
-    = link_to @person, class: 'btn btn-light', data: { method: :delete, confirm: 'Are you sure?' } do
-      i.fa.fa-trash
-      span.d-none.d-lg-inline
-        | &nbsp; Delete
+- btn_class = 'btn btn-sm btn-secondary'
+div.mb-3.clearfix.d-flex.justify-content-between
+  div.mr-auto
+    - if can_people? || can?(:read, Person)
+      = link_to 'View All', people_path, class: btn_class
+    - if can?(:create, Flag)
+      = render 'shared/flag_it', item: @person, item_class: btn_class
+    - if can?(:update, @person)
+      = link_to [:edit, @person], class: btn_class do
+        i.fa.fa-pencil
+        span.d-none.d-lg-inline
+          | &nbsp; Edit
+    = render 'merge_modal', btn_class:
+    - if can?(:destroy, @person) && @person.census_records.blank?
+      = link_to @person, class: btn_class, data: { method: :delete, confirm: 'Are you sure?' } do
+        i.fa.fa-trash
+        span.d-none.d-lg-inline
+          | &nbsp; Delete
+- if @navigation_neighbors.present?
+  - if @navigation_neighbors[:previous_id]
+    = previous_nav_link(person_path(@navigation_neighbors[:previous_id]))
+  - if @navigation_neighbors[:next_id]
+    = next_nav_link(person_path(@navigation_neighbors[:next_id]))
+
 .list-group.mb-3
   - names = @person.variant_names
   - if names.any?
@@ -41,63 +49,73 @@
           = " died in #{@person.death_year}"
   - if @person.description.present?
     .list-group-item
-      = simple_format @person.description
+      = auto_link(simple_format(@person.description), html: { target: '_blank', rel: 'nofollow' })
 .card.mb-3
   .card-header Census Records
-  = table do
-    thead
-      tr
-        th Year
-        th Name
-        th
-          | Relation
-          span.d-none.d-lg-inline &nbsp;to Head
-        th Address
-        th Age
-        th Race
-        th POB
-        th Marriage
-        th Occupation
-    tbody
-      - @person.census_records.each do |raw_row|
-        - row = raw_row.decorate
+  .table-responsive
+    table.table.table-sm.w-100
+      thead
         tr
-          td= row.year
-          td.text-nowrap= link_to row.name, row
-          td= row.relation_to_head if row.year >= 1880
-          td.text-nowrap= row.street_address
-          td= row.age
-          td= row.race
-          td= row.pob
-          td= row.marital_status
-          td= row.occupation
+          th Year
+          th Name
+          th
+            | Relation
+            span.d-none.d-lg-inline &nbsp;to Head
+          th Address
+          th Age
+          th Race
+          th POB
+          th Marriage
+          th Occupation
+      tbody
+        - @person.census_records.each do |raw_row|
+          - row = raw_row.decorate
+          tr
+            td= row.year
+            td.text-nowrap= link_to row.name, row
+            td= row.relation_to_head if row.year >= 1880
+            td.text-nowrap= row.street_address
+            td= row.age
+            td= row.race
+            td= row.pob
+            td= row.marital_status
+            td= row.occupation
 
 - if @person.relatives.present?
-.card.mb-3
-  .card-header Relatives
-  = table do
-    thead
-      tr
-        th Year
-        th Name
-        th
-          | Relation
-          span.d-none.d-lg-inline &nbsp;to Head
-        th Race
-        th Sex
-        th YOB
-        th Occupation
-    tbody
-      - @person.relatives.each do |raw_row|
-        - row = raw_row.decorate
-        tr
-          td= row.census_records.map(&:year).sort.join(', ')
-          td.text-nowrap= link_to row.name, row
-          td= row.relation_to_head
-          td= "#{Translator.option(:race, row.race)} " if row.race.present? && row.race != 'on'
-          td= "#{Translator.option(:sex, row.sex)} " if row.sex.present? && row.sex != 'on'
-          td= row.birth_year
-          td= row.occupation
+  - all_years = @person.relatives.flat_map { |r| r.census_records.map(&:year) }.uniq.sort
+  - all_years.each do |year|
+    .card.mb-3
+      .card-header
+        | Relatives in #{year} US Census
+      .table-responsive
+        table.table.table-sm.w-100
+          thead
+            tr
+              th Name
+              th
+                | Relation
+                span.d-none.d-lg-inline &nbsp;to Head
+              th Address
+              th Age
+              th Race
+              th POB
+              th Marriage
+              th Occupation
+          tbody
+            - relatives_in_year = @person.relatives.select { |r| r.census_records.map(&:year).include?(year) }
+            - census_records = relatives_in_year.map { |relative| relative.census_records.find { |r| r.year == year } }
+            - census_records.sort_by { |r| [r.page_number.to_i, r.page_side.to_s, r.line_number.to_i] }.each do |census_record|
+              - census_record = census_record.decorate
+              tr
+                td.text-nowrap
+                  = link_to census_record.name, person_path(census_record.person_id)
+                td= census_record.relation_to_head
+                td.text-nowrap= census_record.street_address
+                td= census_record.age
+                td= census_record.race
+                td= census_record.pob
+                td= census_record.marital_status
+                td= census_record.occupation
 
 
 - if can?(:update, @person) && @person.possible_unmatched_records.present?

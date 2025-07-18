@@ -8,7 +8,7 @@ class SearchStorage {
       if (rawParams) {
         this.params = JSON.parse(rawParams);
       }
-    } catch(error) {
+    } catch (error) {
       console.error(error)
     }
   }
@@ -34,7 +34,7 @@ class SearchStorage {
 
 const searchStorage = new SearchStorage();
 
-export const search = function(state = {}, action) {
+export const search = function (state = {}, action) {
   if (action.type === "FORGE_INIT") {
     return forgeInit(state);
   }
@@ -91,7 +91,6 @@ function forgeSetYear(state, action) {
 function forgeFiltersLoaded(state, action) {
   const nextState = { filters: action.filters, year: state.year, years: state.years }
   if (state.params && state.params.s) {
-    console.log("resetting filters", state.params)
     nextState.current = buildFilters(action.filters, state.params.s)
     nextState.params = buildParams(nextState, nextState.current)
   } else if (state.year) {

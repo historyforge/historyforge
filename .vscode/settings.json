@@ -7,5 +7,28 @@
         "path": "/usr/bin/zsh"
     },
     "terminal.integrated.fontLigatures": true,
-    "terminal.integrated.fontFamily": "'JetBrainsMono Nerd Font Mono','Fira Code', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'"
+    "terminal.integrated.fontFamily": "'JetBrainsMono Nerd Font Mono','Fira Code', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
+    "rubyLsp.pathToBinary": "/workspaces/greenwood-kiosk/.devcontainer/lsp-wrapper.sh",
+    "rubyLsp.enabled": true,
+    "rubyLsp.useBundler": true,
+    "rubyLsp.bundleGemfile": "/workspaces/greenwood-kiosk/Gemfile",
+    "rubyLsp.bundlePath": "/usr/local/rvm/rubies/default/bin/bundler",
+    "rubyLsp.logLevel": "debug",
+    "rubyLsp.rubyVersion": "3.3.6",
+    "rubyLsp.enabledFeatures": {
+    "documentHighlights": true,
+    "documentSymbols": true,
+    "formatting": true,
+    "hover": true,
+    "semanticHighlighting": true,
+    "selectionRanges": true,
+    "completion": true,
+    "diagnostics": true,
+    "codeActions": true,
+    "definition": true
+    },
+        "rubyLsp.env": {
+            "RUBY_LSP_DEBUG": "1"
+        },
+        "editor.codeActionsOnSave": {}
 }
