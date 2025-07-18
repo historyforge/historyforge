@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 require 'benchmark'
 require 'csv'
-require 'parallel'
-require 'ruby-progressbar'
 
 namespace :import do
   desc 'Import census file into HistoryForge, updating if it exists'
@@ -36,6 +34,8 @@ namespace :import do
   desc 'Import census records in parallel from a CSV file'
   # rake import:census_parallel[1930,path/to/file.csv,true,true]
   task :census_parallel, %i[year file dry_run json] => :environment do |_, args|
+    require 'parallel'
+    require 'ruby-progressbar'
     PaperTrail.request(enabled: false) do
       validate_census_args!(args)
       year = args[:year]
