@@ -8,6 +8,13 @@ on:
       - 'Gemfile*'
       - 'package.json'
       - 'yarn.lock'
+  pull_request:
+    branches: [ main, master ]
+    paths:
+      - '.devcontainer/**'
+      - 'Gemfile*'
+      - 'package.json'
+      - 'yarn.lock'
   workflow_dispatch:
 
 env:
