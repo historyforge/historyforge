@@ -5,7 +5,6 @@ require 'parallel'
 require 'ruby-progressbar'
 
 namespace :import do
-
   desc 'Import census file into HistoryForge, updating if it exists'
   task census: :environment do
     year = ENV.fetch('YEAR', nil)

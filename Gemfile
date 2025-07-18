@@ -56,6 +56,7 @@ group :development do
   gem 'get_process_mem'
   gem 'letter_opener'
   gem 'letter_opener_web'
+  gem 'parallel', require: false
   gem 'rubocop', require: false
   gem 'rubocop-capybara', require: false
   gem 'rubocop-factory_bot', require: false
@@ -63,6 +64,7 @@ group :development do
   gem 'rubocop-rails', require: false
   gem 'rubocop-rspec', require: false
   gem 'ruby-lsp', '~> 0.3.7', require: false
+  gem 'ruby-progressbar', require: false
   gem 'simplecov', require: false
   # gem 'standard'
   gem 'web-console'
