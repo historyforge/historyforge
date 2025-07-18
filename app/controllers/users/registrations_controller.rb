@@ -4,6 +4,8 @@ module Users
   class RegistrationsController < Devise::RegistrationsController
     include RecaptchaHandlers
 
+    before_action :check_captcha, only: :create, if: :using_recaptcha?
+
     # GET /resource/sign_up
     # def new
     #   super
@@ -77,7 +79,7 @@ module Users
     end
 
     def recaptcha_verified?
-      verify_recaptcha(action: 'registration', minimum_score: 0.5, secret_key: AppConfig[:recaptcha_secret_key])
+      verify_recaptcha(action: "registration", minimum_score: 0.5, secret_key: AppConfig[:recaptcha_secret_key])
     end
   end
 end
