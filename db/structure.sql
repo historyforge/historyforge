@@ -206,7 +206,8 @@ CREATE TABLE public.addresses (
     postal_code character varying,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    year integer
+    year integer,
+    searchable_text text
 );
 
 
@@ -496,6 +497,16 @@ CREATE TABLE public.buildings (
 CREATE TABLE public.buildings_building_types (
     building_id bigint,
     building_type_id bigint
+);
+
+
+--
+-- Name: buildings_documents; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.buildings_documents (
+    building_id bigint,
+    document_id bigint
 );
 
 
@@ -1810,7 +1821,9 @@ CREATE TABLE public.documents (
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
     url character varying,
-    available_to_public boolean DEFAULT false
+    available_to_public boolean DEFAULT false,
+    building_id bigint,
+    searchable_text character varying
 );
 
 
@@ -1840,6 +1853,16 @@ ALTER SEQUENCE public.documents_id_seq OWNED BY public.documents.id;
 CREATE TABLE public.documents_localities (
     document_id bigint,
     locality_id bigint
+);
+
+
+--
+-- Name: documents_people; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.documents_people (
+    document_id bigint,
+    person_id bigint
 );
 
 
@@ -2840,7 +2863,7 @@ CREATE TABLE public.videos (
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
     remote_url character varying,
-    searchable_text text
+    searchable_text text,
 );
 
 
@@ -3864,6 +3887,13 @@ CREATE INDEX index_audios_on_reviewed_by_id ON public.audios USING btree (review
 
 
 --
+-- Name: index_audios_on_searchable_text; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_audios_on_searchable_text ON public.audios USING btree (searchable_text);
+
+
+--
 -- Name: index_audios_people_on_audio_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3910,6 +3940,27 @@ CREATE INDEX index_buildings_building_types_on_building_id ON public.buildings_b
 --
 
 CREATE INDEX index_buildings_building_types_on_building_type_id ON public.buildings_building_types USING btree (building_type_id);
+
+
+--
+-- Name: index_buildings_documents_on_building_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_buildings_documents_on_building_id ON public.buildings_documents USING btree (building_id);
+
+
+--
+-- Name: index_buildings_documents_on_building_id_and_document_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_buildings_documents_on_building_id_and_document_id ON public.buildings_documents USING btree (building_id, document_id);
+
+
+--
+-- Name: index_buildings_documents_on_document_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_buildings_documents_on_document_id ON public.buildings_documents USING btree (document_id);
 
 
 --
@@ -4494,10 +4545,38 @@ CREATE INDEX index_documents_localities_on_locality_id ON public.documents_local
 
 
 --
+-- Name: index_documents_on_building_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_documents_on_building_id ON public.documents USING btree (building_id);
+
+
+--
 -- Name: index_documents_on_document_category_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_documents_on_document_category_id ON public.documents USING btree (document_category_id);
+
+
+--
+-- Name: index_documents_people_on_document_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_documents_people_on_document_id ON public.documents_people USING btree (document_id);
+
+
+--
+-- Name: index_documents_people_on_document_id_and_person_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_documents_people_on_document_id_and_person_id ON public.documents_people USING btree (document_id, person_id);
+
+
+--
+-- Name: index_documents_people_on_person_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_documents_people_on_person_id ON public.documents_people USING btree (person_id);
 
 
 --
@@ -4662,6 +4741,13 @@ CREATE INDEX index_photographs_on_reviewed_by_id ON public.photographs USING btr
 
 
 --
+-- Name: index_photographs_on_searchable_text; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_photographs_on_searchable_text ON public.photographs USING btree (searchable_text);
+
+
+--
 -- Name: index_profession_subgroups_on_profession_group_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4757,6 +4843,13 @@ CREATE INDEX index_videos_on_created_by_id ON public.videos USING btree (created
 --
 
 CREATE INDEX index_videos_on_reviewed_by_id ON public.videos USING btree (reviewed_by_id);
+
+
+--
+-- Name: index_videos_on_searchable_text; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_videos_on_searchable_text ON public.videos USING btree (searchable_text);
 
 
 --
@@ -4873,6 +4966,14 @@ ALTER TABLE ONLY public.audit_logs
 
 ALTER TABLE ONLY public.bulk_updated_records
     ADD CONSTRAINT fk_rails_22a17045eb FOREIGN KEY (bulk_update_id) REFERENCES public.bulk_updates(id);
+
+
+--
+-- Name: documents fk_rails_238453caec; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.documents
+    ADD CONSTRAINT fk_rails_238453caec FOREIGN KEY (building_id) REFERENCES public.buildings(id);
 
 
 --
@@ -5564,11 +5665,27 @@ ALTER TABLE ONLY public.documents
 
 
 --
+-- Name: documents_people fk_rails_f49e875c8b; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.documents_people
+    ADD CONSTRAINT fk_rails_f49e875c8b FOREIGN KEY (document_id) REFERENCES public.documents(id);
+
+
+--
 -- Name: cms_page_widgets fk_rails_fddba18ae5; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.cms_page_widgets
     ADD CONSTRAINT fk_rails_fddba18ae5 FOREIGN KEY (cms_page_id) REFERENCES public.cms_pages(id);
+
+
+--
+-- Name: documents_people fk_rails_fde0ef4f55; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.documents_people
+    ADD CONSTRAINT fk_rails_fde0ef4f55 FOREIGN KEY (person_id) REFERENCES public.people(id);
 
 
 --
@@ -5618,8 +5735,12 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20250713185425'),
 ('20250713185424'),
 ('20250709201454'),
+('20250418134317'),
 ('20250325233212'),
 ('20250325015620'),
+('20250317163745'),
+('20250314171546'),
+('20250311210408'),
 ('20250302232511'),
 ('20250202212902'),
 ('20241208172541'),
