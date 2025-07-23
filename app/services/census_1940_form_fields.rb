@@ -30,7 +30,7 @@ class Census1940FormFields < CensusFormFieldConfig
   input :naturalized_alien, as: :radio_buttons, coded: true
 
   divider 'Residence, April 1, 1935'
-  input :residence_1935_town
+  input :residence_1935_town,as: :radio_buttons_other, coded: true
   input :residence_1935_county
   input :residence_1935_state
   input :residence_1935_farm, as: :boolean

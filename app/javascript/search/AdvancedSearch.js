@@ -5,8 +5,8 @@ import selectAttribute from "./selectAttribute";
 // @ts-ignore
 $.fn.advancedSearch = function(options) {
     return this.each(function() {
+        alert("HI!!")
         $(this).data('search', new AdvancedSearch(this, options));
-        return this;
     })
 };
 
