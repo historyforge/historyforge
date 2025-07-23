@@ -34,7 +34,7 @@ div.mb-3.clearfix.d-flex.justify-content-between
   - if can?(:create, CensusRecord)
     .add-another-form.ml-auto.d-flex.justify-content-right
       = form_tag([:save_as, @record], method: :put, class: 'form-inline') do
-        = select_tag 'then', options_for_select([['In this family', 'family'], ['In this dwelling', 'dwelling'], ['On this page', 'page'], ['In this enumeration district', 'enumeration']], params[:then]), prompt: 'Select', class: 'form-control form-control-sm d-inline-block', style: 'width:120px'
+        = select_tag 'then', options_for_select([['In this family', 'family'], ['In this dwelling', 'dwelling'], ['On the same street', 'street'], ['On this page', 'page'], ['In this enumeration district', 'enumeration']], params[:then]), prompt: 'Select', class: 'form-control form-control-sm d-inline-block', style: 'width:120px'
         = submit_tag 'Add', class: 'btn btn-sm btn-primary'
 
 = render 'shared/flag_resolution', item: @record
