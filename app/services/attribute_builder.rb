@@ -106,8 +106,9 @@ class AttributeBuilder
     def scopes
       json.set! :"#{key}_in", 'is one of'
       json.set! :"#{key}_not_in", 'is not one of'
-      json.set! :"#{key}_null", 'is blank'
-      json.set! :"#{key}_not_null", 'is not blank'
+      # These render an empty checkbox that is confusing...
+      # json.set! :"#{key}_null", 'is blank'
+      # json.set! :"#{key}_not_null", 'is not blank'
     end
 
     def extras
