@@ -42,7 +42,7 @@ class CensusFiltersGenerator
       AttributeBuilder.number json, field, klass:
     when :boolean
       AttributeBuilder.boolean json, field, klass:
-    when :radio_buttons
+    when :radio_buttons, :radio_buttons_other
       AttributeBuilder.enumeration json, klass, field
     else
       AttributeBuilder.text json, field, klass:

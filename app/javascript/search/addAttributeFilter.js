@@ -126,6 +126,7 @@ class AttributeFilter {
     }
 
     renderNullInput() {
+        this.input.setAttribute('type', 'hidden');
         this.input.setAttribute('value', '1');
         this.html.appendChild(this.input);
     }
