@@ -5,3 +5,6 @@ SECRET_KEY_BASE:          results-of-running-rake-secret
 FACEBOOK_LOGIN_ENABLED:     false
 FACEBOOK_LOGIN_APP_ID:          Found in Facebook Developer App Console (if Facebook auth enabled)
 FACEBOOK_LOGIN_SECRET:      Found in Facebook Developer App Console (if Facebook auth enabled)
+APP_PLACE_COUNTY: Tulsa
+APP_PLACE_CITY: Tulsa
+APP_PLACE_STATE: OK

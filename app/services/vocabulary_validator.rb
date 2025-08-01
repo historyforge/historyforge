@@ -2,6 +2,8 @@
 
 class VocabularyValidator < ActiveModel::EachValidator
   def validate_each(record, attribute, value)
+    return if Thread.current[:skip_vocabulary_validation]
+
     vocab_name = options[:with] || options[:name] || attribute
     vocabulary = Vocabulary.by_name(vocab_name)
     return if vocabulary&.term_exists?(value)

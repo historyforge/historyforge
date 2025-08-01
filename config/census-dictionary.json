@@ -1034,7 +1034,29 @@
     },
     "employment": {
       "defaults": {
-        "label": "Employment Status"
+        "label": "Employment Status "
+      },
+      "1910": {
+        "column": 20
+      },
+      "1920": {
+        "column": 28
+      }
+    },
+    "institution": {
+      "defaults": {
+        "label": "Institution "
+      },
+      "1910": {
+        "column": 20
+      },
+      "1920": {
+        "column": 28
+      }
+    },
+    "institution": {
+      "defaults": {
+        "label": "Institution "
       },
       "1910": {
         "column": 20
@@ -1720,6 +1742,18 @@
     "string": {
       "defaults": {
         "hint": "Enter what you see on the census. If the field is blank on the census, leave it blank on HistoryForge."
+      }
+    },
+    "institution": {
+      "defaults": {
+        "label": "Institution",
+        "hint": "The Institution Name is in the upper left side of the sheet under Township or other division. Enter the information into the corresponding field on HistoryForge."
+      },
+      "1910": {
+        "column": 10
+      },
+      "1920": {
+        "column": 16
       }
     }
   }

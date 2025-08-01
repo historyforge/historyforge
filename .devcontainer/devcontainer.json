@@ -34,7 +34,7 @@
             "installYarnUsingApt": true,
             "version": "latest",
             "pnpmVersion": "none",
-            "nvmVersion": "0.39"
+            "nvmVersion": "0.40.3"
         },
         "ghcr.io/meaningful-ooo/devcontainer-features/homebrew:2": {},
         "ghcr.io/eitsupi/devcontainer-features/jq-likes:2.1.1": {
@@ -83,7 +83,7 @@
                 "rubyLsp.formatter": "rubocop_internal",
                 "rubyLsp.enabled": true,
                 "rubyLsp.useBundler": true,
-                "rubyLsp.rubyVersion": "3.3.7",
+                "rubyLsp.rubyVersion": "3.4.4",
                 "rubyLsp.addonSettings": {
                     "Ruby LSP Rails": {
                         "enablePendingMigrationsPrompt": true

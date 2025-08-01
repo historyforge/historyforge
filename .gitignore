@@ -30,6 +30,10 @@ bin/deploy.sh
 
 # Ignore all logfiles and tempfiles.
 /log/*.log
+/log/*.log.*
+/.devcontainer/*.log
+/.devcontainer/*.log.*
+*.log
 /tmp
 
 # Ignore the database config
@@ -77,5 +81,14 @@ bin/deploy
 /app/assets/builds2/*
 !/app/assets/builds2/.keep
 
-# Ignore asdf configuration for local development
 .tool-versions
+*.code-workspace
+*.old
+codealike.json
+
+*.xlsx
+
+census/1920_XYdegeo.csv
+/.ruby-version
+.rvmrc
+/vendor/bundle
