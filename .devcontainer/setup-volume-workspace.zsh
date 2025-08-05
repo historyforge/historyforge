@@ -4,7 +4,7 @@ load_env_with_expansion() {
     local env_file="$1"
     [[ -f "$env_file" ]] || return 1
 
-    # First pass: load simple variables
+    # First pass: load simple variables (no expansion)
     while IFS='=' read -r key value; do
         [[ "$key" =~ ^[[:space:]]*# ]] && continue
         [[ -z "$key" ]] && continue
@@ -15,7 +15,7 @@ load_env_with_expansion() {
         export "$key"="$value"
     done < "$env_file"
 
-    # Second pass: expand variables that reference other variables
+    # Second pass: expand only variables that contain variable references
     while IFS='=' read -r key value; do
         [[ "$key" =~ ^[[:space:]]*# ]] && continue
         [[ -z "$key" ]] && continue
@@ -23,9 +23,11 @@ load_env_with_expansion() {
         key=$(echo "$key" | xargs)
         value=$(echo "$value" | xargs | sed 's/^"//;s/"$//')
 
-        # Expand any variable references in the value
-        expanded_value=$(eval echo "$value")
-        export "$key"="$expanded_value"
+        # Only expand if the value contains variable references
+        if [[ "$value" =~ '\$\{[^}]+\}' ]] || [[ "$value" =~ '\$[A-Za-z_][A-Za-z0-9_]*' ]]; then
+            expanded_value=$(eval echo "\"$value\"")
+            export "$key"="$expanded_value"
+        fi
     done < "$env_file"
 }
 

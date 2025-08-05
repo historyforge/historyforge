@@ -1,7 +1,7 @@
 services:
   historyforge:
     # Use pre-built image from GHCR instead of building locally
-    image: ghcr.io/jacrys/historyforge-devcontainer:latest
+    # image: ghcr.io/jacrys/historyforge-devcontainer:latest
     # Fallback to local build if image is not available
     env_file:
       - path: ./devcontainer.env

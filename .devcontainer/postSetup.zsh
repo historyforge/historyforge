@@ -24,6 +24,8 @@ log_standard "🛢 Checking if database exists..."
 
 DB_EXISTS=$(rails db:exists 2>&1 | grep -v "^\[dotenv\]" || echo "false")
 
+MIGRATIONS_PENDING=$(rails db:has_pending_migrations 2>&1 | grep -v "^\[dotenv\]" | grep -v "ActiveRecord::" | grep -v "↳"  || echo "false")
+
 if echo "$DB_EXISTS" | grep -q "false"; then
     SCHEMA_EXISTS=$(rails db:schema_exists 2>&1 | grep -v "^\[dotenv\]" || echo "false")
     DB_EMPTY=$(rails db:is_empty 2>&1 | grep -v "^\[dotenv\]" || echo "false")
@@ -46,7 +48,6 @@ if echo "$DB_EXISTS" | grep -q "false"; then
         log_standard_icon "🛢" "Schema already exists: skipping loading"
     fi
 
-    MIGRATIONS_PENDING=$(rails db:has_pending_migrations 2>&1 | grep -v "^\[dotenv\]" | grep -v "ActiveRecord::" | grep -v "↳"  || echo "false")
     if echo "$DB_EMPTY" | grep -q "true"; then
         log_standard_icon "🛢" "Seeding the DB..."
         rails db:seed
@@ -61,6 +62,13 @@ if echo "$DB_EXISTS" | grep -q "false"; then
     fi
 else
     log_standard_icon "🛢" "Database already exists: skipping creation and seeding"
+fi
+
+if echo "$MIGRATIONS_PENDING" | grep -q "true"; then
+    log_standard_icon "🛢" "Database has pending migrations: running migrations..."
+    rails db:migrate
+else
+    log_standard_icon "🛢" "No pending migrations: skipping migration"
 fi
 
 log_standard_icon "🛠" "Running post setup tasks..."
