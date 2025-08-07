@@ -3,6 +3,56 @@ require 'benchmark'
 require 'csv'
 
 namespace :import do
+
+  desc 'Import parcel file into HistoryForge, updating if it exists'
+  task parcel: :environment do
+    year = ENV.fetch('YEAR', nil)
+    raise ArgumentError('You must pass in a YEAR argument') if year.blank?
+
+    csv_file = ENV.fetch('FILE', nil)
+    raise ArgumentError('You must pass in a valid file path as the FILE argument') unless File.exist?(csv_file)
+
+    Setting.load
+
+    rows = CSV.read(csv_file, headers: true)
+    # Fail early if 'id' column is present
+    raise ArgumentError, "CSV file must not contain an 'id' column." if rows.headers.map(&:downcase).include?('id')
+
+    rows_count = rows.size
+    saved_count = 0
+
+    rows.each_with_index do |row, _index|
+      record = build_census_record(row, year)
+      assign_census_attributes(record, row, year)
+      record.created_by = User.first
+      assign_census_building(record, row)
+      saved_count += 1 if record.save
+    end
+
+    CSV.foreach(csv_file, headers: true) do |row|
+      record =Parcel.find_or_initialize_by(
+        parcelid: row['ParcelID'],
+        sheet: row['Sheet'],
+        row: row['Row'],
+        grantor: row['Grantor'],
+        grantee: row['Grantee'],
+        instrument: row['Instrument'],
+        lots: [row['Lot(s)']],
+        block: row['Block'],
+        subdivision: row['Subdivision'],
+        book: row['Book'],
+        page: row['Page'],
+        date: row['Date'],
+        dl: row['DL'],
+        document_link: row['Document Link'],
+        contact_link: row['Concat Link']
+      )
+      rows_count += 1
+      record.save && saved_count += 1
+      puts "Managed to load #{saved_count} of #{rows_count} records.\n"
+    end
+  end
+
   desc 'Import census file into HistoryForge, updating if it exists'
   task census: :environment do
     year = ENV.fetch('YEAR', nil)
@@ -29,6 +79,66 @@ namespace :import do
     end
 
     puts "Managed to load #{saved_count} of #{rows_count} records.\n"
+  end
+
+  desc 'Import parcel records in parallel from a CSV file'
+  # rake import:parcel_parallel[1930,path/to/file.csv,true,true]
+  task :parcel_parallel, [:year, :file, :dry_run, :json] => :environment do |_, args|
+    require 'parallel'
+    require 'ruby-progressbar'
+    PaperTrail.request(enabled: false) do
+      raise ArgumentError, 'You must provide a YEAR' if args[:year].blank?
+      raise ArgumentError, 'You must provide a valid FILE path' unless File.exist?(args[:file])
+
+      dry_run = parse_bool_arg(args[:dry_run])
+      json_output = parse_bool_arg(args[:json])
+
+      Setting.load
+      rows = CSV.read(args[:file], headers: true)
+      rows_count = rows.size
+      puts "Starting #{dry_run ? 'dry run of' : 'import of'} #{rows_count} parcel records..."
+
+      progress = ProgressBar.create(
+        title: 'Parcels',
+        total: rows_count,
+        format: '%t [%B] %c/%C',
+        output: json_output ? File.open(File::NULL, 'w') : $stdout
+      )
+
+      results = Parallel.map(rows.each_with_index, in_threads: Etc.nprocessors) do |row, index|
+        begin
+          record = Parcel.find_or_initialize_by(
+            parcelid: row['ParcelID'],
+            sheet: row['Sheet'],
+            row: row['Row'],
+            grantor: row['Grantor'],
+            grantee: row['Grantee'],
+            instrument: row['Instrument'],
+            lots: [row['Lot(s)']],
+            block: row['Block'],
+            subdivision: row['Subdivision'],
+            book: row['Book'],
+            page: row['Page'],
+            date: row['Date'],
+            dl: row['DL'],
+            document_link: row['Document Link'],
+            contact_link: row['Concat Link']
+          )
+
+          if dry_run || record.save
+            { index:, status: :ok }
+          else
+            { index:, status: :error, errors: record.errors.full_messages, data: row.to_h }
+          end
+        rescue StandardError => e
+          { index:, status: :error, errors: [e.message], data: row.to_h }
+        ensure
+          progress.increment
+        end
+      end
+
+      summarize_results(results:, type: 'parcel', dry_run:, json_output:)
+    end
   end
 
   desc 'Import census records in parallel from a CSV file'

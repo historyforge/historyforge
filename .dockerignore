@@ -3,6 +3,7 @@ log/
 .git/
 tmp/
 test/
+scripts/
 ssl/
 storage/
 node_modules/

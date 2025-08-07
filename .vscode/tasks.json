@@ -1,0 +1,28 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "import:census",
+            "type": "shell",
+            "command": "rake",
+            "args": [
+                "import:census",
+                "${input:year}",
+                "${input:file}"
+            ],
+
+        }
+    ],
+    "inputs": [
+        {
+            "id": "year",
+            "type": "promptString",
+            "description": "Census Year"  
+        },
+        {
+            "id": "file",
+            "type": "promptString",
+            "description": "Census File"
+        }
+    ]
+}

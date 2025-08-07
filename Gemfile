@@ -38,6 +38,7 @@ gem 'pg'
 gem 'pg_search'
 gem 'pretender'
 gem 'puma'
+gem "rack-cors"
 gem 'rails'
 gem 'rails_autolink'
 gem 'ransack'
@@ -49,6 +50,8 @@ gem 'sassc'
 gem 'simple_form'
 gem 'slim'
 gem 'sprockets-rails'
+gem 'sys-proctable', platforms: %i[mswin mingw x64_mingw]
+gem 'tzinfo-data'
 
 group :development do
   gem 'annotate'
@@ -57,17 +60,18 @@ group :development do
   gem 'letter_opener'
   gem 'letter_opener_web'
   gem 'parallel', require: false
+  gem 'pry'
   gem 'rubocop', require: false
   gem 'rubocop-capybara', require: false
   gem 'rubocop-factory_bot', require: false
   gem 'rubocop-performance', require: false
   gem 'rubocop-rails', require: false
   gem 'rubocop-rspec', require: false
-  gem 'ruby-lsp', '~> 0.3.7', require: false
   gem 'ruby-progressbar', require: false
   gem 'simplecov', require: false
   # gem 'standard'
   gem 'web-console'
+  gem 'yard'
 end
 
 group :development, :test do

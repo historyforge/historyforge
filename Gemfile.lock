@@ -175,8 +175,14 @@ GEM
     faraday-net_http (3.4.1)
       net-http (>= 0.5.0)
     fast_memoize (0.1.1)
+    ffi (1.17.2-aarch64-linux-gnu)
+    ffi (1.17.2-aarch64-linux-musl)
+    ffi (1.17.2-arm-linux-gnu)
+    ffi (1.17.2-arm-linux-musl)
     ffi (1.17.2-arm64-darwin)
+    ffi (1.17.2-x86_64-darwin)
     ffi (1.17.2-x86_64-linux-gnu)
+    ffi (1.17.2-x86_64-linux-musl)
     font-awesome-rails (4.7.0.9)
       railties (>= 3.2, < 9.0)
     geocoder (1.8.5)
@@ -248,6 +254,7 @@ GEM
     memory_profiler (1.1.0)
     method_source (1.1.0)
     mini_magick (5.3.0)
+      benchmark
       logger
     mini_mime (1.1.5)
     minitest (5.25.5)
@@ -266,9 +273,21 @@ GEM
     net-smtp (0.5.1)
       net-protocol
     nio4r (2.7.4)
+    nokogiri (1.18.8-aarch64-linux-gnu)
+      racc (~> 1.4)
+    nokogiri (1.18.8-aarch64-linux-musl)
+      racc (~> 1.4)
+    nokogiri (1.18.8-arm-linux-gnu)
+      racc (~> 1.4)
+    nokogiri (1.18.8-arm-linux-musl)
+      racc (~> 1.4)
     nokogiri (1.18.8-arm64-darwin)
       racc (~> 1.4)
+    nokogiri (1.18.8-x86_64-darwin)
+      racc (~> 1.4)
     nokogiri (1.18.8-x86_64-linux-gnu)
+      racc (~> 1.4)
+    nokogiri (1.18.8-x86_64-linux-musl)
       racc (~> 1.4)
     oauth2 (2.0.12)
       faraday (>= 0.17.3, < 4.0)
@@ -324,6 +343,9 @@ GEM
       nio4r (~> 2.0)
     racc (1.8.1)
     rack (3.1.16)
+    rack-cors (3.0.0)
+      logger
+      rack (>= 3.0.14)
     rack-protection (4.1.1)
       base64 (>= 0.1.0)
       logger (>= 1.6.0)
@@ -440,10 +462,6 @@ GEM
     rubocop-rspec (3.6.0)
       lint_roller (~> 1.1)
       rubocop (~> 1.72, >= 1.72.1)
-    ruby-lsp (0.3.8)
-      language_server-protocol (~> 3.17.0)
-      sorbet-runtime
-      syntax_tree (>= 5.0.0, < 6)
     ruby-progressbar (1.13.0)
     ruby-vips (2.2.4)
       ffi (~> 1.12)
@@ -474,7 +492,6 @@ GEM
     snaky_hash (2.0.3)
       hashie (>= 0.1.0, < 6)
       version_gem (>= 1.1.8, < 3)
-    sorbet-runtime (0.5.12222)
     sprockets (4.2.2)
       concurrent-ruby (~> 1.0)
       logger
@@ -493,6 +510,8 @@ GEM
     timeout (0.4.3)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
+    tzinfo-data (1.2025.2)
+      tzinfo (>= 1.0.0)
     unicode-display_width (3.1.4)
       unicode-emoji (~> 4.0, >= 4.0.4)
     unicode-emoji (4.0.4)
@@ -518,13 +537,22 @@ GEM
     websocket-extensions (0.1.5)
     xpath (3.2.0)
       nokogiri (~> 1.8)
+    yard (0.9.37)
     zeitwerk (2.7.3)
 
 PLATFORMS
+  aarch64-linux-gnu
+  aarch64-linux-musl
+  arm-linux-gnu
+  arm-linux-musl
+  arm64-darwin
   arm64-darwin-22
   arm64-darwin-23
   arm64-darwin-24
+  x86_64-darwin
   x86_64-linux
+  x86_64-linux-gnu
+  x86_64-linux-musl
 
 DEPENDENCIES
   active_interaction (~> 5.2)
@@ -577,6 +605,7 @@ DEPENDENCIES
   pry
   pry-nav
   puma
+  rack-cors
   rails
   rails_autolink
   ransack
@@ -589,7 +618,6 @@ DEPENDENCIES
   rubocop-performance
   rubocop-rails
   rubocop-rspec
-  ruby-lsp (~> 0.3.7)
   ruby-progressbar
   ruby-vips
   rubyXL
@@ -599,8 +627,11 @@ DEPENDENCIES
   simplecov
   slim
   sprockets-rails
+  sys-proctable
+  tzinfo-data
   web-console
   webdrivers
+  yard
 
 RUBY VERSION
    ruby 3.4.4p34

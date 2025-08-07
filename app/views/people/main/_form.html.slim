@@ -47,6 +47,8 @@
         .col-4
           = form.input :ever_enslaved, as: :boolean, label: 'Ever Enslaved'
         .col-4
+          = form.input :ever_enslaved, as: :boolean, label: 'Ever Enslaved'
+        .col-4
           = form.input :locality_ids, as: :check_boxes, collection: Locality.all, label: 'Localities'
 
   .card.mb-1

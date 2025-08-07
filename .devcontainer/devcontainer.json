@@ -31,10 +31,10 @@
             "version": "latest"
         },
         "ghcr.io/devcontainers/features/node:": {
-            "installYarnUsingApt": true,
+            "installYarnUsingApt": false,
             "version": "latest",
             "pnpmVersion": "none",
-            "nvmVersion": "0.39"
+            "nvmVersion": "none"
         },
         "ghcr.io/meaningful-ooo/devcontainer-features/homebrew:2": {},
         "ghcr.io/eitsupi/devcontainer-features/jq-likes:2.1.1": {
@@ -58,8 +58,8 @@
     },
 
     // Use 'postCreateCommand' to run commands after the container is created.
-    "onCreateCommand": "/usr/bin/zsh /usr/local/bin/setup-volume-workspace.sh",
-    "postCreateCommand": "/usr/bin/zsh /usr/local/bin/setup.sh && /usr/bin/zsh /usr/local/bin/postSetup.sh",
+    "onCreateCommand": "/usr/bin/zsh /usr/local/bin/setup-volume-workspace.zsh",
+    "postCreateCommand": "/usr/bin/zsh /usr/local/bin/setup.zsh && /usr/bin/zsh /usr/local/bin/postSetup.zsh",
     // "postStartCommand": "service postgresql start", // Commented out - PostgreSQL runs in separate container
     "containerEnv": {
         "SHELL": "/usr/bin/zsh"
@@ -83,7 +83,7 @@
                 "rubyLsp.formatter": "rubocop_internal",
                 "rubyLsp.enabled": true,
                 "rubyLsp.useBundler": true,
-                "rubyLsp.rubyVersion": "3.3.7",
+                "rubyLsp.rubyVersion": "3.4.4",
                 "rubyLsp.addonSettings": {
                     "Ruby LSP Rails": {
                         "enablePendingMigrationsPrompt": true

@@ -1,0 +1,22 @@
+[Unit]
+Description=Historyforge Application
+After=nginx.service
+
+[Service]
+Type=simple
+User=rails
+Group=rails
+WorkingDirectory=/var/www/historyforge
+Environment=RAILS_ENV=production
+ExecStart=/usr/bin/bash -lc 'bundle exec rails server -e production -b 0.0.0.0 -p 3000'
+Nice=10
+
+Restart=always
+RestartSec=5
+
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=historyforge
+
+[Install]
+WantedBy=multi-user.target

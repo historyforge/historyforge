@@ -38,9 +38,9 @@ class DataDictionary
   end
 
   def initialize
-    file = Rails.root.join('config', 'census-dictionary.json')
-    data = JSON.parse(File.open(file).read)
-    @dictionary = HashWithIndifferentAccess.new(data)
+    file = Rails.root.join('config/census-dictionary.json')
+    data = JSON.parse(File.read(file))
+    @dictionary = ActiveSupport::HashWithIndifferentAccess.new(data)
   end
 
   def lookup_code(field, item)
@@ -57,8 +57,8 @@ class DataDictionary
 
   def field_from_label(label, year)
     @dictionary[:fields].each do |key, config|
-      return key if config.dig(year.to_s, :label) == label
-      return key if config.dig(:defaults, :label) == label
+      return key if config.dig(year.to_s, :label)&.downcase&.strip == label.downcase.strip
+      return key if config.dig(:defaults, :label)&.downcase&.strip == label.downcase.strip
     end
     raise ArgumentError("Cannot find #{label} for #{year}")
   end
