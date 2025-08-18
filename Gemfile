@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 source "https://rubygems.org"
-ruby "3.4.4"
+ruby "3.4.5"
 
 gem "active_interaction", "~> 5.2"
 gem "activerecord-precounter"
