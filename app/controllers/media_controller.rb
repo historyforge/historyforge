@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class MediaController < ApplicationController
+  include SqlInjectionProtection
   include Devise::Controllers::StoreLocation
   include RestoreSearch
   before_action :store_location!, only: :new
@@ -111,7 +112,7 @@ class MediaController < ApplicationController
     return if user_signed_in?
 
     store_location_for(:user, request.fullpath)
-    flash[:error] = 'Please sign in or create a HistoryForge account first.'
+    flash[:error] = "Please sign in or create a HistoryForge account first."
     redirect_to(new_user_session_path)
   end
 
@@ -149,17 +150,16 @@ class MediaController < ApplicationController
 
   def resource_params
     params
-      .require(model_class.model_name.param_key)
-      .permit :file, :description, :caption,
-              { building_ids: [], person_ids: [] },
-              :latitude, :longitude,
-              :date_text, :date_start, :date_end, :date_type,
-              :location, :identifier,
-              :notes,
-              :date_year, :date_month, :date_day,
-              :date_year_end,
-              :date_month_end,
-              :date_day_end,
-              :remote_url
+      .require(model_class.model_name.param_key).permit :file, :description, :caption,
+                                                        { building_ids: [], person_ids: [] },
+                                                        :latitude, :longitude,
+                                                        :date_text, :date_start, :date_end, :date_type,
+                                                        :location, :identifier,
+                                                        :notes,
+                                                        :date_year, :date_month, :date_day,
+                                                        :date_year_end,
+                                                        :date_month_end,
+                                                        :date_day_end,
+                                                        :remote_url
   end
 end

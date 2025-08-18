@@ -6,6 +6,7 @@ module CensusRecords
     include FastMemoize
     include AdvancedRestoreSearch
     include RenderCsv
+    include SqlInjectionProtection
 
     prepend_before_action :check_access, except: :rebuild
     prepend_before_action :check_demographics_access, only: :demographics

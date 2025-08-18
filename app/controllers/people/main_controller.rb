@@ -5,6 +5,7 @@ module People
     include FastMemoize
     include AdvancedRestoreSearch
     include RenderCsv
+    include SqlInjectionProtection
 
     def index
       authorize! :read, Person
