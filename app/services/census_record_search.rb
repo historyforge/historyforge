@@ -74,9 +74,12 @@ class CensusRecordSearch < SearchQueryBuilder
     elsif col == 'family_id'
       "regexp_replace(NULLIF(family_id, ''), '[^0-9]+', '', 'g')::numeric #{dir}"
     elsif col =~ /wages/
-      "regexp_replace(NULLIF(#{col}, ''), '[^0-9]+', '', 'g')::numeric #{dir}"
+      # Use parameterized query to prevent SQL injection
+      sanitized_col = entity_class.connection.quote_column_name(col)
+      "regexp_replace(NULLIF(#{sanitized_col}, ''), '[^0-9]+', '', 'g')::numeric #{dir}"
     elsif entity_class.columns.map(&:name).include?(col)
-      "#{col} #{dir}"
+      sanitized_col = entity_class.connection.quote_column_name(col)
+      "#{sanitized_col} #{dir}"
     else
       raise ArgumentError, 'Unrecognized sort request.'
     end

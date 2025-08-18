@@ -70,20 +70,25 @@ module Buildings
     def add_block_filter(items)
       base_number = street_house_number.to_i
       base_number += 1 if (base_number % 10).zero?
-      sql = if base_number < 100
-              "#{HOUSE_SQL} < 100"
-            elsif base_number < 1_000
-              hundred_block = (base_number.to_d / 1_000.to_d) * 10
-              "#{HOUSE_SQL} BETWEEN #{hundred_block.floor}00 AND (#{hundred_block.ceil}00 - 1)"
-            elsif base_number < 10_000
-              hundred_block = (base_number.to_d / 10_000.to_d) * 100
-              "#{HOUSE_SQL} BETWEEN #{hundred_block.floor}00 AND (#{hundred_block.ceil}00 - 1)"
-            else
-              hundred_block = (base_number.to_d / 100_000.to_d) * 1000
-              "#{HOUSE_SQL} BETWEEN #{hundred_block.floor}00 AND (#{hundred_block.ceil}00 - 1)"
-            end
 
-      items.where Arel.sql(sql)
+      if base_number < 100
+        items.where("#{HOUSE_SQL} < ?", 100)
+      elsif base_number < 1_000
+        hundred_block = (base_number.to_d / 1_000.to_d) * 10
+        lower_bound = hundred_block.floor * 100
+        upper_bound = (hundred_block.ceil * 100) - 1
+        items.where("#{HOUSE_SQL} BETWEEN ? AND ?", lower_bound, upper_bound)
+      elsif base_number < 10_000
+        hundred_block = (base_number.to_d / 10_000.to_d) * 100
+        lower_bound = hundred_block.floor * 100
+        upper_bound = (hundred_block.ceil * 100) - 1
+        items.where("#{HOUSE_SQL} BETWEEN ? AND ?", lower_bound, upper_bound)
+      else
+        hundred_block = (base_number.to_d / 100_000.to_d) * 1000
+        lower_bound = hundred_block.floor * 100
+        upper_bound = (hundred_block.ceil * 100) - 1
+        items.where("#{HOUSE_SQL} BETWEEN ? AND ?", lower_bound, upper_bound)
+      end
     end
   end
 end
