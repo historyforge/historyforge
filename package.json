@@ -3,7 +3,7 @@
     "build": "esbuild app/javascript/application.js app/javascript/cms.js --bundle --sourcemap --outdir=app/assets/builds"
   },
   "dependencies": {
-    "@airbrake/browser": "^1.4.1",
+    "@airbrake/browser": "^2.1.9",
     "@googlemaps/markerclusterer": "^2.5.3",
     "@rails/actiontext": "^6.0.2-2",
     "@rails/ujs": "^6.0.4",

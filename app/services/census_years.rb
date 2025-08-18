@@ -3,11 +3,13 @@
 # Centralizes the means to iterate all census years
 module CensusYears
   YEARS = [1850, 1860, 1870, 1880, 1900, 1910, 1920, 1930, 1940, 1950].freeze
+
   YEARS_IN_WORDS = %w[
-    eighteen_fifty, eighteen_sixty, eighteen_seventy eighteen_eighty nineteen_aught nineteen_ten
+    eighteen_fifty eighteen_sixty eighteen_seventy eighteen_eighty nineteen_aught nineteen_ten
     nineteen_twenty nineteen_thirty nineteen_forty nineteen_fifty
   ].freeze
-  YEAR_CLASSES = [
+
+  YEAR_CLASSES = {
     1850 => Census1850Record,
     1860 => Census1860Record,
     1870 => Census1870Record,
@@ -18,10 +20,10 @@ module CensusYears
     1930 => Census1930Record,
     1940 => Census1940Record,
     1950 => Census1950Record
-  ].freeze
+  }.freeze
 
   def self.class_for(year)
-    YEAR_CLASSES[year]
+    YEAR_CLASSES[year.to_i]
   end
 
   def self.each
