@@ -19,11 +19,11 @@ Airbrake.configure do |c|
   # project_key navigate to your project's General Settings and copy the
   # values from the right sidebar.
   # https://github.com/airbrake/airbrake-ruby#project_id--project_key
-  c.project_id = ENV.fetch("AIRBRAKE_ID", nil)
-  c.project_key = ENV.fetch("AIRBRAKE_KEY", nil)
+  c.project_id = ENV.fetch('AIRBRAKE_ID', nil)
+  c.project_key = ENV.fetch('AIRBRAKE_KEY', nil)
   c.performance_stats = false
 
-  c.host = ENV.fetch("AIRBRAKE_URL", nil)
+  c.host = ENV.fetch('AIRBRAKE_URL', nil)
 
   # Configures the root directory of your project. Expects a String or a
   # Pathname, which represents the path to your project. Providing this option
@@ -83,8 +83,8 @@ ignored_errors = [
   ActionController::InvalidAuthenticityToken,
   ActiveRecord::RecordNotFound,
   AbstractController::ActionNotFound,
-  "SIGTERM",
-  "SIGQUIT",
+  'SIGTERM',
+  'SIGQUIT',
 ].freeze
 
 Airbrake.add_filter do |notice|

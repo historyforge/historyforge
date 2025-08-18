@@ -4,7 +4,7 @@ class FlagsController < ApplicationController
   include RestoreSearch
 
   def index
-    @search = Flag.unresolved.order("created_at asc").ransack(params[:q])
+    @search = Flag.unresolved.order('created_at asc').ransack(params[:q])
     @flags = @search.result
                     .preload(:flaggable, :flagged_by)
                     .includes(:flaggable)
@@ -25,10 +25,10 @@ class FlagsController < ApplicationController
     @flag.flagged_by = current_user
     authorize! :create, @flag
     if @flag.save
-      flash[:notice] = "The record has been flagged. An editor will be on it as soon as possible."
+      flash[:notice] = 'The record has been flagged. An editor will be on it as soon as possible.'
       redirect_back fallback_location: root_path
     else
-      flash[:error] = "Something kept us from being able to flag the content. Sorry!"
+      flash[:error] = 'Something kept us from being able to flag the content. Sorry!'
     end
   end
 
@@ -44,13 +44,13 @@ class FlagsController < ApplicationController
     @flag.attributes = params.require(:flag).permit :reason, :message, :comment, :mark_resolved
     if @flag.save
       if @flag.resolved?
-        flash[:notice] = "The issue has been resolved!"
+        flash[:notice] = 'The issue has been resolved!'
       else
-        flash[:notice] = "Saved your updates. However, the issue has NOT been resolved."
+        flash[:notice] = 'Saved your updates. However, the issue has NOT been resolved.'
       end
       redirect_back fallback_location: url_for(action: :show)
     else
-      flash[:error] = "Something prevented us from saving your changes!"
+      flash[:error] = 'Something prevented us from saving your changes!'
       render action: :show
     end
   end
@@ -59,10 +59,10 @@ class FlagsController < ApplicationController
     @flag = Flag.find params[:id]
     authorize! :destroy, @flag
     if @flag.destroy
-      flash[:notice] = "The flag has been deleted."
+      flash[:notice] = 'The flag has been deleted.'
       redirect_back fallback_location: root_path
     else
-      flash[:error] = "Something kept us from being delete the flag. Sorry!"
+      flash[:error] = 'Something kept us from being delete the flag. Sorry!'
       redirect_to action: :show
     end
   end

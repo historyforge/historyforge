@@ -17,16 +17,16 @@ module Cms
 
     def run
       guts = compiled_template.render template_vars
-      if guts =~ /\{\{/
+      if /\{\{/.match?(guts)
         liquid_guts = Liquid::Template.parse guts
         guts = liquid_guts.render template_vars
       end
-      css_id = page.css_id.present? ? page.css_id : "page_#{page.id}"
-      css_class = page.css_class.present? ? page.css_class : "page_#{page.id}"
+      css_id = (page.css_id.presence || "page_#{page.id}")
+      css_class = (page.css_class.presence || "page_#{page.id}")
 
       html_options = {}
-      html_options["id"] = css_id
-      html_options["class"] = css_class
+      html_options['id'] = css_id
+      html_options['class'] = css_class
 
       template.content_tag :div, guts.html_safe, html_options
       # html = template.content_tag(:style, page.css_compiled.html_safe, type: 'text/css') + html if page.css_compiled.present?

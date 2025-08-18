@@ -62,28 +62,28 @@ class Building < ApplicationRecord
 
   belongs_to :locality
 
-  belongs_to :parent, class_name: "Building", optional: true, inverse_of: :children
-  has_many :children, class_name: "Building", foreign_key: :parent_id, dependent: :nullify, inverse_of: :parent
+  belongs_to :parent, class_name: 'Building', optional: true, inverse_of: :children
+  has_many :children, class_name: 'Building', foreign_key: :parent_id, dependent: :nullify, inverse_of: :parent
 
   has_many :addresses, dependent: :destroy, autosave: true
-  accepts_nested_attributes_for :addresses, allow_destroy: true, reject_if: proc { |p| p["name"].blank? }
+  accepts_nested_attributes_for :addresses, allow_destroy: true, reject_if: proc { |p| p['name'].blank? }
 
   has_and_belongs_to_many :architects
 
   has_many :annotations, dependent: :destroy
-  accepts_nested_attributes_for :annotations, allow_destroy: true, reject_if: proc { |p| p["annotation_text"].blank? }
+  accepts_nested_attributes_for :annotations, allow_destroy: true, reject_if: proc { |p| p['annotation_text'].blank? }
 
-  has_many :census1850_records, dependent: :nullify, class_name: "Census1850Record", inverse_of: :building
-  has_many :census1860_records, dependent: :nullify, class_name: "Census1860Record", inverse_of: :building
-  has_many :census1870_records, dependent: :nullify, class_name: "Census1870Record", inverse_of: :building
-  has_many :census1880_records, dependent: :nullify, class_name: "Census1880Record", inverse_of: :building
-  has_many :census1900_records, dependent: :nullify, class_name: "Census1900Record", inverse_of: :building
-  has_many :census1910_records, dependent: :nullify, class_name: "Census1910Record", inverse_of: :building
-  has_many :census1920_records, dependent: :nullify, class_name: "Census1920Record", inverse_of: :building
-  has_many :census1930_records, dependent: :nullify, class_name: "Census1930Record", inverse_of: :building
-  has_many :census1940_records, dependent: :nullify, class_name: "Census1940Record", inverse_of: :building
-  has_many :census1950_records, dependent: :nullify, class_name: "Census1950Record", inverse_of: :building
-  has_and_belongs_to_many :photos, class_name: "Photograph", dependent: :nullify
+  has_many :census1850_records, dependent: :nullify, class_name: 'Census1850Record', inverse_of: :building
+  has_many :census1860_records, dependent: :nullify, class_name: 'Census1860Record', inverse_of: :building
+  has_many :census1870_records, dependent: :nullify, class_name: 'Census1870Record', inverse_of: :building
+  has_many :census1880_records, dependent: :nullify, class_name: 'Census1880Record', inverse_of: :building
+  has_many :census1900_records, dependent: :nullify, class_name: 'Census1900Record', inverse_of: :building
+  has_many :census1910_records, dependent: :nullify, class_name: 'Census1910Record', inverse_of: :building
+  has_many :census1920_records, dependent: :nullify, class_name: 'Census1920Record', inverse_of: :building
+  has_many :census1930_records, dependent: :nullify, class_name: 'Census1930Record', inverse_of: :building
+  has_many :census1940_records, dependent: :nullify, class_name: 'Census1940Record', inverse_of: :building
+  has_many :census1950_records, dependent: :nullify, class_name: 'Census1950Record', inverse_of: :building
+  has_and_belongs_to_many :photos, class_name: 'Photograph', dependent: :nullify
   has_and_belongs_to_many :audios, dependent: :nullify
   has_and_belongs_to_many :videos, dependent: :nullify
   has_and_belongs_to_many :narratives, dependent: :nullify
@@ -92,17 +92,17 @@ class Building < ApplicationRecord
   validates :name, presence: true, length: { maximum: 255 }
   validates :year_earliest, :year_latest, numericality: { minimum: 1500, maximum: 2100, allow_nil: true }
   validate :validate_primary_address
-  validates :addresses, length: { minimum: 1, too_short: " - a building must have at least one." }
+  validates :addresses, length: { minimum: 1, too_short: ' - a building must have at least one.' }
 
   delegate :name, to: :frame_type, prefix: true, allow_nil: true
   delegate :name, to: :lining_type, prefix: true, allow_nil: true
 
   scope :as_of_year, lambda { |year|
-    where("(year_earliest is null and year_latest is null) or (year_earliest<=:year and (year_latest is null or year_latest>=:year)) or (year_earliest is null and year_latest>=:year)", year:)
+    where('(year_earliest is null and year_latest is null) or (year_earliest<=:year and (year_latest is null or year_latest>=:year)) or (year_earliest is null and year_latest>=:year)', year:)
   }
 
   scope :as_of_year_eq, lambda { |year|
-    where("(year_earliest<=:year and (year_latest is null or year_latest>=:year)) or (year_earliest is null and year_latest>=:year)", year:)
+    where('(year_earliest<=:year and (year_latest is null or year_latest>=:year)) or (year_earliest is null and year_latest>=:year)', year:)
   }
 
   scope :without_residents, lambda {
@@ -112,8 +112,8 @@ class Building < ApplicationRecord
       join_clause << Arel.sql("LEFT OUTER JOIN census_#{year}_records ON census_#{year}_records.building_id=buildings.id")
       where_clause << Arel.sql("census_#{year}_records IS NULL")
     end
-    joins(join_clause.join(" "))
-      .where(where_clause.join(" AND "))
+    joins(join_clause.join(' '))
+      .where(where_clause.join(' AND '))
       .building_types_id_in(3)
   }
 
@@ -123,36 +123,36 @@ class Building < ApplicationRecord
 
   scope :order_by_street_address, lambda { |dir|
     all
-      .joins("LEFT OUTER JOIN addresses primary_address ON primary_address.building_id=buildings.id AND primary_address.is_primary=TRUE")
-      .group("buildings.id, primary_address.id")
+      .joins('LEFT OUTER JOIN addresses primary_address ON primary_address.building_id=buildings.id AND primary_address.is_primary=TRUE')
+      .group('buildings.id, primary_address.id')
       .order('primary_address.name': dir)
       .order('primary_address.prefix': dir)
       .order('primary_address.suffix': dir)
       .order(Arel.sql("substring(primary_address.house_number, '^[0-9]+')::int") => dir)
   }
 
-  scope :by_street_address, -> { order_by_street_address("asc") }
+  scope :by_street_address, -> { order_by_street_address('asc') }
 
   scope :with_multiple_addresses, lambda {
     all
       .joins(:addresses)
-      .group("buildings.id, addresses.name")
-      .having("COUNT(addresses.name) > 1")
+      .group('buildings.id, addresses.name')
+      .having('COUNT(addresses.name) > 1')
   }
 
   scope :building_types_id_in, lambda { |*ids|
     if ids.empty?
-      where("building_types_mask > 0")
+      where('building_types_mask > 0')
     else
-      where "building_types_mask & ? > 0", BuildingType.mask_for(ids)
+      where 'building_types_mask & ? > 0', BuildingType.mask_for(ids)
     end
   }
 
   scope :building_types_id_not_in, lambda { |*ids|
     if ids.empty?
-      where("building_types_mask = 0")
+      where('building_types_mask = 0')
     else
-      where.not "building_types_mask & ? > 0", BuildingType.mask_for(ids)
+      where.not 'building_types_mask & ? > 0', BuildingType.mask_for(ids)
     end
   }
 
@@ -161,7 +161,7 @@ class Building < ApplicationRecord
 
   scope :description_cont, lambda { |query|
     left_joins(:rich_text_description, narratives: :rich_text_story)
-      .merge(ActionText::RichText.where("action_text_rich_texts.body ILIKE ?", "%" + query + "%"))
+      .merge(ActionText::RichText.where('action_text_rich_texts.body ILIKE ?', '%' + query + '%'))
   }
 
   def self.ransackable_scopes(_auth_object = nil)
@@ -191,9 +191,9 @@ class Building < ApplicationRecord
 
   ransacker :street_address, formatter: proc { |v| v.mb_chars.downcase.to_s } do
     addresses = Address.arel_table
-    Arel::Nodes::NamedFunction.new("LOWER",
-                                   [Arel::Nodes::NamedFunction.new("concat_ws",
-                                                                   [Arel::Nodes::Quoted.new(" "),
+    Arel::Nodes::NamedFunction.new('LOWER',
+                                   [Arel::Nodes::NamedFunction.new('concat_ws',
+                                                                   [Arel::Nodes::Quoted.new(' '),
                                                                     addresses[:house_number],
                                                                     addresses[:prefix],
                                                                     addresses[:name],
@@ -218,15 +218,15 @@ class Building < ApplicationRecord
   end
 
   def full_street_address
-    [street_address, city].join(" ")
+    [street_address, city].join(' ')
   end
 
   def architects_list
-    architects.map(&:name).join(", ")
+    architects.map(&:name).join(', ')
   end
 
   def architects_list=(value)
-    self.architects = value.split(",").map(&:strip).map { |item| Architect.find_or_create_by(name: item) }
+    self.architects = value.split(',').map(&:strip).map { |item| Architect.find_or_create_by(name: item) }
   end
 
   def address
@@ -273,7 +273,7 @@ class Building < ApplicationRecord
   end
 
   def primary_street_address
-    (addresses.detect(&:is_primary) || addresses.first || OpenStruct.new(address: "No address")).address
+    (addresses.detect(&:is_primary) || addresses.first || OpenStruct.new(address: 'No address')).address
   end
 
   def ensure_primary_address
@@ -353,9 +353,9 @@ class Building < ApplicationRecord
   def validate_primary_address
     primary_addresses = addresses.to_a.select(&:is_primary)
     if primary_addresses.blank?
-      errors.add(:base, "Primary address missing.")
+      errors.add(:base, 'Primary address missing.')
     elsif primary_addresses.size > 1
-      errors.add(:base, "Multiple primary addresses not allowed.")
+      errors.add(:base, 'Multiple primary addresses not allowed.')
     end
   end
 
