@@ -7,6 +7,22 @@ module CensusYears
     eighteen_fifty, eighteen_sixty, eighteen_seventy eighteen_eighty nineteen_aught nineteen_ten
     nineteen_twenty nineteen_thirty nineteen_forty nineteen_fifty
   ].freeze
+  YEAR_CLASSES = [
+    1850 => Census1850Record,
+    1860 => Census1860Record,
+    1870 => Census1870Record,
+    1880 => Census1880Record,
+    1900 => Census1900Record,
+    1910 => Census1910Record,
+    1920 => Census1920Record,
+    1930 => Census1930Record,
+    1940 => Census1940Record,
+    1950 => Census1950Record
+  ].freeze
+
+  def self.class_for(year)
+    YEAR_CLASSES[year]
+  end
 
   def self.each
     YEARS.each_with_index do |year, index|
@@ -17,7 +33,7 @@ module CensusYears
 
   def each_class
     YEARS.each do |year|
-      yield "Census#{year}Record".safe_constantize
+      yield class_for(year)
     end
   end
 

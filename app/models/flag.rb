@@ -42,6 +42,19 @@ class Flag < ApplicationRecord
     REASONS.map { |k, v| [v, k] }
   end
 
+  def self.safe_flaggable_class(flaggable_type)
+    return nil if flaggable_type.blank?
+    
+    # Check if this is a legitimate flaggable type by looking at models that include Flaggable
+    Rails.application.eager_load! if Rails.env.development?
+    
+    allowed_class = ApplicationRecord.descendants.find do |klass|
+      klass.name == flaggable_type && klass.included_modules.include?(Flaggable)
+    end
+    
+    allowed_class
+  end
+
   def resolved?
     resolved_at.present?
   end

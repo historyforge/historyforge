@@ -6,8 +6,8 @@
       .card-body
         = form.error_notification
         .form-inputs
-          = form.input :login, required: true, autofocus: true %>
-          = form.input :email, required: true %>
+          = form.input :login, required: true, autofocus: true
+          = form.input :email, required: true
 
           - if devise_mapping.confirmable? && resource.pending_reconfirmation?
             p Currently waiting confirmation for: #{resource.unconfirmed_email}

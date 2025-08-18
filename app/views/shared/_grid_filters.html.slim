@@ -20,7 +20,7 @@
 = simple_form_for @search, url: url_for(), method: :get, as: :s do |form|
   .float-right
     = form.submit 'Submit', style: 'display: none'
-    => link_to 'CSV', (params.try(:permit!) || params).merge(format: :csv), class: 'btn btn-sm btn-primary'
+    => link_to 'CSV', request.params.merge(format: :csv), class: 'btn btn-sm btn-primary'
     - if controller.respond_to?(:year)
       => form.submit 'Map It', class: 'btn btn-sm btn-primary', id: 'search-map', data: {year: controller.year}
       - if can_demographics?(controller.year)

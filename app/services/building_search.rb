@@ -124,7 +124,7 @@ class BuildingSearch < SearchQueryBuilder
   end
 
   def enrich_with_residents
-    people_class = "Census#{people}Record".constantize
+    people_class = CensusYears.class_for(people)
     people_records = people_class.where.not(reviewed_at: nil)
     people_records = people_records.ransack(people_params).result if people_params.present?
     people_records = people_records.pluck(:building_id)
