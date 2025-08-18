@@ -31,6 +31,15 @@ class DocumentsController < ApplicationController
 
   def new
     @document = Document.new
+    authorize! :create, @document
+
+    if params[:building_id]
+      @building =  Building.find(params[:building_id])
+      @document.buildings << @building
+    elsif params[:person_id]
+      @person =  Person.find(params[:person_id])
+      @document.people << @person
+    end
   end
 
   def edit
@@ -45,7 +54,17 @@ class DocumentsController < ApplicationController
       flash[:notice] = 'The document has been saved.'
       redirect_to action: :index, document_category_id: @document.document_category_id
     else
-      flash[:error] = 'This document failed to upload. Usually it means the file type is not allowed.'
+      if @document.errors[:document_category].any?
+        if DocumentCategory.count.zero?
+          flash[:error] = 'No document categories exist yet. Please <a href="#{document_categories_path}">create a document category</a> first before adding documents.'.html_safe
+        else
+          flash[:error] = 'Please select a document category for this document.'
+        end
+      elsif @document.errors[:file].any?
+        flash[:error] = 'This document failed to upload. Usually it means the file type is not allowed.'
+      else
+        flash[:error] = "Unable to save document: #{@document.errors.full_messages.join(', ')}"
+      end
       render :new
     end
   end
@@ -83,7 +102,7 @@ class DocumentsController < ApplicationController
                                      :document_category_id,
                                      :url,
                                      :available_to_public,
-                                     locality_ids: []
+                                     { building_ids: [], person_ids: [], locality_ids: [] }
   end
 
   def collection
