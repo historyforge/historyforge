@@ -112,7 +112,7 @@ class MediaController < ApplicationController
     return if user_signed_in?
 
     store_location_for(:user, request.fullpath)
-    flash[:error] = "Please sign in or create a HistoryForge account first."
+    flash[:error] = 'Please sign in or create a HistoryForge account first.'
     redirect_to(new_user_session_path)
   end
 
