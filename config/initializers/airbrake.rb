@@ -79,13 +79,20 @@ end
 # https://github.com/airbrake/airbrake#logger
 # Rails.logger = Airbrake::AirbrakeLogger.new(Rails.logger)
 
-ignored_errors = %w[
-  ActionController::InvalidAuthenticityToken
-  ActiveRecord::RecordNotFound
-  AbstractController::ActionNotFound
-  SIGTERM
-  SIGQUIT
+ignored_errors = [
+  ActionController::InvalidAuthenticityToken,
+  ActiveRecord::RecordNotFound,
+  AbstractController::ActionNotFound,
+  'SIGTERM',
+  'SIGQUIT',
 ].freeze
+
 Airbrake.add_filter do |notice|
-  notice.ignore! if ignored_errors.include?(notice.stash[:exception])
+  notice[:errors]&.each do |error|
+    error_class = error[:type] || error[:class]
+    if ignored_errors.any? { |ignored| ignored.is_a?(String) ? error_class == ignored : error_class == ignored.name }
+      notice.ignore!
+      break
+    end
+  end
 end

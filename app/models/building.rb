@@ -109,8 +109,8 @@ class Building < ApplicationRecord
     join_clause = []
     where_clause = []
     CensusYears.each do |year|
-      join_clause << "LEFT OUTER JOIN census_#{year}_records ON census_#{year}_records.building_id=buildings.id"
-      where_clause << "census_#{year}_records IS NULL"
+      join_clause << Arel.sql("LEFT OUTER JOIN census_#{year}_records ON census_#{year}_records.building_id=buildings.id")
+      where_clause << Arel.sql("census_#{year}_records IS NULL")
     end
     joins(join_clause.join(' '))
       .where(where_clause.join(' AND '))
@@ -161,9 +161,9 @@ class Building < ApplicationRecord
 
   scope :description_cont, lambda { |query|
     left_joins(:rich_text_description, narratives: :rich_text_story)
-      .merge(ActionText::RichText.where('action_text_rich_texts.body ILIKE ?', "%" + query + "%"))
+      .merge(ActionText::RichText.where('action_text_rich_texts.body ILIKE ?', '%' + query + '%'))
   }
-  
+
   def self.ransackable_scopes(_auth_object = nil)
     %i[as_of_year without_residents as_of_year_eq description_cont
        building_types_id_in building_types_id_not_in building_types_id_null building_types_id_not_null]
@@ -183,7 +183,7 @@ class Building < ApplicationRecord
     timeout: 2,
     use_https: true,
     lookup: :google,
-    api_key: AppConfig[:geocoding_key]
+    api_key: AppConfig[:geocoding_key],
   )
 
   geocoded_by :full_street_address, latitude: :lat, longitude: :lon
@@ -285,6 +285,7 @@ class Building < ApplicationRecord
 
     self.name = primary_street_address
   end
+
   before_validation :name_the_house
 
   def neighbors
@@ -296,11 +297,13 @@ class Building < ApplicationRecord
   def residents
     Buildings::FindResidents.run!(building: self, reviewed_only: true)
   end
+
   memoize :residents
 
   def residents_by_year
     residents&.group_by(&:year)
   end
+
   memoize :residents_by_year
 
   CensusYears.each do |year|
@@ -324,11 +327,13 @@ class Building < ApplicationRecord
   def frame_type
     ConstructionMaterial.find frame_type_id
   end
+
   memoize :frame_type
 
   def lining_type
     ConstructionMaterial.find lining_type_id
   end
+
   memoize :lining_type
 
   def building_types

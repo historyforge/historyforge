@@ -12,6 +12,7 @@ gem 'ancestry'
 gem 'ar_doc_store'
 gem 'bcrypt'
 gem 'bootsnap', require: false
+gem 'brakeman', require: false
 gem 'cancancan'
 gem 'chartkick'
 gem 'devise'

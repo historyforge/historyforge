@@ -5,6 +5,17 @@ module Buildings
     include FastMemoize
     include AdvancedRestoreSearch
     include RenderCsv
+    include SqlInjectionProtection
+
+    AUTH_ACTIONS = {
+      new: :create,
+      create: :create,
+      edit: :update,
+      update: :update,
+      destroy: :destroy,
+      review: :review,
+      bulk_review: :review,
+    }.freeze
 
     wrap_parameters format: []
     respond_to :json, only: %i[index show update]
@@ -150,16 +161,6 @@ module Buildings
         reviewed_only: !user_signed_in?,
       )
     end
-
-    AUTH_ACTIONS = {
-      new: :create,
-      create: :create,
-      edit: :update,
-      update: :update,
-      destroy: :destroy,
-      review: :review,
-      bulk_review: :review,
-    }.freeze
 
     def load_building
       @building = Building.find params[:id]

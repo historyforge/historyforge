@@ -119,7 +119,7 @@ div.mb-3.clearfix.d-flex.justify-content-between
         .card-header
           | Description
         .card-body#building-description
-          == @building.description
+          = @building.description
 
     = render 'media/display_on_associated_record', item: @building.object
 

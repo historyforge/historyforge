@@ -2,6 +2,7 @@
 
 class FlagsController < ApplicationController
   include RestoreSearch
+
   def index
     @search = Flag.unresolved.order('created_at asc').ransack(params[:q])
     @flags = @search.result
@@ -15,7 +16,7 @@ class FlagsController < ApplicationController
   def new
     authorize! :create, Flag
     @flag = Flag.new
-    @flag.flaggable = params[:flaggable_type].constantize.find params[:flaggable_id]
+    @flag.flaggable = find_flaggable
     render layout: false
   end
 
@@ -69,10 +70,18 @@ class FlagsController < ApplicationController
   private
 
   def flaggable
-    @flaggable ||= params[:flaggable_type].constantize.find params[:flaggable_id]
+    @flaggable ||= find_flaggable
   end
 
   def build_flaggable
-    @flaggable = params[:flaggable_type].constantize.new
+    flaggable_class = Flag.safe_flaggable_class(params[:flaggable_type])
+    @flaggable = flaggable_class&.new
+  end
+
+  def find_flaggable
+    flaggable_class = Flag.safe_flaggable_class(params[:flaggable_type])
+    return nil unless flaggable_class
+
+    flaggable_class.find(params[:flaggable_id])
   end
 end
