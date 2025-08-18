@@ -1,4 +1,4 @@
-FROM ruby:3.4.4
+FROM ruby:3.4.5
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV RAILS_SERVE_STATIC_FILES true
