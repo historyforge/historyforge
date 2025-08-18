@@ -2,15 +2,15 @@
 <script type="text/javascript">
     window.initialState = {
         layers: { center: {lat: <%= @building.lat %>, lng: <%= @building.lon %>}, layers: <%== mini_forge_layers.to_json %> },
-        buildings: { buildings: <%== mini_forge_buildings.to_json  %>, current: <%== @building.to_json %>, editable: <%== can?(:update, @building).to_json %>},
+        buildings: { buildings: <%== mini_forge_buildings.to_json %>, current: <%== @building.to_json %>, editable: <%== can?(:update, @building).to_json %>},
         search: { params: <%== params.to_json %> }
     }
-    window.googleApiKey = '<%== AppConfig[:google_api_key] %>'
-    <% if ENV['AIRBRAKE_KEY'] %>
+    window.googleApiKey = '<%= AppConfig[:google_api_key] %>'
+    <% if ENV["AIRBRAKE_KEY"] %>
     window.airbrakeCreds = {
-        app_id: '<%== ENV['AIRBRAKE_ID'] %>',
-        api_key: '<%== ENV['AIRBRAKE_KEY'] %>',
-        host: '<%== ENV['AIRBRAKE_URL'] %>'
+        app_id: '<%= ENV["AIRBRAKE_ID"] %>',
+        api_key: '<%= ENV["AIRBRAKE_KEY"] %>',
+        host: '<%= ENV["AIRBRAKE_URL"] %>'
     }
     window.env = "<%= Rails.env.to_s %>"
     <% end %>

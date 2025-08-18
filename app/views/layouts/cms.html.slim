@@ -10,6 +10,6 @@
   - set_page_title @page.title
 
 - content_for :content do
-  == @page.render(self, content: yield)
+  == @page.render(self, content: yield) # rubocop:disable Rails/OutputSafety
 
 = render template: 'layouts/application'

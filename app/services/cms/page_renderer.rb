@@ -2,7 +2,6 @@
 
 module Cms
   class PageRenderer
-
     class_attribute :compiled_templates
     self.compiled_templates ||= {}
 
@@ -26,8 +25,8 @@ module Cms
       css_class = page.css_class.present? ? page.css_class : "page_#{page.id}"
 
       html_options = {}
-      html_options['id'] = css_id
-      html_options['class'] = css_class
+      html_options["id"] = css_id
+      html_options["class"] = css_class
 
       template.content_tag :div, guts.html_safe, html_options
       # html = template.content_tag(:style, page.css_compiled.html_safe, type: 'text/css') + html if page.css_compiled.present?
