@@ -135,6 +135,9 @@ class SearchQueryBuilder
         value.squish
       when Array
         value.map { |v| v.is_a?(String) ? v.squish : v }
+      when Hash
+        # Convert nested hash like {"0" => "2"} to array ["2"]
+        value.values.map { |v| v.is_a?(String) ? v.squish : v }
       else
         value
       end
