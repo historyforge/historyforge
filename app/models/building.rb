@@ -186,7 +186,7 @@ class Building < ApplicationRecord
     api_key: AppConfig[:geocoding_key],
   )
 
-  geocoded_by :geocode_street_address, latitude: :lat, longitude: :lon
+  geocoded_by :full_street_address, latitude: :lat, longitude: :lon
   after_validation :do_the_geocode, if: :new_record?
 
   ransacker :street_address, formatter: proc { |v| v.mb_chars.downcase.to_s } do
@@ -215,6 +215,10 @@ class Building < ApplicationRecord
     geocode
   rescue Errno::ENETUNREACH
     nil
+  end
+
+  def full_street_address
+    [street_address, city].join(" ")
   end
 
   def geocode_street_address
