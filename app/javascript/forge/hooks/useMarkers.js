@@ -1,7 +1,7 @@
-import {useEffect, useRef, useState} from "react";
-import {generateMarkers, highlightMarker, unhighlightMarker} from "../mapFunctions";
+import { useEffect, useRef, useState } from "react";
+import { generateMarkers, highlightMarker, unhighlightMarker } from "../mapFunctions";
 import * as actions from "../actions";
-import {useDispatch, useSelector} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 export function useMarkers(map, clusterMachine, bounds) {
   const dispatch = useDispatch();
@@ -56,12 +56,23 @@ export function useMarkers(map, clusterMachine, bounds) {
   }, [bubble, addressedAt]);
 
   const showBuilding = (buildingId) => {
+    if (!buildingId || isNaN(buildingId)) {
+      console.warn(`Invalid building ID: ${buildingId}`);
+      return;
+    }
     dispatch(actions.select(buildingId, searchParams));
   }
 
   const highlight = (buildingId) => {
+    if (!buildingId || isNaN(buildingId)) {
+      console.warn(`Invalid building ID for highlight: ${buildingId}`);
+      return;
+    }
     highlightMarker(buildingId, markers.current);
-    currentMarker.current = markers.current[buildingId]
+    const marker = markers.current[buildingId];
+    if (marker) {
+      currentMarker.current = marker;
+    }
     window.clearTimeout(infoWindowTimeout.current);
     if (infoWindow.current) {
       infoWindow.current.close();
@@ -70,6 +81,10 @@ export function useMarkers(map, clusterMachine, bounds) {
   }
 
   const unHighlight = (buildingId) => {
+    if (!buildingId || isNaN(buildingId)) {
+      console.warn(`Invalid building ID for unhighlight: ${buildingId}`);
+      return;
+    }
     unhighlightMarker(parseInt(buildingId), markers.current);
     infoWindowTimeout.current = window.setTimeout(() => {
       dispatch(actions.deAddress());

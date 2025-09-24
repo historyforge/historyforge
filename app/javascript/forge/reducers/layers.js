@@ -9,7 +9,7 @@ class LayerStorage {
         JSON.parse(rawLayers).forEach(layer => this.layers.add(layer));
       }
       console.log("Restored layers", this.layers);
-    } catch(error) {
+    } catch (error) {
       console.error(error)
     }
   }
@@ -46,9 +46,9 @@ class LayerStorage {
 
 const layerStorage = new LayerStorage();
 
-export const layers = function(state = {}, action) {
+export const layers = function (state = {}, action) {
   if (action.type === 'FORGE_INIT') {
-    const nextLayers = state.layers.map(layer => {
+    const nextLayers = state.layers.filter(layer => layer != null).map(layer => {
       layer.selected = layerStorage.isSelected(layer);
       return layer;
     });
@@ -73,7 +73,11 @@ export const layers = function(state = {}, action) {
   }
 
   if (action.type === 'LAYER_TOGGLE') {
-    const layer = state.layers.find(item => item.id === action.id)
+    const layer = state.layers.find(item => item && item.id === action.id)
+    if (!layer) {
+      console.warn(`Layer with id ${action.id} not found`);
+      return state;
+    }
     console.log(layer)
     layer.selected = !layer.selected
     if (layer.selected) {
@@ -85,7 +89,11 @@ export const layers = function(state = {}, action) {
   }
 
   if (action.type === 'LAYER_OPACITY') {
-    const layer = state.layers.find(item => item.id === action.id)
+    const layer = state.layers.find(item => item && item.id === action.id)
+    if (!layer) {
+      console.warn(`Layer with id ${action.id} not found for opacity change`);
+      return state;
+    }
     layer.opacity = parseInt(action.opacity)
     return { ...state, layers: [...state.layers], opacityAt: new Date().getTime() }
   }

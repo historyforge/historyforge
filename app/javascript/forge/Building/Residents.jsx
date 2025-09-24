@@ -19,7 +19,7 @@ export const Residents = ({ buildingId, residents, years }) => (
     ))
 )
 
-const Resident = ({person, year}) => {
+const Resident = ({ person, year }) => {
     let occupation = person.occupation;
     if (person.occupation === "None") {
         occupation = null;

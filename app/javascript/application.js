@@ -41,21 +41,21 @@ document.addEventListener('DOMContentLoaded', () => {
   pageLoad()
 })
 
-window.showSubmitButton = function(id, token) {
+window.showSubmitButton = function (id, token) {
   document.getElementById(id).setAttribute('value', token);
   document.getElementById('contact-submit-btn').style.display = 'block'
 }
 
-const pageLoad = function() {
+const pageLoad = function () {
   $('[rel=tooltip]').tooltip()
 }
 
-jQuery(document).on('click', '.alert .closer', function() {
+jQuery(document).on('click', '.alert .closer', function () {
   jQuery(this).closest('.alert').remove();
   jQuery(window).trigger('resize').trigger('scroll'); // trigger parallax refresh on home page
 });
-jQuery(document).on('click', '.dropdown-item.checkbox', function(e) { e.stopPropagation() })
-jQuery(document).on('click', '#search-map', function() {
+jQuery(document).on('click', '.dropdown-item.checkbox', function (e) { e.stopPropagation() })
+jQuery(document).on('click', '#search-map', function () {
   const $form = jQuery(this).closest('form')
   if (document.location.toString().match(/building/)) {
     $form.append('<input type="hidden" name="buildings" value="1">')
@@ -97,29 +97,29 @@ function getBuildingList() {
 jQuery(document)
   .on('change', '#census_record_locality_id, #street_name, #street_suffix, #street_prefix, #street_house_number', getBuildingList)
 
-jQuery(function() {
-    const building = jQuery('#building_id, #census_record_building_id')
-    if (building.length) {
-      getBuildingList()
-      $('.census_record_ensure_building').toggle(!building.val().length)
-    }
-  })
-  .on('change', '#building_id, #census_record_building_id', function() {
-      $('.census_record_ensure_building').toggle(!$(this).val().length)
+jQuery(function () {
+  const building = jQuery('#building_id, #census_record_building_id')
+  if (building.length) {
+    getBuildingList()
+    $('.census_record_ensure_building').toggle(!building.val().length)
+  }
+})
+  .on('change', '#building_id, #census_record_building_id', function () {
+    $('.census_record_ensure_building').toggle(!$(this).val().length)
   })
 
 let buildingNamed = false
-jQuery(document).on('ready', function() {
+jQuery(document).on('ready', function () {
   buildingNamed = jQuery('#building_name').val()
 })
 
-jQuery(document).on('change', '#building_address_house_number, #building_address_street_prefix, #building_address_street_name, #building_address_street_suffix', function() {
+jQuery(document).on('change', '#building_address_house_number, #building_address_street_prefix, #building_address_street_name, #building_address_street_suffix', function () {
   if (buildingNamed) return
   const buildingName = [jQuery('#building_address_house_number').val(), jQuery('#building_address_street_prefix').val(), jQuery('#building_address_street_name').val(), jQuery('#building_address_street_suffix').val()].join(' ')
   jQuery('#building_name').val(buildingName)
 })
 
-window.addEventListener("trix-file-accept", function(event) {
+window.addEventListener("trix-file-accept", function (event) {
   event.preventDefault()
   alert("File attachment not supported!")
 })

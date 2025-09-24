@@ -1,12 +1,23 @@
 const google = window.google
 
 export function generateMarkers(items, handlers) {
-  if (!items) return null
+  if (!items || !Array.isArray(items)) return null
 
   const markers = {}
   items.forEach(item => {
+    if (!item || !item.id) {
+      console.warn('Skipping invalid item in generateMarkers:', item);
+      return;
+    }
+
     const lat = item.lat || item.latitude
     const lon = item.lon || item.longitude
+
+    if (!lat || !lon || isNaN(lat) || isNaN(lon)) {
+      console.warn(`Skipping item ${item.id} with invalid coordinates: lat=${lat}, lon=${lon}`);
+      return;
+    }
+
     const marker = new google.maps.Marker({
       position: new google.maps.LatLng(lat, lon),
       icon: getStaticIcon(),
@@ -29,6 +40,10 @@ export function generateMarkers(items, handlers) {
 
 function tweakMarker(id, icon, zIndex, markers) {
   const marker = markers[id]
+  if (!marker) {
+    console.warn(`Marker with id ${id} not found`);
+    return;
+  }
   marker.setIcon(icon)
   marker.setZIndex(zIndex)
 }
