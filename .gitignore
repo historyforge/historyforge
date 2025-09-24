@@ -23,6 +23,7 @@ certs
 coverage
 
 bin/deploy.sh
+bin/deploy-push
 
 # Ignore the default SQLite database.
 /db/*.sqlite3
