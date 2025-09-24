@@ -19,8 +19,9 @@ RUN apt-get update -qq && \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Generate and configure locale
-RUN locale-gen en_US.UTF-8 && \
-    update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
+RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
+    locale-gen en_US.UTF-8 && \
+    update-locale LANG=en_US.UTF-8
 
 RUN gem install bundler
 
