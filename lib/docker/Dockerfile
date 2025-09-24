@@ -12,17 +12,15 @@ RUN apt-get update -qq && \
   automake build-essential patch zlib1g-dev liblzma-dev git \
   libssl-dev libreadline-dev \
   libyaml-dev libcurl4-openssl-dev libffi-dev \
-  libpq-dev libvips locales postgresql-client
-
-# Clean up
-RUN \
+  libpq-dev libvips locales postgresql-client && \
   apt-get autoremove -y && \
   apt-get autoclean && \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# So the system doesn't complain about unable to set locale
-RUN locale-gen en_US.UTF-8
+# Generate and configure locale
+RUN locale-gen en_US.UTF-8 && \
+    update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
 
 RUN gem install bundler
 
