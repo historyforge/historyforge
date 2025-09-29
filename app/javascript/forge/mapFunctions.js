@@ -39,7 +39,7 @@ export function generateMarkers(items, handlers) {
 }
 
 function tweakMarker(id, icon, zIndex, markers) {
-  const marker = markers[id]
+  const marker = markers ? markers[id] : null;
   if (!marker) {
     console.warn(`Marker with id ${id} not found`);
     return;
