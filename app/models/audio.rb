@@ -33,6 +33,8 @@
 #  index_audios_on_reviewed_by_id  (reviewed_by_id)
 #
 class Audio < ApplicationRecord
+  include DataUri
+  include FileChecksum
   include Media
   include MediaDateBehavior
 end
