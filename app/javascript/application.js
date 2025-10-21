@@ -30,9 +30,24 @@ if (window.airbrakeCreds && window.env === 'production') {
     environment: 'production'
   })
 
-  window.addEventListener('error', (error) => {
+  window.addEventListener('error', (event) => {
     airbrake.notify({
-      error
+      error: event.error,
+      params: {
+        message: event.message,
+        filename: event.filename,
+        lineno: event.lineno,
+        colno: event.colno
+      }
+    })
+  })
+
+  window.addEventListener('unhandledrejection', (event) => {
+    airbrake.notify({
+      error: event.reason,
+      params: {
+        promise: event.promise
+      }
     })
   })
 }

@@ -39,7 +39,11 @@ export function generateMarkers(items, handlers) {
 }
 
 function tweakMarker(id, icon, zIndex, markers) {
-  const marker = markers ? markers[id] : null;
+  if (!markers) {
+    console.warn('Markers object is null or undefined');
+    return;
+  }
+  const marker = markers[id];
   if (!marker) {
     console.warn(`Marker with id ${id} not found`);
     return;

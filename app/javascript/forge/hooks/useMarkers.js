@@ -68,6 +68,10 @@ export function useMarkers(map, clusterMachine, bounds) {
       console.warn(`Invalid building ID for highlight: ${buildingId}`);
       return;
     }
+    if (!markers.current) {
+      console.warn('Markers not yet initialized');
+      return;
+    }
     highlightMarker(buildingId, markers.current);
     const marker = markers.current[buildingId];
     if (marker) {
@@ -83,6 +87,10 @@ export function useMarkers(map, clusterMachine, bounds) {
   const unHighlight = (buildingId) => {
     if (!buildingId || isNaN(buildingId)) {
       console.warn(`Invalid building ID for unhighlight: ${buildingId}`);
+      return;
+    }
+    if (!markers.current) {
+      console.warn('Markers not yet initialized');
       return;
     }
     unhighlightMarker(parseInt(buildingId), markers.current);
