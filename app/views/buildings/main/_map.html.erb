@@ -1,23 +1,41 @@
-<div id="miniforge"></div>
-<script type="text/javascript">
-    window.initialState = {
-        layers: { center: {lat: <%= @building.lat %>, lng: <%= @building.lon %>}, layers: <%== mini_forge_layers.to_json %> },
-        buildings: { buildings: <%== mini_forge_buildings.to_json %>, current: <%== @building.to_json %>, editable: <%== can?(:update, @building).to_json %>},
-        search: { params: <%== params.to_json %> }
-    }
-    window.googleApiKey = '<%= AppConfig[:google_api_key] %>'
-    <% if ENV["AIRBRAKE_KEY"] %>
-    window.airbrakeCreds = {
-        app_id: '<%= ENV["AIRBRAKE_ID"] %>',
-        api_key: '<%= ENV["AIRBRAKE_KEY"] %>',
-        host: '<%= ENV["AIRBRAKE_URL"] %>'
-    }
-    window.env = "<%= Rails.env.to_s %>"
-    <% end %>
-</script>
+<% if bot? %>
+  <% nearby_buildings = @building.neighbors.includes(:addresses).limit(5) %>
+  <% if nearby_buildings.any? %>
+    <div id="building-list">
+      <h3>Nearby Buildings</h3>
+      <div class="list-group">
+        <% nearby_buildings.each do |building| %>
+          <div class="list-group-item building">
+            <p>
+              <%= link_to building.street_address, building_path(building), title: "Open building record" %>
+            </p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+<% else %>
+  <div id="miniforge"></div>
+  <script type="text/javascript">
+      window.initialState = {
+          layers: { center: {lat: <%= @building.lat %>, lng: <%= @building.lon %>}, layers: <%== mini_forge_layers.to_json %> },
+          buildings: { buildings: <%== mini_forge_buildings.to_json %>, current: <%== @building.to_json %>, editable: <%== can?(:update, @building).to_json %>},
+          search: { params: <%== params.to_json %> }
+      }
+      window.googleApiKey = '<%= AppConfig[:google_api_key] %>'
+      <% if ENV["AIRBRAKE_KEY"] %>
+      window.airbrakeCreds = {
+          app_id: '<%= ENV["AIRBRAKE_ID"] %>',
+          api_key: '<%= ENV["AIRBRAKE_KEY"] %>',
+          host: '<%= ENV["AIRBRAKE_URL"] %>'
+      }
+      window.env = "<%= Rails.env.to_s %>"
+      <% end %>
+  </script>
 
-<script>
-    (g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})({
-        key: "<%= AppConfig[:google_api_key] -%>",
-    });
-</script>
+  <script>
+      (g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})({
+          key: "<%= AppConfig[:google_api_key] -%>",
+      });
+  </script>
+<% end %>

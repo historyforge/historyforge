@@ -2,6 +2,7 @@
 
 module Buildings
   class MainController < ApplicationController
+    include BotDetection
     include FastMemoize
     include AdvancedRestoreSearch
     include RenderCsv

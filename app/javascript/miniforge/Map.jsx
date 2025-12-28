@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from 'react'
 import loadWMS from '../forge/wms'
 import { getMainIcon, generateMarkers, highlightMarker, unhighlightMarker } from '../forge/mapFunctions'
 import { moveBuilding, highlight } from '../forge/actions'
-import {useDispatch, useSelector} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const google = window.google
 
@@ -51,7 +51,7 @@ export const Map = () => {
     if (!map && mapRef.current) {
       setMap(new google.maps.Map(mapRef.current, getMapOptions()));
     }
-  }, [map]);
+  }, []); // Empty dependency array - only run once on mount
 
   useEffect(() => {
     if (map && mapRef.current) {

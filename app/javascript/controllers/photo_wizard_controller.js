@@ -39,7 +39,7 @@ export default class extends Controller {
     this.initBuildings()
     this.initPeople()
     this.initDates()
-    this.initMap()
+    // Map initialization is deferred until user navigates to map step (lazy loading)
   }
 
   initDates() {
@@ -155,7 +155,7 @@ export default class extends Controller {
 
   initCard(card) {
     window.scrollTo(0, 0)
-    if (card.find('#map').length && !this.mapInitialized) {
+    if (card.find('#photograph-map').length && !this.mapInitialized) {
       this.initMap()
     }
     card.find('select:visible').chosen({
@@ -171,14 +171,30 @@ export default class extends Controller {
     this.initCard($(el).closest('.card').deactivateCard().next().activateCard())
   }
 
-  initMap() {
-    if (typeof google === 'undefined') {
-      setTimeout(
-        () => this.initMap(),
-        1000
-      )
+  async initMap() {
+    // Wait for Google Maps API to be available
+    if (typeof google === 'undefined' || !google.maps || !google.maps.importLibrary) {
+      // Wait for API to load (with timeout)
+      const maxWait = 10000 // 10 seconds
+      const startTime = Date.now()
+      while (typeof google === 'undefined' || !google.maps || !google.maps.importLibrary) {
+        if (Date.now() - startTime > maxWait) {
+          console.error('Google Maps API did not load within timeout period')
+          return
+        }
+        await new Promise(resolve => setTimeout(resolve, 100))
+      }
+    }
+
+    // Load required libraries
+    try {
+      await google.maps.importLibrary('maps')
+      await google.maps.importLibrary('places')
+    } catch (error) {
+      console.error('Failed to load Google Maps libraries:', error)
       return
     }
+
     this.mapInitialized = true
     const startLat = document.getElementById('photograph_latitude').value
     const startLon = document.getElementById('photograph_longitude').value

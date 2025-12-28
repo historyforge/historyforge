@@ -1,10 +1,10 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { useSelector } from "react-redux";
-import { useOpacity} from "./hooks/useOpacity";
+import { useOpacity } from "./hooks/useOpacity";
 import { useLayers } from "./hooks/useLayers";
 import { useMarkers } from "./hooks/useMarkers";
 import { useMapTargeting } from "./hooks/useMapTargeting";
-import {MarkerClusterer} from "@googlemaps/markerclusterer";
+import { MarkerClusterer } from "@googlemaps/markerclusterer";
 
 const google = window.google
 let boundsTimeout;
@@ -17,6 +17,7 @@ export const Map = () => {
   const map = mapRef.current;
   const [bounds, setBounds] = useState(null);
 
+  useEffect(() => {
     if (!mapRef.current && mapDivRef.current) {
       mapRef.current = new google.maps.Map(mapDivRef.current, mapOptions());
       mapRef.current.setCenter(props.center);
@@ -43,6 +44,7 @@ export const Map = () => {
         }, 250);
       });
     }
+  }, []); // Empty dependency array - only run once on mount
 
   useLayers(mapRef.current);
   useOpacity(mapRef.current);
@@ -50,7 +52,7 @@ export const Map = () => {
   useMapTargeting(mapRef.current, clusterMachine.current);
 
   return <div id="map-wrapper">
-    <div id="map" ref={mapDivRef}/>
+    <div id="map" ref={mapDivRef} />
   </div>
 }
 
@@ -61,10 +63,10 @@ function mapOptions() {
     gestureHandling: 'cooperative',
     zoomControl: true,
     mapTypeControl: true,
-      mapTypeControlOptions: {
-        style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
-        position: google.maps.ControlPosition.TOP_RIGHT,
-      },
+    mapTypeControlOptions: {
+      style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+      position: google.maps.ControlPosition.TOP_RIGHT,
+    },
     streetViewControl: true,
     styles: [{ featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'off' }] }]
   };
@@ -74,7 +76,8 @@ function buildClusterMachine(map) {
   return new MarkerClusterer({
     map,
     markers: [],
-    renderer: { render: ({ count, position }) => {
+    renderer: {
+      render: ({ count, position }) => {
         // create svg url with fill color
         const svg = window.btoa(`
   <svg fill="red" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240">
@@ -96,6 +99,7 @@ function buildClusterMachine(map) {
           // adjust zIndex to be above other markers
           zIndex: Number(google.maps.Marker.MAX_ZINDEX) + count,
         });
-      }}
+      }
+    }
   });
 }

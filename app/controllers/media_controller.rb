@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class MediaController < ApplicationController
+  include BotDetection
   include SqlInjectionProtection
   include Devise::Controllers::StoreLocation
   include RestoreSearch
