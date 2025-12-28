@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 source 'https://rubygems.org'
-ruby '3.4.5'
+ruby '3.4.7'
 
 gem 'active_interaction', '~> 5.2'
 gem 'activerecord-precounter'
@@ -39,7 +39,7 @@ gem 'pg'
 gem 'pg_search'
 gem 'pretender'
 gem 'puma'
-gem 'rails', '7.2.2.2'
+gem 'rails', '~> 7.2'
 gem 'rails_autolink'
 gem 'ransack'
 gem 'recaptcha'

@@ -1,4 +1,4 @@
-FROM ruby:3.4.5
+FROM ruby:3.4.7
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV RAILS_SERVE_STATIC_FILES true
@@ -18,23 +18,22 @@ RUN apt-get update -qq && \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Generate and configure locale
+# Generate locale (ENV vars already configure it)
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
-    locale-gen en_US.UTF-8 && \
-    update-locale LANG=en_US.UTF-8 && \
-    echo 'export LANG=en_US.UTF-8' >> /etc/bash.bashrc && \
-    echo 'export LC_ALL=en_US.UTF-8' >> /etc/bash.bashrc
+    locale-gen en_US.UTF-8
 
 RUN gem install bundler
 
-RUN mkdir /app
 WORKDIR /app
 
 ADD Gemfile ./Gemfile
 ADD Gemfile.lock ./Gemfile.lock
 
 RUN bundle config set without 'development:test' \
-    && bundle install --jobs 20 --retry 5
+    && bundle install --jobs 20 --retry 5 \
+    && rm -rf /usr/local/bundle/cache/*.gem \
+    && find /usr/local/bundle/gems/ -name "*.c" -delete \
+    && find /usr/local/bundle/gems/ -name "*.o" -delete
 
 COPY . .
 
