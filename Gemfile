@@ -42,6 +42,7 @@ gem 'puma'
 gem 'rails', '~> 7.2'
 gem 'rails_autolink'
 gem 'ransack'
+gem 'turbo-rails'
 gem 'recaptcha'
 gem 'ruby-vips'
 gem 'rubyXL', require: false

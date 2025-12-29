@@ -145,6 +145,12 @@ module ApplicationHelper
       t('helpers.page_entries_info.more_pages.display_entries', entry_name: entry_name, first: from, last: to, total:)
     end.html_safe
   end
+
+  # Returns the sanitized app name for use as Google Maps API channel parameter
+  # Delegates to AppConfig.google_maps_channel for precalculated value
+  def google_maps_channel
+    AppConfig.google_maps_channel
+  end
 end
 
 SimpleForm::FormBuilder.class_eval do

@@ -5,8 +5,8 @@ import { useLayers } from "./hooks/useLayers";
 import { useMarkers } from "./hooks/useMarkers";
 import { useMapTargeting } from "./hooks/useMapTargeting";
 import { MarkerClusterer } from "@googlemaps/markerclusterer";
+import { waitForGoogleMaps } from '../js/googleMapsLoader';
 
-const google = window.google
 let boundsTimeout;
 export const Map = () => {
   const props = useSelector(state => ({ ...state.layers, ...state.buildings, ...state.search }))
@@ -19,29 +19,37 @@ export const Map = () => {
 
   useEffect(() => {
     if (!mapRef.current && mapDivRef.current) {
-      mapRef.current = new google.maps.Map(mapDivRef.current, mapOptions());
-      mapRef.current.setCenter(props.center);
+      // Wait for Google Maps API to be available
+      waitForGoogleMaps().then(() => {
+        const google = window.google;
+        if (!mapRef.current && mapDivRef.current) {
+          mapRef.current = new google.maps.Map(mapDivRef.current, mapOptions(google));
+          mapRef.current.setCenter(props.center);
 
-      clusterMachine.current = buildClusterMachine(mapRef.current);
-      // We hide the forge controls when street view is on to give unimpeded street view.
-      google.maps.event.addListener(mapRef.current.getStreetView(), 'visible_changed', () => {
-        const streetViewOn = mapRef.current.getStreetView().getVisible();
-        if (streetViewOn) {
-          document.body.classList.add('streetview');
-        } else {
-          document.body.classList.remove('streetview');
+          clusterMachine.current = buildClusterMachine(mapRef.current, google);
+          // We hide the forge controls when street view is on to give unimpeded street view.
+          google.maps.event.addListener(mapRef.current.getStreetView(), 'visible_changed', () => {
+            const streetViewOn = mapRef.current.getStreetView().getVisible();
+            if (streetViewOn) {
+              document.body.classList.add('streetview');
+            } else {
+              document.body.classList.remove('streetview');
+            }
+          });
+
+          // We add markers only when the bounds have changed. Then we add only the markers visible
+          // in the map bounds. Don't worry, when the map first loads, it fires bounds_changed. But
+          // as you move the map, it also changes the bounds every step of the way. The timeout acts
+          // as a trailing debounce to redo the markers only when you've stopped scrolling the map.
+          google.maps.event.addListener(mapRef.current, "bounds_changed", () => {
+            clearTimeout(boundsTimeout);
+            boundsTimeout = setTimeout(() => {
+              setBounds(mapRef.current.getBounds());
+            }, 250);
+          });
         }
-      });
-
-      // We add markers only when the bounds have changed. Then we add only the markers visible
-      // in the map bounds. Don't worry, when the map first loads, it fires bounds_changed. But
-      // as you move the map, it also changes the bounds every step of the way. The timeout acts
-      // as a trailing debounce to redo the markers only when you've stopped scrolling the map.
-      google.maps.event.addListener(mapRef.current, "bounds_changed", () => {
-        clearTimeout(boundsTimeout);
-        boundsTimeout = setTimeout(() => {
-          setBounds(mapRef.current.getBounds());
-        }, 250);
+      }).catch(error => {
+        console.error('Failed to load Google Maps API:', error);
       });
     }
   }, []); // Empty dependency array - only run once on mount
@@ -56,7 +64,7 @@ export const Map = () => {
   </div>
 }
 
-function mapOptions() {
+function mapOptions(google) {
   return {
     zoom: 14,
     disableDefaultUI: true,
@@ -72,7 +80,7 @@ function mapOptions() {
   };
 }
 
-function buildClusterMachine(map) {
+function buildClusterMachine(map, google) {
   return new MarkerClusterer({
     map,
     markers: [],

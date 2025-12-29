@@ -24,13 +24,15 @@ require('codemirror/addon/edit/closetag')
 require('codemirror/addon/edit/matchtags')
 require('codemirror/addon/edit/matchbrackets')
 
-$(function() {
+const initializeCMS = () => {
   $('a[data-toggle="tab"]').on('shown.bs.tab', function() {
     $('.CodeMirror').each(function() {
       this.CodeMirror.refresh()
     })
   })
   $('textarea.codemirror').each(function() {
+    // Skip if already initialized (CodeMirror adds a class when initialized)
+    if ($(this).next('.CodeMirror').length > 0) { return; }
     const { mode } = this.dataset || 'html'
     const editor = CodeMirror.fromTextArea(this, {
       lineNumbers: true,
@@ -39,7 +41,11 @@ $(function() {
     })
     editor.setSize(null, 500)
   })
-})
+}
+
+// Handle both initial page load and Turbo navigation
+$(initializeCMS)
+document.addEventListener('turbo:load', initializeCMS)
 
 addEventListener('direct-upload:initialize', event => {
   const { target, detail } = event

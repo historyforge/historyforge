@@ -7,11 +7,11 @@
           = t('cms.add.section')
           span.caret
         .dropdown-menu.dropdown-menu-right
-          a.dropdown-item data-no-turbolinks="true" id="add-text-button"= t('cms.add.wysiwyg')
-          a.dropdown-item data-no-turbolinks="true" id="add-picture-button" = t('cms.add.picture')
-          a.dropdown-item data-no-turbolinks="true" id="add-document-button" = t('cms.add.document')
-          a.dropdown-item data-no-turbolinks="true" id="add-embed-button" = t('cms.add.embed')
-          a.dropdown-item data-no-turbolinks="true" id="add-audio-button" = t('cms.add.audio')
+          a.dropdown-item data-turbo="false" id="add-text-button"= t('cms.add.wysiwyg')
+          a.dropdown-item data-turbo="false" id="add-picture-button" = t('cms.add.picture')
+          a.dropdown-item data-turbo="false" id="add-document-button" = t('cms.add.document')
+          a.dropdown-item data-turbo="false" id="add-embed-button" = t('cms.add.embed')
+          a.dropdown-item data-turbo="false" id="add-audio-button" = t('cms.add.audio')
 
 = simple_form_for @page, wrapper: :horizontal_form, html: { id: 'cms-page-form' } do |form|
   - if @page.persisted?

@@ -13,14 +13,12 @@ import './js/census_form'
 import './js/home_page'
 import './js/terms'
 
-import Rails from '@rails/ujs'
+import '@hotwired/turbo-rails'
 
 import './controllers'
 import './forge'
 import './miniforge'
 import { Notifier } from '@airbrake/browser'
-
-Rails.start()
 
 if (window.airbrakeCreds && window.env === 'production') {
   const airbrake = new Notifier({
@@ -52,9 +50,20 @@ if (window.airbrakeCreds && window.env === 'production') {
   })
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+// Initialize on both DOMContentLoaded (initial page load) and turbo:load (Turbo navigation)
+const initializePage = () => {
   pageLoad()
-})
+}
+
+// Cleanup before Turbo caches the page
+const cleanupPage = () => {
+  // Destroy Bootstrap tooltips to prevent memory leaks
+  $('[rel=tooltip]').tooltip('dispose')
+}
+
+document.addEventListener('DOMContentLoaded', initializePage)
+document.addEventListener('turbo:load', initializePage)
+document.addEventListener('turbo:before-cache', cleanupPage)
 
 window.showSubmitButton = function (id, token) {
   document.getElementById(id).setAttribute('value', token);
@@ -112,21 +121,25 @@ function getBuildingList() {
 jQuery(document)
   .on('change', '#census_record_locality_id, #street_name, #street_suffix, #street_prefix, #street_house_number', getBuildingList)
 
-jQuery(function () {
+const initializeBuildingFields = () => {
   const building = jQuery('#building_id, #census_record_building_id')
   if (building.length) {
     getBuildingList()
     $('.census_record_ensure_building').toggle(!building.val().length)
   }
-})
+}
+
+jQuery(document)
+  .on('turbo:load', initializeBuildingFields)
   .on('change', '#building_id, #census_record_building_id', function () {
     $('.census_record_ensure_building').toggle(!$(this).val().length)
   })
 
 let buildingNamed = false
-jQuery(document).on('ready', function () {
+const initializeBuildingName = () => {
   buildingNamed = jQuery('#building_name').val()
-})
+}
+jQuery(document).on('turbo:load', initializeBuildingName)
 
 jQuery(document).on('change', '#building_address_house_number, #building_address_street_prefix, #building_address_street_name, #building_address_street_suffix', function () {
   if (buildingNamed) return

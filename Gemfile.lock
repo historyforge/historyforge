@@ -502,6 +502,9 @@ GEM
     tilt (2.6.1)
     timeout (0.4.4)
     tsort (0.2.0)
+    turbo-rails (2.0.20)
+      actionpack (>= 7.1.0)
+      railties (>= 7.1.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (3.1.5)
@@ -612,6 +615,7 @@ DEPENDENCIES
   simplecov
   slim
   sprockets-rails
+  turbo-rails
   web-console
   webdrivers
 

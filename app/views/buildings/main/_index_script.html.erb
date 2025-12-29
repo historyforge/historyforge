@@ -1,12 +1,21 @@
 <script type="text/javascript">
-document.addEventListener('DOMContentLoaded', (event) => {
+const initializeBuildingsGrid = () => {
+  const gridElement = document.querySelector('#grid');
+  if (!gridElement) return;
+
+  // Destroy existing grid if it exists (for Turbo navigation)
+  if (window.buildingsGrid) {
+    window.buildingsGrid.destroy();
+    window.buildingsGrid = null;
+  }
+
   $('#new_s').advancedSearch({
     url: '/buildings/advanced_search_filters.json',
     fields: <%== @search.f.to_json -%>,
     filters: <%== @search.s.to_json -%>
   });
 
-  new agGrid.Grid(document.querySelector('#grid'), {
+  window.buildingsGrid = new agGrid.Grid(gridElement, {
     components: {
       nameCellRenderer: NameCellRenderer, htmlCellRenderer: HTMLCellRenderer
     },
@@ -16,7 +25,17 @@ document.addEventListener('DOMContentLoaded', (event) => {
     rowModelType: 'infinite',
     datasource: GridDataSource
   });
+};
+
+// Handle both initial page load and Turbo navigation
+document.addEventListener('DOMContentLoaded', initializeBuildingsGrid);
+document.addEventListener('turbo:load', initializeBuildingsGrid);
+
+// Cleanup before Turbo caches the page
+document.addEventListener('turbo:before-cache', () => {
+  if (window.buildingsGrid) {
+    window.buildingsGrid.destroy();
+    window.buildingsGrid = null;
+  }
 });
-
-
 </script>

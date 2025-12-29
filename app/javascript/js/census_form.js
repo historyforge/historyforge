@@ -20,8 +20,9 @@ $.fn.extend({
   }
 })
 
-$(function() {
+const initializeCensusForm = () => {
   const $forms = $('#new_census_record, #edit_census_record')
+  if ($forms.length === 0) { return; }
 
   $forms.on('keypress', function (e) {
     const code = e.keyCode || e.which
@@ -74,7 +75,11 @@ $(function() {
         e.preventDefault()
       })
   })
-})
+}
+
+// Handle both initial page load and Turbo navigation
+$(initializeCensusForm)
+document.addEventListener('turbo:load', initializeCensusForm)
 
 $(document).on('change', '#census_record_page_side', function() {
   const value = $(this).val()

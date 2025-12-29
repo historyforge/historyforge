@@ -1,7 +1,10 @@
-const google = window.google
-
 export function generateMarkers(items, handlers) {
   if (!items || !Array.isArray(items)) return null
+  const google = window.google;
+  if (!google || !google.maps) {
+    console.error('Google Maps API not available');
+    return null;
+  }
 
   const markers = {}
   items.forEach(item => {
@@ -20,7 +23,7 @@ export function generateMarkers(items, handlers) {
 
     const marker = new google.maps.Marker({
       position: new google.maps.LatLng(lat, lon),
-      icon: getStaticIcon(),
+      icon: getStaticIcon(google),
       zIndex: 10
     })
     marker.buildingId = item.id
@@ -53,14 +56,18 @@ function tweakMarker(id, icon, zIndex, markers) {
 }
 
 export function highlightMarker(id, markers) {
-  tweakMarker(id, getHoverIcon(), 100, markers)
+  const google = window.google;
+  if (!google || !google.maps) return;
+  tweakMarker(id, getHoverIcon(google), 100, markers)
 }
 
 export function unhighlightMarker(id, markers) {
-  tweakMarker(id, getStaticIcon(), 10, markers)
+  const google = window.google;
+  if (!google || !google.maps) return;
+  tweakMarker(id, getStaticIcon(google), 10, markers)
 }
 
-function getBaseIcon() {
+function getBaseIcon(google) {
   return {
     path: google.maps.SymbolPath.CIRCLE,
     fillOpacity: 0.9,
@@ -70,20 +77,31 @@ function getBaseIcon() {
   }
 }
 
-function getHoverIcon() {
-  return Object.assign({}, getBaseIcon(), {
+function getHoverIcon(google) {
+  return Object.assign({}, getBaseIcon(google), {
     fillColor: 'blue'
   })
 }
 
-function getStaticIcon() {
-  return Object.assign({}, getBaseIcon(), {
+function getStaticIcon(google) {
+  return Object.assign({}, getBaseIcon(google), {
     fillColor: 'red'
   })
 }
 
 export function getMainIcon() {
-  return Object.assign({}, getBaseIcon(), {
+  const google = window.google;
+  if (!google || !google.maps) {
+    return {
+      path: 'M 0,0 C -2,-20 -10,-22 -10,-30 A 10,10 0 1,1 10,-30 C 10,-22 2,-20 0,0 z',
+      fillColor: 'green',
+      fillOpacity: 0.9,
+      scale: 10,
+      strokeColor: '#333',
+      strokeWeight: 1
+    };
+  }
+  return Object.assign({}, getBaseIcon(google), {
     fillColor: 'green',
     scale: 10
   })
