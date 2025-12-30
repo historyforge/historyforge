@@ -31,7 +31,7 @@ header data-turbo-permanent="true" id="main-header"
                   = link_to "Map Overlays", map_overlays_path, class: 'dropdown-item'
                   = link_to "Narratives", narratives_path, class: 'dropdown-item'
                   = link_to 'Person Records', people_path, class: 'dropdown-item'
-                  = link_to 'Rebuild Index', rebuild_index_path, class: 'dropdown-item', data: { method: :post }
+                  = link_to 'Rebuild Index', rebuild_index_path, class: 'dropdown-item', data: { turbo_method: :post }
                   = link_to "Settings", settings_path, class: 'dropdown-item'
                   = link_to "Street Conversions", street_conversions_path, class: 'dropdown-item'
                   = link_to "Users", users_path, class: 'dropdown-item'
@@ -56,10 +56,10 @@ header data-turbo-permanent="true" id="main-header"
                   | Localities
               .dropdown-menu
                 - if Current.locality_id
-                  = link_to 'Show All', reset_localities_path, data: { turbo_method: :put, method: :put }, class: 'dropdown-item'
+                  = link_to 'Show All', reset_localities_path, data: { turbo_method: :put }, class: 'dropdown-item'
                 - localities.each do |row|
                   - next if Current.locality_id && row.id == Current.locality_id
-                  = link_to row.short_name, set_locality_path(row), data: { turbo_method: :put, method: :put }, class: 'dropdown-item'
+                  = link_to row.short_name, set_locality_path(row), data: { turbo_method: :put }, class: 'dropdown-item'
 
           li.nav-item= link_to 'The Forge', forge_path, class: 'nav-link'
           li.nav-item.dropdown
@@ -89,7 +89,7 @@ header data-turbo-permanent="true" id="main-header"
                 .dropdown-item-text id="user-name"= current_user.name
                 = link_to 'My profile', user_path(current_user), class: 'dropdown-item'
                 = link_to 'Edit my account', edit_user_path(current_user), class: 'dropdown-item'
-                = link_to "Log out", destroy_user_session_path, method: :delete, data: { turbo_method: :delete }, class: 'dropdown-item'
+                = link_to "Log out", destroy_user_session_path, method: :delete, data: { turbo_method: :delete, turbo_confirm: 'Are you sure?' }, class: 'dropdown-item'
           - else
             li.nav-item id="login-menu-item"
               = link_to 'Log in', new_user_session_path, class: 'nav-link'

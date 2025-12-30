@@ -23,13 +23,13 @@ div.mb-3.clearfix.d-flex.justify-content-between
         span.d-none.d-md-inline
           | &nbsp;Edit
     - if can?(:destroy, @record)
-      = link_to @record, data: { method: :delete, confirm: 'Are you sure? There is no return short of re-entering the census record.' }, class: btn_class do
+      = link_to @record, method: :delete, data: { turbo_method: :delete, turbo_confirm: 'Are you sure? There is no return short of re-entering the census record.' }, class: btn_class do
         i.fa.fa-trash
         span.d-none.d-md-inline
           | &nbsp;Delete
     - if !@record.reviewed? && can?(:review, @record)
       | &nbsp;
-      => link_to 'Review', [:reviewed, @record], class: 'btn btn-sm btn-danger', data: { method: :put, confirm: 'You are about to make this census record public.' }
+      => link_to 'Review', [:reviewed, @record], class: 'btn btn-sm btn-danger', data: { turbo_method: :put, turbo_confirm: 'You are about to make this census record public.' }
 
   - if can?(:create, CensusRecord)
     .add-another-form.ml-auto.d-flex.justify-content-right
@@ -137,7 +137,7 @@ div.mb-3.clearfix.d-flex.justify-content-between
     - if @record.person_id.blank? && can?(:review, @record)
       .card.mb-3
         .card-header
-          = link_to 'Create New Person Record', [:make_person, @record], class: 'float-right', data: { method: :put, confirm: 'This will generate a new person record out of this census record.' }
+          = link_to 'Create New Person Record', [:make_person, @record], class: 'float-right', data: { turbo_method: :put, turbo_confirm: 'This will generate a new person record out of this census record.' }
           | Match Person Record
         - if @record.likely_person_matches.blank?
           .card-body

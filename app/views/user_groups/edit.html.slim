@@ -2,6 +2,6 @@
   = link_to 'Save', "javascript: $('form.edit_user_group').submit()", class: 'btn btn-primary'
   = link_to 'View', @user_group, class: 'btn btn-light'
   = link_to 'View All', user_groups_path, class: 'btn btn-light'
-  = link_to 'Delete', @user_group, class: 'btn btn-danger', data: { method: :delete, confirm: 'Are you sure? There is no undo.' }
+  = link_to 'Delete', @user_group, method: :delete, class: 'btn btn-danger', data: { turbo_method: :delete, turbo_confirm: 'Are you sure? There is no undo.' }
 h1.page-title Edit User Group
 = render 'form'

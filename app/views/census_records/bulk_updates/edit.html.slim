@@ -24,7 +24,7 @@
     p You won't be able to run the update until your criteria finds matching records.
   .card-footer
     = form.submit 'Submit', class: 'btn btn-lg btn-primary'
-    = link_to 'Never Mind', "/census/#{year}/bulk/#{@bulk_update.id}", class: 'btn btn-lg btn-secondary', data: { method: :delete }
+    = link_to 'Never Mind', "/census/#{year}/bulk/#{@bulk_update.id}", method: :delete, class: 'btn btn-lg btn-secondary', data: { turbo_method: :delete }
 
 - if records.any?
   br

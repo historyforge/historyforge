@@ -11,9 +11,9 @@ tr
       | &nbsp;
       - unless user == current_user
         - if user.enabled?
-          = link_to('disable', disable_user_path(user.id), method: :put)
+          = link_to('disable', disable_user_path(user.id), method: :put, data: { turbo_method: :put })
         - else
-          = link_to('enable', enable_user_path(user.id), :method => :put)
+          = link_to('enable', enable_user_path(user.id), method: :put, data: { turbo_method: :put })
   td
     - inherited_roles = user.group&.roles || []
     span href="#" rel="tooltip" data-placement="bottom" title=user.role_names.to_sentence

@@ -3,6 +3,6 @@
   = link_to 'View', @map_overlay, class: 'btn btn-light'
   = link_to 'View All', map_overlays_path, class: 'btn btn-light'
   - if @map_overlay.can_delete?
-    = link_to 'Delete', @map_overlay, class: 'btn btn-danger', data: { method: :delete, confirm: 'Are you sure? There is no undo.' }
+    = link_to 'Delete', @map_overlay, method: :delete, data: { turbo_method: :delete, turbo_confirm: 'Are you sure? There is no undo.' }, class: 'btn btn-danger'
 h1.page-title Edit Map Overlay
 = render 'form'

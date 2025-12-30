@@ -2,9 +2,9 @@
 - content_for :pills do
   = link_to 'View All', users_path, class: 'btn btn-sm btn-light'
   = link_to 'Edit', edit_user_path(@user), class: 'btn btn-sm btn-light' if can?(:update, @user)
-  = link_to 'Impersonate', mask_user_path(@user), class: 'btn btn-sm btn-light', data: { method: :put, remote: false } if can?(:manage, @user)
+  = link_to 'Impersonate', mask_user_path(@user), class: 'btn btn-sm btn-light', data: { turbo_method: :put, remote: false } if can?(:manage, @user)
   - if can?(:update, @user) && @user.invitation_accepted_at.blank? && !@user.enabled?
-    = link_to 'Resend Invite', resend_invitation_user_path(@user), data: { method: :put }, class: 'btn btn-sm btn-light'
+    = link_to 'Resend Invite', resend_invitation_user_path(@user), data: { turbo_method: :put }, class: 'btn btn-sm btn-light'
 
 ul.list-group
   li.list-group-item

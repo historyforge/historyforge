@@ -14,7 +14,7 @@ div.mb-3.clearfix.d-flex.justify-content-between
           | &nbsp; Edit
     = render 'merge_modal', btn_class:
     - if can?(:destroy, @person) && @person.census_records.blank?
-      = link_to @person, class: btn_class, data: { method: :delete, confirm: 'Are you sure?' } do
+      = link_to @person, method: :delete, data: { turbo_method: :delete, turbo_confirm: 'Are you sure?' }, class: btn_class do
         i.fa.fa-trash
         span.d-none.d-lg-inline
           | &nbsp; Delete

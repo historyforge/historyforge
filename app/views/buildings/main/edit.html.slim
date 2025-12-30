@@ -3,7 +3,7 @@
   = link_to 'View', @building, class: 'btn btn-light'
   = link_to 'View All', buildings_path, class: 'btn btn-light'
   - if can?(:destroy, @building)
-    = link_to @building, class: 'btn btn-danger', data: { method: :delete, confirm: 'Are you sure? There is no undo.' } do
+    = link_to @building, method: :delete, class: 'btn btn-danger', data: { turbo_method: :delete, turbo_confirm: 'Are you sure? There is no undo.' } do
       i.fa.fa-trash
       span.d-none.d-lg-inline
         | &nbsp; Delete
