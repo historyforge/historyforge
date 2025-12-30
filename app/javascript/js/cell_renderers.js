@@ -5,9 +5,14 @@ window.GridDataSource = {
       to: options.endRow,
       sort: options.sortModel
     }
+
+    const $ = window.jQuery || window.$;
     $.getJSON(document.location.toString(), params, (json) => {
       const lastRow = json.length < 100 ? options.startRow + json.length : null
       options.successCallback(json, lastRow)
+    }).fail((jqXHR, textStatus, errorThrown) => {
+      console.error('GridDataSource error:', textStatus, errorThrown);
+      options.failCallback();
     })
   }
 }

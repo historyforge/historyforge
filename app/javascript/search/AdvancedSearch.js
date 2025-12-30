@@ -2,38 +2,16 @@ import axios from 'axios'
 import addAttributeFilter from "./addAttributeFilter";
 import selectAttribute from "./selectAttribute";
 
-// Wait for jQuery to be available before extending it
-const initializeAdvancedSearch = () => {
-    if (typeof window.jQuery === 'undefined' && typeof window.$ === 'undefined') {
-        // jQuery not ready yet, wait a bit and try again
-        setTimeout(initializeAdvancedSearch, 10);
-        return;
-    }
-    
-    const $ = window.jQuery || window.$;
-    
-    // @ts-ignore
-    $.fn.advancedSearch = function(options) {
-        return this.each(function() {
-            $(this).data('search', new AdvancedSearch(this, options));
-            return this;
-        })
-    };
-};
+// Extend jQuery with advancedSearch plugin
+const $ = window.jQuery || window.$;
 
-// Initialize immediately if jQuery is available, otherwise wait
-if (typeof window.jQuery !== 'undefined' || typeof window.$ !== 'undefined') {
-    initializeAdvancedSearch();
-} else {
-    // Wait for DOMContentLoaded or turbo:load to ensure jQuery is loaded
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initializeAdvancedSearch);
-    } else {
-        // DOM already loaded, try initializing
-        setTimeout(initializeAdvancedSearch, 0);
-    }
-    document.addEventListener('turbo:load', initializeAdvancedSearch);
-}
+// @ts-ignore
+$.fn.advancedSearch = function(options) {
+    return this.each(function() {
+        $(this).data('search', new AdvancedSearch(this, options));
+        return this;
+    })
+};
 
 class AdvancedSearch {
     currentFilters; attributeFilters; form

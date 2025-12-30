@@ -1,4 +1,4 @@
-header
+header data-turbo-permanent="true" id="main-header"
   nav.navbar.navbar-light.navbar-expand-lg.navbar-fixed.top role="navigation"
     .container
       = link_to root_path, class: 'navbar-brand' do
@@ -13,17 +13,17 @@ header
           - if user_signed_in?
             - if current_user.has_role?("administrator")
               - flags_count = Flag.unresolved.count
-              li.dropdown.nav-item
+              li.dropdown.nav-item id="admin-menu-item"
                 a.nav-link.dropdown-toggle data-toggle='dropdown' href="#"
-                  - if flags_count > 0
-                    span.badge.badge-danger= flags_count
-                    = ' '
+                  span.badge.badge-danger id="admin-badge-top" style="#{flags_count > 0 ? '' : 'display: none;'}"
+                    = flags_count
+                  = ' ' if flags_count > 0
                   | Admin
                 .dropdown-menu
                   = link_to flags_path, class: 'dropdown-item' do
                     | Flagged Content &nbsp;
-                    - if flags_count > 0
-                      span.badge.badge-danger= flags_count
+                    span.badge.badge-danger id="admin-badge-menu" style="#{flags_count > 0 ? '' : 'display: none;'}"
+                      = flags_count
                   = link_to "CMS Pages", cms_pages_path, class: 'dropdown-item'
                   = link_to "Controlled Vocabularies", vocabularies_path, class: 'dropdown-item'
                   = link_to "Documents", documents_path, class: 'dropdown-item'
@@ -40,10 +40,11 @@ header
 
             - elsif current_user.has_role?("editor")
               - flags_count = Flag.unresolved.count
-              li.nav-item= link_to flags_path, class: 'nav-link' do
-                | Flagged Content &nbsp;
-                - if flags_count > 0
-                  span.badge.badge-danger= flags_count
+              li.nav-item id="editor-menu-item"
+                = link_to flags_path, class: 'nav-link' do
+                  | Flagged Content &nbsp;
+                  span.badge.badge-danger id="editor-badge" style="#{flags_count > 0 ? '' : 'display: none;'}"
+                    = flags_count
 
           - localities = Locality.all
           - if localities.length > 1
@@ -55,10 +56,10 @@ header
                   | Localities
               .dropdown-menu
                 - if Current.locality_id
-                  = link_to 'Show All', reset_localities_path, data: { method: :put }, class: 'dropdown-item'
+                  = link_to 'Show All', reset_localities_path, data: { turbo_method: :put, method: :put }, class: 'dropdown-item'
                 - localities.each do |row|
                   - next if Current.locality_id && row.id == Current.locality_id
-                  = link_to row.short_name, set_locality_path(row), data: { method: :put }, class: 'dropdown-item'
+                  = link_to row.short_name, set_locality_path(row), data: { turbo_method: :put, method: :put }, class: 'dropdown-item'
 
           li.nav-item= link_to 'The Forge', forge_path, class: 'nav-link'
           li.nav-item.dropdown
@@ -81,14 +82,15 @@ header
               = link_to 'Contact', contact_path, class: 'dropdown-item'
               = link_to 'Volunteer', "#{root_path}volunteer", class: 'dropdown-item'
           - if user_signed_in?
-            li.nav-item.dropleft
+            li.nav-item.dropleft id="user-menu-item"
               a.nav-link.dropdown-toggle data-toggle='dropdown' data-placement="left" href="#"
                 i.fa.fa-user
               .dropdown-menu
-                .dropdown-item-text= current_user.name
+                .dropdown-item-text id="user-name"= current_user.name
                 = link_to 'My profile', user_path(current_user), class: 'dropdown-item'
                 = link_to 'Edit my account', edit_user_path(current_user), class: 'dropdown-item'
-                = link_to "Log out", destroy_user_session_path, method: :delete, class: 'dropdown-item'
+                = link_to "Log out", destroy_user_session_path, method: :delete, data: { turbo_method: :delete }, class: 'dropdown-item'
           - else
-            li.nav-item= link_to 'Log in', new_user_session_path, class: 'nav-link'
+            li.nav-item id="login-menu-item"
+              = link_to 'Log in', new_user_session_path, class: 'nav-link'
 

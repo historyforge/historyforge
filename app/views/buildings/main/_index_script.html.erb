@@ -1,41 +1,66 @@
 <script type="text/javascript">
-const initializeBuildingsGrid = () => {
-  const gridElement = document.querySelector('#grid');
-  if (!gridElement) return;
+(function() {
+  'use strict';
+  
+  // Use a namespace to avoid conflicts
+  if (!window.BuildingsGrid) {
+    window.BuildingsGrid = {};
+  }
+  
+  const initializeBuildingsGrid = () => {
+    const gridElement = document.querySelector('#grid');
+    if (!gridElement) return;
 
-  // Destroy existing grid if it exists (for Turbo navigation)
-  if (window.buildingsGrid) {
-    window.buildingsGrid.destroy();
-    window.buildingsGrid = null;
+    // Destroy existing grid if it exists (for Turbo navigation)
+    if (window.buildingsGrid) {
+      window.buildingsGrid.destroy();
+      window.buildingsGrid = null;
+    }
+
+    // Only initialize advancedSearch if jQuery and the plugin are available
+    if (typeof window.jQuery !== 'undefined' && window.jQuery.fn.advancedSearch) {
+      window.jQuery('#new_s').advancedSearch({
+        url: '/buildings/advanced_search_filters.json',
+        fields: <%== @search.f.to_json -%>,
+        filters: <%== @search.s.to_json -%>
+      });
+    }
+
+    if (typeof agGrid !== 'undefined') {
+      window.buildingsGrid = new agGrid.Grid(gridElement, {
+        components: {
+          nameCellRenderer: NameCellRenderer, htmlCellRenderer: HTMLCellRenderer
+        },
+        columnDefs: <%== BuildingGridTranslator.new(@search).column_def.to_json -%>,
+        defaultColDef: { width: 100 },
+        rowSelection: 'single',
+        rowModelType: 'infinite',
+        datasource: GridDataSource
+      });
+    }
+  };
+
+  // Remove old listeners if they exist
+  if (window.BuildingsGrid.initialized) {
+    document.removeEventListener('DOMContentLoaded', window.BuildingsGrid.initializeHandler);
+    document.removeEventListener('turbo:load', window.BuildingsGrid.initializeHandler);
+    document.removeEventListener('turbo:before-cache', window.BuildingsGrid.cleanupHandler);
   }
 
-  $('#new_s').advancedSearch({
-    url: '/buildings/advanced_search_filters.json',
-    fields: <%== @search.f.to_json -%>,
-    filters: <%== @search.s.to_json -%>
-  });
+  // Store handlers for cleanup
+  window.BuildingsGrid.initializeHandler = initializeBuildingsGrid;
+  window.BuildingsGrid.cleanupHandler = () => {
+    if (window.buildingsGrid) {
+      window.buildingsGrid.destroy();
+      window.buildingsGrid = null;
+    }
+  };
 
-  window.buildingsGrid = new agGrid.Grid(gridElement, {
-    components: {
-      nameCellRenderer: NameCellRenderer, htmlCellRenderer: HTMLCellRenderer
-    },
-    columnDefs: <%== BuildingGridTranslator.new(@search).column_def.to_json -%>,
-    defaultColDef: { width: 100 },
-    rowSelection: 'single',
-    rowModelType: 'infinite',
-    datasource: GridDataSource
-  });
-};
+  // Handle both initial page load and Turbo navigation
+  document.addEventListener('DOMContentLoaded', window.BuildingsGrid.initializeHandler);
+  document.addEventListener('turbo:load', window.BuildingsGrid.initializeHandler);
+  document.addEventListener('turbo:before-cache', window.BuildingsGrid.cleanupHandler);
 
-// Handle both initial page load and Turbo navigation
-document.addEventListener('DOMContentLoaded', initializeBuildingsGrid);
-document.addEventListener('turbo:load', initializeBuildingsGrid);
-
-// Cleanup before Turbo caches the page
-document.addEventListener('turbo:before-cache', () => {
-  if (window.buildingsGrid) {
-    window.buildingsGrid.destroy();
-    window.buildingsGrid = null;
-  }
-});
+  window.BuildingsGrid.initialized = true;
+})();
 </script>
