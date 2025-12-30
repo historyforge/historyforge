@@ -97,4 +97,4 @@
     => form.submit 'Save & Edit', class: 'btn btn-primary btn-lg save-edit'
     - if @page.persisted?
       =<> form.submit 'Save & View', class: 'btn btn-primary btn-lg save-view'
-      =<> link_to 'Delete Page', @page, class: 'btn btn-danger btn-lg', data: { method: :delete, confirm: 'Are you sure you want to delete this page?' }
+      =<> link_to 'Delete Page', @page, method: :delete, data: { turbo_method: :delete, turbo_confirm: 'Are you sure you want to delete this page?' }, class: 'btn btn-danger btn-lg'

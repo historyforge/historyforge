@@ -3,7 +3,7 @@
   = link_to 'View', @record, class: 'btn btn-light'
   = link_to 'View All', resource_class, class: 'btn btn-light'
   - if can?(:destroy, @record)
-    = link_to 'Delete', @record, class: 'btn btn-danger', data: { method: :delete, confirm: 'Are you sure? There is no undo.' }
+    = link_to 'Delete', @record, method: :delete, class: 'btn btn-danger', data: { turbo_method: :delete, turbo_confirm: 'Are you sure? There is no undo.' }
 h1.page-title= @record.name
 = render 'shared/flag_resolution', item: @record
 = render 'form'

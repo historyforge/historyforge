@@ -25,7 +25,7 @@
         - if can?(:update, @asset)
           = link_to 'Edit Video', [:edit, @asset], class: 'btn btn-light'
         - if can?(:destroy, @asset)
-          = link_to 'Delete Video', @asset, class: 'btn btn-light', data: { confirm: 'Are you sure?', method: :delete }
+          = link_to 'Delete Video', @asset, method: :delete, class: 'btn btn-light', data: { turbo_method: :delete, turbo_confirm: 'Are you sure?' }
         = render 'shared/flag_it', item: @asset.object, item_class: 'btn btn-light'
 
     .col-12
@@ -52,7 +52,7 @@
     - else
       .alert.alert-info.alert-block
         | Mark this video as reviewed? &nbsp; &nbsp;
-        =< link_to 'Review', [:review, @asset], class: 'btn btn-primary', data: { method: :put, confirm: 'Go ahead with it?' }
+        =< link_to 'Review', [:review, @asset], class: 'btn btn-primary', data: { turbo_method: :put, turbo_confirm: 'Go ahead with it?' }
 
   - if can?(:review, @asset)
     = panel 'Metadata' do

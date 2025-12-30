@@ -13,7 +13,7 @@ div.mb-3.clearfix.d-flex.justify-content-between
         span.d-none.d-lg-inline
           | &nbsp; Edit
     - if can?(:review, @building.object) && !@building.reviewed?
-      = link_to 'Review', [:review, @building], class: btn_class, data: { method: :put }
+      = link_to 'Review', [:review, @building], class: btn_class, data: { turbo_method: :put }
     = render 'merge_modal', btn_class:
     = link_to 'View All', buildings_path, class: btn_class
 

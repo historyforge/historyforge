@@ -9,17 +9,37 @@
   
   const initializeBuildingsGrid = () => {
     const gridElement = document.querySelector('#grid');
-    if (!gridElement) return;
+    if (!gridElement) {
+      // Clean up if grid element doesn't exist
+      if (window.buildingsGrid) {
+        window.buildingsGrid.destroy();
+        window.buildingsGrid = null;
+      }
+      return;
+    }
 
     // Destroy existing grid if it exists (for Turbo navigation)
     if (window.buildingsGrid) {
-      window.buildingsGrid.destroy();
+      try {
+        window.buildingsGrid.destroy();
+      } catch (e) {
+        // Grid might already be destroyed
+        console.debug('Buildings grid destroy error (ignored):', e);
+      }
       window.buildingsGrid = null;
     }
 
+    // Clear the grid element completely before reinitializing
+    gridElement.innerHTML = '';
+
     // Only initialize advancedSearch if jQuery and the plugin are available
     if (typeof window.jQuery !== 'undefined' && window.jQuery.fn.advancedSearch) {
-      window.jQuery('#new_s').advancedSearch({
+      const $form = window.jQuery('#new_s');
+      // Destroy existing advancedSearch instance if it exists
+      if ($form.data('search')) {
+        $form.data('search', null);
+      }
+      $form.advancedSearch({
         url: '/buildings/advanced_search_filters.json',
         fields: <%== @search.f.to_json -%>,
         filters: <%== @search.s.to_json -%>

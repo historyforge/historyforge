@@ -22,5 +22,5 @@
   - if AppConfig[:facebook_login_enabled]
     br
     - resource_class.omniauth_providers.each do |provider|
-      = link_to image_tag('socials/' + provider.to_s + '_login.png', :width => '250', id: provider.to_s + '_button',), omniauth_authorize_path(resource_name, provider), method: :post
+      = link_to image_tag('socials/' + provider.to_s + '_login.png', :width => '250', id: provider.to_s + '_button',), omniauth_authorize_path(resource_name, provider), method: :post, data: { turbo_method: :post }
       br
