@@ -5,6 +5,7 @@
   "dependencies": {
     "@airbrake/browser": "^2.1.9",
     "@googlemaps/markerclusterer": "^2.5.3",
+    "@hotwired/turbo-rails": "^8.0.0",
     "@rails/actiontext": "^6.0.2-2",
     "@rails/ujs": "^6.0.4",
     "activestorage": "^5.2.4-2",

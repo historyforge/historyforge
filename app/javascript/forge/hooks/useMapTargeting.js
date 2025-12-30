@@ -12,6 +12,8 @@ export function useMapTargeting(map, clusterMachine) {
     }
 
     if (focusOnPoints && prevFocusOnPoints !== focusOnPoints) {
+      const google = window.google;
+      if (!google || !google.maps) return;
       // We don't want it to be fitting bounds and juggling thousands of markers, when the coming bounds
       // change will clear and re-add them anyway.
       clusterMachine.clearMarkers();

@@ -13,14 +13,12 @@ import './js/census_form'
 import './js/home_page'
 import './js/terms'
 
-import Rails from '@rails/ujs'
+import '@hotwired/turbo-rails'
 
 import './controllers'
 import './forge'
 import './miniforge'
 import { Notifier } from '@airbrake/browser'
-
-Rails.start()
 
 if (window.airbrakeCreds && window.env === 'production') {
   const airbrake = new Notifier({
@@ -52,9 +50,114 @@ if (window.airbrakeCreds && window.env === 'production') {
   })
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+// Initialize on both DOMContentLoaded (initial page load) and turbo:load (Turbo navigation)
+const initializePage = () => {
   pageLoad()
-})
+}
+
+// Cleanup before Turbo caches the page
+const cleanupPage = () => {
+  // Destroy Bootstrap tooltips to prevent memory leaks
+  $('[rel=tooltip]').tooltip('dispose')
+}
+
+document.addEventListener('DOMContentLoaded', initializePage)
+document.addEventListener('turbo:load', initializePage)
+document.addEventListener('turbo:before-cache', cleanupPage)
+
+// Update header data (flag counts, login status) - called after login/logout or flag updates
+// Update header from incoming Turbo response to avoid flashing
+// Since header is permanent (data-turbo-permanent), Turbo won't replace it automatically
+// We extract the new header HTML and update only #navbar-nav (the menu list) to preserve everything else
+document.addEventListener('turbo:before-render', (event) => {
+  const newDocument = event.detail.newBody;
+  const newHeader = newDocument.querySelector('#main-header');
+  const currentHeader = document.querySelector('#main-header');
+
+  if (newHeader && currentHeader) {
+    // Update only the <ul> inside #navbar-nav (the menu list)
+    // This preserves the logo, toggle button, and collapse wrapper
+    const newNavbarNav = newHeader.querySelector('#navbar-nav');
+    const currentNavbarNav = currentHeader.querySelector('#navbar-nav');
+
+    if (newNavbarNav && currentNavbarNav) {
+      // Get the ul element inside #navbar-nav
+      const newNavList = newNavbarNav.querySelector('ul.navbar-nav');
+      const currentNavList = currentNavbarNav.querySelector('ul.navbar-nav');
+
+      if (newNavList && currentNavList) {
+        const newNavHTML = newNavList.innerHTML;
+        const currentNavHTML = currentNavList.innerHTML;
+
+        // Only update if menu content actually changed
+        if (newNavHTML !== currentNavHTML) {
+          // Temporarily disable transitions to prevent flash
+          currentNavList.style.transition = 'none';
+
+          // Replace only the menu list items (preserves logo, toggle button, collapse wrapper, etc.)
+          currentNavList.innerHTML = newNavHTML;
+
+          // Re-enable transitions after a brief delay
+          setTimeout(() => {
+            currentNavList.style.transition = '';
+          }, 0);
+
+          // Re-initialize Bootstrap dropdowns
+          // Use setTimeout to ensure DOM is ready
+          setTimeout(() => {
+            const $ = window.jQuery || window.$;
+            if ($ && typeof $.fn.dropdown !== 'undefined') {
+              $('#main-header [data-toggle="dropdown"]').each(function () {
+                const $toggle = $(this);
+                try {
+                  const dropdownData = $toggle.data('bs.dropdown');
+                  if (dropdownData) {
+                    dropdownData.dispose();
+                  }
+                } catch (e) {
+                  // No existing instance
+                }
+                try {
+                  $toggle.dropdown();
+                } catch (e) {
+                  // Bootstrap will handle via delegation
+                }
+              });
+            }
+          }, 0);
+        }
+      }
+    }
+  }
+});
+
+// Flag form submissions redirect, so header updates happen automatically via turbo:before-render
+// No need for separate AJAX update
+
+// Dynamically load cms.js if user gains CMS permissions after login
+// Turbo merges <head> but may not execute new script tags
+document.addEventListener('turbo:before-render', (event) => {
+  const newDocument = event.detail.newBody;
+  const newHead = event.detail.newHead;
+
+  // Check if new page has cms.js script tag but current page doesn't
+  const newCmsScript = newHead.querySelector('script[src*="cms"]');
+  const currentCmsScript = document.head.querySelector('script[src*="cms"]');
+
+  if (newCmsScript && !currentCmsScript) {
+    // User gained CMS permissions - dynamically load cms.js
+    const script = document.createElement('script');
+    script.src = newCmsScript.src;
+    script.type = 'text/javascript';
+    script.onload = () => {
+      // Trigger CMS initialization if it exists
+      if (typeof window.initializeCMS === 'function') {
+        window.initializeCMS();
+      }
+    };
+    document.head.appendChild(script);
+  }
+});
 
 window.showSubmitButton = function (id, token) {
   document.getElementById(id).setAttribute('value', token);
@@ -112,21 +215,25 @@ function getBuildingList() {
 jQuery(document)
   .on('change', '#census_record_locality_id, #street_name, #street_suffix, #street_prefix, #street_house_number', getBuildingList)
 
-jQuery(function () {
+const initializeBuildingFields = () => {
   const building = jQuery('#building_id, #census_record_building_id')
   if (building.length) {
     getBuildingList()
     $('.census_record_ensure_building').toggle(!building.val().length)
   }
-})
+}
+
+jQuery(document)
+  .on('turbo:load', initializeBuildingFields)
   .on('change', '#building_id, #census_record_building_id', function () {
     $('.census_record_ensure_building').toggle(!$(this).val().length)
   })
 
 let buildingNamed = false
-jQuery(document).on('ready', function () {
+const initializeBuildingName = () => {
   buildingNamed = jQuery('#building_name').val()
-})
+}
+jQuery(document).on('turbo:load', initializeBuildingName)
 
 jQuery(document).on('change', '#building_address_house_number, #building_address_street_prefix, #building_address_street_name, #building_address_street_suffix', function () {
   if (buildingNamed) return

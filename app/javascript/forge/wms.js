@@ -25,11 +25,22 @@ function radiansToDegrees(rad) {
 const MERCATOR_RANGE = 256;
 
 class MercatorProjection {
-    pixelOrigin_ = new google.maps.Point(MERCATOR_RANGE / 2, MERCATOR_RANGE / 2);
+    pixelOrigin_ = null;
     pixelsPerLonDegree_ = MERCATOR_RANGE / 360;
     pixelsPerLonRadian_ = MERCATOR_RANGE / (2 * Math.PI);
 
+    constructor() {
+        const google = window.google;
+        if (google && google.maps) {
+            this.pixelOrigin_ = new google.maps.Point(MERCATOR_RANGE / 2, MERCATOR_RANGE / 2);
+        }
+    }
+
     fromLatLngToPoint(latLng, opt_point) {
+        const google = window.google;
+        if (!google || !google.maps) {
+            throw new Error('Google Maps API not available');
+        }
         const point = opt_point || new google.maps.Point(0, 0);
 
         const origin = this.pixelOrigin_;
@@ -42,6 +53,10 @@ class MercatorProjection {
     }
 
     fromDivPixelToLatLng(pixel, zoom) {
+        const google = window.google;
+        if (!google || !google.maps) {
+            throw new Error('Google Maps API not available');
+        }
         const origin = this.pixelOrigin_;
         const scale = Math.pow(2, zoom);
         const lng = (pixel.x / scale - origin.x) / this.pixelsPerLonDegree_;
@@ -51,6 +66,10 @@ class MercatorProjection {
     }
 
     fromDivPixelToSphericalMercator(pixel, zoom) {
+        const google = window.google;
+        if (!google || !google.maps) {
+            throw new Error('Google Maps API not available');
+        }
         const coord = this.fromDivPixelToLatLng(pixel, zoom);
 
         const r = 6378137.0;
@@ -89,6 +108,10 @@ class WMSLoader {
     }
 
     getTileUrl(coord, zoom) {
+        const google = window.google;
+        if (!google || !google.maps) {
+            throw new Error('Google Maps API not available');
+        }
         const lULP = new google.maps.Point(coord.x*256,(coord.y+1)*256);
         const lLRP = new google.maps.Point((coord.x+1)*256,coord.y*256);
 
@@ -106,6 +129,10 @@ class WMSLoader {
     }
 
     get overlayOptions() {
+        const google = window.google;
+        if (!google || !google.maps) {
+            throw new Error('Google Maps API not available');
+        }
         return {
             getTileUrl: this.getTileUrl.bind(this),
             tileSize: new google.maps.Size(256, 256),
@@ -118,6 +145,10 @@ class WMSLoader {
     }
 
     load() {
+        const google = window.google;
+        if (!google || !google.maps) {
+            throw new Error('Google Maps API not available');
+        }
         const overlayWMS = new google.maps.ImageMapType(this.overlayOptions);
 
         if (this.position === 'top') {

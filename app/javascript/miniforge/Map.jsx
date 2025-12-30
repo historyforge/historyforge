@@ -3,10 +3,9 @@ import loadWMS from '../forge/wms'
 import { getMainIcon, generateMarkers, highlightMarker, unhighlightMarker } from '../forge/mapFunctions'
 import { moveBuilding, highlight } from '../forge/actions'
 import { useDispatch, useSelector } from "react-redux";
+import { waitForGoogleMaps } from '../js/googleMapsLoader';
 
-const google = window.google
-
-const getMapOptions = () => ({
+const getMapOptions = (google) => ({
   zoom: 18,
   disableDefaultUI: true,
   gestureHandling: 'cooperative',
@@ -49,7 +48,15 @@ export const Map = () => {
 
   useEffect(() => {
     if (!map && mapRef.current) {
-      setMap(new google.maps.Map(mapRef.current, getMapOptions()));
+      // Wait for Google Maps API to be available
+      waitForGoogleMaps().then(() => {
+        const google = window.google;
+        if (!map && mapRef.current) {
+          setMap(new google.maps.Map(mapRef.current, getMapOptions(google)));
+        }
+      }).catch(error => {
+        console.error('Failed to load Google Maps API:', error);
+      });
     }
   }, []); // Empty dependency array - only run once on mount
 
@@ -152,6 +159,7 @@ function addMarkers(map, markers) {
 }
 
 function addMainMarker(map, current, editable, move) {
+  const google = window.google;
   const marker = new google.maps.Marker({
     position: new google.maps.LatLng(current.object.lat, current.object.lon),
     icon: getMainIcon(),

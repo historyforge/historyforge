@@ -43,6 +43,8 @@ export function useMarkers(map, clusterMachine, bounds) {
     if (prevAddressedAt !== addressedAt) {
       setPrevAddressedAt(addressedAt);
       if (bubble) {
+        const google = window.google;
+        if (!google || !google.maps) return;
         if (infoWindow.current) infoWindow.current.close();
         infoWindow.current = new google.maps.InfoWindow({
           content: bubble.address

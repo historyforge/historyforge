@@ -1,12 +1,33 @@
 <script type="text/javascript">
-    document.addEventListener('DOMContentLoaded', (event) => {
-      $('#new_s').advancedSearch({
+(function() {
+  'use strict';
+  
+  // Use a namespace to avoid conflicts
+  if (!window.CensusGrid) {
+    window.CensusGrid = {};
+  }
+  
+  const initializeGrid = () => {
+    const gridElement = document.querySelector('#grid');
+    if (!gridElement) return;
+
+    // Destroy existing grid if it exists (for Turbo navigation)
+    if (window.currentGrid) {
+      window.currentGrid.destroy();
+      window.currentGrid = null;
+    }
+
+    // Only initialize advancedSearch if jQuery and the plugin are available
+    if (typeof window.jQuery !== 'undefined' && window.jQuery.fn.advancedSearch) {
+      window.jQuery('#new_s').advancedSearch({
         url: '<%= File.join(url_for().sub(/\/unhoused|\/unreviewed|\/unmatched/, ""), "advanced_search_filters.json") -%>',
         fields: <%== @search.f.to_json.html_safe -%>,
         filters: <%== @search.s.to_json.html_safe -%>
       });
+    }
 
-      new agGrid.Grid(document.querySelector('#grid'), {
+    if (typeof agGrid !== 'undefined') {
+      window.currentGrid = new agGrid.Grid(gridElement, {
         components: {
           actionCellRenderer: ActionCellRenderer,
           censusLinkCellRenderer: CensusLinkCellRenderer,
@@ -19,5 +40,30 @@
         rowModelType: 'infinite',
         datasource: GridDataSource
       });
-    });
+    }
+  };
+
+  // Remove old listeners if they exist
+  if (window.CensusGrid.initialized) {
+    document.removeEventListener('DOMContentLoaded', window.CensusGrid.initializeHandler);
+    document.removeEventListener('turbo:load', window.CensusGrid.initializeHandler);
+    document.removeEventListener('turbo:before-cache', window.CensusGrid.cleanupHandler);
+  }
+
+  // Store handlers for cleanup
+  window.CensusGrid.initializeHandler = initializeGrid;
+  window.CensusGrid.cleanupHandler = () => {
+    if (window.currentGrid) {
+      window.currentGrid.destroy();
+      window.currentGrid = null;
+    }
+  };
+
+  // Handle both initial page load and Turbo navigation
+  document.addEventListener('DOMContentLoaded', window.CensusGrid.initializeHandler);
+  document.addEventListener('turbo:load', window.CensusGrid.initializeHandler);
+  document.addEventListener('turbo:before-cache', window.CensusGrid.cleanupHandler);
+
+  window.CensusGrid.initialized = true;
+})();
 </script>

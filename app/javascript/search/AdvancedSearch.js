@@ -2,6 +2,9 @@ import axios from 'axios'
 import addAttributeFilter from "./addAttributeFilter";
 import selectAttribute from "./selectAttribute";
 
+// Extend jQuery with advancedSearch plugin
+const $ = window.jQuery || window.$;
+
 // @ts-ignore
 $.fn.advancedSearch = function(options) {
     return this.each(function() {
