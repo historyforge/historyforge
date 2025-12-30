@@ -50,15 +50,46 @@ if (window.airbrakeCreds && window.env === 'production') {
   })
 }
 
+// Initialize parallax on elements with data-parallax attribute
+const initializeParallax = () => {
+  const $ = window.jQuery || window.$;
+  if (!$ || !$.fn.parallax) return;
+
+  // Destroy existing parallax instances first to avoid duplicates
+  $('[data-parallax]').each(function () {
+    const $el = $(this);
+    // Check if parallax is already initialized
+    if ($el.data('px.parallax')) {
+      $el.parallax('destroy');
+    }
+    // Reinitialize parallax
+    $el.parallax();
+  });
+
+  // Trigger resize/scroll to refresh parallax positions
+  $(window).trigger('resize').trigger('scroll');
+};
+
 // Initialize on both DOMContentLoaded (initial page load) and turbo:load (Turbo navigation)
 const initializePage = () => {
-  pageLoad()
+  pageLoad();
+  initializeParallax();
 }
 
 // Cleanup before Turbo caches the page
 const cleanupPage = () => {
+  const $ = window.jQuery || window.$;
   // Destroy Bootstrap tooltips to prevent memory leaks
-  $('[rel=tooltip]').tooltip('dispose')
+  $('[rel=tooltip]').tooltip('dispose');
+  // Destroy parallax instances to prevent memory leaks
+  if ($ && $.fn.parallax) {
+    $('[data-parallax]').each(function () {
+      const $el = $(this);
+      if ($el.data('px.parallax')) {
+        $el.parallax('destroy');
+      }
+    });
+  }
 }
 
 document.addEventListener('DOMContentLoaded', initializePage)
@@ -136,18 +167,17 @@ document.addEventListener('turbo:before-render', (event) => {
 
 // Dynamically load cms.js if user gains CMS permissions after login
 // Turbo merges <head> but may not execute new script tags
-document.addEventListener('turbo:before-render', (event) => {
-  const newDocument = event.detail.newBody;
-  const newHead = event.detail.newHead;
+let cmsScriptLoaded = false;
 
-  // Check if new page has cms.js script tag but current page doesn't
-  const newCmsScript = newHead.querySelector('script[src*="cms"]');
-  const currentCmsScript = document.head.querySelector('script[src*="cms"]');
+document.addEventListener('turbo:load', () => {
+  const cmsScriptTag = document.head.querySelector('script[src*="cms"]');
 
-  if (newCmsScript && !currentCmsScript) {
-    // User gained CMS permissions - dynamically load cms.js
+  // If cms.js script tag exists but we haven't loaded it yet
+  if (cmsScriptTag && !cmsScriptLoaded) {
+    cmsScriptLoaded = true;
+    // Script tag exists but hasn't executed - load it manually
     const script = document.createElement('script');
-    script.src = newCmsScript.src;
+    script.src = cmsScriptTag.src;
     script.type = 'text/javascript';
     script.onload = () => {
       // Trigger CMS initialization if it exists
@@ -156,6 +186,9 @@ document.addEventListener('turbo:before-render', (event) => {
       }
     };
     document.head.appendChild(script);
+  } else if (!cmsScriptTag) {
+    // Script tag removed (user logged out) - reset flag
+    cmsScriptLoaded = false;
   }
 });
 
