@@ -62,37 +62,128 @@ module Buildings
 
           context 'when building has no locality' do
             # Since buildings require a locality, we'll test the nil check by stubbing locality to return nil
+            let(:default_lat) { 42.4418353 }
+            let(:default_lon) { -76.4987984 }
+
             before do
               allow(building).to receive(:locality).and_return(nil)
-              allow(building).to receive(:geocode) do
-                building.lat = 42.4430
-                building.lon = -76.5000
-                true
-              end
-              described_class.run(building:)
+              allow(AppConfig).to receive(:[]).and_call_original
+              allow(AppConfig).to receive(:[]).with(:latitude).and_return(default_lat)
+              allow(AppConfig).to receive(:[]).with(:longitude).and_return(default_lon)
             end
 
-            it 'keeps the geocoded coordinates' do
-              expect(building.lat).to eq(42.4430)
-              expect(building.lon).to eq(-76.5000)
+            context 'when geocoded location is within 50km of default center' do
+              before do
+                allow(building).to receive(:geocode) do
+                  building.lat = default_lat
+                  building.lon = default_lon
+                  true
+                end
+                described_class.run(building:)
+              end
+
+              it 'keeps the geocoded coordinates' do
+                expect(building.lat).to eq(default_lat)
+                expect(building.lon).to eq(default_lon)
+              end
+            end
+
+            context 'when geocoded location is more than 50km from default center' do
+              before do
+                allow(building).to receive(:geocode) do
+                  # Set geocoded coordinates far away (approximately 100km away)
+                  building.lat = default_lat + 0.9 # ~100km north
+                  building.lon = default_lon
+                  true
+                end
+                described_class.run(building:)
+              end
+
+              it 'replaces coordinates with default center' do
+                expect(building.lat).to eq(default_lat)
+                expect(building.lon).to eq(default_lon)
+              end
+            end
+
+            context 'when default center is not configured' do
+              before do
+                allow(AppConfig).to receive(:[]).with(:latitude).and_return(nil)
+                allow(AppConfig).to receive(:[]).with(:longitude).and_return(nil)
+                allow(building).to receive(:geocode) do
+                  building.lat = 42.4430
+                  building.lon = -76.5000
+                  true
+                end
+                described_class.run(building:)
+              end
+
+              it 'skips validation and keeps the geocoded coordinates' do
+                expect(building.lat).to eq(42.4430)
+                expect(building.lon).to eq(-76.5000)
+              end
             end
           end
 
           context 'when locality has no coordinates' do
             let(:locality) { create(:locality, latitude: nil, longitude: nil) }
+            let(:default_lat) { 42.4418353 }
+            let(:default_lon) { -76.4987984 }
 
             before do
-              allow(building).to receive(:geocode) do
-                building.lat = 42.4430
-                building.lon = -76.5000
-                true
-              end
-              described_class.run(building:)
+              allow(AppConfig).to receive(:[]).and_call_original
+              allow(AppConfig).to receive(:[]).with(:latitude).and_return(default_lat)
+              allow(AppConfig).to receive(:[]).with(:longitude).and_return(default_lon)
             end
 
-            it 'keeps the geocoded coordinates' do
-              expect(building.lat).to eq(42.4430)
-              expect(building.lon).to eq(-76.5000)
+            context 'when geocoded location is within 50km of default center' do
+              before do
+                allow(building).to receive(:geocode) do
+                  building.lat = default_lat
+                  building.lon = default_lon
+                  true
+                end
+                described_class.run(building:)
+              end
+
+              it 'keeps the geocoded coordinates' do
+                expect(building.lat).to eq(default_lat)
+                expect(building.lon).to eq(default_lon)
+              end
+            end
+
+            context 'when geocoded location is more than 50km from default center' do
+              before do
+                allow(building).to receive(:geocode) do
+                  # Set geocoded coordinates far away (approximately 100km away)
+                  building.lat = default_lat + 0.9 # ~100km north
+                  building.lon = default_lon
+                  true
+                end
+                described_class.run(building:)
+              end
+
+              it 'replaces coordinates with default center' do
+                expect(building.lat).to eq(default_lat)
+                expect(building.lon).to eq(default_lon)
+              end
+            end
+
+            context 'when default center is not configured' do
+              before do
+                allow(AppConfig).to receive(:[]).with(:latitude).and_return(nil)
+                allow(AppConfig).to receive(:[]).with(:longitude).and_return(nil)
+                allow(building).to receive(:geocode) do
+                  building.lat = 42.4430
+                  building.lon = -76.5000
+                  true
+                end
+                described_class.run(building:)
+              end
+
+              it 'skips validation and keeps the geocoded coordinates' do
+                expect(building.lat).to eq(42.4430)
+                expect(building.lon).to eq(-76.5000)
+              end
             end
           end
 
