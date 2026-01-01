@@ -1,5 +1,5 @@
 - content_for :pills do
-  = link_to 'Save', "javascript: $('form.edit_person').submit()", class: 'btn btn-primary'
+  button.btn.btn-primary type="button" onclick="document.querySelector('form.edit_person')?.requestSubmit()" Save
   = link_to 'View', @person, class: 'btn btn-light'
   = link_to 'View All', people_path, class: 'btn btn-light'
   - if can?(:destroy, @person)

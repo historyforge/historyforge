@@ -1,5 +1,5 @@
 .float-right.btn-group
-  = link_to 'Save', "javascript: $('form.edit_locality').submit()", class: 'btn btn-primary'
+  button.btn.btn-primary type="button" onclick="document.querySelector('form.edit_locality')?.requestSubmit()" Save
   = link_to 'View', @locality, class: 'btn btn-light'
   = link_to 'View All', localities_path, class: 'btn btn-light'
   = link_to 'Delete', @locality, method: :delete, class: 'btn btn-danger', data: { turbo_method: :delete, turbo_confirm: 'Are you sure? There is no undo.' }

@@ -17,6 +17,12 @@ h4,
 h5,
 h6 {
   font-family: 'Roboto';
+  
+  // Prevent links inside headings from inheriting bold font-weight
+  // This fixes inconsistent bolding on Turbo navigation
+  a {
+    font-weight: normal;
+  }
 }
 
 a {

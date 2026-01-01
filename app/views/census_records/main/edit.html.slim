@@ -1,5 +1,5 @@
 .float-right.btn-group
-  = link_to 'Save', "javascript: $('form.simple_form').submit()", class: 'btn btn-primary'
+  button.btn.btn-primary type="button" onclick="document.querySelector('form.simple_form')?.requestSubmit()" Save
   = link_to 'View', @record, class: 'btn btn-light'
   = link_to 'View All', resource_class, class: 'btn btn-light'
   - if can?(:destroy, @record)

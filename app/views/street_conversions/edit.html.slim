@@ -1,5 +1,5 @@
 .float-right.btn-group
-  = link_to 'Save', "javascript: $('form.edit_street_conversion').submit()", class: 'btn btn-primary'
+  button.btn.btn-primary type="button" onclick="document.querySelector('form.edit_street_conversion')?.requestSubmit()" Save
   = link_to 'View', @street_conversion, class: 'btn btn-light'
   = link_to 'View All', street_conversions_path, class: 'btn btn-light'
   = link_to 'Delete', @street_conversion, method: :delete, class: 'btn btn-danger', data: { turbo_method: :delete, turbo_confirm: 'Are you sure? There is no undo.' }

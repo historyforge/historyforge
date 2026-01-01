@@ -2,7 +2,7 @@
 - content_for :pills do
   = link_to 'View All', videos_path, class: 'btn btn-light'
   = link_to 'View', @asset, class: 'btn btn-light'
-  = link_to 'Save', "javascript: $('[data-controller=photo-wizard]').submit()", class: 'btn btn-primary'
+  button.btn.btn-primary type="button" onclick="document.querySelector('[data-controller=photo-wizard]')?.requestSubmit()" Save
 
 - set_page_title 'Edit Video'
 
