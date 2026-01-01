@@ -210,11 +210,7 @@ class Building < ApplicationRecord
   end
 
   def do_the_geocode
-    return if Rails.env.test?
-
-    geocode
-  rescue Errno::ENETUNREACH
-    nil
+    Buildings::Geocode.run(building: self)
   end
 
   def full_street_address
