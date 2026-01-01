@@ -25,8 +25,7 @@ class DocumentCategoriesController < ApplicationController
       flash[:notice] = 'Good job creating the category!'
       redirect_to action: :index
     else
-      flash[:error] = 'We had some problems doing that.'
-      render :new
+      render_form_with_errors(:new)
     end
   end
 
@@ -37,8 +36,7 @@ class DocumentCategoriesController < ApplicationController
       flash[:notice] = 'Great job! The document category has been updated.'
       redirect_to action: :index
     else
-      flash[:error] = 'Sorry Dave I can\'t do that right now.'
-      render action: :edit
+      render_form_with_errors(:edit)
     end
   end
 

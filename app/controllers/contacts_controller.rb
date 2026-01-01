@@ -14,8 +14,7 @@ class ContactsController < ApplicationController
       flash[:notice] = "Thanks! Your message has been sent."
       redirect_to root_path
     else
-      flash[:error] = "Oops did you fill out the form correctly?"
-      render action: :new
+      render_form_with_errors(:new)
     end
   end
 

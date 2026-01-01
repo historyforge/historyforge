@@ -72,9 +72,9 @@ module Users
       resource.validate # Look for any other validation errors besides reCAPTCHA
 
       set_minimum_password_length
-      respond_with_navigational(resource) do
+        respond_with_navigational(resource) do
         flash.discard(:recaptcha_error) # We need to discard flash to avoid showing it on the next page reload
-        render :new
+        render_form_with_errors(:new)
       end
     end
 

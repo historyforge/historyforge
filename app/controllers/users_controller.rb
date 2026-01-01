@@ -46,8 +46,7 @@ class UsersController < ApplicationController
       flash[:notice] = "An invitation email has been sent to #{@user.email}."
       redirect_to user_path(@user)
     else
-      flash[:error] = 'Could not invite user.'
-      render action: :new
+      render_form_with_errors(:new)
     end
   end
 
@@ -59,9 +58,8 @@ class UsersController < ApplicationController
       flash[:notice] = 'User updated'
       redirect_to user_path(@user)
     else
-      flash[:error] = "Unable to save the user record. #{@user.errors.full_messages.join('. ')}"
       @html_title = 'Edit User Settings'
-      render action: 'edit'
+      render_form_with_errors(:edit)
     end
   end
 

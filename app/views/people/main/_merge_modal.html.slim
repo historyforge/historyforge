@@ -16,4 +16,4 @@
               p.lead Enter the Person ID of the duplicate person record:
               = form.text_field :merge_id, class: 'form-control'
             .modal-footer
-              = form.submit 'Submit', data: {:disable_with => 'Sending...'}, :class => 'btn btn-primary'
+              = form.submit 'Submit', data: { turbo_submits_with: 'Sending...' }, class: 'btn btn-primary'

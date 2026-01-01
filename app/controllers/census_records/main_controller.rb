@@ -88,8 +88,7 @@ module CensusRecords
         flash[:notice] = 'Census Record saved.'
         after_saved
       else
-        flash[:error] = 'Census Record not saved.'
-        render action: :new
+        render_form_with_errors(:new)
       end
     end
 
@@ -100,8 +99,7 @@ module CensusRecords
         flash[:notice] = 'Census Record saved.'
         after_saved
       else
-        flash[:error] = 'Census Record not saved.'
-        render action: :edit
+        render_form_with_errors(:edit)
       end
     end
 

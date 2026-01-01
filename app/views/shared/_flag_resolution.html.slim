@@ -18,4 +18,4 @@
                 = hidden_field_tag 'flag[mark_resolved]', '1'
                 = form.input :comment, label: 'Any comments?'
               .modal-footer
-                = form.submit 'Submit', data: {:disable_with => 'Sending...'}, :class => 'btn btn-primary'
+                = form.submit 'Submit', data: { turbo_submits_with: 'Sending...' }, class: 'btn btn-primary'

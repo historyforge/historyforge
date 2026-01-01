@@ -38,8 +38,7 @@ class Cms::PagesController < ApplicationController
       flash[:notice] = "Successfully created page \"#{@page.title}\"!"
       redirect_to params[:next] == 'edit' ? edit_cms_page_path(@page) : @page
     else
-      flash[:error] = 'The page was not created because of errors on the form.'
-      render action: :new
+      render_form_with_errors(:new)
     end
   end
 
@@ -49,8 +48,7 @@ class Cms::PagesController < ApplicationController
       flash[:notice] = "Successfully updated page \"#{@page.title}\"!"
       redirect_to params[:next] == 'edit' ? edit_cms_page_path(@page) : @page
     else
-      flash[:error] = 'The page was not updated because of errors on the form.'
-      render action: :edit
+      render_form_with_errors(:edit)
     end
   end
 

@@ -50,7 +50,7 @@
               = check_box_tag 'f[]', field, @search.f.include?(field), id: "f_#{field}", data: { default: @search.default_field?(field) }
               = translated_label resource_class, field
       .card-footer
-        = form.submit 'Submit', data: { disable_with: 'Sending...' }, class: 'btn btn-primary mr-auto'
+        = form.submit 'Submit', data: { turbo_submits_with: 'Sending...' }, class: 'btn btn-primary mr-auto'
         button.btn.btn-light.ml-auto.checkall data-scope="#fields" type="button" Check all
 
   .collapse.fade#newAttributeFilter
@@ -83,4 +83,4 @@
           .scope-selection-container.col-3
           .value-input-container.col-6
       .card-footer
-        = form.submit 'Submit', data: { disable_with: 'Sending...' }, class: 'btn btn-primary'
+        = form.submit 'Submit', data: { turbo_submits_with: 'Sending...' }, class: 'btn btn-primary'

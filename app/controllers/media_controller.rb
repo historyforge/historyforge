@@ -54,8 +54,7 @@ class MediaController < ApplicationController
       flash[:notice] = "The #{what} has been uploaded and saved."
       perform_redirect
     else
-      flash[:error] = "Sorry we could not save the #{what}. Please correct the errors and try again."
-      render action: :edit
+      render_form_with_errors(:edit)
     end
     @asset.process
   end
@@ -68,8 +67,7 @@ class MediaController < ApplicationController
       flash[:notice] = "The #{what} has been updated."
       perform_redirect
     else
-      flash[:error] = "The #{what} has been saved, but cannot be marked as reviewed until it has been fully dressed."
-      render action: :edit
+      render_form_with_errors(:edit)
     end
   end
 

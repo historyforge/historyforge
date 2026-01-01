@@ -51,4 +51,4 @@ table.table.table-condensed.table-striped
             p.lead Be sure it is the correct vocabulary, or you will have to delete the terms you accidentally import.
             = form.input :file, as: :file
           .modal-footer
-            = form.submit 'Submit', data: {:disable_with => 'Sending...'}, :class => 'btn btn-primary'
+            = form.submit 'Submit', data: { turbo_submits_with: 'Sending...' }, class: 'btn btn-primary'

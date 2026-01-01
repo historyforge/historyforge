@@ -86,9 +86,8 @@ module Buildings
         flash[:notice] = 'Building created.'
         redirect_to @building
       else
-        flash[:error] = 'Building not saved.'
         @building.ensure_primary_address
-        render action: :new
+        render_form_with_errors(:new)
       end
     end
 
@@ -102,8 +101,7 @@ module Buildings
           format.html { redirect_to action: :show }
         end
       else
-        flash[:error] = 'Building not saved.'
-        render action: :edit
+        render_form_with_errors(:edit)
       end
     end
 
@@ -122,8 +120,7 @@ module Buildings
         flash[:notice] = 'Building reviewed.'
         redirect_to @building
       else
-        flash[:error] = 'Building not reviewed.'
-        render action: :new
+        render_form_with_errors(:new)
       end
     end
 

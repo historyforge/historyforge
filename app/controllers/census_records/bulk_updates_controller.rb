@@ -29,7 +29,7 @@ module CensusRecords
       if @bulk_update.save
         redirect_to "/census/#{year}/bulk/#{@bulk_update.id}/edit"
       else
-        render action: :new
+        render_form_with_errors(:new)
       end
     end
 
@@ -44,11 +44,10 @@ module CensusRecords
           flash[:notice] = "Bulk update completed! #{count} record(s) were changed."
           redirect_to "/census/#{year}/bulk/#{@bulk_update.id}"
         else
-          render action: :edit
+          render_form_with_errors(:edit)
         end
       else
-        flash[:error] = 'Bulk update failed. Did you fill in the form?'
-        render action: :edit
+        render_form_with_errors(:edit)
       end
     end
 

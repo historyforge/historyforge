@@ -19,4 +19,4 @@
                       bare: true,
                       collection: @building.neighbors.map { |b| [b.street_address, b.id] }
             .modal-footer
-              = form.submit 'Submit', data: { disable_with: 'Sending...' }, class: 'btn btn-primary'
+              = form.submit 'Submit', data: { turbo_submits_with: 'Sending...' }, class: 'btn btn-primary'

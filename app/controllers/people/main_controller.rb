@@ -60,8 +60,7 @@ module People
         flash[:notice] = 'Person created.'
         redirect_to @person
       else
-        flash[:error] = 'Person not saved.'
-        render action: :new
+        render_form_with_errors(:new)
       end
     end
 
@@ -72,8 +71,7 @@ module People
         flash[:notice] = 'Person updated.'
         redirect_to @person
       else
-        flash[:error] = 'Person not saved.'
-        render action: :edit
+        render_form_with_errors(:edit)
       end
     end
 

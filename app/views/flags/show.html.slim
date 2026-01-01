@@ -20,4 +20,4 @@ p= @flag.display_reason
   = form.input :comment, as: :string, label: 'Any comments on this issue?'
 
   .form-actions
-    = form.submit 'Submit', data: {:disable_with => 'Sending...'}, :class => 'btn btn-primary'
+    = form.submit 'Submit', data: { turbo_submits_with: 'Sending...' }, class: 'btn btn-primary'

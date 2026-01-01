@@ -45,8 +45,7 @@ class DocumentsController < ApplicationController
       flash[:notice] = 'The document has been saved.'
       redirect_to action: :index, document_category_id: @document.document_category_id
     else
-      flash[:error] = 'This document failed to upload. Usually it means the file type is not allowed.'
-      render :new
+      render_form_with_errors(:new)
     end
   end
 
@@ -57,8 +56,7 @@ class DocumentsController < ApplicationController
       flash[:notice] = 'Great job! The document has been updated.'
       redirect_to action: :index, document_category_id: @document.document_category_id
     else
-      flash[:error] = 'Sorry Dave I can\'t do that right now.'
-      render action: :edit
+      render_form_with_errors(:edit)
     end
   end
 

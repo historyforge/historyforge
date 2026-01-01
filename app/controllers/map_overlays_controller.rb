@@ -21,8 +21,7 @@ class MapOverlaysController < ApplicationController
       flash[:notice] = 'Added the new map overlay.'
       redirect_to action: :index
     else
-      flash[:error] = "Sorry couldn't do it."
-      render action: :new
+      render_form_with_errors(:new)
     end
   end
 
@@ -37,8 +36,7 @@ class MapOverlaysController < ApplicationController
       redirect_to action: :index
 
     else
-      flash[:error] = "Sorry couldn't do it."
-      render action: :edit
+      render_form_with_errors(:edit)
     end
   end
 
