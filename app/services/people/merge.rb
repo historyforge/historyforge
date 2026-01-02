@@ -17,6 +17,7 @@ module People
         merge_associations
         create_audit_log
       end
+      source.reload.destroy
       target.reload
     end
 
@@ -40,8 +41,10 @@ module People
       merge_names
       merge_census_records
       merge_photographs
+      merge_narratives
+      merge_audios
+      merge_videos
       merge_localities
-      source.reload.destroy
     end
 
     def merge_names
@@ -55,12 +58,34 @@ module People
       CensusYears.each do |year|
         CensusRecord.for_year(year)
           .where(person_id: source.id)
-          .update_all(person_id: target.id)
+          .find_each do |record|
+            record.update!(person_id: target.id)
+          end
       end
     end
 
     def merge_photographs
-      source.photos.each { |photo| photo.people << target }
+      source.photos.each do |photo|
+        photo.people << target unless photo.people.include?(target)
+      end
+    end
+
+    def merge_narratives
+      source.narratives.each do |narrative|
+        narrative.people << target unless narrative.people.include?(target)
+      end
+    end
+
+    def merge_audios
+      source.audios.each do |audio|
+        audio.people << target unless audio.people.include?(target)
+      end
+    end
+
+    def merge_videos
+      source.videos.each do |video|
+        video.people << target unless video.people.include?(target)
+      end
     end
 
     def merge_localities

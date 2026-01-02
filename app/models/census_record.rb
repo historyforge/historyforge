@@ -147,7 +147,9 @@ class CensusRecord < ApplicationRecord
   end
 
   def audit_person_connection
-    person_from, person_to = saved_change_to_person_id
+    person_from_id, person_to_id = saved_change_to_person_id
+    person_from = Person.find(person_from_id) if person_from_id.present?
+    person_to = Person.find(person_to_id) if person_to_id.present?
     CensusRecords::AuditPersonConnection.run!(person_from:, person_to:, year:, name:)
   end
 
