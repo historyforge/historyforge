@@ -33,7 +33,6 @@
 FactoryBot.define do
   factory :audio do
     created_by { nil }
-    building { nil }
     description { "MyText" }
     creator { "MyString" }
     date_text { "MyString" }
