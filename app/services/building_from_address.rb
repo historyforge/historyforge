@@ -12,8 +12,7 @@ class BuildingFromAddress
     return original_address.building if original_address.persisted?
     return modern_address.building if modern_address.persisted?
 
-    building = Building.new name: modern_address.address,
-                            locality: record.locality,
+    building = Building.new locality: record.locality,
                             building_type_ids: [3] # residence
 
     modern_address.is_primary = true
