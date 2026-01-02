@@ -218,4 +218,48 @@ RSpec.describe Building do
       end
     end
   end
+
+  describe '#name_the_house' do
+    let(:locality) { create(:locality, name: 'City of Ithaca', short_name: 'Ithaca') }
+    let(:building) { build(:building, locality: locality, name: nil) }
+
+    context 'when building name is blank' do
+      it 'auto-populates name using locality name instead of address city' do
+        building.addresses = [
+          build(:address, building: building, city: 'Different City', house_number: '123', name: 'Main', prefix: nil, suffix: 'St', is_primary: true)
+        ]
+        building.valid?
+        expect(building.name).to eq('123 Main St City of Ithaca')
+      end
+
+      it 'includes locality name even when address city is blank' do
+        building.addresses = [
+          build(:address, building: building, city: nil, house_number: '456', name: 'Oak', prefix: 'N', suffix: 'Ave', is_primary: true)
+        ]
+        building.valid?
+        expect(building.name).to eq('456 N Oak Ave City of Ithaca')
+      end
+
+      it 'does not override existing name' do
+        building.name = 'Custom Building Name'
+        building.addresses = [
+          build(:address, building: building, city: 'Some City', house_number: '789', name: 'Elm', suffix: 'St', is_primary: true)
+        ]
+        building.valid?
+        expect(building.name).to eq('Custom Building Name')
+      end
+
+      context 'when building has no locality' do
+        let(:building_without_locality) { build(:building, locality: nil, name: nil) }
+
+        it 'uses address city as fallback' do
+          building_without_locality.addresses = [
+            build(:address, building: building_without_locality, city: 'Some City', house_number: '999', name: 'Park', prefix: nil, suffix: 'Rd', is_primary: true)
+          ]
+          building_without_locality.valid?
+          expect(building_without_locality.name).to eq('999 Park Rd Some City')
+        end
+      end
+    end
+  end
 end

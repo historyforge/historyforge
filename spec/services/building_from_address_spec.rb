@@ -26,4 +26,11 @@ RSpec.describe BuildingFromAddress do
   it 'has the correct primary street address' do
     expect(result.primary_street_address).to eq('405 N Tioga St Ithaca')
   end
+
+  it 'uses locality name in building name instead of address city' do
+    locality = create(:locality, name: 'City of Ithaca', short_name: 'Ithaca')
+    record.locality = locality
+    building = described_class.new(record).perform
+    expect(building.name).to eq('405 N Tioga St City of Ithaca')
+  end
 end

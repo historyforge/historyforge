@@ -272,8 +272,12 @@ class Building < ApplicationRecord
     addresses.sort.map(&:address_with_year).join("\n")
   end
 
+  def primary_address
+    (addresses.detect(&:is_primary) || addresses.first || OpenStruct.new(address: "No address"))
+  end
+
   def primary_street_address
-    (addresses.detect(&:is_primary) || addresses.first || OpenStruct.new(address: "No address")).address
+    primary_address.address
   end
 
   def ensure_primary_address
@@ -283,7 +287,11 @@ class Building < ApplicationRecord
   def name_the_house
     return if name.present?
 
-    self.name = primary_street_address
+
+    address_parts = [primary_address.house_number, primary_address.prefix, primary_address.name, primary_address.suffix].compact
+    location_name = locality&.name || primary_address.city
+    address_parts << location_name if location_name.present?
+    self.name = address_parts.join(' ')
   end
 
   before_validation :name_the_house
