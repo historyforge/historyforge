@@ -47,16 +47,26 @@
     }
 
     if (typeof agGrid !== 'undefined') {
-      window.buildingsGrid = new agGrid.Grid(gridElement, {
+      const gridOptions = {
         components: {
           nameCellRenderer: NameCellRenderer, htmlCellRenderer: HTMLCellRenderer
         },
         columnDefs: <%== BuildingGridTranslator.new(@search).column_def.to_json -%>,
-        defaultColDef: { width: 100 },
+        defaultColDef: { width: 100, resizable: true },
         rowSelection: 'single',
         rowModelType: 'infinite',
-        datasource: GridDataSource
-      });
+        datasource: GridDataSource,
+        // Ensure resize handles work after Turbo navigation
+        onFirstDataRendered: () => {
+          // Grid is ready - resize handles should now be functional
+          if (window.buildingsGrid && window.buildingsGrid.api) {
+            // Trigger a refresh to ensure resize handles are active
+            window.buildingsGrid.api.refreshHeader();
+          }
+        }
+      };
+      
+      window.buildingsGrid = new agGrid.Grid(gridElement, gridOptions);
     }
   };
 

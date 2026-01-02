@@ -47,7 +47,7 @@
     }
 
     if (typeof agGrid !== 'undefined') {
-      window.currentGrid = new agGrid.Grid(gridElement, {
+      const gridOptions = {
         components: {
           actionCellRenderer: ActionCellRenderer,
           censusLinkCellRenderer: CensusLinkCellRenderer,
@@ -55,11 +55,21 @@
           htmlCellRenderer: HTMLCellRenderer
         },
         columnDefs: <%== @translator.column_def.to_json -%>,
-        defaultColDef: { width: 100 },
+        defaultColDef: { width: 100, resizable: true },
         rowSelection: 'single',
         rowModelType: 'infinite',
-        datasource: GridDataSource
-      });
+        datasource: GridDataSource,
+        // Ensure resize handles work after Turbo navigation
+        onFirstDataRendered: () => {
+          // Grid is ready - resize handles should now be functional
+          if (window.currentGrid && window.currentGrid.api) {
+            // Trigger a refresh to ensure resize handles are active
+            window.currentGrid.api.refreshHeader();
+          }
+        }
+      };
+      
+      window.currentGrid = new agGrid.Grid(gridElement, gridOptions);
     }
   };
 

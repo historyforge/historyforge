@@ -70,10 +70,58 @@ const initializeParallax = () => {
   $(window).trigger('resize').trigger('scroll');
 };
 
+// Ensure textareas and Trix editors maintain resize capability after Turbo navigation
+// Turbo's page caching can interfere with native browser resize functionality
+const initializeTextareaResize = () => {
+  // Handle regular textareas
+  const textareas = document.querySelectorAll('textarea');
+  textareas.forEach((textarea) => {
+    // Ensure resize CSS is applied (may be lost during Turbo navigation)
+    if (!textarea.style.resize) {
+      textarea.style.resize = 'both';
+    }
+    // Ensure overflow is set correctly for resize handles to appear
+    if (!textarea.style.overflow || textarea.style.overflow === 'hidden') {
+      textarea.style.overflow = 'auto';
+    }
+  });
+
+  // Handle Trix rich text editors
+  const trixEditors = document.querySelectorAll('trix-editor');
+  trixEditors.forEach((editor) => {
+    // Ensure resize CSS is applied to Trix editors
+    if (!editor.style.resize) {
+      editor.style.resize = 'both';
+    }
+    if (!editor.style.overflow || editor.style.overflow === 'hidden') {
+      editor.style.overflow = 'auto';
+    }
+    // Ensure minimum height is maintained
+    if (!editor.style.minHeight) {
+      editor.style.minHeight = '200px';
+    }
+  });
+
+  // Also handle .trix-content containers (Rails ActionText wrapper)
+  const trixContents = document.querySelectorAll('.trix-content');
+  trixContents.forEach((content) => {
+    if (!content.style.resize) {
+      content.style.resize = 'both';
+    }
+    if (!content.style.overflow || content.style.overflow === 'hidden') {
+      content.style.overflow = 'auto';
+    }
+    if (!content.style.minHeight) {
+      content.style.minHeight = '200px';
+    }
+  });
+}
+
 // Initialize on both DOMContentLoaded (initial page load) and turbo:load (Turbo navigation)
 const initializePage = () => {
   pageLoad();
   initializeParallax();
+  initializeTextareaResize();
 }
 
 // Cleanup before Turbo caches the page

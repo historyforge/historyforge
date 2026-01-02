@@ -383,6 +383,17 @@ div.date {
   }
 }
 
+// Ensure ag-Grid column resize handles are visible and functional
+.ag-header-cell-resize {
+  cursor: col-resize;
+  user-select: none;
+  touch-action: none;
+}
+
+.ag-header-cell-resize:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
 #search-pagination-bottom {
   position: fixed;
   left: 0;
@@ -538,6 +549,12 @@ form table {
   margin-top: 2.25rem;
   padding-top: 1.125rem;
   border-top: 1px solid $border-color;
+}
+
+// Ensure textareas can be resized by dragging the corner
+textarea {
+  resize: both;
+  overflow: auto;
 }
 
 [data-href] {
@@ -696,6 +713,21 @@ abbr[title] {
 
 #narrative_story {
   min-height: 16rem;
+}
+
+// Make Trix rich text editors resizable
+// Rails ActionText wraps trix-editor in a .trix-content container
+.trix-content {
+  resize: both;
+  overflow: auto;
+  min-height: 200px;
+}
+
+// Also target the trix-editor element directly for better compatibility
+trix-editor {
+  resize: both;
+  overflow: auto;
+  min-height: 200px;
 }
 
 #alerts {
