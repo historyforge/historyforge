@@ -38,6 +38,8 @@ class NextCensusRecordAttributes
   end
 
   def at_end_of_page?
+    return false unless record.line_number
+
     record.line_number == record.per_page
   end
 
