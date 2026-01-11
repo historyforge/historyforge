@@ -72,6 +72,7 @@ class CensusGridTranslator
     notes: 160,
     coded_occupation_name: 250,
     coded_industry_name: 250,
+    institution: 130,
     institution_name: 130,
     institution_type: 130
   }.freeze
