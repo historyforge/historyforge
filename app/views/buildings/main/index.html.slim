@@ -8,8 +8,8 @@
       - if can?(:review, Building)
         = checkbox_button 'Unreviewed', :unreviewed, @search.unreviewed?
         = checkbox_button 'Uninvestigated', :uninvestigated, @search.uninvestigated?
-#grid-filters= render 'shared/grid_filters', resource_class: Building
-#grid.ag-theme-balham
+#grid-filters data-turbo-cache="false"= render 'shared/grid_filters', resource_class: Building
+#grid.ag-theme-balham data-turbo-cache="false"
 
 .navbar.navbar-light.bg-light.navbar-expand-lg.navbar-static.bottom#search-pagination-bottom
   - count = @search.count

@@ -7,6 +7,8 @@
     window.CensusGrid = {};
   }
   
+  let initializationPending = false;
+
   const initializeGrid = () => {
     const gridElement = document.querySelector('#grid');
     if (!gridElement) {
@@ -15,8 +17,29 @@
         window.currentGrid.destroy();
         window.currentGrid = null;
       }
+      initializationPending = false;
       return;
     }
+
+    // Prevent double initialization - if already initializing or already initialized for this element, skip
+    if (initializationPending) {
+      return;
+    }
+
+    // Check if grid is already initialized for this element
+    if (window.currentGrid) {
+      try {
+        const existingGui = window.currentGrid.getGui();
+        if (existingGui && gridElement.contains(existingGui)) {
+          // Grid already initialized for this element
+          return;
+        }
+      } catch (e) {
+        // Grid might be in invalid state, continue with reinitialization
+      }
+    }
+
+    initializationPending = true;
 
     // Destroy existing grid if it exists (for Turbo navigation)
     if (window.currentGrid) {
@@ -66,10 +89,17 @@
             // Trigger a refresh to ensure resize handles are active
             window.currentGrid.api.refreshHeader();
           }
+          initializationPending = false;
         }
       };
       
       window.currentGrid = new agGrid.Grid(gridElement, gridOptions);
+      // Reset flag after a short delay in case onFirstDataRendered doesn't fire immediately
+      setTimeout(() => {
+        initializationPending = false;
+      }, 1000);
+    } else {
+      initializationPending = false;
     }
   };
 
@@ -87,11 +117,25 @@
       window.currentGrid.destroy();
       window.currentGrid = null;
     }
+    initializationPending = false;
   };
 
-  // Handle both initial page load and Turbo navigation
-  document.addEventListener('DOMContentLoaded', window.CensusGrid.initializeHandler);
-  document.addEventListener('turbo:load', window.CensusGrid.initializeHandler);
+  // Use a single initialization function that prevents double calls
+  // Turbo fires turbo:load on both initial page load and navigation
+  // We also listen to DOMContentLoaded as a fallback for initial page load
+  // The initializationPending flag prevents double initialization
+  const safeInitialize = () => {
+    if (!initializationPending) {
+      window.CensusGrid.initializeHandler();
+    }
+  };
+
+  document.addEventListener('turbo:load', safeInitialize);
+  // Fallback for initial page load if Turbo hasn't initialized yet
+  // Only add DOMContentLoaded listener if DOM is still loading
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', safeInitialize);
+  }
   document.addEventListener('turbo:before-cache', window.CensusGrid.cleanupHandler);
 
   window.CensusGrid.initialized = true;

@@ -190,7 +190,17 @@ module CensusRecords
       # Load navigation data if there are active search parameters
       return unless has_active_search_data?
 
-      @navigation = CensusRecordSearch.generate(params: current_search_data, year:, user: current_user).navigation_neighbors(@model.id)
+      # For navigation, only use search criteria (s, scope) - not field selections (f, fs)
+      # Field selections are for display purposes only and can make queries expensive
+      search_data = current_search_data
+      navigation_params = {
+        s: search_data[:s] || search_data['s'],
+        scope: search_data[:scope] || search_data['scope'],
+        sort: search_data[:sort] || search_data['sort']
+      }.compact
+      return if navigation_params.empty? || navigation_params[:s].blank?
+
+      @navigation = CensusRecordSearch.generate(params: navigation_params, year:, user: current_user).navigation_neighbors(@model.id)
     end
 
     def search_key

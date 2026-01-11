@@ -7,8 +7,8 @@
         = checkbox_button 'Uncensused', :uncensused, @search.uncensused?
         = checkbox_button 'Photographed', :photographed, @search.photographed?
 
-#grid-filters.mb-2= render 'shared/grid_filters', resource_class: Person
-#grid.ag-theme-balham
+#grid-filters.mb-2 data-turbo-cache="false"= render 'shared/grid_filters', resource_class: Person
+#grid.ag-theme-balham data-turbo-cache="false"
 
 .navbar.navbar-light.bg-light.navbar-expand-lg.navbar-static.bottom#search-pagination-bottom
   - count = @search.count

@@ -7,8 +7,8 @@
       = checkbox_button 'Not Reviewed', :unreviewed, @search.unreviewed?
       = checkbox_button 'No Person', :unmatched, @search.unmatched?
 
-#grid-filters= render 'shared/grid_filters'
-#grid.ag-theme-balham
+#grid-filters data-turbo-cache="false"= render 'shared/grid_filters'
+#grid.ag-theme-balham data-turbo-cache="false"
 
 .navbar.navbar-light.bg-light.navbar-expand-lg.navbar-static.bottom#search-pagination-bottom
   - count = @search.total_records
