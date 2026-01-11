@@ -86,7 +86,7 @@ const initializeTextareaResize = () => {
     }
   });
 
-  // Handle Trix rich text editors
+  // Handle Trix rich text editors (only editable ones, not display versions)
   const trixEditors = document.querySelectorAll('trix-editor');
   trixEditors.forEach((editor) => {
     // Ensure resize CSS is applied to Trix editors
@@ -102,8 +102,8 @@ const initializeTextareaResize = () => {
     }
   });
 
-  // Also handle .trix-content containers (Rails ActionText wrapper)
-  const trixContents = document.querySelectorAll('.trix-content');
+  // Also handle .trix-content containers, but only when inside forms (editing mode)
+  const trixContents = document.querySelectorAll('form .trix-content');
   trixContents.forEach((content) => {
     if (!content.style.resize) {
       content.style.resize = 'both';
@@ -247,7 +247,202 @@ window.showSubmitButton = function (id, token) {
 
 const pageLoad = function () {
   $('[rel=tooltip]').tooltip()
+  initializeChangeHistoryTruncation()
 }
+
+// Initialize change history text truncation with read more/less
+function initializeChangeHistoryTruncation() {
+  const $ = window.jQuery || window.$
+  if (!$) return
+
+  // Use setTimeout to ensure styles are applied and DOM is ready
+  setTimeout(function () {
+    // Process each wrapper individually
+    $('.change-history-row-wrapper').each(function () {
+      const $wrapper = $(this)
+      const $row = $wrapper.find('.change-history-row')
+
+      // Skip if already has a read more link
+      if ($wrapper.find('.read-more-link').length) {
+        return
+      }
+
+      // Find all truncate-text elements with data-row-id in this row
+      const $texts = $row.find('.truncate-text[data-row-id]')
+
+      if ($texts.length === 0) {
+        return
+      }
+
+      const rowId = $texts.first().data('row-id')
+      let isAnyTruncated = false
+
+      // Check each text element
+      $texts.each(function () {
+        const $text = $(this)
+        const textContent = $text.text().trim()
+
+        // Skip if no meaningful content
+        if (!textContent || textContent === 'blank') {
+          return
+        }
+
+        // Simple check: if text is longer than 50 characters, assume it might be truncated
+        // This is a reliable fallback (roughly 2 lines at typical column width)
+        if (textContent.length > 50) {
+          isAnyTruncated = true
+          return false // break
+        }
+
+        // Also check height-based truncation
+        const constrainedHeight = $text[0].clientHeight
+
+        // Temporarily remove constraints
+        const originalStyles = {
+          display: $text.css('display'),
+          webkitLineClamp: $text.css('-webkit-line-clamp'),
+          maxHeight: $text.css('max-height'),
+          overflow: $text.css('overflow'),
+          webkitBoxOrient: $text.css('-webkit-box-orient')
+        }
+
+        $text.css({
+          'display': 'block',
+          '-webkit-line-clamp': 'unset',
+          '-webkit-box-orient': 'unset',
+          'max-height': 'none',
+          'overflow': 'visible'
+        })
+
+        $text[0].offsetHeight // Force reflow
+
+        const fullHeight = $text[0].scrollHeight
+
+        // Restore styles
+        $text.css(originalStyles)
+
+        // Check if truncated
+        if (fullHeight > constrainedHeight + 10) {
+          isAnyTruncated = true
+          return false // break
+        }
+      })
+
+      // Add link if any field is truncated
+      if (isAnyTruncated) {
+        const $link = $('<a>', {
+          href: '#',
+          class: 'read-more-link visible btn btn-sm btn-link p-0',
+          'data-row-id': rowId,
+          text: 'Read more'
+        })
+        const $linkRow = $('<div>', { class: 'row mt-2' })
+        const $linkCol = $('<div>', { class: 'col-12' })
+        $linkCol.append($link)
+        $linkRow.append($linkCol)
+        $row.after($linkRow)
+      }
+    })
+
+    // Handle "create" events separately (single value field)
+    $('.change-history-row .truncate-text:not([data-row-id])').each(function () {
+      const $text = $(this)
+      const changeId = $text.data('change-id')
+      const textContent = $text.text().trim()
+
+      // Skip if no content or already has a read more link
+      if (!textContent || textContent === 'blank' || $text.next('.read-more-link').length) {
+        return
+      }
+
+      // Get the current constrained height (with line-clamp applied)
+      const constrainedHeight = $text[0].clientHeight
+
+      // Temporarily remove line-clamp to measure full content height
+      const originalDisplay = $text.css('display')
+      const originalLineClamp = $text.css('-webkit-line-clamp')
+      const originalMaxHeight = $text.css('max-height')
+      const originalOverflow = $text.css('overflow')
+
+      // Remove constraints temporarily
+      $text.css({
+        'display': 'block',
+        '-webkit-line-clamp': 'unset',
+        'max-height': 'none',
+        'overflow': 'visible'
+      })
+
+      // Measure the full height without constraints
+      const fullHeight = $text[0].scrollHeight
+
+      // Restore original styles
+      $text.css({
+        'display': originalDisplay,
+        '-webkit-line-clamp': originalLineClamp,
+        'max-height': originalMaxHeight,
+        'overflow': originalOverflow
+      })
+
+      // If full height is greater than constrained height, text is truncated
+      // Use 10px tolerance for browser rendering differences
+      const isTruncated = fullHeight > constrainedHeight + 10
+
+      if (isTruncated) {
+        const $link = $('<a>', {
+          href: '#',
+          class: 'read-more-link visible btn btn-sm btn-link p-0',
+          'data-change-id': changeId,
+          text: 'Read more'
+        })
+        $text.after($link)
+      }
+    })
+  }, 200)
+}
+
+// Handle "Read more" / "Read less" toggle for change history text
+jQuery(document).on('click', '.read-more-link', function (e) {
+  e.preventDefault()
+  const $link = $(this)
+  const rowId = $link.data('row-id')
+  const changeId = $link.data('change-id')
+
+  if (rowId) {
+    // Handle "from" and "to" fields together
+    const $texts = $('.truncate-text[data-row-id="' + rowId + '"]')
+
+    if ($texts.length === 0) {
+      console.error('Could not find text elements with row-id:', rowId)
+      return
+    }
+
+    const isExpanded = $texts.first().hasClass('expanded')
+
+    if (isExpanded) {
+      $texts.removeClass('expanded')
+      $link.text('Read more')
+    } else {
+      $texts.addClass('expanded')
+      $link.text('Read less')
+    }
+  } else if (changeId) {
+    // Handle single field (create events)
+    const $text = $('.truncate-text[data-change-id="' + changeId + '"]')
+
+    if ($text.length === 0) {
+      console.error('Could not find text element with change-id:', changeId)
+      return
+    }
+
+    if ($text.hasClass('expanded')) {
+      $text.removeClass('expanded')
+      $link.text('Read more')
+    } else {
+      $text.addClass('expanded')
+      $link.text('Read less')
+    }
+  }
+})
 
 jQuery(document).on('click', '.alert .closer', function () {
   jQuery(this).closest('.alert').remove();

@@ -676,6 +676,85 @@ abbr[title] {
   }
 }
 
+// Change history text truncation
+.change-history-row-wrapper {
+  .change-history-row {
+    .truncate-text {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.5;
+      max-height: 3em; // 2 lines * 1.5 line-height
+      word-wrap: break-word;
+      
+      &.expanded {
+        display: block !important;
+        -webkit-box-orient: unset !important;
+        -webkit-line-clamp: 999 !important; // Set to very high number to effectively disable
+        max-height: none !important;
+        overflow: visible !important;
+        text-overflow: unset !important;
+      }
+    }
+  }
+  
+  .read-more-link {
+    display: none !important;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    cursor: pointer;
+    
+    &.visible {
+      display: inline-block !important;
+    }
+  }
+  
+  // Center the read more link row (only rows immediately after change-history-row)
+  .change-history-row + .row.mt-2 {
+    text-align: center;
+    
+    .col-12 {
+      text-align: center;
+    }
+  }
+}
+
+// Also support the old structure for create events
+.change-history-row {
+  .truncate-text {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.5;
+    max-height: 3em;
+    word-wrap: break-word;
+    
+    &.expanded {
+      display: block !important;
+      -webkit-box-orient: unset !important;
+      -webkit-line-clamp: 999 !important;
+      max-height: none !important;
+      overflow: visible !important;
+      text-overflow: unset !important;
+    }
+  }
+  
+  .read-more-link {
+    display: none !important;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    cursor: pointer;
+    
+    &.visible {
+      display: inline-block !important;
+    }
+  }
+}
+
 .removed {
   opacity: 0.5;
 }
@@ -715,16 +794,17 @@ abbr[title] {
   min-height: 16rem;
 }
 
-// Make Trix rich text editors resizable
+// Make Trix rich text editors resizable (only in edit forms, not show views)
 // Rails ActionText wraps trix-editor in a .trix-content container
-.trix-content {
+// Only apply resize to editable trix-editor elements, not display-only .trix-content
+trix-editor {
   resize: both;
   overflow: auto;
   min-height: 200px;
 }
 
-// Also target the trix-editor element directly for better compatibility
-trix-editor {
+// Only apply resize to .trix-content when it's inside a form (editing mode)
+form .trix-content {
   resize: both;
   overflow: auto;
   min-height: 200px;

@@ -10,11 +10,13 @@
             = users[version.whodunnit] || 'Automated Update'
             | &nbsp;on &nbsp;
             = version.created_at.strftime('%b %d %Y')
-          .row
-            - if version.is_a?(AuditLog)
+          - if version.is_a?(AuditLog)
+            .row
               .col-12
                 strong= version.message
-            - else
+          - else
+            - changes_array = version.is_a?(PaperTrail::Version) ? version.changeset.reject { |k, _| k == 'updated_at' }.to_a : []
+            .row
               - if version.event == 'create'
                 .col-6
                   strong Field
@@ -27,13 +29,21 @@
                   strong From
                 .col-4
                   strong To
-          - version.is_a?(PaperTrail::Version) && version.changeset.each do |key, changes|
-            - next if key == 'updated_at'
-            .row
-              - if version.event == 'create'
-                .col-6= translated_label(item.class, key)
-                .col-6= changes[1].presence || 'blank'
-              - else
-                .col-4= translated_label(item.class, key)
-                .col-4= changes[0].presence || 'blank'
-                .col-4= changes[1].presence || 'blank'
+            - version.is_a?(PaperTrail::Version) && version.changeset.each do |key, changes|
+              - next if key == 'updated_at'
+              - change_id = "change-#{version.id}-#{key}"
+              .change-history-row-wrapper
+                .row.change-history-row
+                  - if version.event == 'create'
+                    .col-6= translated_label(item.class, key)
+                    .col-6
+                      .change-value.truncate-text data-change-id="#{change_id}"
+                        = changes[1].presence || 'blank'
+                  - else
+                    .col-4= translated_label(item.class, key)
+                    .col-4
+                      .change-from.truncate-text data-change-id="#{change_id}-from" data-row-id="#{change_id}"
+                        = changes[0].presence || 'blank'
+                    .col-4
+                      .change-to.truncate-text data-change-id="#{change_id}-to" data-row-id="#{change_id}"
+                        = changes[1].presence || 'blank'
