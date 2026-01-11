@@ -149,64 +149,73 @@ document.addEventListener('turbo:before-cache', cleanupPage)
 // Since header is permanent (data-turbo-permanent), Turbo won't replace it automatically
 // We extract the new header HTML and update only #navbar-nav (the menu list) to preserve everything else
 document.addEventListener('turbo:before-render', (event) => {
-  const newDocument = event.detail.newBody;
-  const newHeader = newDocument.querySelector('#main-header');
-  const currentHeader = document.querySelector('#main-header');
+  try {
+    const newDocument = event.detail.newBody;
+    if (!newDocument) {
+      return
+    }
 
-  if (newHeader && currentHeader) {
-    // Update only the <ul> inside #navbar-nav (the menu list)
-    // This preserves the logo, toggle button, and collapse wrapper
-    const newNavbarNav = newHeader.querySelector('#navbar-nav');
-    const currentNavbarNav = currentHeader.querySelector('#navbar-nav');
+    const newHeader = newDocument.querySelector('#main-header');
+    const currentHeader = document.querySelector('#main-header');
 
-    if (newNavbarNav && currentNavbarNav) {
-      // Get the ul element inside #navbar-nav
-      const newNavList = newNavbarNav.querySelector('ul.navbar-nav');
-      const currentNavList = currentNavbarNav.querySelector('ul.navbar-nav');
+    if (newHeader && currentHeader) {
+      // Update only the <ul> inside #navbar-nav (the menu list)
+      // This preserves the logo, toggle button, and collapse wrapper
+      const newNavbarNav = newHeader.querySelector('#navbar-nav');
+      const currentNavbarNav = currentHeader.querySelector('#navbar-nav');
 
-      if (newNavList && currentNavList) {
-        const newNavHTML = newNavList.innerHTML;
-        const currentNavHTML = currentNavList.innerHTML;
+      if (newNavbarNav && currentNavbarNav) {
+        // Get the ul element inside #navbar-nav
+        const newNavList = newNavbarNav.querySelector('ul.navbar-nav');
+        const currentNavList = currentNavbarNav.querySelector('ul.navbar-nav');
 
-        // Only update if menu content actually changed
-        if (newNavHTML !== currentNavHTML) {
-          // Temporarily disable transitions to prevent flash
-          currentNavList.style.transition = 'none';
+        if (newNavList && currentNavList) {
+          const newNavHTML = newNavList.innerHTML;
+          const currentNavHTML = currentNavList.innerHTML;
 
-          // Replace only the menu list items (preserves logo, toggle button, collapse wrapper, etc.)
-          currentNavList.innerHTML = newNavHTML;
+          // Only update if menu content actually changed
+          if (newNavHTML !== currentNavHTML) {
+            // Temporarily disable transitions to prevent flash
+            currentNavList.style.transition = 'none';
 
-          // Re-enable transitions after a brief delay
-          setTimeout(() => {
-            currentNavList.style.transition = '';
-          }, 0);
+            // Replace only the menu list items (preserves logo, toggle button, collapse wrapper, etc.)
+            currentNavList.innerHTML = newNavHTML;
 
-          // Re-initialize Bootstrap dropdowns
-          // Use setTimeout to ensure DOM is ready
-          setTimeout(() => {
-            const $ = window.jQuery || window.$;
-            if ($ && typeof $.fn.dropdown !== 'undefined') {
-              $('#main-header [data-toggle="dropdown"]').each(function () {
-                const $toggle = $(this);
-                try {
-                  const dropdownData = $toggle.data('bs.dropdown');
-                  if (dropdownData) {
-                    dropdownData.dispose();
+            // Re-enable transitions after a brief delay
+            setTimeout(() => {
+              currentNavList.style.transition = '';
+            }, 0);
+
+            // Re-initialize Bootstrap dropdowns
+            // Use setTimeout to ensure DOM is ready
+            setTimeout(() => {
+              const $ = window.jQuery || window.$;
+              if ($ && typeof $.fn.dropdown !== 'undefined') {
+                $('#main-header [data-toggle="dropdown"]').each(function () {
+                  const $toggle = $(this);
+                  try {
+                    const dropdownData = $toggle.data('bs.dropdown');
+                    if (dropdownData) {
+                      dropdownData.dispose();
+                    }
+                  } catch (e) {
+                    // No existing instance
                   }
-                } catch (e) {
-                  // No existing instance
-                }
-                try {
-                  $toggle.dropdown();
-                } catch (e) {
-                  // Bootstrap will handle via delegation
-                }
-              });
-            }
-          }, 0);
+                  try {
+                    $toggle.dropdown();
+                  } catch (e) {
+                    // Bootstrap will handle via delegation
+                  }
+                });
+              }
+            }, 0);
+          }
         }
       }
     }
+  } catch (e) {
+    // Don't let header update errors prevent page rendering
+    console.error('Error updating header in turbo:before-render:', e);
   }
 });
 
@@ -449,6 +458,39 @@ jQuery(document).on('click', '.alert .closer', function () {
   jQuery(window).trigger('resize').trigger('scroll'); // trigger parallax refresh on home page
 });
 jQuery(document).on('click', '.dropdown-item.checkbox', function (e) { e.stopPropagation() })
+
+// Fix for AdvancedRestoreSearch with Turbo
+// The server-side AdvancedRestoreSearch concern saves field selections and redirects to restore them,
+// but Turbo's page cache can restore pages without hitting the server, bypassing the redirect.
+// Instead of forcing a visit (which causes white screen issues), we'll rely on cache prevention
+// and let the server-side redirect happen naturally when the page is actually visited.
+// The cache prevention below ensures index pages always hit the server.
+
+// Prevent Turbo from caching index pages (people, buildings, census records)
+// Index pages show lists that can change when new records are created, so they should
+// always fetch fresh data from the server instead of using cached versions.
+// We use data-turbo-cache="false" on the body tag to prevent caching.
+if (typeof Turbo !== 'undefined') {
+  document.addEventListener('turbo:before-cache', function (event) {
+    // Check if this is an index page with a grid
+    const hasGrid = document.querySelector('#grid') !== null
+    if (hasGrid) {
+      // Prevent this page from being cached
+      // This ensures that when users navigate back to index pages, they get fresh data
+      const currentUrl = window.location.href
+      try {
+        // Remove this specific page from cache
+        if (Turbo.cache && typeof Turbo.cache.remove === 'function') {
+          Turbo.cache.remove(currentUrl)
+        }
+      } catch (e) {
+        // Cache API might not be available in all Turbo versions - ignore
+        console.debug('Could not remove page from Turbo cache:', e)
+      }
+    }
+  })
+}
+
 jQuery(document).on('click', '#search-map', function () {
   const $form = jQuery(this).closest('form')
   if (document.location.toString().match(/building/)) {

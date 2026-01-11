@@ -92,8 +92,18 @@ module People
     def load_navigation
       return unless has_active_search_data?
 
+      # For navigation, only use search criteria (s, scope) - not field selections (f, fs)
+      # Field selections are for display purposes only and can make queries expensive
+      search_data = current_search_data
+      navigation_params = {
+        s: search_data[:s] || search_data['s'],
+        scope: search_data[:scope] || search_data['scope'],
+        sort: search_data[:sort] || search_data['sort']
+      }.compact
+      return if navigation_params.empty? || navigation_params[:s].blank?
+
       @navigation_neighbors = PersonSearch.generate(
-        params: current_search_data,
+        params: navigation_params,
         user: current_user,
       ).navigation_neighbors(@person.id)
     end
