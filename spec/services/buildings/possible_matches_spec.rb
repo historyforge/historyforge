@@ -43,6 +43,41 @@ module Buildings
       end
     end
 
+    context 'with building split into multiple addresses' do
+      let(:split_building) do
+        add_building([
+                       build(:address, house_number: '118', name: 'Aurora', prefix: 'N', suffix: nil, is_primary: true, year: nil),
+                       build(:address, house_number: '512', name: 'Aurora', prefix: 'N', suffix: nil, is_primary: false, year: 1899),
+                       build(:address, house_number: '514', name: 'Aurora', prefix: 'N', suffix: nil, is_primary: false, year: 1899)
+                     ])
+      end
+
+      before do
+        split_building
+      end
+
+      let(:record) do
+        Census1860Record.new locality:,
+                             street_house_number: '118',
+                             street_name: 'Aurora',
+                             street_prefix: 'N',
+                             street_suffix: nil,
+                             year: 1860
+      end
+
+      it 'shows the building only once in the dropdown' do
+        building_ids = result.map(&:id)
+        expect(building_ids.count(split_building.id)).to eq(1)
+      end
+
+      it 'shows the correct historical address for the census year' do
+        building_result = result.find { |r| r.id == split_building.id }
+        expect(building_result).to be_present
+        expect(building_result.name).to include('118')
+        expect(building_result.name).to include('N Aurora')
+      end
+    end
+
     context 'with limiting to 100-block' do
       context 'with 1-digit house numbers' do
         before do

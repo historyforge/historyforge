@@ -23,16 +23,20 @@ module Buildings
                       .left_outer_joins(:addresses)
                       .includes(:addresses)
                       .where(addresses: { name: street_name })
+                      .distinct
       items = items.where.not(id: building_id) if is_building
       items = items.where(addresses: { prefix: street_prefix }) if street_prefix.present?
       items = items.where(addresses: { suffix: street_suffix }) if street_suffix.present?
       items = add_block_filter(items) if street_house_number.present?
-      if !is_building && building_id && !items.detect { |b| b.id == building_id }
+      if !is_building && building_id && !items.exists?(id: building_id)
         items = items.to_a.unshift(Building.find(building_id))
+      else
+        items = items.to_a
       end
       items
-        .to_a
-        .uniq
+        .group_by(&:id)
+        .values
+        .map(&:first)
         .map { |item| Row.new item.id, item.street_address_for_building_id(year) }
         .sort_by { |row| row.name.to_i }
     end
