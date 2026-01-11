@@ -1,4 +1,4 @@
-- set_page_title @building.proper_name? ? @building.name : @building.primary_street_address
+- set_page_title @building.name || @building.primary_street_address
 
 = render 'shared/flag_resolution', item: @building
 
