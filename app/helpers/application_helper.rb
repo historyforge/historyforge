@@ -120,7 +120,8 @@ module ApplicationHelper
   def link_to_building(building)
     return 'Unhoused' if building.blank?
 
-    link_to(building.street_address.gsub("\n", '<br />').html_safe, building)
+    link_to(building.name, building)
+    #link_to(building.street_address.gsub("\n", '<br />').html_safe, building)
   end
 
   def birthday(record)

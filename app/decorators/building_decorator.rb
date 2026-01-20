@@ -38,7 +38,7 @@ class BuildingDecorator < ApplicationDecorator
     year
   end
 
-  def name = object.proper_name? ? object.name : object.street_address
+  def name = object.name || object.street_address
 
   def architects = object.architects&.map(&:name)&.join(', ')
 

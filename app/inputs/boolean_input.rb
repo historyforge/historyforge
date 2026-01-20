@@ -15,8 +15,11 @@ class BooleanInput < SimpleForm::Inputs::BooleanInput
     inline_option = options[:inline_label]
 
     if inline_option
-      label = inline_option == true ? label_text : html_escape(inline_option)
-      " #{label}".html_safe
+      label_text_content = inline_option == true ? label_text : html_escape(inline_option)
+      # Get the checkbox ID - SimpleForm generates it as object_name_attribute_name
+      checkbox_id = input_html_options[:id] || "#{@builder.object_name.to_s.gsub(/[\[\]]/, '_').gsub(/__+/, '_').chomp('_')}_#{attribute_name}"
+      # Return a proper label element with 'for' attribute for accessibility
+      @builder.template.content_tag(:label, label_text_content, for: checkbox_id, class: 'form-check-label')
     end
   end
 end
