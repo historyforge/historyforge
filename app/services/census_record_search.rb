@@ -72,11 +72,11 @@ class CensusRecordSearch < SearchQueryBuilder
     elsif col == 'census_scope'
       census_page_order_clause(dir)
     elsif col == 'family_id'
-      "regexp_replace(NULLIF(family_id, ''), '[^0-9]+', '', 'g')::numeric #{dir}"
+      "NULLIF(regexp_replace(NULLIF(family_id, ''), '[^0-9]+', '', 'g'), '')::numeric #{dir}"
     elsif col =~ /wages/
       # Use parameterized query to prevent SQL injection
       sanitized_col = entity_class.connection.quote_column_name(col)
-      "regexp_replace(NULLIF(#{sanitized_col}, ''), '[^0-9]+', '', 'g')::numeric #{dir}"
+      "NULLIF(regexp_replace(NULLIF(#{sanitized_col}, ''), '[^0-9]+', '', 'g'), '')::numeric #{dir}"
     elsif entity_class.columns.map(&:name).include?(col)
       sanitized_col = entity_class.connection.quote_column_name(col)
       "#{sanitized_col} #{dir}"
@@ -93,7 +93,7 @@ class CensusRecordSearch < SearchQueryBuilder
     if entity_class.year < 1880
       Arel.sql "page_number #{dir}, page_side #{dir}, line_number #{dir}"
     else
-      Arel.sql "ward #{dir}, regexp_replace(NULLIF(enum_dist, ''), '[^0-9]+', '', 'g')::numeric #{dir}, enum_dist #{dir}, page_number #{dir}, page_side #{dir}, line_number #{dir}"
+      Arel.sql "ward #{dir}, NULLIF(regexp_replace(NULLIF(enum_dist, ''), '[^0-9]+', '', 'g'), '')::numeric #{dir}, enum_dist #{dir}, page_number #{dir}, page_side #{dir}, line_number #{dir}"
     end
   end
 
