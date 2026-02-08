@@ -42,10 +42,9 @@ module AdvancedRestoreSearch
       redirect_to action: params[:action]
     elsif actively_searching?
       search.params = {
-        scope: params[:scope].dup,
-        s: params[:s].dup,
-        fs: params[:fs].dup,
-        f: params[:f].dup,
+        scope: params[:scope]&.dup || params[:scope],
+        s: params[:s]&.dup || params[:s] || {},
+        f: params[:f]&.dup || params[:f] || [],
       }
       search.save
     elsif search.persisted?
@@ -66,13 +65,12 @@ module AdvancedRestoreSearch
       session[:search] = {
         model: search_key,
         params: {
-          s: params[:s].dup,
-          fs: params[:fs].dup,
-          f: params[:f].dup,
-          scope: params[:scope].dup,
+          s: params[:s]&.dup || params[:s] || {},
+          f: params[:f]&.dup || params[:f] || [],
+          scope: params[:scope]&.dup || params[:scope],
         },
       }
-    elsif session[:search] && session[:search]["model"] == controller_name
+    elsif session[:search] && session[:search]["model"] == search_key
       redirect_to session[:search]["params"].merge(action: params[:action])
     end
   end
@@ -82,7 +80,7 @@ module AdvancedRestoreSearch
   end
 
   def actively_searching?
-    params[:s] || params[:f] || params[:fs] || (params[:scope] && params[:scope] != "on")
+    params[:s] || params[:f] || (params[:scope] && params[:scope] != "on")
   end
 
   def search_key

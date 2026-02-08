@@ -190,7 +190,7 @@ module CensusRecords
       # Load navigation data if there are active search parameters
       return unless has_active_search_data?
 
-      # For navigation, only use search criteria (s, scope) - not field selections (f, fs)
+      # For navigation, only use search criteria (s, scope) - not field selections (f)
       # Field selections are for display purposes only and can make queries expensive
       search_data = current_search_data
       navigation_params = {
