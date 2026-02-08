@@ -5,7 +5,6 @@ module AdvancedRestoreSearch
 
   included do
     before_action :restore_search, only: %i[index], unless: :json_request?
-    memoize :current_search_data
   end
 
   private
@@ -30,17 +29,5 @@ module AdvancedRestoreSearch
 
   def search_key
     self.class.name
-  end
-
-  def current_search_data
-    if current_user
-      current_user.search_params.find_by(model: search_key)&.params&.deep_symbolize_keys
-    else
-      session[:search]&.dig("params")&.deep_symbolize_keys if session[:search]&.dig("model") == search_key
-    end
-  end
-
-  def has_active_search_data?
-    current_search_data.present? && current_search_data[:s].present?
   end
 end
