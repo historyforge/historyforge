@@ -12,6 +12,7 @@ import './search/AdvancedSearch'
 import './js/census_form'
 import './js/home_page'
 import './js/terms'
+import './passkeys'
 
 import '@hotwired/turbo-rails'
 

@@ -2,6 +2,7 @@
 - content_for :pills do
   = link_to 'View All', users_path, class: 'btn btn-sm btn-light'
   = link_to 'View', user_path(@user), class: 'btn btn-sm btn-light'
+  = link_to 'Manage Passkeys', users_passkeys_path, class: 'btn btn-sm btn-light' if @user == current_user
 
 = simple_form_for @user do |form|
   - if can?(:manage, User)

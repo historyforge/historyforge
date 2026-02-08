@@ -1,5 +1,5 @@
 .ml-auto.mr-auto style="max-width: 450px"
-  = simple_form_for(resource, as: resource_name, url: session_path(resource_name)) do |form|
+  = simple_form_for(resource, as: resource_name, url: session_path(resource_name), html: { id: 'sign-in-form' }) do |form|
     .card
       .card-header
         h3.card-title= t('.sign_in')
@@ -8,11 +8,11 @@
         .form-inputs
           .form-group
             = form.label :email
-            = form.email_field :email, autofocus: true, autocomplete: 'email', class: 'form-control'
+            = form.email_field :email, autofocus: true, autocomplete: 'username webauthn', class: 'form-control', id: 'user_email'
 
           .form-group
             = form.label :password
-            = form.password_field :password, autocomplete: 'current-password', class: 'form-control'
+            = form.password_field :password, autocomplete: 'current-password webauthn', class: 'form-control', id: 'user_password', data: { challenge_url: new_user_session_challenge_path, session_url: session_path(resource_name), after_sign_in_url: root_path }
 
           - if devise_mapping.rememberable?
             .form-group.form-check
@@ -22,5 +22,8 @@
       .card-footer
         .form-group
           = form.submit  t('.sign_in'), class: 'btn btn-primary'
+          button.btn.btn-outline-secondary type="button" id="passkey-sign-in-btn" data-turbo="false" data-challenge-url=new_user_session_challenge_path data-session-url=session_path(resource_name) data-after-sign-in-url=root_path
+            i.fa.fa-key.mr-2
+            | Sign in with passkey
           hr
           = render 'devise/shared/links'

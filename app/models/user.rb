@@ -52,10 +52,16 @@ class User < ApplicationRecord
   devise :invitable, :database_authenticatable,
          :registerable, :confirmable,
          :recoverable, :rememberable, :trackable,
-         :validatable, :omniauthable, omniauth_providers: %i[facebook]
+         :validatable, :passkey_authenticatable,
+         :omniauthable, omniauth_providers: %i[facebook]
 
   belongs_to :group, class_name: 'UserGroup', foreign_key: :user_group_id, optional: true, inverse_of: :users
   has_many :search_params, dependent: :destroy
+  has_many :passkeys, dependent: :destroy
+
+  validates :webauthn_id, uniqueness: true, allow_nil: true
+
+  before_create :generate_webauthn_id, if: -> { webauthn_id.blank? }
 
   has_many :census1850_records, dependent: :nullify, class_name: 'Census1850Record', inverse_of: :created_by,
                                 foreign_key: :created_by_id
@@ -97,15 +103,11 @@ class User < ApplicationRecord
 
   def self.find_by_invitation_token(original_token, only_valid)
     invitation_token = Devise.token_generator.digest(self, :invitation_token, original_token)
-    Rails.logger.info invitation_token.inspect
-    Rails.logger.info User.last.invitation_token.inspect
     invitable = find_or_initialize_with_error_by(:invitation_token, invitation_token)
-    Rails.logger.info invitable.inspect
     if invitable.invitation_token && invitable.persisted? && !invitable.valid_invitation?
       invitable.errors.add(:invitation_token,
                            :invalid)
     end
-    Rails.logger.info invitable.errors.inspect
     invitable unless only_valid && invitable.errors.present?
   end
 
@@ -209,5 +211,21 @@ class User < ApplicationRecord
       login: [auth.info.email, auth.provider[0]].join('-')
     )
     user
+  end
+
+  def self.passkeys_class
+    Passkey
+  end
+
+  def self.find_for_passkey(passkey)
+    passkey.user
+  end
+
+  def after_passkey_authentication(passkey:)
+    passkey.update(last_used_at: Time.current)
+  end
+
+  def generate_webauthn_id
+    self.webauthn_id = SecureRandom.urlsafe_base64(32) if webauthn_id.blank?
   end
 end

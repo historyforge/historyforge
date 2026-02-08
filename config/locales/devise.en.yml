@@ -48,6 +48,10 @@ en:
         sign_in: "Volunteer Log In"
       signed_in: "Signed in successfully."
       signed_out: "Signed out successfully."
+    passkeys:
+      credential_missing_or_could_not_be_parsed: "Passkey credential is missing or could not be parsed. Please try again."
+      user:
+        credential_missing_or_could_not_be_parsed: "Passkey credential is missing or could not be parsed. Please try again."
     unlocks:
       send_instructions: "You will receive an email with instructions about how to unlock your account in a few minutes."
       send_paranoid_instructions: "If your account exists, you will receive an email with instructions about how to unlock it in a few minutes."

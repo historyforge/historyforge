@@ -89,6 +89,7 @@ header data-turbo-permanent="true" id="main-header"
                 .dropdown-item-text id="user-name"= current_user.name
                 = link_to 'My profile', user_path(current_user), class: 'dropdown-item'
                 = link_to 'Edit my account', edit_user_path(current_user), class: 'dropdown-item'
+                = link_to 'Passkeys', users_passkeys_path, class: 'dropdown-item'
                 = link_to "Log out", destroy_user_session_path, method: :delete, data: { turbo_method: :delete, turbo_confirm: 'Are you sure?' }, class: 'dropdown-item'
           - else
             li.nav-item id="login-menu-item"
