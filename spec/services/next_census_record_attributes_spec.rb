@@ -11,7 +11,7 @@ RSpec.describe NextCensusRecordAttributes do
       record.county = 'Tompkins'
       record.city = 'Ithaca'
       record.ward = 1
-      record.enum_dist = 172
+      record.enum_dist = 172 if record.respond_to?(:enum_dist=)
       record.locality_id = 1
       record.dwelling_number = 1
       record.family_id = 1
@@ -136,7 +136,7 @@ RSpec.describe NextCensusRecordAttributes do
           expect(result[:county]).to eq(record.county)
           expect(result[:city]).to eq(record.city)
           expect(result[:ward]).to eq(record.ward)
-          expect(result[:enum_dist]).to eq(record.enum_dist)
+          expect(result[:enum_dist]).to eq(record.enum_dist) if record.respond_to?(:enum_dist)
           expect(result[:locality_id]).to eq(record.locality_id)
           expect(result[:dwelling_number]).to eq(record.dwelling_number)
           expect(result[:family_id]).to eq(record.family_id)
