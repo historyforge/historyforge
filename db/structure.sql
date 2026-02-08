@@ -1,7 +1,7 @@
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
---SET transaction_timeout = 0;
+SET transaction_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -2150,6 +2150,42 @@ ALTER SEQUENCE public.occupation1930_codes_id_seq OWNED BY public.occupation1930
 
 
 --
+-- Name: passkeys; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.passkeys (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    label character varying NOT NULL,
+    external_id character varying NOT NULL,
+    public_key character varying NOT NULL,
+    sign_count integer DEFAULT 0 NOT NULL,
+    last_used_at timestamp(6) without time zone,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: passkeys_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.passkeys_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: passkeys_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.passkeys_id_seq OWNED BY public.passkeys.id;
+
+
+--
 -- Name: people; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2752,7 +2788,8 @@ CREATE TABLE public.users (
     invitations_count integer DEFAULT 0,
     roles_mask integer,
     user_group_id bigint,
-    unconfirmed_email character varying
+    unconfirmed_email character varying,
+    webauthn_id character varying
 );
 
 
@@ -3153,6 +3190,13 @@ ALTER TABLE ONLY public.narratives ALTER COLUMN id SET DEFAULT nextval('public.n
 --
 
 ALTER TABLE ONLY public.occupation1930_codes ALTER COLUMN id SET DEFAULT nextval('public.occupation1930_codes_id_seq'::regclass);
+
+
+--
+-- Name: passkeys id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.passkeys ALTER COLUMN id SET DEFAULT nextval('public.passkeys_id_seq'::regclass);
 
 
 --
@@ -3598,6 +3642,14 @@ ALTER TABLE ONLY public.narratives
 
 ALTER TABLE ONLY public.occupation1930_codes
     ADD CONSTRAINT occupation1930_codes_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: passkeys passkeys_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.passkeys
+    ADD CONSTRAINT passkeys_pkey PRIMARY KEY (id);
 
 
 --
@@ -4600,6 +4652,27 @@ CREATE INDEX index_narratives_people_on_person_id ON public.narratives_people US
 
 
 --
+-- Name: index_passkeys_on_external_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_passkeys_on_external_id ON public.passkeys USING btree (external_id);
+
+
+--
+-- Name: index_passkeys_on_public_key; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_passkeys_on_public_key ON public.passkeys USING btree (public_key);
+
+
+--
+-- Name: index_passkeys_on_user_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_passkeys_on_user_id ON public.passkeys USING btree (user_id);
+
+
+--
 -- Name: index_people_videos_on_person_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4737,6 +4810,13 @@ CREATE INDEX index_users_on_invited_by_type_and_invited_by_id ON public.users US
 --
 
 CREATE INDEX index_users_on_user_group_id ON public.users USING btree (user_group_id);
+
+
+--
+-- Name: index_users_on_webauthn_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_users_on_webauthn_id ON public.users USING btree (webauthn_id);
 
 
 --
@@ -5229,6 +5309,14 @@ ALTER TABLE ONLY public.videos
 
 
 --
+-- Name: passkeys fk_rails_902db11bce; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.passkeys
+    ADD CONSTRAINT fk_rails_902db11bce FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
 -- Name: census_1900_records fk_rails_90ec9bfa05; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -5614,6 +5702,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('9'),
 ('8'),
 ('4'),
+('20260208000002'),
+('20260208000001'),
 ('20250924004735'),
 ('20250713203726'),
 ('20250713185426'),

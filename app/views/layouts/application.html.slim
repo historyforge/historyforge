@@ -59,6 +59,7 @@ html
           = yield :content
         - else
           = yield
+    = render 'shared/passkey_prompt' if user_signed_in? && current_user.passkeys.empty?
     = yield :body_end
 
     script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"

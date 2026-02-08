@@ -5,3 +5,5 @@ SECRET_KEY_BASE:          results-of-running-rake-secret
 FACEBOOK_LOGIN_ENABLED:     false
 FACEBOOK_LOGIN_APP_ID:          Found in Facebook Developer App Console (if Facebook auth enabled)
 FACEBOOK_LOGIN_SECRET:      Found in Facebook Developer App Console (if Facebook auth enabled)
+WEBAUTHN_ORIGIN:          https://localhost:3000
+WEBAUTHN_RP_ID:           localhost

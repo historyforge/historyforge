@@ -19,6 +19,11 @@
     = link_to t('.didn_t_receive_unlock_instructions'), new_unlock_path(resource_name)
     br
 
+  - if user_signed_in?
+    br
+    = link_to 'Manage Passkeys', users_passkeys_path, class: 'btn btn-sm btn-outline-secondary'
+    br
+
   - if AppConfig[:facebook_login_enabled]
     br
     - resource_class.omniauth_providers.each do |provider|

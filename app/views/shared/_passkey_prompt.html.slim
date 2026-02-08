@@ -1,0 +1,15 @@
+.modal.fade#passkeyPromptModal tabindex="-1" role="dialog" aria-labelledby="passkeyPromptLabel" aria-hidden="true"
+  .modal-dialog role="document"
+    .modal-content
+      .modal-header
+        h5.modal-title#passkeyPromptLabel Sign in faster next time
+        button.close type="button" data-dismiss="modal" aria-label="Close"
+          span aria-hidden="true" &times;
+      .modal-body
+        p You can use Touch ID or Face ID to sign in next time — no password needed.
+        p It only takes a moment to set up.
+      .modal-footer
+        button.btn.btn-secondary#passkey-prompt-dismiss type="button" Not now
+        button.btn.btn-primary#passkey-prompt-setup type="button" data-challenge-url=new_create_challenge_users_passkeys_path data-create-url=users_passkeys_path
+          i.fa.fa-key.mr-2
+          | Set up

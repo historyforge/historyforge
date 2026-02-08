@@ -43,6 +43,26 @@ Rails.application.routes.draw do
                             sessions: 'users/sessions',
                             omniauth_callbacks: 'users/omniauth_callbacks' }
 
+  devise_scope :user do
+    post 'u/sign_up/new_challenge', to: 'users/registrations#new_challenge', as: :new_user_registration_challenge
+    post 'u/sign_in/new_challenge', to: 'users/sessions#new_challenge', as: :new_user_session_challenge
+
+    post 'u/reauthenticate/new_challenge', to: 'users/reauthentication#new_challenge', as: :new_user_reauthentication_challenge
+    post 'u/reauthenticate', to: 'users/reauthentication#reauthenticate', as: :user_reauthentication
+
+    namespace :users do
+      resources :passkeys, only: [:index, :create, :destroy] do
+        collection do
+          post :new_create_challenge
+        end
+
+        member do
+          post :new_destroy_challenge
+        end
+      end
+    end
+  end
+
   mount LetterOpenerWeb::Engine, at: '/letter_opener' if Rails.env.development?
 
   concern :census_directory do
