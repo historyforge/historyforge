@@ -12,7 +12,7 @@ module Users
     before_action :ensure_user_owns_passkey, only: [:destroy]
     
     # Override to handle credential parsing errors gracefully
-    rescue_from StandardError, with: :handle_credential_error
+    rescue_from WebAuthn::Error, JSON::ParserError, with: :handle_credential_error
 
     # Override create_passkey to handle JSON responses properly
     def create_passkey(resource:)

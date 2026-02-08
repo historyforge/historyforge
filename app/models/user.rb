@@ -228,6 +228,4 @@ class User < ApplicationRecord
   def generate_webauthn_id
     self.webauthn_id = SecureRandom.urlsafe_base64(32) if webauthn_id.blank?
   end
-
-  private
 end

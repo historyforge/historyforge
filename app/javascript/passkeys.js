@@ -58,7 +58,8 @@ function generateDeviceLabel() {
 // Uses native JSON helpers when available, falls back to manual conversion
 function buildGetOptions(options) {
   if (window.PublicKeyCredential?.parseRequestOptionsFromJSON) {
-    return PublicKeyCredential.parseRequestOptionsFromJSON(options);
+    // Native API expects { publicKey: { ... } } and returns the inner PublicKeyCredentialRequestOptions
+    return PublicKeyCredential.parseRequestOptionsFromJSON({ publicKey: options });
   }
 
   const challengeBuffer = typeof options.challenge === 'string'
@@ -86,7 +87,8 @@ function buildGetOptions(options) {
 // Uses native JSON helpers when available, falls back to manual conversion
 function buildCreateOptions(options) {
   if (window.PublicKeyCredential?.parseCreationOptionsFromJSON) {
-    return PublicKeyCredential.parseCreationOptionsFromJSON(options);
+    // Native API expects { publicKey: { ... } } and returns the inner PublicKeyCredentialCreationOptions
+    return PublicKeyCredential.parseCreationOptionsFromJSON({ publicKey: options });
   }
 
   if (!options.challenge) {
@@ -354,6 +356,11 @@ function initializePasskeyPrompt() {
       jQuery('#passkeyPromptModal').modal('hide');
     });
   }
+
+  // Also set cookie when modal is closed via X button or backdrop click
+  jQuery('#passkeyPromptModal').on('hidden.bs.modal', function () {
+    setCookie('passkey_prompt_dismissed', '1', 30);
+  });
 }
 
 // Initialize passkey functionality on page load
