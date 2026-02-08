@@ -13,24 +13,34 @@ class NextCensusRecordAttributes
     'dwelling' => %i[dwelling_number street_house_number
                      street_prefix street_suffix street_name apartment_number building_id],
     'family' => %i[dwelling_number street_house_number street_prefix street_suffix street_name apartment_number
-                   family_id building_id last_name institution_type institution_name]
+                   family_id building_id last_name institution institution_type institution_name]
   }.freeze
+
+  def self.call(record, action)
+    new(record, action).call
+  end
 
   def initialize(record, action)
     @record = record
     @action = action
-    prefill_attributes
-    prefill_sheet_side_line
   end
 
-  attr_reader :record, :action, :attributes
+  def call
+    prefill_attributes
+    prefill_sheet_side_line
+    attributes
+  end
+
+  attr_reader :record, :action
 
   private
 
+  attr_reader :attributes
+
   def prefill_attributes
-    @attributes = fields.each_with_object({}) { |item, hash|
+    @attributes = fields.each_with_object({}) do |item, hash|
       hash[item] = record.public_send(item) if record.respond_to?(item)
-    }
+    end
   end
 
   def prefill_sheet_side_line
