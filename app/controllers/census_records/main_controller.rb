@@ -238,7 +238,7 @@ module CensusRecords
       if params[:context] && params[:context] == 'person'
         redirect_to @record.person
       elsif params[:then].present?
-        attributes = NextCensusRecordAttributes.new(@record, params[:then]).attributes
+        attributes = NextCensusRecordAttributes.call(@record, params[:then])
         redirect_to send(:"new_census#{year}_record_path", attributes:)
       else
         redirect_to @record
