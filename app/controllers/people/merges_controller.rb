@@ -10,7 +10,7 @@ module People
       authorize! :merge, Person
       @target = Person.find params[:person_id]
       @source = Person.find params[:merge_id]
-      People::Merge.run!(source: @source, target: @target)
+      People::Merge.call(source: @source, target: @target)
       flash[:notice] = "The merge operation has been performed."
       redirect_to @target
     end

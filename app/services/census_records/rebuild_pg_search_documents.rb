@@ -2,14 +2,24 @@
 
 module CensusRecords
   # Rebuilds the pg_search_documents rows related to the given table name's census.
-  class RebuildPgSearchDocuments < ApplicationInteraction
-    string :table_name
-    string :class_name
+  class RebuildPgSearchDocuments
+    def self.call(table_name:, class_name:)
+      new(table_name:, class_name:).call
+    end
 
-    def execute
+    def initialize(table_name:, class_name:)
+      @table_name = table_name
+      @class_name = class_name
+    end
+
+    def call
       connection.execute delete_sql
       connection.execute insert_sql
     end
+
+    private
+
+    attr_reader :table_name, :class_name
 
     def delete_sql
       <<~SQL.squish

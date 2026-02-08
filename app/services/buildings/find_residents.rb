@@ -2,14 +2,20 @@
 
 module Buildings
   # Loads the residents of a building record.
-  class FindResidents < ApplicationInteraction
-    object :building, class: 'Building'
-    integer :year, default: nil
-    hash :filters, default: nil
-    boolean :reviewed_only, default: true
+  class FindResidents
+    def self.call(building:, year: nil, filters: nil, reviewed_only: true)
+      new(building:, year:, filters:, reviewed_only:).call
+    end
 
-    def execute
-      prepare_filters(filters)
+    def initialize(building:, year: nil, filters: nil, reviewed_only: true)
+      @building = building
+      @year = year
+      @filters = filters
+      @reviewed_only = reviewed_only
+    end
+
+    def call
+      prepare_filters(@filters)
 
       if year
         load_for_year(year)
@@ -20,10 +26,12 @@ module Buildings
 
     private
 
+    attr_reader :building, :year, :reviewed_only
+
     def load_for_year(year)
       records = building_for_year(year).send("census#{year}_records")
       records = records.reviewed if reviewed_only
-      records = records.ransack(filters).result if filters
+      records = records.ransack(@filters).result if @filters
       records.in_census_order
     end
 

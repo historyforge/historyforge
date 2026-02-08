@@ -137,7 +137,7 @@ module Buildings
 
     def photo
       @photo = Photograph.find params[:id]
-      redirect_to @photo.file.variant(resize_to_fit: ResizeToFit.run!(style: params[:style], device: params[:device]))
+      redirect_to @photo.file.variant(resize_to_fit: ResizeToFit.call(style: params[:style], device: params[:device]))
     end
 
     private
@@ -157,7 +157,7 @@ module Buildings
     end
 
     def load_residents
-      @building.residents = Buildings::FindResidents.run!(
+      @building.residents = Buildings::FindResidents.call(
         building: @building,
         year: params[:people],
         filters: params[:peopleParams],

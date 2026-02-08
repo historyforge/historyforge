@@ -8,7 +8,7 @@ module Buildings
     def new; end
 
     def create
-      if Buildings::Merge.run!(source: @source, target: @target)
+      if Buildings::Merge.call(source: @source, target: @target)
         flash[:notice] = 'The merge operation has been performed.'
         redirect_to @target
       else

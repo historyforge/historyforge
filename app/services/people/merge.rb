@@ -1,16 +1,22 @@
 # frozen_string_literal: true
 
 module People
-  class Merge < ApplicationInteraction
+  class Merge
+    def self.call(source:, target:)
+      new(source:, target:).call
+    end
+
+    def initialize(source:, target:)
+      @source = source
+      @target = target
+    end
+
     MERGEABLE_ATTRIBUTES = %i[
       birth_year is_birth_year_estimated death_year
       is_death_year_estimated pob is_pob_estimated sex race
     ].freeze
 
-    object :source, class: Person
-    object :target, class: Person
-
-    def execute
+    def call
       ActiveRecord::Base.transaction do
         merge_descriptions
         merge_basic_attributes
@@ -22,6 +28,8 @@ module People
     end
 
     private
+
+    attr_reader :source, :target
 
     def merge_descriptions
       target.description = [target.description, source.description]

@@ -16,7 +16,7 @@ module CensusRecords
 
     class_methods do
       def rebuild_pg_search_documents
-        CensusRecords::RebuildPgSearchDocuments.run(class_name: name, table_name:)
+        CensusRecords::RebuildPgSearchDocuments.call(class_name: name, table_name:)
       end
     end
   end

@@ -1,12 +1,18 @@
 # frozen_string_literal: true
 
 module Buildings
-  class Geocode < ApplicationInteraction
-    object :building, class: 'Building'
+  class Geocode
+    def self.call(building:)
+      new(building:).call
+    end
+
+    def initialize(building:)
+      @building = building
+    end
 
     MAX_DISTANCE_KM = 50
 
-    def execute
+    def call
       return if Rails.env.test?
 
       perform_geocoding
@@ -16,6 +22,8 @@ module Buildings
     end
 
     private
+
+    attr_reader :building
 
     def perform_geocoding
       building.geocode
