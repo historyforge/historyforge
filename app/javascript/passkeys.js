@@ -58,8 +58,7 @@ function generateDeviceLabel() {
 // Uses native JSON helpers when available, falls back to manual conversion
 function buildGetOptions(options) {
   if (window.PublicKeyCredential?.parseRequestOptionsFromJSON) {
-    // Native API expects { publicKey: { ... } } and returns the inner PublicKeyCredentialRequestOptions
-    return PublicKeyCredential.parseRequestOptionsFromJSON({ publicKey: options });
+    return PublicKeyCredential.parseRequestOptionsFromJSON(options);
   }
 
   const challengeBuffer = typeof options.challenge === 'string'
@@ -87,8 +86,7 @@ function buildGetOptions(options) {
 // Uses native JSON helpers when available, falls back to manual conversion
 function buildCreateOptions(options) {
   if (window.PublicKeyCredential?.parseCreationOptionsFromJSON) {
-    // Native API expects { publicKey: { ... } } and returns the inner PublicKeyCredentialCreationOptions
-    return PublicKeyCredential.parseCreationOptionsFromJSON({ publicKey: options });
+    return PublicKeyCredential.parseCreationOptionsFromJSON(options);
   }
 
   if (!options.challenge) {
