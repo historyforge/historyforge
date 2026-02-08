@@ -13,7 +13,7 @@ module Buildings
     end
 
     def run_interaction
-      described_class.run!(source:, target:)
+      described_class.call(source:, target:)
     end
 
     context 'with the basic case' do

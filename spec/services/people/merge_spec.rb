@@ -19,7 +19,7 @@ module People
     end
 
     it "merges successfully" do
-      described_class.run(source:, target:)
+      described_class.call(source:, target:)
       expect(source).to be_destroyed
       expect(target.names.map(&:name)).to include(source_name)
       expect(target.census1910_records).to include(source_record)
@@ -64,7 +64,7 @@ module People
         source_narrative
         target_narrative
         PaperTrail.request.whodunnit = user
-        described_class.run(source:, target:)
+        described_class.call(source:, target:)
       end
 
       it "moves narratives from source to target" do
@@ -94,7 +94,7 @@ module People
         source_audio
         target_audio
         PaperTrail.request.whodunnit = user
-        described_class.run(source:, target:)
+        described_class.call(source:, target:)
       end
 
       it "moves audios from source to target" do
@@ -124,7 +124,7 @@ module People
         source_video
         target_video
         PaperTrail.request.whodunnit = user
-        described_class.run(source:, target:)
+        described_class.call(source:, target:)
       end
 
       it "moves videos from source to target" do

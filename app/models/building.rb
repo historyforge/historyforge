@@ -210,7 +210,7 @@ class Building < ApplicationRecord
   end
 
   def do_the_geocode
-    Buildings::Geocode.run(building: self)
+    Buildings::Geocode.call(building: self)
   end
 
   def full_street_address
@@ -303,7 +303,7 @@ class Building < ApplicationRecord
   attr_writer :residents
 
   def residents
-    Buildings::FindResidents.run!(building: self, reviewed_only: true)
+    Buildings::FindResidents.call(building: self, reviewed_only: true)
   end
 
   memoize :residents

@@ -13,11 +13,11 @@ module Buildings
 
     let(:building) { create(:building, locality:, lat: nil, lon: nil) }
 
-    describe '#execute' do
+    describe '#call' do
       context 'when in test environment' do
         it 'returns early without geocoding' do
           expect(building).not_to receive(:geocode)
-          described_class.run(building:)
+          described_class.call(building:)
         end
       end
 
@@ -34,7 +34,7 @@ module Buildings
                 building.lon = -76.5000
                 true
               end
-              described_class.run(building:)
+              described_class.call(building:)
             end
 
             it 'keeps the geocoded coordinates' do
@@ -51,7 +51,7 @@ module Buildings
                 building.lon = -76.5000
                 true
               end
-              described_class.run(building:)
+              described_class.call(building:)
             end
 
             it 'replaces coordinates with locality center' do
@@ -79,7 +79,7 @@ module Buildings
                   building.lon = default_lon
                   true
                 end
-                described_class.run(building:)
+                described_class.call(building:)
               end
 
               it 'keeps the geocoded coordinates' do
@@ -96,7 +96,7 @@ module Buildings
                   building.lon = default_lon
                   true
                 end
-                described_class.run(building:)
+                described_class.call(building:)
               end
 
               it 'replaces coordinates with default center' do
@@ -114,7 +114,7 @@ module Buildings
                   building.lon = -76.5000
                   true
                 end
-                described_class.run(building:)
+                described_class.call(building:)
               end
 
               it 'skips validation and keeps the geocoded coordinates' do
@@ -142,7 +142,7 @@ module Buildings
                   building.lon = default_lon
                   true
                 end
-                described_class.run(building:)
+                described_class.call(building:)
               end
 
               it 'keeps the geocoded coordinates' do
@@ -159,7 +159,7 @@ module Buildings
                   building.lon = default_lon
                   true
                 end
-                described_class.run(building:)
+                described_class.call(building:)
               end
 
               it 'replaces coordinates with default center' do
@@ -177,7 +177,7 @@ module Buildings
                   building.lon = -76.5000
                   true
                 end
-                described_class.run(building:)
+                described_class.call(building:)
               end
 
               it 'skips validation and keeps the geocoded coordinates' do
@@ -194,7 +194,7 @@ module Buildings
                 building.lon = nil
                 true
               end
-              described_class.run(building:)
+              described_class.call(building:)
             end
 
             it 'does not modify coordinates' do
@@ -210,7 +210,7 @@ module Buildings
           end
 
           it 'handles the error gracefully' do
-            expect { described_class.run(building:) }.not_to raise_error
+            expect { described_class.call(building:) }.not_to raise_error
           end
         end
       end

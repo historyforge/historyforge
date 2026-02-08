@@ -155,7 +155,7 @@ module CensusRecords
       @search.scoped.to_a.each do |record|
         next if record.person_id.present?
 
-        People::GenerateFromCensusRecord.run!(record:)
+        People::GenerateFromCensusRecord.call(record:)
         count += 1
       end
 
@@ -166,7 +166,7 @@ module CensusRecords
     def make_person
       @record = resource_class.find params[:id]
       authorize! :create, resource_class
-      person = People::GenerateFromCensusRecord.run!(record: @record)
+      person = People::GenerateFromCensusRecord.call(record: @record)
       if person.persisted?
         flash[:notice] = 'A new person record has been created from this census record.'
       else

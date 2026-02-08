@@ -3,16 +3,16 @@
 require 'rails_helper'
 
 module CensusRecords
-  RSpec.describe SingleCensus do
+  RSpec.describe OnlyOneCensusYear do
     context 'when there are no census records saved yet' do
-      subject { described_class.run! }
+      subject { described_class.call }
       it { is_expected.to be_truthy }
     end
 
     context 'when there is only one census with records in it' do
       before { FactoryBot.create(:census1910_record) }
 
-      subject { described_class.run! }
+      subject { described_class.call }
       it { is_expected.to be_truthy }
     end
 
@@ -22,7 +22,7 @@ module CensusRecords
         FactoryBot.create(:census1920_record)
       end
 
-      subject { described_class.run! }
+      subject { described_class.call }
       it { is_expected.to be_falsey }
     end
   end

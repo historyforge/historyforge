@@ -50,7 +50,8 @@ RSpec.describe "1940 US Census" do
     check "Foreign Born"
     choose "AmCit - American Citizen", name: "census_record[naturalized_alien]"
 
-    fill_in "Town", with: "Ithaca", name: "census_record[residence_1935_town]"
+    find('input[type="radio"][name="census_record[residence_1935_town]"][value="other"]').click
+    fill_in "Other", with: "Ithaca"
     fill_in "County", with: "Tompkins", name: "census_record[residence_1935_county]"
     fill_in "State", with: "New York", name: "census_record[residence_1935_state]"
     check "On a Farm"

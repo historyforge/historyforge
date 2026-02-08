@@ -1,12 +1,16 @@
 # frozen_string_literal: true
 
 module People
-  class LikelyMatches < ApplicationInteraction
-    include FastMemoize
+  class LikelyMatches
+    def self.call(record:)
+      new(record:).call
+    end
 
-    # @!attribute [r] record
-    #   @return [Class<CensusRecord>]
-    object :record, class: 'CensusRecord'
+    def initialize(record:)
+      @record = record
+    end
+
+    include FastMemoize
 
     # @!attribute [r] year
     #   @return [Integer]
@@ -16,7 +20,7 @@ module People
     #   @return [String]
     delegate :year, :age, :sex, to: :record
 
-    def execute
+    def call
       return empty_result if only_one_census_going?
       
       matches = exact_matches
@@ -27,12 +31,14 @@ module People
 
     private
 
+    attr_reader :record
+
     def empty_result
       { matches: [], exact: false }
     end
 
     def only_one_census_going?
-      compose(CensusRecords::SingleCensus)
+      CensusRecords::OnlyOneCensusYear.call
     end
 
     def filter_matches(matches)

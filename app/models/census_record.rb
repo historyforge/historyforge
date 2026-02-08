@@ -91,7 +91,7 @@ class CensusRecord < ApplicationRecord
   end
 
   def set_defaults
-    CensusRecords::SetDefaults.run(record: self)
+    CensusRecords::SetDefaults.call(record: self)
   end
 
   def dont_add_same_person
@@ -126,7 +126,7 @@ class CensusRecord < ApplicationRecord
 
   # @return [Array<Person>]
   def likely_person_matches
-    result = People::LikelyMatches.run!(record: self)
+    result = People::LikelyMatches.call(record: self)
     @likely_exact_matches = result[:exact]
     result[:matches]
   end
@@ -136,7 +136,7 @@ class CensusRecord < ApplicationRecord
   def likely_exact_matches? = @likely_exact_matches || false
 
   def fellows
-    CensusRecords::FindFamilyMembers.run!(record: self)
+    CensusRecords::FindFamilyMembers.call(record: self)
   end
   memoize :fellows
 
@@ -150,7 +150,7 @@ class CensusRecord < ApplicationRecord
     person_from_id, person_to_id = saved_change_to_person_id
     person_from = Person.find(person_from_id) if person_from_id.present?
     person_to = Person.find(person_to_id) if person_to_id.present?
-    CensusRecords::AuditPersonConnection.run!(person_from:, person_to:, year:, name:)
+    CensusRecords::AuditPersonConnection.call(person_from:, person_to:, year:, name:)
   end
 
   def add_name_to_person_record
@@ -162,8 +162,8 @@ class CensusRecord < ApplicationRecord
   end
 
   def auto_generate_person_record
-    return unless reviewed? && CensusRecords::SingleCensus.run!
+    return unless reviewed? && CensusRecords::OnlyOneCensusYear.call
 
-    People::GenerateFromCensusRecord.run!(record: self)
+    People::GenerateFromCensusRecord.call(record: self)
   end
 end

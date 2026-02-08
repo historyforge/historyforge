@@ -16,7 +16,12 @@ RSpec.describe "User management" do
 
   def logout
     find(:xpath, ".//a[i[contains(@class, 'fa-user')]]").click
-    click_on("Log out")
+    page.accept_confirm do
+      click_on("Log out")
+    end
+    # Wait for logout to complete and clear session
+    sleep 0.5
+    page.driver.clear_cookies if page.driver.respond_to?(:clear_cookies)
   end
 
   scenario "administrator adds user" do
@@ -39,8 +44,11 @@ RSpec.describe "User management" do
     logout
 
     user = User.find_by(email:)
+    
+    # Clear any session state to ensure we're truly logged out
+    page.driver.clear_cookies if page.driver.respond_to?(:clear_cookies)
 
-    # Accept the invitation
+    # Accept the invitation - ensure we're not logged in as admin
     url = "/u/invitation/accept?invitation_token=#{token}"
     visit(url)
     expect(page).to have_content("Set your password")

@@ -1,15 +1,17 @@
 # frozen_string_literal: true
 
-class ResizeToFit < ApplicationInteraction
-  # @!attribute [r] device
-  #  @return [String]
-  string :device
-  # @!attribute [r] style
-  #  @return [String]
-  string :style
+class ResizeToFit
+  def self.call(device:, style:)
+    new(device:, style:).call
+  end
+
+  def initialize(device:, style:)
+    @device = device
+    @style = style
+  end
 
   # @return [Array<Integer>]
-  def execute
+  def call
     width = if style == 'full'
               case style
               when 'half'
@@ -30,4 +32,8 @@ class ResizeToFit < ApplicationInteraction
             end
     [width, width * 3]
   end
+
+  private
+
+  attr_reader :device, :style
 end

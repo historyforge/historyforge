@@ -1,16 +1,25 @@
 # frozen_string_literal: true
 
 module People
-  class GenerateFromCensusRecord < ApplicationInteraction
-    # @!attribute census_record [CensusRecord]
-    object :record, class: 'CensusRecord'
+  class GenerateFromCensusRecord
+    def self.call(record:)
+      new(record:).call
+    end
 
-    def execute
+    def initialize(record:)
+      @record = record
+    end
+
+    def call
       person = person_from_census_record
       person.save!
       record.update!(person_id: person.id)
       person
     end
+
+    private
+
+    attr_reader :record
 
     def person_from_census_record
       # Create person without associations first to avoid premature callbacks

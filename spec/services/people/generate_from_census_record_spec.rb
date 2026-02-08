@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe People::GenerateFromCensusRecord do
-  let(:person) { described_class.run!(record:) }
+  let(:person) { described_class.call(record:) }
   let(:record) { create(:census1900_record, birth_year: 1872, age: 28) }
 
   it { expect(person.race).to eq(record.race) }

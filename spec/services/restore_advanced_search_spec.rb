@@ -30,12 +30,12 @@ RSpec.describe RestoreAdvancedSearch do
         let(:user) { nil }
 
         before do
-          session[:search] = { model: search_key, params: { s: { name_eq: 'John' } } }
+          session[:searches] = { search_key => { s: { name_eq: 'John' } } }
         end
 
         it 'deletes session search and returns redirect hash' do
           result = described_class.call(params:, user:, session:, search_key:, action:)
-          expect(session[:search]).to be_nil
+          expect(session[:searches]).not_to have_key(search_key)
           expect(result).to eq({ action: })
         end
       end
@@ -63,7 +63,8 @@ RSpec.describe RestoreAdvancedSearch do
           expect(search.params).to eq({
             'scope' => 'all',
             's' => { 'name_eq' => 'John' },
-            'f' => ['name', 'age']
+            'f' => ['name', 'age'],
+            'sort' => nil
           })
         end
 
@@ -153,13 +154,11 @@ RSpec.describe RestoreAdvancedSearch do
         it 'saves search params to session and returns nil' do
           result = described_class.call(params:, user:, session:, search_key:, action:)
           expect(result).to be_nil
-          expect(session[:search]).to eq({
-            model: search_key,
-            params: {
-              s: { name_eq: 'John' },
-              f: ['name', 'age'],
-              scope: 'all'
-            }
+          expect(session[:searches][search_key]).to eq({
+            s: { name_eq: 'John' },
+            f: ['name', 'age'],
+            scope: 'all',
+            sort: nil
           })
         end
 
@@ -172,8 +171,12 @@ RSpec.describe RestoreAdvancedSearch do
               expect(result).to be_nil
             }.not_to raise_error
 
-            expect(session[:search][:params][:s]).to eq({})
-            expect(session[:search][:params][:scope]).to be_nil
+            saved_params = session[:searches][search_key]
+            # s should default to empty hash when not provided
+            # Note: params_to_save always includes s, f, scope, and sort keys
+            expect(saved_params[:s]).to eq({})
+            expect(saved_params[:scope]).to be_nil
+            expect(saved_params[:f]).to eq(['name'])
           end
         end
       end
@@ -189,12 +192,12 @@ RSpec.describe RestoreAdvancedSearch do
         end
 
         before do
-          session[:search] = { 'model' => search_key, 'params' => saved_params }
+          session[:searches] = { search_key => saved_params }
         end
 
         it 'returns redirect hash with saved params and action' do
           result = described_class.call(params:, user:, session:, search_key:, action:)
-          expect(result).to eq(saved_params.merge(action:))
+          expect(result).to eq(saved_params.deep_symbolize_keys.merge(action:))
         end
       end
 
@@ -202,7 +205,7 @@ RSpec.describe RestoreAdvancedSearch do
         let(:params) { {} }
 
         before do
-          session[:search] = { 'model' => 'Buildings::MainController', 'params' => { s: {} } }
+          session[:searches] = { 'Buildings::MainController' => { s: {} } }
         end
 
         it 'returns nil' do

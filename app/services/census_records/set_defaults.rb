@@ -2,12 +2,22 @@
 
 module CensusRecords
   # Sets default attributes on a new census record object.
-  class SetDefaults < ApplicationInteraction
-    object :record, class: 'CensusRecord'
+  class SetDefaults
+    def self.call(record:)
+      new(record:).call
+    end
 
-    def execute
+    def initialize(record:)
+      @record = record
+    end
+
+    def call
       set_defaults unless record.persisted?
     end
+
+    private
+
+    attr_reader :record
 
     def set_defaults
       set_base_defaults
