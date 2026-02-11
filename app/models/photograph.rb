@@ -32,11 +32,13 @@
 # frozen_string_literal: true
 
 class Photograph < ApplicationRecord
+  include DataUri
+  include FileChecksum
   include Media
   include MediaDateBehavior
-
+  allowed_types = %w[image/jpeg image/png image/gif image/webp image/tiff image/heic image/heif image/bmp image/svg+xml]
   has_one_attached :file
-  validates :file, attached: true, content_type: %w[image/jpeg image/png]
+  validates :file, attached: true, content_type: allowed_types
 
   default_scope -> { preload(file_attachment: :blob) }
 

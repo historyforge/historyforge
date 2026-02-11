@@ -20,6 +20,8 @@
 #
 
 class Document < ApplicationRecord
+  include DataUri
+  include FileChecksum
 
   has_and_belongs_to_many :localities
   belongs_to :document_category
