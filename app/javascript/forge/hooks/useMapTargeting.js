@@ -1,5 +1,6 @@
-import {useEffect, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import L from "leaflet";
 
 export function useMapTargeting(map, clusterMachine) {
   const dispatch = useDispatch();
@@ -12,17 +13,13 @@ export function useMapTargeting(map, clusterMachine) {
     }
 
     if (focusOnPoints && prevFocusOnPoints !== focusOnPoints) {
-      const google = window.google;
-      if (!google || !google.maps) return;
-      // We don't want it to be fitting bounds and juggling thousands of markers, when the coming bounds
-      // change will clear and re-add them anyway.
-      clusterMachine.clearMarkers();
-      const bounds = new google.maps.LatLngBounds();
-      focusOnPoints.forEach(point => bounds.extend(new google.maps.LatLng(point.lat, point.lon)));
+      clusterMachine.clearLayers();
+      const bounds = L.latLngBounds(
+        focusOnPoints.map(point => L.latLng(point.lat, point.lon))
+      );
       map.fitBounds(bounds);
-      dispatch({ type: "FORGE_FOCUSED"});
+      dispatch({ type: "FORGE_FOCUSED" });
       setPrevFocusOnPoints(focusOnPoints);
     }
   }, [map, focusOnPoints, focusOnPoints]);
-
 }

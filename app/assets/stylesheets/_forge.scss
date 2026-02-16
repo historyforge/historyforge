@@ -1,20 +1,11 @@
 @import 'include-media';
 
-button.gm-ui-hover-effect {
-  display: none !important;
-}
-
-body.streetview {
-  #forge-right-col, #forge-sidebar-toggle, header {
-    display: none;
-  }
-}
-
 #forge {
   #map-wrapper {
     position: absolute;
     left: 0;
     top: 66px;
+    z-index: 1;
     #map {
       width: 100vw;
       height: calc(100vh - 66px);
@@ -200,7 +191,7 @@ body.streetview {
     z-index:120;
   }
 }
-.gm-style-iw {
+.leaflet-popup-content {
   div.row {
     margin-left:0;
     margin-right:0;

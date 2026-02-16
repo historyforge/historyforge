@@ -1,26 +1,9 @@
 import React, { useRef, useState, useEffect } from 'react'
+import L from 'leaflet'
 import loadWMS from '../forge/wms'
 import { getMainIcon, generateMarkers, highlightMarker, unhighlightMarker } from '../forge/mapFunctions'
 import { moveBuilding, highlight } from '../forge/actions'
 import { useDispatch, useSelector } from "react-redux";
-import { waitForGoogleMaps } from '../js/googleMapsLoader';
-
-const getMapOptions = (google) => ({
-  zoom: 18,
-  disableDefaultUI: true,
-  gestureHandling: 'cooperative',
-  zoomControl: true,
-  mapTypeControl: true,
-  mapTypeControlOptions: {
-    mapTypeIds: [google.maps.MapTypeId.ROADMAP, google.maps.MapTypeId.SATELLITE],
-    style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
-    position: google.maps.ControlPosition.BOTTOM_LEFT
-  },
-  streetViewControl: true,
-  fullscreenControl: true,
-  styles: [{ featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'off' }] }]
-});
-
 
 export const Map = () => {
   const {
@@ -38,36 +21,52 @@ export const Map = () => {
   const dispatch = useDispatch();
   const toggle = (id) => dispatch({ type: 'LAYER_TOGGLE', id });
 
-  const mapRef = useRef(null);
+  const mapDivRef = useRef(null);
   const [map, setMap] = useState(null);
   const [markers, setMarkers] = useState(null);
   const [marker, setMarker] = useState(null);
   const [currentHighlight, setCurrentHighlight] = useState(null);
   const [lastLayeredAt, setLastLayeredAt] = useState(null);
   const [lastOpacityAt, setLastOpacityAt] = useState(null);
+  const wmsLayerRef = useRef(null);
 
   useEffect(() => {
-    if (!map && mapRef.current) {
-      // Wait for Google Maps API to be available
-      waitForGoogleMaps().then(() => {
-        const google = window.google;
-        if (!map && mapRef.current) {
-          setMap(new google.maps.Map(mapRef.current, getMapOptions(google)));
-        }
-      }).catch(error => {
-        console.error('Failed to load Google Maps API:', error);
+    if (!map && mapDivRef.current) {
+      const leafletMap = L.map(mapDivRef.current, {
+        zoom: 18,
+        center: [center.lat, center.lng],
+        zoomControl: true,
+        scrollWheelZoom: false,
       });
+
+      const streetLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 19,
+      }).addTo(leafletMap);
+
+      const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        attribution: '&copy; Esri',
+        maxZoom: 19,
+      });
+
+      L.control.layers(
+        { 'Street': streetLayer, 'Satellite': satelliteLayer },
+        null,
+        { position: 'bottomleft' }
+      ).addTo(leafletMap);
+
+      setMap(leafletMap);
     }
-  }, []); // Empty dependency array - only run once on mount
+  }, []);
 
   useEffect(() => {
-    if (map && mapRef.current) {
-      map.setCenter(center)
+    if (map && mapDivRef.current) {
+      map.setView([center.lat, center.lng]);
     }
   }, [map, center]);
 
   useEffect(() => {
-    if (map && mapRef.current) {
+    if (map && mapDivRef.current) {
       if (!marker) {
         setMarker(addMainMarker(map, current, editable, (building) => dispatch(moveBuilding(building))))
         if (!layer) {
@@ -76,14 +75,14 @@ export const Map = () => {
             toggle(layerId)
           }
         } else {
-          addLayer(map, layer)
+          addLayer(map, layer, wmsLayerRef)
         }
       }
     }
   }, [map, marker, current, editable, layer]);
 
   useEffect(() => {
-    if (map && mapRef.current) {
+    if (map && mapDivRef.current) {
       if (!markers) {
         const handlers = {
           onClick(building) {
@@ -97,7 +96,9 @@ export const Map = () => {
           }
         }
         const nextMarkers = generateMarkers(buildings, handlers)
-        addMarkers(map, Object.values(nextMarkers))
+        if (nextMarkers) {
+          addMarkers(map, Object.values(nextMarkers))
+        }
         setMarkers(nextMarkers)
       } else {
         const wasHighlighted = parseInt(currentHighlight)
@@ -118,60 +119,55 @@ export const Map = () => {
   }, [map, building, highlighted, currentHighlight, markers]);
 
   useEffect(() => {
-    if (mapRef.current && map && layer) {
+    if (mapDivRef.current && map && layer) {
       if (layeredAt !== lastLayeredAt) {
-        addLayer(map, layer);
+        addLayer(map, layer, wmsLayerRef);
         setLastLayeredAt(layeredAt);
       }
     }
   }, [map, layer, layeredAt, lastLayeredAt]);
 
   useEffect(() => {
-    if (mapRef.current && map && layer && opacity !== null) {
+    if (mapDivRef.current && map && layer && opacity !== null) {
       if (opacityAt !== lastOpacityAt) {
-        addOpacity(map, opacity);
+        if (wmsLayerRef.current) {
+          wmsLayerRef.current.setOpacity(parseInt(opacity) / 100);
+        }
         setLastOpacityAt(opacityAt);
       }
     }
   }, [map, layer, opacity, opacityAt]);
 
-  return <div id="map" ref={mapRef} />;
+  return <div id="map" ref={mapDivRef} />;
 }
 
-function addLayer(map, layer) {
-  const currentLayers = map.overlayMapTypes.getArray();
-  currentLayers.forEach((_, index) => {
-    map.overlayMapTypes.removeAt(index);
-  })
+function addLayer(map, layer, wmsLayerRef) {
+  if (wmsLayerRef.current) {
+    map.removeLayer(wmsLayerRef.current);
+    wmsLayerRef.current = null;
+  }
   if (layer) {
-    loadWMS(map, layer, "top");
+    wmsLayerRef.current = loadWMS(map, layer);
+    wmsLayerRef.current.addTo(map);
     window.localStorage.setItem("miniforge-layer", layer.id);
   }
 }
 
-export function addOpacity(map, opacity) {
-  const currentLayers = map.overlayMapTypes.getArray()
-  currentLayers[0].setOpacity(parseInt(opacity) / 100)
-}
-
 function addMarkers(map, markers) {
-  markers.forEach(marker => marker.setMap(map))
+  markers.forEach(marker => marker.addTo(map))
 }
 
 function addMainMarker(map, current, editable, move) {
-  const google = window.google;
-  const marker = new google.maps.Marker({
-    position: new google.maps.LatLng(current.object.lat, current.object.lon),
-    icon: getMainIcon(),
-    zIndex: 12,
-    map,
-    draggable: editable
-  })
+  const marker = L.marker(
+    [current.object.lat, current.object.lon],
+    { icon: getMainIcon(), zIndexOffset: 12, draggable: editable }
+  ).addTo(map);
+
   if (editable) {
-    google.maps.event.addListener(marker, 'dragend', (event) => {
-      const point = event.latLng
-      move({ lat: point.lat(), lon: point.lng() })
-    })
+    marker.on('dragend', () => {
+      const latlng = marker.getLatLng();
+      move({ lat: latlng.lat, lon: latlng.lng });
+    });
   }
-  return marker
+  return marker;
 }

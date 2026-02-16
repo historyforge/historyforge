@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Map overlays are the historical map layers that show on top of Google Maps. They are generally maintained
+# Map overlays are the historical map layers that show on top of the base map. They are generally maintained
 # on a MapWarper installation at maps.historyforge.net. Here we just get their WMS url and some metadata that
 # helps us use them in context.
 class MapOverlaysController < ApplicationController
