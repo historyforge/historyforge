@@ -1,4 +1,6 @@
 import { Controller } from 'stimulus'
+import L from 'leaflet'
+import { getMainIcon } from '../forge/mapFunctions'
 
 export default class extends Controller {
   connect() {
@@ -39,7 +41,6 @@ export default class extends Controller {
     this.initBuildings()
     this.initPeople()
     this.initDates()
-    // Map initialization is deferred until user navigates to map step (lazy loading)
   }
 
   initDates() {
@@ -171,86 +172,42 @@ export default class extends Controller {
     this.initCard($(el).closest('.card').deactivateCard().next().activateCard())
   }
 
-  async initMap() {
-    // Wait for Google Maps API to be available
-    if (typeof google === 'undefined' || !google.maps || !google.maps.importLibrary) {
-      // Wait for API to load (with timeout)
-      const maxWait = 10000 // 10 seconds
-      const startTime = Date.now()
-      while (typeof google === 'undefined' || !google.maps || !google.maps.importLibrary) {
-        if (Date.now() - startTime > maxWait) {
-          console.error('Google Maps API did not load within timeout period')
-          return
-        }
-        await new Promise(resolve => setTimeout(resolve, 100))
-      }
-    }
-
-    // Load required libraries
-    try {
-      await google.maps.importLibrary('maps')
-      await google.maps.importLibrary('places')
-    } catch (error) {
-      console.error('Failed to load Google Maps libraries:', error)
-      return
-    }
-
+  initMap() {
     this.mapInitialized = true
     const startLat = document.getElementById('photograph_latitude').value
     const startLon = document.getElementById('photograph_longitude').value
-    const loc = (startLat && startLon) ? [parseFloat(startLat), parseFloat(startLon)] : JSON.parse(document.getElementById('photograph-map').dataset.center)
-    const map = new google.maps.Map(document.getElementById('photograph-map'), {
-      center: { lat: loc[0], lng: loc[1] },
-      zoom: 13
-    })
-    const marker = new google.maps.Marker({
-      map: map,
-      anchorPoint: new google.maps.Point(0, -29),
-      draggable: true
+    const loc = (startLat && startLon)
+      ? [parseFloat(startLat), parseFloat(startLon)]
+      : JSON.parse(document.getElementById('photograph-map').dataset.center)
+
+    const map = L.map('photograph-map', {
+      center: loc,
+      zoom: 13,
     })
 
-    marker.setPosition(map.getCenter())
-    marker.setVisible(true)
-    const input = document.getElementById('pac-input')
-    const autocomplete = new google.maps.places.Autocomplete(input)
-    autocomplete.bindTo('bounds', map)
-    autocomplete.setFields(['address_components', 'geometry', 'icon', 'name'])
-    autocomplete.addListener('place_changed', () => {
-      this.handlePlaceAutocompletion(marker, autocomplete, map)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      maxZoom: 19,
+    }).addTo(map)
+
+    const marker = L.marker(loc, {
+      icon: getMainIcon(),
+      draggable: true,
+    }).addTo(map)
+
+    marker.on('dragend', function () {
+      const position = marker.getLatLng()
+      document.getElementById('photograph_latitude').value = position.lat
+      document.getElementById('photograph_longitude').value = position.lng
     })
 
-    marker.addListener('dragend', function () {
-      const position = marker.getPosition()
-      document.getElementById('photograph_latitude').value = position.lat()
-      document.getElementById('photograph_longitude').value = position.lng()
-    })
-
-    $('#photograph_longitude').on('change', function() {
+    $('#photograph_longitude').on('change', function () {
       const lat = document.getElementById('photograph_latitude').value
       const lon = document.getElementById('photograph_longitude').value
-      const loc = new google.maps.LatLng(parseFloat(lat), parseFloat(lon))
-      marker.setPosition(loc)
-      map.setCenter(loc)
+      const latlng = L.latLng(parseFloat(lat), parseFloat(lon))
+      marker.setLatLng(latlng)
+      map.setView(latlng)
     })
-  }
-
-  handlePlaceAutocompletion(marker, autocomplete, map) {
-    marker.setVisible(false)
-    const place = autocomplete.getPlace()
-    if (!place.geometry) {
-      window.alert("No details available for input: '" + place.name + "'")
-      return
-    }
-
-    if (place.geometry.viewport) {
-      map.fitBounds(place.geometry.viewport)
-    } else {
-      map.setCenter(place.geometry.location)
-      map.setZoom(17)
-    }
-    marker.setPosition(place.geometry.location)
-    document.getElementById('photograph_latitude').value = place.geometry.location.lat()
-    document.getElementById('photograph_longitude').value = place.geometry.location.lng()
   }
 }
 

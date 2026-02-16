@@ -1,108 +1,73 @@
+import L from 'leaflet'
+
+const staticStyle = {
+  radius: 6,
+  fillColor: 'red',
+  fillOpacity: 0.9,
+  color: '#333',
+  weight: 1,
+}
+
+const hoverStyle = {
+  fillColor: 'blue',
+}
+
+const mainIconSvg = `
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="34" viewBox="0 0 20 34">
+    <path d="M 10,0 C 8,0 0,1 0,12 C 0,20 10,34 10,34 C 10,34 20,20 20,12 C 20,1 12,0 10,0 Z"
+          fill="green" fill-opacity="0.9" stroke="#333" stroke-width="1"/>
+  </svg>`
+
+export function getMainIcon() {
+  return L.divIcon({
+    html: mainIconSvg,
+    className: '',
+    iconSize: [20, 34],
+    iconAnchor: [10, 34],
+    popupAnchor: [0, -34],
+  })
+}
+
 export function generateMarkers(items, handlers) {
   if (!items || !Array.isArray(items)) return null
-  const google = window.google;
-  if (!google || !google.maps) {
-    console.error('Google Maps API not available');
-    return null;
-  }
 
   const markers = {}
   items.forEach(item => {
     if (!item || !item.id) {
-      console.warn('Skipping invalid item in generateMarkers:', item);
-      return;
+      console.warn('Skipping invalid item in generateMarkers:', item)
+      return
     }
 
     const lat = item.lat || item.latitude
     const lon = item.lon || item.longitude
 
     if (!lat || !lon || isNaN(lat) || isNaN(lon)) {
-      console.warn(`Skipping item ${item.id} with invalid coordinates: lat=${lat}, lon=${lon}`);
-      return;
+      console.warn(`Skipping item ${item.id} with invalid coordinates: lat=${lat}, lon=${lon}`)
+      return
     }
 
-    const marker = new google.maps.Marker({
-      position: new google.maps.LatLng(lat, lon),
-      icon: getStaticIcon(google),
-      zIndex: 10
-    })
+    const marker = L.circleMarker([lat, lon], { ...staticStyle })
     marker.buildingId = item.id
-    google.maps.event.addListener(marker, 'click', () => {
-      handlers.onClick(item)
-    })
-    google.maps.event.addListener(marker, 'mouseover', () => {
-      handlers.onMouseOver(item, marker)
-    })
-    google.maps.event.addListener(marker, 'mouseout', () => {
-      handlers.onMouseOut(item)
-    })
+    marker.on('click', () => handlers.onClick(item))
+    marker.on('mouseover', () => handlers.onMouseOver(item, marker))
+    marker.on('mouseout', () => handlers.onMouseOut(item))
     markers[marker.buildingId] = marker
   })
   return markers
 }
 
-function tweakMarker(id, icon, zIndex, markers) {
-  if (!markers) {
-    console.warn('Markers object is null or undefined');
-    return;
-  }
-  const marker = markers[id];
-  if (!marker) {
-    console.warn(`Marker with id ${id} not found`);
-    return;
-  }
-  marker.setIcon(icon)
-  marker.setZIndex(zIndex)
-}
-
 export function highlightMarker(id, markers) {
-  const google = window.google;
-  if (!google || !google.maps) return;
-  tweakMarker(id, getHoverIcon(google), 100, markers)
+  if (!markers) return
+  const marker = markers[id]
+  if (!marker) return
+  marker.setStyle(hoverStyle)
+  marker.bringToFront()
 }
 
 export function unhighlightMarker(id, markers) {
-  const google = window.google;
-  if (!google || !google.maps) return;
-  tweakMarker(id, getStaticIcon(google), 10, markers)
-}
-
-function getBaseIcon(google) {
-  return {
-    path: google.maps.SymbolPath.CIRCLE,
-    fillOpacity: 0.9,
-    scale: 6,
-    strokeColor: '#333',
-    strokeWeight: 1
-  }
-}
-
-function getHoverIcon(google) {
-  return Object.assign({}, getBaseIcon(google), {
-    fillColor: 'blue'
-  })
-}
-
-function getStaticIcon(google) {
-  return Object.assign({}, getBaseIcon(google), {
-    fillColor: 'red'
-  })
-}
-
-export function getMainIcon() {
-  const google = window.google;
-  if (!google || !google.maps) {
-    return {
-      path: 'M 0,0 C -2,-20 -10,-22 -10,-30 A 10,10 0 1,1 10,-30 C 10,-22 2,-20 0,0 z',
-      fillColor: 'green',
-      fillOpacity: 0.9,
-      scale: 10,
-      strokeColor: '#333',
-      strokeWeight: 1
-    };
-  }
-  return Object.assign({}, getBaseIcon(google), {
-    fillColor: 'green',
-    scale: 10
-  })
+  if (!markers) return
+  const marker = markers[id]
+  if (!marker) return
+  marker.setStyle({ fillColor: 'red' })
+  marker.bringToBack()
 }

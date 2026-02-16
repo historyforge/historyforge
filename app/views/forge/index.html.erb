@@ -9,5 +9,3 @@
       search: { params: <%== {f: params[:f], s: params[:s]&.compact_blank, people: params[:people], buildings: params[:buildings] }.to_json %>, years: <%== CensusYears.visible_to_user(user_signed_in?).to_json %> }
   }
 </script>
-
-<%= render 'shared/google_maps_loader' %>

@@ -1,62 +1,51 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useRef, useEffect } from 'react'
 import { useSelector } from "react-redux";
-import { useOpacity } from "./hooks/useOpacity";
 import { useLayers } from "./hooks/useLayers";
 import { useMarkers } from "./hooks/useMarkers";
 import { useMapTargeting } from "./hooks/useMapTargeting";
-import { MarkerClusterer } from "@googlemaps/markerclusterer";
-import { waitForGoogleMaps } from '../js/googleMapsLoader';
+import L from 'leaflet';
+import 'leaflet.markercluster';
 
-let boundsTimeout;
 export const Map = () => {
   const props = useSelector(state => ({ ...state.layers, ...state.buildings, ...state.search }))
   const mapDivRef = useRef(null)
   const mapRef = useRef(null);
   const clusterMachine = useRef(null);
 
-  const map = mapRef.current;
-  const [bounds, setBounds] = useState(null);
-
   useEffect(() => {
     if (!mapRef.current && mapDivRef.current) {
-      // Wait for Google Maps API to be available
-      waitForGoogleMaps().then(() => {
-        const google = window.google;
-        if (!mapRef.current && mapDivRef.current) {
-          mapRef.current = new google.maps.Map(mapDivRef.current, mapOptions(google));
-          mapRef.current.setCenter(props.center);
-
-          clusterMachine.current = buildClusterMachine(mapRef.current, google);
-          // We hide the forge controls when street view is on to give unimpeded street view.
-          google.maps.event.addListener(mapRef.current.getStreetView(), 'visible_changed', () => {
-            const streetViewOn = mapRef.current.getStreetView().getVisible();
-            if (streetViewOn) {
-              document.body.classList.add('streetview');
-            } else {
-              document.body.classList.remove('streetview');
-            }
-          });
-
-          // We add markers only when the bounds have changed. Then we add only the markers visible
-          // in the map bounds. Don't worry, when the map first loads, it fires bounds_changed. But
-          // as you move the map, it also changes the bounds every step of the way. The timeout acts
-          // as a trailing debounce to redo the markers only when you've stopped scrolling the map.
-          google.maps.event.addListener(mapRef.current, "bounds_changed", () => {
-            clearTimeout(boundsTimeout);
-            boundsTimeout = setTimeout(() => {
-              setBounds(mapRef.current.getBounds());
-            }, 250);
-          });
-        }
-      }).catch(error => {
-        console.error('Failed to load Google Maps API:', error);
+      mapRef.current = L.map(mapDivRef.current, {
+        zoom: 14,
+        center: [props.center.lat, props.center.lng],
+        zoomControl: false,
+        scrollWheelZoom: false,
       });
+
+      L.control.zoom({ position: 'bottomright' }).addTo(mapRef.current);
+
+      const street = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 19,
+      }).addTo(mapRef.current);
+
+      const satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        attribution: '&copy; Esri',
+        maxZoom: 19,
+      });
+
+      L.control.layers(
+        { 'Street': street, 'Satellite': satellite },
+        null,
+        { position: 'topright' }
+      ).addTo(mapRef.current);
+
+      clusterMachine.current = buildClusterGroup();
+      clusterMachine.current.addTo(mapRef.current);
     }
-  }, []); // Empty dependency array - only run once on mount
+  }, []);
 
   useLayers(mapRef.current);
-  useOpacity(mapRef.current);
-  useMarkers(mapRef.current, clusterMachine.current, bounds);
+  useMarkers(mapRef.current, clusterMachine.current);
   useMapTargeting(mapRef.current, clusterMachine.current);
 
   return <div id="map-wrapper">
@@ -64,50 +53,27 @@ export const Map = () => {
   </div>
 }
 
-function mapOptions(google) {
-  return {
-    zoom: 14,
-    disableDefaultUI: true,
-    gestureHandling: 'cooperative',
-    zoomControl: true,
-    mapTypeControl: true,
-    mapTypeControlOptions: {
-      style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
-      position: google.maps.ControlPosition.TOP_RIGHT,
-    },
-    streetViewControl: true,
-    styles: [{ featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'off' }] }]
-  };
-}
-
-function buildClusterMachine(map, google) {
-  return new MarkerClusterer({
-    map,
-    markers: [],
-    renderer: {
-      render: ({ count, position }) => {
-        // create svg url with fill color
-        const svg = window.btoa(`
-  <svg fill="red" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240">
-    <circle cx="120" cy="120" opacity=".8" r="70" />    
-  </svg>`);
-        const diameter = (count >= 100) ? 60 : count > 10 ? 50 : 40;
-        // create marker using svg icon
-        return new google.maps.Marker({
-          position,
-          icon: {
-            url: `data:image/svg+xml;base64,${svg}`,
-            scaledSize: new google.maps.Size(diameter, diameter),
-          },
-          label: {
-            text: String(count),
-            color: "rgba(255,255,255,0.9)",
-            fontSize: "12px",
-          },
-          // adjust zIndex to be above other markers
-          zIndex: Number(google.maps.Marker.MAX_ZINDEX) + count,
-        });
-      }
+function buildClusterGroup() {
+  return L.markerClusterGroup({
+    chunkedLoading: true,
+    maxClusterRadius: 50,
+    iconCreateFunction: (cluster) => {
+      const count = cluster.getChildCount();
+      const diameter = count >= 100 ? 60 : count > 10 ? 50 : 40;
+      return L.divIcon({
+        html: `<div style="
+          width:${diameter}px;
+          height:${diameter}px;
+          line-height:${diameter}px;
+          text-align:center;
+          border-radius:50%;
+          background:rgba(255,0,0,0.8);
+          color:rgba(255,255,255,0.9);
+          font-size:12px;
+        ">${count}</div>`,
+        className: '',
+        iconSize: [diameter, diameter],
+      });
     }
   });
 }
