@@ -12,5 +12,6 @@ export default function loadWMS(map, layer) {
     transparent: true,
     opacity: 1,
     version: '1.1.1',
+    maxZoom: 22,
   })
 }
