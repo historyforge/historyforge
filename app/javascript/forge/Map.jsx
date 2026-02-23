@@ -5,6 +5,8 @@ import { useMarkers } from "./hooks/useMarkers";
 import { useMapTargeting } from "./hooks/useMapTargeting";
 import L from 'leaflet';
 import 'leaflet.markercluster';
+import '@maplibre/maplibre-gl-leaflet';
+import { addStyleImageMissingFallback } from './maplibreImageFallback';
 
 export const Map = () => {
   const props = useSelector(state => ({ ...state.layers, ...state.buildings, ...state.search }))
@@ -17,16 +19,19 @@ export const Map = () => {
       mapRef.current = L.map(mapDivRef.current, {
         zoom: 14,
         center: [props.center.lat, props.center.lng],
+        maxZoom: 22,
         zoomControl: false,
         scrollWheelZoom: false,
       });
 
       L.control.zoom({ position: 'bottomright' }).addTo(mapRef.current);
 
-      const street = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        maxZoom: 19,
+      const street = L.maplibreGL({
+        style: 'https://tiles.openfreemap.org/styles/liberty',
+        maxZoom: 22,
+        attribution: '&copy; <a href="https://openfreemap.org">OpenFreeMap</a> &copy; <a href="https://openmaptiles.org">OpenMapTiles</a> Data from <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
       }).addTo(mapRef.current);
+      addStyleImageMissingFallback(street.getMaplibreMap());
 
       const satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
         attribution: '&copy; Esri',
