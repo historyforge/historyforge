@@ -1,5 +1,10 @@
 # frozen_string_literal: true
 
+# Hint wrapper options - html.data-controller enables Stimulus hint_popover (avoids ? accumulation with Turbo)
+# Simple Form's Many wrapper only passes defaults[:html] to content_tag, not top-level keys
+HINT_BUBBLE = { tag: 'div', class: 'hint-bubble', html: { data: { controller: 'hint-popover' } } }.freeze
+HINT_BUBBLE_SMALL = { tag: 'small', class: 'hint-bubble', html: { data: { controller: 'hint-popover' } } }.freeze
+
 # Please do not make direct changes to this file!
 # This generator is maintained by the community around simple_form-bootstrap:
 # https://github.com/rafaelfranca/simple_form-bootstrap
@@ -60,7 +65,7 @@ SimpleForm.setup do |config|
     b.use :label
     b.use :input, class: 'form-control', error_class: 'is-invalid'
     b.use :full_error, wrap_with: { tag: 'div', class: 'invalid-feedback' }
-    b.use :hint, wrap_with: { tag: 'div', class: 'hint-bubble' }
+    b.use :hint, wrap_with: HINT_BUBBLE.dup
   end
 
   # vertical input for boolean
@@ -72,7 +77,7 @@ SimpleForm.setup do |config|
       bb.use :input, class: 'form-check-input', error_class: 'is-invalid'
       bb.use :inline_label, class: 'form-check-label'
       bb.use :full_error, wrap_with: { tag: 'div', class: 'invalid-feedback' }
-      bb.use :hint, wrap_with: { tag: 'div', class: 'hint-bubble' }
+      bb.use :hint, wrap_with: HINT_BUBBLE.dup
     end
   end
 
@@ -85,7 +90,7 @@ SimpleForm.setup do |config|
     end
     b.use :input, class: 'form-check-input', error_class: 'is-invalid'
     b.use :full_error, wrap_with: { tag: 'div', class: 'invalid-feedback d-block' }
-    b.use :hint, wrap_with: { tag: 'div', class: 'hint-bubble' }
+    b.use :hint, wrap_with: HINT_BUBBLE.dup
   end
 
   # vertical input for inline radio buttons and check boxes
@@ -97,7 +102,7 @@ SimpleForm.setup do |config|
     end
     b.use :input, class: 'form-check-input', error_class: 'is-invalid'
     b.use :full_error, wrap_with: { tag: 'div', class: 'invalid-feedback d-block' }
-    b.use :hint, wrap_with: { tag: 'div', class: 'hint-bubble' }
+    b.use :hint, wrap_with: HINT_BUBBLE.dup
   end
 
   # vertical file input
@@ -110,7 +115,7 @@ SimpleForm.setup do |config|
     b.use :label
     b.use :input, class: 'form-control-file', error_class: 'is-invalid'
     b.use :full_error, wrap_with: { tag: 'div', class: 'invalid-feedback' }
-    b.use :hint, wrap_with: { tag: 'div', class: 'hint-bubble' }
+    b.use :hint, wrap_with: HINT_BUBBLE.dup
   end
 
   # vertical multi select
@@ -122,7 +127,7 @@ SimpleForm.setup do |config|
       ba.use :input, class: 'form-control mx-1', error_class: 'is-invalid'
     end
     b.use :full_error, wrap_with: { tag: 'div', class: 'invalid-feedback d-block' }
-    b.use :hint, wrap_with: { tag: 'div', class: 'hint-bubble' }
+    b.use :hint, wrap_with: HINT_BUBBLE.dup
   end
 
   # vertical range input
@@ -134,7 +139,7 @@ SimpleForm.setup do |config|
     b.use :label
     b.use :input, class: 'form-control-range', error_class: 'is-invalid'
     b.use :full_error, wrap_with: { tag: 'div', class: 'invalid-feedback d-block' }
-    b.use :hint, wrap_with: { tag: 'div', class: 'hint-bubble' }
+    b.use :hint, wrap_with: HINT_BUBBLE.dup
   end
 
 
@@ -153,7 +158,7 @@ SimpleForm.setup do |config|
     b.wrapper :grid_wrapper, tag: 'div', class: 'col-sm-6' do |ba|
       ba.use :input, class: 'form-control', error_class: 'is-invalid'
       ba.use :full_error, wrap_with: { tag: 'div', class: 'invalid-feedback' }
-      ba.use :hint, wrap_with: { tag: 'small', class: 'hint-bubble' }
+      ba.use :hint, wrap_with: HINT_BUBBLE_SMALL.dup
     end
   end
 
@@ -168,7 +173,7 @@ SimpleForm.setup do |config|
       wr.wrapper :form_check_wrapper, tag: 'div', class: 'form-check' do |bb|
         bb.use :input, class: 'form-check-input', error_class: 'is-invalid'
         bb.use :full_error, wrap_with: { tag: 'div', class: 'invalid-feedback d-block' }
-        bb.use :hint, wrap_with: { tag: 'div', class: 'hint-bubble' }
+        bb.use :hint, wrap_with: HINT_BUBBLE.dup
       end
     end
   end
@@ -181,7 +186,7 @@ SimpleForm.setup do |config|
     b.wrapper :grid_wrapper, tag: 'div', class: 'col-sm-6' do |ba|
       ba.use :input, class: 'form-check-input', error_class: 'is-invalid'
       ba.use :full_error, wrap_with: { tag: 'div', class: 'invalid-feedback d-block' }
-      ba.use :hint, wrap_with: { tag: 'small', class: 'hint-bubble' }
+      ba.use :hint, wrap_with: HINT_BUBBLE_SMALL.dup
     end
   end
 
@@ -193,7 +198,7 @@ SimpleForm.setup do |config|
     b.wrapper :grid_wrapper, tag: 'div', class: 'col-sm-6' do |ba|
       ba.use :input, class: 'form-check-input', error_class: 'is-invalid'
       ba.use :full_error, wrap_with: { tag: 'div', class: 'invalid-feedback d-block' }
-      ba.use :hint, wrap_with: { tag: 'small', class: 'hint-bubble' }
+      ba.use :hint, wrap_with: HINT_BUBBLE_SMALL.dup
     end
   end
 
@@ -208,7 +213,7 @@ SimpleForm.setup do |config|
     b.wrapper :grid_wrapper, tag: 'div', class: 'col-sm-6 col-xs-12' do |ba|
       ba.use :input, error_class: 'is-invalid'
       ba.use :full_error, wrap_with: { tag: 'div', class: 'invalid-feedback d-block' }
-      ba.use :hint, wrap_with: { tag: 'small', class: 'hint-bubble' }
+      ba.use :hint, wrap_with: HINT_BUBBLE_SMALL.dup
     end
   end
 
@@ -222,7 +227,7 @@ SimpleForm.setup do |config|
         bb.use :input, class: 'form-control mx-1', error_class: 'is-invalid'
       end
       ba.use :full_error, wrap_with: { tag: 'div', class: 'invalid-feedback d-block' }
-      ba.use :hint, wrap_with: { tag: 'small', class: 'hint-bubble' }
+      ba.use :hint, wrap_with: HINT_BUBBLE_SMALL.dup
     end
   end
 
@@ -236,7 +241,7 @@ SimpleForm.setup do |config|
     b.wrapper :grid_wrapper, tag: 'div', class: 'col-sm-6' do |ba|
       ba.use :input, class: 'form-control-range', error_class: 'is-invalid'
       ba.use :full_error, wrap_with: { tag: 'div', class: 'invalid-feedback d-block' }
-      ba.use :hint, wrap_with: { tag: 'small', class: 'hint-bubble' }
+      ba.use :hint, wrap_with: HINT_BUBBLE_SMALL.dup
     end
   end
 

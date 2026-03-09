@@ -60,28 +60,13 @@ const initializeCensusForm = () => {
     const war_fought = $('input[name="census_record[war_fought]"]:checked').val()
     $('#census_record_veteran').attr('checked', war_fought.length && war_fought !== 'on')
   })
-
-  $('.hint-bubble').each(function () {
-    const label = $(this).closest('.form-group').children('label, .col-form-label')
-    const title = $(`<span>${label.html()}<i class='fa fa-close float-right' /></span>`)
-    const icon = $('<i class="fa fa-question-circle float-right" data-toggle="popover" />')
-    label.prepend(icon)
-    title.on('click', () => icon.popover('hide'))
-    icon
-      .popover({ container: 'body', html: true, title, content: this.innerHTML, trigger: 'hover' })
-      .on('show.bs.popover', () => $('[data-toggle=popover]').popover('hide'))
-      .on('click', function (e) {
-        e.stopPropagation()
-        e.preventDefault()
-      })
-  })
 }
 
 // Handle both initial page load and Turbo navigation
 $(initializeCensusForm)
 document.addEventListener('turbo:load', initializeCensusForm)
 
-$(document).on('change', '#census_record_page_side', function() {
+$(document).on('change', '#census_record_page_side', function () {
   const value = $(this).val()
   const $line = $('#census_record_line_number')
   if (value === 'A') {
@@ -93,7 +78,7 @@ $(document).on('change', '#census_record_page_side', function() {
   }
 })
 
-$(document).on('change', '#census_record_sex', function() {
+$(document).on('change', '#census_record_sex', function () {
   const value = $(this).val()
   if (value === 'M') {
     $('#census_record_num_children_born').val(null).prop('disabled', true)
@@ -104,7 +89,7 @@ $(document).on('change', '#census_record_sex', function() {
   }
 })
 
-$(document).on('change', '#census_record_marital_status', function() {
+$(document).on('change', '#census_record_marital_status', function () {
   const value = $(this).val()
   if (value === 'S' || value === 'D') { $('#census_record_years_married').val(null).prop('disabled', true) } else { $('#census_record_years_married').val(null).prop('disabled', false) }
 })
