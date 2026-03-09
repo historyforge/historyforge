@@ -1,4 +1,5 @@
-$(document).ready(function() {
+// turbo:load fires on both initial load and Turbo navigation; document.ready only runs on full page load
+const initializeHomePageWidgets = function () {
   $('#search-people-input').each(function() {
     $(this).autoComplete({
       source: function (term, response) {
@@ -33,4 +34,6 @@ $(document).ready(function() {
       }
     })
   })
-})
+}
+
+document.addEventListener('turbo:load', initializeHomePageWidgets)
