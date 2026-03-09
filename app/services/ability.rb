@@ -59,7 +59,8 @@ class Ability
         can :read, CensusRecord, reviewed_at: nil
         can :read, Building, reviewed_at: nil
         can :create, CensusRecord
-        can :update, CensusRecord, created_by_id: user.id, reviewed_at: nil
+        # Census takers can edit records they created, even after review (initial transcriber can fix their work)
+        can :update, CensusRecord, created_by_id: user.id
       end
 
       if user.has_role?("builder")
