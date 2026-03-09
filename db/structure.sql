@@ -341,7 +341,9 @@ CREATE TABLE public.audios (
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
     remote_url character varying,
-    searchable_text text
+    searchable_text text,
+    data_uri text,
+    file_checksum text
 );
 
 
@@ -1811,7 +1813,10 @@ CREATE TABLE public.documents (
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
     url character varying,
-    available_to_public boolean DEFAULT false
+    available_to_public boolean DEFAULT false,
+    searchable_text character varying,
+    data_uri text,
+    file_checksum text
 );
 
 
@@ -2381,7 +2386,9 @@ CREATE TABLE public.photographs (
     reviewed_at timestamp without time zone,
     date_type integer DEFAULT 0,
     caption text,
-    searchable_text text
+    searchable_text text,
+    data_uri text,
+    file_checksum text
 );
 
 
@@ -2878,7 +2885,8 @@ CREATE TABLE public.videos (
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
     remote_url character varying,
-    searchable_text text
+    searchable_text text,
+    data_uri text
 );
 
 
@@ -5710,8 +5718,10 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20250713185425'),
 ('20250713185424'),
 ('20250709201454'),
-('20250325233212'),
-('20250325015620'),
+('20250614174145'),
+('20250614172347'),
+('20250318160436'),
+('20250311210408'),
 ('20250302232511'),
 ('20250202212902'),
 ('20241208172541'),
