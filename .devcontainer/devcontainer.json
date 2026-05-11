@@ -36,7 +36,7 @@
             "pnpmVersion": "none",
             "nvmVersion": "0.39"
         },
-        "ghcr.io/meaningful-ooo/devcontainer-features/homebrew:2": {},
+        "ghcr.io/meaningful-ooo/devcontainer-features/homebrew:": {},
         "ghcr.io/eitsupi/devcontainer-features/jq-likes:2.1.1": {
             "jqVersion": "latest",
             "yqVersion": "latest",

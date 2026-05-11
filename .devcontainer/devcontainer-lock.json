@@ -48,10 +48,10 @@
       "resolved": "ghcr.io/joshuanianji/devcontainer-features/github-cli-persistence@sha256:757843d75915f140ec22bc16ccb5e657a910d9b1d1f445d15350a78e584d130f",
       "integrity": "sha256:757843d75915f140ec22bc16ccb5e657a910d9b1d1f445d15350a78e584d130f"
     },
-    "ghcr.io/meaningful-ooo/devcontainer-features/homebrew:2": {
-      "version": "2.0.4",
-      "resolved": "ghcr.io/meaningful-ooo/devcontainer-features/homebrew@sha256:7a291ba9b8b4bced1172c22f8afc77c3c7ff3ecef49f15e94e626cae47777a32",
-      "integrity": "sha256:7a291ba9b8b4bced1172c22f8afc77c3c7ff3ecef49f15e94e626cae47777a32"
+    "ghcr.io/meaningful-ooo/devcontainer-features/homebrew:": {
+      "version": "2.0.5",
+      "resolved": "ghcr.io/meaningful-ooo/devcontainer-features/homebrew@sha256:c49ba0f6275bdd0474f4c7fcf37fc84b5739838b110c7da9c16d6a409ae48a86",
+      "integrity": "sha256:c49ba0f6275bdd0474f4c7fcf37fc84b5739838b110c7da9c16d6a409ae48a86"
     },
     "ghcr.io/rocker-org/devcontainer-features/apt-packages:1": {
       "version": "1.0.2",
