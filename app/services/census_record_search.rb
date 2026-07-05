@@ -6,6 +6,8 @@
 # 3. Converts the hash to a CSV string
 
 class CensusRecordSearch < SearchQueryBuilder
+  PAGE_NUMBER_MAX = 10_000
+
   attr_accessor :page, :s, :f, :g, :user, :sort, :from, :to, :scope, :entity_class, :form_fields_config
 
   def census_scope_search?
@@ -123,6 +125,13 @@ class CensusRecordSearch < SearchQueryBuilder
     end
   end
 
+  def max_page_number
+    selected = s[:page_number_eq].to_i
+    query = entity_class
+    query = query.where(locality_id: Current.locality_id) if Current.locality_id
+    [query.maximum(:page_number).to_i, selected].max
+  end
+
   def all_fields
     CensusFieldListGenerator.new(form_fields_config).render
   end
@@ -141,5 +150,24 @@ class CensusRecordSearch < SearchQueryBuilder
 
   def facets
     form_fields_config.facets
+  end
+
+  private
+
+  def prepare_search_filters
+    super
+    normalize_page_number_filter!
+  end
+
+  def normalize_page_number_filter!
+    value = @s[:page_number_eq]
+    return if value.blank?
+
+    page = value.to_i
+    if page.positive? && value.to_s.match?(/\A\d+\z/)
+      @s[:page_number_eq] = page.clamp(1, PAGE_NUMBER_MAX).to_s
+    else
+      @s.delete(:page_number_eq)
+    end
   end
 end
