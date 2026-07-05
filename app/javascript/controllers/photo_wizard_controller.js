@@ -2,6 +2,7 @@ import { Controller } from 'stimulus'
 import L from 'leaflet'
 import '@maplibre/maplibre-gl-leaflet'
 import { addStyleImageMissingFallback } from '../forge/maplibreImageFallback'
+import { addHousenumbers } from '../forge/maplibreHousenumbers'
 import { getMainIcon } from '../forge/mapFunctions'
 
 export default class extends Controller {
@@ -192,7 +193,9 @@ export default class extends Controller {
       maxZoom: 22,
       attribution: '&copy; <a href="https://openfreemap.org">OpenFreeMap</a> &copy; <a href="https://openmaptiles.org">OpenMapTiles</a> Data from <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     }).addTo(map)
-    addStyleImageMissingFallback(streetLayer.getMaplibreMap())
+    const maplibreMap = streetLayer.getMaplibreMap()
+    addStyleImageMissingFallback(maplibreMap)
+    addHousenumbers(maplibreMap)
 
     const marker = L.marker(loc, {
       icon: getMainIcon(),
