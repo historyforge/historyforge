@@ -145,6 +145,23 @@ document.addEventListener('DOMContentLoaded', initializePage)
 document.addEventListener('turbo:load', initializePage)
 document.addEventListener('turbo:before-cache', cleanupPage)
 
+// The header is data-turbo-permanent, so it can show a logged-in menu after the session
+// expires. Compare the server-rendered auth state on each page to the header and reload
+// when they disagree.
+function syncAuthStateWithHeader() {
+  const authMeta = document.querySelector('meta[name="hf-auth"]')
+  if (!authMeta) return
+
+  const serverSignedIn = authMeta.content === 'signed-in'
+  const headerShowsSignedIn = document.querySelector('#main-header #user-menu-item') !== null
+
+  if (serverSignedIn !== headerShowsSignedIn) {
+    window.location.reload()
+  }
+}
+
+document.addEventListener('turbo:load', syncAuthStateWithHeader)
+
 // Update header data (flag counts, login status) - called after login/logout or flag updates
 // Update header from incoming Turbo response to avoid flashing
 // Since header is permanent (data-turbo-permanent), Turbo won't replace it automatically
