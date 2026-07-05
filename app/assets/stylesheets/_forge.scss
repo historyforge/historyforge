@@ -162,6 +162,12 @@
       width: 100%;
       height: 300px;
       z-index: 1;
+
+      &:fullscreen,
+      &:-webkit-full-screen {
+        width: 100%;
+        height: 100%;
+      }
     }
     select {
       margin-bottom: 30px;
@@ -192,6 +198,14 @@
     z-index:120;
   }
 }
+.leaflet-control-fullscreen a {
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  color: #333;
+}
+
 .leaflet-popup-content {
   div.row {
     margin-left:0;

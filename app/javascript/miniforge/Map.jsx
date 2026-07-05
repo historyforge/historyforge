@@ -5,6 +5,7 @@ import { addStyleImageMissingFallback } from '../forge/maplibreImageFallback'
 import loadWMS from '../forge/wms'
 import { getMainIcon, generateMarkers, highlightMarker, unhighlightMarker } from '../forge/mapFunctions'
 import { moveBuilding, highlight } from '../forge/actions'
+import { addFullscreenControl } from './fullscreenControl'
 import { useDispatch, useSelector } from "react-redux";
 
 export const Map = () => {
@@ -58,6 +59,8 @@ export const Map = () => {
         null,
         { position: 'bottomleft' }
       ).addTo(leafletMap);
+
+      addFullscreenControl(leafletMap, mapDivRef.current)
 
       setMap(leafletMap);
     }
