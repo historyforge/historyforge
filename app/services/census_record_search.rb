@@ -123,6 +123,14 @@ class CensusRecordSearch < SearchQueryBuilder
     end
   end
 
+  def sheet_number_options
+    selected = s[:page_number_eq].to_i
+    query = entity_class
+    query = query.where(locality_id: Current.locality_id) if Current.locality_id
+    max_sheet = [query.maximum(:page_number).to_i, selected, 200].max
+    (1..max_sheet).to_a
+  end
+
   def all_fields
     CensusFieldListGenerator.new(form_fields_config).render
   end

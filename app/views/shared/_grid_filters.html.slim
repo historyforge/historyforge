@@ -63,17 +63,17 @@
           .row
             - if controller.year >= 1880
               .col-3
-                label for="s_ward_eq" Ward
+                label for="s_ward_eq"= translated_label(resource_class, :ward)
                 input.form-control#s_ward_eq type="search" name="s[ward_eq]" value=@search.s[:ward_eq]
               .col-3
-                label for="s_enum_dist_eq" Enum. Dist.
+                label for="s_enum_dist_eq"= translated_label(resource_class, :enum_dist)
                 input.form-control#s_enum_dist_eq type="search" name="s[enum_dist_eq]" value=@search.s[:enum_dist_eq]
             .col-3
-              label for="s_page_number_eq" Sheet
-              = select_tag 's[page_number_eq]', options_for_select((1..200).map, @search.s[:page_number_eq]), include_blank: true, class: 'form-control'
+              label for="s_page_number_eq"= translated_label(resource_class, :page_number)
+              = select_tag 's[page_number_eq]', options_for_select(@search.sheet_number_options, @search.s[:page_number_eq]), include_blank: true, class: 'form-control'
             - if controller.year < 1950 and controller.year >= 1880
               .col-3
-                label for="s_page_side_eq" Side
+                label for="s_page_side_eq"= translated_label(resource_class, :page_side)
                 = select_tag 's[page_side_eq]', options_for_select(resource_class.page_side_choices, @search.s[:page_side_eq]), include_blank: true, class: 'form-control'
           hr
 
