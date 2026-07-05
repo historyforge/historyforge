@@ -1,5 +1,6 @@
 import ReactDOM from "react-dom";
 import MiniForge from "./App";
+import { exitMapFullscreen } from './fullscreenControl';
 import React from "react";
 
 let reactRoot = null;
@@ -25,6 +26,7 @@ const initializeMiniForge = () => {
 };
 
 const cleanupMiniForge = () => {
+    exitMapFullscreen();
     if (reactRoot) {
         ReactDOM.unmountComponentAtNode(reactRoot);
         reactRoot = null;
