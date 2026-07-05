@@ -87,11 +87,14 @@ class ApplicationController < ActionController::Base
   end
 
   def permission_denied
-    flash[:error] = if user_signed_in?
+    signed_in = user_signed_in?
+    flash[:error] = if signed_in
                       'Sorry you do not have permission to do that.'
                     else
                       'Your session may have expired. Please sign in again.'
                     end
+    # Force a full page reload so the permanent header reflects logged-out state
+    response.headers['Turbo-Visit-Control'] = 'reload' unless signed_in
     redirect_to root_path
   end
 
