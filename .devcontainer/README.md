@@ -1,69 +1,69 @@
-# Dev Container Setup
+# Develop HistoryForge in a container
 
-This project uses a pre-built dev container image hosted on GitHub Container Registry (GHCR) for faster startup times.
+This optional environment builds locally and includes Ruby 4.0.6 (matching
+Gemfile), Node 22/Corepack, PostgreSQL 15, image libraries, and Chromium. It does
+not require a registry account or affect the production Docker/Dokku workflow.
 
-## Usage
+## Start
 
-### Prerequisites
-- Docker installed
-- Visual Studio Code with Remote - Containers extension
-- GitHub account with access to the repository
-- Personal Access Token (PAT) with `write:packages` scope for pushing images
+1. Install and start Docker with Docker Compose support.
+2. Install VS Code and its Dev Containers extension.
+3. Clone this repository, open the checkout in VS Code, and run
+   **Dev Containers: Reopen in Container**.
+4. Wait for the image build and `bin/setup` to finish. In the container terminal,
+   run `bin/dev` and open the forwarded port at http://localhost:3000.
 
-## Getting Started
-1. Set the namespace and repository in `.devcontainer/devcontainer.json`:
-   ```json
-    "name": "HistoryForge",
-    "service": "historyforge",
-    "workspaceFolder": "/workspaces/historyforge",
-   ```
-2. Set the your custom variables for the project name in `.devcontainer/devcontainer.env`:
-   ```env
-   REPO_NAME="historyforge"
-   REPO_HUMAN_NAME="HistoryForge"
-   REPO_DESCRIPTION="HistoryForge is a web-based platform for creating and managing historical maps and visualizations."
-   REPO_URL="https://github.com/Jacrys/historyforge"
-   ```
+`bin/setup` installs locked Ruby and Yarn dependencies, builds JavaScript, copies
+missing local configuration, generates development secrets, and prepares both
+local databases. Existing `.env` and `config/database.yml` files are preserved.
+For an existing database configuration, use the environment-aware settings in
+`config/database.example.yml` so the database host is `db` inside the container.
+Do not use production database credentials for development or tests.
 
-### Using Pre-built Image (Default)
-The default configuration uses a pre-built image from GHCR. Just open the project in VS Code and reopen in container.
+The database contains the application's normal seeds, not a demonstration dataset.
+Run `bin/rails init:new_admin_user` to create a local administrator, then configure
+localities and enable the census years you need in the application settings.
+See the [project documentation](https://historyforge.net/documentation) for those workflows.
 
-### Using Local Build (Development)
-When making changes to the dev container setup:
+## Verify changes
 
-1. Uncomment the `docker-compose.dev.yml` line in `.devcontainer/devcontainer.json`
-2. Rebuild the container
+Run these inside the container:
 
-### Building and Pushing New Images
-
-#### Automatic (Recommended)
-Images are automatically built and pushed when:
-- Changes are pushed to main/master branch
-- Changes are made to `.devcontainer/**`, `Gemfile*`, `package.json`, or `yarn.lock`
-- Manual workflow dispatch is triggered
-
-#### Manual
-```bash
-# Set environment variables
-export GITHUB_USERNAME="your-username"
-export GHCR_TOKEN="your-personal-access-token"
-
-# Build and push
-./.devcontainer/build-and-push.sh [tag]
+```sh
+bundle exec rspec spec/models spec/services spec/requests spec/serializers spec/controllers
+bundle exec rspec spec/features
+yarn build
 ```
 
-## Image Registry
+The container sets `HEADLESS=1` for Chromium. The existing browser suite notes
+failures when running tests together in headless mode; a successful build or
+non-browser test run does not establish that the full browser suite passes.
+A single example can be run with `bundle exec rspec path/to/file_spec.rb:LINE`.
 
-Images are stored at: `ghcr.io/jacrys/historyforge-devcontainer`
+## Native development
 
-Available tags:
-- `latest` - Latest build from main branch
-- `main-<sha>` - Specific commit builds
-- Custom tags from manual builds
+Install the Ruby version required by `Gemfile`, Node 22/Corepack, PostgreSQL 15 and
+its client/development libraries, libvips, ImageMagick, and Chrome/Chromium.
+Set `DATABASE_HOST`, `DATABASE_USERNAME`, and `DATABASE_PASSWORD` if your local
+PostgreSQL does not use the example defaults (`localhost`, `postgres`, `postgres`).
+Enable Yarn with `corepack enable` (install Corepack first if your Node distribution
+does not include it). Then run `bin/setup` and `bin/dev`. Use `HEADLESS=1 bundle exec rspec` for headless tests.
 
-## Files
+## Maintenance and persistence
 
-- `docker-compose.yml` - Uses pre-built image
-- `docker-compose.dev.yml` - Override for local building
-- `build-and-push.sh` - Manual build script
-- `.github/workflows/build-devcontainer.yml` - Automated CI/CD
+Source files are bind-mounted from your checkout; edits are immediately visible
+on the host. PostgreSQL data lives in a named Docker volume and survives rebuilds.
+The new PostgreSQL 15 volume does not reuse or delete an older container's data.
+If you previously kept source changes only in the old workspace volume, copy or
+commit those changes before switching to this setup; the old volume is not deleted.
+
+After changing Ruby, update the Dockerfile to match `Gemfile`. Rebuild using
+**Dev Containers: Rebuild Container**, then rerun `bin/setup` as needed.
+Editor extensions and shell preferences beyond Ruby LSP are personal choices.
+
+To check configuration or build without VS Code:
+
+```sh
+docker compose -f .devcontainer/docker-compose.yml config
+docker compose -f .devcontainer/docker-compose.yml build
+```

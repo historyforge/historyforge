@@ -1,2 +1,2 @@
-web: bin/rails server -p 3000
+web: bin/rails server -b ${BINDING:-127.0.0.1} -p 3000
 js: yarn build --watch
