@@ -39,6 +39,20 @@ RSpec.describe 'Search persistence over HTTP', type: :request do
         expect(response.parsed_body.map { |row| row.dig('name', 'id') }).to eq([older.id])
       end
 
+      it "does not restore one visitor's search for another visitor" do
+        get people_path, params: filters
+        other = open_session
+        if authenticated
+          other_user = create(:active_user)
+          other.post user_session_path, params: { user: { email: other_user.email, password: 'b1g_sekrit' } }
+        end
+        other.get people_path
+        expect(other.response).to have_http_status(:ok)
+        other.get people_path(format: :json), params: { f: %w[name birth_year] }
+        expect(other.response.parsed_body.map { |row| row.dig('name', 'id') })
+          .to contain_exactly(older.id, newer.id, excluded.id)
+      end
+
       it 'clears saved filters on reset' do
         get people_path, params: filters
         get people_path, params: { reset: '1' }

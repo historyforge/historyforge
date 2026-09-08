@@ -29,13 +29,34 @@ RSpec.describe 'Locality-scoped search responses', type: :request do
         expect(response.parsed_body.map { |row| row.fetch(cell).fetch('id') }).to eq([second_record.id])
       end
 
+      if directory != :people
+        it 'keeps unreviewed records out of public JSON and CSV exports' do
+          unreviewed = directory_record(directory, first_locality)
+          unreviewed.update!(reviewed_at: nil)
+          get "#{path}.json", params: { locality_slug: first_locality.slug, f: fields, from: 0, to: 100 }
+          expect(response.parsed_body.map { |row| row.fetch(cell).fetch('id') }).to eq([first_record.id])
+          get "#{path}.csv", params: { f: fields }
+          expect(CSV.parse(response.body).drop(1).map { |row| row.last.to_i }).to eq([first_record.id])
+
+          user = create(:administrator)
+          post user_session_path, params: { user: { email: user.email, password: 'b1g_sekrit' } }
+          get "#{path}.json", params: { f: fields, from: 0, to: 100 }
+          expect(response.parsed_body.map { |row| row.fetch(cell).fetch('id') })
+            .to contain_exactly(first_record.id, unreviewed.id)
+        end
+      end
+
       it 'streams only the selected locality into CSV after the controller finishes' do
-        get "#{path}.csv", params: { locality_slug: first_locality.slug, f: fields }
+        notes = "Archive, \"canal warehouse\"\nCafé records"
+        first_record.update!(notes: notes)
+        get "#{path}.csv", params: { locality_slug: first_locality.slug, f: fields + ['notes'] }
         expect(response).to have_http_status(:ok)
         expect(response.media_type).to eq('text/csv')
         expect(response.headers['Content-Disposition']).to include('attachment;', '.csv')
         expect(Current.locality_id).to be_nil
         rows = CSV.parse(response.body)
+        expect(rows.length).to eq(2)
+        expect(rows.last[1]).to eq(notes)
         expect(rows.drop(1).map { |row| row.last.to_i }).to eq([first_record.id])
       end
 
