@@ -63,8 +63,8 @@ RSpec.configure do |config|
   # Change this to :chrome_headless to run the tests in a headless browser.
   # Ideally this would be the default, but it's not working. The tests pass in
   # isolation, but not when run together in headless mode.
-  Capybara.default_driver = :chrome
-  Capybara.javascript_driver = :chrome
+  Capybara.default_driver = ENV["HEADLESS"] == "1" ? :chrome_headless : :chrome
+  Capybara.javascript_driver = Capybara.default_driver
 
   Capybara.default_max_wait_time = 3
 

@@ -71,6 +71,7 @@ app/assets/builds/**
 /yarn-error.log
 yarn-debug.log*
 .yarn-integrity
+/.yarn/install-state.gz
 /.generators
 /.rakeTasks
 bin/deploy
