@@ -39,7 +39,7 @@ module Users
     def new_challenge
       options_for_authentication = generate_authentication_options(
         relying_party: relying_party,
-        options: { user_verification: 'preferred', allow_credentials: nil }
+        options: { user_verification: 'required', allow_credentials: nil }
       )
 
       store_challenge_in_session(options_for_authentication: options_for_authentication)

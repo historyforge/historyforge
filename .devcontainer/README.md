@@ -27,18 +27,24 @@ See the [project documentation](https://historyforge.net/documentation) for thos
 
 ## Verify changes
 
-Run these inside the container:
+Run the full local check inside the container or after native setup:
 
 ```sh
-bundle exec rspec spec/models spec/services spec/requests spec/serializers spec/controllers
-bundle exec rspec spec/features
-yarn build
+bin/check
 ```
 
-The container sets `HEADLESS=1` for Chromium. The existing browser suite notes
-failures when running tests together in headless mode; a successful build or
-non-browser test run does not establish that the full browser suite passes.
-A single example can be run with `bundle exec rspec path/to/file_spec.rb:LINE`.
+This builds JavaScript, checks Rails autoloading, and runs RSpec against the test
+database. Chrome/Chromium runs headlessly by default. For a focused run, pass
+RSpec arguments, for example `bin/check spec/models` or
+`bin/check spec/features/media_spec.rb`. Use `HEADLESS=0 bin/check` to watch Chrome.
+
+Once assets are built, `bundle exec rspec path/to/file_spec.rb:LINE` runs a single
+example directly. Avoid simultaneous test processes against the same database:
+some callback specs deliberately use real commits and clean up their own records.
+
+The browser tests currently load some application dependencies from public CDNs,
+so they need network access as well as PostgreSQL and Chrome. A successful unit
+run alone does not establish that browser workflows pass.
 
 ## Native development
 

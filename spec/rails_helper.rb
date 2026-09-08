@@ -55,18 +55,18 @@ RSpec.configure do |config|
                                    browser: :chrome,
                                    clear_session_storage: true,
                                    clear_local_storage: true,
-                                   capabilities: [Selenium::WebDriver::Chrome::Options.new(
+                                   options: Selenium::WebDriver::Chrome::Options.new(
                                      args: %w[headless disable-gpu no-sandbox window-size=1024,768],
-                                   )]
+                                   )
   end
 
-  # Change this to :chrome_headless to run the tests in a headless browser.
-  # Ideally this would be the default, but it's not working. The tests pass in
-  # isolation, but not when run together in headless mode.
-  Capybara.default_driver = ENV["HEADLESS"] == "1" ? :chrome_headless : :chrome
+  # HEADLESS=0 opens Chrome for interactive debugging.
+  Capybara.default_driver = ENV.fetch("HEADLESS", "1") == "1" ? :chrome_headless : :chrome
   Capybara.javascript_driver = Capybara.default_driver
 
   Capybara.default_max_wait_time = 3
+
+  config.after { Warden.test_reset! }
 
   config.use_transactional_fixtures = true
 

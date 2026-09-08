@@ -2,7 +2,8 @@
 
 module Users
   class RegistrationsController < Devise::RegistrationsController
-    include Devise::Passkeys::Controllers::RegistrationsControllerConcern
+    # Public signup uses a password. Existing users register passkeys through
+    # Users::PasskeysController after signing in.
     include RecaptchaHandlers
 
     before_action :check_captcha, only: :create, if: :using_recaptcha?
@@ -81,10 +82,6 @@ module Users
 
     def recaptcha_verified?
       verify_recaptcha(action: "registration", minimum_score: 0.5, secret_key: AppConfig[:recaptcha_secret_key])
-    end
-
-    def relying_party
-      WebAuthnHelper.relying_party
     end
   end
 end

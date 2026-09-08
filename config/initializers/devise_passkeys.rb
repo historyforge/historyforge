@@ -2,6 +2,9 @@
 
 require 'webauthn'
 
+# devise-passkeys 0.3 no longer registers its authentication module automatically.
+Devise.add_module :passkey_authenticatable, strategy: true, model: 'devise/passkeys/model'
+
 # Configure WebAuthn Relying Party
 # These values should be set via environment variables
 # WEBAUTHN_ORIGIN: The origin URL (e.g., https://yourdomain.com)

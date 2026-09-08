@@ -7,7 +7,7 @@ RSpec.describe 'people' do
     sign_in create(:administrator)
     person = create(:person, death_year: 1940, is_death_year_estimated: false)
     visit person_path(person.id)
-    expect(page).to have_content 'First1 Last1'
+    expect(page).to have_content person.name
     expect(page).to have_content '1940'
     click_on 'Edit'
     fill_in 'Birth Year', with: '1850'

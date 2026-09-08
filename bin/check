@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
+
+# Run against the test database; HEADLESS=0 enables interactive Chrome debugging.
+export RAILS_ENV=test
+export HEADLESS="${HEADLESS:-1}"
+yarn build
+bundle exec rails zeitwerk:check
+bundle exec rspec "$@"

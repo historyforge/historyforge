@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'Checking for life support' do
+RSpec.describe 'Password login and signup' do
   scenario 'login page with unsuccessful login' do
     visit new_user_session_path
     expect(page).to have_content('Volunteer Log In')
@@ -33,5 +33,8 @@ RSpec.describe 'Checking for life support' do
     fill_in 'Repeat password', with: 'b1g_sekrit'
     click_on 'Sign Up'
     expect(page).to have_content('Welcome! You have signed up successfully.')
+    registered_user = User.find_by!(email: user.email)
+    expect(registered_user.valid_password?('b1g_sekrit')).to be(true)
+    expect(registered_user.passkeys).to be_empty
   end
 end

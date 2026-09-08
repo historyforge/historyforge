@@ -70,6 +70,6 @@ module MediaDateBehavior
     self.date_start = nil
     self.date_end = nil
     self.date_start = Date.parse("#{date_year}-01-01") if date_year.present?
-    self.date_end = Date.parse("#{date_year}-12-31") if years? && date_year_end.present?
+    self.date_end = Date.parse("#{date_year_end}-12-31") if years? && date_year_end.present?
   end
 end
