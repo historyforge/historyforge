@@ -26,6 +26,8 @@ gem 'font-awesome-rails'
 gem 'geocoder'
 gem 'image_processing'
 gem 'jbuilder', '~> 2.0'
+# Rails 8.1 passes JSON.parse options as a positional hash; JSON 3 requires keywords.
+gem 'json', '< 3'
 gem 'jsbundling-rails'
 gem 'kaminari'
 gem 'liquid'
