@@ -23,7 +23,7 @@
 
 FactoryBot.define do
   factory(:locality) do
-    name { Faker::Address.community }
+    sequence(:name) { |n| "Test locality #{n}" }
     short_name { name }
   end
 end
