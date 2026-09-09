@@ -21,5 +21,4 @@ shell before starting the process; a `.env` setting is too late for gem loading.
 Application-specific mail settings live in `config/initializers/historyforge_mailer.rb`.
 Settings needed during early boot are grouped under “HistoryForge configuration”
 at the bottom of `config/application.rb` and the environment files. Preserve those
-sections when running `rails app:update`. Framework defaults remain at Rails 7.0
-until their behavior changes have been reviewed separately.
+sections when running `rails app:update`. 
