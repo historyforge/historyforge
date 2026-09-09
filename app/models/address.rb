@@ -32,7 +32,7 @@ class Address < ApplicationRecord
   validates :year, numericality: { minimum: 1500, maximum: 2100, allow_nil: true }
   validates :city, presence: true
 
-  ransacker :street_address, formatter: proc { |v| v.mb_chars.downcase.to_s } do |parent|
+  ransacker :street_address, formatter: proc { |v| v.downcase } do |parent|
     Arel::Nodes::NamedFunction.new('LOWER',
                                    [Arel::Nodes::NamedFunction.new('concat_ws',
                                                                    [Arel::Nodes::Quoted.new(' '),
