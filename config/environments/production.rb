@@ -22,10 +22,6 @@ Rails.application.configure do
   # or in config/master.key. This key is used to decrypt credentials (and other encrypted files).
   # config.require_master_key = true
 
-  # Disable serving static files from the `/public` folder by default since
-  # Apache or NGINX already handles this.
-  config.public_file_server.enabled = ENV['RAILS_SERVE_STATIC_FILES'].present?
-
   # Compress CSS using a preprocessor.
   # config.assets.css_compressor = :sass
 
@@ -57,8 +53,6 @@ Rails.application.configure do
 
   # Use a real queuing backend for Active Job (and separate queues per environment).
   # config.active_job.queue_adapter     = :resque
-  config.active_job.queue_name_prefix = 'historyforge_production'
-  config.active_job.queue_adapter = :inline
 
   config.action_mailer.perform_caching = false
 
@@ -73,6 +67,13 @@ Rails.application.configure do
   # Don't log any deprecations.
   config.active_support.report_deprecations = false
 
+  # Do not dump schema after migrations.
+  config.active_record.dump_schema_after_migration = false
+
+  # Only use :id for inspections in production.
+  config.active_record.attributes_for_inspect = [:id]
+
+  # HistoryForge configuration — preserve when running rails app:update.
   # Use default logging formatter so that PID and timestamp are not suppressed.
   config.log_formatter = Logger::Formatter.new
 
@@ -80,33 +81,9 @@ Rails.application.configure do
     .tap  { |logger| logger.formatter = Logger::Formatter.new }
     .then { |logger| ActiveSupport::TaggedLogging.new(logger) }
 
-  # Do not dump schema after migrations.
-  config.active_record.dump_schema_after_migration = false
-
-  smtp_settings = {
-    address: ENV.fetch('SMTP_HOST', nil),
-    port: ENV.fetch('SMTP_PORT', nil),
-    user_name: ENV.fetch('SMTP_USERNAME', nil),
-    password: ENV.fetch('SMTP_PASSWORD', nil)
-  }
-
-  if ENV['SMTP_HOST'].present? && ENV['SMTP_PORT'] == 'smtp.gmail.com'
-    smtp_settings.merge!(
-      authentication: 'plain',
-      enable_starttls: true,
-      open_timeout: 5,
-      read_timeout: 5
-    )
-  end
-
-  config.action_mailer.delivery_method = :smtp
-  config.action_mailer.smtp_settings = smtp_settings
-
-  config.public_file_server.enabled = true
-
-  # Only use :id for inspections in production.
-  config.active_record.attributes_for_inspect = [:id]
-
+  config.active_job.queue_name_prefix = 'historyforge_production'
+  config.active_job.queue_adapter = :inline
   config.force_ssl = true
   config.ssl_options = { redirect: { exclude: ->(request) { request.path == '/check' } } }
+  config.public_file_server.enabled = true
 end

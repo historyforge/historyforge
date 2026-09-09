@@ -9,6 +9,7 @@ gem 'acts_as_list'
 gem 'airbrake'
 gem 'ancestry'
 gem 'ar_doc_store'
+gem 'benchmark'
 gem 'bcrypt'
 gem 'bootsnap', require: false
 gem 'brakeman', require: false
@@ -39,7 +40,7 @@ gem 'pg'
 gem 'pg_search'
 gem 'pretender'
 gem 'puma'
-gem 'rails', '~> 7.2'
+gem 'rails', '~> 8.0'
 gem 'rails_autolink'
 gem 'ransack'
 gem 'turbo-rails'
@@ -74,7 +75,7 @@ end
 
 group :development, :test do
   gem 'amazing_print'
-  gem 'bullet'
+  gem 'bullet', require: ENV['BULLET'] == '1'
   gem 'capybara'
   gem 'factory_bot_rails'
   gem 'pry'

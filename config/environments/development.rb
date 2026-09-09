@@ -55,10 +55,7 @@ Rails.application.configure do
   config.active_record.verbose_query_logs = true
 
   # Suppress logger output for asset requests.
-  # config.assets.debug = true
   config.assets.quiet = true
-  config.assets.digest = false
-  config.assets.debug = true
 
   # Raises error for missing translations.
   # config.i18n.raise_on_missing_translations = true
@@ -69,30 +66,18 @@ Rails.application.configure do
   # Uncomment if you wish to allow Action Cable access from any origin.
   # config.action_cable.disable_request_forgery_protection = true
 
-  config.logger = ActiveSupport::Logger.new(STDOUT)
-  config.log_level = :debug
-
-  config.active_job.queue_adapter = :inline
   config.active_job.verbose_enqueue_logs = true
-
-  config.action_mailer.delivery_method = :letter_opener
-  config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
-
-  config.web_console.whiny_requests = false
-
-  config.after_initialize do
-    Bullet.enable        = true
-    Bullet.alert         = false
-    Bullet.bullet_logger = true
-    Bullet.console       = false
-    Bullet.rails_logger  = false
-    Bullet.add_footer    = true
-  end
-
-  config.hosts << 'local.test'
 
   # Raise error when a before_action's only/except options reference missing actions.
   config.action_controller.raise_on_missing_callback_actions = true
 
+  # HistoryForge configuration — preserve when running rails app:update.
+  config.assets.digest = false
+  config.assets.debug = true
+  config.logger = ActiveSupport::Logger.new(STDOUT)
+  config.log_level = :debug
+  config.active_job.queue_adapter = :inline
+  config.web_console.whiny_requests = false
+  config.hosts << 'local.test'
   config.generators.apply_rubocop_autocorrect_after_generate!
 end

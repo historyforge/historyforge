@@ -32,7 +32,7 @@ Rails.application.configure do
   config.cache_store = :null_store
 
   # Raise exceptions instead of rendering exception templates.
-  config.action_dispatch.show_exceptions = false
+  config.action_dispatch.show_exceptions = :none
 
   # Disable request forgery protection in test environment.
   config.action_controller.allow_forgery_protection = false
@@ -46,8 +46,6 @@ Rails.application.configure do
   # The :test delivery method accumulates sent emails in the
   # ActionMailer::Base.deliveries array.
   config.action_mailer.delivery_method = :test
-
-  config.active_job.queue_adapter = :inline
 
   # Print deprecation notices to the stderr.
   config.active_support.deprecation = :stderr
@@ -64,9 +62,6 @@ Rails.application.configure do
   # Annotate rendered view with file names.
   # config.action_view.annotate_rendered_view_with_filenames = true
 
-  config.after_initialize do
-    Bullet.enable        = true
-    Bullet.bullet_logger = true
-    # Bullet.raise         = true # raise an error if n+1 query occurs
-  end
+  # HistoryForge configuration — preserve when running rails app:update.
+  config.active_job.queue_adapter = :inline
 end
