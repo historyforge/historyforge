@@ -1,0 +1,29 @@
+- set_page_title "Volunteer Application: #{@volunteer_application.name}"
+= link_to 'All applications', volunteer_applications_path
+- if @volunteer_application.user
+  p= link_to 'View linked user', user_path(@volunteer_application.user), class: 'btn btn-primary'
+- else
+  p= link_to 'Create / connect user', new_volunteer_application_account_path(@volunteer_application), class: 'btn btn-primary'
+p= mail_to @volunteer_application.email
+p
+  strong Submitted: 
+  = l @volunteer_application.created_at, format: :long
+dl
+  dt How did you hear about HistoryForge?
+  dd= simple_format @volunteer_application.how_heard
+  dt Locality interests
+  dd= @volunteer_application.locality_names.join(', ').presence || 'None selected'
+  dt Volunteer interests
+  dd= @volunteer_application.opportunity_labels.join(', ').presence || 'None selected'
+  dt Other interests
+  dd= simple_format @volunteer_application.other_interest
+  dt Related experience
+  dd= @volunteer_application.experience&.humanize || 'Not answered'
+  dd= simple_format @volunteer_application.experience_details
+  dt Questions/Comments
+  dd= simple_format @volunteer_application.comments
+= simple_form_for @volunteer_application do |form|
+  = form.error_notification
+  = form.input :status, collection: VolunteerApplication::STATUSES.map { |status| [status.humanize, status] }, include_blank: false
+  = form.input :staff_notes, label: 'Staff notes (only visible to administrators)'
+  = form.submit 'Save follow-up', class: 'btn btn-primary'

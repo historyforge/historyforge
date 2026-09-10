@@ -10,6 +10,39 @@ body {
   font-family: 'Open Sans';
 }
 
+.volunteer-application-form {
+  .form-group.check_boxes,
+  .form-group.radio_buttons {
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+
+    > .col-form-label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      padding-bottom: 0;
+    }
+  }
+}
+
+.volunteer-interest-options {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.5rem 30px;
+
+  .form-check {
+    padding-left: 0;
+  }
+
+  .form-check-input {
+    margin-left: 0;
+  }
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 h1,
 h2,
 h3,
