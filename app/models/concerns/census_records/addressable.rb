@@ -9,7 +9,7 @@ module CensusRecords
       attr_accessor :ensure_building
 
       ransacker :street_address, formatter: proc { |v|
-        ReverseStreetConversion.convert(v).to_s.mb_chars.downcase.to_s
+        ReverseStreetConversion.convert(v).to_s.downcase
       } do |parent|
         Arel::Nodes::NamedFunction.new('LOWER',
                                        [Arel::Nodes::NamedFunction.new('concat_ws',

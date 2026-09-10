@@ -2,7 +2,7 @@
 # Manual changes might be lost - proceed with caution!
 
 __metadata:
-  version: 8
+  version: 10
   cacheKey: 10c0
 
 "@airbrake/browser@npm:^2.1.9":
@@ -457,30 +457,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rails/actiontext@npm:^6.0.2-2":
-  version: 6.1.710
-  resolution: "@rails/actiontext@npm:6.1.710"
+"@rails/activestorage@npm:~8.1.301":
+  version: 8.1.301
+  resolution: "@rails/activestorage@npm:8.1.301"
   dependencies:
-    "@rails/activestorage": "npm:^6.0.0"
-  peerDependencies:
-    trix: ^1.2.0
-  checksum: 10c0/a533be8140b9e742853aad0004802b1ec015c611302b4af3a562c618ac8bc78c74f7be9ba40bc7a1ba74782968abf376af755b02d512db95ba2a2ebb026f58fb
-  languageName: node
-  linkType: hard
-
-"@rails/activestorage@npm:^6.0.0":
-  version: 6.1.710
-  resolution: "@rails/activestorage@npm:6.1.710"
-  dependencies:
-    spark-md5: "npm:^3.0.0"
-  checksum: 10c0/f00dad0a92120c479d60097e19c80b9b13a2879ef45104ca4812ab125ab167a26467ec1f2ec5e7417f6f26ef82c0ceb0852795dcd10fab2d56c13f360cfb0595
-  languageName: node
-  linkType: hard
-
-"@rails/ujs@npm:^6.0.4":
-  version: 6.1.710
-  resolution: "@rails/ujs@npm:6.1.710"
-  checksum: 10c0/a32ad643478823276bb1ddfdca3eddb2647344556c034807feebc2f5d446d51984819f9640171eeefa629046cca628fdde3203ceca627ec05168ea29698b1d56
+    spark-md5: "npm:^3.0.1"
+  checksum: 10c0/4bbbf7918b9a92c51a5b8f5a1d38be260bb4a27b651bb90232a11ba8c867b7d1c1ad6a82ca68c31c9f5c9aeffce5a21f0adf01427e2b172d8b61716b2a3cc006
   languageName: node
   linkType: hard
 
@@ -633,15 +615,6 @@ __metadata:
   bin:
     acorn: bin/acorn
   checksum: 10c0/be771be2135cc07910cf76f444ad514d7dcfd6d4a8026e597e93155275abc8ef61eee12211d52146e9d962874269b634f397464942087be013c89d0c54c5f8e5
-  languageName: node
-  linkType: hard
-
-"activestorage@npm:^5.2.4-2":
-  version: 5.2.8
-  resolution: "activestorage@npm:5.2.8"
-  dependencies:
-    spark-md5: "npm:^3.0.0"
-  checksum: 10c0/2d63403368fe959e4d7e5ab1b8485a539a478dfb7140142e65efe289fd0de7a52b6d466fcb2d409468c7dc788924cbe155d480d0622fa82772c9ec01c4ee4562
   languageName: node
   linkType: hard
 
@@ -3287,7 +3260,7 @@ __metadata:
 
 "resolve@patch:resolve@npm%3A^1.10.1#optional!builtin<compat/resolve>":
   version: 1.22.12
-  resolution: "resolve@patch:resolve@npm%3A1.22.12#optional!builtin<compat/resolve>::version=1.22.12&hash=c3c19d"
+  resolution: "resolve@patch:resolve@npm%3A1.22.12#optional!builtin<compat/resolve>::version=1.22.12&hash=9bd1a5"
   dependencies:
     es-errors: "npm:^1.3.0"
     is-core-module: "npm:^2.16.1"
@@ -3295,13 +3268,13 @@ __metadata:
     supports-preserve-symlinks-flag: "npm:^1.0.0"
   bin:
     resolve: bin/resolve
-  checksum: 10c0/fc6519984ae1f894d877c0060ba8b1f5ba3bc0e85a02f74e141929c118c23d74d9735619a9cc2965397387e514884245c65d72a40731dcb6cfc84c7bcdc8321e
+  checksum: 10c0/e12af106e16e652bd83060e8afacece4ee3dcbd0f4cf028e3d9ad178e6ced9ecb1c87ee60158b239582313902a717f8adc57a9b76ea54b1994141ba15f420c65
   languageName: node
   linkType: hard
 
 "resolve@patch:resolve@npm%3A^2.0.0-next.5#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^2.0.0-next.6#optional!builtin<compat/resolve>":
   version: 2.0.0-next.7
-  resolution: "resolve@patch:resolve@npm%3A2.0.0-next.7#optional!builtin<compat/resolve>::version=2.0.0-next.7&hash=c3c19d"
+  resolution: "resolve@patch:resolve@npm%3A2.0.0-next.7#optional!builtin<compat/resolve>::version=2.0.0-next.7&hash=9bd1a5"
   dependencies:
     es-errors: "npm:^1.3.0"
     is-core-module: "npm:^2.16.2"
@@ -3311,7 +3284,7 @@ __metadata:
     supports-preserve-symlinks-flag: "npm:^1.0.0"
   bin:
     resolve: bin/resolve
-  checksum: 10c0/6bb6f1d8a1789f7a5b4e35d950e76bc0ba632ff7d51fe86b6f34fb5f41e1ce0f7b884ec166828cfc0728ddffeaee49527711d752d12398297f90c51acd22195e
+  checksum: 10c0/911e8321c64ec2a723247dbeabfcb7663577adf52af642bfda61ddee686fbef2255ad529ff57ee8e3884ee23186b85b2637988bfafc0a9a3a81a98bd4af1e2fc
   languageName: node
   linkType: hard
 
@@ -3340,9 +3313,7 @@ __metadata:
     "@airbrake/browser": "npm:^2.1.9"
     "@hotwired/turbo-rails": "npm:^8.0.0"
     "@maplibre/maplibre-gl-leaflet": "npm:^0.1.3"
-    "@rails/actiontext": "npm:^6.0.2-2"
-    "@rails/ujs": "npm:^6.0.4"
-    activestorage: "npm:^5.2.4-2"
+    "@rails/activestorage": "npm:~8.1.301"
     axios: "npm:^1.13.2"
     chart.js: "npm:^3.5.1"
     chartkick: "npm:^4.0.5"
@@ -3544,7 +3515,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"spark-md5@npm:^3.0.0":
+"spark-md5@npm:^3.0.1":
   version: 3.0.2
   resolution: "spark-md5@npm:3.0.2"
   checksum: 10c0/3fd11735eac5e7d60d6006d99ac0a055f148a89e9baf5f0b51ac103022dec30556b44190b37f6737ca50f81e8e50dc13e724f9edf6290c412ff5ab2101ce7780
