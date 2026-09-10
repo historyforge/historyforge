@@ -115,6 +115,11 @@ Rails.application.routes.draw do
               defaults: { year: year }
   end
 
+  resources :volunteer_applications, only: %i[new create index show update] do
+    resource :account, only: %i[new create], controller: 'volunteer_accounts'
+    get :thank_you, on: :collection
+  end
+
   resources :contacts, only: %i[new create]
   get '/contact' => 'contacts#new'
 

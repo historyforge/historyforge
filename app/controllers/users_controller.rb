@@ -153,7 +153,7 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.require(:user).permit(:login, :email, :password, :password_confirmation, :user_group_id)
+    params.require(:user).permit(:login, :full_name, :email, :password, :password_confirmation, :user_group_id)
   end
 
   def ransack_params

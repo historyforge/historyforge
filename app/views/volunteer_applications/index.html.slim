@@ -1,0 +1,19 @@
+- set_page_title 'Volunteer Applications'
+- if @volunteer_applications.empty?
+  p No volunteer applications yet.
+- else
+  table.table
+    thead
+      tr
+        th Name
+        th Email
+        th Submitted
+        th Status
+    tbody
+      - @volunteer_applications.each do |application|
+        tr
+          td= link_to application.name, volunteer_application_path(application)
+          td= application.email
+          td= l application.created_at, format: :short
+          td= application.status.humanize
+  = paginate @volunteer_applications
