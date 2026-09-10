@@ -14,7 +14,7 @@ module PersonNames
       Array.wrap(names).map { |name| where('searchable_name % ?', name) }.reduce(:or)
     }
 
-    ransacker :name, formatter: proc { |v| v.mb_chars.downcase.to_s } do |parent|
+    ransacker :name, formatter: proc { |v| v.downcase } do |parent|
       Arel::Nodes::NamedFunction.new('LOWER',
                                      [Arel::Nodes::NamedFunction.new('concat_ws',
                                                                      [Arel::Nodes::Quoted.new(' '),

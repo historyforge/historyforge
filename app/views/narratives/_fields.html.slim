@@ -1,8 +1,8 @@
 = panel('Narrative & Source') do
   .p-3
     - content_for :html_end do
-      link rel="stylesheet" type="text/css" href="https://unpkg.com/trix@2.0.0/dist/trix.css"
-      script src= "https://unpkg.com/trix@2.0.0/dist/trix.umd.min.js"
+      link rel="stylesheet" type="text/css" href="https://unpkg.com/trix@2.1.19/dist/trix.css"
+      script src= "https://unpkg.com/trix@2.1.19/dist/trix.umd.min.js"
     = form.input :story do
       = form.input_field :story, as: :rich_text_area
     = form.input :sources, as: :rich_text_area, label: 'Source Citations'

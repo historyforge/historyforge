@@ -189,7 +189,7 @@ class Building < ApplicationRecord
   geocoded_by :full_street_address, latitude: :lat, longitude: :lon
   after_validation :do_the_geocode, if: :new_record?
 
-  ransacker :street_address, formatter: proc { |v| v.mb_chars.downcase.to_s } do
+  ransacker :street_address, formatter: proc { |v| v.downcase } do
     addresses = Address.arel_table
     Arel::Nodes::NamedFunction.new("LOWER",
                                    [Arel::Nodes::NamedFunction.new("concat_ws",

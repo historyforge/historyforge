@@ -31,6 +31,7 @@ bin/deploy-push
 
 # Ignore all logfiles and tempfiles.
 /log/*.log
+/log
 /tmp
 
 # Ignore the database config
@@ -69,6 +70,8 @@ app/assets/builds/**
 /public/packs-test
 /node_modules
 /yarn-error.log
+# Dependencies are managed with Yarn; do not commit an npm lockfile.
+/package-lock.json
 yarn-debug.log*
 .yarn-integrity
 /.yarn/install-state.gz
