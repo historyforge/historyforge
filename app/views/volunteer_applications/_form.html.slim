@@ -1,0 +1,21 @@
+= simple_form_for @volunteer_application, html: { class: 'volunteer-application-form' } do |form|
+  - if @volunteer_application.errors.any?
+    .alert.alert-danger role="alert"
+      ul
+        - @volunteer_application.errors.full_messages.each do |message|
+          li= message
+  .row
+    .col-md-6
+      = form.input :name, label: 'Name (First Name Last Name)', input_html: { autocomplete: 'name' }
+    .col-md-6
+      = form.input :email, as: :email, label: 'Email address', input_html: { autocomplete: 'email' }
+  = form.input :how_heard, label: 'How did you hear about HistoryForge?'
+  = form.input :locality_names, collection: @localities, as: :check_boxes, collection_wrapper_tag: :div, collection_wrapper_class: 'volunteer-interest-options', label: 'Which areas are you interested in helping with?'
+  = form.input :opportunity_interests, collection: @opportunities, as: :check_boxes, collection_wrapper_tag: :div, collection_wrapper_class: 'volunteer-interest-options', label: 'What type of volunteer opportunity would you be interested in?'
+  = form.input :other_interest, label: 'Other — please describe'
+  = form.input :experience, as: :radio_buttons, bare: true, collection: [['Yes', 'yes'], ['No', 'no'], ['Maybe', 'maybe']], label: 'Do you have any experience with data digitization, maps, georectification, or another related skill?'
+  = form.input :experience_details, label: 'Please explain:', required: false
+  = form.input :comments, label: 'Questions/Comments?'
+  - if AppConfig[:recaptcha_site_key].present? && AppConfig[:recaptcha_secret_key].present?
+    = recaptcha_v3 action: 'volunteer_application', site_key: AppConfig[:recaptcha_site_key]
+  = form.submit 'Submit application', class: 'btn btn-primary'

@@ -56,6 +56,7 @@ class User < ApplicationRecord
          :omniauthable, omniauth_providers: %i[facebook]
 
   belongs_to :group, class_name: 'UserGroup', foreign_key: :user_group_id, optional: true, inverse_of: :users
+  has_many :volunteer_applications, dependent: :nullify
   has_many :search_params, dependent: :destroy
   has_many :passkeys, dependent: :destroy
 

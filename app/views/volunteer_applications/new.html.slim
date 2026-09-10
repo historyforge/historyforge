@@ -1,0 +1,6 @@
+- set_page_title 'HistoryForge Volunteer Application'
+- if @page
+  - provide_cms_with :volunteer_form, persist_preview: false do
+    = render 'form'
+- else
+  = render 'form'
