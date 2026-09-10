@@ -45,18 +45,13 @@ module CmsHelper
 
   end
 
-  def provide_cms_with(section, persist_preview: true, &block)
+  def provide_cms_with(section, &block)
     @cms_page_sections ||= {}
     @cms_page_sections[section] = capture(&block)
-    (@cms_transient_sections ||= []) << section unless persist_preview
   end
 
   def cms_page_sections
     @cms_page_sections || {}
-  end
-
-  def cms_preview_sections
-    cms_page_sections.except(*(@cms_transient_sections || []))
   end
 
   def cms_body_class

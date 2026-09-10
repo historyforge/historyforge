@@ -2789,8 +2789,7 @@ CREATE TABLE public.users (
     roles_mask integer,
     user_group_id bigint,
     unconfirmed_email character varying,
-    webauthn_id character varying,
-    full_name character varying
+    webauthn_id character varying
 );
 
 
@@ -2932,50 +2931,6 @@ CREATE SEQUENCE public.vocabularies_id_seq
 --
 
 ALTER SEQUENCE public.vocabularies_id_seq OWNED BY public.vocabularies.id;
-
-
---
--- Name: volunteer_applications; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.volunteer_applications (
-    id bigint NOT NULL,
-    user_id integer,
-    name character varying NOT NULL,
-    email character varying NOT NULL,
-    how_heard text NOT NULL,
-    locality_names character varying[] DEFAULT '{}'::character varying[] NOT NULL,
-    opportunity_interests character varying[] DEFAULT '{}'::character varying[] NOT NULL,
-    experience character varying,
-    experience_details text,
-    other_interest text,
-    comments text,
-    status character varying DEFAULT 'submitted'::character varying NOT NULL,
-    staff_notes text,
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL,
-    CONSTRAINT volunteer_application_experience CHECK (((experience IS NULL) OR ((experience)::text = ANY ((ARRAY['yes'::character varying, 'no'::character varying, 'maybe'::character varying])::text[])))),
-    CONSTRAINT volunteer_application_status CHECK (((status)::text = ANY ((ARRAY['submitted'::character varying, 'contacted'::character varying, 'accepted'::character varying, 'declined'::character varying, 'archived'::character varying])::text[])))
-);
-
-
---
--- Name: volunteer_applications_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.volunteer_applications_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: volunteer_applications_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.volunteer_applications_id_seq OWNED BY public.volunteer_applications.id;
 
 
 --
@@ -3375,13 +3330,6 @@ ALTER TABLE ONLY public.videos ALTER COLUMN id SET DEFAULT nextval('public.video
 --
 
 ALTER TABLE ONLY public.vocabularies ALTER COLUMN id SET DEFAULT nextval('public.vocabularies_id_seq'::regclass);
-
-
---
--- Name: volunteer_applications id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.volunteer_applications ALTER COLUMN id SET DEFAULT nextval('public.volunteer_applications_id_seq'::regclass);
 
 
 --
@@ -3854,14 +3802,6 @@ ALTER TABLE ONLY public.videos
 
 ALTER TABLE ONLY public.vocabularies
     ADD CONSTRAINT vocabularies_pkey PRIMARY KEY (id);
-
-
---
--- Name: volunteer_applications volunteer_applications_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.volunteer_applications
-    ADD CONSTRAINT volunteer_applications_pkey PRIMARY KEY (id);
 
 
 --
@@ -4908,20 +4848,6 @@ CREATE INDEX index_vocabularies_on_machine_name ON public.vocabularies USING btr
 
 
 --
--- Name: index_volunteer_applications_on_status_and_created_at; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_volunteer_applications_on_status_and_created_at ON public.volunteer_applications USING btree (status, created_at);
-
-
---
--- Name: index_volunteer_applications_on_user_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_volunteer_applications_on_user_id ON public.volunteer_applications USING btree (user_id);
-
-
---
 -- Name: people_name_trgm; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -5092,14 +5018,6 @@ ALTER TABLE ONLY public.census_1860_records
 
 ALTER TABLE ONLY public.census_1850_records
     ADD CONSTRAINT fk_rails_3fb36bbfc9 FOREIGN KEY (reviewed_by_id) REFERENCES public.users(id);
-
-
---
--- Name: volunteer_applications fk_rails_416a740eb0; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.volunteer_applications
-    ADD CONSTRAINT fk_rails_416a740eb0 FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE SET NULL;
 
 
 --
@@ -5784,8 +5702,6 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('9'),
 ('8'),
 ('4'),
-('20260909000002'),
-('20260909000000'),
 ('20260208000002'),
 ('20260208000001'),
 ('20250924004735'),

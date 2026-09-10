@@ -77,8 +77,8 @@ module Cms
     def parts_from_view_template
       sections = template.cms_page_sections
       if page.controller && page.action
-        if template.cms_preview_sections.present? && !page.dummy_vars?
-          template.cms_preview_sections.each do |name, content|
+        if sections.present? && !page.dummy_vars?
+          sections.each do |name, content|
             section = page.build_dummy_var
             section.name = name
             section.content = content

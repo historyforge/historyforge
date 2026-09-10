@@ -14,13 +14,3 @@ ul.list-group
       .col-8= @user.created_at.to_formatted_s(:long)
   = render 'users/admin_tools', object: @user
 
-
-- if current_user.has_role?('administrator') && @user.volunteer_applications.exists?
-  h2 Volunteer applications
-  ul
-    - @user.volunteer_applications.order(created_at: :desc).each do |application|
-      li= link_to "#{application.name} — #{l(application.created_at, format: :short)}", volunteer_application_path(application)
-
-p
-  strong> Full name:
-  = @user.full_name

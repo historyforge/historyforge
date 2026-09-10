@@ -55,7 +55,7 @@ html
     - if @full_layout
       = yield
     -else
-      div class="container#{@full_layout ? '-fluid' : ''} pb-5"
+      div class="container#{@full_layout ? '-fluid' : ''}"
         #alerts= flash_messages
         = yield :breadcrumb
         div.content-header

@@ -7,7 +7,7 @@ module AutoStripAttributes
     before_validation :auto_strip_attributes
 
     def self.text_columns
-      @text_columns ||= columns.select { |col_def| col_def.type == :string && !col_def.array }.map(&:name)
+      @text_columns ||= columns.select { |col_def| col_def.type == :string }.map(&:name)
     end
 
     def auto_strip_attributes

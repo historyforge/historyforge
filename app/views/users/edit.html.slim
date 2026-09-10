@@ -7,7 +7,6 @@
 = simple_form_for @user do |form|
   - if can?(:manage, User)
     = form.input :user_group_id, label: 'Group', collection: UserGroup.order(:name), include_blank: true
-  = form.input :full_name, label: 'Full name'
   = form.input :login, label: 'Username'
   = form.input :email
   = form.input :password
