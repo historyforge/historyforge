@@ -70,6 +70,8 @@ app/assets/builds/**
 /public/packs-test
 /node_modules
 /yarn-error.log
+# Dependencies are managed with Yarn; do not commit an npm lockfile.
+/package-lock.json
 yarn-debug.log*
 .yarn-integrity
 /.yarn/install-state.gz
