@@ -32,7 +32,7 @@ RSpec.describe 'Volunteer applications', type: :request do
     expect(response.body).to include('Custom introduction', 'Submit application', 'Custom footer')
     expect(response.body.scan('type="submit"').length).to eq(1)
     post volunteer_applications_path, params: { volunteer_application: attributes.merge(how_heard: '') }
-    expect(response).to have_http_status(:unprocessable_entity)
+    expect(response).to have_http_status(:unprocessable_content)
     expect(response.body).to include('Custom introduction', 'Alex Volunteer', 'checked="checked"')
     expect(page.reload.data.to_json).not_to include('Alex Volunteer', 'alex@example.org', 'authenticity_token')
   end
@@ -60,7 +60,7 @@ RSpec.describe 'Volunteer applications', type: :request do
     expect do
       post volunteer_applications_path, params: { volunteer_application: attributes.merge(how_heard: '') }
     end.not_to change(VolunteerApplication, :count)
-    expect(response).to have_http_status(:unprocessable_entity)
+    expect(response).to have_http_status(:unprocessable_content)
     expect(response.body).to include('How heard', 'Alex Volunteer', 'checked="checked"')
   end
 
@@ -69,7 +69,7 @@ RSpec.describe 'Volunteer applications', type: :request do
     expect do
       post volunteer_applications_path, params: { volunteer_application: attributes }
     end.not_to change(VolunteerApplication, :count)
-    expect(response).to have_http_status(:unprocessable_entity)
+    expect(response).to have_http_status(:unprocessable_content)
     expect(response.body).to include('no longer available')
   end
 
@@ -86,7 +86,7 @@ RSpec.describe 'Volunteer applications', type: :request do
     expect do
       post volunteer_applications_path, params: { volunteer_application: attributes }
     end.not_to change(VolunteerApplication, :count)
-    expect(response).to have_http_status(:unprocessable_entity)
+    expect(response).to have_http_status(:unprocessable_content)
     expect(response.body).to include('spam verification')
   end
 
@@ -129,7 +129,7 @@ RSpec.describe 'Volunteer applications', type: :request do
       expect(application.staff_notes).to eq('Called today')
       expect(application.email).to eq('private@example.org')
       patch volunteer_application_path(application), params: { volunteer_application: { status: 'invalid' } }
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(application.reload.status).to eq('contacted')
     end
   end

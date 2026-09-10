@@ -86,7 +86,7 @@ module Users
           render json: { 
             error: 'Failed to process passkey credential',
             message: exception.message 
-          }, status: :unprocessable_entity
+          }, status: :unprocessable_content
         end
         format.html do
           flash[:error] = 'Failed to register passkey. Please try again.'

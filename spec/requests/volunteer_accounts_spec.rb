@@ -65,7 +65,7 @@ RSpec.describe 'Volunteer user accounts', type: :request do
     expect do
       post volunteer_application_account_path(volunteer), params: { volunteer_account: { login: 'x' } }
     end.not_to change(User, :count)
-    expect(response).to have_http_status(:unprocessable_entity)
+    expect(response).to have_http_status(:unprocessable_content)
     expect(response.body).to include('too short')
     expect(volunteer.reload.user).to be_nil
   end
@@ -80,7 +80,7 @@ RSpec.describe 'Volunteer user accounts', type: :request do
     expect do
       post volunteer_application_account_path(volunteer), params: { volunteer_account: attributes }
     end.not_to change(User, :count)
-    expect(response).to have_http_status(:unprocessable_entity)
+    expect(response).to have_http_status(:unprocessable_content)
     expect(volunteer.reload.user).to be_nil
     expect do
       post volunteer_application_account_path(volunteer), params: { volunteer_account: { user_id: user.id } }
@@ -93,7 +93,7 @@ RSpec.describe 'Volunteer user accounts', type: :request do
     sign_in_admin
     user = create(:active_user)
     post volunteer_application_account_path(volunteer), params: { volunteer_account: { user_id: user.id } }
-    expect(response).to have_http_status(:unprocessable_entity)
+    expect(response).to have_http_status(:unprocessable_content)
     expect(volunteer.reload.user).to be_nil
     matching = create(:active_user, email: volunteer.email)
     other = VolunteerApplication.create!(name: 'Earlier application', email: volunteer.email, how_heard: 'Friend', user: matching)

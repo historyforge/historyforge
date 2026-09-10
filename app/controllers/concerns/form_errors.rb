@@ -17,7 +17,7 @@ module FormErrors
   #     render_form_with_errors(:new)
   #   end
   def render_form_with_errors(action, **options)
-    render({ action: action, status: :unprocessable_entity }.merge(options))
+    render({ action: action, status: :unprocessable_content }.merge(options))
   end
 end
 
