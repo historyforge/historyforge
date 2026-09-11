@@ -78,6 +78,6 @@ class CensusGridTranslator
   }.freeze
 
   def width_for_column(column)
-    COLUMN_WIDTHS[column.intern] || 80
+    COLUMN_WIDTHS[column.to_sym] || 80
   end
 end

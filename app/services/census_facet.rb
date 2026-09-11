@@ -148,7 +148,7 @@ class CensusFacet
   attr_reader :search, :facet
 
   def options
-    search.form_fields_config.options_for(facet.intern)
+    search.form_fields_config.options_for(facet.to_sym)
   end
   memoize :options
 

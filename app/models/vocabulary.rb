@@ -38,7 +38,7 @@ class Vocabulary < ApplicationRecord
   end
 
   def fields_by_year
-    DICTIONARY[machine_name.intern] || []
+    DICTIONARY[machine_name.to_sym] || []
   end
 
   DICTIONARY = {

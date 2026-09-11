@@ -12,43 +12,43 @@ namespace :dictionary do
 
     CensusYears.each do |year|
       "Census#{year}Record".constantize.const_get('COLUMNS').each do |key, value|
-        dict[:fields][key.intern] ||= { defaults: {} }
-        dict[:fields][key.intern][year] = { column: value }
+        dict[:fields][key.to_sym] ||= { defaults: {} }
+        dict[:fields][key.to_sym][year] = { column: value }
       end
     end
 
     labels = YAML.load_file Rails.root.join('config', 'locales', 'census_labels.en.yml')
 
     labels['en']['simple_form']['filters']['census_record'].each do |key, value|
-      dict[:fields][key.intern] ||= { defaults: {} }
-      dict[:fields][key.intern][:defaults][:filter] = value
+      dict[:fields][key.to_sym] ||= { defaults: {} }
+      dict[:fields][key.to_sym][:defaults][:filter] = value
     end
 
     labels['en']['simple_form']['labels']['census_record'].each do |key, value|
-      dict[:fields][key.intern] ||= { defaults: {} }
-      dict[:fields][key.intern][:defaults][:label] = value
+      dict[:fields][key.to_sym] ||= { defaults: {} }
+      dict[:fields][key.to_sym][:defaults][:label] = value
     end
 
     CensusYears.each do |year|
       year_labels = labels['en']['simple_form']['labels']["census#{year}_record"]
       year_labels&.each do |key, value|
-        dict[:fields][key.intern][year] ||= {}
-        dict[:fields][key.intern][year][:label] = value
+        dict[:fields][key.to_sym][year] ||= {}
+        dict[:fields][key.to_sym][year][:label] = value
       end
     end
 
     hints = YAML.load_file Rails.root.join('config', 'locales', 'census_hints.en.yml')
 
     hints['en']['simple_form']['hints']['census_record'].each do |key, value|
-      dict[:fields][key.intern] ||= { defaults: {} }
-      dict[:fields][key.intern][:defaults][:hint] = value
+      dict[:fields][key.to_sym] ||= { defaults: {} }
+      dict[:fields][key.to_sym][:defaults][:hint] = value
     end
 
     CensusYears.each do |year|
       year_hints = hints['en']['simple_form']['hints']["census#{year}_record"]
       year_hints&.each do |key, value|
-        dict[:fields][key.intern][year] ||= {}
-        dict[:fields][key.intern][year][:hint] = value
+        dict[:fields][key.to_sym][year] ||= {}
+        dict[:fields][key.to_sym][year][:hint] = value
       end
     end
 
