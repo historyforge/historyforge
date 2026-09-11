@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "build": "esbuild app/javascript/application.js app/javascript/cms.js --bundle --sourcemap --outdir=app/assets/builds"
+    "build": "esbuild node_modules/maplibre-gl/dist/maplibre-gl-worker.mjs --bundle --format=esm --minify --outfile=app/assets/builds/maplibre-worker.js && esbuild app/javascript/application.js app/javascript/cms.js --bundle --sourcemap --outdir=app/assets/builds"
   },
   "dependencies": {
     "@airbrake/browser": "^2.1.9",

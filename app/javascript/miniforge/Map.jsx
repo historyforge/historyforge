@@ -3,7 +3,7 @@ import L from 'leaflet'
 import { createStreetLayer } from '../forge/streetLayer'
 import { createSatelliteLayer } from '../forge/satelliteLayer'
 import loadWMS from '../forge/wms'
-import { getMainIcon, generateMarkers, highlightMarker, unhighlightMarker } from '../forge/mapFunctions'
+import { getMainIcon, generateMarkers } from '../forge/mapFunctions'
 import { moveBuilding, highlight } from '../forge/actions'
 import { addFullscreenControl } from './fullscreenControl'
 import { useDispatch, useSelector } from "react-redux";
@@ -95,8 +95,8 @@ export const Map = () => {
           onMouseOver(building) {
             dispatch(highlight(building.id));
           },
-          onMouseOut(building) {
-            dispatch(highlight(building.id));
+          onMouseOut() {
+            dispatch(highlight(null));
           }
         }
         const nextMarkers = generateMarkers(buildings, handlers)
@@ -105,18 +105,13 @@ export const Map = () => {
         }
         setMarkers(nextMarkers)
       } else {
-        const wasHighlighted = parseInt(currentHighlight)
-        const isHighlighted = parseInt(highlighted)
-        const buildingId = building && parseInt(building.id)
-        if (wasHighlighted && wasHighlighted !== isHighlighted) {
-          unhighlightMarker(wasHighlighted, markers);
-        }
-        if (isHighlighted) {
-          highlightMarker(isHighlighted, markers)
-          setCurrentHighlight(isHighlighted);
-        } else if (buildingId) {
-          highlightMarker(buildingId, markers)
-          setCurrentHighlight(buildingId);
+        const nextHighlight = highlighted || (building && building.id) || null
+        if (currentHighlight !== nextHighlight) {
+          // Reordering SVG paths under the pointer can trigger hover loops
+          // when nearby buildings overlap. Only change their color here.
+          if (markers[currentHighlight]) markers[currentHighlight].setStyle({ fillColor: 'red' })
+          if (markers[nextHighlight]) markers[nextHighlight].setStyle({ fillColor: 'blue' })
+          setCurrentHighlight(nextHighlight)
         }
       }
     }

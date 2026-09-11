@@ -19,17 +19,17 @@ function setup() {
   }
   // Exercise the installed wrapper's attribution implementation.
   vm.runInNewContext(fs.readFileSync(require.resolve('@maplibre/maplibre-gl-leaflet'), 'utf8'), {
-    exports: {}, module: {}, require: name => name === 'leaflet' ? leaflet : {},
+    exports: {}, module: {}, require: name => name === 'leaflet' ? leaflet : name === 'maplibre-gl' ? { setWorkerUrl() {} } : {},
   })
   leaflet.maplibreGL = value => { options = value; return layer }
   const code = buildSync({
     entryPoints: ['app/javascript/forge/streetLayer.js'], bundle: true,
     platform: 'node', format: 'cjs', write: false,
-    external: ['leaflet', '@maplibre/maplibre-gl-leaflet'],
+    external: ['leaflet', '@maplibre/maplibre-gl-leaflet', 'maplibre-gl'],
   }).outputFiles[0].text
   const module = { exports: {} }
-  vm.runInNewContext(code, { module, exports: module.exports, Uint8Array,
-    require: name => name === 'leaflet' ? leaflet : {},
+  vm.runInNewContext(code, { module, exports: module.exports, Uint8Array, document: { querySelector: () => ({ content: "/assets/maplibre-worker.js" }) },
+    require: name => name === 'leaflet' ? leaflet : name === 'maplibre-gl' ? { setWorkerUrl() {} } : {},
   })
   module.exports.createStreetLayer()
   return { options, definition, activate(map) { currentMap = map; events.add() } }
