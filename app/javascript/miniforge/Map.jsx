@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react'
 import L from 'leaflet'
 import { createStreetLayer } from '../forge/streetLayer'
+import { createSatelliteLayer } from '../forge/satelliteLayer'
 import loadWMS from '../forge/wms'
 import { getMainIcon, generateMarkers, highlightMarker, unhighlightMarker } from '../forge/mapFunctions'
 import { moveBuilding, highlight } from '../forge/actions'
@@ -43,10 +44,7 @@ export const Map = () => {
 
       const streetLayer = createStreetLayer().addTo(leafletMap)
 
-      const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-        attribution: '&copy; Esri',
-        maxZoom: 19,
-      });
+      const satelliteLayer = createSatelliteLayer();
 
       L.control.layers(
         { 'Street': streetLayer, 'Satellite': satelliteLayer },
@@ -57,6 +55,11 @@ export const Map = () => {
       addFullscreenControl(leafletMap, mapDivRef.current)
 
       setMap(leafletMap);
+
+      return () => {
+        leafletMap.remove();
+        wmsLayerRef.current = null;
+      };
     }
   }, []);
 

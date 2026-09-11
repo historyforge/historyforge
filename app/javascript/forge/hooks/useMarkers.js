@@ -17,6 +17,8 @@ export function useMarkers(map, clusterMachine) {
   const popupTimeout = useRef(null);
   const popup = useRef(null);
 
+  useEffect(() => () => window.clearTimeout(popupTimeout.current), []);
+
   useEffect(() => {
     if (!map) {
       return;

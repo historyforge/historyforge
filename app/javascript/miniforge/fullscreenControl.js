@@ -54,7 +54,8 @@ export const addFullscreenControl = (map, container) => {
 
       const onFullscreenChange = () => {
         updateButton()
-        setTimeout(() => map.invalidateSize(), 100)
+        clearTimeout(this._resizeTimeout)
+        this._resizeTimeout = setTimeout(() => map.invalidateSize(), 100)
         if (isFullscreen(container)) {
           map.scrollWheelZoom.enable()
         } else {
@@ -76,6 +77,7 @@ export const addFullscreenControl = (map, container) => {
       return wrapper
     },
     onRemove() {
+      clearTimeout(this._resizeTimeout)
       document.removeEventListener('fullscreenchange', this._onFullscreenChange)
       document.removeEventListener('webkitfullscreenchange', this._onFullscreenChange)
     },

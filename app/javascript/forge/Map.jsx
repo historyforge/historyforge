@@ -6,6 +6,7 @@ import { useMapTargeting } from "./hooks/useMapTargeting";
 import L from 'leaflet';
 import 'leaflet.markercluster';
 import { createStreetLayer } from './streetLayer'
+import { createSatelliteLayer } from './satelliteLayer'
 
 export const Map = () => {
   const props = useSelector(state => ({ ...state.layers, ...state.buildings, ...state.search }))
@@ -27,10 +28,7 @@ export const Map = () => {
 
       const street = createStreetLayer().addTo(mapRef.current)
 
-      const satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-        attribution: '&copy; Esri',
-        maxZoom: 19,
-      });
+      const satellite = createSatelliteLayer();
 
       L.control.layers(
         { 'Street': street, 'Satellite': satellite },
@@ -40,6 +38,12 @@ export const Map = () => {
 
       clusterMachine.current = buildClusterGroup();
       clusterMachine.current.addTo(mapRef.current);
+
+      return () => {
+        mapRef.current.remove();
+        mapRef.current = null;
+        clusterMachine.current = null;
+      };
     }
   }, []);
 
