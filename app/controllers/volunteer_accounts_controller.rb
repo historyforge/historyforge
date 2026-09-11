@@ -17,12 +17,15 @@ class VolunteerAccountsController < ApplicationController
     if result.invited
       begin
         result.user.deliver_invitation
+        invitation_sent = true
         flash[:notice] = "Volunteer connected. An invitation email has been sent to #{result.user.email}."
       rescue StandardError => error
         Rails.logger.error("Volunteer invitation delivery failed (#{error.class}).")
         flash[:error] = 'The user was created and connected, but the invitation could not be sent. Use Resend Invite to try again.'
       end
+      @application.resolve_submission_flag!(current_user) if invitation_sent
     else
+      @application.resolve_submission_flag!(current_user) unless result.already_linked
       flash[:notice] = 'Volunteer connected to the existing user. Account permissions are unchanged.'
     end
     redirect_to user_path(result.user), status: :see_other

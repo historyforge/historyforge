@@ -14,8 +14,12 @@ Administrators open **Admin → Volunteer Applications**, review the submission,
 
 New accounts copy the applicant name into `User#full_name`, separate from the login username. Full name can be edited on the user page. Existing accounts keep their current details when linked. New users stay disabled until accepting their Devise invitation. An optional group controls permissions; no roles are granted by default. Repeat clicks do not create or invite a second user. Failed email delivery leaves the user linked and offers the existing **Resend Invite** action. Deleting a user preserves their applications.
 
-Run `bundle exec rails db:migrate` to install. No application notification emails or Google response import are included.
+Run `bundle exec rails db:migrate` to install. Successful submissions email the same configured recipient as the contact form, with the applicant as Reply-To and their answers in the message. Staff edits do not send another notification. Google response import is not included.
 
 ## Verification
 
 `bundle exec rspec spec/features/volunteer_application_spec.rb` exercises the browser journey from the recruitment page through submission, admin review, invitation, acceptance, and a fresh login. Request and model coverage lives in `spec/requests/volunteer_applications_spec.rb`, `spec/requests/volunteer_accounts_spec.rb`, and `spec/models/volunteer_application_spec.rb`.
+
+## Intake flags
+
+Each application creates a system flag before the submission email is sent. Non-admins see only “Volunteer Application Submitted” in the flags list and cannot open or act on the flag. Admins can review the application and manually resolve the flag. Successful invitations, resends, and explicit existing-account links resolve the intake flag with the acting administrator and time. Failed delivery leaves it open; other flags are unaffected.

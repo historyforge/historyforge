@@ -17,6 +17,7 @@ class VolunteerApplicationsController < ApplicationController
     captcha_valid = !using_recaptcha? || verify_recaptcha(action: 'volunteer_application', minimum_score: 0.5,
                                                          secret_key: AppConfig[:recaptcha_secret_key])
     if valid_choices && captcha_valid && @volunteer_application.save
+      VolunteerApplicationMailer.application_email(@volunteer_application).deliver_now
       redirect_to thank_you_volunteer_applications_path, status: :see_other
     else
       @volunteer_application.errors.add(:base, 'Please complete the spam verification and try again.') unless captcha_valid

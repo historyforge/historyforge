@@ -4,7 +4,7 @@
 # Email delivery happens after this transaction, so failure cannot orphan the link.
 class ConnectVolunteerUser
   class Conflict < StandardError; end
-  Result = Struct.new(:user, :invited, keyword_init: true)
+  Result = Struct.new(:user, :invited, :already_linked, keyword_init: true)
 
   def initialize(application, administrator)
     @application = application
@@ -13,7 +13,7 @@ class ConnectVolunteerUser
 
   def call(user_id: nil, login: nil, user_group_id: nil)
     @application.with_lock do
-      return Result.new(user: @application.user, invited: false) if @application.user
+      return Result.new(user: @application.user, invited: false, already_linked: true) if @application.user
 
       # Serialize invitations from different applications sharing the same email.
       connection = VolunteerApplication.connection

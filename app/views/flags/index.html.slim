@@ -22,10 +22,13 @@
     tbody
       - @flags.each do |flag|
         tr
-          td= flag.flaggable ? link_to(flag.flaggable.name, flag.flaggable) : 'Oops a stray'
-          td= Flag.safe_flaggable_class(flag.flaggable_type)&.human_name || flag.flaggable_type
-          td= flag.flagged_by&.name
-          td= flag.created_at.strftime('%-m/%-d/%y')
-          td.col-6= [flag.display_reason, flag.message].compact_blank.join("<br />").html_safe
+          - if flag.flaggable_type == 'VolunteerApplication' && cannot?(:read, flag.flaggable)
+            td colspan="5" Volunteer Application Submitted
+          - else
+            td= flag.flaggable ? link_to(flag.flaggable.name, flag.flaggable) : 'Oops a stray'
+            td= Flag.safe_flaggable_class(flag.flaggable_type)&.human_name || flag.flaggable_type
+            td= flag.flagged_by&.name
+            td= flag.created_at.strftime('%-m/%-d/%y')
+            td.col-6= [flag.display_reason, flag.message].compact_blank.join("<br />").html_safe
 
 = paginate @flags

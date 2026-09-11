@@ -1,6 +1,15 @@
 # frozen_string_literal: true
 
 class VolunteerApplication < ApplicationRecord
+  include Flaggable
+
+  after_create :flag_submission
+
+  def resolve_submission_flag!(administrator)
+    flags.unresolved.where(reason: 'volunteer_application_submitted').find_each do |flag|
+      flag.update!(resolved_by: administrator, resolved_at: Time.current)
+    end
+  end
   STATUSES = %w[submitted contacted accepted declined archived].freeze
   EXPERIENCE_OPTIONS = %w[yes no maybe].freeze
 
@@ -32,6 +41,10 @@ class VolunteerApplication < ApplicationRecord
   validates :status, inclusion: { in: STATUSES }
   validates :experience, inclusion: { in: EXPERIENCE_OPTIONS }, allow_nil: true
   private
+
+  def flag_submission
+    flags.create!(reason: 'volunteer_application_submitted', message: 'Volunteer Application Submitted')
+  end
 
   def valid_opportunity_interests
     allowed = OPPORTUNITIES.keys

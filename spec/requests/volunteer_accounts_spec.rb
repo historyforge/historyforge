@@ -37,6 +37,7 @@ RSpec.describe 'Volunteer user accounts', type: :request do
     expect(response).to redirect_to(user_path(user))
     expect(user.email).to eq(volunteer.email)
     expect(user.invited_by).to eq(admin)
+    expect(volunteer.flags.sole.reload.resolved_by).to eq(admin)
     expect(user.roles).to be_empty
     expect(user).not_to be_enabled
     expect(user.invitation_token).to be_present
@@ -87,6 +88,7 @@ RSpec.describe 'Volunteer user accounts', type: :request do
     end.not_to change(ActionMailer::Base.deliveries, :size)
     expect(volunteer.reload.user).to eq(user)
     expect(user.reload.attributes).to eq(before)
+    expect(volunteer.flags.sole).to be_resolved
   end
 
   it 'rejects a different email but allows multiple applications to link to the same user' do
@@ -110,6 +112,12 @@ RSpec.describe 'Volunteer user accounts', type: :request do
     expect(response).to redirect_to(user_path(volunteer.reload.user))
     follow_redirect!
     expect(response.body).to include('could not be sent', 'Resend Invite')
+    expect(volunteer.flags.sole).not_to be_resolved
+    post volunteer_application_account_path(volunteer), params: { volunteer_account: attributes }
+    expect(volunteer.flags.sole.reload).not_to be_resolved
+    allow_any_instance_of(User).to receive(:deliver_invitation).and_call_original
+    put resend_invitation_user_path(volunteer.user)
+    expect(volunteer.flags.sole.reload).to be_resolved
   end
 
   it 'preserves the application when its user is deleted' do

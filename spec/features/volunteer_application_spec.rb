@@ -6,7 +6,7 @@ RSpec.describe 'Volunteer application to user invitation', type: :feature do
   before { Cms::PageRenderer.compiled_templates = {} }
   after { Cms::PageRenderer.compiled_templates = {} }
 
-  scenario 'an applicant submits the form, an admin invites them, and they accept and log in' do
+  scenario 'an applicant submits, an admin invites from Flags and sees it resolved, and the applicant accepts and logs in' do
     locality = create(:locality)
     admin = create(:administrator)
     Cms::Page.create!(title: 'Volunteer', url_path: '/volunteer',
@@ -32,9 +32,18 @@ RSpec.describe 'Volunteer application to user invitation', type: :feature do
     expect(application.locality_names).to eq([locality.name])
     expect(application.opportunity_interests).to contain_exactly('maps', 'other')
     expect(application.user).to be_nil
+    expect(application.flags.sole).not_to be_resolved
 
-    sign_in admin
-    visit volunteer_applications_path
+    visit new_user_session_path
+    fill_in 'Email', with: admin.email
+    fill_in 'Password', with: 'b1g_sekrit'
+    click_button 'Volunteer Log In'
+    expect(page).to have_no_button('Volunteer Log In')
+    dismiss_passkey_prompt
+    find('#admin-menu-item > a').click
+    click_link 'Flagged Content'
+    expect(page).to have_content('Unresolved Flags')
+    expect(page).to have_content('Volunteer Application Submitted')
     click_link 'Alex Historian'
     expect(page).to have_content('Working with historic maps')
     expect(page).to have_content('Local history walks')
@@ -47,9 +56,16 @@ RSpec.describe 'Volunteer application to user invitation', type: :feature do
     click_button 'Create user and send invitation'
     expect(page).to have_content("An invitation email has been sent to #{email}.")
     user = application.reload.user
+    expect(application.flags.sole.resolved_by).to eq(admin)
     expect(user.full_name).to eq('Alex Historian')
     expect(application.status).to eq('contacted')
     expect(user).not_to be_enabled
+    find('#admin-menu-item > a').click
+    click_link 'Flagged Content'
+    expect(page).to have_content('Unresolved Flags')
+    expect(page).to have_no_link('Alex Historian')
+    expect(page).to have_no_content('Volunteer Application Submitted')
+    expect(page).to have_content('Nothing to show here!')
     mail = ActionMailer::Base.deliveries.find { |message| message.to.include?(email) }
     token = (mail.text_part || mail).body.decoded.match(/invitation_token=([^\s]+)/)[1]
 

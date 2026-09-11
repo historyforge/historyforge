@@ -38,11 +38,19 @@ RSpec.describe 'Volunteer applications', type: :request do
   end
 
   it 'saves the application and distinct interests without privileged fields' do
+    allow(AppConfig).to receive(:[]).and_call_original
+    allow(AppConfig).to receive(:[]).with(:contact_email).and_return('coordinator@example.org')
+    allow(AppConfig).to receive(:[]).with(:mail_from).and_return('historyforge@example.org')
     expect do
       post volunteer_applications_path, params: { volunteer_application: attributes.merge(
         locality_names: ['', locality.name, locality.name], status: 'accepted', staff_notes: 'Injected', user_id: 123
       ) }
-    end.to change(VolunteerApplication, :count).by(1)
+    end.to change(VolunteerApplication, :count).by(1).and change(ActionMailer::Base.deliveries, :size).by(1)
+    message = ActionMailer::Base.deliveries.last
+    expect(message.to).to eq(['coordinator@example.org'])
+    expect(message.from).to eq(['historyforge@example.org'])
+    expect(message.reply_to).to eq(['alex@example.org'])
+    expect(message.body.decoded).to include('Alex Volunteer', locality.name, 'Finding and describing photographs and other media', 'I digitize photographs.')
     expect(response).to redirect_to(thank_you_volunteer_applications_path)
     application = VolunteerApplication.last
     expect(application.email).to eq('alex@example.org')
@@ -57,10 +65,12 @@ RSpec.describe 'Volunteer applications', type: :request do
   end
 
   it 'renders validation errors and retains selections without saving an application' do
+    delivery_count = ActionMailer::Base.deliveries.size
     expect do
       post volunteer_applications_path, params: { volunteer_application: attributes.merge(how_heard: '') }
     end.not_to change(VolunteerApplication, :count)
     expect(response).to have_http_status(:unprocessable_content)
+    expect(ActionMailer::Base.deliveries.size).to eq(delivery_count)
     expect(response.body).to include('How heard', 'Alex Volunteer', 'checked="checked"')
   end
 
@@ -81,6 +91,7 @@ RSpec.describe 'Volunteer applications', type: :request do
   end
 
   it 'does not persist an application when spam verification fails' do
+    delivery_count = ActionMailer::Base.deliveries.size
     allow_any_instance_of(VolunteerApplicationsController).to receive(:using_recaptcha?).and_return(true)
     allow_any_instance_of(VolunteerApplicationsController).to receive(:verify_recaptcha).and_return(false)
     expect do
@@ -88,6 +99,7 @@ RSpec.describe 'Volunteer applications', type: :request do
     end.not_to change(VolunteerApplication, :count)
     expect(response).to have_http_status(:unprocessable_content)
     expect(response.body).to include('spam verification')
+    expect(ActionMailer::Base.deliveries.size).to eq(delivery_count)
   end
 
   context 'with an application' do

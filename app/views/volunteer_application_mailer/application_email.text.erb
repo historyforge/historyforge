@@ -1,0 +1,16 @@
+Name: <%= @application.name %>
+Email: <%= @application.email %>
+
+How did you hear about HistoryForge?
+<%= @application.how_heard %>
+
+Locality interests: <%= @application.locality_names.join(', ').presence || 'None selected' %>
+Volunteer interests: <%= @application.opportunity_labels.join(', ').presence || 'None selected' %>
+Other interests: <%= @application.other_interest.presence || 'Not given' %>
+
+Related experience: <%= @application.experience&.humanize || 'Not answered' %>
+Please explain:
+<%= @application.experience_details.presence || 'Not given' %>
+
+Questions/Comments:
+<%= @application.comments.presence || 'Not given' %>
