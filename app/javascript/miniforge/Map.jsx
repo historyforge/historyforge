@@ -1,8 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react'
 import L from 'leaflet'
-import '@maplibre/maplibre-gl-leaflet'
-import { addStyleImageMissingFallback } from '../forge/maplibreImageFallback'
-import { addHousenumbers } from '../forge/maplibreHousenumbers'
+import { createStreetLayer } from '../forge/streetLayer'
 import loadWMS from '../forge/wms'
 import { getMainIcon, generateMarkers, highlightMarker, unhighlightMarker } from '../forge/mapFunctions'
 import { moveBuilding, highlight } from '../forge/actions'
@@ -43,14 +41,7 @@ export const Map = () => {
         scrollWheelZoom: false,
       });
 
-      const streetLayer = L.maplibreGL({
-        style: 'https://tiles.openfreemap.org/styles/liberty',
-        maxZoom: 22,
-        attribution: '&copy; <a href="https://openfreemap.org">OpenFreeMap</a> &copy; <a href="https://openmaptiles.org">OpenMapTiles</a> Data from <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-      }).addTo(leafletMap);
-      const maplibreMap = streetLayer.getMaplibreMap();
-      addStyleImageMissingFallback(maplibreMap);
-      addHousenumbers(maplibreMap);
+      const streetLayer = createStreetLayer().addTo(leafletMap)
 
       const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
         attribution: '&copy; Esri',

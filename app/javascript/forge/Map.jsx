@@ -5,9 +5,7 @@ import { useMarkers } from "./hooks/useMarkers";
 import { useMapTargeting } from "./hooks/useMapTargeting";
 import L from 'leaflet';
 import 'leaflet.markercluster';
-import '@maplibre/maplibre-gl-leaflet';
-import { addStyleImageMissingFallback } from './maplibreImageFallback';
-import { addHousenumbers } from './maplibreHousenumbers';
+import { createStreetLayer } from './streetLayer'
 
 export const Map = () => {
   const props = useSelector(state => ({ ...state.layers, ...state.buildings, ...state.search }))
@@ -27,14 +25,7 @@ export const Map = () => {
 
       L.control.zoom({ position: 'bottomright' }).addTo(mapRef.current);
 
-      const street = L.maplibreGL({
-        style: 'https://tiles.openfreemap.org/styles/liberty',
-        maxZoom: 22,
-        attribution: '&copy; <a href="https://openfreemap.org">OpenFreeMap</a> &copy; <a href="https://openmaptiles.org">OpenMapTiles</a> Data from <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-      }).addTo(mapRef.current);
-      const maplibreMap = street.getMaplibreMap();
-      addStyleImageMissingFallback(maplibreMap);
-      addHousenumbers(maplibreMap);
+      const street = createStreetLayer().addTo(mapRef.current)
 
       const satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
         attribution: '&copy; Esri',
