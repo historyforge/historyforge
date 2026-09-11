@@ -6,8 +6,8 @@ const Building = ({ id, street_address, highlighted }) => {
   const dispatch = useDispatch();
   return (
     <div className={`list-group-item building ${highlighted === id && 'active'}`}
-         onMouseOver={() => dispatch(highlight(id))}
-         onMouseOut={() => dispatch(highlight(null))}>
+         onMouseEnter={() => dispatch(highlight(id))}
+         onMouseLeave={() => dispatch(highlight(null))}>
       <p>
         <a href={`/buildings/${id}`}
            title="Open building record">

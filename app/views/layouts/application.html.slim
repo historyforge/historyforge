@@ -45,6 +45,7 @@ html
     script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"
     script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-autocomplete/1.0.7/jquery.auto-complete.min.js" integrity="sha512-TToQDr91fBeG4RE5RjMl/tqNAo35hSRR4cbIFasiV2AAMQ6yKXXYhdSdEpUcRE6bqsTiB+FPLPls4ZAFMoK5WA==" crossorigin="anonymous" referrerpolicy="no-referrer"
 
+    meta name="maplibre-worker-url" content=asset_path('maplibre-worker.js')
     = javascript_include_tag 'application'
     = javascript_include_tag 'cms' if can?(:update, Cms::Page)
 

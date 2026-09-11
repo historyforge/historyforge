@@ -1,12 +1,34 @@
 import { Controller } from 'stimulus'
 import L from 'leaflet'
-import '@maplibre/maplibre-gl-leaflet'
-import { addStyleImageMissingFallback } from '../forge/maplibreImageFallback'
-import { addHousenumbers } from '../forge/maplibreHousenumbers'
+import { createStreetLayer } from '../forge/streetLayer'
 import { getMainIcon } from '../forge/mapFunctions'
 
+function parseCoordinates(latitude, longitude) {
+  if (!String(latitude ?? '').trim() || !String(longitude ?? '').trim()) return null
+  const lat = Number(latitude)
+  const lon = Number(longitude)
+  if (!Number.isFinite(lat) || !Number.isFinite(lon) || Math.abs(lat) > 90 || Math.abs(lon) > 180) return null
+  return [lat, lon]
+}
+
 export default class extends Controller {
+  disconnect() {
+    document.removeEventListener('turbo:before-cache', this.beforeCache)
+    this.removeMap()
+  }
+
+  removeMap() {
+    this.coordinateInputs?.off('change', this.updateMapCoordinates)
+    this.coordinateInputs = null
+    this.updateMapCoordinates = null
+    this.map?.remove()
+    this.map = null
+    this.mapInitialized = false
+  }
+
   connect() {
+    this.beforeCache = () => this.removeMap()
+    document.addEventListener('turbo:before-cache', this.beforeCache)
     this.addStepNumbers()
 
     this.paramKey = location.pathname.match(/photographs/) ? 'photograph' : location.pathname.match(/audios/) ? 'audio' : location.pathname.match(/videos/) ? 'video' : 'narrative';
@@ -176,26 +198,19 @@ export default class extends Controller {
   }
 
   initMap() {
-    this.mapInitialized = true
     const startLat = document.getElementById('photograph_latitude').value
     const startLon = document.getElementById('photograph_longitude').value
-    const loc = (startLat && startLon)
-      ? [parseFloat(startLat), parseFloat(startLon)]
-      : JSON.parse(document.getElementById('photograph-map').dataset.center)
+    const loc = parseCoordinates(startLat, startLon)
+      || JSON.parse(document.getElementById('photograph-map').dataset.center)
 
     const map = L.map('photograph-map', {
       center: loc,
       zoom: 13,
     })
+    this.map = map
+    this.mapInitialized = true
 
-    const streetLayer = L.maplibreGL({
-      style: 'https://tiles.openfreemap.org/styles/liberty',
-      maxZoom: 22,
-      attribution: '&copy; <a href="https://openfreemap.org">OpenFreeMap</a> &copy; <a href="https://openmaptiles.org">OpenMapTiles</a> Data from <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    }).addTo(map)
-    const maplibreMap = streetLayer.getMaplibreMap()
-    addStyleImageMissingFallback(maplibreMap)
-    addHousenumbers(maplibreMap)
+    createStreetLayer().addTo(map)
 
     const marker = L.marker(loc, {
       icon: getMainIcon(),
@@ -208,13 +223,16 @@ export default class extends Controller {
       document.getElementById('photograph_longitude').value = position.lng
     })
 
-    $('#photograph_longitude').on('change', function () {
+    this.updateMapCoordinates = () => {
       const lat = document.getElementById('photograph_latitude').value
       const lon = document.getElementById('photograph_longitude').value
-      const latlng = L.latLng(parseFloat(lat), parseFloat(lon))
+      const latlng = parseCoordinates(lat, lon)
+      if (!latlng) return
       marker.setLatLng(latlng)
       map.setView(latlng)
-    })
+    }
+    this.coordinateInputs = $('#photograph_latitude, #photograph_longitude')
+    this.coordinateInputs.on('change', this.updateMapCoordinates)
   }
 }
 

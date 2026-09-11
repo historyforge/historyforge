@@ -312,7 +312,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mapbox/jsonlint-lines-primitives@npm:^2.0.2, @mapbox/jsonlint-lines-primitives@npm:~2.0.2":
+"@mapbox/jsonlint-lines-primitives@npm:^2.0.3":
   version: 2.0.3
   resolution: "@mapbox/jsonlint-lines-primitives@npm:2.0.3"
   checksum: 10c0/e114b27757a21ccbf20e3c99761e8b48d2527cb321f47e5a4d9aa4b5781b16f15b1f6f4ab678a4329f93668956281a05b56387331dc0260981a2ef695414fc1d
@@ -326,17 +326,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mapbox/tiny-sdf@npm:^2.1.0":
+"@mapbox/tiny-sdf@npm:^2.2.0":
   version: 2.2.0
   resolution: "@mapbox/tiny-sdf@npm:2.2.0"
   checksum: 10c0/9cfddf94bcdbedb047cd5e1bf17b8d90cdfe3e5d0286282769f697d8972955be33cc3e49c23f60d977c99439f3de80ed429b4bf73599cec441cb493ba3c6c8ed
-  languageName: node
-  linkType: hard
-
-"@mapbox/unitbezier@npm:^0.0.1":
-  version: 0.0.1
-  resolution: "@mapbox/unitbezier@npm:0.0.1"
-  checksum: 10c0/97f39d4fbdf9579d0a1a8be0d536eb113a805d36459e774014f488a7ca6cc9dcfc77ab7a2ebe5af395ad50da6efb4dbf2566de0db3f62b6b8675cddbace8f86a
   languageName: node
   linkType: hard
 
@@ -347,25 +340,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mapbox/vector-tile@npm:^2.0.4":
-  version: 2.0.5
-  resolution: "@mapbox/vector-tile@npm:2.0.5"
+"@mapbox/vector-tile@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@mapbox/vector-tile@npm:3.0.0"
   dependencies:
     "@mapbox/point-geometry": "npm:~1.1.0"
     "@types/geojson": "npm:^7946.0.16"
-    pbf: "npm:^4.0.2"
-  checksum: 10c0/e8e856551c37e0e13ae73ed96c7b4547e9dbf4aa4ba757d5d9027a6b702e7b0b732f30b2af163818f092d52a799299e0fefa040997ce84fd35e08b35e7794a05
+    pbf: "npm:^5.0.0"
+  checksum: 10c0/ccede784967394a171956376de98b9cc9d5683ae67e3516246082d7bd5a157f711777955d111cd4885cc9dc4e22ef26e8b9af70ef6c8746392dd8de84e201ba6
   languageName: node
   linkType: hard
 
-"@mapbox/whoots-js@npm:^3.1.0":
-  version: 3.1.0
-  resolution: "@mapbox/whoots-js@npm:3.1.0"
-  checksum: 10c0/fe9e959a9049bcbc2c05d9d1156e050191ad697a1bd95e41cdfa069051ff1d6f2930ced234a8d68d5a0bf78091feab30d76497418ec800d90f0aac8691fe4fd4
-  languageName: node
-  linkType: hard
-
-"@maplibre/geojson-vt@npm:^6.1.0":
+"@maplibre/geojson-vt@npm:^6.1.1":
   version: 6.1.1
   resolution: "@maplibre/geojson-vt@npm:6.1.1"
   dependencies:
@@ -374,7 +360,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@maplibre/maplibre-gl-leaflet@npm:^0.1.3":
+"@maplibre/maplibre-gl-leaflet@npm:^0.1.4":
   version: 0.1.4
   resolution: "@maplibre/maplibre-gl-leaflet@npm:0.1.4"
   peerDependencies:
@@ -385,11 +371,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@maplibre/maplibre-gl-style-spec@npm:^24.8.1":
-  version: 24.10.0
-  resolution: "@maplibre/maplibre-gl-style-spec@npm:24.10.0"
+"@maplibre/maplibre-gl-style-spec@npm:^26.4.2":
+  version: 26.4.2
+  resolution: "@maplibre/maplibre-gl-style-spec@npm:26.4.2"
   dependencies:
-    "@mapbox/jsonlint-lines-primitives": "npm:~2.0.2"
+    "@mapbox/jsonlint-lines-primitives": "npm:^2.0.3"
     "@mapbox/unitbezier": "npm:^1.0.0"
     json-stringify-pretty-compact: "npm:^4.0.0"
     minimist: "npm:^1.2.8"
@@ -399,11 +385,11 @@ __metadata:
     gl-style-format: dist/gl-style-format.mjs
     gl-style-migrate: dist/gl-style-migrate.mjs
     gl-style-validate: dist/gl-style-validate.mjs
-  checksum: 10c0/43ababa29ca151b274c5faea8a3cfe6c84c4b5ae47430fb92ea3711c733ea05db159eb56b3430febd2a11a0416ae01617ffa63f1951a4d8a44d0671299fd7bce
+  checksum: 10c0/46e816876e2e59b3e82971c41af183b92188ed6d3d25216b12c183a9e4f5f1bf5f612639a080db05d198940722a002948264e45c27e051da0c965cc4ffa5af73
   languageName: node
   linkType: hard
 
-"@maplibre/mlt@npm:^1.1.8":
+"@maplibre/mlt@npm:^1.2.1":
   version: 1.2.1
   resolution: "@maplibre/mlt@npm:1.2.1"
   dependencies:
@@ -412,7 +398,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@maplibre/vt-pbf@npm:^4.3.0":
+"@maplibre/vt-pbf@npm:^4.3.2":
   version: 4.3.2
   resolution: "@maplibre/vt-pbf@npm:4.3.2"
   dependencies:
@@ -839,6 +825,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"bidi-js@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "bidi-js@npm:1.1.0"
+  dependencies:
+    require-from-string: "npm:^2.0.2"
+  checksum: 10c0/b608addec6bd6e5d1c0cc7b6116002d589c6e666966503aca2aa7b2f61717ecaaeb0ac1a16c1374d61ee757de4f2f24017312a70781f5c4b127ffab54a2f7187
+  languageName: node
+  linkType: hard
+
 "bintrees@npm:1.0.2":
   version: 1.0.2
   resolution: "bintrees@npm:1.0.2"
@@ -1192,7 +1187,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"earcut@npm:^3.0.2":
+"earcut@npm:^3.2.3":
   version: 3.2.3
   resolution: "earcut@npm:3.2.3"
   checksum: 10c0/38660ec1ce55eecbbbf11d5a0072934c9f33851527bf5e40923c6656c3a0c6b00bb449ae8f4b28f89a0b249fe18568e630a8ea9ee39ce2707a50a89531a2f995
@@ -2543,7 +2538,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"kdbush@npm:^4.0.2, kdbush@npm:^4.1.0":
+"kdbush@npm:^4.1.0":
   version: 4.1.0
   resolution: "kdbush@npm:4.1.0"
   checksum: 10c0/b47c8a27de438df1e60080f73e3793217b4542a62bed7f07c8c29b0bf53359bbdba1e97305e396f7f4d28f98e31ce3fd21500dc3de03a44d8cda71a3d70ff7bb
@@ -2628,30 +2623,29 @@ __metadata:
   languageName: node
   linkType: hard
 
-"maplibre-gl@npm:^5.18.0":
-  version: 5.24.0
-  resolution: "maplibre-gl@npm:5.24.0"
+"maplibre-gl@npm:^6.4.1":
+  version: 6.9.0
+  resolution: "maplibre-gl@npm:6.9.0"
   dependencies:
-    "@mapbox/jsonlint-lines-primitives": "npm:^2.0.2"
     "@mapbox/point-geometry": "npm:^1.1.0"
-    "@mapbox/tiny-sdf": "npm:^2.1.0"
-    "@mapbox/unitbezier": "npm:^0.0.1"
-    "@mapbox/vector-tile": "npm:^2.0.4"
-    "@mapbox/whoots-js": "npm:^3.1.0"
-    "@maplibre/geojson-vt": "npm:^6.1.0"
-    "@maplibre/maplibre-gl-style-spec": "npm:^24.8.1"
-    "@maplibre/mlt": "npm:^1.1.8"
-    "@maplibre/vt-pbf": "npm:^4.3.0"
+    "@mapbox/tiny-sdf": "npm:^2.2.0"
+    "@mapbox/unitbezier": "npm:^1.0.0"
+    "@mapbox/vector-tile": "npm:^3.0.0"
+    "@maplibre/geojson-vt": "npm:^6.1.1"
+    "@maplibre/maplibre-gl-style-spec": "npm:^26.4.2"
+    "@maplibre/mlt": "npm:^1.2.1"
+    "@maplibre/vt-pbf": "npm:^4.3.2"
     "@types/geojson": "npm:^7946.0.16"
-    earcut: "npm:^3.0.2"
+    bidi-js: "npm:^1.1.0"
+    earcut: "npm:^3.2.3"
     gl-matrix: "npm:^3.4.4"
-    kdbush: "npm:^4.0.2"
+    kdbush: "npm:^4.1.0"
     murmurhash-js: "npm:^1.0.0"
-    pbf: "npm:^4.0.1"
+    pbf: "npm:^5.1.2"
     potpack: "npm:^2.1.0"
     quickselect: "npm:^3.0.0"
     tinyqueue: "npm:^3.0.0"
-  checksum: 10c0/4ebe63987d307a8133a8cce6b3a414c2ca1b9901b98b2867590d4ce517bdc82c46900610b7693d6eeffb792271596751cf0bf40e59ee7d5e5c779bef9296cf10
+  checksum: 10c0/235ce06922aaf06e64275f1d4749e110b5956a8c5f93b856162f97aa50d1fe9a8a271d57917131c284cd0fb2eec0887f6c3d075d2737733f7c3e8e82d9480ede
   languageName: node
   linkType: hard
 
@@ -2923,18 +2917,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pbf@npm:^4.0.1, pbf@npm:^4.0.2":
-  version: 4.0.2
-  resolution: "pbf@npm:4.0.2"
-  dependencies:
-    resolve-protobuf-schema: "npm:^2.1.0"
-  bin:
-    pbf: bin/pbf
-  checksum: 10c0/c59674bf6fdc0c0194de40372ee0a65ba22d9bce49b4dc2c1accfcbad227756984972220a3f97a213dee0b32807f33ffb1bf8ccedba5987d791a24e6f396aa6a
-  languageName: node
-  linkType: hard
-
-"pbf@npm:^5.1.0":
+"pbf@npm:^5.0.0, pbf@npm:^5.1.0, pbf@npm:^5.1.2":
   version: 5.1.2
   resolution: "pbf@npm:5.1.2"
   dependencies:
@@ -3212,6 +3195,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"require-from-string@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "require-from-string@npm:2.0.2"
+  checksum: 10c0/aaa267e0c5b022fc5fd4eef49d8285086b15f2a1c54b28240fdf03599cbd9c26049fee3eab894f2e1f6ca65e513b030a7c264201e3f005601e80c49fb2937ce2
+  languageName: node
+  linkType: hard
+
 "resolve-from@npm:^4.0.0":
   version: 4.0.0
   resolution: "resolve-from@npm:4.0.0"
@@ -3312,7 +3302,7 @@ __metadata:
   dependencies:
     "@airbrake/browser": "npm:^2.1.9"
     "@hotwired/turbo-rails": "npm:^8.0.0"
-    "@maplibre/maplibre-gl-leaflet": "npm:^0.1.3"
+    "@maplibre/maplibre-gl-leaflet": "npm:^0.1.4"
     "@rails/activestorage": "npm:~8.1.301"
     axios: "npm:^1.13.2"
     chart.js: "npm:^3.5.1"
@@ -3332,7 +3322,7 @@ __metadata:
     include-media: "npm:^1.4.10"
     leaflet: "npm:^1.9.4"
     leaflet.markercluster: "npm:^1.5.3"
-    maplibre-gl: "npm:^5.18.0"
+    maplibre-gl: "npm:^6.4.1"
     react: "npm:^17.0.1"
     react-dom: "npm:^17.0.1"
     react-redux: "npm:^7.2.2"

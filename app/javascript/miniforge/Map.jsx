@@ -1,10 +1,9 @@
 import React, { useRef, useState, useEffect } from 'react'
 import L from 'leaflet'
-import '@maplibre/maplibre-gl-leaflet'
-import { addStyleImageMissingFallback } from '../forge/maplibreImageFallback'
-import { addHousenumbers } from '../forge/maplibreHousenumbers'
+import { createStreetLayer } from '../forge/streetLayer'
+import { createSatelliteLayer } from '../forge/satelliteLayer'
 import loadWMS from '../forge/wms'
-import { getMainIcon, generateMarkers, highlightMarker, unhighlightMarker } from '../forge/mapFunctions'
+import { getMainIcon, generateMarkers } from '../forge/mapFunctions'
 import { moveBuilding, highlight } from '../forge/actions'
 import { addFullscreenControl } from './fullscreenControl'
 import { useDispatch, useSelector } from "react-redux";
@@ -43,19 +42,9 @@ export const Map = () => {
         scrollWheelZoom: false,
       });
 
-      const streetLayer = L.maplibreGL({
-        style: 'https://tiles.openfreemap.org/styles/liberty',
-        maxZoom: 22,
-        attribution: '&copy; <a href="https://openfreemap.org">OpenFreeMap</a> &copy; <a href="https://openmaptiles.org">OpenMapTiles</a> Data from <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-      }).addTo(leafletMap);
-      const maplibreMap = streetLayer.getMaplibreMap();
-      addStyleImageMissingFallback(maplibreMap);
-      addHousenumbers(maplibreMap);
+      const streetLayer = createStreetLayer().addTo(leafletMap)
 
-      const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-        attribution: '&copy; Esri',
-        maxZoom: 19,
-      });
+      const satelliteLayer = createSatelliteLayer();
 
       L.control.layers(
         { 'Street': streetLayer, 'Satellite': satelliteLayer },
@@ -66,6 +55,11 @@ export const Map = () => {
       addFullscreenControl(leafletMap, mapDivRef.current)
 
       setMap(leafletMap);
+
+      return () => {
+        leafletMap.remove();
+        wmsLayerRef.current = null;
+      };
     }
   }, []);
 
@@ -101,8 +95,8 @@ export const Map = () => {
           onMouseOver(building) {
             dispatch(highlight(building.id));
           },
-          onMouseOut(building) {
-            dispatch(highlight(building.id));
+          onMouseOut() {
+            dispatch(highlight(null));
           }
         }
         const nextMarkers = generateMarkers(buildings, handlers)
@@ -111,18 +105,13 @@ export const Map = () => {
         }
         setMarkers(nextMarkers)
       } else {
-        const wasHighlighted = parseInt(currentHighlight)
-        const isHighlighted = parseInt(highlighted)
-        const buildingId = building && parseInt(building.id)
-        if (wasHighlighted && wasHighlighted !== isHighlighted) {
-          unhighlightMarker(wasHighlighted, markers);
-        }
-        if (isHighlighted) {
-          highlightMarker(isHighlighted, markers)
-          setCurrentHighlight(isHighlighted);
-        } else if (buildingId) {
-          highlightMarker(buildingId, markers)
-          setCurrentHighlight(buildingId);
+        const nextHighlight = highlighted || (building && building.id) || null
+        if (currentHighlight !== nextHighlight) {
+          // Reordering SVG paths under the pointer can trigger hover loops
+          // when nearby buildings overlap. Only change their color here.
+          if (markers[currentHighlight]) markers[currentHighlight].setStyle({ fillColor: 'red' })
+          if (markers[nextHighlight]) markers[nextHighlight].setStyle({ fillColor: 'blue' })
+          setCurrentHighlight(nextHighlight)
         }
       }
     }

@@ -26,7 +26,7 @@ export const buildings = function(state = {}, action) {
   if (action.type === 'BUILDING_HIGHLIGHT') {
     return {
       ...state,
-      highlighted: state.highlighted === action.id ? null : action.id
+      highlighted: action.id
     }
   }
 
