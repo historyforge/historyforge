@@ -17,6 +17,7 @@ class FlagsController < ApplicationController
     authorize! :create, Flag
     @flag = Flag.new
     @flag.flaggable = find_flaggable
+    authorize! :create, @flag
     render layout: false
   end
 

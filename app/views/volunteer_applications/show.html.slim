@@ -1,5 +1,6 @@
 - set_page_title "Volunteer Application: #{@volunteer_application.name}"
 = link_to 'All applications', volunteer_applications_path
+= render 'shared/flag_resolution', item: @volunteer_application
 - if @volunteer_application.user
   p= link_to 'View linked user', user_path(@volunteer_application.user), class: 'btn btn-primary'
 - else

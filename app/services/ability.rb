@@ -89,6 +89,9 @@ class Ability
 
       can :update, User, id: user.id
       can :create, Flag
+      unless user.has_role?('administrator')
+        cannot :manage, Flag, flaggable_type: 'VolunteerApplication'
+      end
       can :read, Document
 
       # Anyone can add user generated content

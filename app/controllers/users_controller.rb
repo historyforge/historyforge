@@ -146,6 +146,7 @@ class UsersController < ApplicationController
   def resend_invitation
     user = User.find params[:id]
     user.deliver_invitation
+    user.volunteer_applications.each { |application| application.resolve_submission_flag!(current_user) }
     flash[:notice] = 'Resent the invitation!'
     redirect_to action: :edit
   end
