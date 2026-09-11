@@ -9,7 +9,7 @@ class BuildingSearch < SearchQueryBuilder
       user:,
       people_params: params[:peopleParams] && parse_params(params[:peopleParams]),
       building_params: params[:buildingParams] && parse_params(params[:buildingParams]),
-      scope: params[:scope] && params[:scope] != 'on' && params[:scope].intern,
+      scope: params[:scope] && params[:scope] != 'on' && params[:scope].to_sym,
       **params.slice(:s, :f, :g, :from, :to, :sort, :people, :near)
     )
   end

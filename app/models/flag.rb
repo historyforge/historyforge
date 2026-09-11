@@ -69,6 +69,6 @@ class Flag < ApplicationRecord
   def display_reason
     return 'Volunteer Application Submitted' if reason == 'volunteer_application_submitted'
 
-    REASONS[reason.intern]
+    REASONS[reason.to_sym]
   end
 end

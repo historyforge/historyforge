@@ -174,7 +174,7 @@ module Buildings
     end
 
     def action_to_authorize
-      AUTH_ACTIONS[params[:action].intern]
+      AUTH_ACTIONS[params[:action].to_sym]
     end
 
     def review_building
