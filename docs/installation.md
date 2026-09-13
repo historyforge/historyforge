@@ -326,10 +326,17 @@ see [indexing behavior](configuration.md#keep-a-public-demo-out-of-search-result
 
 ## 5. Bootstrap the empty database from the selected image
 
-Do this **only for the empty database created in step 3**. Schema loading is not an
-upgrade procedure. Historical migrations can assume existing application data;
+Do this **only for the empty database created in step 3**. The fresh-install command refuses a database with existing application tables.
+It is not an upgrade procedure. Historical migrations can assume existing application data;
 loading the release's schema first avoids replaying the entire migration history.
+`hf:bootstrap` loads the schema, runs the normal seeds, adds missing 1930
+occupation codes, and prompts for your first administrator's login and email.
+It prints a generated password; save it securely. Run it from an interactive
+terminal. The `-it` Docker option connects that terminal to the setup process.
 Subsequent deployments run `db:migrate db:seed` through `app.json`.
+
+Use an image containing `hf:bootstrap`; these new instructions cannot be used
+with an older published image that lacks the command.
 
 Download the HistoryForge package using the commands for your database option
 below. The second command records the downloaded package's exact identifier in
@@ -353,10 +360,10 @@ HF_IMAGE=$(docker image inspect --format '{{index .RepoDigests 0}}' "$HF_IMAGE")
 HF_DB_CONTAINER=$(dokku postgres:info "$HF_DB" --id)
 export DATABASE_URL=$(dokku config:get "$HF_APP" DATABASE_URL)
 export SECRET_KEY_BASE=$(dokku config:get "$HF_APP" SECRET_KEY_BASE)
-docker run --rm --network "container:$HF_DB_CONTAINER" \
+docker run --rm -it --network "container:$HF_DB_CONTAINER" \
   -e DATABASE_URL -e SECRET_KEY_BASE "$HF_IMAGE" /bin/bash -ec '
     export DATABASE_URL="$(ruby -ruri -e '\''u = URI(ENV.fetch("DATABASE_URL")); u.host = "127.0.0.1"; puts u'\'')"
-    bundle exec rails db:schema:load
+    bundle exec rails hf:bootstrap
   '
 unset DATABASE_URL SECRET_KEY_BASE
 ```
@@ -383,15 +390,15 @@ docker run --rm -v "$HF_DB_CERT_DIR:/app/db-cert:ro" \
   '
 ```
 
-Verify the result names the **new site database and intended user**, then load it:
+Verify the result names the **new site database and intended user**, then initialize it:
 
 ```sh
-docker run --rm \
+docker run --rm -it \
   -v "$HF_DB_CERT_DIR:/app/db-cert:ro" \
   -e DATABASE_URL \
   -e SECRET_KEY_BASE \
   -e RAILS_ENV=production \
-  "$HF_IMAGE" bundle exec rails db:schema:load
+  "$HF_IMAGE" bundle exec rails hf:bootstrap
 unset DATABASE_URL SECRET_KEY_BASE
 ```
 
@@ -430,29 +437,29 @@ check an existing host's schedule before changing it. All configured domains
 must resolve correctly for certificate issuance. Do not bypass certificate
 verification to make the rollout pass.
 
-## 7. Initialize the installation and configure content
+## 7. Sign in and configure your collection
 
-After the initial deployment, initialize your new installation:
+Sign in over HTTPS using the administrator account created in step 5. Your
+reference data and account already exist; do not run the fresh-install command
+again after deployment.
+
+If setup was interrupted after creating tables, resolve the reported error and
+resume the remaining steps in the same temporary container arrangement from
+step 5. Replace `hf:bootstrap` with `db:seed`, then `hf:load_occupation_codes`,
+then `hf:create_admin`, running only the steps that remain. Seeds and the
+occupation loader preserve existing entries. Skip administrator creation if
+that account was already created. Never reload the schema to resume setup.
+
+For an already deployed app, missing occupation codes can be added independently:
 
 ```sh
-dokku run "$HF_APP" bundle exec rails hf:bootstrap
+dokku run "$HF_APP" bundle exec rails hf:load_occupation_codes
 ```
 
-This command supplies default application settings, vocabulary terms, and 1930
-occupation codes, then prompts for the first administrator's login and email and
-prints a generated password. Use an interactive SSH session. If your Dokku setup
-does not attach input for `run`, use `dokku enter "$HF_APP" web` and run
-`bundle exec rails hf:bootstrap` there. Save the password securely and verify
-login over HTTPS.
-
-You can rerun initialization after an interruption: it adds missing reference
-data without replacing existing entries and skips administrator creation if an
-administrator already exists. It does not load the database schema or import a
-community's collection. To create an additional administrator later, use
-`rails hf:create_admin`.
-
-These commands require an image built from a version containing the new tasks;
-an older published image may not include them yet.
+This loader preserves existing records and needs
+ordinary database write permissions, not privileges to disable foreign keys.
+To create an additional administrator, use `dokku run "$HF_APP" bundle exec
+rails hf:create_admin` in an interactive session.
 
 In the administrator interface:
 

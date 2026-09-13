@@ -1,13 +1,18 @@
 # frozen_string_literal: true
 
 namespace :hf do
-  desc 'Initialize a site with default settings, reference data, and its first administrator'
-  task bootstrap: ['db:seed'] do
+  desc 'Prepare an empty database: schema, seeds, occupation codes, and first administrator'
+  task bootstrap: :environment do
     InstallationBootstrap.new.run
   end
 
-  desc 'Create an additional administrator interactively'
+  desc 'Insert missing 1930 occupation codes without replacing existing records'
+  task load_occupation_codes: :environment do
+    LoadOccupationCodes.new.run
+  end
+
+  desc 'Create an administrator interactively'
   task create_admin: :environment do
-    InstallationBootstrap.new.create_admin
+    CreateAdministrator.new.run
   end
 end

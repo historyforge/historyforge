@@ -21,8 +21,10 @@ For an existing database configuration, use the environment-aware settings in
 Do not use production database credentials for development or tests.
 
 The database contains the application's normal seeds, not a demonstration dataset.
-Run `bin/rails hf:bootstrap` to initialize reference data and create the first
-local administrator, then configure
+Because `bin/setup` already prepares the database, run
+`bin/rails hf:load_occupation_codes` followed by `bin/rails hf:create_admin` to
+complete local initialization. Do not run the fresh-database `hf:bootstrap` here.
+Then configure
 localities and enable the census years you need in the application settings.
 See the [project documentation](https://historyforge.net/documentation) for those workflows.
 
