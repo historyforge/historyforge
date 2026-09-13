@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-set -euo pipefail
-echo 'Use bin/image-build IMAGE for a local build or bin/image-publish REGISTRY/IMAGE to publish.' >&2
-exit 1

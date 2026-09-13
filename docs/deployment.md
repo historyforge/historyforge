@@ -107,7 +107,7 @@ The first selected installation is the canary. Rollout is intentionally serial:
 each Dokku deployment and external health check must pass before continuing.
 Failures stop the rollout and produce a nonzero exit code. There is no `--all`
 rebuild and no implicit use of `latest`. `bin/deploy-push` is a compatibility alias
-for `bin/deploy`; the old `lib/docker/build*` commands print migration guidance.
+for `bin/deploy`; the old `lib/docker/build` command prints migration guidance.
 
 Use `DEPLOY_CONFIG` to select another configuration. State is recorded atomically
 in `tmp/deploy/releases.json`, keyed by host/app, with desired, successful and
