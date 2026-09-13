@@ -1,27 +1,8 @@
 # frozen_string_literal: true
 
 namespace :init do
-  task do_it: %i[build terms fixtures new_admin_user]
-
-  task new_admin_user: :environment do
-    user = User.new
-    user.add_role Role.find_by(name: 'Administrator')
-    STDOUT.puts "Generating admin user. \n"
-    STDOUT.puts "\nUser name: "
-    user.login = STDIN.gets.chomp
-    STDOUT.puts "\nEmail: "
-    user.email = STDIN.gets.chomp
-    chars = '!@#$%^&*(){}[]'.split + '!@#$%^&*(){}[]'.split + ('0'..'9').to_a + ('A'..'Z').to_a + ('a'..'z').to_a
-    pwd = chars.sort_by { rand }.join[0...16]
-    user.password = pwd
-    user.password_confirmation = pwd
-    user.confirmed_at = Time.current
-    if user.save
-      STDOUT.puts "A new user has been created with the email #{user.email}. The password is: \n#{pwd}"
-    else
-      STDOUT.puts 'Unable to create the new user. Usually this means a user by that email already exists.'
-    end
-  end
+  # Compatibility name for older administrator instructions.
+  task new_admin_user: 'hf:create_admin'
 
   task build: :environment do
     Vocabulary.where(machine_name: 'relation_to_head').first_or_create { |model| model.name = 'Relation to Head' }
@@ -47,5 +28,3 @@ namespace :init do
     end
   end
 end
-
-task init: 'init:do_it'

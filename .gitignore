@@ -23,7 +23,6 @@ certs
 coverage
 
 bin/deploy.sh
-bin/deploy-push
 
 # Ignore the default SQLite database.
 /db/*.sqlite3
@@ -77,10 +76,15 @@ yarn-debug.log*
 /.yarn/install-state.gz
 /.generators
 /.rakeTasks
-bin/deploy
 
 /app/assets/builds2/*
 !/app/assets/builds2/.keep
 
 # Ignore asdf configuration for local development
 .tool-versions
+
+/config/deploy*.json
+!/config/deploy.example.json
+
+docs/wiki
+docs/demo-acceptance.md

@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
+repository="${1:?Usage: bin/image-publish REGISTRY/IMAGE}"
+if [ -n "$(git status --porcelain)" ]; then
+  cat >&2 <<'MESSAGE'
+Cannot publish: this checkout has uncommitted changes or untracked files.
+
+The image would include work that is not recorded in its source commit, making
+it harder to identify or recover the code you deployed. Commit the changes you
+want to publish, then rerun this command. Use `git status` to see what remains;
+move aside or ignore local-only files rather than committing them accidentally.
+
+Nothing has been published. This command publishes a unique release tag; it
+does not overwrite :latest.
+MESSAGE
+  exit 1
+fi
+revision=$(git rev-parse HEAD)
+release="$repository:$revision-$(date -u +%Y%m%dT%H%M%SZ)"
+bin/image-build "$release"
+bin/image-smoke "$release"
+# Push exactly the locally tested artifact; do not rebuild it here.
+docker push "$release"
+docker inspect --format '{{index .RepoDigests 0}}' "$release"
