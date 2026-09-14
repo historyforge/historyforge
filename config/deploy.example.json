@@ -1,0 +1,6 @@
+{
+  "image": "your-registry/historyforge",
+  "installations": [
+    { "name": "canary", "host": "your-ssh-host", "app": "historyforge", "url": "https://historyforge.example.org" }
+  ]
+}

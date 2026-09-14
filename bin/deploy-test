@@ -1,0 +1,94 @@
+#!/usr/bin/env python3
+"""Exercise rollout behavior with fake transports; no Docker, Rails, or servers."""
+import fcntl
+import json
+import os
+from pathlib import Path
+import subprocess
+import tempfile
+import unittest
+
+ROOT = Path(__file__).resolve().parents[1]
+RELEASE = 'example/hf@sha256:' + 'a' * 64
+NEXT_RELEASE = 'example/hf@sha256:' + 'b' * 64
+
+
+class RolloutTest(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        self.path = Path(self.temp.name)
+        executables = self.path / 'bin'
+        executables.mkdir()
+        (executables / 'ssh').write_text(
+            '#!/bin/sh\nprintf "%s\\n" "$*" >> "$CALLS"\n'
+            'case "$*" in *badhost*) exit 1;; esac\n')
+        (executables / 'curl').write_text(
+            '#!/usr/bin/env python3\nimport os, sys\nfrom pathlib import Path\n'
+            'Path(sys.argv[sys.argv.index("--output")+1]).write_text('
+            'os.environ.get("HEALTH_BODY", "simple_check"))\n')
+        for executable in executables.iterdir():
+            executable.chmod(0o755)
+        self.config = self.path / 'config.json'
+        self.config.write_text(json.dumps({
+            'image': 'example/hf',
+            'installations': [
+                {'name': name, 'host': host, 'app': 'hf', 'url': 'https://example.org'}
+                for name, host in [('first', 'goodhost'), ('second', 'badhost'),
+                                   ('third', 'unreached')]
+            ]
+        }))
+        self.env = dict(os.environ, PATH=str(executables) + ':' + os.environ['PATH'],
+                        DEPLOY_CONFIG=str(self.config),
+                        DEPLOY_STATE_DIR=str(self.path / 'state'),
+                        CALLS=str(self.path / 'calls'))
+
+    def run_deploy(self, *args):
+        return subprocess.run(['ruby', 'script/deploy.rb', *args], cwd=ROOT,
+                              env=self.env, capture_output=True, text=True)
+
+    def state(self):
+        return json.loads((self.path / 'state/releases.json').read_text())
+
+    def test_failure_stops_remaining_installations(self):
+        result = self.run_deploy(RELEASE)
+        self.assertNotEqual(0, result.returncode)
+        self.assertNotIn('unreached', (self.path / 'calls').read_text())
+        self.assertEqual(RELEASE, self.state()['goodhost/hf']['successful'])
+        self.assertEqual('deploy_failed', self.state()['badhost/hf']['status'])
+
+    def test_selected_rollout_preserves_previous_release_on_retry(self):
+        for release in [RELEASE, NEXT_RELEASE, NEXT_RELEASE]:
+            self.assertEqual(0, self.run_deploy(release, 'first').returncode)
+        self.assertEqual(RELEASE, self.state()['goodhost/hf']['previous_successful'])
+        self.assertEqual(NEXT_RELEASE, self.state()['goodhost/hf']['successful'])
+        self.assertNotIn('badhost', (self.path / 'calls').read_text())
+
+    def test_invalid_inputs_never_contact_servers(self):
+        for args in [('example/hf:latest',), (RELEASE, 'missing'),
+                     ('other/hf@sha256:' + 'a' * 64,)]:
+            self.assertNotEqual(0, self.run_deploy(*args).returncode)
+        self.assertFalse((self.path / 'calls').exists())
+
+    def test_external_check_failure_keeps_last_verified_release(self):
+        self.assertEqual(0, self.run_deploy(RELEASE, 'first').returncode)
+        self.env['HEALTH_BODY'] = 'wrong response'
+        self.assertNotEqual(0, self.run_deploy(NEXT_RELEASE).returncode)
+        entry = self.state()['goodhost/hf']
+        self.assertEqual('verification_failed', entry['status'])
+        self.assertEqual(RELEASE, entry['successful'])
+        self.assertEqual(NEXT_RELEASE, entry['desired'])
+        self.assertNotIn('badhost', (self.path / 'calls').read_text())
+
+    def test_concurrent_coordinator_run_is_rejected(self):
+        state_dir = self.path / 'state'
+        state_dir.mkdir()
+        with (state_dir / 'lock').open('w') as lock:
+            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            result = self.run_deploy(RELEASE)
+        self.assertNotEqual(0, result.returncode)
+        self.assertFalse((self.path / 'calls').exists())
+
+
+if __name__ == '__main__':
+    unittest.main()

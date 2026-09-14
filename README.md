@@ -4,9 +4,22 @@
 
 This is HistoryForge. It is a basic Rails application.
 
-## Setup Production Environment
+## Run a site for your community
 
-See the wiki page.
+You can run the published HistoryForge application without downloading its source
+code or building it yourself. Start with these guides:
+
+- [Install a new site](docs/installation.md): arrange hosting and launch your collection.
+- [Configure your site](docs/configuration.md): names, email, maps, and public access.
+- [Update and maintain your site](docs/operating.md): use published updates without a local checkout.
+- [Explore HistoryForge](docs/trying-historyforge.md): choose local setup or a community site.
+
+## Contribute to HistoryForge
+
+To change the application code, start with the development instructions below.
+The [build and deployment guide](docs/deployment.md) covers publishing your own
+images and deploying to one or several sites. These are also the maintainer's
+workflows; contributors do not need a separate deployment approach.
 
 ## Development
 

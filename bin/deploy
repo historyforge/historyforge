@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
+if [ "${1:-}" = --publish ]; then
+  shift
+  repository=$(ruby -rjson -e 'puts JSON.parse(File.read(ENV.fetch("DEPLOY_CONFIG", "config/deploy.json"))).fetch("image")')
+  bin/check
+  output=$(mktemp)
+  trap 'rm -f "$output"' EXIT
+  bin/image-publish "$repository" | tee "$output"
+  release=$(tail -n 1 "$output")
+  ruby script/deploy.rb "$release" "$@"
+  exit
+fi
+if [ "$#" -eq 0 ]; then
+  echo 'Usage: bin/deploy IMAGE@sha256:DIGEST [INSTALLATION ...]' >&2
+  echo 'Or: bin/deploy --publish [INSTALLATION ...] to test, publish, and deploy.' >&2
+  exit 1
+fi
+exec ruby script/deploy.rb "$@"

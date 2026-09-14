@@ -1,5 +1,7 @@
 # See https://www.robotstxt.org/robotstxt.html for documentation on how to use the robots.txt file
 
 User-agent: *
+# The Forge is an interactive map; person, building, and census record pages
+# provide the standalone content useful in search results and remain crawlable.
 Disallow: /forge
 Disallow: /*/forge

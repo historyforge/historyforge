@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
+image="${1:-historyforge:local}"
+revision=$(git rev-parse HEAD)
+docker buildx build --platform "${PLATFORM:-linux/amd64}" --load \
+  --build-arg "REVISION=$revision" --tag "$image" .

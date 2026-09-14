@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+set -euo pipefail
+image="${1:?Usage: bin/image-smoke IMAGE}"
+platform=$(docker image inspect --format '{{.Os}}/{{.Architecture}}' "$image")
+network="historyforge-smoke-$$-$RANDOM"
+database=""
+container=""
+cleanup() {
+  [ -z "$container" ] || docker rm -f "$container" >/dev/null || true
+  [ -z "$database" ] || docker rm -fv "$database" >/dev/null || true
+  docker network rm "$network" >/dev/null || true
+}
+docker network create "$network" >/dev/null
+trap cleanup EXIT
+# This database is disposable, isolated, and never published on a host port.
+database=$(docker run -d --network "$network" --network-alias db \
+  -e POSTGRES_PASSWORD=smoke -e POSTGRES_DB=historyforge_smoke postgres:17-bookworm)
+ready=false
+for attempt in {1..60}; do
+  if docker exec "$database" pg_isready -h 127.0.0.1 -U postgres -d historyforge_smoke >/dev/null 2>&1; then
+    ready=true
+    break
+  fi
+  sleep 1
+done
+if [ "$ready" != true ]; then docker logs "$database"; exit 1; fi
+runtime=(--platform "$platform" --network "$network" \
+  -e SECRET_KEY_BASE_DUMMY=1 -e DATABASE_URL=postgresql://postgres:smoke@db/historyforge_smoke)
+docker run --rm "${runtime[@]}" "$image" ruby -rjson -e '
+  manifest = JSON.parse(File.read(Dir["public/assets/.sprockets-manifest-*.json"].fetch(0)))
+  %w[application.js cms.js maplibre-worker.js application.css cms.css].each do |asset|
+    abort "Missing compiled asset: #{asset}" unless manifest.fetch("assets").key?(asset)
+  end
+  abort "Wrong runtime user" unless Process.uid == 32767
+  abort "Local deployment inventory leaked" if File.exist?("config/deploy.json")
+'
+docker run --rm "${runtime[@]}" "$image" bundle exec rails db:schema:load
+container=$(docker run -d "${runtime[@]}" "$image")
+for attempt in {1..60}; do
+  if docker exec "$container" ruby -rnet/http -e 'r = Net::HTTP.get_response(URI("http://127.0.0.1:5000/check.txt")); exit(r.code == "200" && r.body.include?("simple_check") ? 0 : 1)' 2>/dev/null; then
+    echo "Image assets, database schema, and startup check passed: $image"
+    exit 0
+  fi
+  if [ "$(docker inspect --format '{{.State.Running}}' "$container")" != true ]; then break; fi
+  sleep 2
+done
+docker logs "$container"
+exit 1
