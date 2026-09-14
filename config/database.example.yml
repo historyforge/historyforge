@@ -24,10 +24,6 @@ test:
   min_messages: WARNING
 
 production:
-    <% if ENV['DEPLOYING'] %>
-  <<: *default
-  database: historyforge
-    <% else %>
+  adapter: postgresql
   url: <%= ENV['DATABASE_URL'] %>
   pool: 5
-    <% end %>

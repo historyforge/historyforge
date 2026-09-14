@@ -120,8 +120,7 @@ production mail. For release testing, use the email precautions in
 [testing a release on a separate site](deployment.md#test-a-release-on-a-separate-site).
 
 `SECRET_KEY_BASE_DUMMY` is used only by isolated build/smoke commands, not real
-sites. `DEPLOYING` is a build-time asset flag, not a setting to leave enabled on
-the application. The image contains its own database configuration: do not copy
+sites. The image contains its own database configuration: do not copy
 a developer's `config/database.yml` into a deployment.
 
 The current API is `AppConfig[:mail_from]`, not `AppConfig.mail_from`.
@@ -148,4 +147,3 @@ Setting.add 'be_happy', type: :boolean, value: '1', group: 'Faces',
 Read it as `AppConfig[:be_happy]`. Supported types are `boolean` (`'1'` is true),
 `integer`, `number`, and string. Update example configuration when introducing a
 startup environment variable; include the app name in every Dokku config command.
-
