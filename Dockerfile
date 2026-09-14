@@ -17,7 +17,8 @@ RUN apt-get update -qq && apt-get install --no-install-recommends -y \
 
 ENV BUNDLE_PATH=/usr/local/bundle
 
-FROM base AS build
+FROM base AS build-tools
+ENV COREPACK_HOME=/opt/corepack
 RUN apt-get update -qq && apt-get install --no-install-recommends -y \
     build-essential git pkg-config libpq-dev libyaml-dev libssl-dev libffi-dev \
     libcurl4-openssl-dev liblzma-dev zlib1g-dev \
@@ -27,10 +28,20 @@ COPY --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules
 RUN ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm \
     && ln -s /usr/local/lib/node_modules/corepack/dist/corepack.js /usr/local/bin/corepack \
     && corepack enable
-COPY Gemfile Gemfile.lock ./
-RUN bundle install --jobs 4 --retry 5 && rm -rf /usr/local/bundle/cache
+
+# Keep dependency caches independent: gem changes do not rerun Yarn, and vice versa.
+FROM build-tools AS javascript-dependencies
 COPY package.json yarn.lock .yarnrc.yml ./
 RUN yarn install --immutable
+
+FROM build-tools AS ruby-dependencies
+COPY Gemfile Gemfile.lock ./
+RUN bundle install --jobs 4 --retry 5 && rm -rf /usr/local/bundle/cache
+
+FROM ruby-dependencies AS build
+COPY --from=javascript-dependencies /app/node_modules /app/node_modules
+COPY --from=javascript-dependencies /app/.yarn /app/.yarn
+COPY --from=javascript-dependencies /opt/corepack /opt/corepack
 COPY . .
 COPY lib/docker/database.yml config/database.yml
 RUN yarn build \
