@@ -124,6 +124,36 @@ therefore the last *verified* release, not a guarantee of what is currently runn
 Inspect the server before recovery. A rerun of an identical digest may be a Dokku
 no-op; it is not a substitute for repairing missing local image state.
 
+## Test a release on a separate site
+
+Maintainers can use a separate server installation to check deployment and
+application behavior before updating live collections. This is an optional
+release-testing workflow, not a prerequisite for community installations or
+local development. A site used this way is called a canary.
+
+Provision it using the installation guide, with its own app, domain, database,
+uploaded files, and secrets. Use a small test collection. Configure a mail capture
+service—a test inbox that catches outgoing messages instead of delivering them
+to the named recipients—and verify it before testing invitations or resets.
+Do not copy live user accounts or credentials into the test installation.
+For a publicly reachable test site, see [search engine visibility](configuration.md#search-engine-visibility).
+
+Add the site to `config/deploy.json` with a name such as `canary`. From your
+checkout, build, test, publish, and deploy to that entry alone:
+
+```sh
+bin/deploy --publish canary
+```
+
+Check the site in a browser and keep the published release identifier from the
+command output. Deploy that same release to explicitly selected community sites
+after review. The rollout script checks HTTP health but does not pause for your
+manual review; selecting the canary alone gives you that time.
+
+If the test installation shares a server or database cluster with live sites,
+its resource use can affect them. Use separate infrastructure for load tests or
+disruptive recovery experiments.
+
 ## Recovery and adoption
 
 Redeploy an explicitly selected retained digest to the affected installation with

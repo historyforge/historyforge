@@ -12,7 +12,7 @@ code or building it yourself. Start with these guides:
 - [Install a new site](docs/installation.md): arrange hosting and launch your collection.
 - [Configure your site](docs/configuration.md): names, email, maps, and public access.
 - [Update and maintain your site](docs/operating.md): use published updates without a local checkout.
-- [Try HistoryForge](docs/trying-historyforge.md): explore it before launching a collection.
+- [Explore HistoryForge](docs/trying-historyforge.md): choose local setup or a community site.
 
 ## Contribute to HistoryForge
 

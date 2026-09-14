@@ -3,8 +3,8 @@
 This guide explains how to launch a HistoryForge site for your community. It covers a 
 **new, empty installation** on Dokku. For an existing site,
 use [updating and maintaining your site](operating.md). For local development, use
-[the development guide](../.devcontainer/README.md). If you just want to explore
-HistoryForge or set up a trial site, see [trying HistoryForge](trying-historyforge.md).
+[the development guide](../.devcontainer/README.md). For an overview of local exploration and starting a collection, see
+[exploring HistoryForge](trying-historyforge.md).
 
 ## What is Dokku?
 
@@ -165,9 +165,10 @@ A firewall controls which network connections can reach the server. Allow SSH
 and hosting provider firewalls. Set the
 site's DNS A record to the host; only publish an AAAA record if IPv6 also works.
 
-Size memory for both old and candidate Rails containers during a deployment,
-plus PostgreSQL if it runs locally. Dokku's minimum is not a measured HistoryForge capacity recommendation.
-Check available RAM, disk, and swap before deploying.
+During an update, Dokku may run the current application and its replacement
+at the same time. The server needs memory for both, plus PostgreSQL if it runs
+locally. Dokku's minimum requirements alone do not establish enough capacity for
+HistoryForge. We have not yet measured a recommended server size.
 
 Open a terminal on your computer and connect using `ssh root@YOUR_HOST`,
 replacing `YOUR_HOST` with your server's IP address or hostname. The commands
@@ -218,7 +219,7 @@ dokku postgres:create "$HF_DB" --image-version 17-bookworm
 dokku postgres:link "$HF_DB" "$HF_APP"
 ```
 
-PostgreSQL 17 matches the production-image smoke test. Record the selected version
+PostgreSQL 17 is the version tested with the application image. Record the selected version
 and follow the [Postgres plugin documentation](https://github.com/dokku/dokku-postgres)
 for upgrades and backups. The schema uses `fuzzystrmatch` and `pg_trgm`, not PostGIS.
 Keep the database port private. Continue with step 4, then bootstrap using option A
@@ -232,7 +233,7 @@ The following is a concrete example for DigitalOcean Managed PostgreSQL Standard
 Edition; other providers have equivalent database, user, network, and TLS settings.
 
 1. Create or select a PostgreSQL cluster. Choose a compatible major version;
-   PostgreSQL 17 is the version used by the image smoke test. For private connectivity, place the
+   PostgreSQL 17 is the version tested with the application image. For private connectivity, place the
    application host and cluster in the same reachable private network.
 2. Create a **new database** such as `community_hf` and a dedicated user.
    Give that user ownership or the privileges needed to create tables, indexes,
@@ -322,7 +323,7 @@ dokku config:set --no-restart "$HF_APP" \
 
 Leave `DISALLOW_INDEXING` unset for a public community site so its record pages
 can appear in search results. The existing map-page crawl exclusions still apply;
-see [indexing behavior](configuration.md#keep-a-public-demo-out-of-search-results).
+see [indexing behavior](configuration.md#search-engine-visibility).
 
 ## 5. Bootstrap the empty database from the selected image
 
@@ -419,9 +420,10 @@ dokku git:from-image "$HF_APP" "$HF_IMAGE"
 curl --fail "http://$HF_DOMAIN/check.txt"
 ```
 
-Expect `simple_check`. Confirm the logs show the predeploy migration/seed task and
-web health check. If the candidate fails, stop here and inspect `dokku logs "$HF_APP"`.
-Normal Rails requests redirect to HTTPS; `/check.txt` is exempt for bootstrap checks.
+Expect `simple_check`, which means the application is responding. If deployment
+fails or you receive a different response, stop and read the application logs
+with `dokku logs "$HF_APP"`. Ordinary pages redirect to HTTPS; this check is
+available over HTTP so you can verify startup before obtaining the certificate.
 
 ```sh
 dokku letsencrypt:set "$HF_APP" email 'YOUR_OPERATOR_EMAIL'
@@ -571,7 +573,7 @@ the place within it where you publish your HistoryForge images. You do not need
 to run a registry server yourself.
 
 You can then build and test a release once, publish it to your repository, try it
-on a canary site, and deploy that same release to your community sites. They can
+on a separate test installation, and deploy that same release to your community sites. They can
 all use the same image while keeping their own names, settings, and collections.
 This involves learning the Docker build and publishing workflow and taking
 responsibility for testing updates and retaining working releases. See

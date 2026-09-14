@@ -20,14 +20,16 @@ service that delivers it. Configure both. The contact address is where messages
 from your site's contact form should arrive.
 
 Choose [local or managed PostgreSQL](installation.md#choose-where-the-database-runs)
-before setting the connection. The managed path includes CA mounting and verified TLS.
+before setting the connection. The managed database instructions explain how
+to install the provider's certificate and verify the encrypted connection.
 
 ## Configure a new collection
 
 Use Admin → Settings for sponsor name/URL, contact email, mail sender, map center,
 census visibility, and building-entry permissions. Create localities separately.
-Production census visibility defaults are disabled in the seeds; an empty or
-hidden collection does not by itself indicate a deployment failure.
+Census years start hidden on a new hosted site. Enable the years you want
+people to work on, and choose when to make them visible to public visitors.
+An empty search page may mean the year is hidden or has no published records.
 
 The default street map uses OpenFreeMap; displaying it does not require a Google
 Maps account. Converting addresses into map coordinates is a separate operation,
@@ -56,7 +58,7 @@ the app has not been deployed yet. Keep passwords and application secrets privat
 
 | Variable | Purpose |
 | --- | --- |
-| `DISALLOW_INDEXING` | Set exactly `true` on a demo/QA site to send `X-Robots-Tag: noindex, nofollow`. Unset or other values leave indexing behavior unchanged. |
+| `DISALLOW_INDEXING` | Set exactly `true` to ask search engines to exclude this installation using `X-Robots-Tag: noindex, nofollow`. Unset or other values leave indexing behavior unchanged. |
 | `DATABASE_URL` | Database connection: supplied by the local Dokku Postgres link, or set explicitly for a managed cluster. |
 | `SECRET_KEY_BASE` | Rails signing/encryption secret; generate locally and retain between releases. |
 | `DEVISE_SECRET_KEY` | Devise authentication token secret; retain between releases. |
@@ -65,67 +67,49 @@ the app has not been deployed yet. Keep passwords and application secrets privat
 | `BASE_URL` | Canonical hostname, such as `history.example.org`, used by mail and authentication defaults. |
 | `WEBAUTHN_ORIGIN` | Exact HTTPS origin for passkeys, such as `https://history.example.org`. |
 | `WEBAUTHN_RP_ID` | Passkey relying-party hostname, such as `history.example.org`. |
-| `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD` | Outgoing mail connection; use a capture service for QA. |
+| `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD` | Outgoing mail service connection. |
 | `RAILS_MAX_THREADS` | Puma threads and the container database connection pool; tune together with memory and workload. |
 | `FACEBOOK_LOGIN_APP_ID`, `FACEBOOK_LOGIN_SECRET` | Optional OAuth credentials read during initialization. |
 | `AIRBRAKE_ID`, `AIRBRAKE_KEY`, `AIRBRAKE_URL` | Optional error reporting configuration. |
 
 Choose a stable domain: changing it later can affect saved passkeys (the login
 credentials stored on users' devices). SMTP being unset does not disable mail.
-For a public site, test delivery to an address you control; for a trial, use the
-mail capture arrangement described in [trying HistoryForge](trying-historyforge.md).
+Test delivery to an address you control before inviting community members.
 
-## Keep a public demo out of search results
+## Search engine visibility
 
-Set the indexing flag on the demo app only, before its first deployment:
+For a public community collection, leave `DISALLOW_INDEXING` unset. Search
+engines can discover its person, building, and census record pages.
+A development site running only on your computer at `localhost` is not publicly
+reachable and does not need this setting.
 
-```sh
-dokku config:set --no-restart historyforge-demo DISALLOW_INDEXING=true
-```
+The Forge itself is an interactive JavaScript map. Its map view offers little
+standalone content for a search result; the individual record pages are more
+useful destinations. For that reason, `robots.txt` excludes `/forge` and
+`/*/forge` from crawling on every site, while allowing other pages.
 
-For an already-running demo, omit `--no-restart` so the change takes effect after
-restart. Do not set this globally or on public collection sites. The switch is
-read at application startup and is not baked into the shared image.
-
-The application adds `X-Robots-Tag: noindex, nofollow` to responses passing through
-Rails, including Rails-served static files, redirects, and error responses. It
-adds no login requirement. Files or errors served directly by a proxy, CDN, or
-external storage service need their own header configuration if used.
-
-There are two separate controls:
-
-- **Crawling:** `robots.txt` keeps the existing exclusions for `/forge` and
-  `/*/forge` on every site. All other paths are allowed to be crawled.
-- **Indexing:** for pages crawlers can fetch, the response tells them whether to
-  index the content. With `DISALLOW_INDEXING=true`, the demo sends the `noindex`
-  header on every response through Rails. With the flag unset, real collection
-  sites receive no additional indexing restriction from this feature.
-
-The Forge is an interactive JavaScript map for exploring records. Its map view
-offers little standalone content for a search result; the person, building, and
-census record pages are more useful destinations. The crawl exclusions keep
-crawlers out of that map interface while leaving the record pages available.
-This is a choice about the usefulness of the map as a search result, not a claim
-that search engines cannot process JavaScript.
-
-Crawlers cannot see noindex on a URL they are forbidden to crawl;
-this setting therefore cannot guarantee removal of already-indexed map URLs.
-See [Google's indexing instructions](https://developers.google.com/search/docs/crawling-indexing/robots-meta-tag)
-for that distinction. This is an indexing request to compliant search engines,
-not access control.
-
-After deployment, check the demo and a real collection site:
+If you have a publicly reachable installation that you want excluded from search
+results, set this on that app, replacing `community-hf` with its Dokku app name:
 
 ```sh
-curl -sSI https://demo.example.org/check.txt
-curl -sS https://demo.example.org/robots.txt
-curl -sSI https://history.example.org/check.txt
+dokku config:set community-hf DISALLOW_INDEXING=true
 ```
 
-Expect `X-Robots-Tag: noindex, nofollow` only on the demo, and the existing map
-exclusions in its robots file. Use your actual hostnames when following these
-examples. Unsetting the flag and restarting removes the added header; search
-engines apply changes on their own crawl schedules.
+This restarts the app and adds an HTTP `X-Robots-Tag: noindex, nofollow` header.
+During initial installation, add `--no-restart` and the setting will take effect
+on the first deployment. It applies to this installation, not every site using
+the shared image. To return to normal indexing behavior:
+
+```sh
+dokku config:unset community-hf DISALLOW_INDEXING
+```
+
+This is a request to search engines, not privacy or access control. People can
+still visit the site. Search engines must be able to crawl a page to read the
+header, so it cannot guarantee removal of map URLs already excluded by
+`robots.txt`. See [Google's indexing instructions](https://developers.google.com/search/docs/crawling-indexing/robots-meta-tag).
+The header covers responses served through the application; content served
+separately by a proxy or external storage needs its own configuration.
 
 ## For contributors: settings in application code
 
@@ -133,14 +117,13 @@ Consult [mailer initialization](../config/initializers/historyforge_mailer.rb) a
 [passkey configuration](../config/initializers/devise_passkeys.rb) when changing a
 site's domain or mail provider. Changing the passkey relying-party domain affects
 existing credentials; use a stable domain. SMTP being unset does not disable
-production mail. Test invitations and resets with the chosen capture service
-before loading demo accounts with real email addresses.
+production mail. For release testing, use the email precautions in
+[testing a release on a separate site](deployment.md#test-a-release-on-a-separate-site).
 
 `SECRET_KEY_BASE_DUMMY` is used only by isolated build/smoke commands, not real
 sites. `DEPLOYING` is a build-time asset flag, not a setting to leave enabled on
 the application. The image contains its own database configuration: do not copy
 a developer's `config/database.yml` into a deployment.
-
 
 The current API is `AppConfig[:mail_from]`, not `AppConfig.mail_from`.
 [AppConfig](../app/models/app_config.rb) loads database settings and falls back to

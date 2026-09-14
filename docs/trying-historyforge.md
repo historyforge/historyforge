@@ -1,110 +1,45 @@
-# Try HistoryForge before launching a community site
+# Explore HistoryForge
 
-To try HistoryForge without changing its code, use the maintainer's ready-made
-package:
+You can work with HistoryForge on your own computer or start a collection for
+your community. The setup depends on where you want it to run.
 
-```text
-dfurber/historyforge:latest
-```
+## Work on your own computer
 
-You do not need to build it, publish anything, or create a Docker Hub account.
-Docker downloads the package for you when you follow the installation commands.
-Docker Hub is simply where the package is stored; you may see it called a
-“registry.” The package is called an “image.”
+The [development guide](../.devcontainer/README.md) explains how to download the
+source and run HistoryForge locally, including an optional Docker-based
+workspace. This is the path for working on the code or exploring the application
+without renting a server. It requires development tools; we do not yet provide
+a desktop installer.
 
-A hosted trial lets you and other people explore the application in a browser.
-You will still need a server, a domain, and access to configure them. The
-[installation guide](installation.md) explains those requirements and the setup
-steps. This package runs the full application; it does not include a collection
-of sample records.
+Your browser connects to `http://localhost:3000`. You do not need a public domain,
+HTTPS certificate, or search-engine configuration for that local setup.
+Development email opens locally for inspection rather than being sent through
+a production mail service.
 
-## Create a hosted trial site
+After setup, follow the development guide's initialization commands to load
+reference data and create an administrator. Create a locality, enable a census
+year, and enter a few buildings and records. The initial data supplies application
+settings and reference lists, but no sample community collection.
 
-Follow [the installation guide](installation.md). Keep its package setting:
+## Start a collection for your community
 
-```sh
-HF_IMAGE='dfurber/historyforge:latest'
-```
+Follow [the installation guide](installation.md) to run the published
+`dfurber/historyforge:latest` package on a server. You do not need to clone the
+repository, build software, or create a Docker Hub account. You will need hosting,
+a domain, and access to configure them; the guide explains each requirement.
 
-You can choose your site's name, locality, census years, and records through
-configuration and the web interface. Those choices do not require custom code.
-For a trial, make these additional choices:
+You can begin with a small collection and invite more people as you get familiar
+with the application. Your site's name, localities, census years, and records
+are configured through settings and the web interface. They do not require
+changes to the application code.
 
-- Give the site its own Dokku app, domain, database, database credentials, uploaded
-  files, and secrets. It can share a server or managed database cluster with other
-  sites, but its data should remain separate.
-- Use trial-specific names, such as `historyforge-demo` for the Dokku app and
-  `demo.example.org` for the domain.
-- Route outgoing mail to a mail capture service: a test mailbox that catches
-  application messages instead of delivering them to their named recipients. Empty SMTP settings do not
-  reliably disable mail. Confirm that invitations and resets go to the capture
-  service before adding accounts with real addresses.
-- Set `DISALLOW_INDEXING=true` on this app before its first deployment, as explained
-  in [demo indexing](configuration.md#keep-a-public-demo-out-of-search-results).
-  The site stays publicly accessible, but asks search engines not to index it.
-- Use a small curated or synthetic dataset. Do not start by copying production
-  user accounts, password hashes, or integration credentials. No demonstration
-  dataset is bundled; document the source and preparation of the records you use.
+Use the [user documentation](https://historyforge.net/documentation) to learn
+about entering, reviewing, and publishing records. Once the site is running,
+[ongoing operation](operating.md) covers updates and maintenance.
 
-For importing a CSV, follow [the collection import instructions](installation.md#8-add-records-and-verify-the-site).
-Check the saved/total count and inspect the results; import can partially succeed.
+## Contribute changes
 
-## Optional: explore through the development environment
-
-This route involves downloading the source and setting up development tools.
-It is useful if you also want to contribute code. Follow the
-[development guide](../.devcontainer/README.md) to run HistoryForge locally. It includes an optional Docker-based environment and instructions for
-initializing reference data and the first administrator. Your browser connects to `http://localhost:3000`;
-you do not need a public domain or an HTTPS certificate for that local setup.
-
-The normal seeds configure the application but do not provide a demonstration
-collection. Create a locality, enable a census year, and enter a few buildings and
-records to explore the workflows. The [user documentation](https://historyforge.net/documentation)
-explains how to work with the collection.
-
-## Optional: try changes to the application code
-
-If you want to change the application itself, you will need to learn more about
-Docker and building your own package. Start with the [development guide](../.devcontainer/README.md),
-then follow the [release guide](deployment.md) to build and publish your modified
-version. Making a copy of the source does not change the ready-made package.
-
-## Optional: use a trial site as a canary
-
-This section is for operators who already manage other HistoryForge sites; it is
-not needed just to try the application.
-
-You can use the maintainer's image across your sites, or publish your own shared
-version to a Docker Hub repository you control. See
-[choosing an image repository](deployment.md#choose-an-image-repository) for
-that optional step; the example below uses the maintainer's image.
-
-A canary is a site that receives a release before your active community sites do.
-It lets you check application behavior and deployment recovery with less impact
-on users. Keep a local record of the initial installation, browser checks, upgrades, and
-recovery rehearsal. Verify the features your community sites use before
-promoting a release.
-
-After the site is configured, add it first in the operator's ignored
-`config/deploy.json`, using its actual SSH alias, app name, and HTTPS URL. Give the
-inventory entry a name such as `demo`. Initially, select that entry alone:
-
-```sh
-docker pull dfurber/historyforge:latest
-HF_RELEASE=$(docker image inspect --format '{{index .RepoDigests 0}}' dfurber/historyforge:latest)
-bin/deploy "$HF_RELEASE" demo
-```
-
-Run this on the workstation with Docker and the deployment scripts installed.
-The commands download the current package and look up its exact identifier
-(called a digest) for you. Save `HF_RELEASE`: after browser and recovery checks
-pass, use that same value when deploying to explicitly selected community sites.
-Do not download `latest` again between testing and deploying the tested release.
-
-Putting the canary first only gates subsequent deployments on the HTTP health
-check. The script does not pause for manual QA. Select the canary alone whenever
-you need time to review a release before other sites receive it.
-
-A canary sharing an application server or database cluster still shares resources
-with the other sites. Account for its memory, CPU, storage, and connection usage;
-do not run load tests on shared infrastructure as part of ordinary acceptance.
+Use the local development environment to make and test code changes. When you
+are ready to publish your own version, follow the [build and deployment guide](deployment.md).
+That guide also covers testing releases on a separate server installation before
+updating live sites.
