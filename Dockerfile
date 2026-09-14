@@ -5,19 +5,20 @@ FROM ruby:${RUBY_VERSION}-slim-bookworm AS base
 ENV RAILS_ENV=production \
     RAILS_SERVE_STATIC_FILES=true \
     RAILS_LOG_TO_STDOUT=true \
-    LANG=en_US.UTF-8 \
-    LC_ALL=en_US.UTF-8 \
+    LANG=C.UTF-8 \
+    LC_ALL=C.UTF-8 \
+    LC_CTYPE=C.UTF-8 \
     BUNDLE_WITHOUT=development:test \
     BUNDLE_DEPLOYMENT=1
 WORKDIR /app
 RUN apt-get update -qq && apt-get install --no-install-recommends -y \
-    libpq5 libvips imagemagick locales postgresql-client libyaml-0-2 ca-certificates \
-    && echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen \
+    libpq5 libvips imagemagick postgresql-client libyaml-0-2 ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
 ENV BUNDLE_PATH=/usr/local/bundle
 
-FROM base AS build
+FROM base AS build-tools
+ENV COREPACK_HOME=/opt/corepack
 RUN apt-get update -qq && apt-get install --no-install-recommends -y \
     build-essential git pkg-config libpq-dev libyaml-dev libssl-dev libffi-dev \
     libcurl4-openssl-dev liblzma-dev zlib1g-dev \
@@ -27,14 +28,24 @@ COPY --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules
 RUN ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm \
     && ln -s /usr/local/lib/node_modules/corepack/dist/corepack.js /usr/local/bin/corepack \
     && corepack enable
-COPY Gemfile Gemfile.lock ./
-RUN bundle install --jobs 4 --retry 5 && rm -rf /usr/local/bundle/cache
+
+# Keep dependency caches independent: gem changes do not rerun Yarn, and vice versa.
+FROM build-tools AS javascript-dependencies
 COPY package.json yarn.lock .yarnrc.yml ./
 RUN yarn install --immutable
+
+FROM build-tools AS ruby-dependencies
+COPY Gemfile Gemfile.lock ./
+RUN bundle install --jobs 4 --retry 5 && rm -rf /usr/local/bundle/cache
+
+FROM ruby-dependencies AS build
+COPY --from=javascript-dependencies /app/node_modules /app/node_modules
+COPY --from=javascript-dependencies /app/.yarn /app/.yarn
+COPY --from=javascript-dependencies /opt/corepack /opt/corepack
 COPY . .
 COPY lib/docker/database.yml config/database.yml
 RUN yarn build \
-    && SECRET_KEY_BASE_DUMMY=1 DEPLOYING=true bundle exec rails assets:precompile \
+    && SECRET_KEY_BASE_DUMMY=1 bundle exec rails assets:precompile \
     && rm -rf node_modules .yarn/cache tmp/cache
 
 FROM base AS runtime

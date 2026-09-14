@@ -41,7 +41,9 @@ File.open(File.join(state_dir, 'lock'), 'w') do |lock|
     save.call
     puts "#{index.zero? ? 'Canary' : 'Deploying'}: #{name} (#{key}) -> #{release}"
     $stdout.flush
-    command = ['dokku', 'git:from-image', app, release].shelljoin
+    # Override locale values forwarded by SSH (macOS may send LC_CTYPE=UTF-8).
+    command = ['env', 'LANG=C.UTF-8', 'LC_ALL=C.UTF-8', 'LC_CTYPE=C.UTF-8',
+               'dokku', 'git:from-image', app, release].shelljoin
     deployed = system('ssh', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=15', host, command)
     healthy = deployed && system('curl', '--fail', '--silent', '--show-error', '--max-time', '20',
                                  '--retry', '3', '--output', File.join(state_dir, 'health.txt'),
