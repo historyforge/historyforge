@@ -19,9 +19,8 @@ The sender address identifies outgoing mail; the SMTP settings connect to the
 service that delivers it. Configure both. The contact address is where messages
 from your site's contact form should arrive.
 
-Choose [local or managed PostgreSQL](installation.md#choose-where-the-database-runs)
-before setting the connection. The managed database instructions explain how
-to install the provider's certificate and verify the encrypted connection.
+The basic installation guide configures the local database connection for you.
+For a separate database service, follow [managed PostgreSQL](managed-postgresql.md).
 
 ## Configure a new collection
 

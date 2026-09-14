@@ -1,6 +1,6 @@
 # Install a new HistoryForge site
 
-This guide explains how to launch a HistoryForge site for your community. It covers a 
+This guide explains how to launch a HistoryForge site for your community. It covers a
 **new, empty installation** on Dokku. For an existing site,
 use [updating and maintaining your site](operating.md). For local development, use
 [the development guide](../.devcontainer/README.md). For an overview of local exploration and starting a collection, see
@@ -21,9 +21,8 @@ manages it on the server. Dokku uses Docker to run the application in a
 HistoryForge containing its code, Ruby, and the libraries it needs. This lets us
 build a release once and run that same release on several installations.
 
-In this guide, you will add a Dokku plugin for HTTPS certificates and choose
-where PostgreSQL runs: on your Dokku server or in a separate managed database
-service. The local option uses another Dokku plugin to manage PostgreSQL. The database holds your site's records and user accounts.
+In this guide, you will add Dokku plugins for HTTPS certificates and PostgreSQL.
+PostgreSQL runs on the same server and holds your site's records and user accounts.
 A separate storage directory holds uploaded files, so they survive application
 updates. One Dokku server can host several HistoryForge sites, each with its own
 domain, database, configuration, and uploaded files.
@@ -36,8 +35,8 @@ for your first site.
 ## Guide status
 
 The container build and startup with a fresh PostgreSQL 17 schema have been tested
-locally. The complete installation on a Dokku server, including the managed
-database option, has not yet been verified end to end. The commands below are a
+locally. The complete installation on a Dokku server has not yet been verified
+end to end. The commands below are a
 first-install procedure under validation.
 
 ## How to follow this guide
@@ -59,16 +58,14 @@ commands. Keep the same terminal connection open; if you reconnect, set the
 variables again before continuing. Do not rerun commands that create the app or
 load its empty database simply to restore those variables.
 
-Work through the numbered steps in order, choosing either database option A or
-B wherever offered. If a command reports an error, stop at that step and resolve
+Work through the numbered steps in order. If a command reports an error, stop at that step and resolve
 it before proceeding. Keep the error text for troubleshooting, excluding
 passwords and connection URLs that contain them.
 
 You can learn this as you go. If server setup is unfamiliar, a technical volunteer
 can help with hosting, backups, and updates while your community manages the
-collection through the browser. Keep hosting, domain, and recovery information
-accessible to the people responsible for the site, rather than only on one
-volunteer's computer.
+collection through the browser. Keep hosting and domain credentials in your
+password manager.
 
 ## 1. Arrange hosting and your site address
 
@@ -77,7 +74,9 @@ yet; the later steps explain how to connect them.
 
 1. **A server to run the site.** This is a computer that stays online and receives
    requests from visitors. You can rent one from a hosting provider such as
-   DigitalOcean, where it is called a “droplet.” You can also use an existing
+   DigitalOcean, where it is called a “droplet.” This guide uses DigitalOcean as
+   its hosting example; enable automated backups when creating the Droplet.
+   You can also use an existing
    Dokku server with room for another application. Each HistoryForge site gets
    its own app, database, and uploaded-file storage, even when sharing a server.
 2. **An address for visitors.** Choose a domain or subdomain you control, such as
@@ -121,38 +120,11 @@ You can still give your site its own name, domain, localities, census years,
 records, and administrator settings. Those choices do not require a custom image.
 Ruby and the application's runtime libraries are included in the package.
 
-## Choose where the database runs
-
-PostgreSQL stores the records, users, and settings for your site. HistoryForge can
-connect to it in either of these arrangements:
-
-- **Local PostgreSQL:** Dokku runs PostgreSQL in a separate container on the same
-  server as HistoryForge. Here “local” means your hosting server, not your laptop.
-  You maintain the database along with the server.
-- **Managed PostgreSQL cluster:** a provider runs PostgreSQL separately, and
-  HistoryForge connects to it over the network. You create a database and user
-  within that service. The provider manages the database infrastructure; you
-  still manage your data, access permissions, and application migrations.
-
-A cluster is the database service, not a HistoryForge installation. It can hold
-several databases. Depending on the plan it may have only one database server;
-replicas and automatic failover are features to check, not guarantees of the word
-“cluster.” Give each site its own database and credentials, even when sharing a
-cluster. Shared resources still mean one site's workload can affect another.
-
-| Consideration | On the Dokku server | Managed cluster |
-| --- | --- | --- |
-| Cost and setup | Uses the server you already rent; fewer services to configure. | Adds a separately billed service and network/credential setup. |
-| Resources | Database and application share RAM, CPU, and disk. | Database capacity is separate from application capacity. |
-| Maintenance | You arrange database updates, backups, and recovery. | Provider handles infrastructure maintenance; check backup retention, restore options, and upgrade policies. |
-| Failure | A server failure affects both app and database. | Database can survive an app-server failure; database availability depends on its own plan and network. |
-| Connection | Dokku's database link supplies the connection URL. | You supply the service's connection URL, network access, and TLS trust configuration. |
-
-Local PostgreSQL is a straightforward starting point for a small standalone site.
-A managed cluster is useful when you want separate database capacity and less
-infrastructure maintenance. Neither option removes the need to test restores.
-Choose one path below. These are new-install instructions, not a procedure for
-moving an existing database between the two.
+PostgreSQL stores your site's records, users, and settings. These instructions
+run it alongside HistoryForge on your Droplet, managed by Dokku. Here “local”
+means on the hosting server, not your laptop. If you already use a database
+service or want the database on separate infrastructure, see the
+[advanced managed PostgreSQL guide](managed-postgresql.md).
 
 ## 2. Prepare the host
 
@@ -166,8 +138,7 @@ and hosting provider firewalls. Set the
 site's DNS A record to the host; only publish an AAAA record if IPv6 also works.
 
 During an update, Dokku may run the current application and its replacement
-at the same time. The server needs memory for both, plus PostgreSQL if it runs
-locally. Dokku's minimum requirements alone do not establish enough capacity for
+at the same time. The server needs memory for both, plus PostgreSQL. Dokku's minimum requirements alone do not establish enough capacity for
 HistoryForge. We have not yet measured a recommended server size.
 
 Open a terminal on your computer and connect using `ssh root@YOUR_HOST`,
@@ -207,11 +178,10 @@ user. These numbers give the application permission to write uploaded files.
 The storage connection (called a mount) keeps those files outside the replaceable
 application container, so application updates preserve them.
 
-### Option A: PostgreSQL on the Dokku server
+### Create the database
 
 Install the Postgres plugin if this host does not already have it, then create and
 link the new database. This sets `DATABASE_URL` on the application automatically.
-Do not also follow option B.
 
 ```sh
 dokku plugin:install https://github.com/dokku/dokku-postgres.git postgres
@@ -222,69 +192,8 @@ dokku postgres:link "$HF_DB" "$HF_APP"
 PostgreSQL 17 is the version tested with the application image. Record the selected version
 and follow the [Postgres plugin documentation](https://github.com/dokku/dokku-postgres)
 for upgrades and backups. The schema uses `fuzzystrmatch` and `pg_trgm`, not PostGIS.
-Keep the database port private. Continue with step 4, then bootstrap using option A
-in step 5.
-
-### Option B: an external managed PostgreSQL cluster
-
-You do not need the Dokku Postgres plugin for this option. Do not create or link a
-local service: the provider supplies PostgreSQL and you set `DATABASE_URL` yourself.
-The following is a concrete example for DigitalOcean Managed PostgreSQL Standard
-Edition; other providers have equivalent database, user, network, and TLS settings.
-
-1. Create or select a PostgreSQL cluster. Choose a compatible major version;
-   PostgreSQL 17 is the version tested with the application image. For private connectivity, place the
-   application host and cluster in the same reachable private network.
-2. Create a **new database** such as `community_hf` and a dedicated user.
-   Give that user ownership or the privileges needed to create tables, indexes,
-   functions, and extensions in that database. Do not use a shared production
-   database or the provider's general-purpose default database.
-3. Allow connections from the application server in the cluster's trusted sources.
-   Use the private hostname when network routing permits it; otherwise restrict
-   the public endpoint to the server's outgoing IP. Containers must be able to
-   reach the endpoint too.
-4. Obtain the direct database connection URI for this database and user. Keep the
-   supplied hostname and port. Use the direct endpoint initially, not a transaction
-   pooling endpoint, so schema loading and migrations use a normal connection.
-5. Download the cluster's CA certificate to the Dokku server. Configure verified
-   TLS as shown below, using the provider's hostname rather than an IP address.
-
-DigitalOcean's [connection instructions](https://docs.digitalocean.com/products/databases/postgresql/how-to/connect/)
-and [trusted-source instructions](https://docs.digitalocean.com/products/databases/postgresql/how-to/secure/)
-explain where to obtain those values. Its
-[supported extensions](https://docs.digitalocean.com/products/databases/postgresql/details/supported-extensions/)
-include `fuzzystrmatch` and `pg_trgm`. Confirm availability and permissions on your
-chosen service before loading the schema. Managed users are not unrestricted
-PostgreSQL superusers; the schema's extension creation and comments must succeed
-with the selected credentials. Do not ignore permission errors during bootstrap.
-
-On the server, install the downloaded CA file and mount it read-only into the app.
-This file is a public trust certificate, not a database password. The path in the
-connection URL must be the path **inside the container**.
-
-```sh
-HF_DB_CERT_DIR="/var/lib/dokku/data/storage/$HF_APP-db-cert"
-install -d -m 0755 "$HF_DB_CERT_DIR"
-install -m 0644 /path/to/downloaded-ca.crt "$HF_DB_CERT_DIR/ca.crt"
-dokku storage:mount "$HF_APP" "$HF_DB_CERT_DIR:/app/db-cert:ro"
-```
-
-Build the URI using your provider's actual database/user/host/port. URL-encode
-special characters in usernames and passwords. The example below is a template;
-replace every placeholder before setting it.
-
-```sh
-dokku config:set --no-restart "$HF_APP" \
-  DATABASE_URL='postgresql://USER:URL_ENCODED_PASSWORD@CLUSTER_HOST:PORT/community_hf?sslmode=verify-full&sslrootcert=/app/db-cert/ca.crt'
-```
-
-`verify-full` verifies the server certificate and hostname as well as encrypting
-the connection. Keep the CA file available to deployment tasks, one-off commands,
-and the running app. Providers using public certificate authorities may require a
-different trust configuration; this example specifically uses a downloaded CA.
-The application image includes a PostgreSQL 15 command-line client, so do not copy instructions
-requiring newer client features without checking compatibility. Continue with
-step 4 and option B in step 5. This managed-cluster path is not yet live-tested.
+Dokku connects the app to the database internally; you do not need to open a
+public database port.
 
 ## 4. Configure the application
 
@@ -305,8 +214,9 @@ dokku config:set --no-restart "$HF_APP" \
 unset HF_SESSION_SECRET HF_DEVISE_SECRET
 ```
 
-Option A supplies `DATABASE_URL` through the database link; option B sets it
-explicitly. SMTP is the service HistoryForge uses to send email, including
+The database connection is already configured by Dokku.
+
+SMTP is the service HistoryForge uses to send email, including
 invitations, password resets, and contact messages. Your mail provider supplies
 the server name, port, username, and password; these are not necessarily the
 credentials you use to sign into your personal mailbox. Configure it before
@@ -339,8 +249,7 @@ Subsequent deployments run `db:migrate db:seed` through `app.json`.
 Use an image containing `hf:bootstrap`; these new instructions cannot be used
 with an older published image that lacks the command.
 
-Download the HistoryForge package using the commands for your database option
-below. The second command records the downloaded package's exact identifier in
+Download and initialize the HistoryForge package with the commands below. The second command records the downloaded package's exact identifier in
 `HF_IMAGE`. Docker calls this identifier a digest. You do not need to look it up
 or type it yourself. Keep the variable set through step 6 so the database and app
 use the same version, even if `latest` changes during installation.
@@ -349,11 +258,9 @@ Only if you chose a custom image in a private registry, configure Docker login
 for this shell and [Dokku registry access](https://dokku.com/docs/advanced-usage/registry/)
 for deployments.
 
-### Option A: bootstrap the local Dokku database
-
-The bootstrap container shares the database container's network namespace. Its
-connection URL is rewritten to localhost inside that container, avoiding a
-public database port and dependence on the host resolving Dokku's database alias.
+The command starts a temporary copy of HistoryForge connected directly to your
+new database. It prepares the database and creates your administrator account,
+then exits. The next step starts the site for visitors.
 
 ```sh
 docker pull "$HF_IMAGE"
@@ -371,42 +278,6 @@ unset DATABASE_URL SECRET_KEY_BASE
 
 If schema loading fails, inspect the error and the new database before continuing; do not switch to
 an existing site's database or force a destructive reset.
-
-### Option B: bootstrap the managed database
-
-Run this on the Dokku server after configuring the managed connection and app
-secrets. It uses normal outbound networking and mounts the same CA certificate as
-the app. **Do not rewrite the hostname to localhost** for a managed database.
-Reestablish `HF_DB_CERT_DIR` if you opened a new shell.
-
-```sh
-docker pull "$HF_IMAGE"
-HF_IMAGE=$(docker image inspect --format '{{index .RepoDigests 0}}' "$HF_IMAGE")
-HF_DB_CERT_DIR="/var/lib/dokku/data/storage/$HF_APP-db-cert"
-export DATABASE_URL=$(dokku config:get "$HF_APP" DATABASE_URL)
-export SECRET_KEY_BASE=$(dokku config:get "$HF_APP" SECRET_KEY_BASE)
-docker run --rm -v "$HF_DB_CERT_DIR:/app/db-cert:ro" \
-  -e DATABASE_URL "$HF_IMAGE" /bin/bash -ec '
-    psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -c "SELECT current_database(), current_user;"
-  '
-```
-
-Verify the result names the **new site database and intended user**, then initialize it:
-
-```sh
-docker run --rm -it \
-  -v "$HF_DB_CERT_DIR:/app/db-cert:ro" \
-  -e DATABASE_URL \
-  -e SECRET_KEY_BASE \
-  -e RAILS_ENV=production \
-  "$HF_IMAGE" bundle exec rails hf:bootstrap
-unset DATABASE_URL SECRET_KEY_BASE
-```
-
-If connectivity fails, check the trusted sources, routing, hostname, port, and CA
-path. For schema permission failures, inspect the provider's database/schema and
-extension permissions. These commands initialize only an empty database, not an
-existing site. Both options now continue with the same deployment steps below.
 
 ## 6. Deploy once, then enable HTTPS
 
@@ -506,44 +377,21 @@ replace these checks of the features your community will use.
 
 ## 9. Backups and ongoing operation
 
-Keep database exports, uploaded files, secrets, and release records backed up
-outside the server. A provider snapshot alone does not establish a tested restore.
-For **local PostgreSQL**, export on the Dokku host:
+For the DigitalOcean setup in this guide, enable automated backups on your
+Droplet. You can do this when creating it or from the existing Droplet's
+**Backups** page. Choose a schedule that suits how often your collection changes.
+See [DigitalOcean's backup setup](https://docs.digitalocean.com/products/backups/how-to/enable/).
 
-```sh
-umask 077
-dokku postgres:export "$HF_DB" > "$HF_APP-database.dump"
-```
+Droplet backups cover its disk, including the uploaded-file directory used in
+this guide and the local PostgreSQL data. A separate database export is useful
+before major database work; the [advanced operations reference](deployment.md#manual-database-exports)
+provides commands when you need one.
 
-For a **managed cluster**, configure the provider's backup retention and restore
-settings and test restoring to a separate database or cluster. Dokku's
-`postgres:export` applies only to plugin-managed services, not your external
-cluster. For a portable logical export, use a PostgreSQL client matching the
-server major version (the application image's older `pg_dump` may not work):
+If you put uploads on separate storage or use another hosting provider, use that
+service's backup settings for those files.
 
-```sh
-HF_DB_CERT_DIR="/var/lib/dokku/data/storage/$HF_APP-db-cert"
-export DATABASE_URL=$(dokku config:get "$HF_APP" DATABASE_URL)
-umask 077
-docker run --rm -v "$HF_DB_CERT_DIR:/app/db-cert:ro" \
-  -e DATABASE_URL postgres:17-bookworm /bin/sh -ec 'pg_dump --dbname="$DATABASE_URL" --format=custom --no-owner --no-acl' \
-  > "$HF_APP-database.dump"
-unset DATABASE_URL
-```
-
-Use that client tag only with a PostgreSQL 17 server; match your selected major
-version otherwise. Confirm the export command succeeds before keeping the dump.
-Provider backups do not include files uploaded to the application server.
-
-Copy the export and a consistent backup of `HF_STORAGE` to your backup destination.
-Choose a schedule and retention policy, and restore into a separate test database
-and upload directory before declaring recovery ready. Never import a test backup
-over the running site. Record the exact image identifier used for each successful
-release. Returning to an earlier version requires that image to remain available;
-pulling `latest` again does not retrieve the previous version.
-Use [updating and maintaining your site](operating.md) for subsequent updates,
-routine checks, and troubleshooting. You can continue using the published
-package without downloading the source repository.
+You're ready to work on your collection. The [maintenance guide](operating.md)
+explains how to install published updates and check common issues.
 
 ## For contributors and operators publishing their own version
 

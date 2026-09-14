@@ -6,16 +6,12 @@ HistoryForge repository, install development tools on your computer, or publish
 an image. For your first installation, use [the installation guide](installation.md).
 Contributors publishing code changes should use [the deployment guide](deployment.md).
 
-These instructions accompany the installation procedure under validation. The
-complete update and recovery process still needs verification on a hosted test
-site before it can be described as tested end to end.
+These update instructions are still being verified on a hosted installation.
 
-## Keep your site's details somewhere accessible
+## Connect to your site
 
-Record the server address, Dokku app name, public domain, database location, and
-uploaded-file storage directory. Keep credentials and application secrets in a
-password manager available to the people responsible for the site. Also record
-where backups are stored and how to contact your hosting and domain providers.
+Use the same SSH connection you used during installation. Your hosting account
+has the server address if you need to look it up.
 
 The examples use `community-hf` and `history.example.org`. Replace them with your
 site's values. Open a terminal on your computer and connect to the server using
@@ -25,8 +21,8 @@ SSH, as you did during installation. All commands below run on that server.
 
 An update replaces the application package. It keeps your database, uploaded
 files, and Dokku settings. Database changes included in the release run during
-deployment, so take a fresh [database and file backup](installation.md#9-backups-and-ongoing-operation)
-first. Read any instructions accompanying the release and choose a time when
+deployment. Check that your [hosting backups](installation.md#9-backups-and-ongoing-operation)
+are up to date, read any instructions accompanying the release, and choose a time when
 you can check the site afterward. Do not repeat the installation's schema-loading
 step on an existing database.
 
@@ -63,18 +59,6 @@ Expect `simple_check`. Then open the site in your browser: sign in, search for
 known records, view maps and uploaded files, and check the features your community
 uses. The small automated check does not exercise those workflows.
 
-After verifying the update, save a release receipt:
-
-```sh
-install -d -m 0700 /root/historyforge-releases
-printf '%s %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$HF_IMAGE" >> "/root/historyforge-releases/$HF_APP.log"
-```
-
-This assumes the root SSH account used in the installation guide. It records the
-date and package identifier automatically. Keep the log with your off-server
-backups; it can help a technical helper identify a working version. An identifier
-is not itself a backup of the image or database.
-
 ## If something does not work
 
 Start with the error from the command that failed. To read recent application
@@ -96,16 +80,14 @@ When asking for help, include the command, error, app name, software versions,
 and whether the site still responds. Remove passwords, secret values, personal
 data, and database connection URLs from anything you share.
 
-A failed deployment does not establish which version is serving visitors; inspect
-the site and logs. Do not delete the app, reset its database, or reload its schema
-as a troubleshooting step. Returning to an older image does not undo database
-changes. Recovery may require a compatible earlier image or restoration from a
-backup; involve someone familiar with Dokku and PostgreSQL when that is needed.
+For a failed update, start with the site and its logs; do not rerun fresh-install
+commands against your existing database. More involved deployment troubleshooting
+is covered in the [advanced deployment guide](deployment.md#advanced-recovery-and-deployment-validation).
 
 ## Routine care
 
-- Check that scheduled backups actually complete, include uploaded files, and
-  are copied outside the application server. Practice restoring a separate test site.
+- Check the Droplet's Backups page occasionally to confirm automated backups
+  are running. A managed database has its own backups.
 - Keep the domain registration and hosting account current, and monitor available
   disk space and memory through your provider or server monitoring.
 - Check HTTPS certificate renewal and outgoing email periodically.

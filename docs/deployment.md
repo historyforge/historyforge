@@ -154,7 +154,7 @@ If the test installation shares a server or database cluster with live sites,
 its resource use can affect them. Use separate infrastructure for load tests or
 disruptive recovery experiments.
 
-## Recovery and adoption
+## Advanced: recovery and deployment validation
 
 Redeploy an explicitly selected retained digest to the affected installation with
 `bin/deploy`. Do not rebuild old source and assume it produces the same image.
@@ -175,3 +175,41 @@ once. Investigate startup logs and OOM evidence before changing health timeouts.
 
 This change prepares the workflow; it does not change server configuration,
 publish an image, or migrate any live installation automatically.
+
+## Manual database exports
+
+These commands are for operators who need a portable database copy, for example
+before database maintenance or moving a site. Routine DigitalOcean backup setup
+is covered in the installation guide. Run these on the Dokku server with the
+app and database variables set as in that guide.
+
+For **local PostgreSQL**, export on the Dokku host:
+
+```sh
+umask 077
+dokku postgres:export "$HF_DB" > "$HF_APP-database.dump"
+```
+
+For a **managed cluster**, use its built-in backups for routine operation. Dokku's
+`postgres:export` applies only to plugin-managed services, not your external
+cluster. For a portable logical export, use a PostgreSQL client matching the
+server major version (the application image's older `pg_dump` may not work):
+
+```sh
+HF_DB_CERT_DIR="/var/lib/dokku/data/storage/$HF_APP-db-cert"
+export DATABASE_URL=$(dokku config:get "$HF_APP" DATABASE_URL)
+umask 077
+docker run --rm -v "$HF_DB_CERT_DIR:/app/db-cert:ro" \
+  -e DATABASE_URL postgres:17-bookworm /bin/sh -ec 'pg_dump --dbname="$DATABASE_URL" --format=custom --no-owner --no-acl' \
+  > "$HF_APP-database.dump"
+unset DATABASE_URL
+```
+
+Use that client tag only with a PostgreSQL 17 server; match your selected major
+version otherwise. Confirm the export command succeeds before keeping the dump.
+Provider backups do not include files uploaded to the application server.
+
+
+Database exports do not include uploaded files. For a complete manual copy,
+include the site's upload directory and configuration separately. Test restores
+in a separate database, not over a running collection.
