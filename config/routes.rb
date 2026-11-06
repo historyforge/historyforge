@@ -138,6 +138,12 @@ Rails.application.routes.draw do
 
   resources :map_overlays
 
+  namespace :api, defaults: { format: :json } do
+    namespace :v1 do
+      resources :people, only: :show, constraints: { id: /\d+/, format: /json/ }
+    end
+  end
+
   resources :people, controller: 'people/main' do
     collection do
       get :advanced_search_filters
