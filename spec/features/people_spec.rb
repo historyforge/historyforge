@@ -15,9 +15,9 @@ RSpec.describe 'people' do
 
     within('section[aria-labelledby="census-summary-heading"]') do
       expect(page).to have_text('The recorded age suggests a birth year around 1880.')
-      expect(page).to have_link('1910 census', href: polymorphic_path(public_record))
-      expect(page).to have_no_link(href: polymorphic_path(unreviewed_record))
-      expect(page).to have_no_link(href: polymorphic_path(hidden_record))
+      expect(page).to have_link('1910 census', href: /#{Regexp.escape(polymorphic_path(public_record))}\z/)
+      expect(page).to have_no_link(href: /#{Regexp.escape(polymorphic_path(unreviewed_record))}\z/)
+      expect(page).to have_no_link(href: /#{Regexp.escape(polymorphic_path(hidden_record))}\z/)
       expect(page).to have_no_text('Pennsylvania')
     end
   end

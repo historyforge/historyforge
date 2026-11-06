@@ -39,8 +39,7 @@ module People
     def show
       @person = Person.find params[:id]
       authorize! :read, @person
-      visible_records = @person.census_records.select { |record| can_census?(record.year) && can?(:read, record) }
-      @census_summary = CensusSummary.call(records: visible_records)
+      @public_person = PersonSerializer.new(@person, routes: self)
       load_navigation
     end
 
