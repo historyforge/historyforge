@@ -1,7 +1,8 @@
 - content_for :head do
   - if @page.keywords.present?
     meta name="keywords" content=@page.keywords
-  - if @page.description.present?
+- if @page.description.present? && !content_for?(:meta_description)
+  - content_for :meta_description do
     meta name="description" content=@page.description
 
 - if @page.browser_title.present?
