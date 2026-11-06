@@ -17,6 +17,7 @@ RSpec.describe PersonSerializer do
   let(:serializer) { described_class.new(person, routes:) }
 
   before do
+    allow(People::PublicUrlOptions).to receive(:call).and_return({})
     allow(Setting).to receive(:can_view_public?).and_call_original
     allow(Setting).to receive(:can_view_public?).with(1850).and_return(true)
     allow(Setting).to receive(:can_view_public?).with(1910).and_return(true)

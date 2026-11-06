@@ -4,6 +4,7 @@ require 'rails_helper'
 
 RSpec.describe 'Public Person pages', type: :request do
   it 'serves the title, canonical URL, summary and source links to an anonymous crawler' do
+    allow(People::PublicUrlOptions).to receive(:call).and_return({})
     person = create(:person)
     record = create(:census1910_record, age: 30, pob: 'New York')
     record.update_columns(person_id: person.id, reviewed_at: Time.current)

@@ -4,6 +4,7 @@ require 'rails_helper'
 
 RSpec.describe 'people' do
   scenario 'a public census summary links only to readable census records', driver: :rack_test do
+    allow(People::PublicUrlOptions).to receive(:call).and_return({})
     person = create(:person, birth_year: 1880, is_birth_year_estimated: false,
                              death_year: 1940, is_death_year_estimated: false)
     unreviewed_record = create(:census1920_record, person:, age: 50, pob: 'Pennsylvania')

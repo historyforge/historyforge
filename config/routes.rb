@@ -25,6 +25,9 @@ Rails.application.routes.draw do
   end
 
   root 'home#index'
+  get 'sitemap.xml', to: 'sitemaps#index', as: :sitemap, format: false
+  get 'sitemap-people-:shard.xml', to: 'sitemaps#people', as: :people_sitemap,
+                                 constraints: { shard: /0|[1-9]\d{0,4}/ }, format: false
   get 'stats' => 'home#stats'
   get 'search/people' => 'home#search_people', as: 'search_people'
   get 'search/buildings' => 'home#search_buildings', as: 'search_buildings'

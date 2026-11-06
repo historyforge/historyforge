@@ -6,6 +6,7 @@ RSpec.describe 'Public Person API v1', type: :request do
   include Devise::Test::IntegrationHelpers
 
   it 'returns the public representation with source links and shallow household relationships' do
+    allow(People::PublicUrlOptions).to receive(:call).and_return({})
     person = create(:person, notes: 'Private editor notes')
     relative = create(:person, notes: 'Private relative notes')
     locality = create(:locality)

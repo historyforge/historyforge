@@ -33,7 +33,7 @@ class PersonSerializer < ApplicationSerializer
   delegate :id, :name, to: :object
 
   def canonical_url
-    @canonical_url ||= @routes.person_url(object)
+    @canonical_url ||= @routes.person_url(object, **People::PublicUrlOptions.call)
   end
 
   def description
@@ -70,7 +70,7 @@ class PersonSerializer < ApplicationSerializer
         {
           type: 'census_household_member',
           person_id: fellow.person_id,
-          person_url: @routes.person_url(fellow.person_id),
+          person_url: @routes.person_url(fellow.person_id, **People::PublicUrlOptions.call),
           source_links: [source_link(record), source_link(fellow)],
         }
       end
