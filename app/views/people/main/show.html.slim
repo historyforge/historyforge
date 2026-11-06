@@ -1,4 +1,6 @@
 - set_page_title @person.name
+script type="application/ld+json"
+  == ERB::Util.json_escape(PersonJsonLdSerializer.new(@public_person).to_json)
 = render 'shared/flag_resolution', item: @person
 - btn_class = 'btn btn-sm btn-secondary'
 div.mb-3.clearfix.d-flex.justify-content-between
