@@ -50,6 +50,14 @@ div.mb-3.clearfix.d-flex.justify-content-between
   - if @person.description.present?
     .list-group-item
       = auto_link(simple_format(@person.description), html: { target: '_blank', rel: 'nofollow' })
+- if @census_summary
+  section.card.mb-3 aria-labelledby="census-summary-heading"
+    h2#census-summary-heading.card-header.h5 Census Summary
+    .card-body
+      p= @census_summary.paragraph
+      p.mb-0
+        ' Sources:
+        = safe_join(@census_summary.sources.map { |record| link_to("#{record.year} census", record) }, ', ')
 .card.mb-3
   .card-header Census Records
   .table-responsive

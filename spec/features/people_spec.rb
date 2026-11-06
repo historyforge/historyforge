@@ -3,6 +3,25 @@
 require 'rails_helper'
 
 RSpec.describe 'people' do
+  scenario 'a public census summary links only to readable census records', driver: :rack_test do
+    person = create(:person)
+    unreviewed_record = create(:census1920_record, person:, age: 50, pob: 'Pennsylvania')
+    public_record = create(:census1910_record, person:, age: 30, pob: 'New York', reviewed_at: Time.current)
+    hidden_record = create(:census1930_record, person:, age: 60, pob: 'Pennsylvania', reviewed_at: Time.current)
+    allow(Setting).to receive(:can_view_public?).and_call_original
+    allow(Setting).to receive(:can_view_public?).with(1930).and_return(false)
+
+    visit person_path(person)
+
+    within('section[aria-labelledby="census-summary-heading"]') do
+      expect(page).to have_text('The recorded age suggests a birth year around 1880.')
+      expect(page).to have_link('1910 census', href: polymorphic_path(public_record))
+      expect(page).to have_no_link(href: polymorphic_path(unreviewed_record))
+      expect(page).to have_no_link(href: polymorphic_path(hidden_record))
+      expect(page).to have_no_text('Pennsylvania')
+    end
+  end
+
   scenario 'edit people' do
     sign_in create(:administrator)
     person = create(:person, death_year: 1940, is_death_year_estimated: false)
