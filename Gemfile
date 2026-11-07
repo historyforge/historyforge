@@ -10,19 +10,17 @@ gem 'airbrake'
 gem 'ancestry'
 gem 'ar_doc_store'
 gem 'benchmark'
-gem 'bcrypt'
 gem 'bootsnap', require: false
 gem 'brakeman', require: false
 gem 'cancancan'
 gem 'chartkick'
 gem 'devise'
 gem 'devise-bootstrap-views', '~> 1.0'
-gem 'devise-encryptable'
-gem 'devise_invitable'
+# Version 3 requires migrating invitation data from users to devise_invitations.
+gem 'devise_invitable', '~> 2.0.12'
 gem 'devise-passkeys'
 gem 'dotenv-rails'
 gem 'fast_memoize'
-gem 'font-awesome-rails'
 gem 'geocoder'
 gem 'image_processing'
 gem 'jbuilder', '~> 2.0'
@@ -31,9 +29,6 @@ gem 'json', '< 3'
 gem 'jsbundling-rails'
 gem 'kaminari'
 gem 'liquid'
-gem 'memory_profiler'
-gem 'mini_magick'
-gem 'net-smtp', require: false
 gem 'omniauth-facebook'
 gem 'omniauth-rails_csrf_protection'
 gem 'ostruct'
@@ -48,8 +43,6 @@ gem 'ransack'
 gem 'turbo-rails'
 gem 'recaptcha'
 gem 'ruby-vips'
-gem 'rubyXL', require: false
-gem 'rubyzip', '>= 3.4.0', require: false
 gem 'sassc'
 gem 'simple_form'
 gem 'slim'
@@ -58,7 +51,6 @@ gem 'sprockets-rails'
 group :development do
   gem 'annotate'
   gem 'byebug'
-  gem 'get_process_mem'
   gem 'letter_opener'
   gem 'letter_opener_web'
   gem 'parallel', require: false
@@ -87,8 +79,6 @@ group :development, :test do
 end
 
 group :test do
-  gem 'capybara-selenium'
   gem 'database_cleaner-active_record'
   gem 'faker'
-  gem 'rspec-collection_matchers'
 end

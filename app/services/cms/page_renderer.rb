@@ -2,6 +2,12 @@
 
 module Cms
   class PageRenderer
+    LIQUID_ENVIRONMENT = Liquid::Environment.build do |environment|
+      environment.register_tag('panel', Cms::PanelTag)
+      environment.register_tag('slider', Cms::SliderTag)
+    end
+    private_constant :LIQUID_ENVIRONMENT
+
     class_attribute :compiled_templates
     self.compiled_templates ||= {}
 
@@ -18,7 +24,7 @@ module Cms
     def run
       guts = compiled_template.render template_vars
       if /\{\{/.match?(guts)
-        liquid_guts = Liquid::Template.parse guts
+        liquid_guts = Liquid::Template.parse(guts, environment: LIQUID_ENVIRONMENT)
         guts = liquid_guts.render template_vars
       end
       css_id = (page.css_id.presence || "page_#{page.id}")
@@ -44,7 +50,7 @@ module Cms
 
     def compiled_template
       compiled_templates[page.url_path] || begin
-        compiled_templates[page.url_path] = Liquid::Template.parse(page.template)
+        compiled_templates[page.url_path] = Liquid::Template.parse(page.template, environment: LIQUID_ENVIRONMENT)
       end
     end
 
