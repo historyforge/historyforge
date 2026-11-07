@@ -39,11 +39,7 @@ module People
     def show
       @person = Person.find params[:id]
       authorize! :read, @person
-      census_readable = method(:census_record_readable?)
-      census_records = @person.census_records.select(&census_readable)
-      census_households = census_records.index_with { |record| CensusHousehold.load(record, readable: census_readable) }
-      @person_representation = PersonSerializer.new(@person, census_records:, census_households:,
-                                                             url_options: url_options.except(:_recall))
+      load_representation
       load_navigation
     end
 
@@ -96,6 +92,17 @@ module People
 
     def census_record_readable?(record)
       can_census?(record.year) && can?(:read, record)
+    end
+
+    def load_representation
+      census_records = @person.census_records.select(&method(:census_record_readable?))
+      census_households = census_records.index_with { |record| CensusHousehold.load(record, readable: method(:census_record_readable?)) }
+      @person_representation = PersonSerializer.new(
+        @person, 
+        census_records:, 
+        census_households:,
+        url_options: url_options.except(:_recall)
+      )
     end
 
     def load_navigation
