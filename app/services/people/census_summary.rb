@@ -1,56 +1,67 @@
 # frozen_string_literal: true
 
 module People
-  # Builds prose from the public census observations in a Person representation.
+  # Builds a short account from the public Person representation’s narrative evidence.
   class CensusSummary
-    UNKNOWN_PLACES = ['unknown', 'un', 'un.', 'illegible', '?', 'n/a'].freeze
+    Result = Data.define(:paragraph, :sources)
+    PRONOUNS = { 'F' => 'she', 'M' => 'he' }.freeze
+    CHILDHOOD_AGES = %w[one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen].freeze
 
-    def self.call(observations:)
-      new(observations:).call
+    def self.call(name:, sex:, observations:)
+      new(name:, sex:, observations:).call
     end
 
-    def initialize(observations:)
-      @observations = observations.sort_by { |observation| observation.values_at(:year, :id) }
+    def initialize(name:, sex:, observations:)
+      @name = name
+      @pronoun = PRONOUNS.fetch(sex, 'they')
+      @observations = observations
     end
 
     def call
       return if @observations.empty?
 
-      years = @observations.pluck(:year).uniq
-      appearance = if years.one?
-                     "This person is listed in the #{years.first} census."
-                   else
-                     "This person is listed in the #{years.to_sentence} censuses."
-                   end
-
-      [appearance, birth_year_sentence, birthplace_sentence].compact.join(' ')
+      first = @observations.first
+      latest_change = @observations.reverse_each.find { |entry| details(entry) != details(first) }
+      selected = [first, latest_change || @observations.last].uniq
+      sentences = if selected.size == 2 && !latest_change
+                    [sentence(first, @name, years: selected.map { |entry| entry.record.year }.join(' and '))]
+                  else
+                    if selected.size == 2 && same_head?(first, selected.last)
+                      selected[-1] = selected.last.with(household: nil, head: nil)
+                    end
+                    selected.each_with_index.map do |entry, i|
+                      if i.zero?
+                        sentence(entry, @name, opening: childhood_opening(entry.record.age))
+                      else
+                        sentence(entry, @pronoun)
+                      end
+                    end
+                  end
+      sources = selected.flat_map { |entry| [entry.record, entry.head].compact }.uniq
+      Result.new(paragraph: sentences.join(' '), sources:)
     end
 
     private
 
-    def birth_year_sentence
-      estimates = @observations.filter_map do |observation|
-        year, age = observation.values_at(:year, :age)
-        year - age if age&.between?(0, 120)
-      end
-      return if estimates.empty?
-
-      earliest, latest = estimates.minmax
-      # Census ages in completed years can put the birth on either side of New Year.
-      return 'The recorded ages suggest conflicting birth years.' if latest - earliest > 1
-
-      "The recorded #{estimates.one? ? 'age suggests' : 'ages suggest'} a birth year around #{earliest}."
+    def same_head?(first, later)
+      first.head&.person_id.present? && first.head.person_id == later.head&.person_id &&
+        first.household == later.household && (later.residence || later.activity)
     end
 
-    def birthplace_sentence
-      places = @observations.filter_map do |observation|
-        place = observation[:pob].to_s.squish
-        place if place.present? && UNKNOWN_PLACES.exclude?(place.downcase)
-      end.uniq(&:downcase)
-      return if places.empty?
-      return 'The census records list different birthplaces.' if places.many?
+    def details(entry)
+      [entry.residence, entry.household, entry.activity]
+    end
 
-      "The recorded birthplace is #{places.first}."
+    def childhood_opening(age)
+      "At #{CHILDHOOD_AGES.fetch(age - 1)}" if age&.between?(1, CHILDHOOD_AGES.length)
+    end
+
+    def sentence(entry, subject, years: entry.record.year, opening: nil)
+      observations = [entry.household, entry.activity].compact
+      facts = [("lived #{entry.residence}" if entry.residence)]
+      facts << "#{subject == 'they' ? 'were' : 'was'} #{observations.to_sentence}" if observations.any?
+      facts.compact!
+      "#{opening || "In #{years}"}, #{subject} #{facts.to_sentence}."
     end
   end
 end

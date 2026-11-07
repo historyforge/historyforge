@@ -24,8 +24,10 @@ RSpec.describe PersonSerializer do
   end
 
   it 'keeps Person identity separate from year-specific census observations and their links' do
-    earlier = build_stubbed(:census1850_record, id: 1, age: 5, pob: 'New York', reviewed_at: Time.current)
-    later = build_stubbed(:census1910_record, id: 1, age: 65, pob: 'New York', reviewed_at: Time.current)
+    earlier = build_stubbed(:census1850_record, id: 1, person_id: person.id, age: 5, pob: 'New York',
+                                              street_name: 'Buffalo', reviewed_at: Time.current)
+    later = build_stubbed(:census1910_record, id: 1, person_id: person.id, age: 65, pob: 'New York',
+                                              occupation: 'Merchant', reviewed_at: Time.current)
     hidden = build_stubbed(:census1930_record, id: 1, age: 20, reviewed_at: Time.current)
     unreviewed = build_stubbed(:census1910_record, id: 2, age: 30)
     expect(person).to receive(:census_records).once.and_return([later, hidden, unreviewed, earlier])
@@ -35,7 +37,7 @@ RSpec.describe PersonSerializer do
     result = serializer.serializable_hash
 
     expect(result).to include(id: 42, name: person.name, canonical_url: routes.person_url(person.id))
-    expect(result[:summary]).to include('1850 and 1910 censuses', 'around 1845')
+    expect(result[:summary]).to include('At five, Mary Jones lived on Buffalo', 'In 1910', '“Merchant”')
     expect(result[:census_observations]).to match([
       a_hash_including(id: 1, year: 1850, name: earlier.name, age: 5, pob: 'New York'),
       a_hash_including(id: 1, year: 1910, name: later.name, age: 65, relation_to_head: later.relation_to_head),
@@ -44,6 +46,10 @@ RSpec.describe PersonSerializer do
     expect(result[:source_links]).to eq([
       { year: 1850, record_id: 1, url: routes.polymorphic_url(earlier) },
       { year: 1910, record_id: 1, url: routes.polymorphic_url(later) },
+    ])
+    expect(result[:summary_source_links]).to eq([
+      { year: 1850, record_id: 1, url: routes.polymorphic_url(earlier), label: '1850 census' },
+      { year: 1910, record_id: 1, url: routes.polymorphic_url(later), label: '1910 census' },
     ])
   end
 
@@ -70,11 +76,27 @@ RSpec.describe PersonSerializer do
     expect(serializer.relationships.size).to eq(1)
   end
 
-  it 'builds the summary without loading household members' do
-    record = build_stubbed(:census1910_record, id: 1, reviewed_at: Time.current)
+  it 'builds the summary without loading household members when the row is a household head' do
+    record = build_stubbed(:census1910_record, id: 1, occupation: 'Merchant', reviewed_at: Time.current)
     allow(person).to receive(:census_records).and_return([record])
     expect(record).not_to receive(:fellows)
 
-    expect(serializer.summary).to include('1910 census')
+    expect(serializer.summary).to include('“Merchant”')
+  end
+
+  it 'only names and cites a household head whose census row is public' do
+    record = build_stubbed(:census1910_record, id: 1, person_id: person.id, relation_to_head: 'Daughter',
+                                              street_name: 'Buffalo', reviewed_at: Time.current)
+    head = build_stubbed(:census1910_record, id: 2, relation_to_head: 'Head')
+    allow(person).to receive(:census_records).and_return([record])
+    allow(record).to receive(:fellows).and_return([head])
+
+    expect(serializer.summary).not_to include(head.name)
+    expect(serializer.summary_source_links.pluck(:record_id)).to eq([record.id])
+
+    head.reviewed_at = Time.current
+    refreshed = described_class.new(person, routes:)
+    expect(refreshed.summary).to include("#{head.name}’s daughter")
+    expect(refreshed.summary_source_links.pluck(:record_id)).to eq([record.id, head.id])
   end
 end

@@ -21,6 +21,7 @@ class PersonSerializer < ApplicationSerializer
       name: object.name,
       canonical_url: @routes.person_url(object),
       summary:,
+      summary_source_links:,
       census_observations:,
       source_links:,
       relationships:,
@@ -28,9 +29,14 @@ class PersonSerializer < ApplicationSerializer
   end
 
   def summary
-    return @summary if defined?(@summary)
+    summary_result&.paragraph
+  end
 
-    @summary = People::CensusSummary.call(observations: census_observations)
+  def summary_source_links
+    @summary_source_links ||= Array(summary_result&.sources).map do |record|
+      label = record.person_id == object.id ? "#{record.year} census" : "#{record.year}: #{record.name}"
+      source_link(record).merge(label:)
+    end
   end
 
   def census_observations
@@ -57,6 +63,13 @@ class PersonSerializer < ApplicationSerializer
   end
 
   private
+
+  def summary_result
+    return @summary_result if defined?(@summary_result)
+
+    observations = People::CensusNarrativeEvidence.call(records: public_records, readable: :reviewed?.to_proc)
+    @summary_result = People::CensusSummary.call(name: object.name, sex: object.sex, observations:)
+  end
 
   def public_records
     @public_records ||= object.census_records.group_by(&:year).sort_by(&:first).flat_map do |year, records|
