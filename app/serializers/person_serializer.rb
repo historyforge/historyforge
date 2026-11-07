@@ -10,8 +10,10 @@ class PersonSerializer < ApplicationSerializer
     end
   end
 
-  def initialize(person, url_options:)
+  def initialize(person, census_records:, census_readable:, url_options:)
     super(person)
+    @census_records = census_records.sort_by { |record| [record.year, record.id] }
+    @census_readable = census_readable
     @url_options = url_options
   end
 
@@ -40,17 +42,17 @@ class PersonSerializer < ApplicationSerializer
   end
 
   def census_observations
-    @census_observations ||= public_records.map { |record| ObservationSerializer.new(record).serializable_hash }
+    @census_observations ||= @census_records.map { |record| ObservationSerializer.new(record).serializable_hash }
   end
 
   def source_links
-    @source_links ||= public_records.map { |record| source_link(record) }
+    @source_links ||= @census_records.map { |record| source_link(record) }
   end
 
   def relationships
-    @relationships ||= public_records.flat_map do |record|
+    @relationships ||= @census_records.flat_map do |record|
       record.fellows.filter_map do |fellow|
-        next unless fellow.person_id && fellow.person_id != object.id && fellow.reviewed?
+        next unless fellow.person_id && fellow.person_id != object.id && @census_readable.call(fellow)
 
         {
           type: 'census_household_member',
@@ -71,14 +73,8 @@ class PersonSerializer < ApplicationSerializer
   def summary_result
     return @summary_result if defined?(@summary_result)
 
-    observations = People::CensusNarrativeEvidence.call(records: public_records, readable: :reviewed?.to_proc)
+    observations = People::CensusNarrativeEvidence.call(records: @census_records, readable: @census_readable)
     @summary_result = People::CensusSummary.call(name: object.name, sex: object.sex, observations:)
-  end
-
-  def public_records
-    @public_records ||= object.census_records.group_by(&:year).sort_by(&:first).flat_map do |year, records|
-      Setting.can_view_public?(year) ? records.select(&:reviewed?).sort_by(&:id) : []
-    end
   end
 
   def source_link(record)

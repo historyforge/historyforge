@@ -5,10 +5,10 @@ require 'rails_helper'
 RSpec.describe 'people' do
   scenario 'a public census summary links only to readable census records', driver: :rack_test do
     person = create(:person)
-    unreviewed_record = create(:census1920_record, person:, age: 50, pob: 'Pennsylvania')
+    unreviewed_record = create(:census1920_record, person:, age: 50, occupation: 'Carpenter')
     public_record = create(:census1910_record, person:, age: 30, pob: 'New York', street_name: 'Coddington',
                            street_suffix: 'Rd', reviewed_at: Time.current)
-    hidden_record = create(:census1930_record, person:, age: 60, pob: 'Pennsylvania', reviewed_at: Time.current)
+    hidden_record = create(:census1930_record, person:, age: 60, occupation: 'Banker', reviewed_at: Time.current)
     allow(Setting).to receive(:can_view_public?).and_call_original
     allow(Setting).to receive(:can_view_public?).with(1930).and_return(false)
 
@@ -26,7 +26,15 @@ RSpec.describe 'people' do
       expect(page).to have_link('1910 census', href: /#{Regexp.escape(polymorphic_path(public_record))}\z/)
       expect(page).to have_no_link(href: /#{Regexp.escape(polymorphic_path(unreviewed_record))}\z/)
       expect(page).to have_no_link(href: /#{Regexp.escape(polymorphic_path(hidden_record))}\z/)
-      expect(page).to have_no_text('Pennsylvania')
+      expect(page).to have_no_text(/Carpenter|Banker/)
+    end
+
+    sign_in create(:administrator)
+    visit person_path(person)
+
+    within('section[aria-label="Biography"]') do
+      expect(page).to have_link('1910 census')
+      expect(page).to have_no_text(/Carpenter|Banker/)
     end
   end
 
