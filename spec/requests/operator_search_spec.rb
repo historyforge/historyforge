@@ -57,6 +57,17 @@ RSpec.describe 'Operator search', :versioning, type: :request do
     expect(people_created_by(operator)).to be_empty
   end
 
+  it 'lets person record editors search for people they created' do
+    editor = create(:active_user)
+    editor.add_role Role.find_by(name: 'person record editor')
+    person = create_person_as(editor, created_at: creation_date)
+    create_person_as(other_operator, created_at: creation_date)
+    sign_in_as(editor)
+
+    expect(people_created_by(editor)).to eq([person.id])
+    expect(people_created_by(other_operator)).to be_empty
+  end
+
   it 'limits builders to their own creations' do
     builder = create(:builder)
     building = create(:building, created_by: builder)

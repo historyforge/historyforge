@@ -75,6 +75,7 @@ class Ability
       end
 
       if user.has_role?("person record editor")
+        can :search_by_own_operator, Person
         can :create, Person
         can :update, Person
         can :merge, Person
