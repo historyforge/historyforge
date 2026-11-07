@@ -60,7 +60,12 @@ html
         #alerts= flash_messages
         = yield :breadcrumb
         div.content-header
-          h1= page_title if page_title
+          - if content_for?(:title_actions)
+            .d-flex.align-items-center.justify-content-between.mb-2
+              h1.mb-0.mr-3= page_title if page_title
+              = yield :title_actions
+          - else
+            h1= page_title if page_title
           - if content_for? :pills
             .pills= yield :pills
         - if content_for?(:content)

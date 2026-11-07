@@ -1,9 +1,10 @@
 - set_page_title @person.name
 = render 'shared/flag_resolution', item: @person
 - btn_class = 'btn btn-sm btn-secondary'
-div.mb-3.clearfix.d-flex.justify-content-between
-  div.mr-auto
-    - if can_people? || can?(:read, Person)
+- can_view_people = can_people? || can?(:read, Person)
+- if user_signed_in?
+  .mb-3.person-actions
+    - if can_view_people
       = link_to 'View All', people_path, class: btn_class
     - if can?(:create, Flag)
       = render 'shared/flag_it', item: @person, item_class: btn_class
@@ -18,6 +19,9 @@ div.mb-3.clearfix.d-flex.justify-content-between
         i.fa.fa-trash
         span.d-none.d-lg-inline
           | &nbsp; Delete
+- elsif can_view_people
+  - content_for :title_actions do
+    = link_to 'View All', people_path, class: "#{btn_class} flex-shrink-0"
 - if @navigation_neighbors.present?
   - if @navigation_neighbors[:previous_id]
     = previous_nav_link(person_path(@navigation_neighbors[:previous_id]))

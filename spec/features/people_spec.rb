@@ -15,6 +15,8 @@ RSpec.describe 'people' do
     visit person_path(person)
 
     expect(page).to have_no_text('Census Summary')
+    expect(page).to have_css('.content-header h1 + a', text: 'View All')
+    expect(page).to have_no_css('.person-actions')
     expect(page).to have_css('section.col-lg-4[aria-labelledby="person-facts-heading"]')
     within('section[aria-labelledby="person-about-heading"]') do
       expect(page).to have_text('lived on Coddington Rd')
@@ -43,7 +45,11 @@ RSpec.describe 'people' do
     visit person_path(person.id)
     expect(page).to have_content person.name
     expect(page).to have_content '1940'
-    click_on 'Edit'
+    expect(page).to have_no_link('View All', href: people_path, class: 'flex-shrink-0')
+    within('.person-actions') do
+      expect(page).to have_link('View All', href: people_path)
+      click_on 'Edit'
+    end
     fill_in 'Birth Year', with: '1850'
     find(:checkbox, 'person_is_birth_year_estimated', checked: true)
     find(:checkbox, 'person_is_death_year_estimated', checked: false)
