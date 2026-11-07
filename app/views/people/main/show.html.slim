@@ -48,11 +48,11 @@
     .card.p-2
       table.table.table-sm.table-borderless.mb-0 aria-label="Person details"
         tbody
-          - names = @person.variant_names
+          - names = @person_representation.alternate_names
           - if names.any?
             tr
               th scope="row" Also recorded as
-              td= names.map(&:short_name).join(', ')
+              td= names.join(', ')
           - if @person.birth_year
             tr
               th scope="row" Born

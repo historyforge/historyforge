@@ -40,6 +40,7 @@ RSpec.describe 'people' do
       '@type' => 'Person',
       '@id' => "#{canonical_url}#person",
       'url' => canonical_url,
+      'mainEntityOfPage' => canonical_url,
       'identifier' => person.id.to_s,
       'name' => person.name,
       'birthDate' => '1880',
@@ -79,6 +80,8 @@ RSpec.describe 'people' do
     visit person_path(person)
 
     expect(page).to have_no_css('section[aria-label="Biography"]')
+    data = JSON.parse(find('script[type="application/ld+json"]', visible: :all).native.content)
+    expect(data).not_to have_key('alternateName')
     within('table[aria-label="Person details"]') do
       expect(page).to have_css('th', text: 'Born')
       expect(page).to have_css('td', text: 'About 1933')
@@ -100,13 +103,17 @@ RSpec.describe 'people' do
     expect(data.keys).not_to include('description', 'birthDate', 'deathDate', 'subjectOf')
   end
 
-  scenario 'Person JSON-LD uses the public description when there is no census summary', driver: :rack_test do
+  scenario 'Person JSON-LD uses the visible name variants and falls back to the public description', driver: :rack_test do
     person = create(:person, description: '<p>A local <em>historian</em>.</p>')
+    person.names.create!(first_name: 'Mary', last_name: 'Jones')
+    person.names.create!(first_name: 'Maria', last_name: 'Jones')
 
     visit person_path(person)
 
     data = JSON.parse(find('script[type="application/ld+json"]', visible: :all).native.content)
     expect(data['description']).to eq('A local historian.')
+    expect(data['alternateName']).to contain_exactly('Mary Jones', 'Maria Jones')
+    expect(page).to have_css('tr', text: /Also recorded as.*Maria Jones, Mary Jones/)
   end
 
   scenario 'edit people' do

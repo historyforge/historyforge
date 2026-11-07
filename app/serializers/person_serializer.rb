@@ -39,6 +39,10 @@ class PersonSerializer < ApplicationSerializer
     @canonical_url ||= routes.person_url(object, **@url_options)
   end
 
+  def alternate_names
+    @alternate_names ||= object.variant_names.map(&:short_name).compact_blank.uniq - [name]
+  end
+
   def description
     summary || ActionController::Base.helpers.strip_tags(object.description).presence
   end
