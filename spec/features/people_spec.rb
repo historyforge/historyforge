@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe 'people' do
-  scenario 'a public census summary links only to readable census records', driver: :rack_test do
+  scenario 'the census narrative uses the viewer’s census permissions', driver: :rack_test do
     person = create(:person)
     unreviewed_record = create(:census1920_record, person:, age: 50, occupation: 'Carpenter')
     public_record = create(:census1910_record, person:, age: 30, pob: 'New York', street_name: 'Coddington',
@@ -34,7 +34,18 @@ RSpec.describe 'people' do
 
     within('section[aria-label="Biography"]') do
       expect(page).to have_link('1910 census')
-      expect(page).to have_no_text(/Carpenter|Banker/)
+      expect(page).to have_link('1930 census', href: /#{Regexp.escape(polymorphic_path(hidden_record))}\z/)
+      expect(page).to have_text('Banker')
+    end
+
+    allow(Setting).to receive(:can_view_private?).and_call_original
+    allow(Setting).to receive(:can_view_private?).with(1930).and_return(false)
+    visit person_path(person)
+
+    within('section[aria-label="Biography"]') do
+      expect(page).to have_no_text('Banker')
+      expect(page).to have_link('1920 census', href: /#{Regexp.escape(polymorphic_path(unreviewed_record))}\z/)
+      expect(page).to have_text('Carpenter')
     end
   end
 

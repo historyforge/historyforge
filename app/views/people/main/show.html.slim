@@ -28,7 +28,7 @@
   - if @navigation_neighbors[:next_id]
     = next_nav_link(person_path(@navigation_neighbors[:next_id]))
 
-- summary = @public_person.summary
+- summary = @person_representation.summary
 - has_biography = summary || @person.description.present?
 .row.mb-4
   - if has_biography
@@ -37,7 +37,7 @@
         p.mb-2= summary
         p.small.mb-0
           ' Census sources:
-          = safe_join(@public_person.summary_source_links.map { |source| link_to(source[:label], source[:url]) }, ', ')
+          = safe_join(@person_representation.summary_source_links.map { |source| link_to(source[:label], source[:url]) }, ', ')
       - if @person.description.present?
         div class=("mt-3" if summary)
           = auto_link(simple_format(@person.description), html: { target: '_blank', rel: 'nofollow' })

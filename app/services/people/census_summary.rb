@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module People
-  # Builds a short account from the public Person representation’s narrative evidence.
+  # Builds a short account from authorized narrative evidence.
   class CensusSummary
     Result = Data.define(:paragraph, :sources)
     PRONOUNS = { 'F' => 'she', 'M' => 'he' }.freeze

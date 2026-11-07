@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# The public Person and the census rows that provide evidence about them.
+# Represents a Person using the census evidence authorized by the caller.
 class PersonSerializer < ApplicationSerializer
   class ObservationSerializer < CensusRecordSerializer
     def serializable_attributes
