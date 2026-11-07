@@ -2,11 +2,12 @@
 
 class ApplicationController < ActionController::Base
   include FormErrors
+  include CensusAccess
+  include LoadSettings
 
   impersonates :user
   protect_from_forgery with: :exception
 
-  around_action :load_settings
   around_action :set_current_attributes
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :set_paper_trail_whodunnit
@@ -21,10 +22,6 @@ class ApplicationController < ActionController::Base
   layout :cms_choose_layout
 
   rescue_from CanCan::AccessDenied, with: :permission_denied
-
-  def can_census?(year)
-    Setting.can_view_public?(year) || (user_signed_in? && Setting.can_view_private?(year))
-  end
 
   def can_demographics?(year)
     Setting.can_view_public_demographics?(year) || (user_signed_in? && Setting.can_view_private_demographics?(year))
@@ -102,12 +99,6 @@ class ApplicationController < ActionController::Base
 
   def after_invite_path_for(_user)
     users_path
-  end
-
-  def load_settings
-    Setting.load
-    yield
-    Setting.unload
   end
 
   def set_current_attributes

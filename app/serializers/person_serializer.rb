@@ -21,6 +21,7 @@ class PersonSerializer < ApplicationSerializer
     {
       id:,
       name:,
+      alternate_names:,
       canonical_url:,
       summary:,
       summary_source_links:,
