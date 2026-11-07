@@ -31,7 +31,7 @@ class ApplicationController < ActionController::Base
     Setting.can_people_public? || (user_signed_in? && Setting.can_people_private?)
   end
 
-  helper_method :can_census?, :can_demographics?, :can_people?
+  helper_method :can_census?, :can_demographics?, :can_people?, :operator_search_scope
 
   def check_administrator_role
     check_role('administrator')

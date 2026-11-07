@@ -88,6 +88,8 @@ header data-turbo-permanent="true" id="main-header"
                 i.fa.fa-user
               .dropdown-menu
                 .dropdown-item-text id="user-name"= current_user.name
+                - if [Building, Person, CensusRecord].any? { |resource| operator_search_scope(resource) }
+                  = link_to 'My stuff', my_stuff_users_path, class: 'dropdown-item'
                 = link_to 'My profile', user_path(current_user), class: 'dropdown-item'
                 = link_to 'Edit my account', edit_user_path(current_user), class: 'dropdown-item'
                 = link_to 'Passkeys', users_passkeys_path, class: 'dropdown-item'

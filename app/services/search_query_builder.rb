@@ -10,6 +10,7 @@ class SearchQueryBuilder
   OPERATOR_FILTER_KEYS = %i[operator_id operator_created_from operator_created_to].freeze
 
   attr_accessor :page, :s, :f, :g, :user, :c, :d, :sort, :paged, :per, :scope, :from, :to, :navigation
+  attr_reader :operator_scope
 
   delegate :any?, :present?, :each, :first, :last,
            :current_page, :total_pages, :limit_value, :count,
@@ -48,11 +49,12 @@ class SearchQueryBuilder
 
   memoize :operator_filters
 
-  def operator_choices
-    return User.order(:login).pluck(:login, :id) if @operator_scope == :all
-    return [['My records', @operator_scope]] if @operator_scope
+  def selected_operator_name
+    return unless operator_scope == :all && operator_filter_active?
 
-    []
+    operator_id = Integer(operator_filters[:operator_id].to_s, 10, exception: false)
+    operator = User.find_by(id: operator_id) if operator_id&.positive?
+    operator&.full_name.presence || operator&.login
   end
 
   def default_field?(field)

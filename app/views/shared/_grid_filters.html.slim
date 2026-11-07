@@ -17,7 +17,10 @@
     a.dropdown-toggle.btn.btn-sm.btn-light data-toggle="dropdown" Load Search
     .dropdown-menu
 
-= simple_form_for @search, url: url_for(), method: :get, as: :s do |form|
+- operator_filters = @search.operator_filters
+- mine_selected = @search.operator_scope && operator_filters[:operator_id].to_s == current_user.id.to_s
+- operator_picker = { controller: 'operator-picker', operator_picker_mine: current_user.id } if @search.operator_scope
+= simple_form_for @search, url: url_for(), method: :get, as: :s, html: { data: operator_picker } do |form|
   .float-right
     = form.submit 'Submit', style: 'display: none'
     => link_to 'CSV', request.params.merge(format: :csv), class: 'btn btn-sm btn-primary'
@@ -32,6 +35,9 @@
   .mb-3
     button.btn.btn-sm.btn-light type="button" data-toggle="collapse" data-target="#fieldSelector" = pluralize @search.columns.size, 'Field'
     button.btn.btn-sm.btn-light.mr-3 type="button" data-toggle="collapse" data-target="#newAttributeFilter" Filter
+    - if @search.operator_scope
+      = hidden_field_tag 's[operator_id]', operator_filters[:operator_id], data: { target: 'operator-picker.id' }
+      button.btn.btn-sm.btn-outline-primary type="button" class=('active' if mine_selected) aria-pressed=mine_selected.to_s data-target="operator-picker.toggle" data-action="operator-picker#toggleMine" My stuff
 
   = yield :filter_buttons
 
@@ -59,13 +65,12 @@
         button.float-right.close(type="button" data-toggle="collapse" data-target="#newAttributeFilter") &times;
         span Search Filters
       .card-body
-        - operator_choices = @search.operator_choices
-        - if operator_choices.any?
-          - operator_filters = @search.operator_filters
+        - if @search.operator_scope
           .form-row
             .form-group.col-md-4
-              = label_tag 's_operator_id', 'Created by'
-              = select_tag 's[operator_id]', options_for_select(operator_choices, operator_filters[:operator_id]), include_blank: 'Any creator', class: 'form-control'
+              - if @search.operator_scope == :all
+                = label_tag 'operator_lookup', 'Created by'
+                = search_field_tag 'operator_lookup', @search.selected_operator_name, name: nil, placeholder: 'Search by name or email', autocomplete: 'off', class: 'form-control mb-2', data: { target: 'operator-picker.lookup', action: 'input->operator-picker#clearSelection', url: operator_autocomplete_users_path(format: :json) }
             .form-group.col-md-4
               = label_tag 's_operator_created_from', 'Created from'
               = date_field_tag 's[operator_created_from]', operator_filters[:operator_created_from], class: 'form-control'

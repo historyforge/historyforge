@@ -5,6 +5,7 @@ import BlowupController from "./blowup_controller";
 import CensusAutoCompleteController from "./census_autocomplete_controller";
 import HintPopoverController from "./hint_popover_controller";
 import LoadSavedSearchController from "./load_saved_search_controller";
+import OperatorPickerController from "./operator_picker_controller";
 import PhotoWizardController from "./photo_wizard_controller";
 import SaveSearchController from "./save_search_controller";
 import SavedSearchesController from "./saved_searches_controller";
@@ -15,6 +16,7 @@ const definitions = [
     { identifier: 'census-autocomplete', controllerConstructor: CensusAutoCompleteController },
     { identifier: 'hint-popover', controllerConstructor: HintPopoverController },
     { identifier: 'load-saved-search', controllerConstructor: LoadSavedSearchController },
+    { identifier: 'operator-picker', controllerConstructor: OperatorPickerController },
     { identifier: 'photo-wizard', controllerConstructor: PhotoWizardController },
     { identifier: 'save-search', controllerConstructor: SaveSearchController },
     { identifier: 'saved-searches', controllerConstructor: SavedSearchesController },

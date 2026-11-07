@@ -6,7 +6,7 @@ class UsersController < ApplicationController
   layout 'application'
 
   before_action :authenticate_user!,
-                only: %i[show edit update]
+                only: %i[show edit update my_stuff]
 
   before_action :check_administrator_role,
                 only: %i[index new create destroy enable disable disable_and_reset resend_invitation]
@@ -16,6 +16,24 @@ class UsersController < ApplicationController
   def index
     @q = User.includes(:group).ransack(ransack_params)
     @users = @q.result.page(params[:page]).order('email asc')
+  end
+
+  def operator_autocomplete
+    return head :forbidden unless can?(:search_by_operator, Person)
+
+    response.headers['Cache-Control'] = 'no-store'
+    term = params[:term].to_s.strip
+    return render json: [] unless term.length.between?(2, 100)
+
+    pattern = "%#{User.sanitize_sql_like(term)}%"
+    operators = User.where('login ILIKE :pattern OR full_name ILIKE :pattern OR email ILIKE :pattern', pattern:)
+                    .order(:login, :id).limit(10)
+                    .pluck(:id, :login, :full_name)
+    render json: operators.map { |id, login, full_name| { id:, name: full_name.presence || login, login: } }
+  end
+
+  def my_stuff
+    permission_denied unless [Building, Person, CensusRecord].any? { |resource| operator_search_scope(resource) }
   end
 
   def show

@@ -173,6 +173,10 @@ Rails.application.routes.draw do
   resources :street_conversions
 
   resources :users do
+    collection do
+      get :operator_autocomplete
+      get :my_stuff
+    end
     member do
       put 'enable'
       put 'disable'
