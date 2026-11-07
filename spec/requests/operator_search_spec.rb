@@ -48,7 +48,10 @@ RSpec.describe 'Operator search', :versioning, type: :request do
   end
 
   it 'limits census takers to their own creations even when they submit another operator ID' do
-    person = create_person_as(operator, created_at: creation_date)
+    person = PaperTrail.request(enabled: false, whodunnit: operator.id.to_s) do
+      create(:person, created_at: creation_date)
+    end
+    expect(person.versions).to be_empty
     create_person_as(other_operator, created_at: creation_date)
     sign_in_as(operator)
 

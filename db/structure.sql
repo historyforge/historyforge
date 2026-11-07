@@ -2210,7 +2210,8 @@ CREATE TABLE public.people (
     sortable_name character varying,
     death_year integer,
     is_death_year_estimated boolean DEFAULT true,
-    ever_enslaved boolean DEFAULT false
+    ever_enslaved boolean DEFAULT false,
+    created_by_id bigint
 );
 
 
@@ -4733,6 +4734,13 @@ CREATE INDEX index_passkeys_on_user_id ON public.passkeys USING btree (user_id);
 
 
 --
+-- Name: index_people_on_created_by_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_people_on_created_by_id ON public.people USING btree (created_by_id);
+
+
+--
 -- Name: index_people_videos_on_person_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4884,13 +4892,6 @@ CREATE UNIQUE INDEX index_users_on_webauthn_id ON public.users USING btree (weba
 --
 
 CREATE INDEX index_versions_on_item_type_and_item_id ON public.versions USING btree (item_type, item_id);
-
-
---
--- Name: index_versions_on_person_creation_operator; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_versions_on_person_creation_operator ON public.versions USING btree (whodunnit, item_id) WHERE (((item_type)::text = 'Person'::text) AND ((event)::text = 'create'::text));
 
 
 --
@@ -5791,6 +5792,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('9'),
 ('8'),
 ('4'),
+('20261107000001'),
 ('20261107000000'),
 ('20260909000002'),
 ('20260909000000'),

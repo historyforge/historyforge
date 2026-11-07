@@ -143,16 +143,7 @@ class SearchQueryBuilder
     return query.none unless operator_id&.positive?
     return query.none unless @operator_scope == :all || @operator_scope == operator_id
 
-    if entity_class == Person
-      # Keep the partial index predicate literal so generic prepared plans can use it.
-      creations = Person.paper_trail.version_class
-                        .where("item_type = 'Person' AND event = 'create'")
-                        .where(whodunnit: operator_id.to_s)
-      query.where(id: creations.select(:item_id))
-    else
-      query.where(entity_class.table_name => { created_by_id: operator_id })
-    end
-
+    query.where(entity_class.table_name => { created_by_id: operator_id })
     filter_by_operator_creation_date(query)
   end
 
