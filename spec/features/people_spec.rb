@@ -16,10 +16,9 @@ RSpec.describe 'people' do
 
     expect(page).to have_no_text('Census Summary')
     expect(page).to have_no_css('h2', text: /\A(?:About|Person details)\z/i)
-    within('.col-lg-4 .person-directory-link') do
+    within('.content-header .pills') do
       expect(page).to have_link('View All', href: people_path)
     end
-    expect(page).to have_no_css('.content-header', text: 'View All')
     expect(page).to have_no_css('.person-actions')
     expect(page).to have_css('.col-lg-4 .card table[aria-label="Person details"]')
     within('section[aria-label="Biography"]') do
@@ -49,7 +48,7 @@ RSpec.describe 'people' do
     visit person_path(person.id)
     expect(page).to have_content person.name
     expect(page).to have_content '1940'
-    expect(page).to have_no_css('.person-directory-link')
+    expect(page).to have_no_css('.content-header .pills', text: 'View All')
     within('.person-actions') do
       expect(page).to have_link('View All', href: people_path)
       click_on 'Edit'
