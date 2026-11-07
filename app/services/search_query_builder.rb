@@ -46,9 +46,11 @@ class SearchQueryBuilder
     s.symbolize_keys.slice(*OPERATOR_FILTER_KEYS)
   end
 
+  memoize :operator_filters
+
   def operator_choices
-    return User.order(:login).pluck(:login, :id) if can_search_other_operators?
-    return [['My records', user.id]] if user&.has_role?('census taker')
+    return User.order(:login).pluck(:login, :id) if @operator_scope == :all
+    return [['My records', @operator_scope]] if @operator_scope
 
     []
   end
@@ -123,21 +125,17 @@ class SearchQueryBuilder
 
   memoize :builder
 
-  def can_search_other_operators?
-    return false unless user
-
-    ability = Ability.new(user)
-    ability.can?(:review, CensusRecord) || (entity_class == Building && ability.can?(:review, Building))
-  end
-
   def filter_by_operator(query)
     filters = operator_filters
     operator_id = Integer(filters[:operator_id].to_s, 10, exception: false)
     return query.none unless operator_id&.positive?
-    return query.none unless can_search_other_operators? || (user&.has_role?('census taker') && operator_id == user.id)
+    return query.none unless @operator_scope == :all || @operator_scope == operator_id
 
     if entity_class == Person
-      creations = Person.paper_trail.version_class.where(item_type: 'Person', event: 'create', whodunnit: operator_id.to_s)
+      # Keep the partial index predicate literal so generic prepared plans can use it.
+      creations = Person.paper_trail.version_class
+                        .where("item_type = 'Person' AND event = 'create'")
+                        .where(whodunnit: operator_id.to_s)
       query.where(id: creations.select(:item_id))
     else
       query.where(entity_class.table_name => { created_by_id: operator_id })

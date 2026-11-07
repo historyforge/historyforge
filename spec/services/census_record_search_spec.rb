@@ -32,7 +32,7 @@ RSpec.describe CensusRecordSearch do
     match.update!(created_by: operator)
     create_1870_record(page_number: 2)
 
-    search = described_class.generate(year: 1870, user: reviewer, params: { s: { operator_id: operator.id } })
+    search = described_class.generate(year: 1870, user: reviewer, operator_scope: :all, params: { s: { operator_id: operator.id } })
 
     expect(search.scoped).to contain_exactly(match)
   end

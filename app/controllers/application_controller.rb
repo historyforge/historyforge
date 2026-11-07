@@ -97,6 +97,11 @@ class ApplicationController < ActionController::Base
 
   private
 
+  def operator_search_scope(resource_class)
+    return :all if current_ability.can?(:search_by_operator, resource_class)
+    return current_user.id if current_ability.can?(:search_by_own_operator, resource_class)
+  end
+
   def after_invite_path_for(_user)
     users_path
   end

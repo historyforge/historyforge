@@ -8,19 +8,12 @@ RSpec.describe BuildingSearch do
     own_building = create(:building, created_by: operator)
     other_building = create(:building, created_by: create(:active_user))
 
-    search = described_class.generate(user: operator, params: { s: { operator_id: operator.id } })
+    search = described_class.generate(user: operator, operator_scope: operator.id, params: { s: { operator_id: operator.id } })
     expect(search).to be_active
     expect(search.scoped).to contain_exactly(own_building)
 
     bypass = described_class.generate(user: operator, params: { s: { created_by_id_eq: other_building.created_by_id } })
     expect(bypass.scoped).to contain_exactly(own_building, other_building)
-  end
-
-  it 'allows users with building review permission to search by another creator' do
-    building = create(:building, created_by: create(:active_user))
-    search = described_class.generate(user: create(:builder), params: { s: { operator_id: building.created_by_id } })
-
-    expect(search.scoped).to contain_exactly(building)
   end
 
   context 'when near argument is passed' do

@@ -4,9 +4,10 @@ class BuildingSearch < SearchQueryBuilder
   attr_reader :num_residents, :people_params, :near, :building_params
   attr_accessor :people, :expanded
 
-  def self.generate(params: {}, user: nil)
+  def self.generate(params: {}, user: nil, operator_scope: nil)
     new(
       user:,
+      operator_scope:,
       people_params: params[:peopleParams] && parse_params(params[:peopleParams]),
       building_params: params[:buildingParams] && parse_params(params[:buildingParams]),
       scope: params[:scope] && params[:scope] != 'on' && params[:scope].to_sym,

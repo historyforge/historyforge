@@ -47,6 +47,7 @@ class Ability
         can :review, CensusRecord
         can :review, Building
         can :review, [Photograph, Audio, Video, Narrative]
+        can :search_by_operator, [CensusRecord, Building, Person]
       end
 
       if user.has_role?("photographer")
@@ -56,6 +57,7 @@ class Ability
       end
 
       if user.has_role?("census taker")
+        can :search_by_own_operator, [CensusRecord, Building, Person]
         can :read, CensusRecord, reviewed_at: nil
         can :read, Building, reviewed_at: nil
         can :create, CensusRecord
@@ -69,6 +71,7 @@ class Ability
         can :update, Building
         can :merge, Building
         can :review, Building
+        can :search_by_operator, Building
       end
 
       if user.has_role?("person record editor")

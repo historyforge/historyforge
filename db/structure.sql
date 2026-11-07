@@ -4887,6 +4887,13 @@ CREATE INDEX index_versions_on_item_type_and_item_id ON public.versions USING bt
 
 
 --
+-- Name: index_versions_on_person_creation_operator; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_versions_on_person_creation_operator ON public.versions USING btree (whodunnit, item_id) WHERE (((item_type)::text = 'Person'::text) AND ((event)::text = 'create'::text));
+
+
+--
 -- Name: index_videos_on_created_by_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -5784,6 +5791,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('9'),
 ('8'),
 ('4'),
+('20261107000000'),
 ('20260909000002'),
 ('20260909000000'),
 ('20260208000002'),
