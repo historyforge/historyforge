@@ -44,8 +44,14 @@ class UsersController < ApplicationController
       CensusYears.each_visible_to_user(true) { |year| sources << CensusYears.class_for(year) }
     end
 
-    @recent_creations = sources.flat_map { |source| recent_creations(source).to_a }
-                               .sort_by(&:created_at).reverse.first(RECENT_CREATIONS_LIMIT)
+    cursor = creation_cursor
+    records = sources.flat_map { |source| recent_creations(source, cursor).to_a }
+                     .sort_by { |record| [record.created_at, record.id, record.class.table_name] }.reverse
+    @recent_creations = records.first(RECENT_CREATIONS_LIMIT)
+    if records.size > RECENT_CREATIONS_LIMIT
+      last = @recent_creations.last
+      @next_creation_cursor = [last.created_at.utc.iso8601(6), last.id, last.class.table_name].join(',')
+    end
   end
 
   def show
@@ -183,7 +189,16 @@ class UsersController < ApplicationController
 
   private
 
-  def recent_creations(source)
+  def creation_cursor
+    time, id, table = params[:before].to_s.split(',', 3)
+    return unless time && id && table
+
+    [Time.iso8601(time), Integer(id, 10), table]
+  rescue ArgumentError
+    nil
+  end
+
+  def recent_creations(source, cursor)
     records = source.accessible_by(current_ability).where(created_by_id: current_user.id)
     if Current.locality_id
       records = if source == Person
@@ -192,8 +207,14 @@ class UsersController < ApplicationController
         records.where(locality_id: Current.locality_id)
       end
     end
+    if cursor
+      time, id, cursor_table = cursor
+      table = source.arel_table
+      earlier_id = source.table_name < cursor_table ? table[:id].lteq(id) : table[:id].lt(id)
+      records = records.where(table[:created_at].lt(time).or(table[:created_at].eq(time).and(earlier_id)))
+    end
     records = records.preload(:addresses) if source == Building
-    records.order(created_at: :desc, id: :desc).limit(RECENT_CREATIONS_LIMIT)
+    records.order(created_at: :desc, id: :desc).limit(RECENT_CREATIONS_LIMIT + 1)
   end
 
   def user_params

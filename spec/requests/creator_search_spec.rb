@@ -124,10 +124,27 @@ RSpec.describe 'Creator search', :versioning, type: :request do
     filters = { creator_id: creator.id }
     search_links = [buildings_path(s: filters), people_path(s: filters), census_records_path(year: 1910, s: filters)]
     expect(menu_links).to include(my_stuff_users_path, *search_links)
-    expect(html.css('.list-group a').map { |link| link['href'] }).to include(*search_links)
-    recent_links = html.css('ul.list-group a').map { |link| link['href'] }
+    recent_links = html.css('#recent-creations a').map { |link| link['href'] }
     expect(recent_links).to eq([census_record_path(year: 1910, id: census_record.id), building_path(building), person_path(person)])
     expect(recent_links).not_to include(person_path(other_person))
+  end
+
+  it 'loads older creations in place without repeating records with the same timestamp' do
+    allow(Setting).to receive(:can_people_private?).and_return(true)
+    people = Array.new(16) { create_person_as(creator, created_at: creation_date) }
+    sign_in_as(creator)
+
+    get my_stuff_users_path
+    page = Nokogiri::HTML(response.body)
+    expect(page.css('#recent-creations a').map { |link| link['href'] }).to eq(people.drop(1).reverse.map { |person| person_path(person) })
+    load_more = page.at_css('#load-more-creations a')
+
+    get load_more['href'], headers: { 'Accept' => 'text/vnd.turbo-stream.html' }
+    expect(response).to have_http_status(:ok)
+    streams = Nokogiri::HTML.fragment(response.body)
+    expect(streams.css('turbo-stream[action="append"][target="recent-creations"] a').map { |link| link['href'] })
+      .to eq([person_path(people.first)])
+    expect(streams.at_css('turbo-stream[action="replace"][target="load-more-creations"] a')).to be_nil
   end
 
   it 'lets person record editors search for people they created' do

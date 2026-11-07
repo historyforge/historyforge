@@ -1,0 +1,3 @@
+#load-more-creations
+  - if @next_creation_cursor
+    = link_to 'Load more', my_stuff_users_path(before: @next_creation_cursor), class: 'btn btn-outline-primary', data: { turbo_stream: true }
