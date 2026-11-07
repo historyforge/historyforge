@@ -2,52 +2,96 @@
 
 require 'active_support/all'
 require_relative '../../../app/services/people/census_summary'
+require_relative '../../../app/services/people/census_narrative_evidence'
+require_relative '../../../app/services/people/census_household'
 
 RSpec.describe People::CensusSummary do
-  it 'attributes the estimated birth year and recorded birthplace to one census' do
-    record = { year: 1910, id: 1, age: 30, pob: 'New York' }
+  let(:observation) do
+    Struct.new(:year, :name, :person_id, :locality, :locality_id, :city, :street_name, :street_address, :street_house_number,
+               :family_id, :relation_to_head, :fellows, :ward, :building_id, :dwelling_number, :page_number,
+               :page_side, :occupation, :industry, :attended_school, :age, :pob, keyword_init: true) do
+      def field_for(field)
+        public_send(field)
+      end
+    end
+  end
+  let(:caroline) { Data.define(:short_name).new('Caroline') }
 
-    summary = described_class.call(observations: [record])
-
-    expect(summary).to eq('This person is listed in the 1910 census. ' \
-                          'The recorded age suggests a birth year around 1880. ' \
-                          'The recorded birthplace is New York.')
+  def summarize(*records, name: 'Frances Aagaard', sex: 'F', readable: ->(_record) { true })
+    households = records.index_with { |record| People::CensusHousehold.call(record:, readable:) }
+    observations = People::CensusNarrativeEvidence.call(records:, households:)
+    described_class.call(name:, sex:, observations:)
   end
 
-  it 'sorts observations and allows a one-year difference in birth estimates' do
-    earlier = { year: 1900, id: 2, age: 20, pob: 'New York' }
-    later = { year: 1910, id: 1, age: 29, pob: 'new york' }
+  it 'connects residence, household, and schooling across censuses and cites the head records' do
+    head_1940 = observation.new(year: 1940, name: 'Andrew Aagaard', person_id: 42, relation_to_head: 'Head')
+    head_1950 = observation.new(year: 1950, name: 'Andrew Aagaard', person_id: 42, relation_to_head: 'Head')
+    child = observation.new(year: 1940, age: 7, locality: caroline, locality_id: 1, family_id: '148',
+                            street_name: 'Coddington', street_address: 'Coddington Rd',
+                            relation_to_head: 'Daughter', fellows: [head_1940], attended_school: true, occupation: 'None')
+    teenager = observation.new(year: 1950, locality: caroline, locality_id: 1, family_id: '152',
+                               street_name: 'Coddington', street_address: '1784 Coddington Rd', street_house_number: '1784',
+                               relation_to_head: 'Daughter', fellows: [head_1950], occupation: 'Student Senior in High School')
 
-    summary = described_class.call(observations: [later, earlier])
+    result = summarize(teenager, child)
 
-    expect(summary).to eq('This person is listed in the 1900 and 1910 censuses. ' \
-                          'The recorded ages suggest a birth year around 1880. ' \
-                          'The recorded birthplace is New York.')
-    expect(described_class.call(observations: [earlier, later])).to eq(summary)
+    expect(result.paragraph).to include('At seven, Frances Aagaard lived on Coddington Rd in Caroline',
+                                        'was listed as Andrew Aagaard’s daughter',
+                                        'In 1950, she lived at 1784 Coddington Rd in Caroline',
+                                        'was listed as a high school senior')
+    expect(result.paragraph).not_to match(/moved|same house|employed/)
+    expect(result.paragraph.scan('Andrew Aagaard').length).to eq(1)
+    expect(result.sources).to eq([child, head_1940, teenager])
+    expect(summarize(child, teenager)).to eq(result)
   end
 
-  it 'reports disagreement without picking a birth year or birthplace' do
-    earlier = { year: 1900, id: 1, age: 20, pob: 'New York' }
-    later = { year: 1910, id: 1, age: 22, pob: 'Pennsylvania' }
+  it 'describes dated work observations without inventing an employer or promotion' do
+    earlier = observation.new(year: 1940, occupation: 'Laborer', industry: 'Gun Factory')
+    later = observation.new(year: 1950, occupation: 'Hand Sander', industry: 'Gun Factory')
 
-    summary = described_class.call(observations: [earlier, later])
+    result = summarize(earlier, later, name: 'Andrew Aagaard', sex: 'M')
 
-    expect(summary).to eq('This person is listed in the 1900 and 1910 censuses. ' \
-                          'The recorded ages suggest conflicting birth years. ' \
-                          'The census records list different birthplaces.')
+    expect(result.paragraph).to eq('In 1940, Andrew Aagaard was recorded with the occupation “Laborer” and industry “Gun Factory”. ' \
+                                   'In 1950, he was recorded with the occupation “Hand Sander” and industry “Gun Factory”.')
+    expect(summarize(earlier, later, sex: nil).paragraph).to include('In 1950, they were recorded')
   end
 
-  it 'omits birth details when the records have missing values or transcription markers' do
-    earlier = { year: 1900, id: 1, age: nil, pob: ' ' }
-    later = { year: 1910, id: 2, age: 999, pob: 'Illegible' }
-    latest = { year: 1950, id: 3, age: -1, pob: 'Unknown' }
+  it 'omits a household claim and link when the head record is unreadable' do
+    head = observation.new(year: 1940, name: 'Andrew Aagaard', relation_to_head: 'Head')
+    child = observation.new(year: 1940, family_id: '148', locality_id: 1, relation_to_head: 'Daughter',
+                            fellows: [head], attended_school: true)
 
-    summary = described_class.call(observations: [earlier, later, latest])
+    result = summarize(child, readable: ->(record) { record != head })
 
-    expect(summary).to eq('This person is listed in the 1900, 1910, and 1950 censuses.')
+    expect(result.paragraph).not_to include('Andrew Aagaard')
+    expect(result.sources).to eq([child])
   end
 
-  it 'returns no summary when there are no sources' do
-    expect(described_class.call(observations: [])).to be_nil
+  it 'does not turn an ambiguous household into a definite claim by filtering out a head' do
+    visible_head = observation.new(year: 1940, name: 'Andrew Aagaard', relation_to_head: 'Head')
+    hidden_head = observation.new(year: 1940, name: 'Another Head', relation_to_head: 'Head')
+    child = observation.new(year: 1940, family_id: '148', locality_id: 1, relation_to_head: 'Daughter',
+                            fellows: [visible_head, hidden_head], attended_school: true)
+    readable = ->(record) { record != hidden_head }
+
+    household = People::CensusHousehold.call(record: child, readable:)
+
+    expect(household.fellows).to eq([visible_head])
+    expect(summarize(child, readable:).sources).to eq([child])
+  end
+
+  it 'does not pick among conflicting observations from the same census year' do
+    first = observation.new(year: 1940, occupation: 'Laborer')
+    second = observation.new(year: 1940, occupation: 'Hand Sander')
+
+    expect(summarize(first, second)).to be_nil
+  end
+
+  it 'omits the story for birth facts, incomplete addresses, and placeholder occupations alone' do
+    record = observation.new(year: 1940, age: 7, pob: 'New York', city: 'Caroline', street_name: 'Unknown',
+                             street_address: 'Unknown', occupation: 'None')
+
+    expect(summarize(record)).to be_nil
+    expect(summarize).to be_nil
   end
 end
