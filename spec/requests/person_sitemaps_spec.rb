@@ -58,15 +58,22 @@ RSpec.describe 'Public Person sitemaps', type: :request do
     expect(xml_values('/s:urlset/s:url/s:lastmod')).to eq(['2022-01-01T00:00:00Z'])
   end
 
-  it 'matches the Person HTML canonical URL when a configured host differs from the request host' do
+  it 'uses the same canonical URL in the sitemap, HTML, JSON-LD, and API' do
     person = create(:person)
     host! 'alias.example'
 
     get person_path(person)
 
-    expect(Nokogiri::HTML(response.body).at_css('link[rel="canonical"]')['href']).to eq(
-      "https://history.example#{person_path(person)}"
-    )
+    canonical_url = "https://history.example#{person_path(person)}"
+    html = Nokogiri::HTML(response.body)
+    expect(html.at_css('link[rel="canonical"]')['href']).to eq(canonical_url)
+    expect(JSON.parse(html.at_css('script[type="application/ld+json"]').text)['url']).to eq(canonical_url)
+
+    get api_v1_person_path(person)
+    expect(response.parsed_body['canonical_url']).to eq(canonical_url)
+
+    get people_sitemap_path(shard: (person.id - 1) / People::Sitemap::SHARD_SIZE)
+    expect(xml_values('/s:urlset/s:url/s:loc')).to eq([canonical_url])
   end
 
   it 'refreshes cached shards after the TTL and gates cached sitemaps on public access' do

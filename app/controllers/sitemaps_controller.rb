@@ -1,19 +1,23 @@
 # frozen_string_literal: true
 
-class SitemapsController < ApplicationController
-  skip_before_action :check_cms_for_page
+class SitemapsController < ActionController::API
+  include LoadSettings
 
   before_action :check_public_indexing
 
   def index
-    render_sitemap People::Sitemap.new(routes: self).index
+    render_sitemap sitemap.index
   end
 
   def people
-    render_sitemap People::Sitemap.new(routes: self).people(params[:shard].to_i)
+    render_sitemap sitemap.people(params[:shard].to_i)
   end
 
   private
+
+  def sitemap
+    People::Sitemap.new(url_options: url_options.except(:_recall))
+  end
 
   def render_sitemap(xml)
     return head :not_found unless xml

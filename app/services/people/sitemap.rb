@@ -7,9 +7,9 @@ module People
     MAX_PERSON_ID = 2**31 - 1
     CACHE_TTL = 15.minutes
 
-    def initialize(routes:)
-      @routes = routes
-      @url_options = PublicUrlOptions.call
+    def initialize(url_options:)
+      @routes = Rails.application.routes.url_helpers
+      @url_options = url_options.merge(PublicUrlOptions.call)
     end
 
     def index
@@ -53,8 +53,9 @@ module People
     private
 
     def census_last_modified(range, years)
+      public_ability = Ability.new(nil)
       years.each_with_object({}) do |year, dates|
-        CensusRecord.for_year(year).reviewed.where(person_id: range).group(:person_id)
+        CensusRecord.for_year(year).accessible_by(public_ability, :read).where(person_id: range).group(:person_id)
                     .maximum(Arel.sql('GREATEST(updated_at, reviewed_at)')).each do |id, date|
           dates[id] = [dates[id], date].compact.max
         end

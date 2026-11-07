@@ -2,8 +2,13 @@
 
 module Api
   module V1
-    class PeopleController < ApplicationController
-      skip_before_action :check_cms_for_page
+    class PeopleController < ActionController::API
+      include CensusAccess
+      include LoadSettings
+
+      impersonates :user
+
+      rescue_from CanCan::AccessDenied, with: :permission_denied
 
       def show
         return permission_denied unless Setting.can_people_public?
@@ -12,7 +17,10 @@ module Api
         return render json: { error: 'not_found' }, status: :not_found unless person
 
         authorize! :read, person
-        render json: PersonSerializer.new(person, routes: self)
+        evidence = People::LoadCensusEvidence.call(person:, readable: method(:census_record_readable?))
+
+        no_store if user_signed_in?
+        render json: PersonSerializer.new(person, **evidence.to_h, url_options: url_options.except(:_recall))
       end
 
       private
