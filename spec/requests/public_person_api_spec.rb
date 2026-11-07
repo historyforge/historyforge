@@ -48,15 +48,13 @@ RSpec.describe 'Public Person API v1', type: :request do
     expect(response.body).not_to include('Private', polymorphic_path(unreviewed))
   end
 
-  it 'excludes private-year and unreviewed evidence even for an administrator' do
+  it 'uses the caller’s census-year and record permissions' do
     person = create(:person)
     unreviewed = create(:census1910_record, person:, occupation: 'Carpenter')
     hidden = create(:census1930_record, occupation: 'Banker')
     hidden.update_columns(person_id: person.id, reviewed_at: Time.current)
     allow(Setting).to receive(:can_view_public?).and_call_original
     allow(Setting).to receive(:can_view_public?).with(1930).and_return(false)
-    sign_in create(:administrator)
-
     get api_v1_person_path(person, format: :json)
 
     expect(response).to have_http_status(:ok)
@@ -64,6 +62,16 @@ RSpec.describe 'Public Person API v1', type: :request do
       'summary' => nil, 'summary_source_links' => [], 'census_observations' => [], 'source_links' => [], 'relationships' => []
     )
     expect(response.body).not_to include(polymorphic_path(unreviewed), polymorphic_path(hidden))
+
+    sign_in create(:administrator)
+    get api_v1_person_path(person, format: :json)
+
+    expect(response).to have_http_status(:ok)
+    expect(response.headers['Cache-Control']).to include('no-store')
+    expect(response.parsed_body['source_links'].pluck('url')).to eq([
+      "#{request.base_url}#{polymorphic_path(unreviewed)}",
+      "#{request.base_url}#{polymorphic_path(hidden)}",
+    ])
   end
 
   it 'returns a JSON 403 when public People access is disabled, including for signed-in callers' do

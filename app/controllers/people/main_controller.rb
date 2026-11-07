@@ -90,10 +90,6 @@ module People
 
     private
 
-    def census_record_readable?(record)
-      can_census?(record.year) && can?(:read, record)
-    end
-
     def load_representation
       evidence = LoadCensusEvidence.call(person: @person, readable: method(:census_record_readable?))
       @person_representation = PersonSerializer.new(

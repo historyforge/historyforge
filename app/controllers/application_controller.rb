@@ -100,6 +100,10 @@ class ApplicationController < ActionController::Base
 
   private
 
+  def census_record_readable?(record)
+    can_census?(record.year) && can?(:read, record)
+  end
+
   def after_invite_path_for(_user)
     users_path
   end
