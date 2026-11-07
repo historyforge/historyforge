@@ -22,7 +22,7 @@ RSpec.describe People::CensusSummary do
   it 'connects residence, household, and schooling across censuses and cites the head records' do
     head_1940 = observation.new(year: 1940, name: 'Andrew Aagaard', person_id: 42, relation_to_head: 'Head')
     head_1950 = observation.new(year: 1950, name: 'Andrew Aagaard', person_id: 42, relation_to_head: 'Head')
-    child = observation.new(year: 1940, locality: caroline, locality_id: 1, family_id: '148',
+    child = observation.new(year: 1940, age: 7, locality: caroline, locality_id: 1, family_id: '148',
                             street_name: 'Coddington', street_address: 'Coddington Rd',
                             relation_to_head: 'Daughter', fellows: [head_1940], attended_school: true, occupation: 'None')
     teenager = observation.new(year: 1950, locality: caroline, locality_id: 1, family_id: '152',
@@ -31,7 +31,7 @@ RSpec.describe People::CensusSummary do
 
     result = summarize(teenager, child)
 
-    expect(result.paragraph).to include('In 1940, Frances Aagaard lived on Coddington Rd in Caroline',
+    expect(result.paragraph).to include('At seven, Frances Aagaard lived on Coddington Rd in Caroline',
                                         'was listed as Andrew Aagaard’s daughter',
                                         'In 1950, she lived at 1784 Coddington Rd in Caroline',
                                         'was listed as a high school senior')

@@ -9,6 +9,7 @@ module People
     HEAD_RELATIONS = %w[daughter son stepdaughter stepson wife husband].freeze
     GENERIC_JOBS = %w[employer employee worker unemployed retired].freeze
     PRONOUNS = { 'F' => 'she', 'M' => 'he' }.freeze
+    CHILDHOOD_AGES = %w[one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen].freeze
 
     def self.call(name:, sex:, records:, readable:)
       new(name:, sex:, records:, readable:).call
@@ -37,7 +38,13 @@ module People
                     if selected.size == 2 && same_head?(first, selected.last)
                       selected[-1] = selected.last.with(household: nil, head: nil)
                     end
-                    selected.each_with_index.map { |entry, i| sentence(entry, i.zero? ? @name : @pronoun) }
+                    selected.each_with_index.map do |entry, i|
+                      if i.zero?
+                        sentence(entry, @name, opening: childhood_opening(entry.record.age))
+                      else
+                        sentence(entry, @pronoun)
+                      end
+                    end
                   end
       sources = selected.flat_map { |entry| [entry.record, entry.head].compact }.uniq
       Result.new(paragraph: sentences.join(' '), sources:)
@@ -112,12 +119,16 @@ module People
       [entry.residence, entry.household, entry.activity]
     end
 
-    def sentence(entry, subject, years: entry.record.year)
+    def childhood_opening(age)
+      "At #{CHILDHOOD_AGES.fetch(age - 1)}" if age&.between?(1, CHILDHOOD_AGES.length)
+    end
+
+    def sentence(entry, subject, years: entry.record.year, opening: nil)
       observations = [entry.household, entry.activity].compact
       facts = [("lived #{entry.residence}" if entry.residence)]
       facts << "#{subject == 'they' ? 'were' : 'was'} #{observations.to_sentence}" if observations.any?
       facts.compact!
-      "In #{years}, #{subject} #{facts.to_sentence}."
+      "#{opening || "In #{years}"}, #{subject} #{facts.to_sentence}."
     end
 
     def usable_text(value)
