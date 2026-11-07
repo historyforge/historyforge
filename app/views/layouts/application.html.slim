@@ -3,6 +3,7 @@ html
   head
     = google_tag_manager
     title= [page_title, 'HistoryForge'].compact.join(' | ')
+    = yield :meta_description
     meta name='viewport' content='width=device-width, initial-scale=1'
     / Prevent Turbo from caching pages when logged in - avoids stale auth state and "permission denied" after session expiry
     - if user_signed_in?

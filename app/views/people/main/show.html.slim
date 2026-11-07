@@ -1,5 +1,10 @@
-- set_page_title @person.name
+- set_page_title @person_representation.name
+- content_for :head do
+  link rel="canonical" href=@person_representation.canonical_url
 - unless user_signed_in?
+  - if (description = @person_representation.description)
+    - content_for :meta_description do
+      meta name="description" content=String.new(description)
   script type="application/ld+json"
     == ERB::Util.json_escape(PersonJsonLdSerializer.new(@person_representation).to_json)
 = render 'shared/flag_resolution', item: @person
