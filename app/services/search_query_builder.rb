@@ -7,6 +7,8 @@ class SearchQueryBuilder
   include ActiveModel::Validations
   include FastMemoize
 
+  OPERATOR_FILTER_KEYS = %i[operator_id operator_created_from operator_created_to].freeze
+
   attr_accessor :page, :s, :f, :g, :user, :c, :d, :sort, :paged, :per, :scope, :from, :to, :navigation
 
   delegate :any?, :present?, :each, :first, :last,
@@ -33,7 +35,22 @@ class SearchQueryBuilder
   end
 
   def active?
-    ransack_params.keys.any?
+    operator_filter_active? || ransack_params.keys.any?
+  end
+
+  def operator_filter_active?
+    operator_filters[:operator_id].present?
+  end
+
+  def operator_filters
+    s.symbolize_keys.slice(*OPERATOR_FILTER_KEYS)
+  end
+
+  def operator_choices
+    return User.order(:login).pluck(:login, :id) if can_search_other_operators?
+    return [['My records', user.id]] if user&.has_role?('census taker')
+
+    []
   end
 
   def default_field?(field)
@@ -99,15 +116,52 @@ class SearchQueryBuilder
   private
 
   def builder
-    Builder.new entity_class, ransack_params
+    Builder.new(entity_class, ransack_params).tap do |query|
+      filter_by_operator(query) if operator_filter_active?
+    end
   end
 
   memoize :builder
+
+  def can_search_other_operators?
+    return false unless user
+
+    ability = Ability.new(user)
+    ability.can?(:review, CensusRecord) || (entity_class == Building && ability.can?(:review, Building))
+  end
+
+  def filter_by_operator(query)
+    filters = operator_filters
+    operator_id = Integer(filters[:operator_id].to_s, 10, exception: false)
+    return query.none unless operator_id&.positive?
+    return query.none unless can_search_other_operators? || (user&.has_role?('census taker') && operator_id == user.id)
+
+    if entity_class == Person
+      creations = Person.paper_trail.version_class.where(item_type: 'Person', event: 'create', whodunnit: operator_id.to_s)
+      query.where(id: creations.select(:item_id))
+    else
+      query.where(entity_class.table_name => { created_by_id: operator_id })
+    end
+
+    created_at = entity_class.arel_table[:created_at]
+    if filters[:operator_created_from].present?
+      start_date = Date.iso8601(filters[:operator_created_from].to_s)
+      query.where(created_at.gteq(start_date.in_time_zone))
+    end
+    if filters[:operator_created_to].present?
+      end_date = Date.iso8601(filters[:operator_created_to].to_s)
+      query.where(created_at.lt((end_date + 1.day).in_time_zone))
+    end
+  rescue Date::Error
+    query.none
+  end
 
   def ransack_params
     prepare_search_filters
     p = {}
     s.each do |key, value|
+      next if OPERATOR_FILTER_KEYS.include?(key.to_sym)
+
       if value.is_a?(Array) && value.include?("blank")
         p[:g] ||= []
         case key

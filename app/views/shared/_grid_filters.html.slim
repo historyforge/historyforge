@@ -53,12 +53,28 @@
         = form.submit 'Submit', data: { turbo_submits_with: 'Sending...' }, class: 'btn btn-primary mr-auto'
         button.btn.btn-light.ml-auto.checkall data-scope="#fields" type="button" Check all
 
-  .collapse.fade#newAttributeFilter
+  .collapse.fade#newAttributeFilter class=('show' if @search.operator_filter_active?)
     .card.mb-3
       .card-header
         button.float-right.close(type="button" data-toggle="collapse" data-target="#newAttributeFilter") &times;
         span Search Filters
       .card-body
+        - operator_choices = @search.operator_choices
+        - if operator_choices.any?
+          - operator_filters = @search.operator_filters
+          .form-row
+            .form-group.col-md-4
+              = label_tag 's_operator_id', 'Created by'
+              = select_tag 's[operator_id]', options_for_select(operator_choices, operator_filters[:operator_id]), include_blank: 'Any creator', class: 'form-control'
+            .form-group.col-md-4
+              = label_tag 's_operator_created_from', 'Created from'
+              = date_field_tag 's[operator_created_from]', operator_filters[:operator_created_from], class: 'form-control'
+            .form-group.col-md-4
+              = label_tag 's_operator_created_to', 'Created through'
+              = date_field_tag 's[operator_created_to]', operator_filters[:operator_created_to], class: 'form-control'
+          p.form-text.text-muted Select a creator to filter by creation date.
+          hr
+
         - if controller.respond_to?(:year) && user_signed_in?
           .row
             - if controller.year >= 1880

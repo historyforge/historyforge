@@ -25,6 +25,18 @@ RSpec.describe CensusRecordSearch do
            occupation: 'None')
   end
 
+  it 'filters census records by creator' do
+    reviewer = create(:administrator)
+    operator = create(:active_user)
+    match = create_1870_record(page_number: 1)
+    match.update!(created_by: operator)
+    create_1870_record(page_number: 2)
+
+    search = described_class.generate(year: 1870, user: reviewer, params: { s: { operator_id: operator.id } })
+
+    expect(search.scoped).to contain_exactly(match)
+  end
+
   describe '#max_page_number' do
     before do
       Current.locality_id = locality.id
