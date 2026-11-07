@@ -83,7 +83,7 @@ RSpec.describe 'Operator search', :versioning, type: :request do
     expect(response).to have_http_status(:forbidden)
   end
 
-  it 'links from the account menu to searches for the signed-in operator' do
+  it 'links from the My menu to searches for the signed-in operator' do
     allow(Setting).to receive(:can_people_private?).and_return(true)
     allow(Setting).to receive(:can_view_private?).and_call_original
     allow(Setting).to receive(:can_view_private?).with(1910).and_return(true)
@@ -92,11 +92,13 @@ RSpec.describe 'Operator search', :versioning, type: :request do
     get my_stuff_users_path, params: { s: { operator_id: other_operator.id } }
     expect(response).to have_http_status(:ok)
     html = Nokogiri::HTML(response.body)
-    menu_link = html.css('#user-menu-item a').find { |link| link.text == 'My stuff' }
-    expect(menu_link['href']).to eq(my_stuff_users_path)
-    links = html.css('.list-group a').map { |link| link['href'] }
+    menu = html.at_css('#my-menu-item')
+    expect(menu.at_css('.dropdown-toggle').text).to eq('My')
+    menu_links = menu.css('.dropdown-item').map { |link| link['href'] }
     filters = { operator_id: operator.id }
-    expect(links).to include(buildings_path(s: filters), people_path(s: filters), census_records_path(year: 1910, s: filters))
+    search_links = [buildings_path(s: filters), people_path(s: filters), census_records_path(year: 1910, s: filters)]
+    expect(menu_links).to include(my_stuff_users_path, *search_links)
+    expect(html.css('.list-group a').map { |link| link['href'] }).to include(*search_links)
   end
 
   it 'lets person record editors search for people they created' do

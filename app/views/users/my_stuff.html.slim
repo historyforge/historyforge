@@ -1,13 +1,5 @@
 - set_page_title 'My stuff'
-- filters = { operator_id: current_user.id }
-
 p Find records you created.
 
 .list-group
-  - if operator_search_scope(Building)
-    = link_to 'My buildings', buildings_path(s: filters), class: 'list-group-item list-group-item-action'
-  - if operator_search_scope(Person) && can_people?
-    = link_to 'My people records', people_path(s: filters), class: 'list-group-item list-group-item-action'
-  - if operator_search_scope(CensusRecord)
-    - CensusYears.each_visible_to_user(true) do |year|
-      = link_to "My #{year} US Census records", census_records_path(year:, s: filters), class: 'list-group-item list-group-item-action'
+  = render 'my_search_links', link_class: 'list-group-item list-group-item-action'
