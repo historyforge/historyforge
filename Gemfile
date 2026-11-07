@@ -49,7 +49,7 @@ gem 'turbo-rails'
 gem 'recaptcha'
 gem 'ruby-vips'
 gem 'rubyXL', require: false
-gem 'rubyzip', require: false
+gem 'rubyzip', '>= 3.4.0', require: false
 gem 'sassc'
 gem 'simple_form'
 gem 'slim'
@@ -83,7 +83,7 @@ group :development, :test do
   gem 'pry'
   gem 'pry-nav'
   gem 'rspec-rails'
-  gem 'webdrivers'
+  gem 'selenium-webdriver'
 end
 
 group :test do
