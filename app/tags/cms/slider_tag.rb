@@ -4,7 +4,7 @@ module Cms
   class SliderTag < Liquid::Block
 
     def initialize(tag_name, markup, tokens)
-      @slider_options = '{selector: ".slides > .cms-slide"'
+      @slider_options = +'{selector: ".slides > .cms-slide"'
       if markup.present?
         options = markup.split(' ')
         @css_id = options.shift
@@ -33,5 +33,3 @@ module Cms
 
   end
 end
-
-Liquid::Template.register_tag('slider', Cms::SliderTag)

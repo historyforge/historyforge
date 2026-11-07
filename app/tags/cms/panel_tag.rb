@@ -16,5 +16,3 @@ module Cms
     end
   end
 end
-
-Liquid::Template.register_tag('panel', Cms::PanelTag)
