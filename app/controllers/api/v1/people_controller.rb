@@ -2,8 +2,13 @@
 
 module Api
   module V1
-    class PeopleController < ApplicationController
-      skip_before_action :check_cms_for_page
+    class PeopleController < ActionController::API
+      include CensusAccess
+      include LoadSettings
+
+      impersonates :user
+
+      rescue_from CanCan::AccessDenied, with: :permission_denied
 
       def show
         return permission_denied unless Setting.can_people_public?

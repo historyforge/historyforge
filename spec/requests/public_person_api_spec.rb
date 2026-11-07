@@ -72,6 +72,14 @@ RSpec.describe 'Public Person API v1', type: :request do
       "#{request.base_url}#{polymorphic_path(unreviewed)}",
       "#{request.base_url}#{polymorphic_path(hidden)}",
     ])
+
+    put mask_user_path(create(:user))
+    expect(response).to redirect_to(root_path)
+
+    get api_v1_person_path(person)
+
+    expect(response).to have_http_status(:ok)
+    expect(response.parsed_body['source_links'].pluck('url')).to eq(["#{request.base_url}#{polymorphic_path(hidden)}"])
   end
 
   it 'returns a JSON 403 when public People access is disabled, including for signed-in callers' do
