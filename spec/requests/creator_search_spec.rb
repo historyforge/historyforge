@@ -59,7 +59,7 @@ RSpec.describe 'Creator search', :versioning, type: :request do
     expect(people_created_by(other_creator)).to be_empty
   end
 
-  it 'applies rolling presets by calendar date and preserves custom links' do
+  it 'applies rolling presets by calendar date and supports a custom end date' do
     travel_to(Time.zone.local(2025, 1, 14, 12)) do
       recent = create_person_as(creator, created_at: creation_date)
       older = create_person_as(creator, created_at: creation_date - 1.day)
@@ -67,9 +67,7 @@ RSpec.describe 'Creator search', :versioning, type: :request do
 
       expect(people_created_by(creator, creation_date_range: 'last7')).to eq([recent.id])
       expect(people_created_by(creator, creation_date_range: 'today')).to be_empty
-      get people_path(format: :json), params: { s: { operator_id: creator.id, operator_created_to: '2025-01-07' } }
-      expect(response).to have_http_status(:ok)
-      expect(response.parsed_body.map { |row| row.dig('name', 'id') }).to eq([older.id])
+      expect(people_created_by(creator, creation_date_range: 'custom', creation_date_to: '2025-01-07')).to eq([older.id])
     end
   end
 

@@ -8,12 +8,6 @@ class SearchQueryBuilder
   include FastMemoize
 
   CREATOR_FILTER_KEYS = %i[creator_id creation_date_range creation_date_from creation_date_to].freeze
-  LEGACY_CREATOR_FILTER_KEYS = {
-    operator_id: :creator_id,
-    operator_created_range: :creation_date_range,
-    operator_created_from: :creation_date_from,
-    operator_created_to: :creation_date_to,
-  }.freeze
   CREATION_DATE_PRESETS = { 'today' => 1, 'last7' => 7, 'last14' => 14, 'last30' => 30, 'last90' => 90 }.freeze
   CREATION_DATE_CHOICES = [
     ['All time', 'all'], ['Today', 'today'], ['Last 7 days', 'last7'], ['Last 14 days', 'last14'],
@@ -201,17 +195,6 @@ class SearchQueryBuilder
   def prepare_search_filters
     @s = @s.is_a?(String) ? JSON.parse(@s) : @s
     @s = @s.respond_to?(:to_unsafe_hash) ? @s.to_unsafe_hash : @s
-    @s = @s.dup
-    LEGACY_CREATOR_FILTER_KEYS.each do |old_key, new_key|
-      if @s.key?(old_key.to_s)
-        old_key = old_key.to_s
-        new_key = new_key.to_s
-      end
-      next unless @s.key?(old_key)
-
-      value = @s.delete(old_key)
-      @s[new_key] = value unless @s.key?(new_key.to_s) || @s.key?(new_key.to_sym)
-    end
     @s = @s.reject { |key, value| value == "" || (!creator_scope && CREATOR_FILTER_KEYS.include?(key.to_sym)) }
     @s.transform_values! do |value|
       case value
