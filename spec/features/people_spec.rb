@@ -4,7 +4,8 @@ require 'rails_helper'
 
 RSpec.describe 'people' do
   scenario 'the census narrative uses the viewer’s census permissions', driver: :rack_test do
-    person = create(:person)
+    person = create(:person, birth_year: 1880, is_birth_year_estimated: false,
+                             death_year: 1940, is_death_year_estimated: false)
     unreviewed_record = create(:census1920_record, person:, age: 50, occupation: 'Carpenter')
     public_record = create(:census1910_record, person:, age: 30, pob: 'New York', street_name: 'Coddington',
                            street_suffix: 'Rd', reviewed_at: Time.current)
@@ -12,7 +13,7 @@ RSpec.describe 'people' do
     allow(Setting).to receive(:can_view_public?).and_call_original
     allow(Setting).to receive(:can_view_public?).with(1930).and_return(false)
 
-    visit person_path(person)
+    visit person_path(person, ref: 'search')
 
     expect(page).to have_no_text('Census Summary')
     expect(page).to have_no_css('h2', text: /\A(?:About|Person details)\z/i)
@@ -29,8 +30,32 @@ RSpec.describe 'people' do
       expect(page).to have_no_text(/Carpenter|Banker/)
     end
 
+    data = JSON.parse(find('script[type="application/ld+json"]', visible: :all).native.content)
+    origin = URI(page.current_url).origin
+    canonical_url = "#{origin}#{person_path(person)}"
+    source_url = "#{origin}#{polymorphic_path(public_record)}"
+
+    expect(data).to include(
+      '@context' => 'https://schema.org',
+      '@type' => 'Person',
+      '@id' => "#{canonical_url}#person",
+      'url' => canonical_url,
+      'mainEntityOfPage' => canonical_url,
+      'identifier' => person.id.to_s,
+      'name' => person.name,
+      'birthDate' => '1880',
+      'deathDate' => '1940',
+    )
+    expect(data['description']).to include('lived on Coddington Rd')
+    expect(data['subjectOf']).to eq([
+      { '@type' => 'CreativeWork', '@id' => "#{source_url}#census-record",
+        'url' => source_url, 'name' => '1910 census record' },
+    ])
+
     sign_in create(:administrator)
     visit person_path(person)
+
+    expect(page).to have_no_css('script[type="application/ld+json"]', visible: :all)
 
     within('section[aria-label="Biography"]') do
       expect(page).to have_link('1910 census')
@@ -55,10 +80,40 @@ RSpec.describe 'people' do
     visit person_path(person)
 
     expect(page).to have_no_css('section[aria-label="Biography"]')
+    data = JSON.parse(find('script[type="application/ld+json"]', visible: :all).native.content)
+    expect(data).not_to have_key('alternateName')
     within('table[aria-label="Person details"]') do
       expect(page).to have_css('th', text: 'Born')
       expect(page).to have_css('td', text: 'About 1933')
     end
+  end
+
+  scenario 'Person JSON-LD escapes script delimiters and omits unsupported facts', driver: :rack_test do
+    person = create(:person, birth_year: 1880, is_birth_year_estimated: true, death_year: nil)
+    person.update_columns(first_name: %q(Mary "</script><script id="injected-person-jsonld">alert(1)</script>&))
+
+    visit person_path(person)
+
+    json = find('script[type="application/ld+json"]', visible: :all).native.content
+    data = JSON.parse(json)
+
+    expect(json).not_to include('</script>', '<script', '&')
+    expect(page).to have_no_css('script#injected-person-jsonld', visible: :all)
+    expect(data['name']).to eq(person.name)
+    expect(data.keys).not_to include('description', 'birthDate', 'deathDate', 'subjectOf')
+  end
+
+  scenario 'Person JSON-LD uses the visible name variants and falls back to the public description', driver: :rack_test do
+    person = create(:person, description: '<p>A local <em>historian</em>.</p>')
+    person.names.create!(first_name: 'Mary', last_name: 'Jones')
+    person.names.create!(first_name: 'Maria', last_name: 'Jones')
+
+    visit person_path(person)
+
+    data = JSON.parse(find('script[type="application/ld+json"]', visible: :all).native.content)
+    expect(data['description']).to eq('A local historian.')
+    expect(data['alternateName']).to contain_exactly('Mary Jones', 'Maria Jones')
+    expect(page).to have_css('tr', text: /Also recorded as.*Maria Jones, Mary Jones/)
   end
 
   scenario 'edit people' do

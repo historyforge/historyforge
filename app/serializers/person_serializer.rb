@@ -19,15 +19,40 @@ class PersonSerializer < ApplicationSerializer
 
   def serializable_hash
     {
-      id: object.id,
-      name: object.name,
-      canonical_url: routes.person_url(object, **@url_options),
+      id:,
+      name:,
+      canonical_url:,
       summary:,
       summary_source_links:,
+      description:,
+      birth_year:,
+      death_year:,
       census_observations:,
       source_links:,
       relationships:,
     }
+  end
+
+  delegate :id, :name, to: :object
+
+  def canonical_url
+    @canonical_url ||= routes.person_url(object, **@url_options)
+  end
+
+  def alternate_names
+    @alternate_names ||= object.variant_names.map(&:short_name).compact_blank.uniq - [name]
+  end
+
+  def description
+    summary || ActionController::Base.helpers.strip_tags(object.description).presence
+  end
+
+  def birth_year
+    object.birth_year if object.is_birth_year_estimated == false
+  end
+
+  def death_year
+    object.death_year if object.is_death_year_estimated == false
   end
 
   def summary
