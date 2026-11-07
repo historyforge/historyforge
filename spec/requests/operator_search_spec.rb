@@ -39,8 +39,7 @@ RSpec.describe 'Operator search', :versioning, type: :request do
     expect(response.body).to include('s[operator_id]', 's[operator_created_from]', 's[operator_created_to]')
     form = Nokogiri::HTML(response.body)
     expect(form.at_css('#operator_lookup')['value']).to eq(operator.login)
-    expect(form.at_css('[data-target="operator-picker.toggle"]').text).to eq('My stuff')
-    expect(form.at_css('form[data-controller="operator-picker"]')['data-operator-picker-mine']).to eq(reviewer.id.to_s)
+    expect(form.at_css('form[data-controller="operator-picker"] #s_operator_id')['value']).to eq(operator.id.to_s)
 
     expect(people_created_by(operator, operator_created_from: '2025-01-08', operator_created_to: '2025-01-08'))
       .to eq([person.id])
