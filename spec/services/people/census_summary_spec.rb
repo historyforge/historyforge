@@ -3,6 +3,7 @@
 require 'active_support/all'
 require_relative '../../../app/services/people/census_summary'
 require_relative '../../../app/services/people/census_narrative_evidence'
+require_relative '../../../app/services/people/census_household'
 
 RSpec.describe People::CensusSummary do
   let(:observation) do
@@ -17,7 +18,8 @@ RSpec.describe People::CensusSummary do
   let(:caroline) { Data.define(:short_name).new('Caroline') }
 
   def summarize(*records, name: 'Frances Aagaard', sex: 'F', readable: ->(_record) { true })
-    observations = People::CensusNarrativeEvidence.call(records:, readable:)
+    households = records.index_with { |record| People::CensusHousehold.load(record, readable:) }
+    observations = People::CensusNarrativeEvidence.call(records:, households:)
     described_class.call(name:, sex:, observations:)
   end
 
@@ -63,6 +65,19 @@ RSpec.describe People::CensusSummary do
 
     expect(result.paragraph).not_to include('Andrew Aagaard')
     expect(result.sources).to eq([child])
+  end
+
+  it 'does not turn an ambiguous household into a definite claim by filtering out a head' do
+    visible_head = observation.new(year: 1940, name: 'Andrew Aagaard', relation_to_head: 'Head')
+    hidden_head = observation.new(year: 1940, name: 'Another Head', relation_to_head: 'Head')
+    child = observation.new(year: 1940, family_id: '148', locality_id: 1, relation_to_head: 'Daughter',
+                            fellows: [visible_head, hidden_head], attended_school: true)
+    readable = ->(record) { record != hidden_head }
+
+    household = People::CensusHousehold.load(child, readable:)
+
+    expect(household.fellows).to eq([visible_head])
+    expect(summarize(child, readable:).sources).to eq([child])
   end
 
   it 'does not pick among conflicting observations from the same census year' do

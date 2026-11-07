@@ -5,8 +5,10 @@ require 'rails_helper'
 RSpec.describe PersonSerializer do
   let(:person) { build_stubbed(:person, id: 42, first_name: 'Mary', last_name: 'Jones') }
   let(:url_options) { { host: 'history.example', protocol: 'https', script_name: '/archive' } }
-  def serialize(*census_records, census_readable: ->(_record) { true })
-    described_class.new(person, census_records:, census_readable:, url_options:)
+
+  def serialize(*census_records, households: {})
+    census_households = census_records.index_with { People::CensusHousehold.new(fellows: [], head: nil) }.merge(households)
+    described_class.new(person, census_records:, census_households:, url_options:)
   end
 
   it 'keeps Person identity separate from year-specific census observations and their links' do
@@ -15,8 +17,8 @@ RSpec.describe PersonSerializer do
     later = build_stubbed(:census1910_record, id: 1, person_id: person.id, age: 65, pob: 'New York',
                                               occupation: 'Merchant', reviewed_at: Time.current)
     expect(person).not_to receive(:census_records)
-    allow(earlier).to receive(:fellows).and_return([])
-    allow(later).to receive(:fellows).and_return([])
+    expect(earlier).not_to receive(:fellows)
+    expect(later).not_to receive(:fellows)
 
     result = serialize(later, earlier).serializable_hash
 
@@ -40,12 +42,12 @@ RSpec.describe PersonSerializer do
   it 'links other people only through public evidence of a shared census household' do
     record = build_stubbed(:census1910_record, id: 1, reviewed_at: Time.current)
     fellow = build_stubbed(:census1910_record, id: 2, person_id: 43, relation_to_head: 'Daughter', reviewed_at: Time.current)
-    unreviewed = build_stubbed(:census1910_record, id: 3, person_id: 44)
     unlinked = build_stubbed(:census1910_record, id: 4, reviewed_at: Time.current)
-    expect(record).to receive(:fellows).once.and_return([fellow, unreviewed, unlinked])
+    expect(record).not_to receive(:fellows)
     expect(fellow).not_to receive(:person)
 
-    serializer = serialize(record, census_readable: ->(row) { row != unreviewed })
+    household = People::CensusHousehold.new(fellows: [fellow, unlinked], head: nil)
+    serializer = serialize(record, households: { record => household })
 
     expect(serializer.relationships).to eq([
       {
@@ -72,13 +74,14 @@ RSpec.describe PersonSerializer do
     record = build_stubbed(:census1910_record, id: 1, person_id: person.id, relation_to_head: 'Daughter',
                                               street_name: 'Buffalo', reviewed_at: Time.current)
     head = build_stubbed(:census1910_record, id: 2, relation_to_head: 'Head', reviewed_at: Time.current)
-    allow(record).to receive(:fellows).and_return([head])
+    expect(record).not_to receive(:fellows)
 
-    serializer = serialize(record, census_readable: ->(row) { row != head })
+    serializer = serialize(record)
     expect(serializer.summary).not_to include(head.name)
     expect(serializer.summary_source_links.pluck(:record_id)).to eq([record.id])
 
-    refreshed = serialize(record)
+    household = People::CensusHousehold.new(fellows: [head], head:)
+    refreshed = serialize(record, households: { record => household })
     expect(refreshed.summary).to include("#{head.name}’s daughter")
     expect(refreshed.summary_source_links.pluck(:record_id)).to eq([record.id, head.id])
   end

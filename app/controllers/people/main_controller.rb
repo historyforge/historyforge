@@ -41,7 +41,8 @@ module People
       authorize! :read, @person
       census_readable = public_census_reader
       census_records = @person.census_records.select(&census_readable)
-      @public_person = PersonSerializer.new(@person, census_records:, census_readable:, url_options: url_options.except(:_recall))
+      census_households = census_records.index_with { |record| CensusHousehold.load(record, readable: census_readable) }
+      @public_person = PersonSerializer.new(@person, census_records:, census_households:, url_options: url_options.except(:_recall))
       load_navigation
     end
 

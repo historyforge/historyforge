@@ -10,10 +10,10 @@ class PersonSerializer < ApplicationSerializer
     end
   end
 
-  def initialize(person, census_records:, census_readable:, url_options:)
+  def initialize(person, census_records:, census_households:, url_options:)
     super(person)
     @census_records = census_records.sort_by { |record| [record.year, record.id] }
-    @census_readable = census_readable
+    @census_households = census_households
     @url_options = url_options
   end
 
@@ -51,8 +51,8 @@ class PersonSerializer < ApplicationSerializer
 
   def relationships
     @relationships ||= @census_records.flat_map do |record|
-      record.fellows.filter_map do |fellow|
-        next unless fellow.person_id && fellow.person_id != object.id && @census_readable.call(fellow)
+      @census_households.fetch(record).fellows.filter_map do |fellow|
+        next unless fellow.person_id && fellow.person_id != object.id
 
         {
           type: 'census_household_member',
@@ -73,7 +73,7 @@ class PersonSerializer < ApplicationSerializer
   def summary_result
     return @summary_result if defined?(@summary_result)
 
-    observations = People::CensusNarrativeEvidence.call(records: @census_records, readable: @census_readable)
+    observations = People::CensusNarrativeEvidence.call(records: @census_records, households: @census_households)
     @summary_result = People::CensusSummary.call(name: object.name, sex: object.sex, observations:)
   end
 
