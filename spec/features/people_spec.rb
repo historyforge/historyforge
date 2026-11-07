@@ -15,10 +15,11 @@ RSpec.describe 'people' do
     visit person_path(person)
 
     expect(page).to have_no_text('Census Summary')
-    expect(page).to have_css('.content-header h1 + a', text: 'View All')
+    expect(page).to have_no_css('h2', text: /\A(?:About|Person details)\z/i)
+    expect(page).to have_no_link('View All', href: people_path)
     expect(page).to have_no_css('.person-actions')
-    expect(page).to have_css('section.col-lg-4[aria-labelledby="person-facts-heading"]')
-    within('section[aria-labelledby="person-about-heading"]') do
+    expect(page).to have_css('.col-lg-4 .card table[aria-label="Person details"]')
+    within('section[aria-label="Biography"]') do
       expect(page).to have_text('lived on Coddington Rd')
       expect(page).to have_link('1910 census', href: polymorphic_path(public_record))
       expect(page).to have_no_link(href: polymorphic_path(unreviewed_record))
@@ -32,8 +33,8 @@ RSpec.describe 'people' do
 
     visit person_path(person)
 
-    expect(page).to have_no_css('#person-about-heading')
-    within('section[aria-labelledby="person-facts-heading"]') do
+    expect(page).to have_no_css('section[aria-label="Biography"]')
+    within('table[aria-label="Person details"]') do
       expect(page).to have_css('th', text: 'Born')
       expect(page).to have_css('td', text: 'About 1933')
     end
@@ -45,7 +46,6 @@ RSpec.describe 'people' do
     visit person_path(person.id)
     expect(page).to have_content person.name
     expect(page).to have_content '1940'
-    expect(page).to have_no_link('View All', href: people_path, class: 'flex-shrink-0')
     within('.person-actions') do
       expect(page).to have_link('View All', href: people_path)
       click_on 'Edit'
