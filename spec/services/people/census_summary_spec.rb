@@ -18,7 +18,7 @@ RSpec.describe People::CensusSummary do
   let(:caroline) { Data.define(:short_name).new('Caroline') }
 
   def summarize(*records, name: 'Frances Aagaard', sex: 'F', readable: ->(_record) { true })
-    households = records.index_with { |record| People::CensusHousehold.load(record, readable:) }
+    households = records.index_with { |record| People::CensusHousehold.call(record:, readable:) }
     observations = People::CensusNarrativeEvidence.call(records:, households:)
     described_class.call(name:, sex:, observations:)
   end
@@ -74,7 +74,7 @@ RSpec.describe People::CensusSummary do
                             fellows: [visible_head, hidden_head], attended_school: true)
     readable = ->(record) { record != hidden_head }
 
-    household = People::CensusHousehold.load(child, readable:)
+    household = People::CensusHousehold.call(record: child, readable:)
 
     expect(household.fellows).to eq([visible_head])
     expect(summarize(child, readable:).sources).to eq([child])

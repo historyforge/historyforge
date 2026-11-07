@@ -95,8 +95,9 @@ module People
     end
 
     def load_representation
-      census_records = @person.census_records.select(&method(:census_record_readable?))
-      census_households = census_records.index_with { |record| CensusHousehold.load(record, readable: method(:census_record_readable?)) }
+      readable = method(:census_record_readable?)
+      census_records = @person.census_records.select(&readable)
+      census_households = census_records.index_with { |record| CensusHousehold.call(record:, readable:) }
       @person_representation = PersonSerializer.new(
         @person, 
         census_records:, 
