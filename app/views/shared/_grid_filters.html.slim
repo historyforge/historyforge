@@ -69,12 +69,17 @@
               - if @search.operator_scope == :all
                 = label_tag 'operator_lookup', 'Created by'
                 = search_field_tag 'operator_lookup', @search.selected_operator_name, name: nil, placeholder: 'Search by name or email', autocomplete: 'off', class: 'form-control mb-2', data: { target: 'operator-picker.lookup', action: 'input->operator-picker#clearSelection', url: operator_autocomplete_users_path(format: :json) }
-            .form-group.col-md-4
-              = label_tag 's_operator_created_from', 'Created from'
-              = date_field_tag 's[operator_created_from]', operator_filters[:operator_created_from], class: 'form-control'
-            .form-group.col-md-4
-              = label_tag 's_operator_created_to', 'Created through'
-              = date_field_tag 's[operator_created_to]', operator_filters[:operator_created_to], class: 'form-control'
+            .form-group.col-md-8 data-controller="operator-date-range"
+              - custom_range = @search.operator_created_range == 'custom'
+              = label_tag 's_operator_created_range', 'Creation date'
+              = select_tag 's[operator_created_range]', options_for_select(SearchQueryBuilder::OPERATOR_DATE_CHOICES, @search.operator_created_range), class: 'form-control', data: { target: 'operator-date-range.preset', action: 'change->operator-date-range#update' }
+              .form-row.mt-2 hidden=(!custom_range) data-target="operator-date-range.custom"
+                .col
+                  = label_tag 's_operator_created_from', 'Start date'
+                  = date_field_tag 's[operator_created_from]', operator_filters[:operator_created_from], class: 'form-control', disabled: !custom_range
+                .col
+                  = label_tag 's_operator_created_to', 'End date'
+                  = date_field_tag 's[operator_created_to]', operator_filters[:operator_created_to], class: 'form-control', disabled: !custom_range
           p.form-text.text-muted Select a creator to filter by creation date.
           hr
 

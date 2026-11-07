@@ -7,7 +7,12 @@ class SearchQueryBuilder
   include ActiveModel::Validations
   include FastMemoize
 
-  OPERATOR_FILTER_KEYS = %i[operator_id operator_created_from operator_created_to].freeze
+  OPERATOR_FILTER_KEYS = %i[operator_id operator_created_range operator_created_from operator_created_to].freeze
+  OPERATOR_DATE_PRESETS = { 'today' => 1, 'last7' => 7, 'last14' => 14, 'last30' => 30, 'last90' => 90 }.freeze
+  OPERATOR_DATE_CHOICES = [
+    ['All time', 'all'], ['Today', 'today'], ['Last 7 days', 'last7'], ['Last 14 days', 'last14'],
+    ['Last 30 days', 'last30'], ['Last 90 days', 'last90'], ['Custom range', 'custom'],
+  ].freeze
 
   attr_accessor :page, :s, :f, :g, :user, :c, :d, :sort, :paged, :per, :scope, :from, :to, :navigation
   attr_reader :operator_scope
@@ -48,6 +53,11 @@ class SearchQueryBuilder
   end
 
   memoize :operator_filters
+
+  def operator_created_range
+    operator_filters[:operator_created_range].presence ||
+      (operator_filters.values_at(:operator_created_from, :operator_created_to).any?(&:present?) ? 'custom' : 'all')
+  end
 
   def selected_operator_name
     return unless operator_scope == :all && operator_filter_active?
@@ -143,15 +153,27 @@ class SearchQueryBuilder
       query.where(entity_class.table_name => { created_by_id: operator_id })
     end
 
+    filter_by_operator_creation_date(query)
+  end
+
+  def filter_by_operator_creation_date(query)
+    range = operator_created_range
+    return if range == 'all'
+
+    if range == 'custom'
+      from, through = operator_filters.values_at(:operator_created_from, :operator_created_to)
+      start_date = Date.iso8601(from.to_s) if from.present?
+      end_date = Date.iso8601(through.to_s) if through.present?
+    elsif (days = OPERATOR_DATE_PRESETS[range])
+      end_date = Date.current
+      start_date = end_date - (days - 1)
+    else
+      return query.none
+    end
+
     created_at = entity_class.arel_table[:created_at]
-    if filters[:operator_created_from].present?
-      start_date = Date.iso8601(filters[:operator_created_from].to_s)
-      query.where(created_at.gteq(start_date.in_time_zone))
-    end
-    if filters[:operator_created_to].present?
-      end_date = Date.iso8601(filters[:operator_created_to].to_s)
-      query.where(created_at.lt((end_date + 1.day).in_time_zone))
-    end
+    query.where(created_at.gteq(start_date.in_time_zone)) if start_date
+    query.where(created_at.lt(end_date.next_day.in_time_zone)) if end_date
   rescue Date::Error
     query.none
   end
