@@ -10,16 +10,16 @@ class PersonSerializer < ApplicationSerializer
     end
   end
 
-  def initialize(person, routes:)
+  def initialize(person, url_options:)
     super(person)
-    @routes = routes
+    @url_options = url_options
   end
 
   def serializable_hash
     {
       id: object.id,
       name: object.name,
-      canonical_url: @routes.person_url(object),
+      canonical_url: routes.person_url(object, **@url_options),
       summary:,
       summary_source_links:,
       census_observations:,
@@ -55,7 +55,7 @@ class PersonSerializer < ApplicationSerializer
         {
           type: 'census_household_member',
           person_id: fellow.person_id,
-          person_url: @routes.person_url(fellow.person_id),
+          person_url: routes.person_url(fellow.person_id, **@url_options),
           source_links: [source_link(record), source_link(fellow)],
         }
       end
@@ -63,6 +63,10 @@ class PersonSerializer < ApplicationSerializer
   end
 
   private
+
+  def routes
+    Rails.application.routes.url_helpers
+  end
 
   def summary_result
     return @summary_result if defined?(@summary_result)
@@ -78,6 +82,6 @@ class PersonSerializer < ApplicationSerializer
   end
 
   def source_link(record)
-    { year: record.year, record_id: record.id, url: @routes.polymorphic_url(record) }
+    { year: record.year, record_id: record.id, url: routes.polymorphic_url(record, @url_options) }
   end
 end

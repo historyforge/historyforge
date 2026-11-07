@@ -39,7 +39,7 @@ module People
     def show
       @person = Person.find params[:id]
       authorize! :read, @person
-      @public_person = PersonSerializer.new(@person, routes: self)
+      @public_person = PersonSerializer.new(@person, url_options: url_options.except(:_recall))
       load_navigation
     end
 

@@ -4,17 +4,8 @@ require 'rails_helper'
 
 RSpec.describe PersonSerializer do
   let(:person) { build_stubbed(:person, id: 42, first_name: 'Mary', last_name: 'Jones') }
-  let(:routes) do
-    routes = ActionDispatch::Routing::RouteSet.new
-    routes.draw do
-      resources :people, only: :show
-      resources :census1850_records, only: :show
-      resources :census1910_records, only: :show
-    end
-    routes.default_url_options[:host] = 'history.example'
-    routes.url_helpers
-  end
-  let(:serializer) { described_class.new(person, routes:) }
+  let(:url_options) { { host: 'history.example', protocol: 'https', script_name: '/archive' } }
+  let(:serializer) { described_class.new(person, url_options:) }
 
   before do
     allow(Setting).to receive(:can_view_public?).and_call_original
@@ -36,7 +27,7 @@ RSpec.describe PersonSerializer do
 
     result = serializer.serializable_hash
 
-    expect(result).to include(id: 42, name: person.name, canonical_url: routes.person_url(person.id))
+    expect(result).to include(id: 42, name: person.name, canonical_url: "https://history.example/archive/people/#{person.id}")
     expect(result[:summary]).to include('At five, Mary Jones lived on Buffalo', 'In 1910', '“Merchant”')
     expect(result[:census_observations]).to match([
       a_hash_including(id: 1, year: 1850, name: earlier.name, age: 5, pob: 'New York'),
@@ -44,12 +35,12 @@ RSpec.describe PersonSerializer do
     ])
     expect(result[:census_observations].first).not_to have_key(:relation_to_head)
     expect(result[:source_links]).to eq([
-      { year: 1850, record_id: 1, url: routes.polymorphic_url(earlier) },
-      { year: 1910, record_id: 1, url: routes.polymorphic_url(later) },
+      { year: 1850, record_id: 1, url: "https://history.example/archive/census/1850/#{earlier.id}" },
+      { year: 1910, record_id: 1, url: "https://history.example/archive/census/1910/#{later.id}" },
     ])
     expect(result[:summary_source_links]).to eq([
-      { year: 1850, record_id: 1, url: routes.polymorphic_url(earlier), label: '1850 census' },
-      { year: 1910, record_id: 1, url: routes.polymorphic_url(later), label: '1910 census' },
+      { year: 1850, record_id: 1, url: "https://history.example/archive/census/1850/#{earlier.id}", label: '1850 census' },
+      { year: 1910, record_id: 1, url: "https://history.example/archive/census/1910/#{later.id}", label: '1910 census' },
     ])
   end
 
@@ -66,10 +57,10 @@ RSpec.describe PersonSerializer do
       {
         type: 'census_household_member',
         person_id: 43,
-        person_url: routes.person_url(43),
+        person_url: 'https://history.example/archive/people/43',
         source_links: [
-          { year: 1910, record_id: 1, url: routes.polymorphic_url(record) },
-          { year: 1910, record_id: 2, url: routes.polymorphic_url(fellow) },
+          { year: 1910, record_id: 1, url: "https://history.example/archive/census/1910/#{record.id}" },
+          { year: 1910, record_id: 2, url: "https://history.example/archive/census/1910/#{fellow.id}" },
         ],
       },
     ])
@@ -95,7 +86,7 @@ RSpec.describe PersonSerializer do
     expect(serializer.summary_source_links.pluck(:record_id)).to eq([record.id])
 
     head.reviewed_at = Time.current
-    refreshed = described_class.new(person, routes:)
+    refreshed = described_class.new(person, url_options:)
     expect(refreshed.summary).to include("#{head.name}’s daughter")
     expect(refreshed.summary_source_links.pluck(:record_id)).to eq([record.id, head.id])
   end
