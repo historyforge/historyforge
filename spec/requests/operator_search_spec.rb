@@ -57,14 +57,23 @@ RSpec.describe 'Operator search', :versioning, type: :request do
     expect(people_created_by(operator)).to be_empty
   end
 
-  it 'lets builders search by another operator on buildings only' do
-    building = create(:building, created_by: operator)
+  it 'limits builders to their own creations' do
+    builder = create(:builder)
+    building = create(:building, created_by: builder)
+    create(:building, created_by: operator)
+    person = create_person_as(builder, created_at: creation_date)
     create_person_as(operator, created_at: creation_date)
-    sign_in_as(create(:builder))
+    sign_in_as(builder)
+
+    get buildings_path(format: :json), params: { s: { operator_id: builder.id }, from: 0, to: 100 }
+    expect(response).to have_http_status(:ok)
+    expect(response.parsed_body.map { |row| row.dig('street_address', 'id') }).to eq([building.id])
 
     get buildings_path(format: :json), params: { s: { operator_id: operator.id }, from: 0, to: 100 }
     expect(response).to have_http_status(:ok)
-    expect(response.parsed_body.map { |row| row.dig('street_address', 'id') }).to eq([building.id])
+    expect(response.parsed_body).to be_empty
+
+    expect(people_created_by(builder)).to eq([person.id])
     expect(people_created_by(operator)).to be_empty
   end
 end

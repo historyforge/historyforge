@@ -71,7 +71,7 @@ class Ability
         can :update, Building
         can :merge, Building
         can :review, Building
-        can :search_by_operator, Building
+        can :search_by_own_operator, [CensusRecord, Building, Person]
       end
 
       if user.has_role?("person record editor")
