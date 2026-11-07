@@ -196,7 +196,7 @@ module CensusRecords
       return unless navigation_params
 
       @navigation = CensusRecordSearch.generate(
-        params: navigation_params, year:, user: current_user, operator_scope: operator_search_scope(resource_class)
+        params: navigation_params, year:, user: current_user, creator_scope: creator_search_scope(resource_class)
       ).navigation_neighbors(@model.id)
     end
 
@@ -249,7 +249,7 @@ module CensusRecords
     def load_census_records
       authorize! :read, resource_class
       @search = CensusRecordSearch.generate(
-        params: search_params, year:, user: current_user, operator_scope: operator_search_scope(resource_class)
+        params: search_params, year:, user: current_user, creator_scope: creator_search_scope(resource_class)
       )
     end
 

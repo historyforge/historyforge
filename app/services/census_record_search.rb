@@ -103,12 +103,12 @@ class CensusRecordSearch < SearchQueryBuilder
     "lower(last_name) #{dir}, lower(first_name) #{dir}, middle_name #{dir} NULLS FIRST"
   end
 
-  def self.generate(year:, params: {}, user:, operator_scope: nil)
+  def self.generate(year:, params: {}, user:, creator_scope: nil)
     scope = params[:scope]
     new entity_class: "Census#{year}Record".constantize,
         form_fields_config: "Census#{year}FormFields".constantize,
         user: user,
-        operator_scope:,
+        creator_scope:,
         s: params[:s],
         f: params[:f],
         g: params[:g],

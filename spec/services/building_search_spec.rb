@@ -4,15 +4,15 @@ require 'rails_helper'
 
 RSpec.describe BuildingSearch do
   it 'filters by the building creator and reserves direct creator predicates' do
-    operator = create(:census_taker)
-    own_building = create(:building, created_by: operator)
+    creator = create(:census_taker)
+    own_building = create(:building, created_by: creator)
     other_building = create(:building, created_by: create(:active_user))
 
-    search = described_class.generate(user: operator, operator_scope: operator.id, params: { s: { operator_id: operator.id } })
+    search = described_class.generate(user: creator, creator_scope: creator.id, params: { s: { creator_id: creator.id } })
     expect(search).to be_active
     expect(search.scoped).to contain_exactly(own_building)
 
-    bypass = described_class.generate(user: operator, params: { s: { created_by_id_eq: other_building.created_by_id } })
+    bypass = described_class.generate(user: creator, params: { s: { created_by_id_eq: other_building.created_by_id } })
     expect(bypass.scoped).to contain_exactly(own_building, other_building)
   end
 

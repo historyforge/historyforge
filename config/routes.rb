@@ -174,7 +174,7 @@ Rails.application.routes.draw do
 
   resources :users do
     collection do
-      get :operator_autocomplete
+      get :creator_autocomplete
       get :my_stuff
     end
     member do

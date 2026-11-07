@@ -153,7 +153,7 @@ module Buildings
       @navigation_neighbors = BuildingSearch.generate(
         params: navigation_params,
         user: current_user,
-        operator_scope: operator_search_scope(Building),
+        creator_scope: creator_search_scope(Building),
       ).navigation_neighbors(@building.id)
     end
 
@@ -204,7 +204,7 @@ module Buildings
     def load_buildings
       authorize! :read, Building
       @search = BuildingSearch.generate(
-        params: search_params, user: current_user, operator_scope: operator_search_scope(Building)
+        params: search_params, user: current_user, creator_scope: creator_search_scope(Building)
       )
       @search.expanded = true if request.format.csv?
     end

@@ -27,12 +27,12 @@ RSpec.describe CensusRecordSearch do
 
   it 'filters census records by creator' do
     reviewer = create(:administrator)
-    operator = create(:active_user)
+    creator = create(:active_user)
     match = create_1870_record(page_number: 1)
-    match.update!(created_by: operator)
+    match.update!(created_by: creator)
     create_1870_record(page_number: 2)
 
-    search = described_class.generate(year: 1870, user: reviewer, operator_scope: :all, params: { s: { operator_id: operator.id } })
+    search = described_class.generate(year: 1870, user: reviewer, creator_scope: :all, params: { s: { creator_id: creator.id } })
 
     expect(search.scoped).to contain_exactly(match)
   end

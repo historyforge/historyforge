@@ -4,10 +4,10 @@ class BuildingSearch < SearchQueryBuilder
   attr_reader :num_residents, :people_params, :near, :building_params
   attr_accessor :people, :expanded
 
-  def self.generate(params: {}, user: nil, operator_scope: nil)
+  def self.generate(params: {}, user: nil, creator_scope: nil)
     new(
       user:,
-      operator_scope:,
+      creator_scope:,
       people_params: params[:peopleParams] && parse_params(params[:peopleParams]),
       building_params: params[:buildingParams] && parse_params(params[:buildingParams]),
       scope: params[:scope] && params[:scope] != 'on' && params[:scope].to_sym,
@@ -69,7 +69,7 @@ class BuildingSearch < SearchQueryBuilder
 
   def active?
     keys = ransack_params.keys
-    operator_filter_active? || (keys.any? && keys != [:lat_not_null])
+    creator_filter_active? || (keys.any? && keys != [:lat_not_null])
   end
 
   def default_fields

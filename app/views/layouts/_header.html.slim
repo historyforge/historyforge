@@ -76,7 +76,7 @@ header data-turbo-permanent="true" id="main-header"
               = link_to 'Audio Recordings', audios_path, class: 'dropdown-item'
               = link_to 'Videos', videos_path, class: 'dropdown-item'
 
-          - if user_signed_in? && [Building, Person, CensusRecord].any? { |resource| operator_search_scope(resource) }
+          - if user_signed_in? && [Building, Person, CensusRecord].any? { |resource| creator_search_scope(resource) }
             li.nav-item.dropdown id="my-menu-item"
               a.nav-link.dropdown-toggle data-toggle="dropdown" href="#" My
               .dropdown-menu

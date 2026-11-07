@@ -18,22 +18,22 @@ class UsersController < ApplicationController
     @users = @q.result.page(params[:page]).order('email asc')
   end
 
-  def operator_autocomplete
-    return head :forbidden unless user_signed_in? && can?(:search_by_operator, Person)
+  def creator_autocomplete
+    return head :forbidden unless user_signed_in? && can?(:search_by_creator, Person)
 
     response.headers['Cache-Control'] = 'no-store'
     term = params[:term].to_s.strip
     return render json: [] unless term.length.between?(2, 100)
 
     pattern = "%#{User.sanitize_sql_like(term)}%"
-    operators = User.where('login ILIKE :pattern OR full_name ILIKE :pattern OR email ILIKE :pattern', pattern:)
+    creators = User.where('login ILIKE :pattern OR full_name ILIKE :pattern OR email ILIKE :pattern', pattern:)
                     .order(:login, :id).limit(10)
                     .pluck(:id, :login, :full_name)
-    render json: operators.map { |id, login, full_name| { id:, name: full_name.presence || login, login: } }
+    render json: creators.map { |id, login, full_name| { id:, name: full_name.presence || login, login: } }
   end
 
   def my_stuff
-    permission_denied unless [Building, Person, CensusRecord].any? { |resource| operator_search_scope(resource) }
+    permission_denied unless [Building, Person, CensusRecord].any? { |resource| creator_search_scope(resource) }
   end
 
   def show

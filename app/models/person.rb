@@ -82,8 +82,8 @@ class Person < ApplicationRecord
 
   before_save :ensure_primary_name
   before_create do
-    operator = PaperTrail.request.whodunnit.to_s
-    self.created_by_id ||= operator.to_i if operator.match?(/\A[1-9][0-9]{0,9}\z/)
+    creator = PaperTrail.request.whodunnit.to_s
+    self.created_by_id ||= creator.to_i if creator.match?(/\A[1-9][0-9]{0,9}\z/)
   end
 
   scope :fuzzy_name_search, lambda { |names|
