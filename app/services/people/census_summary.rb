@@ -8,13 +8,15 @@ module People
     MISSING = %w[none blank unknown un un. illegible unreadable n/a na x ? -].freeze
     HEAD_RELATIONS = %w[daughter son stepdaughter stepson wife husband].freeze
     GENERIC_JOBS = %w[employer employee worker unemployed retired].freeze
+    PRONOUNS = { 'F' => 'she', 'M' => 'he' }.freeze
 
-    def self.call(name:, records:, readable:)
-      new(name:, records:, readable:).call
+    def self.call(name:, sex:, records:, readable:)
+      new(name:, sex:, records:, readable:).call
     end
 
-    def initialize(name:, records:, readable:)
+    def initialize(name:, sex:, records:, readable:)
       @name = name
+      @pronoun = PRONOUNS.fetch(sex, 'they')
       @records = records
       @readable = readable
     end
@@ -35,7 +37,7 @@ module People
                     if selected.size == 2 && same_head?(first, selected.last)
                       selected[-1] = selected.last.with(household: nil, head: nil)
                     end
-                    selected.each_with_index.map { |entry, i| sentence(entry, i.zero? ? @name : 'they', later: i.positive?) }
+                    selected.each_with_index.map { |entry, i| sentence(entry, i.zero? ? @name : @pronoun) }
                   end
       sources = selected.flat_map { |entry| [entry.record, entry.head].compact }.uniq
       Result.new(paragraph: sentences.join(' '), sources:)
@@ -110,10 +112,10 @@ module People
       [entry.residence, entry.household, entry.activity]
     end
 
-    def sentence(entry, subject, years: entry.record.year, later: false)
+    def sentence(entry, subject, years: entry.record.year)
       observations = [entry.household, entry.activity].compact
       facts = [("lived #{entry.residence}" if entry.residence)]
-      facts << "#{later ? 'were' : 'was'} #{observations.to_sentence}" if observations.any?
+      facts << "#{subject == 'they' ? 'were' : 'was'} #{observations.to_sentence}" if observations.any?
       facts.compact!
       "In #{years}, #{subject} #{facts.to_sentence}."
     end

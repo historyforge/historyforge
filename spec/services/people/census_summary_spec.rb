@@ -15,8 +15,8 @@ RSpec.describe People::CensusSummary do
   end
   let(:caroline) { Data.define(:short_name).new('Caroline') }
 
-  def summarize(*records, readable: ->(_record) { true })
-    described_class.call(name: 'Frances Aagaard', records:, readable:)
+  def summarize(*records, name: 'Frances Aagaard', sex: 'F', readable: ->(_record) { true })
+    described_class.call(name:, sex:, records:, readable:)
   end
 
   it 'connects residence, household, and schooling across censuses and cites the head records' do
@@ -33,8 +33,8 @@ RSpec.describe People::CensusSummary do
 
     expect(result.paragraph).to include('In 1940, Frances Aagaard lived on Coddington Rd in Caroline',
                                         'was listed as Andrew Aagaard’s daughter',
-                                        'In 1950, they lived at 1784 Coddington Rd in Caroline',
-                                        'listed as a high school senior')
+                                        'In 1950, she lived at 1784 Coddington Rd in Caroline',
+                                        'was listed as a high school senior')
     expect(result.paragraph).not_to match(/moved|same house|employed/)
     expect(result.paragraph.scan('Andrew Aagaard').length).to eq(1)
     expect(result.sources).to eq([child, head_1940, teenager])
@@ -45,10 +45,11 @@ RSpec.describe People::CensusSummary do
     earlier = observation.new(year: 1940, occupation: 'Laborer', industry: 'Gun Factory')
     later = observation.new(year: 1950, occupation: 'Hand Sander', industry: 'Gun Factory')
 
-    result = summarize(earlier, later)
+    result = summarize(earlier, later, name: 'Andrew Aagaard', sex: 'M')
 
-    expect(result.paragraph).to eq('In 1940, Frances Aagaard was recorded with the occupation “Laborer” and industry “Gun Factory”. ' \
-                                   'In 1950, they were recorded with the occupation “Hand Sander” and industry “Gun Factory”.')
+    expect(result.paragraph).to eq('In 1940, Andrew Aagaard was recorded with the occupation “Laborer” and industry “Gun Factory”. ' \
+                                   'In 1950, he was recorded with the occupation “Hand Sander” and industry “Gun Factory”.')
+    expect(summarize(earlier, later, sex: nil).paragraph).to include('In 1950, they were recorded')
   end
 
   it 'omits a household claim and link when the head record is unreadable' do
