@@ -36,7 +36,10 @@
       - if @person.description.present?
         div class=("mt-3" if @census_summary)
           = auto_link(simple_format(@person.description), html: { target: '_blank', rel: 'nofollow' })
-  .col-lg-4
+  .col-lg-4 class=('ml-lg-auto' unless has_biography)
+    - if !user_signed_in? && (can_people? || can?(:read, Person))
+      .text-right.mb-2.person-directory-link
+        = link_to 'View All', people_path, class: btn_class
     .card.p-2
       table.table.table-sm.table-borderless.mb-0 aria-label="Person details"
         tbody
