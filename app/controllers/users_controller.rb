@@ -3,6 +3,8 @@
 class UsersController < ApplicationController
   include RestoreSearch
 
+  RECENT_CREATIONS_LIMIT = 15
+
   layout 'application'
 
   before_action :authenticate_user!,
@@ -33,7 +35,17 @@ class UsersController < ApplicationController
   end
 
   def my_stuff
-    permission_denied unless [Building, Person, CensusRecord].any? { |resource| creator_search_scope(resource) }
+    return permission_denied unless [Building, Person, CensusRecord].any? { |resource| creator_search_scope(resource) }
+
+    sources = []
+    sources << Building if creator_search_scope(Building)
+    sources << Person if creator_search_scope(Person) && can_people?
+    if creator_search_scope(CensusRecord)
+      CensusYears.each_visible_to_user(true) { |year| sources << CensusYears.class_for(year) }
+    end
+
+    @recent_creations = sources.flat_map { |source| recent_creations(source).to_a }
+                               .sort_by(&:created_at).reverse.first(RECENT_CREATIONS_LIMIT)
   end
 
   def show
@@ -170,6 +182,19 @@ class UsersController < ApplicationController
   end
 
   private
+
+  def recent_creations(source)
+    records = source.accessible_by(current_ability).where(created_by_id: current_user.id)
+    if Current.locality_id
+      records = if source == Person
+        records.joins(:localities).where(localities_people: { locality_id: Current.locality_id })
+      else
+        records.where(locality_id: Current.locality_id)
+      end
+    end
+    records = records.preload(:addresses) if source == Building
+    records.order(created_at: :desc, id: :desc).limit(RECENT_CREATIONS_LIMIT)
+  end
 
   def user_params
     params.require(:user).permit(:login, :full_name, :email, :password, :password_confirmation, :user_group_id)

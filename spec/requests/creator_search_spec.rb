@@ -105,10 +105,14 @@ RSpec.describe 'Creator search', :versioning, type: :request do
     expect(response).to have_http_status(:forbidden)
   end
 
-  it 'links from the My menu to searches for the signed-in creator' do
+  it 'shows recent creations and links to searches for the signed-in creator' do
     allow(Setting).to receive(:can_people_private?).and_return(true)
     allow(Setting).to receive(:can_view_private?).and_call_original
     allow(Setting).to receive(:can_view_private?).with(1910).and_return(true)
+    person = create_person_as(creator, created_at: creation_date)
+    other_person = create_person_as(other_creator, created_at: creation_date)
+    building = create(:building, created_by: creator, created_at: creation_date + 1.day)
+    census_record = create(:census1910_record, created_by: creator, created_at: creation_date + 2.days)
     sign_in_as(creator)
 
     get my_stuff_users_path, params: { s: { creator_id: other_creator.id } }
@@ -121,6 +125,9 @@ RSpec.describe 'Creator search', :versioning, type: :request do
     search_links = [buildings_path(s: filters), people_path(s: filters), census_records_path(year: 1910, s: filters)]
     expect(menu_links).to include(my_stuff_users_path, *search_links)
     expect(html.css('.list-group a').map { |link| link['href'] }).to include(*search_links)
+    recent_links = html.css('ul.list-group a').map { |link| link['href'] }
+    expect(recent_links).to eq([census_record_path(year: 1910, id: census_record.id), building_path(building), person_path(person)])
+    expect(recent_links).not_to include(person_path(other_person))
   end
 
   it 'lets person record editors search for people they created' do

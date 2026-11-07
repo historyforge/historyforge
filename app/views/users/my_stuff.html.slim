@@ -1,5 +1,29 @@
 - set_page_title 'My stuff'
-p Find records you created.
+h2 Recently created
 
+- if @recent_creations.any?
+  ul.list-group.mb-4
+    - @recent_creations.each do |record|
+      - case record
+      - when Building
+        - label = record.primary_street_address
+        - path = building_path(record)
+        - record_type = 'Building'
+      - when Person
+        - label = record.name
+        - path = person_path(record)
+        - record_type = 'Person'
+      - when CensusRecord
+        - label = record.name
+        - path = census_record_path(year: record.year, id: record.id)
+        - record_type = "#{record.year} US Census"
+      li.list-group-item
+        = link_to label.presence || "Record ##{record.id}", path
+        .small.text-muted
+          = "#{record_type} · #{l(record.created_at.to_date, format: :long)}"
+- else
+  p No records you created to show here.
+
+h2 Search all my records
 .list-group
   = render 'my_search_links', link_class: 'list-group-item list-group-item-action'
