@@ -39,8 +39,8 @@ module People
     def show
       @person = Person.find params[:id]
       authorize! :read, @person
-      visible_records = @person.census_records.select { |record| can_census?(record.year) && can?(:read, record) }
-      @census_summary = CensusSummary.call(records: visible_records)
+      readable = ->(record) { can_census?(record.year) && can?(:read, record) }
+      @census_summary = CensusSummary.call(name: @person.name, records: @person.census_records.select(&readable), readable:)
       load_navigation
     end
 
