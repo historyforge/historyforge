@@ -6,6 +6,8 @@ RSpec.describe PersonSerializer do
   let(:person) { build_stubbed(:person, id: 42, first_name: 'Mary', last_name: 'Jones') }
   let(:url_options) { { host: 'history.example', protocol: 'https', script_name: '/archive' } }
 
+  before { allow(People::PublicUrlOptions).to receive(:call).and_return({}) }
+
   def serialize(*census_records, households: {})
     census_households = census_records.index_with { People::CensusHousehold::Result.new(fellows: [], head: nil) }.merge(households)
     described_class.new(person, census_records:, census_households:, url_options:)

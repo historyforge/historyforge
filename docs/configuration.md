@@ -63,7 +63,7 @@ the app has not been deployed yet. Keep passwords and application secrets privat
 | `DEVISE_SECRET_KEY` | Devise authentication token secret; retain between releases. |
 | `RAILS_ENV`, `RACK_ENV` | `production` for deployed sites. |
 | `APP_NAME` | Site identity. |
-| `BASE_URL` | Canonical hostname, such as `history.example.org`, used by mail and authentication defaults. |
+| `BASE_URL` | Canonical hostname, such as `history.example.org`, used by Person URLs, sitemaps, mail, and authentication defaults. |
 | `WEBAUTHN_ORIGIN` | Exact HTTPS origin for passkeys, such as `https://history.example.org`. |
 | `WEBAUTHN_RP_ID` | Passkey relying-party hostname, such as `history.example.org`. |
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD` | Outgoing mail service connection. |
@@ -86,6 +86,35 @@ The Forge itself is an interactive JavaScript map. Its map view offers little
 standalone content for a search result; the individual record pages are more
 useful destinations. For that reason, `robots.txt` excludes `/forge` and
 `/*/forge` from crawling on every site, while allowing other pages.
+
+### Person sitemaps
+
+Submit `https://your-host.example/sitemap.xml` on the canonical host to search
+engines. The index links to root-level files such as `/sitemap-people-0.xml`.
+The static `robots.txt` keeps its existing crawl rules. If an installation
+serves its own robots.txt at the proxy, it can advertise the absolute index URL
+with a `Sitemap:` directive.
+
+The application generates the index and each file on demand. Each file covers
+a fixed range of up to 50,000 Person IDs. The index skips empty ranges, and
+generation reads only that range's IDs and timestamps plus grouped census
+timestamps. Each URL uses the same canonical origin as the Person page. Set
+`BASE_URL` to pin the origin across hostname aliases. A bare hostname uses
+HTTPS, an explicit scheme and port are preserved, and an unset value uses the
+request origin.
+
+The index and each file are cached independently for 15 minutes in the Rails
+cache, keyed by database and canonical origin. The next request after expiry
+regenerates that file. Additions, edits, and deletions can take up to one cache
+interval to appear. The sitemap becomes unavailable immediately when the
+**Enabled Public** People setting is off or `DISALLOW_INDEXING=true`. Empty
+indexes and empty files return HTTP 404. Person records have no separate
+publication flag.
+
+Each entry's `lastmod` uses the latest available Person update or public
+reviewed census update or review time. It never uses sitemap generation time.
+Changes to associated media, narratives, and other household records are not
+independently tracked by this timestamp.
 
 If you have a publicly reachable installation that you want excluded from search
 results, set this on that app, replacing `community-hf` with its Dokku app name:

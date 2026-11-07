@@ -6,6 +6,7 @@ RSpec.describe 'Public Person pages', type: :request do
   include Devise::Test::IntegrationHelpers
 
   it 'serves the title, canonical URL, summary and source links to an anonymous crawler' do
+    allow(People::PublicUrlOptions).to receive(:call).and_return({})
     person = create(:person)
     record = create(:census1910_record, age: 30, street_name: 'Coddington', street_suffix: 'Rd')
     record.update_columns(person_id: person.id, reviewed_at: Time.current)

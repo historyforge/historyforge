@@ -37,7 +37,7 @@ class PersonSerializer < ApplicationSerializer
   delegate :id, :name, to: :object
 
   def canonical_url
-    @canonical_url ||= routes.person_url(object, **@url_options)
+    @canonical_url ||= routes.person_url(object, **canonical_url_options)
   end
 
   def alternate_names
@@ -83,7 +83,7 @@ class PersonSerializer < ApplicationSerializer
         {
           type: 'census_household_member',
           person_id: fellow.person_id,
-          person_url: routes.person_url(fellow.person_id, **@url_options),
+          person_url: routes.person_url(fellow.person_id, **canonical_url_options),
           source_links: [source_link(record), source_link(fellow)],
         }
       end
@@ -91,6 +91,10 @@ class PersonSerializer < ApplicationSerializer
   end
 
   private
+
+  def canonical_url_options
+    @canonical_url_options ||= @url_options.merge(People::PublicUrlOptions.call)
+  end
 
   def routes
     Rails.application.routes.url_helpers
