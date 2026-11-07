@@ -17,7 +17,7 @@
     a.dropdown-toggle.btn.btn-sm.btn-light data-toggle="dropdown" Load Search
     .dropdown-menu
 
-- operator_filters = @search.operator_filters
+- operator_filters = @search.operator_filters if @search.operator_scope
 - operator_picker = { controller: 'operator-picker' } if @search.operator_scope == :all
 = simple_form_for @search, url: url_for(), method: :get, as: :s, html: { data: operator_picker } do |form|
   - if @search.operator_scope

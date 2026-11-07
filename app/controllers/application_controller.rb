@@ -98,6 +98,8 @@ class ApplicationController < ActionController::Base
   private
 
   def operator_search_scope(resource_class)
+    return unless user_signed_in?
+
     return :all if current_ability.can?(:search_by_operator, resource_class)
     return current_user.id if current_ability.can?(:search_by_own_operator, resource_class)
   end

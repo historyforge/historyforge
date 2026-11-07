@@ -45,7 +45,7 @@ class SearchQueryBuilder
   end
 
   def operator_filter_active?
-    operator_filters[:operator_id].present?
+    operator_scope.present? && operator_filters[:operator_id].present?
   end
 
   def operator_filters
@@ -195,7 +195,7 @@ class SearchQueryBuilder
   def prepare_search_filters
     @s = @s.is_a?(String) ? JSON.parse(@s) : @s
     @s = @s.respond_to?(:to_unsafe_hash) ? @s.to_unsafe_hash : @s
-    @s = @s.reject { |_k, v| v == "" }
+    @s = @s.reject { |key, value| value == "" || (!operator_scope && OPERATOR_FILTER_KEYS.include?(key.to_sym)) }
     @s.transform_values! do |value|
       case value
       when String

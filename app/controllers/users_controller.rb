@@ -19,7 +19,7 @@ class UsersController < ApplicationController
   end
 
   def operator_autocomplete
-    return head :forbidden unless can?(:search_by_operator, Person)
+    return head :forbidden unless user_signed_in? && can?(:search_by_operator, Person)
 
     response.headers['Cache-Control'] = 'no-store'
     term = params[:term].to_s.strip

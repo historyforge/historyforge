@@ -71,10 +71,14 @@ RSpec.describe 'Operator search', :versioning, type: :request do
     end
   end
 
-  it 'disallows operator searches by guests' do
-    create_person_as(operator, created_at: creation_date)
+  it 'ignores operator filters from guests and users without operator search permission' do
+    person = create_person_as(operator, created_at: creation_date)
+    other_person = create_person_as(other_operator, created_at: creation_date)
 
-    expect(people_created_by(operator)).to be_empty
+    expect(people_created_by(operator, operator_created_range: 'today')).to contain_exactly(person.id, other_person.id)
+
+    sign_in_as(create(:active_user))
+    expect(people_created_by(operator, operator_created_range: 'today')).to contain_exactly(person.id, other_person.id)
   end
 
   it 'finds operators by name or email without returning email addresses' do
