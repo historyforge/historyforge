@@ -9,10 +9,14 @@ RSpec.describe 'Public Person API v1', type: :request do
     person = create(:person, notes: 'Private editor notes')
     relative = create(:person, notes: 'Private relative notes')
     locality = create(:locality)
-    record = create(:census1910_record, locality:, age: 30, pob: 'New York', notes: 'Private census notes')
-    fellow = create(:census1910_record, locality:, relation_to_head: 'Daughter')
+    person.names.create!(first_name: 'Mary', last_name: 'Jones')
+    record = create(:census1910_record, locality:, age: 15, pob: 'New York', relation_to_head: 'Daughter',
+                                        street_name: 'Coddington', street_suffix: 'Rd', notes: 'Private census notes')
+    fellow = create(:census1910_record, locality:, relation_to_head: 'Head')
+    unreviewed = create(:census1910_record, locality:, relation_to_head: 'Son')
     record.update_columns(person_id: person.id, reviewed_at: Time.current)
     fellow.update_columns(person_id: relative.id, reviewed_at: Time.current)
+    unreviewed.update_columns(person_id: create(:person).id)
 
     get api_v1_person_path(person)
 
@@ -23,11 +27,16 @@ RSpec.describe 'Public Person API v1', type: :request do
     fellow_source = { 'year' => 1910, 'record_id' => fellow.id, 'url' => "#{origin}#{polymorphic_path(fellow)}" }
     data = response.parsed_body
     expect(data.keys).to contain_exactly(
-      'id', 'name', 'canonical_url', 'summary', 'description', 'birth_year', 'death_year',
+      'id', 'name', 'alternate_names', 'canonical_url', 'summary', 'summary_source_links', 'description', 'birth_year', 'death_year',
       'census_observations', 'source_links', 'relationships'
     )
     expect(data).to include('id' => person.id, 'name' => person.name, 'canonical_url' => "#{origin}#{person_path(person)}")
-    expect(data['summary']).to include('The recorded age suggests a birth year around 1880.')
+    expect(data['alternate_names']).to eq(['Mary Jones'])
+    expect(data['summary']).to include('lived on Coddington Rd', "#{fellow.name}’s daughter")
+    expect(data['summary_source_links']).to eq([
+      source.merge('label' => '1910 census'),
+      fellow_source.merge('label' => "1910: #{fellow.name}"),
+    ])
     expect(data['census_observations']).to eq([
       record.slice(:id, :name, :year, :occupation, :race, :sex, :age, :relation_to_head, :pob).stringify_keys,
     ])
@@ -36,13 +45,13 @@ RSpec.describe 'Public Person API v1', type: :request do
       { 'type' => 'census_household_member', 'person_id' => relative.id,
         'person_url' => "#{origin}#{person_path(relative)}", 'source_links' => [source, fellow_source] },
     ])
-    expect(response.body).not_to include('Private')
+    expect(response.body).not_to include('Private', polymorphic_path(unreviewed))
   end
 
   it 'excludes private-year and unreviewed evidence even for an administrator' do
     person = create(:person)
-    unreviewed = create(:census1910_record, person:)
-    hidden = create(:census1930_record)
+    unreviewed = create(:census1910_record, person:, occupation: 'Carpenter')
+    hidden = create(:census1930_record, occupation: 'Banker')
     hidden.update_columns(person_id: person.id, reviewed_at: Time.current)
     allow(Setting).to receive(:can_view_public?).and_call_original
     allow(Setting).to receive(:can_view_public?).with(1930).and_return(false)
@@ -52,7 +61,7 @@ RSpec.describe 'Public Person API v1', type: :request do
 
     expect(response).to have_http_status(:ok)
     expect(response.parsed_body).to include(
-      'summary' => nil, 'census_observations' => [], 'source_links' => [], 'relationships' => []
+      'summary' => nil, 'summary_source_links' => [], 'census_observations' => [], 'source_links' => [], 'relationships' => []
     )
     expect(response.body).not_to include(polymorphic_path(unreviewed), polymorphic_path(hidden))
   end

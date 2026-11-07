@@ -1,15 +1,16 @@
-- set_page_title @public_person.name
+- set_page_title @person_representation.name
 - content_for :head do
-  link rel="canonical" href=@public_person.canonical_url
-- if (description = @public_person.description)
-  - content_for :meta_description do
-    meta name="description" content=String.new(description)
-script type="application/ld+json"
-  == ERB::Util.json_escape(PersonJsonLdSerializer.new(@public_person).to_json)
+  link rel="canonical" href=@person_representation.canonical_url
+- unless user_signed_in?
+  - if (description = @person_representation.description)
+    - content_for :meta_description do
+      meta name="description" content=String.new(description)
+  script type="application/ld+json"
+    == ERB::Util.json_escape(PersonJsonLdSerializer.new(@person_representation).to_json)
 = render 'shared/flag_resolution', item: @person
 - btn_class = 'btn btn-sm btn-secondary'
-div.mb-3.clearfix.d-flex.justify-content-between
-  div.mr-auto
+- if user_signed_in?
+  .mb-3.person-actions
     - if can_people? || can?(:read, Person)
       = link_to 'View All', people_path, class: btn_class
     - if can?(:create, Flag)
@@ -25,46 +26,58 @@ div.mb-3.clearfix.d-flex.justify-content-between
         i.fa.fa-trash
         span.d-none.d-lg-inline
           | &nbsp; Delete
+- elsif can_people? || can?(:read, Person)
+  - content_for :pills do
+    .text-right
+      = link_to 'View All', people_path, class: 'btn btn-light'
 - if @navigation_neighbors.present?
   - if @navigation_neighbors[:previous_id]
     = previous_nav_link(person_path(@navigation_neighbors[:previous_id]))
   - if @navigation_neighbors[:next_id]
     = next_nav_link(person_path(@navigation_neighbors[:next_id]))
 
-.list-group.mb-3
-  - names = @person.variant_names
-  - if names.any?
-    .list-group-item
-      .row
-        .col-6 Name Variants
-        .col-6
-          -names.each do |name|
-            div= name.short_name
-  .list-group-item
-    .row
-      .col-6 Person ID
-      .col-6= @person.id
-  .list-group-item
-    .row
-      .col-6 About
-      .col-6
-        = "#{Translator.option(:race, @person.race)} " if @person.race.present? && @person.race != 'on'
-        = "#{Translator.option(:sex, @person.sex)} " if @person.sex.present? && @person.sex != 'on'
-        - if @person.birth_year
-          = "born in #{@person.birth_year}"
-        - if @person.death_year
-          = " died in #{@person.death_year}"
-  - if @person.description.present?
-    .list-group-item
-      = auto_link(simple_format(@person.description), html: { target: '_blank', rel: 'nofollow' })
-- if (summary = @public_person.summary)
-  section.card.mb-3 aria-labelledby="census-summary-heading"
-    h2#census-summary-heading.card-header.h5 Census Summary
-    .card-body
-      p= summary
-      p.mb-0
-        ' Sources:
-        = safe_join(@public_person.source_links.map { |source| link_to("#{source[:year]} census", source[:url]) }, ', ')
+- summary = @person_representation.summary
+- has_biography = summary || @person.description.present?
+.row.mb-4
+  - if has_biography
+    section.col-lg-8.mb-3.mb-lg-0 aria-label="Biography"
+      - if summary
+        p.mb-2= summary
+        p.small.mb-0
+          ' Census sources:
+          = safe_join(@person_representation.summary_source_links.map { |source| link_to(source[:label], source[:url]) }, ', ')
+      - if @person.description.present?
+        div class=("mt-3" if summary)
+          = auto_link(simple_format(@person.description), html: { target: '_blank', rel: 'nofollow' })
+  .col-lg-4
+    .card.p-2
+      table.table.table-sm.table-borderless.mb-0 aria-label="Person details"
+        tbody
+          - names = @person_representation.alternate_names
+          - if names.any?
+            tr
+              th scope="row" Also recorded as
+              td= names.join(', ')
+          - if @person.birth_year
+            tr
+              th scope="row" Born
+              td= "#{'About ' if @person.is_birth_year_estimated?}#{@person.birth_year}"
+          - if @person.death_year
+            tr
+              th scope="row" Died
+              td= "#{'About ' if @person.is_death_year_estimated?}#{@person.death_year}"
+          - if @person.race.present? && @person.race != 'on'
+            tr
+              th scope="row" Race
+              td= Translator.option(:race, @person.race)
+          - if @person.sex.present? && @person.sex != 'on'
+            tr
+              th scope="row" Sex
+              td= Translator.option(:sex, @person.sex)
+          tr
+            th scope="row" Person ID
+            td= @person.id
+
 .card.mb-3
   .card-header Census Records
   .table-responsive

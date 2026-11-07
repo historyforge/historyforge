@@ -3,9 +3,11 @@
 require 'rails_helper'
 
 RSpec.describe 'Public Person pages', type: :request do
+  include Devise::Test::IntegrationHelpers
+
   it 'serves the title, canonical URL, summary and source links to an anonymous crawler' do
     person = create(:person)
-    record = create(:census1910_record, age: 30, pob: 'New York')
+    record = create(:census1910_record, age: 30, street_name: 'Coddington', street_suffix: 'Rd')
     record.update_columns(person_id: person.id, reviewed_at: Time.current)
     host! 'history.example'
     https!
@@ -23,11 +25,24 @@ RSpec.describe 'Public Person pages', type: :request do
     expect(head.css('link[rel="canonical"]').map { |tag| tag['href'] }).to eq([
       person_url(person, host: 'history.example', protocol: 'https'),
     ])
-    summary = html.at_css('section[aria-labelledby="census-summary-heading"]')
+    summary = html.at_css('section[aria-label="Biography"]')
     expect(html.at_css('body h1').text).to eq(person.name)
-    expect(summary.at_css('p').text).to include('The recorded age suggests a birth year around 1880.')
+    expect(summary.at_css('p').text).to include('lived on Coddington Rd')
     expect(head.css('meta[name="description"]').map { |tag| tag['content'] }).to eq([summary.at_css('p').text])
     expect(summary.at_css('a')['href']).to eq(polymorphic_url(record, host: 'history.example', protocol: 'https'))
+  end
+
+  it 'keeps signed-in census evidence out of search metadata' do
+    person = create(:person)
+    create(:census1910_record, person:, occupation: 'Carpenter')
+    sign_in create(:administrator)
+
+    get person_path(person)
+
+    expect(response).to have_http_status(:ok)
+    html = Nokogiri::HTML(response.body)
+    expect(html.at_css('section[aria-label="Biography"]').text).to include('Carpenter')
+    expect(html.at_css('head meta[name="description"]')).to be_nil
   end
 
   it 'escapes the public description in the metadata attribute' do
