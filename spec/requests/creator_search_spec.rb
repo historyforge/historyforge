@@ -43,7 +43,7 @@ RSpec.describe 'Creator search', :versioning, type: :request do
     expect(form.at_css('#creator_lookup')['value']).to eq(creator.login)
     expect(form.at_css('form[data-controller="creator-picker"] #s_creator_id')['value']).to eq(creator.id.to_s)
     chips = form.css('#attribute-filters [data-creator-filter-chip]')
-    expect(chips.map(&:text)).to eq(["×Created by #{creator.login}", '×Creation date Last 7 days'])
+    expect(chips.map(&:text)).to eq(["×#{creator.login}", '×Last 7 days'])
     expect(chips.css('button').map { |button| button['aria-label'] })
       .to eq(['Remove Created by filter', 'Remove Creation date filter'])
 
@@ -77,7 +77,7 @@ RSpec.describe 'Creator search', :versioning, type: :request do
       get people_path, params: filters
       expect(response).to have_http_status(:ok)
       chips = Nokogiri::HTML(response.body).css('#attribute-filters [data-creator-filter-chip]')
-      expect(chips.map(&:text)).to eq(['×Creation date Last 7 days'])
+      expect(chips.map(&:text)).to eq(['×Last 7 days'])
 
       get people_path(format: :json), params: filters.merge(from: 0, to: 100)
       expect(response.parsed_body.map { |row| row.dig('name', 'id') }).to eq([recent.id])
