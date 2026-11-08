@@ -17,11 +17,11 @@
     a.dropdown-toggle.btn.btn-sm.btn-light data-toggle="dropdown" Load Search
     .dropdown-menu
 
-- creator_filters = @search.creator_filters if @search.creator_scope
-- creator_picker = { controller: 'creator-picker' } if @search.creator_scope == :all
+- creator_filter = @search.creator_filter
+- creator_picker = { controller: 'creator-picker' } if creator_filter&.scope == :all
 = simple_form_for @search, url: url_for(), method: :get, as: :s, html: { data: creator_picker } do |form|
-  - if @search.creator_scope
-    = hidden_field_tag 's[creator_id]', creator_filters[:creator_id], data: { target: 'creator-picker.id' }
+  - if creator_filter
+    = hidden_field_tag 's[creator_id]', creator_filter.params[:creator_id], data: { target: 'creator-picker.id' }
   .float-right
     = form.submit 'Submit', style: 'display: none'
     => link_to 'CSV', request.params.merge(format: :csv), class: 'btn btn-sm btn-primary'
@@ -57,29 +57,30 @@
         = form.submit 'Submit', data: { turbo_submits_with: 'Sending...' }, class: 'btn btn-primary mr-auto'
         button.btn.btn-light.ml-auto.checkall data-scope="#fields" type="button" Check all
 
-  .collapse.fade#newAttributeFilter class=('show' if @search.creator_filter_active?)
+  .collapse.fade#newAttributeFilter class=('show' if creator_filter&.active?)
     .card.mb-3
       .card-header
         button.float-right.close(type="button" data-toggle="collapse" data-target="#newAttributeFilter") &times;
         span Search Filters
       .card-body
-        - if @search.creator_scope
+        - if creator_filter
           .form-row
             .form-group.col-md-4
-              - if @search.creator_scope == :all
+              - if creator_filter.scope == :all
                 = label_tag 'creator_lookup', 'Created by'
-                = search_field_tag 'creator_lookup', @search.selected_creator_name, name: nil, placeholder: 'Search by name or email', autocomplete: 'off', class: 'form-control mb-2', data: { target: 'creator-picker.lookup', action: 'input->creator-picker#clearSelection', url: creator_autocomplete_users_path(format: :json) }
+                = search_field_tag 'creator_lookup', creator_filter.selected_creator_name, name: nil, placeholder: 'Search by name or email', autocomplete: 'off', class: 'form-control mb-2', data: { target: 'creator-picker.lookup', action: 'input->creator-picker#clearSelection', url: creator_autocomplete_users_path(format: :json) }
             .form-group.col-md-8 data-controller="creation-date-range"
-              - custom_range = @search.creation_date_range == 'custom'
+              - creation_date_range = creator_filter.creation_date_range
+              - custom_range = creation_date_range == 'custom'
               = label_tag 's_creation_date_range', 'Creation date'
-              = select_tag 's[creation_date_range]', options_for_select(SearchQueryBuilder::CREATION_DATE_CHOICES, @search.creation_date_range), class: 'form-control', data: { target: 'creation-date-range.preset', action: 'change->creation-date-range#update' }
+              = select_tag 's[creation_date_range]', options_for_select(CreatorFilter::CREATION_DATE_CHOICES, creation_date_range), class: 'form-control', data: { target: 'creation-date-range.preset', action: 'change->creation-date-range#update' }
               .form-row.mt-2 hidden=(!custom_range) data-target="creation-date-range.custom"
                 .col
                   = label_tag 's_creation_date_from', 'Start date'
-                  = date_field_tag 's[creation_date_from]', creator_filters[:creation_date_from], class: 'form-control', disabled: !custom_range
+                  = date_field_tag 's[creation_date_from]', creator_filter.params[:creation_date_from], class: 'form-control', disabled: !custom_range
                 .col
                   = label_tag 's_creation_date_to', 'End date'
-                  = date_field_tag 's[creation_date_to]', creator_filters[:creation_date_to], class: 'form-control', disabled: !custom_range
+                  = date_field_tag 's[creation_date_to]', creator_filter.params[:creation_date_to], class: 'form-control', disabled: !custom_range
           p.form-text.text-muted Select a creator to filter by creation date.
           hr
 

@@ -69,7 +69,7 @@ class BuildingSearch < SearchQueryBuilder
 
   def active?
     keys = ransack_params.keys
-    creator_filter_active? || (keys.any? && keys != [:lat_not_null])
+    creator_filter&.active? || (keys.any? && keys != [:lat_not_null])
   end
 
   def default_fields

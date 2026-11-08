@@ -7,15 +7,7 @@ class SearchQueryBuilder
   include ActiveModel::Validations
   include FastMemoize
 
-  CREATOR_FILTER_KEYS = %i[creator_id creation_date_range creation_date_from creation_date_to].freeze
-  CREATION_DATE_PRESETS = { 'today' => 1, 'last7' => 7, 'last14' => 14, 'last30' => 30, 'last90' => 90 }.freeze
-  CREATION_DATE_CHOICES = [
-    ['All time', 'all'], ['Today', 'today'], ['Last 7 days', 'last7'], ['Last 14 days', 'last14'],
-    ['Last 30 days', 'last30'], ['Last 90 days', 'last90'], ['Custom range', 'custom'],
-  ].freeze
-
   attr_accessor :page, :s, :f, :g, :user, :c, :d, :sort, :paged, :per, :scope, :from, :to, :navigation
-  attr_reader :creator_scope
 
   delegate :any?, :present?, :each, :first, :last,
            :current_page, :total_pages, :limit_value, :count,
@@ -41,30 +33,13 @@ class SearchQueryBuilder
   end
 
   def active?
-    creator_filter_active? || ransack_params.keys.any?
+    creator_filter&.active? || ransack_params.keys.any?
   end
 
-  def creator_filter_active?
-    creator_scope.present? && creator_filters[:creator_id].present?
-  end
+  def creator_filter
+    return unless @creator_scope
 
-  def creator_filters
-    s.symbolize_keys.slice(*CREATOR_FILTER_KEYS)
-  end
-
-  memoize :creator_filters
-
-  def creation_date_range
-    creator_filters[:creation_date_range].presence ||
-      (creator_filters.values_at(:creation_date_from, :creation_date_to).any?(&:present?) ? 'custom' : 'all')
-  end
-
-  def selected_creator_name
-    return unless creator_scope == :all && creator_filter_active?
-
-    creator_id = Integer(creator_filters[:creator_id].to_s, 10, exception: false)
-    creator = User.find_by(id: creator_id) if creator_id&.positive?
-    creator&.full_name.presence || creator&.login
+    @creator_filter ||= CreatorFilter.new(scope: @creator_scope, params: s)
   end
 
   def default_field?(field)
@@ -108,8 +83,8 @@ class SearchQueryBuilder
   end
 
   class Builder
-    def initialize(entity_class, params)
-      @scoped = entity_class.ransack(params).result
+    def initialize(relation)
+      @scoped = relation
     end
 
     attr_reader :scoped
@@ -130,50 +105,18 @@ class SearchQueryBuilder
   private
 
   def builder
-    Builder.new(entity_class, ransack_params).tap do |query|
-      filter_by_creator(query) if creator_filter_active?
-    end
+    relation = entity_class.ransack(ransack_params).result
+    relation = creator_filter.apply(relation) if creator_filter
+    Builder.new(relation)
   end
 
   memoize :builder
-
-  def filter_by_creator(query)
-    filters = creator_filters
-    creator_id = Integer(filters[:creator_id].to_s, 10, exception: false)
-    return query.none unless creator_id&.positive?
-    return query.none unless @creator_scope == :all || @creator_scope == creator_id
-
-    query.where(entity_class.table_name => { created_by_id: creator_id })
-    filter_by_creator_creation_date(query)
-  end
-
-  def filter_by_creator_creation_date(query)
-    range = creation_date_range
-    return if range == 'all'
-
-    if range == 'custom'
-      from, through = creator_filters.values_at(:creation_date_from, :creation_date_to)
-      start_date = Date.iso8601(from.to_s) if from.present?
-      end_date = Date.iso8601(through.to_s) if through.present?
-    elsif (days = CREATION_DATE_PRESETS[range])
-      end_date = Date.current
-      start_date = end_date - (days - 1)
-    else
-      return query.none
-    end
-
-    created_at = entity_class.arel_table[:created_at]
-    query.where(created_at.gteq(start_date.in_time_zone)) if start_date
-    query.where(created_at.lt(end_date.next_day.in_time_zone)) if end_date
-  rescue Date::Error
-    query.none
-  end
 
   def ransack_params
     prepare_search_filters
     p = {}
     s.each do |key, value|
-      next if CREATOR_FILTER_KEYS.include?(key.to_sym)
+      next if CreatorFilter::PARAM_KEYS.include?(key.to_sym)
 
       if value.is_a?(Array) && value.include?("blank")
         p[:g] ||= []
@@ -195,7 +138,7 @@ class SearchQueryBuilder
   def prepare_search_filters
     @s = @s.is_a?(String) ? JSON.parse(@s) : @s
     @s = @s.respond_to?(:to_unsafe_hash) ? @s.to_unsafe_hash : @s
-    @s = @s.reject { |key, value| value == "" || (!creator_scope && CREATOR_FILTER_KEYS.include?(key.to_sym)) }
+    @s = @s.reject { |key, value| value == "" || (!@creator_scope && CreatorFilter::PARAM_KEYS.include?(key.to_sym)) }
     @s.transform_values! do |value|
       case value
       when String

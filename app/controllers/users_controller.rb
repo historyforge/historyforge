@@ -35,7 +35,7 @@ class UsersController < ApplicationController
   end
 
   def my_stuff
-    return permission_denied unless [Building, Person, CensusRecord].any? { |resource| creator_search_scope(resource) }
+    return permission_denied unless my_stuff_available?
 
     sources = []
     sources << Building if creator_search_scope(Building)
