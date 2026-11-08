@@ -36,12 +36,16 @@ RSpec.describe 'Creator search', :versioning, type: :request do
     end
     sign_in_as(reviewer)
 
-    get people_path, params: { s: { creator_id: creator.id } }
+    get people_path, params: { s: { creator_id: creator.id, creation_date_range: 'last7' } }
     expect(response).to have_http_status(:ok)
     expect(response.body).to include('s[creator_id]', 's[creation_date_from]', 's[creation_date_to]')
     form = Nokogiri::HTML(response.body)
     expect(form.at_css('#creator_lookup')['value']).to eq(creator.login)
     expect(form.at_css('form[data-controller="creator-picker"] #s_creator_id')['value']).to eq(creator.id.to_s)
+    chips = form.css('#attribute-filters [data-creator-filter-chip]')
+    expect(chips.map(&:text)).to eq(["×Created by #{creator.login}", '×Creation date Last 7 days'])
+    expect(chips.css('button').map { |button| button['aria-label'] })
+      .to eq(['Remove Created by filter', 'Remove Creation date filter'])
 
     expect(people_created_by(creator, creation_date_from: '2025-01-08', creation_date_to: '2025-01-08'))
       .to eq([person.id])

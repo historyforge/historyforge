@@ -28,6 +28,15 @@ class AdvancedSearch {
     }
 
     initFormEvents() {
+        this.form.find('[data-clear-creator-filter]').on('click', (event) => {
+            if (event.currentTarget.dataset.clearCreatorFilter === 'creator') {
+                this.form.find('[name="s[creator_id]"], #creator_lookup').val('')
+            }
+            this.form.find('[name="s[creation_date_range]"]').val('all')
+            this.form.find('[name="s[creation_date_from]"], [name="s[creation_date_to]"]').val('')
+            this.form.trigger('submit')
+        });
+
         // when you click toggle buttons like "unreviewed" and "unhoused" this submits the form
         $(document).on('click', '#new_s .btn-group-toggle label', () => {
             this.form.submit();
@@ -55,7 +64,7 @@ class AdvancedSearch {
     // filters already applied are listed as buttons with an X that removes the filter
     showCurrentFilters() {
         if (Object.entries(this.currentFilters).length) {
-            $('#attribute-filters').addClass('mb-3').empty();
+            $('#attribute-filters').addClass('mb-3').children(':not([data-creator-filter-chip])').remove();
             for (let scope in this.currentFilters) {
                 const field_config = this.getFieldConfigFromScope(scope) ||
                     this.getFieldConfigFromScope(scope.replace(/_eq/, '_in'))

@@ -31,6 +31,24 @@ class CreatorFilter
     creator&.full_name.presence || creator&.login
   end
 
+  def creation_date_label
+    case creation_date_range
+    when 'all'
+      nil
+    when 'custom'
+      from, through = params.values_at(:creation_date_from, :creation_date_to).map(&:presence)
+      if from && through
+        "#{from} to #{through}"
+      elsif from
+        "From #{from}"
+      elsif through
+        "Through #{through}"
+      end
+    else
+      CREATION_DATE_CHOICES.find { |_label, value| value == creation_date_range }&.first
+    end
+  end
+
   def apply(relation)
     return relation unless active?
     return relation.none unless creator_id&.positive? && (scope == :all || scope == creator_id)
