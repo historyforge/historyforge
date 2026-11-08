@@ -8,7 +8,7 @@ import { buildStore } from './store'
 let reactRoot = null;
 let store = null;
 
-const initializeForge = () => {
+export const initializeForge = () => {
     const forge = document.getElementById("forge");
     if (!forge) {
         if (reactRoot) {
@@ -39,6 +39,4 @@ const cleanupForge = () => {
     }
 };
 
-document.addEventListener('DOMContentLoaded', initializeForge);
-document.addEventListener('turbo:load', initializeForge);
 document.addEventListener('turbo:before-cache', cleanupForge);

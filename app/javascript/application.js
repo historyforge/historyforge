@@ -1,5 +1,4 @@
 /* eslint no-console:0 */
-import 'chartkick/chart.js'
 import '../../vendor/assets/javascripts/parallax.min'
 import '../../vendor/assets/javascripts/jquery.mousewheel'
 import '../../vendor/assets/javascripts/chosen.jquery'
@@ -17,8 +16,7 @@ import './passkeys'
 import '@hotwired/turbo-rails'
 
 import './controllers'
-import './forge'
-import './miniforge'
+import { loadMaps } from './loadMaps'
 import { Notifier } from '@airbrake/browser'
 
 if (window.airbrakeCreds && window.env === 'production') {
@@ -125,6 +123,15 @@ const initializePage = () => {
   initializeTextareaResize();
 }
 
+const initializeMaps = () => {
+  if (!document.querySelector('#forge, #miniforge')) return
+
+  loadMaps().then(({ initializeForge, initializeMiniForge }) => {
+    initializeForge()
+    initializeMiniForge()
+  }).catch(error => console.error('Could not initialize maps', error))
+}
+
 // Cleanup before Turbo caches the page
 const cleanupPage = () => {
   const $ = window.jQuery || window.$;
@@ -143,6 +150,8 @@ const cleanupPage = () => {
 
 document.addEventListener('DOMContentLoaded', initializePage)
 document.addEventListener('turbo:load', initializePage)
+document.addEventListener('DOMContentLoaded', initializeMaps)
+document.addEventListener('turbo:load', initializeMaps)
 document.addEventListener('turbo:before-cache', cleanupPage)
 
 // The header is data-turbo-permanent, so it can show a logged-in menu after the session
