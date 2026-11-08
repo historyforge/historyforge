@@ -8,12 +8,12 @@ RSpec.describe 'Public Person API v1', type: :request do
   it 'returns the public representation with source links and shallow household relationships' do
     allow(People::PublicUrlOptions).to receive(:call).and_return({})
     person = create(:person, notes: 'Private editor notes')
-    relative = create(:person, notes: 'Private relative notes')
+    relative = create(:person, sex: 'M', notes: 'Private relative notes')
     locality = create(:locality)
     person.names.create!(first_name: 'Mary', last_name: 'Jones')
     record = create(:census1910_record, locality:, age: 15, pob: 'New York', relation_to_head: 'Daughter',
                                         street_name: 'Coddington', street_suffix: 'Rd', notes: 'Private census notes')
-    fellow = create(:census1910_record, locality:, relation_to_head: 'Head')
+    fellow = create(:census1910_record, locality:, sex: 'M', relation_to_head: 'Head')
     unreviewed = create(:census1910_record, locality:, relation_to_head: 'Son')
     record.update_columns(person_id: person.id, reviewed_at: Time.current)
     fellow.update_columns(person_id: relative.id, reviewed_at: Time.current)
@@ -33,7 +33,7 @@ RSpec.describe 'Public Person API v1', type: :request do
     )
     expect(data).to include('id' => person.id, 'name' => person.name, 'canonical_url' => "#{origin}#{person_path(person)}")
     expect(data['alternate_names']).to eq(['Mary Jones'])
-    expect(data['summary']).to include('lived on Coddington Rd', "the daughter of #{relative.name}")
+    expect(data['summary']).to include('lived on Coddington Rd', "father was #{relative.name}")
     expect(data['summary_source_links']).to eq([
       source.merge('label' => '1910 census'),
       fellow_source.merge('label' => "1910: #{fellow.name}"),

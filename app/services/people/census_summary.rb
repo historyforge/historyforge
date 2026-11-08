@@ -24,18 +24,21 @@ module People
 
       jobs = select_occupations(continuity.occupations)
       extended = jobs.size > 3
+      family_first = continuity.households.any? && jobs.none? { |group| group.first.occupation } &&
+                     continuity.households.flatten.any? { |entry| childhood_age(entry) }
       sentences = []
+      sentences << household_sentence(continuity.households, @name) if family_first
       if extended
         sentences << occupation_sentence(jobs.first(2), @name)
         sentences << occupation_sentence(jobs.drop(2), @pronoun.capitalize)
       elsif jobs.any?
-        sentences << occupation_sentence(jobs, @name)
+        sentences << occupation_sentence(jobs, family_first ? @pronoun.capitalize : @name)
       end
       if continuity.residences.any?
         subject = sentences.empty? ? @name : @pronoun.capitalize
         sentences << residence_sentence(continuity.residences, subject, childhood: sentences.empty?)
       end
-      if continuity.households.any?
+      if continuity.households.any? && !family_first
         subject = sentences.empty? ? @name : @pronoun.capitalize
         sentences << household_sentence(continuity.households, subject)
       end
@@ -62,6 +65,7 @@ module People
           "#{actor} worked as #{dated_occupation(group)}"
         else
           age = childhood_age(group.first) if index.zero? && group.one?
+          actor = @pronoun if age && actor == @pronoun.capitalize
           "#{("At #{age}, " if age)}#{actor} #{past_be(actor)} #{group.first.activity} #{dates(group)}"
         end
       end
@@ -172,12 +176,57 @@ module People
     end
 
     def household_sentence(groups, subject)
-      groups = [groups.first, groups.last] if groups.size > 2
-      relationships = groups.map do |group|
-        relationship = group.first.household
-        groups.one? ? relationship : "#{relationship} #{dates(group)}"
+      first, last = groups.map { |group| group.first.household }
+      same_member = last && first.member.person_id.present? && first.member.person_id == last.member.person_id
+      if same_member && (first.role != last.role || first.role.nil?)
+        return "#{subject} shared a census household with #{first.name} #{dates(groups.flatten)}."
       end
-      "#{subject} #{past_be(subject)} listed as #{relationships.to_sentence}."
+
+      groups = [groups.flatten] if same_member
+      terms = groups.map { |group| established_kin(group) }
+      # Two different people with the same relationship may reflect a change or conflicting evidence.
+      if terms.size == 2 && (terms.first == terms.last || (terms - %w[wife husband spouse]).empty?)
+        terms = Array.new(groups.size)
+      end
+      if terms.none? && first.role
+        labels = groups.map do |group|
+          relationship = group.first.household
+          "the #{relationship.role} of #{relationship.name} #{dates(group)}"
+        end
+        return "#{subject} #{past_be(subject)} listed as #{labels.to_sentence}."
+      end
+
+      clauses = groups.zip(terms).map.with_index do |(group, term), index|
+        relationship = group.first.household
+        actor = index.zero? ? subject : @pronoun
+        if term
+          owner = if actor.casecmp?(@pronoun)
+                    { 'he' => 'his', 'she' => 'her', 'they' => 'their' }.fetch(@pronoun)
+                  else
+                    "#{actor}’s"
+                  end
+          "#{index.zero? ? owner.sub(/\A./, &:upcase) : owner} #{term} was #{relationship.name}"
+        elsif relationship.role
+          "#{actor} #{past_be(actor)} listed as the #{relationship.role} of #{relationship.name} #{dates(group)}"
+        else
+          "#{actor} shared a census household with #{relationship.name} #{dates(group)}"
+        end
+      end
+      "#{clauses.to_sentence(two_words_connector: ', and ')}."
+    end
+
+    def established_kin(group)
+      relationships = group.map(&:household)
+      first = relationships.first
+      return unless first.member.person_id.present? && first.kin && !first.role.start_with?('step') &&
+                    !first.kin.start_with?('step')
+
+      return first.kin if relationships.all? { |relationship| relationship.kin == first.kin }
+
+      Evidence::GENDERED_KIN.keys.find do |neutral|
+        terms = Evidence::GENDERED_KIN.fetch(neutral).values + [neutral]
+        relationships.all? { |relationship| terms.include?(relationship.kin) }
+      end
     end
 
     def dates(group)

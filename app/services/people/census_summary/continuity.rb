@@ -6,9 +6,9 @@ module People
     class Continuity
       Result = Data.define(:occupations, :residences, :households) do
         def sources
-          heads = households.flatten.to_h { |entry| [entry.record, entry.head] }
+          members = households.flatten.to_h { |entry| [entry.record, entry.household.member] }
           records = (occupations + residences + households).flatten.map(&:record).uniq.sort_by(&:year)
-          records.flat_map { |record| [record, heads[record]].compact }.uniq
+          records.flat_map { |record| [record, members[record]].compact }.uniq
         end
       end
 
@@ -33,16 +33,32 @@ module People
           residences = residences.select { |group| street_residence?(group.first) }
         end
         households = runs(:household) do |first, later|
-          first.head.person_id.present? && first.head.person_id == later.head.person_id &&
-            first.household == later.household
+          member_id = first.household.member.person_id
+          member_id.present? && member_id == later.household.member.person_id &&
+            first.household.role == later.household.role
         end
 
         return if occupations.empty? && residences.empty? && households.empty?
 
-        Result.new(occupations:, residences:, households:)
+        explicit = households.select { |group| group.first.household.role }
+        households = explicit if explicit.any?
+        Result.new(occupations:, residences:, households: select_households(households))
       end
 
       private
+
+      def select_households(groups)
+        # Check all dated observations before shortening the account to two groups.
+        conflict = groups.combination(2).find do |first, later|
+          earlier = first.first.household
+          newer = later.first.household
+          earlier.member.person_id.present? && earlier.member.person_id == newer.member.person_id &&
+            earlier.role != newer.role
+        end
+        return conflict if conflict
+
+        groups.size > 2 ? [groups.first, groups.last] : groups
+      end
 
       def school_activity(entry)
         entry.activity.delete_prefix('listed as ').delete_prefix('recorded as ')

@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe People::CensusSummary do
   let(:observation) do
-    Struct.new(:year, :name, :person_id, :person, :locality, :locality_id, :city, :street_name, :street_address, :street_house_number,
+    Struct.new(:year, :name, :person_id, :person, :sex, :locality, :locality_id, :city, :street_name, :street_address, :street_house_number,
                :family_id, :relation_to_head, :fellows, :ward, :building_id, :dwelling_number, :page_number,
                :page_side, :occupation, :industry, :attended_school, :age, :pob, :state, keyword_init: true) do
       def field_for(field)
@@ -234,7 +234,7 @@ RSpec.describe People::CensusSummary do
       'Andrew W Aagaard worked as “Laborer” in both 1930 and 1940 (industry “University Grounds” in 1930) ' \
       'and “Hand Sander” in 1950 (industry “Gun Factory”). ' \
       'He lived on Coddington Rd in Caroline, at number 1784 in 1950. ' \
-      'He was listed as the stepson of Webster Barnhart.'
+      'He was listed as the stepson of Webster Barnhart in 1930.'
     )
     expect(result.sources).to eq([earlier, head, middle, later])
   end
@@ -251,7 +251,7 @@ RSpec.describe People::CensusSummary do
   end
 
   it 'connects residence, household, and schooling across censuses and cites the head records' do
-    andrew = Data.define(:name).new('Andrew Aagaard')
+    andrew = Data.define(:name, :sex).new('Andrew Aagaard', 'M')
     head_1940 = observation.new(year: 1940, name: 'Andrew Agaard', person_id: 42, person: andrew, relation_to_head: 'Head')
     head_1950 = observation.new(year: 1950, name: 'Andrew W Aagaard', person_id: 42, person: andrew, relation_to_head: 'Head')
     child = observation.new(year: 1940, age: 7, locality: caroline, locality_id: 1, family_id: '148',
@@ -264,9 +264,9 @@ RSpec.describe People::CensusSummary do
     result = summarize(teenager, child)
 
     expect(result.paragraph).to eq(
-      'At seven, Frances Aagaard was recorded as attending school in 1940, and she was listed as a high school senior in 1950. ' \
-      'She lived on Coddington Rd in Caroline, at number 1784 in 1950. ' \
-      'She was listed as the daughter of Andrew Aagaard.'
+      'Frances Aagaard’s father was Andrew Aagaard. ' \
+      'At seven, she was recorded as attending school in 1940, and she was listed as a high school senior in 1950. ' \
+      'She lived on Coddington Rd in Caroline, at number 1784 in 1950.'
     )
     expect(result.paragraph).not_to match(/moved|same house|employed/)
     expect(result.paragraph.scan('Andrew Aagaard').length).to eq(1)
@@ -296,6 +296,89 @@ RSpec.describe People::CensusSummary do
       'Andrew Aagaard worked as “Laborer” in 1940 (industry “Gun Factory”) and “Hand Sander” in 1950 (industry “Gun Factory”).'
     )
     expect(summarize(earlier, later, residence(1960, '12 Main St'), sex: nil).paragraph).to include('They lived at 12 Main St')
+  end
+
+  it 'prefers an explicitly listed spouse over a child or a lodger for the household head' do
+    child = observation.new(year: 1910, name: 'Clara Jones', relation_to_head: 'Daughter')
+    spouse = observation.new(year: 1910, name: 'John Jones', relation_to_head: 'Husband')
+    lodger = observation.new(year: 1910, name: 'Sam Bell', relation_to_head: 'Lodger')
+    head = observation.new(year: 1910, locality_id: 1, family_id: '12', relation_to_head: 'Head',
+                           fellows: [child, spouse, lodger])
+
+    result = summarize(head)
+
+    expect(result.paragraph).to eq('Frances Aagaard was listed as the spouse of John Jones in 1910.')
+    expect(result.sources).to eq([head, spouse])
+  end
+
+  it 'uses a linked spouse’s explicitly recorded role without repeating census years' do
+    first_wife = observation.new(year: 1910, name: 'Laura Treman', person_id: 42, relation_to_head: 'Wife')
+    last_wife = observation.new(year: 1920, name: 'Laura Treman', person_id: 42, relation_to_head: 'Wife')
+    first = observation.new(year: 1910, locality_id: 1, family_id: '12', relation_to_head: 'Head', fellows: [first_wife])
+    last = observation.new(year: 1920, locality_id: 1, family_id: '12', relation_to_head: 'Head', fellows: [last_wife])
+
+    result = summarize(first, last, name: 'Robert Treman', sex: 'M')
+
+    expect(result.paragraph).to eq('Robert Treman’s wife was Laura Treman.')
+    expect(result.sources).to eq([first, first_wife, last, last_wife])
+  end
+
+  it 'describes a lodger and head as sharing a household' do
+    head = observation.new(year: 1910, name: 'John Jones', relation_to_head: 'Head')
+    lodger = observation.new(year: 1910, locality_id: 1, family_id: '12', relation_to_head: 'Lodger', fellows: [head])
+
+    result = summarize(lodger)
+
+    expect(result.paragraph).to eq('Frances Aagaard shared a census household with John Jones in 1910.')
+    expect(result.sources).to eq([lodger, head])
+  end
+
+  it 'does not infer that a child is related to the head’s spouse' do
+    spouse = observation.new(year: 1910, name: 'Mary Jones', relation_to_head: 'Wife')
+    child = observation.new(year: 1910, locality_id: 1, family_id: '12', relation_to_head: 'Daughter', fellows: [spouse])
+
+    expect(summarize(child).paragraph).to eq('Frances Aagaard shared a census household with Mary Jones in 1910.')
+  end
+
+  it 'describes a change from a parent’s household to a spouse’s household in one dated sentence' do
+    parent = observation.new(year: 1910, name: 'Mary Jones', relation_to_head: 'Head')
+    spouse = observation.new(year: 1920, name: 'John Smith', relation_to_head: 'Head')
+    child = observation.new(year: 1910, age: 16, locality_id: 1, family_id: '12',
+                            relation_to_head: 'Daughter', fellows: [parent])
+    adult = observation.new(year: 1920, age: 26, locality_id: 1, family_id: '24',
+                            relation_to_head: 'Wife', fellows: [spouse])
+
+    result = summarize(adult, child)
+
+    expect(result.paragraph).to eq(
+      'Frances Aagaard was listed as the daughter of Mary Jones in 1910 and the wife of John Smith in 1920.'
+    )
+    expect(result.sources).to eq([child, parent, adult, spouse])
+  end
+
+  it 'falls back to shared household when the same linked person has conflicting relationships' do
+    earlier_head = observation.new(year: 1910, person_id: 42, name: 'John Jones', relation_to_head: 'Head')
+    later_head = observation.new(year: 1920, person_id: 42, name: 'John Jones', relation_to_head: 'Head')
+    earlier = observation.new(year: 1910, locality_id: 1, family_id: '12',
+                              relation_to_head: 'Daughter', fellows: [earlier_head])
+    later = observation.new(year: 1920, locality_id: 1, family_id: '24',
+                            relation_to_head: 'Sister', fellows: [later_head])
+
+    last_head = observation.new(year: 1930, person_id: 42, name: 'John Jones', relation_to_head: 'Head')
+    last = observation.new(year: 1930, locality_id: 1, family_id: '24',
+                           relation_to_head: 'Daughter', fellows: [last_head])
+
+    result = summarize(earlier, later, last)
+
+    expect(result.paragraph).to eq('Frances Aagaard shared a census household with John Jones in both 1910 and 1920.')
+    expect(result.sources).to eq([earlier, earlier_head, later, later_head])
+  end
+
+  it 'omits household prose when the only fellow has no usable name' do
+    head = observation.new(year: 1910, name: 'Unknown', relation_to_head: 'Head')
+    child = observation.new(year: 1910, locality_id: 1, family_id: '12', relation_to_head: 'Daughter', fellows: [head])
+
+    expect(summarize(child)).to be_nil
   end
 
   it 'omits a household claim and link when the head record is unreadable' do
