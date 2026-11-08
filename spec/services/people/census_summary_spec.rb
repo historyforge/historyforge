@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require 'active_support/all'
+require_relative '../../../app/services/people/census_occupation'
+require_relative '../../../app/services/people/census_continuity'
 require_relative '../../../app/services/people/census_summary'
 require_relative '../../../app/services/people/census_narrative_evidence'
 require_relative '../../../app/services/people/census_household'
