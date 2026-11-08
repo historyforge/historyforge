@@ -57,7 +57,7 @@
         = form.submit 'Submit', data: { turbo_submits_with: 'Sending...' }, class: 'btn btn-primary mr-auto'
         button.btn.btn-light.ml-auto.checkall data-scope="#fields" type="button" Check all
 
-  .collapse.fade#newAttributeFilter class=('show' if creator_filter&.active?)
+  .collapse.fade#newAttributeFilter
     .card.mb-3
       .card-header
         button.float-right.close(type="button" data-toggle="collapse" data-target="#newAttributeFilter") &times;
