@@ -1,11 +1,6 @@
 # frozen_string_literal: true
 
-require 'active_support/all'
-require_relative '../../../app/services/people/census_summary'
-require_relative '../../../app/services/people/census_summary/occupation'
-require_relative '../../../app/services/people/census_summary/continuity'
-require_relative '../../../app/services/people/census_summary/evidence'
-require_relative '../../../app/services/people/census_household'
+require 'rails_helper'
 
 RSpec.describe People::CensusSummary do
   let(:observation) do
