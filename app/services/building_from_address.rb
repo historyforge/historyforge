@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
 class BuildingFromAddress
-  def initialize(record)
+  def initialize(record, latitude: nil, longitude: nil)
     @record = record
+    @latitude = latitude
+    @longitude = longitude
   end
 
   attr_reader :record
@@ -13,6 +15,8 @@ class BuildingFromAddress
     return modern_address.building if modern_address.persisted?
 
     building = Building.new locality: record.locality,
+                            lat: @latitude,
+                            lon: @longitude,
                             building_type_ids: [3] # residence
 
     modern_address.is_primary = true
