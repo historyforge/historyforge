@@ -5,7 +5,7 @@ import React from "react";
 
 let reactRoot = null;
 
-const initializeMiniForge = () => {
+export const initializeMiniForge = () => {
     const miniforge = document.getElementById('miniforge')
     if (!miniforge) {
         if (reactRoot) {
@@ -33,6 +33,4 @@ const cleanupMiniForge = () => {
     }
 };
 
-document.addEventListener('DOMContentLoaded', initializeMiniForge);
-document.addEventListener('turbo:load', initializeMiniForge);
 document.addEventListener('turbo:before-cache', cleanupMiniForge);

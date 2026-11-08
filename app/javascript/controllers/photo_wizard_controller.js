@@ -1,7 +1,5 @@
 import { Controller } from 'stimulus'
-import L from 'leaflet'
-import { createStreetLayer } from '../forge/streetLayer'
-import { getMainIcon } from '../forge/mapFunctions'
+import { loadMaps } from '../loadMaps'
 
 function parseCoordinates(latitude, longitude) {
   if (!String(latitude ?? '').trim() || !String(longitude ?? '').trim()) return null
@@ -182,7 +180,7 @@ export default class extends Controller {
   initCard(card) {
     window.scrollTo(0, 0)
     if (card.find('#photograph-map').length && !this.mapInitialized) {
-      this.initMap()
+      this.initMap(card[0]).catch(error => console.error('Could not initialize the photo map', error))
     }
     card.find('select:visible').chosen({
       disable_search_threshold: 15
@@ -197,7 +195,10 @@ export default class extends Controller {
     this.initCard($(el).closest('.card').deactivateCard().next().activateCard())
   }
 
-  initMap() {
+  async initMap(card) {
+    const { L, createStreetLayer, getMainIcon } = await loadMaps()
+    if (!card.isConnected || !card.classList.contains('active') || this.mapInitialized) return
+
     const startLat = document.getElementById('photograph_latitude').value
     const startLon = document.getElementById('photograph_longitude').value
     const loc = parseCoordinates(startLat, startLon)
