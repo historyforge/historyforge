@@ -43,7 +43,8 @@
   #attribute-filters class=('mb-3' if creator_filter&.active?)
     - if creator_filter&.active?
       - if creator_filter.creator_selected?
-        - creator_label = selected_creator_name || (creator_filter.params[:creator_id].to_s == current_user.id.to_s ? 'You' : "User ##{creator_filter.params[:creator_id]}")
+        - creator_name = creator_filter.params[:creator_id].to_s == current_user.id.to_s ? 'you' : (selected_creator_name || "User ##{creator_filter.params[:creator_id]}")
+        - creator_label = "Created by #{creator_name}"
       - date_label = creator_filter.creation_date_label
       - { 'Created by' => creator_label, 'Creation date' => date_label }.each do |label, value|
         - if value

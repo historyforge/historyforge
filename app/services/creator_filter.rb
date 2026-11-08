@@ -36,20 +36,24 @@ class CreatorFilter
   end
 
   def creation_date_label
-    case creation_date_range
+    range = creation_date_range
+    case range
     when 'all'
       nil
     when 'custom'
       from, through = params.values_at(:creation_date_from, :creation_date_to).map(&:presence)
       if from && through
-        "#{from} to #{through}"
+        "Created from #{from} to #{through}"
       elsif from
-        "From #{from}"
+        "Created from #{from}"
       elsif through
-        "Through #{through}"
+        "Created through #{through}"
       end
+    when 'today'
+      'Created today'
     else
-      CREATION_DATE_CHOICES.find { |_label, value| value == creation_date_range }&.first
+      days = CREATION_DATE_PRESETS[range]
+      "Created in the last #{days} days" if days
     end
   end
 
