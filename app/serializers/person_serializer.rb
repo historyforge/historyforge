@@ -45,7 +45,7 @@ class PersonSerializer < ApplicationSerializer
   end
 
   def description
-    summary || CGI.unescapeHTML(ActionController::Base.helpers.strip_tags(object.description).to_s).presence
+    summary&.squish || CGI.unescapeHTML(ActionController::Base.helpers.strip_tags(object.description).to_s).presence
   end
 
   def birth_year
@@ -103,7 +103,7 @@ class PersonSerializer < ApplicationSerializer
   def summary_result
     return @summary_result if defined?(@summary_result)
 
-    observations = People::CensusNarrativeEvidence.call(records: @census_records, households: @census_households)
+    observations = People::CensusSummary::Evidence.call(records: @census_records, households: @census_households)
     @summary_result = People::CensusSummary.call(name: object.name, sex: object.sex, observations:)
   end
 
