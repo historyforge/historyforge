@@ -9,7 +9,7 @@ RSpec.describe PersonSerializer do
   before { allow(People::PublicUrlOptions).to receive(:call).and_return({}) }
 
   def serialize(*census_records, households: {})
-    census_households = census_records.index_with { People::CensusHousehold::Result.new(fellows: [], head: nil) }.merge(households)
+    census_households = census_records.index_with { People::CensusHousehold::Result.new(fellows: [], head: nil, members: []) }.merge(households)
     described_class.new(person, census_records:, census_households:, url_options:)
   end
 
@@ -49,7 +49,7 @@ RSpec.describe PersonSerializer do
     expect(record).not_to receive(:fellows)
     expect(fellow).not_to receive(:person)
 
-    household = People::CensusHousehold::Result.new(fellows: [fellow, unlinked], head: nil)
+    household = People::CensusHousehold::Result.new(fellows: [fellow, unlinked], head: nil, members: [])
     serializer = serialize(record, households: { record => household })
 
     expect(serializer.relationships).to eq([
@@ -83,7 +83,7 @@ RSpec.describe PersonSerializer do
     expect(serializer.summary).not_to include(head.name)
     expect(serializer.summary_source_links.pluck(:record_id)).to eq([record.id])
 
-    household = People::CensusHousehold::Result.new(fellows: [head], head:)
+    household = People::CensusHousehold::Result.new(fellows: [head], head:, members: [head])
     refreshed = serialize(record, households: { record => household })
     expect(refreshed.summary).to include("the daughter of #{head.name}")
     expect(refreshed.summary_source_links.pluck(:record_id)).to eq([record.id, head.id])

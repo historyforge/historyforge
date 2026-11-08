@@ -17,6 +17,8 @@ module People
     def call
       census_records = @person.census_records.select(&@readable)
       census_households = census_records.index_with { |record| CensusHousehold.call(record:, readable: @readable) }
+      members = census_households.values.flat_map(&:members).select(&:person_id)
+      ActiveRecord::Associations::Preloader.new(records: members, associations: :person).call
       Result.new(census_records:, census_households:)
     end
   end

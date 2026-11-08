@@ -2,7 +2,7 @@
 
 module People
   class CensusHousehold
-    Result = Data.define(:fellows, :head)
+    Result = Data.define(:fellows, :head, :members)
 
     def self.call(record:, readable:)
       new(record:, readable:).call
@@ -16,21 +16,21 @@ module People
     def call
       candidates = @record.fellows.to_a
       fellows = candidates.select(&@readable)
-      # A hidden candidate still makes the head ambiguous.
-      head = unique_head(candidates)
-      Result.new(fellows:, head: (head if fellows.include?(head)))
+      members = []
+      head = nil
+      if @record.family_id.present? && @record.locality_id.present?
+        context = candidates.select { |fellow| same_household_context?(fellow) }
+        heads = [@record, *context].select { |row| row.try(:relation_to_head).to_s.strip.casecmp?('head') }
+        # An unreadable head still counts when checking for ambiguity.
+        if heads.size <= 1
+          members = fellows & context
+          head = heads.first if members.include?(heads.first)
+        end
+      end
+      Result.new(fellows:, head:, members:)
     end
 
     private
-
-    def unique_head(candidates)
-      return unless @record.respond_to?(:relation_to_head) && @record.family_id.present? && @record.locality_id.present?
-
-      heads = candidates.select do |fellow|
-        fellow.relation_to_head.to_s.strip.casecmp?('head') && same_household_context?(fellow)
-      end
-      heads.first if heads.one?
-    end
 
     def same_household_context?(fellow)
       return false unless @record.ward == fellow.ward
