@@ -21,10 +21,7 @@ namespace :import do
     saved_count = 0
 
     rows.each_with_index do |row, _index|
-      record = build_census_record(row, year)
-      assign_census_attributes(record, row, year)
-      record.created_by = User.first
-      assign_census_building(record, row)
+      record = build_and_assign_census_record(row:, year:)
       saved_count += 1 if record.save
     end
 
@@ -86,6 +83,7 @@ namespace :import do
       ActiveRecord::Base.transaction do
         record = build_and_assign_census_record(row:, year:)
         result = census_row_result(record:, row:, index:, dry_run:)
+        raise ActiveRecord::Rollback if dry_run
       end
       return result
     rescue ActiveRecord::ActiveRecordError => e
@@ -182,22 +180,7 @@ namespace :import do
   end
 
   def assign_census_building(record:, row:)
-    address = Address.find_or_initialize_by(
-      house_number: record.street_house_number,
-      prefix: record.street_prefix,
-      name: record.street_name,
-      suffix: record.street_suffix,
-      city: record.city,
-      is_primary: true
-    )
-    record.building = address.building || Building.create(
-      name: address.address.split(address.city.to_s).first.strip,
-      locality: record.locality,
-      building_type_ids: [1],
-      lat: row['Latitude'],
-      lon: row['Longitude'],
-      addresses: [address]
-    )
+    record.building = BuildingFromAddress.new(record, latitude: row['Latitude'], longitude: row['Longitude']).perform
   end
 
   require 'json'
