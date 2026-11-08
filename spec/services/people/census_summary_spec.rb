@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require 'active_support/all'
-require_relative '../../../app/services/people/census_occupation'
-require_relative '../../../app/services/people/census_continuity'
 require_relative '../../../app/services/people/census_summary'
-require_relative '../../../app/services/people/census_narrative_evidence'
+require_relative '../../../app/services/people/census_summary/occupation'
+require_relative '../../../app/services/people/census_summary/continuity'
+require_relative '../../../app/services/people/census_summary/evidence'
 require_relative '../../../app/services/people/census_household'
 
 RSpec.describe People::CensusSummary do
@@ -21,7 +21,7 @@ RSpec.describe People::CensusSummary do
 
   def summarize(*records, name: 'Frances Aagaard', sex: 'F', readable: ->(_record) { true })
     households = records.index_with { |record| People::CensusHousehold.call(record:, readable:) }
-    observations = People::CensusNarrativeEvidence.call(records:, households:)
+    observations = People::CensusSummary::Evidence.call(records:, households:)
     described_class.call(name:, sex:, observations:)
   end
 

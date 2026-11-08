@@ -18,7 +18,7 @@ module People
     end
 
     def call
-      continuity = CensusContinuity.call(observations: @observations)
+      continuity = Continuity.call(observations: @observations)
       return unless continuity
 
       sentences = shared_sentences(continuity.residences, continuity.occupations)
@@ -39,8 +39,8 @@ module People
         ["recorded #{group.first.residence}", group]
       end
       occupations.each do |group|
-        job = CensusOccupation.label(group)
-        industry = CensusOccupation.shared_industry(group)
+        job = Occupation.label(group)
+        industry = Occupation.shared_industry(group)
         claims << ["recorded with the occupation “#{job}”#{(" and industry “#{industry}”" if industry)}", group]
       end
 
