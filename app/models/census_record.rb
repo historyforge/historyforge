@@ -97,16 +97,14 @@ class CensusRecord < ApplicationRecord
   def dont_add_same_person
     if duplicate_census_scope?
       errors.add :base, 'A record already exists for this census sheet, side, and line number.'
-    elsif last_name.present? && likely_matches?
-      errors.add :base, 'A person with the same street number, street name, last name, and first name already exists.'
+    elsif likely_matches?
+      errors.add :base, 'A person with the same name and age already exists in this census household on this sheet.'
     end
   end
 
   scope :not_me, ->(record) { record.persisted? ? where.not(id: record.id) : self }
   def duplicate_census_scope?
-    attrs = { locality_id:, ward:, page_number:, page_side:, line_number: }
-    attrs[:enum_dist] = enum_dist if enum_dist_defined?
-    self.class.where(attrs)
+    self.class.where(census_sheet_attributes.merge(line_number:))
       .not_me(self)
       .exists?
   end
@@ -118,10 +116,22 @@ class CensusRecord < ApplicationRecord
   end
 
   def likely_matches?
-    attrs = { locality_id:, street_house_number:, street_name:, last_name:, first_name:, name_prefix:, name_suffix:, age: age || 0 }
-    self.class.where(attrs)
+    return false unless locality_id && page_number && family_id.present? && first_name.present? && last_name.present?
+
+    attrs = { family_id:, dwelling_number:, first_name:, middle_name:, last_name:, name_prefix:, name_suffix:, age: }
+    attrs[:post_office] = post_office if has_attribute?(:post_office)
+    attrs[:age_months] = age_months if has_attribute?(:age_months)
+    return false if age.nil? && attrs[:age_months].nil?
+
+    self.class.where(census_sheet_attributes).where(attrs)
       .not_me(self)
       .exists?
+  end
+
+  private def census_sheet_attributes
+    attrs = { locality_id:, ward:, page_number:, page_side: }
+    attrs[:enum_dist] = enum_dist if enum_dist_defined?
+    attrs
   end
 
   # @return [Array<Person>]
