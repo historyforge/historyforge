@@ -42,7 +42,8 @@
 
   #attribute-filters class=('mb-3' if creator_filter&.active?)
     - if creator_filter&.active?
-      - creator_label = selected_creator_name || (creator_filter.params[:creator_id].to_s == current_user.id.to_s ? 'You' : "User ##{creator_filter.params[:creator_id]}")
+      - if creator_filter.creator_selected?
+        - creator_label = selected_creator_name || (creator_filter.params[:creator_id].to_s == current_user.id.to_s ? 'You' : "User ##{creator_filter.params[:creator_id]}")
       - date_label = creator_filter.creation_date_label
       - { 'Created by' => creator_label, 'Creation date' => date_label }.each do |label, value|
         - if value
@@ -90,7 +91,6 @@
                 .col
                   = label_tag 's_creation_date_to', 'End date'
                   = date_field_tag 's[creation_date_to]', creator_filter.params[:creation_date_to], class: 'form-control', disabled: !custom_range
-          p.form-text.text-muted Select a creator to filter by creation date.
           hr
 
         - if controller.respond_to?(:year) && user_signed_in?

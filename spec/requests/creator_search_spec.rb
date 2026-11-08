@@ -72,6 +72,15 @@ RSpec.describe 'Creator search', :versioning, type: :request do
       expect(people_created_by(creator, creation_date_range: 'last7')).to eq([recent.id])
       expect(people_created_by(creator, creation_date_range: 'today')).to be_empty
       expect(people_created_by(creator, creation_date_range: 'custom', creation_date_to: '2025-01-07')).to eq([older.id])
+
+      filters = { s: { creation_date_range: 'last7' } }
+      get people_path, params: filters
+      expect(response).to have_http_status(:ok)
+      chips = Nokogiri::HTML(response.body).css('#attribute-filters [data-creator-filter-chip]')
+      expect(chips.map(&:text)).to eq(['×Creation date Last 7 days'])
+
+      get people_path(format: :json), params: filters.merge(from: 0, to: 100)
+      expect(response.parsed_body.map { |row| row.dig('name', 'id') }).to eq([recent.id])
     end
   end
 

@@ -16,6 +16,10 @@ class CreatorFilter
   end
 
   def active?
+    creator_selected? || creation_date_range != 'all'
+  end
+
+  def creator_selected?
     params[:creator_id].present?
   end
 
@@ -50,10 +54,11 @@ class CreatorFilter
   end
 
   def apply(relation)
-    return relation unless active?
-    return relation.none unless creator_id&.positive? && (scope == :all || scope == creator_id)
+    if creator_selected?
+      return relation.none unless creator_id&.positive? && (scope == :all || scope == creator_id)
 
-    relation = relation.where(created_by_id: creator_id)
+      relation = relation.where(created_by_id: creator_id)
+    end
     filter_creation_date(relation)
   end
 
