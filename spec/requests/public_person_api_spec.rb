@@ -33,7 +33,7 @@ RSpec.describe 'Public Person API v1', type: :request do
     )
     expect(data).to include('id' => person.id, 'name' => person.name, 'canonical_url' => "#{origin}#{person_path(person)}")
     expect(data['alternate_names']).to eq(['Mary Jones'])
-    expect(data['summary']).to include('lived on Coddington Rd', "#{fellow.name}’s daughter")
+    expect(data['summary']).to include('lived on Coddington Rd', "the daughter of #{relative.name}")
     expect(data['summary_source_links']).to eq([
       source.merge('label' => '1910 census'),
       fellow_source.merge('label' => "1910: #{fellow.name}"),

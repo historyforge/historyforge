@@ -32,11 +32,6 @@ module People
         group.find { |entry| preferred && entry.occupation.casecmp?(preferred) }&.occupation || group.first.occupation
       end
 
-      def self.shared_industry(group)
-        industry = group.first.industry
-        industry if industry && group.all? { |entry| industry.casecmp?(entry.industry.to_s) }
-      end
-
       def self.occupation_key(occupation)
         return unless occupation
 

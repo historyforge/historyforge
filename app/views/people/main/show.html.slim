@@ -42,7 +42,8 @@
   - if has_biography
     section.col-lg-8.mb-3.mb-lg-0 aria-label="Biography"
       - if summary
-        p.mb-2= summary
+        - summary.split("\n\n").each do |paragraph|
+          p.mb-2= paragraph
         p.small.mb-0
           ' Census sources:
           = safe_join(@person_representation.summary_source_links.map { |source| link_to(source[:label], source[:url]) }, ', ')

@@ -2,69 +2,86 @@
 
 module People
   class CensusSummary
-    # Selects dated observations and groups repeated residences and occupations.
+    # Groups dated evidence independently for work, residence, and household.
     class Continuity
-      Result = Data.define(:observations, :residences, :occupations, :sources)
+      Result = Data.define(:occupations, :residences, :households) do
+        def sources
+          heads = households.flatten.to_h { |entry| [entry.record, entry.head] }
+          records = (occupations + residences + households).flatten.map(&:record).uniq.sort_by(&:year)
+          records.flat_map { |record| [record, heads[record]].compact }.uniq
+        end
+      end
 
       def self.call(observations:)
         new(observations:).call
       end
 
       def initialize(observations:)
-        @observations = observations
+        @observations = observations.sort_by { |entry| entry.record.year }
       end
 
       def call
-        meaningful = @observations.select(&:meaningful?)
-        first = meaningful.first
-        return unless first
+        occupations = runs(:activity) do |first, later|
+          if first.occupation || later.occupation
+            Occupation.equivalent?(first, later)
+          else
+            school_activity(first) == school_activity(later)
+          end
+        end
+        residences = runs(:residence) { |first, later| same_residence?(first, later) }
+        if residences.flatten.any? { |entry| street_residence?(entry) }
+          residences = residences.select { |group| street_residence?(group.first) }
+        end
+        households = runs(:household) do |first, later|
+          first.head.person_id.present? && first.head.person_id == later.head.person_id &&
+            first.household == later.household
+        end
 
-        latest_change = meaningful.reverse_each.find { |entry| details(entry) != details(first) }
-        selected = [first, latest_change || meaningful.last].uniq
-        residences = continuity_groups(selected) { |a, b| a.address_key && a.address_key == b.address_key }
-        occupations = continuity_groups(selected) { |a, b| Occupation.equivalent?(a, b) }
+        return if occupations.empty? && residences.empty? && households.empty?
 
-        selected = without_repeated_details(selected, residences, occupations)
-        shared_records = (residences + occupations).flatten.map(&:record)
-        sources = (selected.flat_map { |entry| [entry.record, entry.head].compact } + shared_records).uniq.sort_by(&:year)
-        Result.new(observations: selected, residences:, occupations:, sources:)
+        Result.new(occupations:, residences:, households:)
       end
 
       private
 
-      def continuity_groups(selected)
-        groups = @observations.each_with_object([]) do |entry, runs|
-          # Contextual occupation matches need to hold across the whole run.
-          if runs.last&.all? { |previous| yield previous, entry }
-            runs.last << entry
-          else
-            runs << [entry]
+      def school_activity(entry)
+        entry.activity.delete_prefix('listed as ').delete_prefix('recorded as ')
+      end
+
+      def runs(field)
+        groups = []
+        current = []
+        @observations.each do |entry|
+          unless entry.public_send(field)
+            current = []
+            next
           end
+
+          # Contextual matches must hold across the whole run.
+          if current.empty? || !current.all? { |previous| yield previous, entry }
+            current = []
+            groups << current
+          end
+          current << entry
         end
-        groups.select { |run| run.size > 1 && run.intersect?(selected) }
+        groups
       end
 
-      def without_repeated_details(selected, residences, occupations)
-        first = selected.first
-        selected.map.with_index do |entry, i|
-          residence = entry.residence unless residences.any? { |group| group.include?(entry) }
-          job_group = occupations.find { |group| group.include?(entry) }
-          activity = if job_group
-                       "recorded in the industry “#{entry.industry}”" if entry.industry && !Occupation.shared_industry(job_group)
-                     else
-                       entry.activity
-                     end
-          omit_head = i.positive? && (residence || activity) && same_head?(first, entry)
-          entry.with(residence:, activity:, household: (entry.household unless omit_head), head: (entry.head unless omit_head))
+      def street_residence?(entry)
+        entry.residence.start_with?('at ', 'on ')
+      end
+
+      def same_residence?(first, later)
+        if first.address_key || later.address_key
+          return first.address_key == later.address_key
         end
-      end
 
-      def same_head?(first, later)
-        first.head&.person_id.present? && first.head.person_id == later.head&.person_id && first.household == later.household
-      end
+        # Two road-only observations can establish the same road, never the same house.
+        return false if first.residence.start_with?('at ') || later.residence.start_with?('at ')
 
-      def details(entry)
-        [entry.residence, entry.household, entry.activity]
+        first.record.locality_id == later.record.locality_id &&
+          first.record.field_for(:state).to_s.casecmp?(later.record.field_for(:state).to_s) &&
+          first.residence.casecmp?(later.residence)
       end
     end
   end

@@ -45,7 +45,7 @@ class PersonSerializer < ApplicationSerializer
   end
 
   def description
-    summary || CGI.unescapeHTML(ActionController::Base.helpers.strip_tags(object.description).to_s).presence
+    summary&.squish || CGI.unescapeHTML(ActionController::Base.helpers.strip_tags(object.description).to_s).presence
   end
 
   def birth_year

@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe PersonSerializer do
-  let(:person) { build_stubbed(:person, id: 42, first_name: 'Mary', last_name: 'Jones') }
+  let(:person) { build_stubbed(:person, id: 42, first_name: 'Mary', last_name: 'Jones', sex: 'F') }
   let(:url_options) { { host: 'history.example', protocol: 'https', script_name: '/archive' } }
 
   before { allow(People::PublicUrlOptions).to receive(:call).and_return({}) }
@@ -25,7 +25,8 @@ RSpec.describe PersonSerializer do
     result = serialize(later, earlier).serializable_hash
 
     expect(result).to include(id: 42, name: person.name, canonical_url: "https://history.example/archive/people/#{person.id}")
-    expect(result[:summary]).to include('At five, Mary Jones lived on Buffalo', 'In 1910', '“Merchant”')
+    expect(result[:summary]).to start_with('Mary Jones worked as “Merchant” in 1910.')
+    expect(result[:summary]).to include('She lived on Buffalo', 'in 1850.')
     expect(result[:census_observations]).to match([
       a_hash_including(id: 1, year: 1850, name: earlier.name, age: 5, pob: 'New York'),
       a_hash_including(id: 1, year: 1910, name: later.name, age: 65, relation_to_head: later.relation_to_head),
@@ -84,7 +85,7 @@ RSpec.describe PersonSerializer do
 
     household = People::CensusHousehold::Result.new(fellows: [head], head:)
     refreshed = serialize(record, households: { record => household })
-    expect(refreshed.summary).to include("#{head.name}’s daughter")
+    expect(refreshed.summary).to include("the daughter of #{head.name}")
     expect(refreshed.summary_source_links.pluck(:record_id)).to eq([record.id, head.id])
   end
 end

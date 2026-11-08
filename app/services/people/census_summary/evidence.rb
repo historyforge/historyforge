@@ -4,11 +4,7 @@ module People
   class CensusSummary
     # Projects authorized census rows into the observations needed for a narrative.
     class Evidence
-      Snapshot = Data.define(:record, :residence, :address_key, :household, :activity, :occupation, :industry, :head) do
-        def meaningful?
-          residence || household || activity
-        end
-      end
+      Snapshot = Data.define(:record, :residence, :place, :road, :address_key, :household, :activity, :occupation, :industry, :head)
       MISSING = %w[none blank unknown un un. illegible unreadable n/a na x ? -].freeze
       HEAD_RELATIONS = %w[daughter son stepdaughter stepson wife husband].freeze
       GENERIC_JOBS = %w[employer employee worker unemployed retired].freeze
@@ -24,10 +20,11 @@ module People
       def initialize(records:, households:)
         @records = records
         @households = households
+        @linked_names = {}
       end
 
       def call
-        @records.group_by(&:year).sort_by(&:first).filter_map do |_year, records|
+        @records.group_by(&:year).sort_by(&:first).map do |_year, records|
           # Multiple rows for one year can disagree. Leave those details to the source table.
           if records.one?
             snapshot(records.first)
@@ -52,13 +49,21 @@ module People
                     elsif place
                       "in #{place}"
                     end
-        Snapshot.new(record:, residence:, address_key: address_key(record, street, place),
+        Snapshot.new(record:, residence:, place:, road: road_label(record, street), address_key: address_key(record, street, place),
                      household:, activity:, occupation:, industry:, head:)
       end
 
       def empty_snapshot(record)
-        Snapshot.new(record:, residence: nil, address_key: nil, household: nil,
+        Snapshot.new(record:, residence: nil, place: nil, road: nil, address_key: nil, household: nil,
                      activity: nil, occupation: nil, industry: nil, head: nil)
+      end
+
+      def road_label(record, street)
+        return unless street
+
+        number = usable_text(record.street_house_number)
+        road = number ? street.delete_prefix("#{number} ") : street
+        road.split(/\s+(?:apt\.?|apartment)\s+/i, 2).first
       end
 
       def address_key(record, street, place)
@@ -79,12 +84,16 @@ module People
 
       def household_details(record)
         head = @households.fetch(record).head
-        return unless head&.name.present?
+        return unless head
 
         relation = usable_text(record.relation_to_head)&.downcase
         return unless HEAD_RELATIONS.include?(relation)
 
-        [head, "listed as #{head.name}’s #{relation}"]
+        name = if head.person_id
+                 @linked_names.fetch(head.person_id) { @linked_names[head.person_id] = head.person&.name.presence }
+               end
+        name ||= head.name.presence
+        [head, "the #{relation} of #{name}"] if name
       end
 
       def activity_details(record)
