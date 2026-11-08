@@ -65,7 +65,7 @@
       $form.advancedSearch({
         url: '<%= File.join(url_for().sub(/\/unhoused|\/unreviewed|\/unmatched/, ""), "advanced_search_filters.json") -%>',
         fields: <%== @search.f.to_json.html_safe -%>,
-        filters: <%== @search.s.to_json.html_safe -%>
+        filters: <%== json_escape(@search.s.to_json) -%>
       });
     }
 

@@ -31,7 +31,7 @@ class ApplicationController < ActionController::Base
     Setting.can_people_public? || (user_signed_in? && Setting.can_people_private?)
   end
 
-  helper_method :can_census?, :can_demographics?, :can_people?
+  helper_method :can_census?, :can_demographics?, :can_people?, :creator_search_scope, :my_stuff_available?
 
   def check_administrator_role
     check_role('administrator')
@@ -96,6 +96,17 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
+  def my_stuff_available?
+    user_signed_in? && [Building, Person, CensusRecord].any? { |resource| creator_search_scope(resource) }
+  end
+
+  def creator_search_scope(resource_class)
+    return unless user_signed_in?
+
+    return :all if current_ability.can?(:search_by_creator, resource_class)
+    return current_user.id if current_ability.can?(:search_by_own_creator, resource_class)
+  end
 
   def after_invite_path_for(_user)
     users_path

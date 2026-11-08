@@ -176,7 +176,7 @@ class Building < ApplicationRecord
   end
 
   def self.ransackable_attributes(_auth_object = nil)
-    super + %w[street_address]
+    (super - %w[created_by_id]) + %w[street_address]
   end
 
   Geocoder.configure(

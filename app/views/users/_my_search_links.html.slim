@@ -1,0 +1,8 @@
+- filters = { creator_id: current_user.id }
+- if creator_search_scope(Building)
+  = link_to 'Buildings', buildings_path(s: filters), class: link_class
+- if creator_search_scope(Person) && can_people?
+  = link_to 'People', people_path(s: filters), class: link_class
+- if creator_search_scope(CensusRecord)
+  - CensusYears.each_visible_to_user(true) do |year|
+    = link_to "#{year} US Census", census_records_path(year:, s: filters), class: link_class

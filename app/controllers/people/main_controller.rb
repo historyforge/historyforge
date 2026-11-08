@@ -9,7 +9,9 @@ module People
 
     def index
       authorize! :read, Person
-      @search = PersonSearch.generate params: search_params, user: current_user
+      @search = PersonSearch.generate(
+        params: search_params, user: current_user, creator_scope: creator_search_scope(Person)
+      )
       @translator = PersonGridTranslator.new(@search)
       respond_to do |format|
         format.html
@@ -110,6 +112,7 @@ module People
       @navigation_neighbors = PersonSearch.generate(
         params: navigation_params,
         user: current_user,
+        creator_scope: creator_search_scope(Person),
       ).navigation_neighbors(@person.id)
     end
 

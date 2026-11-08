@@ -53,7 +53,7 @@ class CensusRecord < ApplicationRecord
   scope :name_cont, ->(name) { fuzzy_name_search(name.downcase) }
 
   def self.ransackable_attributes(_auth_object = nil)
-    super + %w[street_address]
+    (super - %w[created_by_id]) + %w[street_address]
   end
 
   def self.ransackable_scopes(_auth_object = nil)

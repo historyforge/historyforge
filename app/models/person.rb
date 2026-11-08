@@ -39,6 +39,8 @@ class Person < ApplicationRecord
   include PersonNames
   include Versioning
 
+  belongs_to :created_by, class_name: 'User', optional: true
+
   NAME_VARIANT_ATTRIBUTES = %w[first_name last_name].freeze
   PRIMARY_NAME_ATTRIBUTES = %w[name_prefix first_name middle_name last_name name_suffix].freeze
   SEXES = %w[M F].freeze
@@ -79,6 +81,10 @@ class Person < ApplicationRecord
   end
 
   before_save :ensure_primary_name
+  before_create do
+    creator = PaperTrail.request.whodunnit.to_s
+    self.created_by_id ||= creator.to_i if creator.match?(/\A[1-9][0-9]{0,9}\z/)
+  end
 
   scope :fuzzy_name_search, lambda { |names|
     names = names.is_a?(String) ? names.downcase.split : names
@@ -126,7 +132,7 @@ class Person < ApplicationRecord
   }
 
   def self.ransackable_attributes(_auth_object = nil)
-    super + %w[name]
+    (super - %w[created_by_id]) + %w[name]
   end
 
   def self.ransackable_scopes(_auth_object = nil)

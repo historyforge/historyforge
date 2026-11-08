@@ -3,10 +3,12 @@
 class UsersController < ApplicationController
   include RestoreSearch
 
+  RECENT_CREATIONS_LIMIT = 15
+
   layout 'application'
 
   before_action :authenticate_user!,
-                only: %i[show edit update]
+                only: %i[show edit update my_stuff]
 
   before_action :check_administrator_role,
                 only: %i[index new create destroy enable disable disable_and_reset resend_invitation]
@@ -16,6 +18,40 @@ class UsersController < ApplicationController
   def index
     @q = User.includes(:group).ransack(ransack_params)
     @users = @q.result.page(params[:page]).order('email asc')
+  end
+
+  def creator_autocomplete
+    return head :forbidden unless user_signed_in? && can?(:search_by_creator, Person)
+
+    response.headers['Cache-Control'] = 'no-store'
+    term = params[:term].to_s.strip
+    return render json: [] unless term.length.between?(2, 100)
+
+    pattern = "%#{User.sanitize_sql_like(term)}%"
+    creators = User.where('login ILIKE :pattern OR full_name ILIKE :pattern OR email ILIKE :pattern', pattern:)
+                    .order(:login, :id).limit(10)
+                    .pluck(:id, :login, :full_name)
+    render json: creators.map { |id, login, full_name| { id:, name: full_name.presence || login, login: } }
+  end
+
+  def my_stuff
+    return permission_denied unless my_stuff_available?
+
+    sources = []
+    sources << Building if creator_search_scope(Building)
+    sources << Person if creator_search_scope(Person) && can_people?
+    if creator_search_scope(CensusRecord)
+      CensusYears.each_visible_to_user(true) { |year| sources << CensusYears.class_for(year) }
+    end
+
+    cursor = creation_cursor
+    records = sources.flat_map { |source| recent_creations(source, cursor).to_a }
+                     .sort_by { |record| [record.created_at, record.id, record.class.table_name] }.reverse
+    @recent_creations = records.first(RECENT_CREATIONS_LIMIT)
+    if records.size > RECENT_CREATIONS_LIMIT
+      last = @recent_creations.last
+      @next_creation_cursor = [last.created_at.utc.iso8601(6), last.id, last.class.table_name].join(',')
+    end
   end
 
   def show
@@ -152,6 +188,34 @@ class UsersController < ApplicationController
   end
 
   private
+
+  def creation_cursor
+    time, id, table = params[:before].to_s.split(',', 3)
+    return unless time && id && table
+
+    [Time.iso8601(time), Integer(id, 10), table]
+  rescue ArgumentError
+    nil
+  end
+
+  def recent_creations(source, cursor)
+    records = source.accessible_by(current_ability).where(created_by_id: current_user.id)
+    if Current.locality_id
+      records = if source == Person
+        records.joins(:localities).where(localities_people: { locality_id: Current.locality_id })
+      else
+        records.where(locality_id: Current.locality_id)
+      end
+    end
+    if cursor
+      time, id, cursor_table = cursor
+      table = source.arel_table
+      earlier_id = source.table_name < cursor_table ? table[:id].lteq(id) : table[:id].lt(id)
+      records = records.where(table[:created_at].lt(time).or(table[:created_at].eq(time).and(earlier_id)))
+    end
+    records = records.preload(:addresses) if source == Building
+    records.order(created_at: :desc, id: :desc).limit(RECENT_CREATIONS_LIMIT + 1)
+  end
 
   def user_params
     params.require(:user).permit(:login, :full_name, :email, :password, :password_confirmation, :user_group_id)

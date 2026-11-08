@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 class PersonSearch < SearchQueryBuilder
-  def self.generate(params: {}, user: nil)
+  def self.generate(params: {}, user: nil, creator_scope: nil)
     new user:,
+        creator_scope:,
         entity_class: Person,
         s: params[:s],
         f: params[:f],

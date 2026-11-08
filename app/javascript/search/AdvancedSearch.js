@@ -28,6 +28,37 @@ class AdvancedSearch {
     }
 
     initFormEvents() {
+        this.form.off('formdata.advancedSearch').on('formdata.advancedSearch', (event) => {
+            const { formData } = event.originalEvent;
+            const names = new Set(formData.keys());
+            for (const name of names) {
+                if (!name.startsWith('s[')) continue;
+
+                const values = formData.getAll(name);
+                const nonempty = values.filter(value => value !== '');
+                if (nonempty.length > 1 && nonempty.every(value => value === nonempty[0])) {
+                    nonempty.length = 1;
+                }
+                if (nonempty.length === values.length) continue;
+
+                formData.delete(name);
+                nonempty.forEach(value => formData.append(name, value));
+            }
+            if (![...formData.keys()].some(name => name.startsWith('s[') || name.startsWith('f['))) {
+                formData.set('s', '{}');
+            }
+        });
+
+        this.form.find('[data-clear-creator-filter]').on('click', (event) => {
+            if (event.currentTarget.dataset.clearCreatorFilter === 'creator') {
+                this.form.find('[name="s[creator_id]"], #creator_lookup').val('')
+            } else {
+                this.form.find('[name="s[creation_date_range]"]').val('all')
+                this.form.find('[name="s[creation_date_from]"], [name="s[creation_date_to]"]').val('')
+            }
+            this.form.trigger('submit')
+        });
+
         // when you click toggle buttons like "unreviewed" and "unhoused" this submits the form
         $(document).on('click', '#new_s .btn-group-toggle label', () => {
             this.form.submit();
@@ -55,7 +86,7 @@ class AdvancedSearch {
     // filters already applied are listed as buttons with an X that removes the filter
     showCurrentFilters() {
         if (Object.entries(this.currentFilters).length) {
-            $('#attribute-filters').addClass('mb-3').empty();
+            $('#attribute-filters').addClass('mb-3').children(':not([data-creator-filter-chip])').remove();
             for (let scope in this.currentFilters) {
                 const field_config = this.getFieldConfigFromScope(scope) ||
                     this.getFieldConfigFromScope(scope.replace(/_eq/, '_in'))

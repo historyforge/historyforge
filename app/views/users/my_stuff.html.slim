@@ -1,0 +1,8 @@
+- set_page_title 'My stuff'
+
+- if @recent_creations.any?
+  ul.list-group.mb-3#recent-creations
+    = render 'recent_creations'
+  = render 'load_more_creations'
+- else
+  p No records you created to show here.

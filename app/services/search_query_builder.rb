@@ -33,7 +33,13 @@ class SearchQueryBuilder
   end
 
   def active?
-    ransack_params.keys.any?
+    creator_filter&.active? || ransack_params.keys.any?
+  end
+
+  def creator_filter
+    return unless @creator_scope
+
+    @creator_filter ||= CreatorFilter.new(scope: @creator_scope, params: s)
   end
 
   def default_field?(field)
@@ -77,8 +83,8 @@ class SearchQueryBuilder
   end
 
   class Builder
-    def initialize(entity_class, params)
-      @scoped = entity_class.ransack(params).result
+    def initialize(relation)
+      @scoped = relation
     end
 
     attr_reader :scoped
@@ -99,7 +105,9 @@ class SearchQueryBuilder
   private
 
   def builder
-    Builder.new entity_class, ransack_params
+    relation = entity_class.ransack(ransack_params).result
+    relation = creator_filter.apply(relation) if creator_filter
+    Builder.new(relation)
   end
 
   memoize :builder
@@ -108,6 +116,8 @@ class SearchQueryBuilder
     prepare_search_filters
     p = {}
     s.each do |key, value|
+      next if CreatorFilter::PARAM_KEYS.include?(key.to_sym)
+
       if value.is_a?(Array) && value.include?("blank")
         p[:g] ||= []
         case key
@@ -128,7 +138,7 @@ class SearchQueryBuilder
   def prepare_search_filters
     @s = @s.is_a?(String) ? JSON.parse(@s) : @s
     @s = @s.respond_to?(:to_unsafe_hash) ? @s.to_unsafe_hash : @s
-    @s = @s.reject { |_k, v| v == "" }
+    @s = @s.reject { |key, value| value == "" || (!@creator_scope && CreatorFilter::PARAM_KEYS.include?(key.to_sym)) }
     @s.transform_values! do |value|
       case value
       when String

@@ -76,6 +76,14 @@ header data-turbo-permanent="true" id="main-header"
               = link_to 'Audio Recordings', audios_path, class: 'dropdown-item'
               = link_to 'Videos', videos_path, class: 'dropdown-item'
 
+          - if my_stuff_available?
+            li.nav-item.dropdown id="my-menu-item"
+              a.nav-link.dropdown-toggle data-toggle="dropdown" href="#" My
+              .dropdown-menu
+                = link_to 'My stuff', my_stuff_users_path, class: 'dropdown-item'
+                .dropdown-divider
+                = render 'users/my_search_links', link_class: 'dropdown-item'
+
           li.nav-item.dropdown
             a.dropdown-toggle.nav-link data-toggle="dropdown" href="#" More
             .dropdown-menu

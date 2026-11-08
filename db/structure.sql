@@ -2210,7 +2210,8 @@ CREATE TABLE public.people (
     sortable_name character varying,
     death_year integer,
     is_death_year_estimated boolean DEFAULT true,
-    ever_enslaved boolean DEFAULT false
+    ever_enslaved boolean DEFAULT false,
+    created_by_id bigint
 );
 
 
@@ -4733,6 +4734,13 @@ CREATE INDEX index_passkeys_on_user_id ON public.passkeys USING btree (user_id);
 
 
 --
+-- Name: index_people_on_created_by_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_people_on_created_by_id ON public.people USING btree (created_by_id);
+
+
+--
 -- Name: index_people_videos_on_person_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -5784,6 +5792,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('9'),
 ('8'),
 ('4'),
+('20261107000001'),
+('20261107000000'),
 ('20260909000002'),
 ('20260909000000'),
 ('20260208000002'),
