@@ -114,6 +114,47 @@ RSpec.describe People::CensusSummary do
     expect(summarize(earlier, later).paragraph).to include('occupation “Doctor”', 'occupation “Physician”')
     earlier.industry = 'Clinic'
     expect(summarize(earlier, later).paragraph).not_to include('in both')
+
+    earlier.industry = later.industry = 'Medical'
+    expect(summarize(earlier, later).paragraph).to include('occupation “Physician” and industry “Medical” in both 1910 and 1920')
+  end
+
+  it 'matches familiar compound spellings and keeps the recorded spelling in the summary' do
+    earlier = observation.new(year: 1910, occupation: 'Book Keeper')
+    later = observation.new(year: 1920, occupation: 'Bookkeeper')
+
+    expect(summarize(earlier, later).paragraph).to include('occupation “Book Keeper” in both 1910 and 1920')
+  end
+
+  it 'combines Attorney and Lawyer and preserves their separately recorded industries' do
+    earlier = observation.new(year: 1910, occupation: 'Attorney', industry: 'General Practice')
+    later = observation.new(year: 1920, occupation: 'Lawyer', industry: 'District Office')
+
+    expect(summarize(earlier, later).paragraph).to include('occupation “Attorney” in both 1910 and 1920',
+                                                         'industry “General Practice”', 'industry “District Office”')
+  end
+
+  it 'combines Teacher and Teaching in the same education setting without folding in Professor' do
+    earlier = observation.new(year: 1910, occupation: 'Teaching', industry: 'Cornell University')
+    later = observation.new(year: 1920, occupation: 'Teacher', industry: 'Cornell University')
+
+    expect(summarize(earlier, later).paragraph).to include('occupation “Teacher” and industry “Cornell University” in both 1910 and 1920')
+
+    earlier.occupation = 'Professor'
+    expect(summarize(earlier, later).paragraph).to include('occupation “Professor”', 'occupation “Teacher”')
+    earlier.occupation = 'Teaching'
+    earlier.industry = nil
+    expect(summarize(earlier, later).paragraph).not_to include('in both')
+  end
+
+  it 'combines School Teacher and Teacher only in the same school setting' do
+    earlier = observation.new(year: 1910, occupation: 'School Teacher', industry: 'Public School')
+    later = observation.new(year: 1920, occupation: 'Teacher', industry: 'Public School')
+
+    expect(summarize(earlier, later).paragraph).to include('occupation “Teacher” and industry “Public School” in both 1910 and 1920')
+
+    earlier.industry = later.industry = 'University'
+    expect(summarize(earlier, later).paragraph).not_to include('in both')
   end
 
   it 'retains different industries when the occupation is the same' do

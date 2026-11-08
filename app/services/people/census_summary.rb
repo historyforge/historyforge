@@ -6,7 +6,16 @@ module People
     Result = Data.define(:paragraph, :sources)
     PRONOUNS = { 'F' => 'she', 'M' => 'he' }.freeze
     CHILDHOOD_AGES = %w[one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen].freeze
-    MEDICAL_INDUSTRIES = ['clinic', 'hospital', 'medical practice', 'medicine', 'physician’s office', "physician's office"].freeze
+    COMPOUND_OCCUPATIONS = %w[
+      bookbinder bookkeeper boatbuilder bricklayer cabinetmaker glassblower gunsmith hairdresser housekeeper
+      papermaker schoolteacher steamfitter stonecutter toolmaker watchmaker
+    ].freeze
+    OCCUPATION_ALIASES = { 'attorney' => 'lawyer', 'medical doctor' => 'physician' }.freeze
+    CONTEXTUAL_OCCUPATIONS = {
+      %w[doctor physician] => ['physician', /\A(?:clinic|hospital|medical|medical practice|medicine|practice of medicine|doctor of medicine|physician['’]s office)\z/],
+      %w[schoolteacher teacher] => ['teacher', /\bschools?\b/],
+      %w[teacher teaching] => ['teacher', /\b(?:schools?|universit(?:y|ies)|colleges?)\b/],
+    }.freeze
 
     def self.call(name:, sex:, observations:)
       new(name:, sex:, observations:).call
@@ -54,13 +63,30 @@ module People
     end
 
     def same_occupation?(first, later)
-      a, b = [first.occupation, later.occupation].map { |job| job&.downcase }
-      return false unless a && b
-      return true if a == b
-      return false unless [a, b].sort == %w[doctor physician]
+      first_title = occupation_key(first.occupation)
+      later_title = occupation_key(later.occupation)
+      return false unless first_title && later_title
+      return true if first_title == later_title
 
+      rule = CONTEXTUAL_OCCUPATIONS[[first_title, later_title].sort]
       industry = first.industry&.downcase
-      MEDICAL_INDUSTRIES.include?(industry) && industry == later.industry&.downcase
+      rule && industry && industry == later.industry&.downcase && rule.last.match?(industry)
+    end
+
+    def occupation_key(occupation)
+      return unless occupation
+
+      title = occupation.downcase
+      joined = title.delete(' -')
+      return joined if COMPOUND_OCCUPATIONS.include?(joined)
+
+      OCCUPATION_ALIASES.fetch(title, title)
+    end
+
+    def occupation_label(group)
+      titles = group.map { |entry| occupation_key(entry.occupation) }.uniq.sort
+      preferred = CONTEXTUAL_OCCUPATIONS[titles]&.first
+      group.find { |entry| preferred && entry.occupation.casecmp?(preferred) }&.occupation || group.first.occupation
     end
 
     def common_industry(group)
@@ -73,8 +99,7 @@ module People
         ["recorded #{group.first.residence}", group]
       end
       occupations.each do |group|
-        physician = group.find { |entry| entry.occupation.casecmp?('physician') }
-        job = physician&.occupation || group.first.occupation
+        job = occupation_label(group)
         industry = common_industry(group)
         claims << ["recorded with the occupation “#{job}”#{(" and industry “#{industry}”" if industry)}", group]
       end
