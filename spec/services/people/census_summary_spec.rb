@@ -9,7 +9,7 @@ RSpec.describe People::CensusSummary do
   let(:observation) do
     Struct.new(:year, :name, :person_id, :locality, :locality_id, :city, :street_name, :street_address, :street_house_number,
                :family_id, :relation_to_head, :fellows, :ward, :building_id, :dwelling_number, :page_number,
-               :page_side, :occupation, :industry, :attended_school, :age, :pob, keyword_init: true) do
+               :page_side, :occupation, :industry, :attended_school, :age, :pob, :state, keyword_init: true) do
       def field_for(field)
         public_send(field)
       end
@@ -21,6 +21,110 @@ RSpec.describe People::CensusSummary do
     households = records.index_with { |record| People::CensusHousehold.call(record:, readable:) }
     observations = People::CensusNarrativeEvidence.call(records:, households:)
     described_class.call(name:, sex:, observations:)
+  end
+
+  def residence(year, address, number: '12', **attributes)
+    observation.new(year:, street_name: 'Main', street_house_number: number, street_address: address,
+                    locality: caroline, **attributes)
+  end
+
+  it 'states a shared address once and retains both dated sources when other facts differ' do
+    earlier = residence(1910, '12 Main St', occupation: 'Clerk')
+    later = residence(1920, '12 Main St', occupation: 'Teacher')
+
+    result = summarize(earlier, later)
+
+    expect(result.paragraph).to include('was recorded at 12 Main St in Caroline in both 1910 and 1920')
+    expect(result.paragraph.scan('12 Main St').size).to eq(1)
+    expect(result.paragraph).to include('In 1910, she was recorded with the occupation “Clerk”',
+                                        'In 1920, she was recorded with the occupation “Teacher”')
+    expect(result.sources).to eq([earlier, later])
+  end
+
+  it 'matches address formatting variants while displaying the original transcription' do
+    earlier = residence(1910, '12 Main Street, Apt. 2')
+    later = residence(1920, ' 12  MAIN ST. Apartment 2 ')
+
+    result = summarize(earlier, later)
+
+    expect(result.paragraph).to eq('Frances Aagaard was recorded at 12 Main Street, Apt. 2 in Caroline in both 1910 and 1920.')
+    expect(result.sources).to eq([earlier, later])
+  end
+
+  it 'keeps different house and apartment numbers distinct' do
+    earlier = residence(1910, '12 Main St Apt. 2')
+    later = residence(1920, '14 Main St Apt. 2', number: '14')
+
+    expect(summarize(earlier, later).paragraph).to include('In 1910, Frances Aagaard lived at 12 Main St Apt. 2',
+                                                         'In 1920, she lived at 14 Main St Apt. 2')
+    later.street_house_number = '12'
+    later.street_address = '12 Main St Apt. 3'
+    expect(summarize(earlier, later).paragraph).to include('In 1920, she lived at 12 Main St Apt. 3')
+  end
+
+  it 'does not combine addresses across a record with no address' do
+    earlier = residence(1910, '12 Main St')
+    missing = observation.new(year: 1920)
+    later = residence(1930, '12 Main St')
+
+    result = summarize(earlier, missing, later)
+
+    expect(result.paragraph).not_to include('in both')
+    expect(result.sources).to eq([earlier, later])
+  end
+
+  it 'does not treat a road without a house number as a matching address' do
+    earlier = residence(1910, 'Main St', number: nil)
+    later = residence(1920, '12 Main St')
+
+    expect(summarize(earlier, later).paragraph).to include('lived on Main St', 'lived at 12 Main St')
+  end
+
+  it 'reports the repeated address before a later change and cites all three records' do
+    earlier = residence(1910, '12 Main St')
+    middle = residence(1920, '12 Main St')
+    later = residence(1930, '14 Main St', number: '14')
+
+    result = summarize(later, earlier, middle)
+
+    expect(result.paragraph).to include('at 12 Main St in Caroline in both 1910 and 1920',
+                                        'In 1930, she lived at 14 Main St')
+    expect(result.sources).to eq([earlier, middle, later])
+  end
+
+  it 'states the same occupation once when residences change' do
+    earlier = residence(1910, '12 Main St', occupation: 'Teacher', industry: 'School')
+    later = residence(1920, '14 Main St', number: '14', occupation: 'teacher', industry: 'School')
+
+    result = summarize(earlier, later)
+
+    expect(result.paragraph).to include('occupation “Teacher” and industry “School” in both 1910 and 1920',
+                                        'lived at 12 Main St', 'lived at 14 Main St')
+    expect(result.paragraph.scan(/“teacher”/i).size).to eq(1)
+    expect(result.sources).to eq([earlier, later])
+  end
+
+  it 'combines Doctor and Physician only in the same explicit medical context' do
+    earlier = observation.new(year: 1910, occupation: 'Doctor', industry: 'Hospital')
+    later = observation.new(year: 1920, occupation: 'Physician', industry: 'Hospital')
+
+    expect(summarize(earlier, later).paragraph).to include('occupation “Physician” and industry “Hospital” in both 1910 and 1920')
+
+    earlier.industry = nil
+    expect(summarize(earlier, later).paragraph).to include('occupation “Doctor”', 'occupation “Physician”')
+    earlier.industry = 'Clinic'
+    expect(summarize(earlier, later).paragraph).not_to include('in both')
+  end
+
+  it 'retains different industries when the occupation is the same' do
+    earlier = observation.new(year: 1910, occupation: 'Clerk', industry: 'Hardware Store')
+    later = observation.new(year: 1920, occupation: 'Clerk', industry: 'Railroad')
+
+    expect(summarize(earlier, later).paragraph).to eq(
+      'Frances Aagaard was recorded with the occupation “Clerk” in both 1910 and 1920. ' \
+      'In 1910, she was recorded in the industry “Hardware Store”. ' \
+      'In 1920, she was recorded in the industry “Railroad”.'
+    )
   end
 
   it 'connects residence, household, and schooling across censuses and cites the head records' do

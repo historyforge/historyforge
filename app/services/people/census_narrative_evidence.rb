@@ -3,10 +3,18 @@
 module People
   # Projects authorized census rows into the observations needed for a narrative.
   class CensusNarrativeEvidence
-    Snapshot = Data.define(:record, :residence, :household, :activity, :head)
+    Snapshot = Data.define(:record, :residence, :address_key, :household, :activity, :occupation, :industry, :head) do
+      def meaningful?
+        residence || household || activity
+      end
+    end
     MISSING = %w[none blank unknown un un. illegible unreadable n/a na x ? -].freeze
     HEAD_RELATIONS = %w[daughter son stepdaughter stepson wife husband].freeze
     GENERIC_JOBS = %w[employer employee worker unemployed retired].freeze
+    STREET_SUFFIXES = {
+      'avenue' => 'ave', 'boulevard' => 'blvd', 'drive' => 'dr', 'lane' => 'ln',
+      'place' => 'pl', 'road' => 'rd', 'street' => 'st', 'terrace' => 'ter',
+    }.freeze
 
     def self.call(records:, households:)
       new(records:, households:).call
@@ -20,7 +28,11 @@ module People
     def call
       @records.group_by(&:year).sort_by(&:first).filter_map do |_year, records|
         # Multiple rows for one year can disagree. Leave those details to the source table.
-        snapshot(records.first) if records.one?
+        if records.one?
+          snapshot(records.first)
+        else
+          empty_snapshot(records.first)
+        end
       end
     end
 
@@ -29,8 +41,8 @@ module People
     def snapshot(record)
       street = usable_text(record.street_name) && usable_text(record.street_address)
       head, household = household_details(record)
-      activity = activity_details(record)
-      return unless street || household || activity
+      activity, occupation, industry = activity_details(record)
+      return empty_snapshot(record) unless street || household || activity
 
       place = usable_text(record.locality&.short_name) || usable_text(record.city)
 
@@ -39,7 +51,29 @@ module People
                   elsif place
                     "in #{place}"
                   end
-      Snapshot.new(record:, residence:, household:, activity:, head:)
+      Snapshot.new(record:, residence:, address_key: address_key(record, street, place),
+                   household:, activity:, occupation:, industry:, head:)
+    end
+
+    def empty_snapshot(record)
+      Snapshot.new(record:, residence: nil, address_key: nil, household: nil,
+                   activity: nil, occupation: nil, industry: nil, head: nil)
+    end
+
+    def address_key(record, street, place)
+      return unless street && place && usable_text(record.street_house_number)
+
+      # Match formatting without folding different house or apartment numbers together.
+      street_part, apartment = street.downcase.tr(',', ' ').squish.split(/\s+(?:apt\.?|apartment)\s+/, 2)
+      return if street_part.blank? || (apartment && !usable_text(apartment))
+
+      tokens = street_part.split
+      if tokens.size > 2
+        suffix = tokens.last.delete_suffix('.')
+        tokens[-1] = STREET_SUFFIXES.fetch(suffix, suffix)
+      end
+      locality = record.locality_id || [place.downcase, usable_text(record.field_for(:state))&.downcase]
+      [locality, tokens.join(' '), apartment]
     end
 
     def household_details(record)
@@ -63,7 +97,8 @@ module People
 
       if job && !GENERIC_JOBS.include?(job.downcase)
         industry = usable_text(record.field_for(:industry))
-        return "recorded with the occupation “#{job}”#{(" and industry “#{industry}”" if industry)}"
+        activity = "recorded with the occupation “#{job}”#{(" and industry “#{industry}”" if industry)}"
+        return [activity, job, industry]
       end
 
       school = record.field_for(:attended_school)
