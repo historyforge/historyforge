@@ -2,7 +2,7 @@
 #
 # Table name: map_overlays
 #
-#  id            :bigint           not null, primary key
+#  id            :integer          not null, primary key
 #  name          :string
 #  year_depicted :integer
 #  url           :string
@@ -10,7 +10,7 @@
 #  position      :integer
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
-#  locality_id   :bigint
+#  locality_id   :integer
 #  layers_param  :string
 #
 # Indexes

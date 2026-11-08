@@ -2,8 +2,8 @@
 #
 # Table name: terms
 #
-#  id            :bigint           not null, primary key
-#  vocabulary_id :bigint
+#  id            :integer          not null, primary key
+#  vocabulary_id :integer
 #  name          :string
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null

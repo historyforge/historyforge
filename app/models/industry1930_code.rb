@@ -2,7 +2,7 @@
 #
 # Table name: industry1930_codes
 #
-#  id         :bigint           not null, primary key
+#  id         :integer          not null, primary key
 #  code       :string
 #  name       :string
 #  created_at :datetime         not null

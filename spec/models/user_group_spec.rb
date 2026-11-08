@@ -1,3 +1,14 @@
+# == Schema Information
+#
+# Table name: user_groups
+#
+#  id         :integer          not null, primary key
+#  name       :string
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  roles_mask :integer
+#
+
 # frozen_string_literal: true
 
 require 'rails_helper'

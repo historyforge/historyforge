@@ -2,14 +2,14 @@
 #
 # Table name: flags
 #
-#  id             :bigint           not null, primary key
+#  id             :integer          not null, primary key
 #  flaggable_type :string
-#  flaggable_id   :bigint
-#  user_id        :bigint
+#  flaggable_id   :integer
+#  user_id        :integer
 #  reason         :string
 #  message        :text
 #  comment        :text
-#  resolved_by_id :bigint
+#  resolved_by_id :integer
 #  resolved_at    :datetime
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null

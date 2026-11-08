@@ -1,7 +1,7 @@
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
--- SET transaction_timeout = 0;
+SET transaction_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -341,7 +341,12 @@ CREATE TABLE public.audios (
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
     remote_url character varying,
-    searchable_text text
+    searchable_text text,
+    institution_id bigint,
+    collection_id bigint,
+    source_record_url character varying,
+    credit text,
+    rights_statement text
 );
 
 
@@ -1702,6 +1707,42 @@ ALTER SEQUENCE public.cms_pages_id_seq OWNED BY public.cms_pages.id;
 
 
 --
+-- Name: collections; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.collections (
+    id bigint NOT NULL,
+    institution_id bigint NOT NULL,
+    name character varying NOT NULL,
+    url character varying,
+    default_credit text,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL,
+    description text,
+    published boolean DEFAULT false NOT NULL
+);
+
+
+--
+-- Name: collections_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.collections_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: collections_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.collections_id_seq OWNED BY public.collections.id;
+
+
+--
 -- Name: construction_materials; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1958,6 +1999,41 @@ ALTER SEQUENCE public.industry1930_codes_id_seq OWNED BY public.industry1930_cod
 
 
 --
+-- Name: institutions; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.institutions (
+    id bigint NOT NULL,
+    name character varying NOT NULL,
+    website_url character varying,
+    default_credit text,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL,
+    description text,
+    hosts_site boolean DEFAULT false NOT NULL
+);
+
+
+--
+-- Name: institutions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.institutions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: institutions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.institutions_id_seq OWNED BY public.institutions.id;
+
+
+--
 -- Name: ipums_records; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2064,6 +2140,76 @@ CREATE SEQUENCE public.map_overlays_id_seq
 --
 
 ALTER SEQUENCE public.map_overlays_id_seq OWNED BY public.map_overlays.id;
+
+
+--
+-- Name: media_import_rows; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.media_import_rows (
+    id bigint NOT NULL,
+    media_import_id bigint NOT NULL,
+    row_number integer NOT NULL,
+    fields jsonb DEFAULT '{}'::jsonb NOT NULL,
+    status character varying DEFAULT 'pending'::character varying NOT NULL,
+    message text,
+    media_type character varying,
+    media_id bigint,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: media_import_rows_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.media_import_rows_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: media_import_rows_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.media_import_rows_id_seq OWNED BY public.media_import_rows.id;
+
+
+--
+-- Name: media_imports; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.media_imports (
+    id bigint NOT NULL,
+    collection_id bigint,
+    created_by_id bigint NOT NULL,
+    filename character varying NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: media_imports_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.media_imports_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: media_imports_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.media_imports_id_seq OWNED BY public.media_imports.id;
 
 
 --
@@ -2382,7 +2528,13 @@ CREATE TABLE public.photographs (
     reviewed_at timestamp without time zone,
     date_type integer DEFAULT 0,
     caption text,
-    searchable_text text
+    searchable_text text,
+    institution_id bigint,
+    collection_id bigint,
+    source_record_url character varying,
+    credit text,
+    rights_statement text,
+    downloaded_from_url character varying
 );
 
 
@@ -2880,7 +3032,12 @@ CREATE TABLE public.videos (
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
     remote_url character varying,
-    searchable_text text
+    searchable_text text,
+    institution_id bigint,
+    collection_id bigint,
+    source_record_url character varying,
+    credit text,
+    rights_statement text
 );
 
 
@@ -3162,6 +3319,13 @@ ALTER TABLE ONLY public.cms_pages ALTER COLUMN id SET DEFAULT nextval('public.cm
 
 
 --
+-- Name: collections id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.collections ALTER COLUMN id SET DEFAULT nextval('public.collections_id_seq'::regclass);
+
+
+--
 -- Name: construction_materials id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3211,6 +3375,13 @@ ALTER TABLE ONLY public.industry1930_codes ALTER COLUMN id SET DEFAULT nextval('
 
 
 --
+-- Name: institutions id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.institutions ALTER COLUMN id SET DEFAULT nextval('public.institutions_id_seq'::regclass);
+
+
+--
 -- Name: localities id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3222,6 +3393,20 @@ ALTER TABLE ONLY public.localities ALTER COLUMN id SET DEFAULT nextval('public.l
 --
 
 ALTER TABLE ONLY public.map_overlays ALTER COLUMN id SET DEFAULT nextval('public.map_overlays_id_seq'::regclass);
+
+
+--
+-- Name: media_import_rows id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.media_import_rows ALTER COLUMN id SET DEFAULT nextval('public.media_import_rows_id_seq'::regclass);
+
+
+--
+-- Name: media_imports id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.media_imports ALTER COLUMN id SET DEFAULT nextval('public.media_imports_id_seq'::regclass);
 
 
 --
@@ -3602,6 +3787,14 @@ ALTER TABLE ONLY public.cms_pages
 
 
 --
+-- Name: collections collections_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.collections
+    ADD CONSTRAINT collections_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: construction_materials construction_materials_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3658,6 +3851,14 @@ ALTER TABLE ONLY public.industry1930_codes
 
 
 --
+-- Name: institutions institutions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.institutions
+    ADD CONSTRAINT institutions_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: ipums_records ipums_records_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3679,6 +3880,22 @@ ALTER TABLE ONLY public.localities
 
 ALTER TABLE ONLY public.map_overlays
     ADD CONSTRAINT map_overlays_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: media_import_rows media_import_rows_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.media_import_rows
+    ADD CONSTRAINT media_import_rows_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: media_imports media_imports_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.media_imports
+    ADD CONSTRAINT media_imports_pkey PRIMARY KEY (id);
 
 
 --
@@ -3964,10 +4181,24 @@ CREATE INDEX index_audios_buildings_on_building_id ON public.audios_buildings US
 
 
 --
+-- Name: index_audios_on_collection_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_audios_on_collection_id ON public.audios USING btree (collection_id);
+
+
+--
 -- Name: index_audios_on_created_by_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_audios_on_created_by_id ON public.audios USING btree (created_by_id);
+
+
+--
+-- Name: index_audios_on_institution_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_audios_on_institution_id ON public.audios USING btree (institution_id);
 
 
 --
@@ -4587,6 +4818,20 @@ CREATE INDEX index_cms_pages_on_url_path ON public.cms_pages USING btree (url_pa
 
 
 --
+-- Name: index_collections_on_institution_and_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_collections_on_institution_and_name ON public.collections USING btree (institution_id, lower((name)::text));
+
+
+--
+-- Name: index_collections_on_institution_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_collections_on_institution_id ON public.collections USING btree (institution_id);
+
+
+--
 -- Name: index_documents_localities_on_document_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4636,6 +4881,20 @@ CREATE INDEX index_flags_on_user_id ON public.flags USING btree (user_id);
 
 
 --
+-- Name: index_institutions_on_lower_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_institutions_on_lower_name ON public.institutions USING btree (lower((name)::text));
+
+
+--
+-- Name: index_institutions_on_single_site_host; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_institutions_on_single_site_host ON public.institutions USING btree (hosts_site) WHERE (hosts_site = true);
+
+
+--
 -- Name: index_ipums_records_on_histid; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4675,6 +4934,41 @@ CREATE INDEX index_localities_people_on_person_id ON public.localities_people US
 --
 
 CREATE INDEX index_map_overlays_on_locality_id ON public.map_overlays USING btree (locality_id);
+
+
+--
+-- Name: index_media_import_rows_on_media; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_media_import_rows_on_media ON public.media_import_rows USING btree (media_type, media_id);
+
+
+--
+-- Name: index_media_import_rows_on_media_import_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_media_import_rows_on_media_import_id ON public.media_import_rows USING btree (media_import_id);
+
+
+--
+-- Name: index_media_import_rows_on_media_import_id_and_row_number; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_media_import_rows_on_media_import_id_and_row_number ON public.media_import_rows USING btree (media_import_id, row_number);
+
+
+--
+-- Name: index_media_imports_on_collection_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_media_imports_on_collection_id ON public.media_imports USING btree (collection_id);
+
+
+--
+-- Name: index_media_imports_on_created_by_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_media_imports_on_created_by_id ON public.media_imports USING btree (created_by_id);
 
 
 --
@@ -4790,10 +5084,24 @@ CREATE INDEX index_photographs_on_building_id ON public.photographs USING btree 
 
 
 --
+-- Name: index_photographs_on_collection_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_photographs_on_collection_id ON public.photographs USING btree (collection_id);
+
+
+--
 -- Name: index_photographs_on_created_by_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_photographs_on_created_by_id ON public.photographs USING btree (created_by_id);
+
+
+--
+-- Name: index_photographs_on_institution_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_photographs_on_institution_id ON public.photographs USING btree (institution_id);
 
 
 --
@@ -4895,10 +5203,24 @@ CREATE INDEX index_versions_on_item_type_and_item_id ON public.versions USING bt
 
 
 --
+-- Name: index_videos_on_collection_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_videos_on_collection_id ON public.videos USING btree (collection_id);
+
+
+--
 -- Name: index_videos_on_created_by_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_videos_on_created_by_id ON public.videos USING btree (created_by_id);
+
+
+--
+-- Name: index_videos_on_institution_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_videos_on_institution_id ON public.videos USING btree (institution_id);
 
 
 --
@@ -4964,6 +5286,14 @@ ALTER TABLE ONLY public.professions
 
 ALTER TABLE ONLY public.census_1940_records
     ADD CONSTRAINT fk_rails_06d9d88dc4 FOREIGN KEY (building_id) REFERENCES public.buildings(id);
+
+
+--
+-- Name: media_imports fk_rails_084651c64f; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.media_imports
+    ADD CONSTRAINT fk_rails_084651c64f FOREIGN KEY (collection_id) REFERENCES public.collections(id);
 
 
 --
@@ -5087,11 +5417,27 @@ ALTER TABLE ONLY public.bulk_updates
 
 
 --
+-- Name: collections fk_rails_398c8e09d8; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.collections
+    ADD CONSTRAINT fk_rails_398c8e09d8 FOREIGN KEY (institution_id) REFERENCES public.institutions(id);
+
+
+--
 -- Name: census_1860_records fk_rails_3e6ad3533c; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.census_1860_records
     ADD CONSTRAINT fk_rails_3e6ad3533c FOREIGN KEY (locality_id) REFERENCES public.localities(id);
+
+
+--
+-- Name: videos fk_rails_3eb4be3c65; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.videos
+    ADD CONSTRAINT fk_rails_3eb4be3c65 FOREIGN KEY (collection_id) REFERENCES public.collections(id);
 
 
 --
@@ -5204,6 +5550,14 @@ ALTER TABLE ONLY public.census_1860_records
 
 ALTER TABLE ONLY public.census_1910_records
     ADD CONSTRAINT fk_rails_4fbfccdce2 FOREIGN KEY (created_by_id) REFERENCES public.users(id);
+
+
+--
+-- Name: videos fk_rails_505a1769a1; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.videos
+    ADD CONSTRAINT fk_rails_505a1769a1 FOREIGN KEY (institution_id) REFERENCES public.institutions(id);
 
 
 --
@@ -5332,6 +5686,46 @@ ALTER TABLE ONLY public.census_1930_records
 
 ALTER TABLE ONLY public.census_1910_records
     ADD CONSTRAINT fk_rails_6eebef98a8 FOREIGN KEY (building_id) REFERENCES public.buildings(id);
+
+
+--
+-- Name: photographs fk_rails_6fbf0fa309; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.photographs
+    ADD CONSTRAINT fk_rails_6fbf0fa309 FOREIGN KEY (collection_id) REFERENCES public.collections(id);
+
+
+--
+-- Name: audios fk_rails_74833d19cb; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.audios
+    ADD CONSTRAINT fk_rails_74833d19cb FOREIGN KEY (collection_id) REFERENCES public.collections(id);
+
+
+--
+-- Name: media_imports fk_rails_7558b031fe; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.media_imports
+    ADD CONSTRAINT fk_rails_7558b031fe FOREIGN KEY (created_by_id) REFERENCES public.users(id);
+
+
+--
+-- Name: photographs fk_rails_76debcea81; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.photographs
+    ADD CONSTRAINT fk_rails_76debcea81 FOREIGN KEY (institution_id) REFERENCES public.institutions(id);
+
+
+--
+-- Name: media_import_rows fk_rails_808ce4b7ef; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.media_import_rows
+    ADD CONSTRAINT fk_rails_808ce4b7ef FOREIGN KEY (media_import_id) REFERENCES public.media_imports(id);
 
 
 --
@@ -5743,6 +6137,14 @@ ALTER TABLE ONLY public.documents
 
 
 --
+-- Name: audios fk_rails_f1f6e02493; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.audios
+    ADD CONSTRAINT fk_rails_f1f6e02493 FOREIGN KEY (institution_id) REFERENCES public.institutions(id);
+
+
+--
 -- Name: cms_page_widgets fk_rails_fddba18ae5; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -5794,6 +6196,12 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('4'),
 ('20261107000001'),
 ('20261107000000'),
+('20260915000002'),
+('20260915000001'),
+('20260915000000'),
+('20260914000002'),
+('20260914000001'),
+('20260914000000'),
 ('20260909000002'),
 ('20260909000000'),
 ('20260208000002'),

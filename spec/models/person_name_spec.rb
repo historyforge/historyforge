@@ -2,8 +2,8 @@
 #
 # Table name: person_names
 #
-#  id              :bigint           not null, primary key
-#  person_id       :bigint           not null
+#  id              :integer          not null, primary key
+#  person_id       :integer          not null
 #  is_primary      :boolean
 #  last_name       :string
 #  first_name      :string
@@ -18,9 +18,10 @@
 # Indexes
 #
 #  index_person_names_on_person_id        (person_id)
-#  index_person_names_on_searchable_name  (searchable_name) USING gin
+#  index_person_names_on_searchable_name  (searchable_name)
 #  person_names_primary_name_index        (person_id,is_primary)
 #
+
 require 'rails_helper'
 
 RSpec.describe PersonName, type: :model do
