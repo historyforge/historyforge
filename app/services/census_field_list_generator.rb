@@ -38,6 +38,7 @@ class CensusFieldListGenerator
     @fields.concat %w[locality_id name first_name middle_name last_name census_scope page_number]
     @fields << 'page_side' if klass.year >= 1880
     @fields.concat %w[line_number county city]
+    @fields << 'post_office' if [1860, 1870].include?(klass.year)
     @fields << 'ward' unless klass.year <= 1880
     @fields << 'enum_dist' if klass.year >= 1880
     @fields.concat %w[street_address]
