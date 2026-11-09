@@ -31,4 +31,75 @@ RSpec.describe BuildingFromAddress do
     building = described_class.new(record).perform
     expect(building.name).to eq("405 N Tioga St #{record.locality.name}")
   end
+
+  it 'reuses the matching street address in the census locality even when Place differs' do
+    record.locality = create(:locality)
+    record.city = 'Forest Home'
+    street = { house_number: '405', prefix: 'N', name: 'Tioga', suffix: 'St' }
+    create(:building, addresses: [build(:address, **street, city: 'Forest Home')])
+    existing = create(:building, locality: record.locality, addresses: [build(:address, **street, city: nil)])
+
+    expect { expect(result).to eq(existing) }.not_to change(Building, :count)
+    expect(existing.reload.address.city).to be_nil
+  end
+
+  it 'creates a building from a census record without a Place' do
+    record.city = nil
+
+    expect(result).to be_persisted
+    expect(result.address.city).to be_nil
+    expect(result.full_street_address).to include(record.locality.name)
+  end
+
+  context 'when multiple buildings share the same street address and Locality' do
+    let(:locality) { create(:locality) }
+    let(:street) { { house_number: '405', prefix: 'N', name: 'Tioga', suffix: 'St' } }
+    let!(:forest_home) { create(:building, locality:, addresses: [build(:address, **street, city: 'Forest Home')]) }
+    let!(:other) { create(:building, locality:, addresses: [build(:address, **street, city: 'Ithaca')]) }
+
+    it 'uses a unique matching Place' do
+      record.locality = locality
+      record.city = 'Forest Home'
+
+      expect(result).to eq(forest_home)
+    end
+
+    it 'returns no building when even an exact Place matches two buildings' do
+      record.locality = locality
+      record.city = 'Forest Home'
+      other.address.update!(city: record.city)
+
+      expect { expect(result).to be_nil }.not_to change(Building, :count)
+    end
+
+    it 'saves the census record without linking or creating a building when Place is blank' do
+      census_record = build(:census1920_record, locality:, city: nil, street_house_number: '405',
+                                               street_prefix: 'N', street_name: 'Tioga', street_suffix: 'St',
+                                               ensure_building: '1')
+
+      expect { census_record.save! }.not_to change(Building, :count)
+      expect(census_record.reload.building_id).to be_nil
+    end
+
+    it 'automatically links a blank-Place record once only one building matches' do
+      other.address.update!(house_number: '407')
+      create(:address, building: forest_home, **street, city: 'Ithaca', is_primary: false)
+      census_record = create(:census1920_record, locality:, city: nil, street_house_number: '405',
+                                                street_prefix: 'N', street_name: 'Tioga', street_suffix: 'St',
+                                                ensure_building: '1')
+
+      expect(census_record.reload.building).to eq(forest_home)
+    end
+
+    it 'returns no building when only the converted street address matches and it is ambiguous' do
+      record.locality = locality
+      record.street_name = 'Old Tioga'
+      record.city = 'Forest Home'
+      StreetConversion.create!(from_house_number: '405', from_prefix: 'N', from_name: 'Old Tioga',
+                               from_suffix: 'St', from_city: 'Forest Home',
+                               to_name: 'Tioga', to_city: 'null', year: 1910)
+
+      expect { expect(result).to be_nil }.not_to change(Building, :count)
+    end
+  end
 end

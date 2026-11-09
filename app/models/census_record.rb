@@ -20,7 +20,7 @@ class CensusRecord < ApplicationRecord
   attr_accessor :ensure_building
 
   validates :first_name, :last_name, :family_id, :occupation,
-            :page_number, :line_number, :county, :city, :state,
+            :page_number, :line_number, :county, :state,
             presence: true
   validates :page_side, presence: true, if: :page_side?
   validates :age, numericality: { greater_than_or_equal_to: -1, allow_nil: true }
@@ -155,7 +155,7 @@ class CensusRecord < ApplicationRecord
   memoize :fellows
 
   def ensure_housing
-    return unless building_id.blank? && ensure_building == '1' && street_name && city && street_house_number
+    return unless building_id.blank? && ensure_building == '1'
 
     self.building = BuildingFromAddress.new(self).perform
   end
