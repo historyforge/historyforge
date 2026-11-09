@@ -12,14 +12,18 @@ module Buildings
     end
 
     def call
-      merge_census_records
-      merge_addresses
-      merge_building_data
-      merge_photographs
-      target.save!
-      source.destroy!
-      BuildAddressHistory.new(target).perform
-      target.audit_logs.create message: "Merged ##{source.id} - #{source.name}"
+      Building.transaction(requires_new: true) do
+        merge_census_records
+        merge_addresses
+        merge_building_data
+        merge_photographs
+        target.save!
+        source.destroy!
+        if BuildAddressHistory.new(target).perform == false
+          raise ActiveRecord::RecordNotSaved, 'Could not update merged address history'
+        end
+        target.audit_logs.create! message: "Merged ##{source.id} - #{source.name}"
+      end
     end
 
     private
@@ -30,7 +34,7 @@ module Buildings
       source.addresses.each do |address|
         next if target.addresses.any? { |addr| addr.equals?(address) }
 
-        address.update(building_id: target.id, is_primary: false)
+        address.update!(building_id: target.id, is_primary: false)
       end
       target.addresses.reload
     end
@@ -47,7 +51,7 @@ module Buildings
     def merge_census_records
       CensusYears.each do |year|
         "Census#{year}Record".constantize.where(building_id: source.id).each do |record|
-          record.update(building_id: target.id)
+          record.update!(building_id: target.id)
         end
       end
     end

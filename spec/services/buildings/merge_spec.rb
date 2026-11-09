@@ -16,6 +16,18 @@ module Buildings
       described_class.call(source:, target:)
     end
 
+    it 'rolls back transfers and restores the source if address history fails' do
+      resident = create(:census1910_record, building: source)
+      address = source.address
+      history = instance_double(BuildAddressHistory, perform: false)
+      allow(BuildAddressHistory).to receive(:new).with(target).and_return(history)
+
+      expect { run_interaction }.to raise_error(ActiveRecord::RecordNotSaved)
+      expect(Building.exists?(source.id)).to be true
+      expect(resident.reload.building_id).to eq(source.id)
+      expect(address.reload).to have_attributes(building_id: source.id, is_primary: true)
+    end
+
     context 'with the basic case' do
       it 'basically works' do
         target_name = target.name
