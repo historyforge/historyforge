@@ -4,9 +4,11 @@ const vm = require('node:vm')
 const fs = require('node:fs')
 const { buildSync } = require('esbuild')
 
-function setup() {
+function setup({ webgl2 = true } = {}) {
   let definition
   let options
+  let raster
+  let workerUrl
   const events = {}
   let currentMap
   const layer = {
@@ -16,6 +18,7 @@ function setup() {
   const leaflet = {
     Layer: { extend(value) { definition = value; return function () {} } },
     maplibreGL(value) { options = value; return layer },
+    tileLayer(url, options) { raster = { url, options }; return raster },
   }
   // Exercise the installed wrapper's attribution implementation.
   vm.runInNewContext(fs.readFileSync(require.resolve('@maplibre/maplibre-gl-leaflet'), 'utf8'), {
@@ -28,12 +31,31 @@ function setup() {
     external: ['leaflet', '@maplibre/maplibre-gl-leaflet', 'maplibre-gl'],
   }).outputFiles[0].text
   const module = { exports: {} }
-  vm.runInNewContext(code, { module, exports: module.exports, Uint8Array, document: { querySelector: () => ({ content: "/assets/maplibre-worker.js" }) },
-    require: name => name === 'leaflet' ? leaflet : name === 'maplibre-gl' ? { setWorkerUrl() {} } : {},
+  const document = {
+    createElement: () => ({
+      getContext(type) {
+        assert.equal(type, 'webgl2')
+        return webgl2 ? { getExtension: () => null } : null
+      },
+    }),
+    querySelector: () => ({ content: '/assets/maplibre-worker.js' }),
+  }
+  vm.runInNewContext(code, { module, exports: module.exports, Uint8Array, document,
+    require: name => name === 'leaflet' ? leaflet : name === 'maplibre-gl' ? { setWorkerUrl(url) { workerUrl = url } } : {},
   })
-  module.exports.createStreetLayer()
-  return { options, definition, activate(map) { currentMap = map; events.add() } }
+  const street = module.exports.createStreetLayer()
+  return { street, raster, workerUrl, options, definition, activate(map) { currentMap = map; events.add() } }
 }
+
+test('uses raster street tiles when WebGL2 is unavailable', () => {
+  const { street, raster, workerUrl, options } = setup({ webgl2: false })
+  assert.equal(street, raster)
+  assert.equal(raster.url, 'https://tile.openstreetmap.org/{z}/{x}/{y}.png')
+  assert.match(raster.options.attribution, /OpenStreetMap/)
+  assert.equal(raster.options.maxZoom, 22)
+  assert.equal(options, undefined)
+  assert.equal(workerUrl, undefined)
+})
 
 test('uses fixed provider credits without reading third-party source attribution', () => {
   const { options, definition } = setup()

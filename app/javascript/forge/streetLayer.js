@@ -5,6 +5,14 @@ import { addStyleImageMissingFallback } from './maplibreImageFallback'
 import { addHousenumbers } from './maplibreHousenumbers'
 
 export function createStreetLayer() {
+  if (!canCreateWebGL2Context()) {
+    return L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      maxNativeZoom: 19,
+      maxZoom: 22,
+    })
+  }
+
   // Rails supplies the fingerprinted URL for MapLibre 6's separate worker.
   setWorkerUrl(document.querySelector('meta[name="maplibre-worker-url"]').content)
   const layer = L.maplibreGL({
@@ -23,4 +31,17 @@ export function createStreetLayer() {
     addHousenumbers(map)
   })
   return layer
+}
+
+function canCreateWebGL2Context() {
+  // Match MapLibre's depth, stencil, and GPU preferences when probing.
+  const context = document.createElement('canvas').getContext('webgl2', {
+    stencil: true,
+    antialias: false,
+    powerPreference: 'high-performance',
+  })
+  if (!context) return false
+
+  context.getExtension('WEBGL_lose_context')?.loseContext()
+  return true
 }
