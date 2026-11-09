@@ -81,6 +81,7 @@ end
 
 ignored_errors = [
   ActionController::InvalidAuthenticityToken,
+  ActionDispatch::Http::Parameters::ParseError,
   ActiveRecord::RecordNotFound,
   AbstractController::ActionNotFound,
   'SIGTERM',

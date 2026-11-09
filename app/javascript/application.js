@@ -54,16 +54,8 @@ const initializeParallax = () => {
   const $ = window.jQuery || window.$;
   if (!$ || !$.fn.parallax) return;
 
-  // Destroy existing parallax instances first to avoid duplicates
-  $('[data-parallax]').each(function () {
-    const $el = $(this);
-    // Check if parallax is already initialized
-    if ($el.data('px.parallax')) {
-      $el.parallax('destroy');
-    }
-    // Reinitialize parallax
-    $el.parallax();
-  });
+  // The plugin reuses an existing instance when called again on the same element.
+  $('[data-parallax]').parallax();
 
   // Trigger resize/scroll to refresh parallax positions
   $(window).trigger('resize').trigger('scroll');
@@ -141,7 +133,8 @@ const cleanupPage = () => {
   if ($ && $.fn.parallax) {
     $('[data-parallax]').each(function () {
       const $el = $(this);
-      if ($el.data('px.parallax')) {
+      // On iOS and Android the plugin applies a background without creating a mirror.
+      if ($el.data('px.parallax')?.$mirror) {
         $el.parallax('destroy');
       }
     });
@@ -277,8 +270,11 @@ document.addEventListener('turbo:load', () => {
 });
 
 window.showSubmitButton = function (id, token) {
-  document.getElementById(id).setAttribute('value', token);
-  document.getElementById('contact-submit-btn').style.display = 'block'
+  const input = document.getElementById(id)
+  if (!input) return
+
+  input.value = token
+  input.form.querySelector('#contact-submit-btn').style.display = 'block'
 }
 
 const pageLoad = function () {

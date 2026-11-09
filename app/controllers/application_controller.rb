@@ -22,6 +22,7 @@ class ApplicationController < ActionController::Base
   layout :cms_choose_layout
 
   rescue_from CanCan::AccessDenied, with: :permission_denied
+  rescue_from ActionDispatch::Http::Parameters::ParseError, with: :invalid_request_parameters
 
   def can_demographics?(year)
     Setting.can_view_public_demographics?(year) || (user_signed_in? && Setting.can_view_private_demographics?(year))
@@ -96,6 +97,10 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
+  def invalid_request_parameters
+    head :bad_request
+  end
 
   def my_stuff_available?
     user_signed_in? && [Building, Person, CensusRecord].any? { |resource| creator_search_scope(resource) }
