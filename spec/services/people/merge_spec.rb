@@ -42,6 +42,16 @@ module People
       expect(target.audit_logs.pluck(:message)).to include(match(/Connected to 1920 Census Record/))
     end
 
+    it "rolls back transferred records and changes if the source cannot be deleted" do
+      allow(source).to receive(:destroy).and_return(false)
+
+      expect { described_class.call(source:, target:) }.to raise_error(ActiveRecord::RecordNotDestroyed)
+      expect(Person.exists?(source.id)).to be true
+      expect(source_record.reload.person_id).to eq(source.id)
+      expect(target.reload.description).to eq("target text")
+      expect(target.audit_logs.pluck(:message)).not_to include(match(/Merged #\d+/))
+    end
+
     context "with narratives" do
       let(:source_narrative) do
         narrative = build(:narrative, created_by: user)

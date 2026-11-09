@@ -17,13 +17,13 @@ module People
     ].freeze
 
     def call
-      ActiveRecord::Base.transaction do
+      Person.transaction(requires_new: true) do
         merge_descriptions
         merge_basic_attributes
         merge_associations
         create_audit_log
+        source.reload.destroy!
       end
-      source.reload.destroy
       target.reload
     end
 
@@ -35,14 +35,14 @@ module People
       target.description = [target.description, source.description]
         .compact_blank
         .join("\n\n")
-      target.save
+      target.save!
     end
 
     def merge_basic_attributes
       MERGEABLE_ATTRIBUTES.each do |attr|
         target[attr] ||= source[attr]
       end
-      target.save
+      target.save!
     end
 
     def merge_associations
@@ -58,7 +58,7 @@ module People
     def merge_names
       source.names.each do |name|
         next if target.names.any? { |target_name| name.same_name_as?(target_name) }
-        target.names.create(name.attributes.except("id", "person_id", "created_at", "updated_at"))
+        target.names.create!(name.attributes.except("id", "person_id", "created_at", "updated_at"))
       end
     end
 
@@ -102,7 +102,7 @@ module People
     end
 
     def create_audit_log
-      target.audit_logs.create(
+      target.audit_logs.create!(
         message: "Merged ##{source.id} - #{source.first_name} #{source.last_name}",
       )
     end
