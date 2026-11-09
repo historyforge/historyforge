@@ -94,6 +94,9 @@ module People
 
     def load_representation
       evidence = LoadCensusEvidence.call(person: @person, readable: method(:census_record_readable?))
+      @visible_census_records = evidence.census_records
+      @visible_relative_records_by_year = evidence.census_households.values.flat_map(&:fellows)
+                                                 .select(&:person_id).group_by(&:year)
       @person_representation = PersonSerializer.new(
         @person,
         **evidence.to_h,
