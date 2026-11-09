@@ -11,7 +11,9 @@ class BuildingFromAddress
 
   def perform
     return if record.street_house_number.blank? || record.street_name.blank?
+    return unless original_address
     return original_address.building if original_address.persisted?
+    return unless modern_address
     return modern_address.building if modern_address.persisted?
 
     building = Building.new locality: record.locality,
@@ -53,8 +55,14 @@ class BuildingFromAddress
   def find_or_build_address(place, **street)
     if record.locality_id
       matches = Address.joins(:building).where(buildings: { locality_id: record.locality_id }).where(street)
-      existing = matches.find_by(city: place) || matches.first
-      return existing if existing
+      if place.present?
+        exact_matches = matches.where(city: place)
+        matches = exact_matches if exact_matches.exists?
+      end
+
+      building_ids = matches.distinct.limit(2).pluck(:building_id)
+      return if building_ids.size > 1
+      return matches.first if building_ids.one?
     end
 
     Address.new(**street, city: place)

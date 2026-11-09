@@ -50,4 +50,44 @@ RSpec.describe BuildingFromAddress do
     expect(result.address.city).to be_nil
     expect(result.full_street_address).to include(record.locality.name)
   end
+
+  context 'when multiple buildings share the same street address and Locality' do
+    let(:locality) { create(:locality) }
+    let(:street) { { house_number: '405', prefix: 'N', name: 'Tioga', suffix: 'St' } }
+    let!(:forest_home) { create(:building, locality:, addresses: [build(:address, **street, city: 'Forest Home')]) }
+    let!(:other) { create(:building, locality:, addresses: [build(:address, **street, city: 'Ithaca')]) }
+
+    it 'uses a unique matching Place' do
+      record.locality = locality
+      record.city = 'Forest Home'
+
+      expect(result).to eq(forest_home)
+    end
+
+    it 'returns no building when even an exact Place matches two buildings' do
+      record.locality = locality
+      record.city = 'Forest Home'
+      other.address.update!(city: record.city)
+
+      expect { expect(result).to be_nil }.not_to change(Building, :count)
+    end
+
+    it 'saves the census record without linking or creating a building when Place is blank' do
+      census_record = build(:census1920_record, locality:, city: nil, street_house_number: '405',
+                                               street_prefix: 'N', street_name: 'Tioga', street_suffix: 'St',
+                                               ensure_building: '1')
+
+      expect { census_record.save! }.not_to change(Building, :count)
+      expect(census_record.reload.building_id).to be_nil
+    end
+
+    it 'automatically links a blank-Place record once only one building matches' do
+      other.address.update!(house_number: '407')
+      census_record = create(:census1920_record, locality:, city: nil, street_house_number: '405',
+                                                street_prefix: 'N', street_name: 'Tioga', street_suffix: 'St',
+                                                ensure_building: '1')
+
+      expect(census_record.reload.building).to eq(forest_home)
+    end
+  end
 end

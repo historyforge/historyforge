@@ -155,7 +155,7 @@ class CensusRecord < ApplicationRecord
   memoize :fellows
 
   def ensure_housing
-    return unless building_id.blank? && ensure_building == '1' && street_name && city && street_house_number
+    return unless building_id.blank? && ensure_building == '1'
 
     self.building = BuildingFromAddress.new(self).perform
   end
