@@ -16,19 +16,35 @@ class RestoreAdvancedSearch
     end
 
     def call
-      if user
-        search = user.search_params.find_or_initialize_by(model: search_key)
-        search&.destroy
-      else
-        session[:searches]&.delete(search_key)
-      end
-
-      { action: }
+      fields = user ? reset_user_search : reset_guest_search
+      fields ? { action:, f: fields } : { action: }
     end
 
     private
 
     attr_reader :user, :session, :search_key, :action
+
+    def reset_user_search
+      search = user.search_params.find_by(model: search_key)
+      fields = search&.params&.fetch('f', nil).presence
+      if fields
+        search.update!(params: { f: fields })
+      else
+        search&.destroy
+      end
+      fields
+    end
+
+    def reset_guest_search
+      searches = session[:searches]
+      fields = searches&.dig(search_key)&.with_indifferent_access&.fetch(:f, nil).presence
+      if fields
+        searches[search_key] = { f: fields }
+      else
+        searches&.delete(search_key)
+      end
+      fields
+    end
   end
 
   class AuthenticatedUser
@@ -46,10 +62,10 @@ class RestoreAdvancedSearch
     def call
       search = user.search_params.find_or_initialize_by(model: search_key)
 
-      if resetting_search?
-        search&.destroy
-        { action: }
-      elsif actively_searching?
+      if actively_searching?
+        fields = search.params&.fetch('f', nil)
+        return { action:, params: params.merge(f: fields) } if !params.key?(:f) && fields.present?
+
         search.params = params_to_save
         search.save
         nil
@@ -63,10 +79,6 @@ class RestoreAdvancedSearch
     private
 
     attr_reader :params, :user, :search_key, :action
-
-    def resetting_search?
-      params[:reset]
-    end
 
     def actively_searching?
       params[:s] || params[:f] || (params[:scope] && params[:scope] != 'on')
@@ -95,26 +107,22 @@ class RestoreAdvancedSearch
     end
 
     def call
-      if resetting_search?
-        session[:searches]&.delete(search_key)
-        nil
-      elsif actively_searching?
+      saved_params = session[:searches]&.dig(search_key)&.with_indifferent_access
+      if actively_searching?
+        fields = saved_params&.fetch(:f, nil)
+        return { action:, params: params.merge(f: fields) } if !params.key?(:f) && fields.present?
+
         session[:searches] ||= {}
         session[:searches][search_key] = params_to_save
         nil
       else
-        saved_params = session[:searches]&.dig(search_key)
-        saved_params&.deep_symbolize_keys&.merge(action:) if saved_params
+        saved_params&.deep_symbolize_keys&.merge(action:)
       end
     end
 
     private
 
     attr_reader :params, :session, :search_key, :action
-
-    def resetting_search?
-      params[:reset]
-    end
 
     def actively_searching?
       params[:s] || params[:f] || (params[:scope] && params[:scope] != 'on')

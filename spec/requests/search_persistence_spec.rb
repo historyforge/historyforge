@@ -53,18 +53,54 @@ RSpec.describe 'Search persistence over HTTP', type: :request do
           .to contain_exactly(older.id, newer.id, excluded.id)
       end
 
-      it 'clears saved filters on reset' do
+      it 'clears saved filters on reset while keeping selected columns' do
         get people_path, params: filters
         get people_path, params: { reset: '1' }
-        expect(response).to redirect_to(people_path)
+        expect(response).to redirect_to(people_path(f: filters[:f]))
         follow_redirect!
         expect(response).to have_http_status(:ok)
         get people_path
-        expect(response).to have_http_status(:ok)
+        expect(response).to redirect_to(people_path(f: filters[:f]))
         get people_path(format: :json), params: { f: %w[name birth_year] }
         expect(response.parsed_body.map { |row| row.dig('name', 'id') })
           .to contain_exactly(older.id, newer.id, excluded.id)
       end
     end
+  end
+
+  it 'keeps People columns when following a filter-only URL and signing in again' do
+    user = create(:active_user)
+    credentials = { user: { email: user.email, password: 'b1g_sekrit' } }
+    post user_session_path, params: credentials
+
+    fields = %w[name description locality_ids]
+    get people_path, params: { f: fields }
+    filter_only = { s: { birth_year_eq: '1900' } }
+    get people_path, params: filter_only
+    expect(response).to redirect_to(people_path(**filter_only, f: fields))
+    follow_redirect!
+    expect(response).to have_http_status(:ok)
+
+    delete destroy_user_session_path
+    post user_session_path, params: credentials
+    get people_path
+    expect(response).to redirect_to(people_path(**filter_only, f: fields))
+  end
+
+  it 'keeps Census columns when opening a sheet and accepts an explicit return to defaults' do
+    fields = %w[name occupation industry]
+    get census_records_path(year: 1930), params: { f: fields }
+    expect(response).to have_http_status(:ok)
+
+    sheet = { s: { enum_dist_eq: '1', page_number_eq: '1', page_side_eq: 'A' } }
+    get census_records_path(year: 1930), params: sheet
+    expect(response).to redirect_to(census_records_path(year: 1930, **sheet, f: fields))
+    follow_redirect!
+    expect(response).to have_http_status(:ok)
+
+    get census_records_path(year: 1930), params: sheet.merge(f: '')
+    expect(response).to have_http_status(:ok)
+    get census_records_path(year: 1930)
+    expect(response).to redirect_to(census_records_path(year: 1930, **sheet, f: ''))
   end
 end

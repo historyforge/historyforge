@@ -11,7 +11,7 @@ module AdvancedRestoreSearch
 
   def restore_search
     redirect_url = RestoreAdvancedSearch.call(
-      params:,
+      params: request.query_parameters.with_indifferent_access,
       user: current_user,
       session:,
       search_key:,
