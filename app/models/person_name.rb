@@ -28,6 +28,16 @@ class PersonName < ApplicationRecord
 
   belongs_to :person
 
+  %w[first_name last_name].each do |attribute|
+    ransacker :"case_insensitive_#{attribute}", formatter: lambda(&:downcase) do |parent|
+      Arel::Nodes::NamedFunction.new('LOWER', [parent.table[attribute]])
+    end
+  end
+
+  def self.ransackable_attributes(_auth_object = nil)
+    super + %w[case_insensitive_first_name case_insensitive_last_name]
+  end
+
   before_validation :clean_name
   before_save :set_searchable_name
 
