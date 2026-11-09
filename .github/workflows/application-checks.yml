@@ -34,8 +34,12 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y libpq-dev libvips imagemagick postgresql-client
+      - name: Read the Ruby version
+        id: ruby
+        run: awk '$1 == "ruby" { print "version=" $2; exit }' Gemfile.lock >> "$GITHUB_OUTPUT"
       - uses: ruby/setup-ruby@v1
         with:
+          ruby-version: ${{ steps.ruby.outputs.version }}
           bundler-cache: true
       - uses: actions/setup-node@v6
         with:
