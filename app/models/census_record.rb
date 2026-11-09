@@ -162,8 +162,9 @@ class CensusRecord < ApplicationRecord
 
   def audit_person_connection
     person_from_id, person_to_id = saved_change_to_person_id
-    person_from = Person.find(person_from_id) if person_from_id.present?
-    person_to = Person.find(person_to_id) if person_to_id.present?
+    # A merge may delete the former Person before this after-commit callback runs.
+    person_from = Person.find_by(id: person_from_id) if person_from_id.present?
+    person_to = Person.find_by(id: person_to_id) if person_to_id.present?
     CensusRecords::AuditPersonConnection.call(person_from:, person_to:, year:, name:)
   end
 
