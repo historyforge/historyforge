@@ -32,21 +32,31 @@ class BuildingFromAddress
   def original_address
     return @original_address if defined?(@original_address)
 
-    @original_address = Address.find_or_initialize_by house_number: record.street_house_number,
-                                                      prefix: record.street_prefix,
-                                                      name: record.street_name,
-                                                      suffix: record.street_suffix,
-                                                      city: record.city
+    @original_address = find_or_build_address(record.city,
+                                              house_number: record.street_house_number,
+                                              prefix: record.street_prefix,
+                                              name: record.street_name,
+                                              suffix: record.street_suffix)
   end
 
   def modern_address
     return @modern_address if defined?(@modern_address)
 
     base = ConvertibleAddress.new(record).modernize
-    @modern_address = Address.find_or_initialize_by house_number: base.house_number,
-                                                    name: base.street_name,
-                                                    prefix: base.street_prefix,
-                                                    suffix: base.street_suffix,
-                                                    city: base.city
+    @modern_address = find_or_build_address(base.city,
+                                            house_number: base.house_number,
+                                            name: base.street_name,
+                                            prefix: base.street_prefix,
+                                            suffix: base.street_suffix)
+  end
+
+  def find_or_build_address(place, **street)
+    if record.locality_id
+      matches = Address.joins(:building).where(buildings: { locality_id: record.locality_id }).where(street)
+      existing = matches.find_by(city: place) || matches.first
+      return existing if existing
+    end
+
+    Address.new(**street, city: place)
   end
 end

@@ -3,6 +3,24 @@
 require 'rails_helper'
 
 RSpec.describe 'Place search', type: :request do
+  it 'allows a census record to be saved without Place even when a site has a city configured' do
+    user = create(:administrator)
+    post user_session_path, params: { user: { email: user.email, password: 'b1g_sekrit' } }
+    allow(AppConfig).to receive(:[]).and_call_original
+    allow(AppConfig).to receive(:[]).with(:city).and_return('Ithaca')
+
+    get new_census1920_record_path
+    expect(response).to have_http_status(:ok)
+    place = Nokogiri::HTML(response.body).at_css('input[name="census_record[city]"]')
+    expect(place['value']).to be_blank
+    expect(place['required']).to be_nil
+
+    record = create(:census1920_record, city: 'Forest Home')
+    patch census1920_record_path(record), params: { census_record: { city: '' } }
+    expect(response).to redirect_to(census1920_record_path(record))
+    expect(record.reload.city).to be_nil
+  end
+
   it 'filters buildings by the Place on their primary address' do
     matching = create(:building, :reviewed, addresses: [
                         build(:address, city: 'Cayuga Heights'),

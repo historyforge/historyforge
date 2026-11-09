@@ -25,7 +25,6 @@ module CensusRecords
     end
 
     def set_base_defaults
-      record.city   ||= AppConfig[:city]
       record.county ||= AppConfig[:county]
       record.state  ||= AppConfig[:state]
       record.pob    ||= AppConfig[:pob]

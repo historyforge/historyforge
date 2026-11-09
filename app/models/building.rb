@@ -224,7 +224,7 @@ class Building < ApplicationRecord
   end
 
   def full_street_address
-    [street_address, city].join(" ")
+    [street_address, city.presence || locality&.name].compact.join(" ")
   end
 
   def geocode_street_address
