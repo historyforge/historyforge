@@ -3,6 +3,7 @@ import SavedSearches from '../js/saved_searches'
 
 export default class extends Controller {
     what = null
+    rebuild = () => this.build()
     connect() {
       const url = document.location.toString()
       if (url.match(/building/)) { this.what = 'building' } else if (url.match(/census/)) { this.what = 'census' } else if (url.match(/people/)) { this.what = 'people' }
@@ -13,11 +14,11 @@ export default class extends Controller {
       this._remove = this.remove.bind(this)
       this.build()
 
-      window.addEventListener(`searches:${this.what}`, () => this.build())
+      window.addEventListener(`searches:${this.what}`, this.rebuild)
     }
 
     disconnect() {
-      window.removeEventListener(`searches:${this.what}`, () => this.build())
+      window.removeEventListener(`searches:${this.what}`, this.rebuild)
     }
 
     build() {
