@@ -36,7 +36,7 @@ module People
       end
       if continuity.residences.any?
         subject = sentences.empty? ? @name : @pronoun.capitalize
-        sentences << residence_sentence(continuity.residences, subject, childhood: sentences.empty?)
+        sentences.concat(residence_sentences(continuity.residences, subject, childhood: sentences.empty?))
       end
       if continuity.households.any? && !family_first
         subject = sentences.empty? ? @name : @pronoun.capitalize
@@ -106,36 +106,53 @@ module People
       !industry.casecmp?('medical') || !%w[doctor physician].include?(occupation.downcase)
     end
 
-    def residence_sentence(groups, subject, childhood:)
+    def residence_sentences(groups, subject, childhood:)
+      localities, streets = groups.partition { |group| group.first.residence.start_with?('in ') }
+      entries = groups.flatten
+      if localities.empty? || streets.empty?
+        return [residence_sentence(groups, subject, childhood:, entries:)]
+      end
+
+      locality_details = localities.map { |group| "in #{display_place(group.first, entries)} #{dates(group)}" }
+      if localities.first.first.record.year < streets.first.first.record.year
+        ["#{subject} #{past_be(subject)} recorded #{locality_details.to_sentence}.",
+         residence_sentence(streets, @pronoun.capitalize, childhood: false, entries:)]
+      else
+        [residence_sentence(streets, subject, childhood:, entries:),
+         "#{@pronoun.capitalize} #{past_be(@pronoun)} recorded #{locality_details.to_sentence}."]
+      end
+    end
+
+    def residence_sentence(groups, subject, childhood:, entries:)
       if groups.one?
         group = groups.first
         entry = group.first
-        location = residence_label(entry, display_place(entry, group))
+        location = residence_label(entry, display_place(entry, entries))
         age = childhood_age(entry) if childhood && group.one?
         return "#{("At #{age}, " if age)}#{subject} lived #{location} #{dates(group)}." if group.one?
 
         return "#{subject} lived #{location} #{dates(group)}."
       end
 
-      entries = groups.flatten
+      street_entries = groups.flatten
       highlight = groups.max_by do |group|
         [group.first.address_key && group.many? ? group.size : 0, group.last.record.year]
       end
       entry = highlight.first
       location = residence_label(entry, display_place(entry, entries))
-      places = entries.select(&:place).uniq { |row| [row.record.locality_id, row.place, row.record.field_for(:state)] }
-      roads = entries.filter_map { |row| row.road&.downcase }.uniq
-      addresses = entries.filter_map(&:address_key).uniq
+      places = street_entries.select(&:place).uniq { |row| [row.record.locality_id, row.place, row.record.field_for(:state)] }
+      roads = street_entries.filter_map { |row| row.road&.downcase }.uniq
+      addresses = street_entries.filter_map(&:address_key).uniq
       number = entry.record.street_house_number
       if places.one? && roads.one? && entry.address_key && entry.address_key.last.nil? &&
-         entries.any? { |row| row.residence.start_with?('on ') }
-        return "#{subject} lived on #{entry.road} in #{display_place(entry, places)}, " \
+         street_entries.any? { |row| row.residence.start_with?('on ') }
+        return "#{subject} lived on #{entry.road} in #{display_place(entry, entries)}, " \
                "at number #{number} #{dates(highlight)}."
       end
 
       if places.one? && addresses.many? && entry.address_key
         address = entry.residence.delete_prefix('at ').delete_suffix(" in #{entry.place}")
-        return "#{subject} lived at more than one address in #{display_place(entry, places)}, " \
+        return "#{subject} lived at more than one address in #{display_place(entry, entries)}, " \
                "including #{address} #{dates(highlight)}."
       end
 

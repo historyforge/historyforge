@@ -221,6 +221,20 @@ RSpec.describe People::CensusSummary do
     expect(result.sources).to eq([city, town])
   end
 
+  it 'cites an earlier locality-only record alongside a later street address' do
+    place = Data.define(:short_name)
+    earlier = observation.new(year: 1880, locality: place.new('Town of Ithaca'), locality_id: 2,
+                              relation_to_head: 'Boarder', occupation: 'None')
+    later = observation.new(year: 1900, locality: place.new('City of Ithaca'), locality_id: 1,
+                            street_name: 'Dryden Rd', street_address: '113 Dryden Rd', street_house_number: '113')
+
+    result = summarize(later, earlier, name: 'Mary A Frost')
+
+    expect(result.paragraph).to eq('Mary A Frost was recorded in Town of Ithaca in 1880. ' \
+                                   'She lived at 113 Dryden Rd in City of Ithaca in 1900.')
+    expect(result.sources).to eq([earlier, later])
+  end
+
   it 'tells Andrew W Aagaard’s work, residence, and family history in separate sentences' do
     head = observation.new(year: 1930, name: 'Webster Barnhart', relation_to_head: 'Head')
     earlier = residence(1930, 'Coddington Rd', number: nil, occupation: 'Laborer', industry: 'University Grounds',

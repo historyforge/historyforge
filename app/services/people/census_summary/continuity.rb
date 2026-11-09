@@ -29,9 +29,6 @@ module People
           end
         end
         residences = runs(:residence) { |first, later| same_residence?(first, later) }
-        if residences.flatten.any? { |entry| street_residence?(entry) }
-          residences = residences.select { |group| street_residence?(group.first) }
-        end
         households = runs(:household) do |first, later|
           member_id = first.household.member.person_id
           member_id.present? && member_id == later.household.member.person_id &&
@@ -81,10 +78,6 @@ module People
           current << entry
         end
         groups
-      end
-
-      def street_residence?(entry)
-        entry.residence.start_with?('at ', 'on ')
       end
 
       def same_residence?(first, later)

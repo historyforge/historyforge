@@ -56,9 +56,10 @@ module People
         street = usable_text(record.street_name) && usable_text(record.street_address)
         household = household_details(record)
         activity, occupation, industry = activity_details(record)
-        return empty_snapshot(record) unless street || household || activity
+        locality = usable_text(record.locality&.short_name)
+        return empty_snapshot(record) unless street || household || activity || locality
 
-        place = usable_text(record.locality&.short_name) || usable_text(record.city)
+        place = locality || usable_text(record.city)
 
         residence = if street
                       [usable_text(record.street_house_number) ? "at #{street}" : "on #{street}", ("in #{place}" if place)].compact.join(' ')
