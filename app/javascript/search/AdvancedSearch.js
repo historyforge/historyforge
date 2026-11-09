@@ -44,8 +44,9 @@ class AdvancedSearch {
                 formData.delete(name);
                 nonempty.forEach(value => formData.append(name, value));
             }
-            if (![...formData.keys()].some(name => name.startsWith('s[') || name.startsWith('f['))) {
-                formData.set('s', '{}');
+            // A submitted form with no checked fields explicitly requests the defaults.
+            if (!formData.has('f[]')) {
+                formData.set('f', '');
             }
         });
 
