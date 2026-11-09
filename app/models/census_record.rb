@@ -52,6 +52,10 @@ class CensusRecord < ApplicationRecord
 
   scope :name_cont, ->(name) { fuzzy_name_search(name.downcase) }
 
+  ransacker :city, formatter: lambda(&:downcase) do |parent|
+    Arel::Nodes::NamedFunction.new('LOWER', [parent.table[:city]])
+  end
+
   def self.ransackable_attributes(_auth_object = nil)
     (super - %w[created_by_id]) + %w[street_address]
   end

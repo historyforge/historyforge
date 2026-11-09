@@ -176,7 +176,7 @@ class Building < ApplicationRecord
   end
 
   def self.ransackable_attributes(_auth_object = nil)
-    (super - %w[created_by_id]) + %w[street_address]
+    (super - %w[created_by_id]) + %w[street_address city]
   end
 
   Geocoder.configure(
@@ -198,6 +198,16 @@ class Building < ApplicationRecord
                                                                     addresses[:prefix],
                                                                     addresses[:name],
                                                                     addresses[:suffix]])])
+  end
+
+  ransacker :city, formatter: lambda(&:downcase) do |parent|
+    addresses = Address.arel_table
+    place = Arel::Nodes::NamedFunction.new('LOWER', [addresses[:city]])
+    primary_place = addresses.project(place)
+                             .where(addresses[:building_id].eq(parent.table[:id]))
+                             .where(addresses[:is_primary].eq(true))
+                             .order(addresses[:id]).take(1)
+    Arel::Nodes::Grouping.new(primary_place.ast)
   end
 
   alias_attribute :latitude, :lat
