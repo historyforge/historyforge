@@ -15,7 +15,7 @@ RSpec.describe 'Invalid form submissions', type: :request do
 
       it 'renders an invalid census edit with input intact and no saved changes' do
         record = create(:census1910_record, notes: 'Original notes')
-        original = record.attributes
+        original = record.reload.attributes
         patch census1910_record_path(record), params: {
           census_record: { first_name: '', notes: 'Keep this draft' }
         }, headers: headers
@@ -30,8 +30,8 @@ RSpec.describe 'Invalid form submissions', type: :request do
       it 'does not partially save a building or its nested address on an invalid edit' do
         building = create(:building, notes: 'Original notes')
         address = building.addresses.first
-        original_building = building.attributes
-        original_address = address.attributes
+        original_building = building.reload.attributes
+        original_address = address.reload.attributes
         long_name = 'A' * 256
         patch building_path(building), params: {
           building: { name: long_name, notes: 'Keep this draft',
