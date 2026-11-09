@@ -70,12 +70,12 @@ class PersonSearch < SearchQueryBuilder
 
     builder.group("person_names.id")
     builder.select(builder.scoped.select_values, "person_names.first_name as matched_first_name, person_names.last_name as matched_last_name") unless navigation
-    builder.select(builder.scoped.select_values, "person_names.sortable_name as sortable_matched_name")
   end
 
   def add_sorts
     order = []
     sort&.each_value do |sort_unit|
+      sort_unit = sort_unit.with_indifferent_access
       col = sort_unit["colId"]
       dir = sort_unit["sort"]
       next if col == "locality_ids"
@@ -91,11 +91,15 @@ class PersonSearch < SearchQueryBuilder
   end
 
   def name_order_clause(dir)
-    if has_names_joined?
-      "sortable_matched_name #{dir}"
-    else
-      "sortable_name #{dir}"
-    end
+    matched = has_names_joined?
+    table = matched ? 'person_names' : 'people'
+    parts = matched ? %w[last_name first_name] : %w[last_name first_name middle_name]
+
+    parts.map do |part|
+      key = "sortable_#{part}"
+      builder.select("LOWER(COALESCE(#{table}.#{part}, '')) AS #{key}")
+      "#{key} #{dir}"
+    end.join(', ')
   end
 
   def default_fields
@@ -115,11 +119,10 @@ class PersonSearch < SearchQueryBuilder
   end
 
   def has_names_joined?
-    joins_values = builder.scoped.joins_values
-    return false if joins_values.blank?
-    return joins_values.any? { |v| v == :names } if joins_values.first.is_a?(Symbol)
-
-    joins_values.any? { |v| !v.is_a?(String) && v.reflections.any? { |r| r.name == :names } }
+    relation = builder.scoped
+    (relation.joins_values + relation.left_outer_joins_values).any? do |join|
+      join == :names || (join.respond_to?(:reflections) && join.reflections.any? { |reflection| reflection.name == :names })
+    end
   end
 
   private
