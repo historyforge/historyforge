@@ -121,4 +121,13 @@ class PersonSearch < SearchQueryBuilder
 
     joins_values.any? { |v| !v.is_a?(String) && v.reflections.any? { |r| r.name == :names } }
   end
+
+  private
+
+  def ransack_params
+    # Keep the original filter keys in saved searches and filter chips.
+    super.transform_keys do |key|
+      key.to_s.sub(/\Anames_((?:first|last)_name_)/, 'names_case_insensitive_\1').to_sym
+    end
+  end
 end
