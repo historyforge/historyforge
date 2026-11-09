@@ -73,7 +73,7 @@ RSpec.describe 'Volunteer user accounts', type: :request do
 
   it 'requires explicit linking when an account already uses the email' do
     user = create(:active_user, email: volunteer.email)
-    before = user.attributes
+    before = user.reload.attributes
     sign_in_admin
     get new_volunteer_application_account_path(volunteer)
     expect(response.body).to include('Link existing user')

@@ -1,0 +1,61 @@
+name: Application checks
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      RAILS_ENV: test
+      BASE_URL: localhost:3000
+      RECAPTCHA_SITE_KEY: test-site-key
+      DATABASE_USERNAME: postgres
+      DATABASE_PASSWORD: postgres
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libpq-dev libvips imagemagick postgresql-client
+      - name: Read the Ruby version
+        id: ruby
+        run: awk '$1 == "ruby" { print "version=" $2; exit }' Gemfile.lock >> "$GITHUB_OUTPUT"
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ steps.ruby.outputs.version }}
+          bundler-cache: true
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          package-manager-cache: false
+      - name: Install JavaScript dependencies
+        run: |
+          corepack enable
+          yarn install --immutable
+      - name: Prepare test database
+        run: |
+          cp config/database.example.yml config/database.yml
+          bin/rails db:prepare
+      - name: Run Rails checks
+        run: bin/check --exclude-pattern 'spec/features/**/*_spec.rb'
+      - name: Run JavaScript tests
+        run: node --test spec/javascript/*.test.cjs
