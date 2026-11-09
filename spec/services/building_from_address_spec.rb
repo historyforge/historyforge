@@ -83,11 +83,23 @@ RSpec.describe BuildingFromAddress do
 
     it 'automatically links a blank-Place record once only one building matches' do
       other.address.update!(house_number: '407')
+      create(:address, building: forest_home, **street, city: 'Ithaca', is_primary: false)
       census_record = create(:census1920_record, locality:, city: nil, street_house_number: '405',
                                                 street_prefix: 'N', street_name: 'Tioga', street_suffix: 'St',
                                                 ensure_building: '1')
 
       expect(census_record.reload.building).to eq(forest_home)
+    end
+
+    it 'returns no building when only the converted street address matches and it is ambiguous' do
+      record.locality = locality
+      record.street_name = 'Old Tioga'
+      record.city = 'Forest Home'
+      StreetConversion.create!(from_house_number: '405', from_prefix: 'N', from_name: 'Old Tioga',
+                               from_suffix: 'St', from_city: 'Forest Home',
+                               to_name: 'Tioga', to_city: 'null', year: 1910)
+
+      expect { expect(result).to be_nil }.not_to change(Building, :count)
     end
   end
 end
