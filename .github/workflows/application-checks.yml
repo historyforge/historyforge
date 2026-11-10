@@ -65,6 +65,7 @@ jobs:
             spec/features/bootstrap_components_spec.rb \
             spec/features/native_autocomplete_spec.rb \
             spec/features/buildings_spec.rb \
+            spec/features/forge_spec.rb \
             spec/features/census_1880_spec.rb \
             spec/features/media_spec.rb
       - name: Run JavaScript tests
