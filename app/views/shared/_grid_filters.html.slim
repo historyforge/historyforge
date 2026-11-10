@@ -14,7 +14,7 @@
   - if @search.active?
     = link_to 'Start New Search', url_for(reset: true), class: 'btn btn-sm btn-light'
   .dropdown.ml-2 data-controller="load-saved-search"
-    a.dropdown-toggle.btn.btn-sm.btn-light data-bs-toggle="dropdown" Load Search
+    button.dropdown-toggle.btn.btn-sm.btn-light type="button" data-bs-toggle="dropdown" aria-expanded="false" Load Search
     .dropdown-menu
 
 - creator_filter = @search.creator_filter
