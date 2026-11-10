@@ -3,15 +3,17 @@
 require "rails_helper"
 
 RSpec.describe "Native autocomplete" do
-  scenario "pasted searches support keyboard selection and reconnect after Turbo Back", :js do
-    Cms::Page.create!(controller: "HomeController", action: "index", url_path: "/", title: "Home",
-                     template: "{{ person_finder }} {{ home_finder }}")
+  scenario "existing CMS search inputs support paste, keyboard selection, and Turbo Back", :js do
+    Cms::Page.create!(controller: "HomeController", action: "index", url_path: "/", title: "Home", template: <<~HTML)
+      <input type="search" id="search-people-input" placeholder="Type a name here" class="form-control">
+      <input type="search" id="search-buildings-input" placeholder="Type an address here" class="form-control">
+    HTML
     person = create(:person, first_name: "Beatrice", middle_name: nil, last_name: "Canal")
     building = create(:building, :reviewed, addresses: [build(:address, house_number: "92", name: "Foundry", prefix: nil, suffix: "St")])
 
     visit root_path
     expect(page.evaluate_script("typeof window.jQuery")).to eq("undefined")
-    search = find("#search-people-input")
+    search = find(%q(#search-people-input[role="combobox"]))
     page.execute_script(<<~JS, search)
       arguments[0].focus()
       arguments[0].value = 'Canal'
@@ -24,7 +26,7 @@ RSpec.describe "Native autocomplete" do
     page.go_back
     expect(page).to have_current_path(root_path)
     expect(page).to have_no_css('.autocomplete-suggestions:not([hidden])')
-    find("#search-buildings-input").set("Foundry")
+    find(%q(#search-buildings-input[role="combobox"])).set("Foundry")
     find('[role="option"]', text: "92 Foundry St").click
     expect(page).to have_current_path(building_path(building))
   end

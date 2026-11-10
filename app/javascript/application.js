@@ -94,8 +94,26 @@ const initializeTextareaResize = () => {
   });
 }
 
+// Saved CMS templates can contain these inputs directly instead of using the Rails partials.
+function initializeHomeSearch() {
+  for (const kind of ['people', 'buildings']) {
+    const input = document.getElementById(`search-${kind}-input`)
+    if (!input) continue
+
+    input.autocomplete = 'off'
+    input.dataset.autocompleteUrl ||= `/search/${kind}`
+    input.dataset.autocompleteKind ||= kind
+    if (kind === 'people') input.dataset.autocompleteDelay ||= '250'
+    const controllers = (input.dataset.controller || '').split(/\s+/).filter(Boolean)
+    if (!controllers.includes('autocomplete')) {
+      input.dataset.controller = [...controllers, 'autocomplete'].join(' ')
+    }
+  }
+}
+
 // Initialize on both DOMContentLoaded (initial page load) and turbo:load (Turbo navigation)
 const initializePage = () => {
+  initializeHomeSearch()
   requestAnimationFrame(initializeChangeHistoryTruncation);
   initializeParallax();
   initializeTextareaResize();
