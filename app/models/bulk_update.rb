@@ -30,10 +30,11 @@ class BulkUpdate < ApplicationRecord
   validates :field, presence: true
 
   def perform
-    targets.each do |record|
-      record[field] = value_to
-      record.comment = comment
-      if record.save!
+    self.class.transaction(requires_new: true) do
+      targets.each do |record|
+        record[field] = value_to
+        record.comment = comment
+        record.save!
         records.create! record: record
       end
     end
