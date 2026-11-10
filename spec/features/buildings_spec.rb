@@ -42,7 +42,7 @@ RSpec.describe "buildings" do
     page.go_back
     expect(page).to have_current_path(/scope=unpeopled/)
     expect(page).to have_link(href: %r{#{building_path(building)}\z})
-    expect(page).to have_css(".ag-header-cell", text: "City")
+    expect(page).to have_css(".ag-header-cell[col-id=city]")
     click_on "Load Search"
     expect(page).to have_link("Unpeopled buildings", href: /scope=unpeopled/)
   end
