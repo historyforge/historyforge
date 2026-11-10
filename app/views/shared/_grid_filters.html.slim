@@ -1,3 +1,5 @@
+- search_year = controller.year if controller.respond_to?(:year)
+- search_kind = search_year ? 'census' : (resource_class == Building ? 'building' : 'people')
 - content_for :pills do
   - if can?(:create, resource_class)
     = link_to 'Add New Record', [:new, resource_class.model_name.singular_route_key.to_sym], class: 'btn btn-sm btn-light'
@@ -13,7 +15,7 @@
 
   - if @search.active?
     = link_to 'Start New Search', url_for(reset: true), class: 'btn btn-sm btn-light'
-  .dropdown.ml-2 data-controller="load-saved-search"
+  .dropdown.ml-2 data-controller="load-saved-search" data-search-kind=search_kind data-search-year=search_year
     button.dropdown-toggle.btn.btn-sm.btn-light type="button" data-bs-toggle="dropdown" aria-expanded="false" Load Search
     .dropdown-menu
 
@@ -33,7 +35,7 @@
     - elsif params[:controller] == 'buildings/main'
       => form.submit 'Map It', class: 'btn btn-sm btn-primary', id: 'search-map'
     - if @search.active?
-      button.btn.btn-sm.btn-primary type="button" data-controller="save-search" Save It
+      button.btn.btn-sm.btn-primary type="button" data-controller="save-search" data-search-kind=search_kind data-action="save-search#add" Save It
   .mb-3
     button.btn.btn-sm.btn-light type="button" data-bs-toggle="collapse" data-bs-target="#fieldSelector" = pluralize @search.columns.size, 'Field'
     button.btn.btn-sm.btn-light.mr-3 type="button" data-bs-toggle="collapse" data-bs-target="#newAttributeFilter" Filter

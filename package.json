@@ -1,5 +1,6 @@
 {
   "scripts": {
+    "lint:js": "eslint 'app/javascript/**/*.{js,jsx}'",
     "build": "sh -c 'flags=; if [ \"$RAILS_ENV\" = production ] || [ \"$NODE_ENV\" = production ]; then flags=--minify; fi; yarn build:maps $flags && yarn build:app $flags'",
     "build:maps": "esbuild node_modules/maplibre-gl/dist/maplibre-gl-worker.mjs --bundle --format=esm --minify --outfile=app/assets/builds/maplibre-worker.js && esbuild app/javascript/maps.js --bundle --format=esm --sourcemap --outfile=app/assets/builds/maps.js",
     "build:app": "yarn build:bootstrap && esbuild app/javascript/application.js app/javascript/cms.js app/javascript/demographics.js --bundle --sourcemap --outdir=app/assets/builds",

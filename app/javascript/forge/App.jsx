@@ -11,7 +11,7 @@ const App = () => {
     const [sidebarLeft, setSidebarLeft] = useState(false)
     const [sidebarRight, setSidebarRight] = useState(false);
     const [forgePickerOpen, setForgePickerOpen] = useState(false);
-    const hasForges = window.initialState.forges.forges.length > 1;
+    const hasForges = useSelector(state => state.forges.forges.length > 1);
     const dispatch = useDispatch();
 
     useEffect(() => {

@@ -57,5 +57,15 @@ jobs:
           bin/rails db:prepare
       - name: Run Rails checks
         run: bin/check --exclude-pattern 'spec/features/**/*_spec.rb'
+      - name: Lint JavaScript
+        run: yarn lint:js
+      - name: Run browser smoke tests
+        run: |
+          bundle exec rspec \
+            spec/features/bootstrap_components_spec.rb \
+            spec/features/native_autocomplete_spec.rb \
+            spec/features/buildings_spec.rb \
+            spec/features/census_1880_spec.rb \
+            spec/features/media_spec.rb
       - name: Run JavaScript tests
         run: node --test spec/javascript/*.test.cjs

@@ -3,10 +3,14 @@ import { applyMiddleware, combineReducers, createStore } from 'redux'
 import thunk from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension'
 
-export const buildStore = reducers => {
+/**
+ * @param {Record<string, Function>} reducers
+ * @param {Record<string, object>} initialState State serialized on the map mount element.
+ */
+export const buildStore = (reducers, initialState) => {
   const loggerMiddleware = createLogger({ collapsed: true })
   const combinedReducers = combineReducers(reducers)
   const appliedMiddlewares = composeWithDevTools(applyMiddleware(thunk, loggerMiddleware))
 
-  return createStore(combinedReducers, window.initialState, appliedMiddlewares)
+  return createStore(combinedReducers, initialState, appliedMiddlewares)
 }

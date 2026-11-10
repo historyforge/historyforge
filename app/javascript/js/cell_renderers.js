@@ -46,16 +46,23 @@ class NameCellRenderer extends BaseCellRenderer {
       if (this.value.id) {
         const baseUrl = document.location.toString().split('?')[0]
         const id = this.value.id || this.value
-        this.eGui.innerHTML = `<a href="${baseUrl}/${id}" title="${this.value.name}">${this.value.name}</a>`
+        const link = document.createElement('a')
+        link.href = `${baseUrl}/${encodeURIComponent(id)}`
+        link.title = this.value.name
+        link.textContent = this.value.name
+        this.eGui.append(link)
       } else {
-        this.eGui.innerHTML = this.value.name
+        this.eGui.textContent = this.value.name
       }
 
       if (!this.value.reviewed) {
-        this.eGui.innerHTML += '<span class="badge badge-success">NEW</span>'
+        const badge = document.createElement('span')
+        badge.className = 'badge badge-success'
+        badge.textContent = 'NEW'
+        this.eGui.append(badge)
       }
     } else {
-      this.eGui.innerHTML = 'Loading more records.'
+      this.eGui.textContent = 'Loading more records.'
     }
   }
 }

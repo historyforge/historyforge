@@ -2,58 +2,44 @@ import { Controller } from 'stimulus'
 import SavedSearches from '../js/saved_searches'
 
 export default class extends Controller {
-    what = null
-    rebuild = () => this.build()
-    connect() {
-      const url = document.location.toString()
-      if (url.match(/building/)) { this.what = 'building' } else if (url.match(/census/)) { this.what = 'census' } else if (url.match(/people/)) { this.what = 'people' }
+  rebuild = () => this.build()
 
-      const savedSearchesClass = `${this.what}SavedSearches`
-      window[savedSearchesClass] = window[savedSearchesClass] || new SavedSearches(this.what)
-      this.searches = window[savedSearchesClass]
-      this._remove = this.remove.bind(this)
-      this.build()
+  connect() {
+    this.kind = this.element.dataset.searchKind
+    this.searches = SavedSearches.for(this.kind)
+    this.build()
+    window.addEventListener(`searches:${this.kind}`, this.rebuild)
+  }
 
-      window.addEventListener(`searches:${this.what}`, this.rebuild)
+  disconnect() {
+    window.removeEventListener(`searches:${this.kind}`, this.rebuild)
+  }
+
+  build() {
+    if (!this.searches.length) {
+      this.element.textContent = 'You have no saved searches.'
+      return
     }
 
-    disconnect() {
-      window.removeEventListener(`searches:${this.what}`, this.rebuild)
-    }
+    const menu = document.createElement('ul')
+    menu.className = 'list-group'
+    this.searches.forEach(search => {
+      const url = SavedSearches.urlFor(search)
+      const row = document.createElement('li')
+      row.className = 'list-group-item'
+      const remove = document.createElement('button')
+      remove.type = 'button'
+      remove.className = 'btn-close float-end'
+      remove.setAttribute('aria-label', 'Remove ' + search.name)
+      remove.addEventListener('click', () => this.searches.remove(search.name))
 
-    build() {
-      if (!this.searches.length) {
-        this.element.innerHTML = 'You have no saved searches.'
-        return
-      }
-
-      const menu = document.createElement('UL')
-      menu.className = 'list-group'
-
-      this.searches.forEach(({ name, url }) => {
-        const li = document.createElement('LI')
-        li.classList.add('list-group-item')
-        const btn = document.createElement('BUTTON')
-        btn.className = 'btn btn-sm btn-default close float-right'
-        btn.innerHTML = '&times;'
-        btn.addEventListener('click', () => this.remove(name))
-        li.appendChild(btn)
-
-        const link = document.createElement('A')
-        link.href = url
-        link.innerHTML = name
-        if (this.what === 'census') {
-          link.innerHTML += ` (${url.split('/census/')[1].split('?')[0]} US Census)`
-        }
-        li.appendChild(link)
-        menu.appendChild(li)
-      })
-      this.element.innerHTML = ''
-      this.element.appendChild(menu)
-    }
-
-    remove(name) {
-      this.searches.remove(name)
-      this.element.blur()
-    }
+      const label = document.createElement(url ? 'a' : 'span')
+      if (url) label.href = url.href
+      const year = this.kind === 'census' && url && SavedSearches.censusYear(url)
+      label.textContent = year ? `${search.name} (${year} US Census)` : search.name
+      row.append(remove, label)
+      menu.append(row)
+    })
+    this.element.replaceChildren(menu)
+  }
 }

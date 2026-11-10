@@ -2,6 +2,9 @@ import ReactDOM from "react-dom";
 import MiniForge from "./App";
 import { exitMapFullscreen } from './fullscreenControl';
 import React from "react";
+import { Provider } from 'react-redux'
+import * as reducers from './reducers'
+import { buildStore } from '../forge/store'
 
 let reactRoot = null;
 
@@ -22,7 +25,8 @@ export const initializeMiniForge = () => {
     }
 
     reactRoot = miniforge;
-    ReactDOM.render(<MiniForge />, miniforge)
+    const store = buildStore(reducers, JSON.parse(miniforge.dataset.initialState))
+    ReactDOM.render(<Provider store={store}><MiniForge /></Provider>, miniforge)
 };
 
 const cleanupMiniForge = () => {
@@ -34,3 +38,4 @@ const cleanupMiniForge = () => {
 };
 
 document.addEventListener('turbo:before-cache', cleanupMiniForge);
+document.addEventListener('turbo:before-render', cleanupMiniForge);
