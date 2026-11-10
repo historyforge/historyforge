@@ -45,7 +45,8 @@ export default class AdvancedSearch {
       for (const name of new Set(formData.keys())) {
         if (!name.startsWith('s[')) continue
         const values = formData.getAll(name)
-        const nonempty = values.filter(value => value !== '')
+        let nonempty = values.filter(value => value !== '')
+        if (nonempty.length > 1 && nonempty.every(value => value === nonempty[0])) nonempty = [nonempty[0]]
         if (nonempty.length === values.length) continue
         formData.delete(name)
         nonempty.forEach(value => formData.append(name, value))

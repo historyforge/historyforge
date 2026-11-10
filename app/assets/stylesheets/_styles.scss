@@ -690,6 +690,12 @@ abbr[title] {
 }
 
 [data-parallax] {
+  background-position: top center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  @media (hover: hover) and (pointer: fine) {
+    background-attachment: fixed;
+  }
   display: flex;
   justify-content: center;
   align-items: center;

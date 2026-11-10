@@ -1,5 +1,4 @@
 - collection = form.object.people.map { |p| ["#{p.name} (#{p.id}) - #{p.years}", p.id] }
 = form.input :person_ids, collection:, as: :check_boxes, label: ''
 p.lead To add a person to the list, type an name or Person ID:
-input.form-control.mb-3#person-autocomplete placeholder="Enter name here"
-#person-results.list-group style="display:none"
+input.form-control.mb-3#person-autocomplete aria-label="Search for a person" autocomplete="off" data-controller="autocomplete" data-autocomplete-url="/people/autocomplete" data-autocomplete-min="2" data-autocomplete-delay="500" data-autocomplete-kind="media-person" placeholder="Enter name here"

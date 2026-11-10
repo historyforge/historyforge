@@ -1,6 +1,8 @@
 import { Application } from 'stimulus'
 
 import AutoCompleteController from "./autocomplete_controller";
+import TermRecordsController from "./term_records_controller";
+import CmsSliderController from "./cms_slider_controller";
 import BlowupController from "./blowup_controller";
 import RecordGridController from "./record_grid_controller";
 import SearchScopeController from "./search_scope_controller";
@@ -16,6 +18,8 @@ import SavedSearchesController from "./saved_searches_controller";
 
 const definitions = [
     { identifier: 'autocomplete', controllerConstructor: AutoCompleteController },
+    { identifier: 'term-records', controllerConstructor: TermRecordsController },
+    { identifier: 'cms-slider', controllerConstructor: CmsSliderController },
     { identifier: 'blowup', controllerConstructor: BlowupController },
     { identifier: 'record-grid', controllerConstructor: RecordGridController },
     { identifier: 'search-scope', controllerConstructor: SearchScopeController },

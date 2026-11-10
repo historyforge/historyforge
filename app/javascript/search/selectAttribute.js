@@ -19,7 +19,8 @@ export default function selectAttribute(form, config) {
 
   const renderValue = () => {
     const name = `s[${selector.value}]`
-    const previous = valueBox.querySelector('input:not([type=hidden])')?.value
+    const previous = valueBox.querySelector('input:not([type=hidden]):not([type=checkbox]), select')?.value
+    const checked = new Set([...valueBox.querySelectorAll('input[type=checkbox]:checked')].map(input => input.value))
     valueBox.replaceChildren()
 
     if (/null$/.test(selector.value) || config.type === 'boolean') {
@@ -31,6 +32,7 @@ export default function selectAttribute(form, config) {
         wrapper.className = 'form-check d-block'
         const checkbox = input(name + '[]', 'checkbox', value)
         checkbox.className = 'form-check-input'
+        checkbox.checked = checked.has(checkbox.value)
         wrapper.append(checkbox, label)
         valueBox.append(wrapper)
       }
@@ -41,6 +43,7 @@ export default function selectAttribute(form, config) {
       field.className = 'form-control'
       if (config.type === 'dropdown') {
         config.choices.filter(choice => typeof choice === 'string').forEach(choice => field.add(new Option(choice)))
+        if (previous && [...field.options].some(option => option.value === previous)) field.value = previous
       }
       if (/y_term/.test(selector.value)) field.placeholder = 'spaces separate "multiple words"'
 

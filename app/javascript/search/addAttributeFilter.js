@@ -117,8 +117,8 @@ export default function addAttributeFilter(container, form, config, scope, value
     const filter = new AttributeFilter(config, scope, value).render()
     container.append(filter)
     filter.querySelector('button').addEventListener('click', () => {
-        const name = filter.querySelector('input').name
-        const names = [name, name.replace('[]', ''), name.replace('_in', '_eq')]
+        const name = `s[${scope}]`
+        const names = [name, name + '[]', name.replace('_in', '_eq')]
         for (const field of form.elements) {
             if (names.includes(field.name)) field.value = ''
         }

@@ -10,194 +10,152 @@ function parseCoordinates(latitude, longitude) {
 }
 
 export default class extends Controller {
-  disconnect() {
-    document.removeEventListener('turbo:before-cache', this.beforeCache)
-    this.removeMap()
+  connect() {
+    this.listeners = new AbortController()
+    this.selectFilters = new Map()
+    const options = { signal: this.listeners.signal }
+    this.element.addEventListener('click', event => this.click(event), options)
+    this.element.addEventListener('change', event => this.change(event.target), options)
+    this.element.addEventListener('autocomplete:selected', event => this.addAssociation(event), options)
+    document.addEventListener('turbo:before-cache', () => this.disconnect(), options)
+
+    this.paramKey = this.element.getAttribute('action')?.match(/\/(photographs|audios|videos|narratives)(?:\/|$)/)?.[1].slice(0, -1)
+    if (this.element.id === 'photo-wizard') {
+      const steps = [...this.element.querySelectorAll(':scope > .card')]
+      steps.forEach((step, index) => {
+        const title = document.createElement('h3')
+        title.className = 'card-title'
+        title.dataset.turboTemporary = ''
+        title.textContent = `Step ${index + 1} of ${steps.length}`
+        step.querySelector('.card-body').prepend(title)
+      })
+      window.scrollTo(0, 0)
+    }
+    this.addSelectFilters()
   }
 
-  removeMap() {
-    this.coordinateInputs?.off('change', this.updateMapCoordinates)
-    this.coordinateInputs = null
-    this.updateMapCoordinates = null
+  disconnect() {
+    this.listeners?.abort()
+    this.mapListeners?.abort()
     this.map?.remove()
     this.map = null
     this.mapInitialized = false
+    for (const [select, filter] of this.selectFilters) {
+      filter.remove()
+      for (const option of select.options) option.hidden = false
+    }
+    this.selectFilters.clear()
   }
 
-  connect() {
-    this.beforeCache = () => this.removeMap()
-    document.addEventListener('turbo:before-cache', this.beforeCache)
-    this.addStepNumbers()
+  click(event) {
+    const button = event.target.closest('button')
+    if (!button) return
 
-    this.paramKey = location.pathname.match(/photographs/) ? 'photograph' : location.pathname.match(/audios/) ? 'audio' : location.pathname.match(/videos/) ? 'video' : 'narrative';
-    window.scrollTo(0, 0)
-
-    $('button.btn-prev').on('click', (e) => {
-      this.prev(e.target)
-    })
-    $('button.btn-next').on('click', (e) => {
-      this.next(e.target)
-    })
-
-    $('#audio_remote_url, #video_remote_url, #photograph_remote_url').on('change', function(e) {
-      const value = e.target.value;
-      if (value.length) {
-        $('.step-1-next-button').removeAttr('disabled')
-      } else {
-        $('.step-1-next-button').attr('disabled', 'disabled')
+    if (button.matches('.btn-next, .btn-prev')) {
+      const card = button.closest('.card')
+      const next = button.matches('.btn-next') ? card.nextElementSibling : card.previousElementSibling
+      if (!next?.matches('.card')) return
+      card.classList.remove('active')
+      next.classList.add('active')
+      window.scrollTo(0, 0)
+      if (next.querySelector('#photograph-map') && !this.mapInitialized) {
+        this.initMap(next).catch(error => console.error('Could not initialize the photo map', error))
       }
-    })
+    } else if (button.matches('#dates-question [data-date-type]')) {
+      for (const choice of this.element.querySelectorAll('#dates-question [data-date-type]')) {
+        choice.classList.toggle('btn-primary', choice === button)
+        choice.classList.toggle('btn-light', choice !== button)
+      }
+      this.element.querySelector('#photograph_date_type').value = button.dataset.dateType
+      this.element.querySelector('#photograph-date-type').className = button.dataset.dateType
+    } else if (button.matches('#person-question .btn-primary, #building-question .btn-primary')) {
+      const question = button.closest('#person-question, #building-question')
+      question.hidden = true
+      const fields = this.element.querySelector('#' + question.id.replace('question', 'fields'))
+      fields.style.display = ''
+      fields.querySelector('[data-controller=autocomplete]')?.focus()
+    }
+    this.addSelectFilters()
+  }
 
-    $('#photograph_file').on('change', function () {
-      if (this.files.length) {
-        const reader = new FileReader()
-        reader.onload = function (e) {
-          const file = e.target.result
-          $('#selected-file, .thumb').html('<img class="img img-thumbnail" alt="" />')
-          $('#selected-file img, .thumb img').attr('src', file)
-          $('.step-1-next-button').removeAttr('disabled')
+  change(input) {
+    const nextButtons = this.element.querySelectorAll('.step-1-next-button')
+    if (input.matches('#audio_remote_url, #video_remote_url, #photograph_remote_url')) {
+      nextButtons.forEach(button => { button.disabled = !input.value.length })
+    } else if (input.matches('#photograph_file') && input.files.length) {
+      const reader = new FileReader()
+      reader.onload = () => {
+        if (!input.isConnected || this.listeners.signal.aborted) return
+        for (const preview of this.element.querySelectorAll('#selected-file, .thumb')) {
+          const image = document.createElement('img')
+          image.src = reader.result
+          image.alt = ''
+          image.className = 'img img-thumbnail'
+          preview.replaceChildren(image)
         }
-        reader.readAsDataURL(this.files[0])
+        nextButtons.forEach(button => { button.disabled = false })
       }
-    })
-
-    this.initBuildings()
-    this.initPeople()
-    this.initDates()
+      reader.readAsDataURL(input.files[0])
+    }
   }
 
-  initDates() {
-    $('#dates-question button').on('click', (e) => {
-      const type = e.target.dataset.dateType
-      $('#dates-question button.btn-primary').removeClass('btn-primary').addClass('btn-light')
-      $(e.target).addClass('btn-primary').removeClass('btn-light')
-      $('#photograph_date_type').val(type)
-      document.getElementById('photograph-date-type').className = type
-      $('select:visible').chosen({
-        disable_search_threshold: 15
+  addSelectFilters() {
+    for (const select of this.element.querySelectorAll('select')) {
+      if (!select.offsetParent || select.options.length < 15 || this.selectFilters.has(select)) continue
+      const search = document.createElement('input')
+      search.type = 'search'
+      search.className = 'form-control mb-1'
+      search.placeholder = 'Filter choices'
+      search.setAttribute('aria-label', 'Filter choices for ' + (select.labels[0]?.textContent.trim() || select.name))
+      search.addEventListener('keydown', event => {
+        if (event.key === 'Enter') {
+          event.preventDefault()
+          select.focus()
+        }
       })
-    })
-  }
-
-  initPeople() {
-    $('#person-question .btn-primary').on('click', function () {
-      $('#person-question').fadeOut()
-      $('#person-fields').fadeIn()
-    })
-
-    let autocompleteTimeout;
-
-    $('#person-autocomplete').on('keyup', (e) => {
-      if (e.keyCode === 13) {
-        e.stopPropagation()
-      }
-      const input = e.target
-      const value = input.value
-      if (value.length > 1) {
-        if (autocompleteTimeout) {
-          window.clearTimeout(autocompleteTimeout);
+      search.addEventListener('input', () => {
+        const term = search.value.toLowerCase()
+        for (const option of select.options) {
+          option.hidden = !option.selected && !option.text.toLowerCase().includes(term)
         }
-        autocompleteTimeout = window.setTimeout(() => {
-          $.getJSON('/people/autocomplete', { term: value }, (json) => {
-            const people = []
-            json.forEach((person) => {
-              people.push(`<div class="list-group-item list-group-item-action" data-person=${person.id}>${person.name} (${person.id}) - ${person.years}</div>`)
-            })
-            $('#person-results').html(people).show()
-            $('#person-results .list-group-item').on('click', (e) => {
-              const id = e.target.dataset.person
-              const name = e.target.innerHTML
-              this.addPerson(id, name)
-              input.value = null
-              $('#person-results').html('')
-            })
-          })
-        }, 500)
-      }
-    })
-  }
-
-  initBuildings() {
-    $('#building-question .btn-primary').on('click', function () {
-      $('#building-question').fadeOut()
-      $('#building-fields').fadeIn()
-    })
-
-    $('#building-autocomplete').on('keyup', (e) => {
-      if (e.keyCode === 13) {
-        e.stopPropagation()
-      }
-      const input = e.target
-      const value = input.value
-      if (value.length > 1) {
-        $.getJSON('/buildings/autocomplete', { term: value }, (json) => {
-          const buildings = []
-          json.forEach((building) => {
-            buildings.push(`<div class="list-group-item list-group-item-action" data-building=${building.id} data-lat="${building.lat}" data-lon="${building.lon}">${building.address}</div>`)
-          })
-          $('#building-results').html(buildings).show()
-          $('#building-results .list-group-item').on('click', (e) => {
-            const id = e.target.dataset.building
-            const lat = e.target.dataset.lat
-            const lon = e.target.dataset.lon
-            const address = e.target.innerHTML
-            this.addBuilding(id, address, lat, lon)
-            input.value = null
-            $('#building-results').html('')
-          })
-        })
-      }
-    })
-  }
-
-  addBuilding(id, address, lat, lon) {
-    const formId = `photograph_building_ids_${id}`
-    $(`#${formId}`).closest('.form-check').remove()
-    const html = `<div class="form-check"><input type="checkbox" class="form-check-input" name="${this.paramKey}[building_ids][]" id="${formId}" value="${id}" checked /><label class="form-check-label" for="${formId}">${address}</label></div>`
-    $(`.${this.paramKey}_building_ids`).append(html)
-    if ($(`.${this.paramKey}_building_ids input:checked`).length === 1) {
-      $(`#photograph_latitude`).val(lat)
-      $(`#photograph_longitude`).val(lon).trigger('change')
+      })
+      select.before(search)
+      this.selectFilters.set(select, search)
     }
   }
 
-  addPerson(id, name) {
-    const formId = `${this.paramKey}_person_ids_${id}`
-    $(`#person-fields input[value=${id}]`).closest('.form-check').remove()
-    const html = `<div class="form-check"><input type="checkbox" class="form-check-input" name="${this.paramKey}[person_ids][]" id="${formId}" value="${id}" checked /><label class="form-check-label" for="${formId}">${name}</label></div>`
-    $(`.${this.paramKey}_person_ids`).append(html)
-  }
+  addAssociation({ target, detail: item }) {
+    const type = target.dataset.autocompleteKind === 'media-person' ? 'person' : 'building'
+    const wrapper = this.element.querySelector(`.${this.paramKey}_${type}_ids`)
+    if (!wrapper) return
+    const id = `${this.paramKey}_${type}_ids_${item.id}`
+    document.getElementById(id)?.closest('.form-check')?.remove()
 
-  addStepNumbers() {
-    const steps = $('#photo-wizard .card')
-    const numSteps = steps.length
-    let i = 0
-    steps.each(function () {
-      $(this).find('.card-body').prepend(`<h3 class="card-title">Step ${++i} of ${numSteps}</h3>`)
-    })
-  }
+    const option = document.createElement('div')
+    option.className = 'form-check'
+    const input = document.createElement('input')
+    Object.assign(input, { type: 'checkbox', className: 'form-check-input', id,
+      name: `${this.paramKey}[${type}_ids][]`, value: item.id, checked: true, defaultChecked: true })
+    const label = document.createElement('label')
+    label.className = 'form-check-label'
+    label.htmlFor = id
+    label.textContent = type === 'person' ? `${item.name} (${item.id}) - ${item.years}` : item.address
+    option.append(input, label)
+    wrapper.append(option)
+    target.value = ''
 
-  initCard(card) {
-    window.scrollTo(0, 0)
-    if (card.find('#photograph-map').length && !this.mapInitialized) {
-      this.initMap(card[0]).catch(error => console.error('Could not initialize the photo map', error))
+    const lat = this.element.querySelector('#photograph_latitude')
+    const lon = this.element.querySelector('#photograph_longitude')
+    if (type === 'building' && lat && lon && wrapper.querySelectorAll('input:checked').length === 1) {
+      lat.value = item.lat ?? ''
+      lon.value = item.lon ?? ''
+      lon.dispatchEvent(new Event('change', { bubbles: true }))
     }
-    card.find('select:visible').chosen({
-      disable_search_threshold: 15
-    })
-  }
-
-  prev(el) {
-    this.initCard($(el).closest('.card').deactivateCard().prev().activateCard())
-  }
-
-  next(el) {
-    this.initCard($(el).closest('.card').deactivateCard().next().activateCard())
   }
 
   async initMap(card) {
     const { L, createStreetLayer, getMainIcon } = await loadMaps()
-    if (!card.isConnected || !card.classList.contains('active') || this.mapInitialized) return
+    if (this.listeners.signal.aborted || !card.isConnected || !card.classList.contains('active') || this.mapInitialized) return
 
     const startLat = document.getElementById('photograph_latitude').value
     const startLon = document.getElementById('photograph_longitude').value
@@ -208,6 +166,7 @@ export default class extends Controller {
       center: loc,
       zoom: 13,
     })
+    this.mapListeners = new AbortController()
     this.map = map
     this.mapInitialized = true
 
@@ -232,21 +191,8 @@ export default class extends Controller {
       marker.setLatLng(latlng)
       map.setView(latlng)
     }
-    this.coordinateInputs = $('#photograph_latitude, #photograph_longitude')
-    this.coordinateInputs.on('change', this.updateMapCoordinates)
+    this.element.querySelectorAll('#photograph_latitude, #photograph_longitude').forEach(input => {
+      input.addEventListener('change', this.updateMapCoordinates, { signal: this.mapListeners.signal })
+    })
   }
-}
-
-$.fn.activateCard = function () {
-  return this.each(function () {
-    $(this).addClass('active')
-    return this
-  })
-}
-
-$.fn.deactivateCard = function () {
-  return this.each(function () {
-    $(this).removeClass('active')
-    return this
-  })
 }

@@ -1,95 +1,74 @@
-$.fn.extend({
-  disableWrapper: function () {
-    return this.each(function () {
-      return $(this).addClass('disabled').find('input').attr('disabled', true)
-    })
-  },
-  enableWrapper: function () {
-    return this.each(function () {
-      return $(this).removeClass('disabled').find('input').removeAttr('disabled', true)
-    })
-  },
-  toggleDependents: function () {
-    return this.each(function () {
-      const value = $(this).is('[type=checkbox]') ? $(this).is(':checked') : $(this).val()
-      const name = this.getAttribute('name')
-      const attribute_name = name.match(/census_record\[(\w+)]/)[1]
-      const dependent = $(this).closest('[data-dependents]').attr('data-dependents')
-      if (value.toString() === dependent.toString()) { $(`.form-group[data-depends-on=${attribute_name}]`).enableWrapper() } else { $(`.form-group[data-depends-on=${attribute_name}]`).disableWrapper() }
-    })
-  }
-})
+const censusForm = '#new_census_record, #edit_census_record'
 
-const initializeCensusForm = () => {
-  const $forms = $('#new_census_record, #edit_census_record')
-  if ($forms.length === 0) { return; }
-
-  $forms.on('keypress', function (e) {
-    const code = e.keyCode || e.which
-    if (code === 13) {
-      e.preventDefault()
-      return false
-    }
-  })
-
-  $forms.find('input[data-type=other-radio-button]').each(function () {
-    if (!$(this).val().length) { $(this).attr('disabled', true) }
-  })
-
-  $forms.find('input[type=radio][value!=other]').on('click', function () {
-    const $input = $(this).closest('.form-group').find('input[data-type=other-radio-button]')
-    $input.val(null).attr('disabled', true)
-  })
-
-  $forms.find('input[type=radio][value=other]').on('click', function () {
-    const $input = $(this).next().find('input')
-    if ($(this).is(':checked')) { $input.removeAttr('disabled').focus() } else { $input.attr('disabled', true) }
-  })
-
-  $('input[data-type="other-radio-button"]').on('change', function () {
-    $(this).closest('.form-check').find('input[type=radio]').prop('checked', true).val($(this).val())
-  })
-
-  $('[data-dependents] input').on('change click', function () {
-    $(this).toggleDependents()
-  })
-
-  $('[data-dependents]').find('input[type=radio]:checked, input[type=checkbox], input[type=text]').toggleDependents()
-
-  $('.census1930_record_census_record_war_fought').find('input[type=radio]').on('click', function () {
-    const war_fought = $('input[name="census_record[war_fought]"]:checked').val()
-    $('#census_record_veteran').attr('checked', war_fought.length && war_fought !== 'on')
+function toggleDependents(input) {
+  const attribute = input.name.match(/census_record\[(\w+)\]/)?.[1]
+  if (!attribute) return
+  const value = input.type === 'checkbox' ? input.checked : input.value
+  const active = String(value) === input.closest('[data-dependents]').dataset.dependents
+  input.form.querySelectorAll(`[data-depends-on="${attribute}"]`).forEach(wrapper => {
+    wrapper.classList.toggle('disabled', !active)
+    wrapper.querySelectorAll('input').forEach(field => { field.disabled = !active })
   })
 }
 
-// Handle both initial page load and Turbo navigation
-$(initializeCensusForm)
-document.addEventListener('turbo:load', initializeCensusForm)
+document.addEventListener('turbo:load', () => {
+  document.querySelectorAll(censusForm).forEach(form => {
+    form.querySelectorAll('[data-type=other-radio-button]').forEach(input => { input.disabled = !input.value.length })
+    form.querySelectorAll('[data-dependents] :is(input[type=radio]:checked, input[type=checkbox], input[type=text])')
+      .forEach(toggleDependents)
+  })
+})
 
-$(document).on('change', '#census_record_page_side', function () {
-  const value = $(this).val()
-  const $line = $('#census_record_line_number')
-  if (value === 'A') {
-    $line.attr('min', 1)
-    $line.attr('max', 50)
-  } else {
-    $line.attr('min', 51)
-    $line.attr('max', 100)
+document.addEventListener('keypress', event => {
+  if (event.key === 'Enter' && event.target.closest(censusForm)) event.preventDefault()
+})
+
+document.addEventListener('click', ({ target }) => {
+  if (!target.closest(censusForm)) return
+  if (target.matches('[data-dependents] input')) toggleDependents(target)
+  if (!target.matches('input[type=radio]')) return
+  const other = target.closest('.form-group')?.querySelector('[data-type=other-radio-button]')
+  if (other) {
+    const selected = target.closest('.form-check')?.contains(other)
+    other.disabled = !selected
+    if (selected) other.focus()
+    else other.value = ''
+  }
+  if (target.name === 'census_record[war_fought]') {
+    const veteran = document.getElementById('census_record_veteran')
+    if (veteran) veteran.checked = !!target.value && target.value !== 'on'
   }
 })
 
-$(document).on('change', '#census_record_sex', function () {
-  const value = $(this).val()
-  if (value === 'M') {
-    $('#census_record_num_children_born').val(null).prop('disabled', true)
-    $('#census_record_num_children_alive').val(null).prop('disabled', true)
-  } else if (value === 'F') {
-    $('#census_record_num_children_born').prop('disabled', false)
-    $('#census_record_num_children_alive').prop('disabled', false)
+document.addEventListener('change', ({ target }) => {
+  if (target.matches('[data-dependents] input')) toggleDependents(target)
+  if (target.matches('[data-type=other-radio-button]')) {
+    const radio = target.closest('.form-check')?.querySelector('input[type=radio]')
+    if (radio) {
+      radio.checked = true
+      radio.value = target.value
+    }
   }
-})
-
-$(document).on('change', '#census_record_marital_status', function () {
-  const value = $(this).val()
-  if (value === 'S' || value === 'D') { $('#census_record_years_married').val(null).prop('disabled', true) } else { $('#census_record_years_married').val(null).prop('disabled', false) }
+  if (target.id === 'census_record_page_side') {
+    const line = document.getElementById('census_record_line_number')
+    if (line) {
+      line.min = target.value === 'A' ? 1 : 51
+      line.max = target.value === 'A' ? 50 : 100
+    }
+  }
+  if (target.id === 'census_record_sex' && ['M', 'F'].includes(target.value)) {
+    for (const field of ['born', 'alive']) {
+      const input = document.getElementById('census_record_num_children_' + field)
+      if (!input) continue
+      input.disabled = target.value === 'M'
+      if (input.disabled) input.value = ''
+    }
+  }
+  if (target.id === 'census_record_marital_status') {
+    const years = document.getElementById('census_record_years_married')
+    if (years) {
+      years.disabled = ['S', 'D'].includes(target.value)
+      if (years.disabled) years.value = ''
+    }
+  }
 })

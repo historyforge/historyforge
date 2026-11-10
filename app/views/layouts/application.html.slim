@@ -29,7 +29,6 @@ html
     = stylesheet_link_tag    'application', media: 'all'
     - if can?(:update, Cms::Page)
       = stylesheet_link_tag 'cms'
-      = stylesheet_link_tag "https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.min.css"
       link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.52.2/theme/darcula.min.css"
     = csrf_meta_tags
 
@@ -42,7 +41,6 @@ html
       | };
       | window.env = "#{Rails.env.to_s}";
 
-    script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"
 
     meta name="maps-url" content=asset_path('maps.js')
     meta name="maplibre-worker-url" content=asset_path('maplibre-worker.js')

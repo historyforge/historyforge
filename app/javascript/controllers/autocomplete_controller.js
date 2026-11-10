@@ -46,6 +46,8 @@ export default class extends Controller {
   close() {
     clearTimeout(this.timer)
     this.request?.abort()
+    this.request = null
+    this.timer = null
     this.list.hidden = true
     this.list.replaceChildren()
     this.element.setAttribute('aria-expanded', 'false')
@@ -62,6 +64,7 @@ export default class extends Controller {
   }
 
   async load(term) {
+    this.timer = null
     const request = new AbortController()
     this.request = request
     const url = new URL(this.element.dataset.autocompleteUrl, document.baseURI)
@@ -74,6 +77,8 @@ export default class extends Controller {
       this.render(items)
     } catch (error) {
       if (!request.signal.aborted) console.error('Autocomplete request failed', error)
+    } finally {
+      if (this.request === request) this.request = null
     }
   }
 
@@ -86,7 +91,10 @@ export default class extends Controller {
       option.dataset.index = index
       option.setAttribute('role', 'option')
       option.setAttribute('aria-selected', 'false')
-      option.textContent = typeof item === 'string' ? item : item.name
+      option.textContent = typeof item === 'string' ? item : item.address || item.name
+      if (this.element.dataset.autocompleteKind === 'media-person') {
+        option.textContent += ` (${item.id}) - ${item.years}`
+      }
       if (this.element.dataset.autocompleteKind === 'people') {
         const year = document.createElement('span')
         year.className = 'float-end ms-2'
@@ -111,7 +119,7 @@ export default class extends Controller {
 
   keydown(event) {
     if (event.isComposing) return
-    if (event.key === 'Escape' && !this.list.hidden) {
+    if (event.key === 'Escape' && (!this.list.hidden || this.request || this.timer)) {
       event.preventDefault()
       this.close()
     }

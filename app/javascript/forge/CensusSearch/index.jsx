@@ -1,3 +1,4 @@
+import axios from 'axios'
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import YearButtons from './YearButtons'
@@ -58,24 +59,8 @@ const CensusSearch = (props) => {
 }
 
 function buildCensusUrl(year, params) {
-  let url = `/census/${year}`
-  if (params) {
-    const { f, s } = params
-    url += `?${$.param({ f, s })}`
-  }
-  return url
+  return axios.getUri({ url: `/census/${year}`, params: params && { f: params.f, s: params.s } })
 }
-
-// This is here until we build in "permission to see" to allow us
-// to show the Demographics button conditionally.
-// function buildDemographicsUrl(year, params) {
-//     let url = `/census/${year}/demographics`
-//     if (params) {
-//         const {f, s} = params
-//         url += `?${$.param({f, s, facet: 'race'})}`
-//     }
-//     return url;
-// }
 
 const mapStateToProps = state => {
   return { ...state.search, message: state.buildings.message }

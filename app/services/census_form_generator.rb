@@ -14,7 +14,7 @@ class CensusFormGenerator
 
   def render
     config.fields.each do |field|
-      options = config.options_for(field)
+      options = config.options_for(field).deep_dup
       options[:as] == :divider ? start_card(options) : add_field(field, options)
     end
     to_html
