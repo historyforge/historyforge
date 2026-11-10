@@ -2,6 +2,7 @@ import { Application } from 'stimulus'
 
 import AutoCompleteController from "./autocomplete_controller";
 import BlowupController from "./blowup_controller";
+import RecordGridController from "./record_grid_controller";
 import SearchScopeController from "./search_scope_controller";
 import TooltipController from "./tooltip_controller";
 import PasskeyPromptController from "./passkey_prompt_controller";
@@ -16,6 +17,7 @@ import SavedSearchesController from "./saved_searches_controller";
 const definitions = [
     { identifier: 'autocomplete', controllerConstructor: AutoCompleteController },
     { identifier: 'blowup', controllerConstructor: BlowupController },
+    { identifier: 'record-grid', controllerConstructor: RecordGridController },
     { identifier: 'search-scope', controllerConstructor: SearchScopeController },
     { identifier: 'tooltip', controllerConstructor: TooltipController },
     { identifier: 'passkey-prompt', controllerConstructor: PasskeyPromptController },

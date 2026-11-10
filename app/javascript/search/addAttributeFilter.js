@@ -31,30 +31,11 @@ class AttributeFilter {
     }
 
     renderLabel() {
-        const closeButton = document.createElement('BUTTON');
-        closeButton.setAttribute('type', 'button');
-        closeButton.classList.add('close');
-        closeButton.classList.add('remove-filter');
-        closeButton.innerHTML = "&times;";
-
-        const desc = document.createElement('SPAN');
-        desc.appendChild(closeButton);
-        desc.innerHTML += this.sentence.join(' ');
-        if (this.config.append) {
-            desc.innerHTML += this.config.append;
-        }
-        this.html.appendChild(desc);
-        this.html.addEventListener('click', function() {
-            const $filter = $(this).closest('.attribute-filter')
-            const name = $filter.find('input:first').attr('name')
-
-            $(`[name="${name}"]`).val(null)
-            $(`[name="${name.replace('[]', '')}"]`).val(null)
-            $(`[name="${name.replace('_in', '_eq')}"]`).val(null)
-
-            $filter.remove();
-            $('#new_s').trigger('submit');
-        });
+        const closeButton = document.createElement('button')
+        closeButton.type = 'button'
+        closeButton.className = 'btn-close remove-filter'
+        closeButton.setAttribute('aria-label', `Remove ${this.config.label} filter`)
+        this.html.append(closeButton, this.sentence.join(' '), this.config.append || '')
     }
 
     renderInput() {
@@ -81,7 +62,7 @@ class AttributeFilter {
         this.html.appendChild(this.input);
 
         const selection = this.config.choices.find((choice) => this.scopeValue === choice.toString())
-        this.sentence.push(selection.toString())
+        this.sentence.push(selection ?? this.scopeValue)
     }
 
     renderNumber() {
@@ -132,10 +113,16 @@ class AttributeFilter {
     }
 }
 
-const addAttributeFilter = function(field_config, scope, scopeValue) {
-    const filter = new AttributeFilter(field_config, scope, scopeValue);
-    filter.render();
-    $('#attribute-filters').append(filter.html);
-};
-
-export default addAttributeFilter;
+export default function addAttributeFilter(container, form, config, scope, value) {
+    const filter = new AttributeFilter(config, scope, value).render()
+    container.append(filter)
+    filter.querySelector('button').addEventListener('click', () => {
+        const name = filter.querySelector('input').name
+        const names = [name, name.replace('[]', ''), name.replace('_in', '_eq')]
+        for (const field of form.elements) {
+            if (names.includes(field.name)) field.value = ''
+        }
+        filter.remove()
+        form.requestSubmit()
+    })
+}

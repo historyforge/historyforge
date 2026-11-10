@@ -6,8 +6,6 @@ import '../../vendor/assets/javascripts/blowup'
 
 import './js/add_child'
 import './js/buildings'
-import './js/cell_renderers'
-import './search/AdvancedSearch'
 import './js/census_form'
 import './js/terms'
 import './passkeys'
