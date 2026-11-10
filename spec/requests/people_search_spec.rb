@@ -22,20 +22,25 @@ RSpec.describe 'People search', type: :request do
   end
 
   it 'sorts by surname before given name and follows that order in record navigation' do
-    longer = create(:person, first_name: 'Abram', last_name: 'Colegrove')
-    later = create(:person, first_name: 'Haines', last_name: 'Cole')
+    longer = create(:person, first_name: 'Abram', last_name: 'Brownell')
+    later = create(:person, first_name: 'Haines', last_name: 'Brown')
     earlier = create(:person, first_name: 'Jenny', last_name: 'Zimmer')
-    alternate = create(:person_name, person: earlier, first_name: 'Abby', last_name: 'Cole')
+    alternate = create(:person_name, person: earlier, first_name: 'Abby', last_name: 'Brown')
 
     # Reproduce the order of the old combined sort keys regardless of the test database collation.
     longer.names.first.update_columns(sortable_name: '1')
     later.names.first.update_columns(sortable_name: '2')
     alternate.update_columns(sortable_name: '3')
 
-    filters = { s: { names_last_name_start: 'cole' } }
+    filters = { s: { names_last_name_start: 'brown' } }
     get people_path(format: :json), params: filters.merge(from: 0, to: 100)
     expect(response).to have_http_status(:ok)
     expect(response.parsed_body.map { |row| row.dig('name', 'id') }).to eq([earlier.id, later.id, longer.id])
+    expect(response.parsed_body.map { |row| row.dig('name', 'name') }).to eq([
+      'Brown, Abby (see Zimmer, Jenny)',
+      'Brown, Haines',
+      'Brownell, Abram'
+    ])
 
     descending = filters.merge(sort: { '0' => { colId: 'name', sort: 'desc' } })
     get people_path(format: :json), params: descending.merge(from: 0, to: 100)
