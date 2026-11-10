@@ -128,7 +128,9 @@ const initializeMaps = () => {
 const cleanupPage = () => {
   const $ = window.jQuery || window.$;
   // Destroy Bootstrap tooltips to prevent memory leaks
-  $('[rel=tooltip]').tooltip('dispose');
+  if (typeof $?.fn?.tooltip === 'function') {
+    $('[rel=tooltip]').tooltip('dispose');
+  }
   // Destroy parallax instances to prevent memory leaks
   if ($ && $.fn.parallax) {
     $('[data-parallax]').each(function () {
@@ -278,7 +280,10 @@ window.showSubmitButton = function (id, token) {
 }
 
 const pageLoad = function () {
-  $('[rel=tooltip]').tooltip()
+  const $ = window.jQuery || window.$
+  if (typeof $?.fn?.tooltip === 'function') {
+    $('[rel=tooltip]').tooltip()
+  }
   initializeChangeHistoryTruncation()
 }
 
