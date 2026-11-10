@@ -17,7 +17,7 @@
         tr.draggable
           td= record.name
           td
-            span href="#" rel="tooltip" data-placement="bottom" title=record.roles.map(&:name).to_sentence
+            span tabindex="0" data-controller="tooltip" data-action="turbo:before-cache@document->tooltip#disconnect" data-bs-placement="bottom" title=record.roles.map(&:name).to_sentence
               = pluralize record.roles.length, 'role'
           td
             = number_with_delimiter record.users.count

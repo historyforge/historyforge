@@ -1,7 +1,7 @@
 - set_page_title 'People'
 - if can?(:create, Person) || can?(:review, Person)
   - content_for :filter_buttons do
-    .btn-group.btn-group-toggle data-toggle="buttons"
+    .btn-group.btn-group-toggle data-controller="search-scope" data-action="change->search-scope#submit"
       = checkbox_button 'All', 'on', @search.scope.blank?
       - if can?(:create, Person)
         = checkbox_button 'Uncensused', :uncensused, @search.uncensused?

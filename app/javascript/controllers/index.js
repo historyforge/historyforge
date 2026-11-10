@@ -3,6 +3,9 @@ import { Application } from 'stimulus'
 import AutoCompleteController from "./autocomplete_controller";
 import BlowupController from "./blowup_controller";
 import CensusAutoCompleteController from "./census_autocomplete_controller";
+import SearchScopeController from "./search_scope_controller";
+import TooltipController from "./tooltip_controller";
+import PasskeyPromptController from "./passkey_prompt_controller";
 import HintPopoverController from "./hint_popover_controller";
 import LoadSavedSearchController from "./load_saved_search_controller";
 import CreatorPickerController from "./creator_picker_controller";
@@ -15,6 +18,9 @@ const definitions = [
     { identifier: 'auto-complete', controllerConstructor: AutoCompleteController },
     { identifier: 'blowup', controllerConstructor: BlowupController },
     { identifier: 'census-autocomplete', controllerConstructor: CensusAutoCompleteController },
+    { identifier: 'search-scope', controllerConstructor: SearchScopeController },
+    { identifier: 'tooltip', controllerConstructor: TooltipController },
+    { identifier: 'passkey-prompt', controllerConstructor: PasskeyPromptController },
     { identifier: 'hint-popover', controllerConstructor: HintPopoverController },
     { identifier: 'load-saved-search', controllerConstructor: LoadSavedSearchController },
     { identifier: 'creator-picker', controllerConstructor: CreatorPickerController },

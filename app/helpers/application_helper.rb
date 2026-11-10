@@ -106,7 +106,6 @@ module ApplicationHelper
 
   def checkbox_button(label, attr, checked)
     render 'shared/checkbox_button',
-           active_class: checked ? 'active' : '',
            attr: attr,
            label_text: label,
            checked: checked

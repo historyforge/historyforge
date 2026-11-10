@@ -5,7 +5,7 @@ header data-turbo-permanent="true" id="main-header"
         = image_tag 'logo-hf.png'
         = image_tag 'logo-text.png'
 
-      button.navbar-toggler type="button" data-toggle="collapse" data-target="#navbar-nav"
+      button.navbar-toggler type="button" data-bs-toggle="collapse" data-bs-target="#navbar-nav" aria-controls="navbar-nav" aria-expanded="false" aria-label="Toggle navigation"
         span.navbar-toggler-icon
 
       .collapse.navbar-collapse#navbar-nav
@@ -14,7 +14,7 @@ header data-turbo-permanent="true" id="main-header"
             - if current_user.has_role?("administrator")
               - flags_count = Flag.unresolved.count
               li.dropdown.nav-item id="admin-menu-item"
-                a.nav-link.dropdown-toggle data-toggle='dropdown' href="#"
+                a.nav-link.dropdown-toggle data-bs-toggle='dropdown' href="#"
                   span.badge.badge-danger id="admin-badge-top" style="#{flags_count > 0 ? '' : 'display: none;'}"
                     = flags_count
                   = ' ' if flags_count > 0
@@ -50,7 +50,7 @@ header data-turbo-permanent="true" id="main-header"
           - localities = Locality.all
           - if localities.length > 1
             li.nav-item.dropdown
-              a.dropdown-toggle.nav-link data-toggle="dropdown" href="#"
+              a.dropdown-toggle.nav-link data-bs-toggle="dropdown" href="#"
                 - if Current.locality_id
                   = localities.detect { |item| item.id == Current.locality_id }.short_name
                 - else
@@ -64,7 +64,7 @@ header data-turbo-permanent="true" id="main-header"
 
           li.nav-item= link_to 'The Forge', forge_path, class: 'nav-link'
           li.nav-item.dropdown
-            a.nav-link.dropdown-toggle data-toggle='dropdown' href="#"
+            a.nav-link.dropdown-toggle data-bs-toggle='dropdown' href="#"
               | Data
             .dropdown-menu
               = link_to 'Buildings', buildings_path, class: 'dropdown-item'
@@ -78,21 +78,21 @@ header data-turbo-permanent="true" id="main-header"
 
           - if my_stuff_available?
             li.nav-item.dropdown id="my-menu-item"
-              a.nav-link.dropdown-toggle data-toggle="dropdown" href="#" My
+              a.nav-link.dropdown-toggle data-bs-toggle="dropdown" href="#" My
               .dropdown-menu
                 = link_to 'My stuff', my_stuff_users_path, class: 'dropdown-item'
                 .dropdown-divider
                 = render 'users/my_search_links', link_class: 'dropdown-item'
 
           li.nav-item.dropdown
-            a.dropdown-toggle.nav-link data-toggle="dropdown" href="#" More
+            a.dropdown-toggle.nav-link data-bs-toggle="dropdown" href="#" More
             .dropdown-menu
               = link_to 'About', 'https://historyforge.net', target: '_blank', class: 'dropdown-item'
               = link_to 'Contact', contact_path, class: 'dropdown-item'
               = link_to 'Volunteer', "#{root_path}volunteer", class: 'dropdown-item'
           - if user_signed_in?
-            li.nav-item.dropleft id="user-menu-item"
-              a.nav-link.dropdown-toggle data-toggle='dropdown' data-placement="left" href="#"
+            li.nav-item.dropstart id="user-menu-item"
+              a.nav-link.dropdown-toggle data-bs-toggle='dropdown' href="#"
                 i.fa.fa-user
               .dropdown-menu
                 .dropdown-item-text id="user-name"= current_user.name

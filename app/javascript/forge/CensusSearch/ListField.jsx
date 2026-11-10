@@ -1,5 +1,4 @@
 import React from 'react'
-import { Col, FormGroup, Input, Label, Row } from 'reactstrap'
 import ScopeSelector from './ScopeSelector'
 
 const choose = function (props, value) {
@@ -19,25 +18,25 @@ const ListField = (props) => {
   const criteria = props.criteria || [] // to avoid changing uncontrolled to controlled component
 
   return (
-        <Row>
-            <Col sm={6}>
+        <div className="row">
+            <div className="col-sm-6">
                 <ScopeSelector {...props} />
-            </Col>
-            <Col sm={6}>
+            </div>
+            <div className="col-sm-6">
                 {choices.map(choice => (
-                    <FormGroup key={choice[1]} check>
-                        <Label check>
-                            <Input type="checkbox"
+                    <div className="form-check" key={choice[1]}>
+                        <label className="form-check-label">
+                            <input className="form-check-input" type="checkbox"
                                    name={`${field}-${choice[1]}`}
                                    checked={criteria.indexOf(choice[1]) > -1}
                                    onChange={() => choose(props, choice[1])}
                             />
                             {choice[0]}
-                        </Label>
-                    </FormGroup>
+                        </label>
+                    </div>
                 ))}
-            </Col>
-        </Row>
+            </div>
+        </div>
   )
 }
 

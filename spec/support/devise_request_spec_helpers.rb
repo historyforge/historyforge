@@ -19,12 +19,6 @@ module DeviseRequestSpecHelpers
   def dismiss_passkey_prompt
     return unless page.has_css?('#passkeyPromptModal.show', wait: 2)
 
-    # Bootstrap ignores hide() while its entrance animation is in progress.
-    page.document.synchronize do
-      if page.evaluate_script("jQuery('#passkeyPromptModal').data('bs.modal')._isTransitioning")
-        raise Capybara::ElementNotFound, 'Passkey prompt is still opening'
-      end
-    end
     click_button 'Not now'
     expect(page).to have_no_css('#passkeyPromptModal.show')
   end

@@ -1,6 +1,6 @@
+import ForgeModal from '../ForgeModal'
 import React, { useState, useCallback, useEffect, useMemo} from 'react'
 import {useDispatch} from 'react-redux';
-import { Modal, ModalHeader, ModalBody, Row, Col } from 'reactstrap'
 import {Residents} from './Residents'
 import {Details} from './Details'
 
@@ -30,14 +30,9 @@ export const BuildingModal = ({ building, years }) => {
   }, [buildingId]);
 
   return (
-    <Modal size={hasResidents ? 'xl' : 'md'} isOpen={visible}>
-      <ModalHeader toggle={close}>
-        Building Details
-      </ModalHeader>
-      <ModalBody>
-        {building ? <Building building={building} residents={residents} hasResidents={hasResidents} years={years} /> : null}
-      </ModalBody>
-    </Modal>
+    <ForgeModal open={visible} onClose={close} title="Building Details" size={hasResidents ? 'xl' : undefined}>
+      {building ? <Building building={building} residents={residents} hasResidents={hasResidents} years={years} /> : null}
+    </ForgeModal>
   )
 }
 
@@ -45,14 +40,14 @@ const Building = ({ building, years, residents, hasResidents }) => {
   if (hasResidents) {
     return (
       <div id="building-details">
-        <Row>
-          <Col sm={12} lg={5}>
+        <div className="row">
+          <div className="col-sm-12 col-lg-5">
             <Details {...building} />
-          </Col>
-          <Col sm={12} lg={7}>
+          </div>
+          <div className="col-sm-12 col-lg-7">
             <Residents buildingId={building.id} residents={residents} years={years} />
-          </Col>
-        </Row>
+          </div>
+        </div>
       </div>
     )
   }

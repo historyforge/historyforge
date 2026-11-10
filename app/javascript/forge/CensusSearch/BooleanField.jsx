@@ -1,4 +1,3 @@
-import { FormGroup, Input, Label } from 'reactstrap'
 import React from 'react'
 
 export default function BooleanField({ field, predicate, config: { scopes }, handleChange }) {
@@ -7,16 +6,16 @@ export default function BooleanField({ field, predicate, config: { scopes }, han
     handleChange(field, scope, scopes[scope])
   }, []);
   return Object.keys(scopes).map(scope => (
-        <FormGroup key={scope} check>
-            <Label check>
-                <Input type="radio"
+        <div className="form-check" key={scope}>
+            <label className="form-check-label">
+                <input className="form-check-input" type="radio"
                        name={field}
                        value={scope}
                        checked={predicate === scope}
                        onChange={() => handleChange(field, scope, scopes[scope])}
                 />
                 {scopes[scope]}
-            </Label>
-        </FormGroup>
+            </label>
+        </div>
   ))
 }

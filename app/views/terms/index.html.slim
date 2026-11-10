@@ -4,7 +4,7 @@
   = link_to url_for(format: :csv), class: 'btn btn-light' do
     i.fa.fa-sign-out
     | &nbsp; Export
-  = link_to '#importModal', class: 'btn btn-light', data: {toggle: 'modal'} do
+  = link_to '#importModal', class: 'btn btn-light', data: {bs_toggle: 'modal'} do
     i.fa.fa-sign-in
     | &nbsp; Import
 
@@ -45,7 +45,7 @@ table.table.table-condensed.table-striped
         .modal-content
           .modal-header
             h5.modal-title Import Terms
-            button.close(type="button" data-dismiss="modal") &times;
+            button.btn-close type="button" data-bs-dismiss="modal" aria-label="Close"
           .modal-body
             p.lead Import a list of terms to this vocabulary.
             p.lead Be sure it is the correct vocabulary, or you will have to delete the terms you accidentally import.

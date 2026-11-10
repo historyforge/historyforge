@@ -28,7 +28,7 @@ function base64ToArrayBuffer(base64) {
 }
 
 // Auto-generate device label from user agent
-function generateDeviceLabel() {
+export function generateDeviceLabel() {
   const ua = navigator.userAgent;
   const platform = navigator.platform;
 
@@ -301,66 +301,6 @@ export function initializePasskeyRegistration(formId, challengeUrl, createUrl) {
   }
 }
 
-// Cookie helpers
-function getCookie(name) {
-  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-  return match ? match[2] : null;
-}
-
-function setCookie(name, value, days) {
-  const expires = new Date(Date.now() + days * 864e5).toUTCString();
-  document.cookie = name + '=' + value + '; expires=' + expires + '; path=/; SameSite=Lax';
-}
-
-// Show a modal prompting the user to register a passkey after password login
-function initializePasskeyPrompt() {
-  if (!window.PublicKeyCredential) return;
-  if (getCookie('passkey_prompt_dismissed')) return;
-
-  const modal = document.getElementById('passkeyPromptModal');
-  if (!modal) return;
-
-  const setupBtn = document.getElementById('passkey-prompt-setup');
-  const dismissBtn = document.getElementById('passkey-prompt-dismiss');
-
-  if (!setupBtn) return;
-
-  const challengeUrl = setupBtn.dataset.challengeUrl;
-  const createUrl = setupBtn.dataset.createUrl;
-
-  if (!challengeUrl || !createUrl) return;
-
-  // Show the modal
-  jQuery('#passkeyPromptModal').modal('show');
-
-  // "Set up" button: register passkey with auto-generated label
-  setupBtn.addEventListener('click', async function () {
-    setupBtn.disabled = true;
-    setupBtn.textContent = 'Setting up...';
-
-    try {
-      await registerPasskey(challengeUrl, createUrl, generateDeviceLabel());
-    } catch (error) {
-      alert('Failed to set up passkey: ' + error.message);
-      setupBtn.disabled = false;
-      setupBtn.innerHTML = '<i class="fa fa-key mr-2"></i> Set up';
-    }
-  });
-
-  // "Not now" button: dismiss and remember for 30 days
-  if (dismissBtn) {
-    dismissBtn.addEventListener('click', function () {
-      setCookie('passkey_prompt_dismissed', '1', 30);
-      jQuery('#passkeyPromptModal').modal('hide');
-    });
-  }
-
-  // Also set cookie when modal is closed via X button or backdrop click
-  jQuery('#passkeyPromptModal').on('hidden.bs.modal', function () {
-    setCookie('passkey_prompt_dismissed', '1', 30);
-  });
-}
-
 // Initialize passkey functionality on page load
 function initializePasskeys() {
   // Initialize passkey sign-in button
@@ -407,9 +347,6 @@ function initializePasskeys() {
       initializePasskeyRegistration(null, challengeUrl, createUrl);
     }
   }
-
-  // Show passkey registration prompt if applicable
-  initializePasskeyPrompt();
 }
 
 document.addEventListener('DOMContentLoaded', function () {

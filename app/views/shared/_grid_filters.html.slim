@@ -14,7 +14,7 @@
   - if @search.active?
     = link_to 'Start New Search', url_for(reset: true), class: 'btn btn-sm btn-light'
   .dropdown.ml-2 data-controller="load-saved-search"
-    a.dropdown-toggle.btn.btn-sm.btn-light data-toggle="dropdown" Load Search
+    a.dropdown-toggle.btn.btn-sm.btn-light data-bs-toggle="dropdown" Load Search
     .dropdown-menu
 
 - creator_filter = @search.creator_filter
@@ -35,8 +35,8 @@
     - if @search.active?
       button.btn.btn-sm.btn-primary type="button" data-controller="save-search" Save It
   .mb-3
-    button.btn.btn-sm.btn-light type="button" data-toggle="collapse" data-target="#fieldSelector" = pluralize @search.columns.size, 'Field'
-    button.btn.btn-sm.btn-light.mr-3 type="button" data-toggle="collapse" data-target="#newAttributeFilter" Filter
+    button.btn.btn-sm.btn-light type="button" data-bs-toggle="collapse" data-bs-target="#fieldSelector" = pluralize @search.columns.size, 'Field'
+    button.btn.btn-sm.btn-light.mr-3 type="button" data-bs-toggle="collapse" data-bs-target="#newAttributeFilter" Filter
 
   = yield :filter_buttons
 
@@ -49,13 +49,13 @@
       - { 'Created by' => creator_label, 'Creation date' => date_label }.each do |label, value|
         - if value
           .attribute-filter.btn.btn-sm.btn-light data-creator-filter-chip="true"
-            button.close.remove-filter type="button" aria-label="Remove #{label} filter" data-clear-creator-filter=(label == 'Created by' ? 'creator' : 'date') &times;
+            button.btn-close.remove-filter type="button" aria-label="Remove #{label} filter" data-clear-creator-filter=(label == 'Created by' ? 'creator' : 'date')
             = value
 
   .collapse.fade#fieldSelector
     .card.mb-3
       .card-header
-        button.float-right.close(type="button" data-toggle="collapse" data-target="#fieldSelector") &times;
+        button.float-end.btn-close type="button" data-bs-toggle="collapse" data-bs-target="#fieldSelector" aria-label="Close"
         span Fields
 
       .card-body
@@ -71,7 +71,7 @@
   .collapse.fade#newAttributeFilter
     .card.mb-3
       .card-header
-        button.float-right.close(type="button" data-toggle="collapse" data-target="#newAttributeFilter") &times;
+        button.float-end.btn-close type="button" data-bs-toggle="collapse" data-bs-target="#newAttributeFilter" aria-label="Close"
         span Search Filters
       .card-body
         - if creator_filter

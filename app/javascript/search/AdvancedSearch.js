@@ -60,11 +60,6 @@ class AdvancedSearch {
             this.form.trigger('submit')
         });
 
-        // when you click toggle buttons like "unreviewed" and "unhoused" this submits the form
-        $(document).on('click', '#new_s .btn-group-toggle label', () => {
-            this.form.submit();
-        });
-
         // on the fields dropdown there is a "check all" button
         this.form.find('.checkall').on('click', function(e) {
             e.stopPropagation();

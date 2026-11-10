@@ -127,8 +127,6 @@ const initializeMaps = () => {
 // Cleanup before Turbo caches the page
 const cleanupPage = () => {
   const $ = window.jQuery || window.$;
-  // Destroy Bootstrap tooltips to prevent memory leaks
-  $('[rel=tooltip]').tooltip('dispose');
   // Destroy parallax instances to prevent memory leaks
   if ($ && $.fn.parallax) {
     $('[data-parallax]').each(function () {
@@ -199,35 +197,14 @@ document.addEventListener('turbo:before-render', (event) => {
             currentNavList.style.transition = 'none';
 
             // Replace only the menu list items (preserves logo, toggle button, collapse wrapper, etc.)
+            currentNavList.querySelectorAll('[data-bs-toggle=dropdown]').forEach(element => {
+              window.bootstrap.Dropdown.getInstance(element)?.dispose();
+            });
             currentNavList.innerHTML = newNavHTML;
 
             // Re-enable transitions after a brief delay
             setTimeout(() => {
               currentNavList.style.transition = '';
-            }, 0);
-
-            // Re-initialize Bootstrap dropdowns
-            // Use setTimeout to ensure DOM is ready
-            setTimeout(() => {
-              const $ = window.jQuery || window.$;
-              if ($ && typeof $.fn.dropdown !== 'undefined') {
-                $('#main-header [data-toggle="dropdown"]').each(function () {
-                  const $toggle = $(this);
-                  try {
-                    const dropdownData = $toggle.data('bs.dropdown');
-                    if (dropdownData) {
-                      dropdownData.dispose();
-                    }
-                  } catch (e) {
-                    // No existing instance
-                  }
-                  try {
-                    $toggle.dropdown();
-                  } catch (e) {
-                    // Bootstrap will handle via delegation
-                  }
-                });
-              }
             }, 0);
           }
         }
@@ -278,7 +255,6 @@ window.showSubmitButton = function (id, token) {
 }
 
 const pageLoad = function () {
-  $('[rel=tooltip]').tooltip()
   initializeChangeHistoryTruncation()
 }
 
@@ -480,7 +456,6 @@ jQuery(document).on('click', '.alert .closer', function () {
   jQuery(this).closest('.alert').remove();
   jQuery(window).trigger('resize').trigger('scroll'); // trigger parallax refresh on home page
 });
-jQuery(document).on('click', '.dropdown-item.checkbox', function (e) { e.stopPropagation() })
 
 // Fix for AdvancedRestoreSearch with Turbo
 // The server-side AdvancedRestoreSearch concern saves field selections and redirects to restore them,

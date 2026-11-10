@@ -14,7 +14,7 @@ html
     link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"
     - if Rails.env.production?
       link rel="manifest" href="/site.webmanifest"
-    link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+    = stylesheet_link_tag 'bootstrap', data: { turbo_track: 'reload' }
     link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@29.0.0/styles/ag-grid.css"
     link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@29.0.0/styles/ag-theme-balham.css"
     script src="https://cdn.jsdelivr.net/npm/ag-grid-community@29.0.0/dist/ag-grid-community.min.noStyle.js" crossorigin="anonymous"
@@ -48,11 +48,12 @@ html
 
     meta name="maps-url" content=asset_path('maps.js')
     meta name="maplibre-worker-url" content=asset_path('maplibre-worker.js')
+    = javascript_include_tag 'bootstrap', data: { turbo_track: 'reload' }
     = javascript_include_tag 'application'
     = javascript_include_tag 'cms' if can?(:update, Cms::Page)
 
     = yield :head
-  body data-turbo-suppress-warning="true"
+  body data-turbo-suppress-warning="true" data-bs-no-jquery=""
     = yield :announcement
     = render 'layouts/header'
     - if @full_layout
@@ -72,6 +73,4 @@ html
     = render 'shared/passkey_prompt' if user_signed_in? && current_user.passkeys.empty?
     = yield :body_end
 
-    script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"
-    script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" type="text/javascript" crossorigin="anonymous"
     = yield :html_end

@@ -2,14 +2,17 @@
   "scripts": {
     "build": "sh -c 'flags=; if [ \"$RAILS_ENV\" = production ] || [ \"$NODE_ENV\" = production ]; then flags=--minify; fi; yarn build:maps $flags && yarn build:app $flags'",
     "build:maps": "esbuild node_modules/maplibre-gl/dist/maplibre-gl-worker.mjs --bundle --format=esm --minify --outfile=app/assets/builds/maplibre-worker.js && esbuild app/javascript/maps.js --bundle --format=esm --sourcemap --outfile=app/assets/builds/maps.js",
-    "build:app": "esbuild app/javascript/application.js app/javascript/cms.js app/javascript/demographics.js --bundle --sourcemap --outdir=app/assets/builds"
+    "build:app": "yarn build:bootstrap && esbuild app/javascript/application.js app/javascript/cms.js app/javascript/demographics.js --bundle --sourcemap --outdir=app/assets/builds",
+    "build:bootstrap": "esbuild node_modules/bootstrap/dist/js/bootstrap.esm.js --bundle --minify --sourcemap --global-name=bootstrap --outfile=app/assets/builds/bootstrap.js && esbuild node_modules/bootstrap/dist/css/bootstrap.css --minify --sourcemap --outfile=app/assets/builds/bootstrap.css"
   },
   "dependencies": {
     "@airbrake/browser": "^2.1.9",
     "@hotwired/turbo-rails": "^8.0.0",
     "@maplibre/maplibre-gl-leaflet": "^0.1.4",
+    "@popperjs/core": "2.11.8",
     "@rails/activestorage": "~8.1.301",
     "axios": "^1.13.2",
+    "bootstrap": "5.3.8",
     "chart.js": "^3.5.1",
     "chartkick": "^4.0.5",
     "codemirror": "^5.52.2",
@@ -21,7 +24,6 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-redux": "^7.2.2",
-    "reactstrap": "^8.9.0",
     "redux": "^4.0.5",
     "redux-devtools-extension": "^2.13.9",
     "redux-logger": "^3.0.6",
@@ -29,6 +31,7 @@
     "stimulus": "^1.1.1"
   },
   "devDependencies": {
+    "@types/bootstrap": "^5",
     "esbuild": "^0.25.6",
     "eslint": "^8.2.0",
     "eslint-config-airbnb": "^18.2.1",

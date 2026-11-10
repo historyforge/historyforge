@@ -1,7 +1,7 @@
 = link_to '#flagModal',
         title: 'Flag',
         class: (defined?(item_class) ? item_class : nil),
-        data: { toggle: :modal, container: 'body' } do
+        data: { bs_toggle: :modal, container: 'body' } do
   i.fa.fa-flag
   span.d-none.d-lg-inline
     | &nbsp; Flag
@@ -16,7 +16,7 @@
         .modal-content
           .modal-header
             h5.modal-title Flag this Record
-            button.close(type="button" data-dismiss="modal") &times;
+            button.btn-close type="button" data-bs-dismiss="modal" aria-label="Close"
           .modal-body
             = form.input :reason, collection: Flag.reason_choices, label: "What is the issue?"
             = form.input :message, label: "Please tell us more so we can fix it."

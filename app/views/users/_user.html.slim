@@ -16,7 +16,7 @@ tr
           = link_to('enable', enable_user_path(user.id), method: :put, data: { turbo_method: :put })
   td
     - inherited_roles = user.group&.roles || []
-    span href="#" rel="tooltip" data-placement="bottom" title=user.role_names.to_sentence
+    span tabindex="0" data-controller="tooltip" data-action="turbo:before-cache@document->tooltip#disconnect" data-bs-placement="bottom" title=user.role_names.to_sentence
       = pluralize user.roles.length, 'role'
       - if inherited_roles.any?
         small.text-muted
