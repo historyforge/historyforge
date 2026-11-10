@@ -69,7 +69,8 @@ class CensusFormGenerator
       options[:collection] = options[:collection].call(form) if options[:collection].respond_to?(:call)
     elsif options[:as].blank?
       options[:input_html] ||= {}
-      options[:input_html].merge!(autocomplete: :off, 'data-controller': 'census-autocomplete')
+      options[:input_html].merge!(autocomplete: :off, 'data-controller': 'autocomplete',
+                                  'data-autocomplete-url': "/census/#{form.object.year}/autocomplete?attribute=#{field}")
     end
   end
 

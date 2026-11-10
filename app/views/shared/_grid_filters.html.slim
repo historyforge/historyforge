@@ -79,7 +79,7 @@
             .form-group.col-md-4
               - if creator_filter.scope == :all
                 = label_tag 'creator_lookup', 'Created by'
-                = search_field_tag 'creator_lookup', selected_creator_name, name: nil, placeholder: 'Search by name or email', autocomplete: 'off', class: 'form-control mb-2', data: { target: 'creator-picker.lookup', action: 'input->creator-picker#clearSelection', url: creator_autocomplete_users_path(format: :json) }
+                = search_field_tag 'creator_lookup', selected_creator_name, name: nil, placeholder: 'Search by name or email', autocomplete: 'off', class: 'form-control mb-2', data: { controller: 'autocomplete', action: 'input->creator-picker#clearSelection autocomplete:selected->creator-picker#select', autocomplete_min: 2, autocomplete_delay: 250, autocomplete_kind: 'creator', autocomplete_url: creator_autocomplete_users_path(format: :json) }
             .form-group.col-md-8 data-controller="creation-date-range"
               - creation_date_range = creator_filter.creation_date_range
               - custom_range = creation_date_range == 'custom'
