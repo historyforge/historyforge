@@ -1,5 +1,5 @@
 - if can?(:merge, Person)
-  = link_to '#mergeModal', class: btn_class, data: { toggle: 'modal' }, title: 'Merge' do
+  = link_to '#mergeModal', class: btn_class, data: { bs_toggle: 'modal' }, title: 'Merge' do
     i.fa.fa-code-fork
     span.d-none.d-lg-inline
       | &nbsp; Merge
@@ -10,7 +10,7 @@
           .modal-content
             .modal-header
               h5.modal-title Merge Person Record
-              button.close(type="button" data-dismiss="modal") &times;
+              button.btn-close type="button" data-bs-dismiss="modal" aria-label="Close"
             .modal-body
               p.lead Merge another person record into this one.
               p.lead Enter the Person ID of the duplicate person record:

@@ -1,7 +1,7 @@
 - if can?(:resolve, Flag) && item.flags.unresolved
   - item.flags.unresolved.each do |flag|
     .alert.alert-danger
-      a.float-right.btn.btn-danger data-toggle="modal" href="#flagModal#{flag.id}" Resolve
+      a.float-right.btn.btn-danger data-bs-toggle="modal" href="#flagModal#{flag.id}" Resolve
       h4.alert-heading Flagged as #{flag.display_reason} by #{flag.flagged_by&.name || 'System'}
       p.mb-0= flag.message
     - content_for :body_end do
@@ -13,7 +13,7 @@
             .modal-content
               .modal-header
                 h5.modal-title Resolve
-                button.close(type="button" data-dismiss="modal") &times;
+                button.btn-close type="button" data-bs-dismiss="modal" aria-label="Close"
               .modal-body
                 = hidden_field_tag 'flag[mark_resolved]', '1'
                 = form.input :comment, label: 'Any comments?'

@@ -34,7 +34,7 @@
       - if @documents[category.id]
         .card.card-default.mb-3
           .card-header
-            h5.card-title= link_to(category.name, "#panel-#{category.id}", data: { toggle: "collapse" }, role: "button", aria: { expanded: false })
+            h5.card-title= link_to(category.name, "#panel-#{category.id}", data: { bs_toggle: "collapse" }, role: "button", aria: { expanded: false })
           .card-body.collapse.collapsed id="panel-#{category.id}"
             - if category.description.present?
               = simple_format category.description

@@ -1,4 +1,4 @@
-import { Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap'
+import ForgeModal from '../ForgeModal'
 import FilterListItem from './FilterListItem'
 import React from 'react'
 import FilterField from './FilterField'
@@ -17,17 +17,12 @@ const CurrentFilters = ({ current, filters, setOpen, remove }) => (
 )
 
 const FilterModal = ({ filters, current, close, open, search, setFilter }) => (
-    <Modal isOpen={!!open}>
-        <ModalHeader toggle={close}>
-            Search on &ldquo;{open && filters[open].label}&rdquo;
-        </ModalHeader>
-        <ModalBody>
-            {open && <FilterField {...current[open]} config={filters[open]} handleChange={setFilter} />}
-        </ModalBody>
-        <ModalFooter>
-            <button className="btn btn-primary" type="button" onClick={search}>Search</button>
-        </ModalFooter>
-    </Modal>
+    <ForgeModal open={!!open}
+                onClose={close}
+                title={open && `Search on “${filters[open].label}”`}
+                footer={<button className="btn btn-primary" type="button" onClick={search}>Search</button>}>
+        {open && <FilterField {...current[open]} config={filters[open]} handleChange={setFilter} />}
+    </ForgeModal>
 )
 
 const Filters = (props) => (

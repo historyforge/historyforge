@@ -3,10 +3,10 @@
     li.nav-item= link_to 'Pages', cms_pages_path, class: 'nav-link'
     - if @page.persisted?
       li.nav-item#add-section.dropdown
-        a.nav-link.dropdown-toggle data-toggle="dropdown" href='#'
+        a.nav-link.dropdown-toggle data-bs-toggle="dropdown" href='#'
           = t('cms.add.section')
           span.caret
-        .dropdown-menu.dropdown-menu-right
+        .dropdown-menu.dropdown-menu-end
           a.dropdown-item data-turbo="false" id="add-text-button"= t('cms.add.wysiwyg')
           a.dropdown-item data-turbo="false" id="add-picture-button" = t('cms.add.picture')
           a.dropdown-item data-turbo="false" id="add-document-button" = t('cms.add.document')
@@ -26,14 +26,14 @@
   - if @page.persisted?
     ul.nav-tabs.nav.mb-3
       li.nav-item
-        a.nav-link href="#metadata" data-toggle="tab" = t('cms.tabs.meta')
+        a.nav-link href="#metadata" data-bs-toggle="tab" = t('cms.tabs.meta')
       li.nav-item
-        a.nav-link.active href="#template" data-toggle="tab" = t('cms.tabs.template')
+        a.nav-link.active href="#template" data-bs-toggle="tab" = t('cms.tabs.template')
       li.nav-item.dropdown
-        a.nav-link.dropdown-toggle href='#' data-toggle='dropdown' Media
+        a.nav-link.dropdown-toggle href='#' data-bs-toggle='dropdown' Media
         .dropdown-menu
           - @page.widgets.each do |widget|
-            a.dropdown-item href="#widget#{widget.id}" data-toggle="tab" = widget.human_name
+            a.dropdown-item href="#widget#{widget.id}" data-bs-toggle="tab" = widget.human_name
 
   .tab-content
     .tab-pane#metadata class=(@page.new_record? ? 'active' : '')

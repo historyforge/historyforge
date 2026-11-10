@@ -40,3 +40,4 @@ const cleanupForge = () => {
 };
 
 document.addEventListener('turbo:before-cache', cleanupForge);
+document.addEventListener('turbo:before-render', cleanupForge);

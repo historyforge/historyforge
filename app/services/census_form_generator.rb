@@ -53,7 +53,7 @@ class CensusFormGenerator
 
   def apply_options_for(field, options)
     options[:hint] = options.key?(:hint) ? options[:hint] : hint_for(field, options[:as])
-    options[:hint_html] = { data: { controller: 'hint-popover' } } if options[:hint]
+    options[:hint_html] = { data: { controller: 'hint-popover', action: 'turbo:before-cache@document->hint-popover#disconnect' } } if options[:hint]
     options.delete :placeholder
     options[:wrapper_html] = { data: { dependents: 'true' } } if options[:dependents]
     options[:wrapper_html] = { data: { depends_on: options[:depends_on] } } if options[:depends_on]

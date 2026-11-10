@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
-import { ButtonGroup } from 'reactstrap'
 import YearButtons from './YearButtons'
 import AddFilter from './AddFilter'
 import Filters from './Filters'
@@ -48,11 +47,11 @@ const CensusSearch = (props) => {
             />
             {message && <div className="mt-2 alert alert-info">{message}</div>}
             {year && (
-                <ButtonGroup className="btn-block">
+                <div className="btn-group w-100" role="group">
                     <a href={buildCensusUrl(year, params)} className="btn btn-sm btn-info col-6">VIEW CENSUS RECORDS</a>
                     {/* <a href={this.demographicsUrl} className="btn btn-sm btn-info col-4">VIEW DEMOGRAPHICS</a> */}
                     <button className="btn btn-sm btn-info col-6" type="button" onClick={props.reset}>RESET</button>
-                </ButtonGroup>
+                </div>
             )}
         </div>
   )

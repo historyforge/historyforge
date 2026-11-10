@@ -24,12 +24,11 @@ require('codemirror/addon/edit/closetag')
 require('codemirror/addon/edit/matchtags')
 require('codemirror/addon/edit/matchbrackets')
 
+document.addEventListener('shown.bs.tab', () => {
+  document.querySelectorAll('.CodeMirror').forEach(editor => editor.CodeMirror.refresh())
+})
+
 const initializeCMS = () => {
-  $('a[data-toggle="tab"]').on('shown.bs.tab', function() {
-    $('.CodeMirror').each(function() {
-      this.CodeMirror.refresh()
-    })
-  })
   $('textarea.codemirror').each(function() {
     // Skip if already initialized (CodeMirror adds a class when initialized)
     if ($(this).next('.CodeMirror').length > 0) { return; }

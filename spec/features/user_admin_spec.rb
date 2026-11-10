@@ -14,6 +14,23 @@ RSpec.describe "User management" do
     expect(page).to have_content "Sorry you do not have permission to do that"
   end
 
+  scenario "administrator can inspect role tooltips after a Turbo visit", :js do
+    admin = create(:administrator)
+    sign_in admin
+
+    page.execute_script("Turbo.visit(arguments[0])", users_path)
+    expect(page).to have_current_path(users_path)
+    within(find("tr", text: admin.login, match: :first)) do
+      trigger = find("[data-controller=tooltip]")
+      page.execute_script("arguments[0].focus()", trigger)
+    end
+    expect(page).to have_css(".tooltip.show", text: admin.role_names.to_sentence)
+
+    page.execute_script("Turbo.visit(arguments[0])", root_path)
+    expect(page).to have_current_path(root_path)
+    expect(page).to have_no_css(".tooltip", visible: :all)
+  end
+
   scenario "administrator adds user" do
     admin = create(:administrator)
     sign_in admin

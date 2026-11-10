@@ -37,7 +37,7 @@ const add_the_cms_widget = function(widget, name, callback) {
   const code_name = name.toLowerCase().replace(/\W+/g, '-')
 
   // create the tab
-  const tab_link = $(`<a class="dropdown-item" href="#${code_name}" data-toggle="tab">${name}</a>`)
+  const tab_link = $(`<a class="dropdown-item" href="#${code_name}" data-bs-toggle="tab">${name}</a>`)
 
   // create the form
   let tab_pane = $(`#new_${widget}_fields`).text()

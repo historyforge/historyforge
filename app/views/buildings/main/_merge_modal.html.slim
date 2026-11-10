@@ -1,5 +1,5 @@
 - if can?(:merge, Building) && @building.neighbors
-  = link_to '#mergeModal', class: btn_class, data: { toggle: 'modal' } do
+  = link_to '#mergeModal', class: btn_class, data: { bs_toggle: 'modal' } do
     i.fa.fa-code-fork
     | &nbsp; Merge
   - content_for :body_end do
@@ -9,7 +9,7 @@
           .modal-content
             .modal-header
               h5.modal-title Merge Building Record
-              button.close(type="button" data-dismiss="modal") &times;
+              button.btn-close type="button" data-bs-dismiss="modal" aria-label="Close"
             .modal-body
               p.lead Merge another building record into this one.
               p.lead Choose from the nearest buildings:

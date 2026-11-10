@@ -1,5 +1,4 @@
 import React from "react";
-import { Row, Col } from "reactstrap";
 
 export const Residents = ({ buildingId, residents, years }) => (
     years.map(year => residents[year] && (
@@ -28,17 +27,17 @@ const Resident = ({ person, year }) => {
         occupation = null;
     }
     return (
-        <Row>
-            <Col size={7} sm={6}>
+        <div className="row">
+            <div className="col-7 col-sm-6">
                 <a href={`/census/${year}/${person.id}`} target="_blank">{person.name}</a>
-            </Col>
-            <Col size={5} sm={6}>
+            </div>
+            <div className="col-5 col-sm-6">
                 {person.relation_to_head}
-            </Col>
-            <Col size={6} sm={6}>
+            </div>
+            <div className="col-6 col-sm-6">
                 Age {person.age} - {person.race} - {person.sex}
-            </Col>
-            {occupation && <Col size={6} sm={6}>{occupation}</Col>}
-        </Row>
+            </div>
+            {occupation && <div className="col-6 col-sm-6">{occupation}</div>}
+        </div>
     )
 }
