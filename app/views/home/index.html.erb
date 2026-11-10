@@ -13,11 +13,11 @@
 <% end %>
 
 <% provide_cms_with :person_finder do %>
-<input type="search" id="search-people-input" placeholder="Type a name here" class="form-control" />
+<input type="search" id="search-people-input" aria-label="Search people" autocomplete="off" data-controller="autocomplete" data-autocomplete-url="<%= search_people_path %>" data-autocomplete-kind="people" data-autocomplete-delay="250" placeholder="Type a name here" class="form-control" />
 <% end %>
 
 <% provide_cms_with :home_finder do %>
-<input type="search" id="search-buildings-input" placeholder="Type an address here" class="form-control" />
+<input type="search" id="search-buildings-input" aria-label="Search buildings" autocomplete="off" data-controller="autocomplete" data-autocomplete-url="<%= search_buildings_path %>" data-autocomplete-kind="buildings" placeholder="Type an address here" class="form-control" />
 <% end %>
 
 <% provide_cms_with :sponsors do %>

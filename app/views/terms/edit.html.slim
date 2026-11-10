@@ -6,4 +6,4 @@ p.lead Rename a term to an existing term to merge it with that term.
 = render 'form'
 
 - CensusYears.each do |year|
-  div.term-peeps id="peeps_#{year}" data-year=year data-base-url=url_for([@vocabulary, @term])
+  div.term-peeps data-controller="term-records" data-action="click->term-records#paginate" id="peeps_#{year}" data-year=year data-base-url=url_for([@vocabulary, @term])
