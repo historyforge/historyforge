@@ -189,8 +189,24 @@ p {
   margin: 1em 0;
 }
 
+.autocomplete-suggestions {
+  position: fixed;
+  z-index: 1060;
+  max-height: 16rem;
+  overflow-y: auto;
+  background: var(--bs-body-bg);
+  border: 1px solid var(--bs-border-color);
+  box-shadow: 0 .25rem .5rem rgba(0, 0, 0, .15);
+}
+
 .autocomplete-suggestion {
   padding: 0.25rem 0.875rem;
+  cursor: pointer;
+
+  &:hover,
+  &[aria-selected="true"] {
+    background: var(--bs-tertiary-bg);
+  }
 }
 
 .boolean,
@@ -674,6 +690,12 @@ abbr[title] {
 }
 
 [data-parallax] {
+  background-position: top center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  @media (hover: hover) and (pointer: fine) {
+    background-attachment: fixed;
+  }
   display: flex;
   justify-content: center;
   align-items: center;

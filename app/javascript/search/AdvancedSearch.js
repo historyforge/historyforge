@@ -1,126 +1,75 @@
-import axios from 'axios'
-import addAttributeFilter from "./addAttributeFilter";
-import selectAttribute from "./selectAttribute";
+import addAttributeFilter from './addAttributeFilter'
+import selectAttribute from './selectAttribute'
 
-// Extend jQuery with advancedSearch plugin
-const $ = window.jQuery || window.$;
+export default class AdvancedSearch {
+  constructor(form, url, filters, signal) {
+    this.form = form
+    this.filters = filters
+    this.signal = signal
+    this.bindFormEvents()
+    this.loadFilters(url)
+  }
 
-// @ts-ignore
-$.fn.advancedSearch = function(options) {
-    return this.each(function() {
-        $(this).data('search', new AdvancedSearch(this, options));
-        return this;
+  async loadFilters(url) {
+    try {
+      const response = await fetch(url, { signal: this.signal, headers: { Accept: 'application/json' } })
+      if (!response.ok) throw new Error(`HTTP ${response.status}`)
+      const { filters } = await response.json()
+      if (this.signal.aborted) return
+
+      const chips = this.form.querySelector('#attribute-filters')
+      chips.querySelectorAll(':scope > :not([data-creator-filter-chip])').forEach(chip => chip.remove())
+      for (const [scope, value] of Object.entries(this.filters)) {
+        const config = Object.values(filters).find(field => field.scopes?.[scope])
+          || Object.values(filters).find(field => field.scopes?.[scope.replace(/_eq/, '_in')])
+        if (config) addAttributeFilter(chips, this.form, config, scope, value)
+      }
+      chips.classList.toggle('mb-3', chips.children.length > 0)
+
+      const attribute = this.form.querySelector('select.attribute')
+      attribute.replaceChildren(new Option('Select field name', ''))
+      for (const [key, config] of Object.entries(filters)) {
+        if (config.scopes) attribute.add(new Option(config.label, key))
+      }
+      attribute.addEventListener('change', () => {
+        selectAttribute(this.form, filters[attribute.value])
+      }, { signal: this.signal })
+    } catch (error) {
+      if (!this.signal.aborted) console.error('Could not load search filters', error)
+    }
+  }
+
+  bindFormEvents() {
+    const options = { signal: this.signal }
+    this.form.addEventListener('formdata', ({ formData }) => {
+      for (const name of new Set(formData.keys())) {
+        if (!name.startsWith('s[')) continue
+        const values = formData.getAll(name)
+        let nonempty = values.filter(value => value !== '')
+        if (nonempty.length > 1 && nonempty.every(value => value === nonempty[0])) nonempty = [nonempty[0]]
+        if (nonempty.length === values.length) continue
+        formData.delete(name)
+        nonempty.forEach(value => formData.append(name, value))
+      }
+      if (!formData.has('f[]')) formData.set('f', '')
+    }, options)
+
+    this.form.querySelectorAll('[data-clear-creator-filter]').forEach(button => {
+      button.addEventListener('click', () => {
+        if (button.dataset.clearCreatorFilter === 'creator') {
+          this.form.querySelectorAll('[name="s[creator_id]"], #creator_lookup').forEach(input => { input.value = '' })
+        } else {
+          this.form.elements['s[creation_date_range]'].value = 'all'
+          for (const field of ['from', 'to']) this.form.elements[`s[creation_date_${field}]`].value = ''
+        }
+        this.form.requestSubmit()
+      }, options)
     })
-};
 
-class AdvancedSearch {
-    currentFilters; attributeFilters; form
-
-    constructor(form, options) {
-        this.currentFilters = options.filters;
-        this.form = $(form);
-        this.initFormEvents();
-        axios.get(options.url).then((json) => {
-            this.attributeFilters = json.data.filters;
-            this.showCurrentFilters()
-            this.showAddableFilters();
-        })
-    }
-
-    initFormEvents() {
-        this.form.off('formdata.advancedSearch').on('formdata.advancedSearch', (event) => {
-            const { formData } = event.originalEvent;
-            const names = new Set(formData.keys());
-            for (const name of names) {
-                if (!name.startsWith('s[')) continue;
-
-                const values = formData.getAll(name);
-                const nonempty = values.filter(value => value !== '');
-                if (nonempty.length > 1 && nonempty.every(value => value === nonempty[0])) {
-                    nonempty.length = 1;
-                }
-                if (nonempty.length === values.length) continue;
-
-                formData.delete(name);
-                nonempty.forEach(value => formData.append(name, value));
-            }
-            // A submitted form with no checked fields explicitly requests the defaults.
-            if (!formData.has('f[]')) {
-                formData.set('f', '');
-            }
-        });
-
-        this.form.find('[data-clear-creator-filter]').on('click', (event) => {
-            if (event.currentTarget.dataset.clearCreatorFilter === 'creator') {
-                this.form.find('[name="s[creator_id]"], #creator_lookup').val('')
-            } else {
-                this.form.find('[name="s[creation_date_range]"]').val('all')
-                this.form.find('[name="s[creation_date_from]"], [name="s[creation_date_to]"]').val('')
-            }
-            this.form.trigger('submit')
-        });
-
-        // on the fields dropdown there is a "check all" button
-        this.form.find('.checkall').on('click', function(e) {
-            e.stopPropagation();
-            const $cont = $($(this).data('scope'));
-            const $inputs = $cont.find('input[type=checkbox]');
-            const checks = $inputs.filter(':checked').length;
-            if (checks) {
-                if (checks === $inputs.length) {
-                    $inputs.removeAttr('checked');
-                    $inputs.filter("[data-default=true]").trigger('click');
-                } else {
-                    $inputs.filter(':not(:checked)').trigger('click');
-                }
-            } else {
-                $inputs.trigger('click');
-            }
-        });
-    }
-
-    // filters already applied are listed as buttons with an X that removes the filter
-    showCurrentFilters() {
-        if (Object.entries(this.currentFilters).length) {
-            $('#attribute-filters').addClass('mb-3').children(':not([data-creator-filter-chip])').remove();
-            for (let scope in this.currentFilters) {
-                const field_config = this.getFieldConfigFromScope(scope) ||
-                    this.getFieldConfigFromScope(scope.replace(/_eq/, '_in'))
-                if (field_config || field_config?.scopes) {
-                    addAttributeFilter(field_config, scope, this.currentFilters[scope]);
-                }
-            }
-        }
-    }
-
-    // underneath any quick filters is a dropdown that lets you select a field to filter on
-    showAddableFilters() {
-        $('select.scope').hide();
-        $('.value-input-container').empty();
-        const attrSelect = $('select.attribute');
-        attrSelect.on('change', (event) => {
-            const attribute = $(event.target).val().toString();
-            const config = this.attributeFilters[attribute]
-            if (config) {
-                selectAttribute(attribute, this.form, config)
-            }
-        });
-        attrSelect.html("<option>Select field name</option>");
-        Object.keys(this.attributeFilters).forEach((key) => {
-            const config = this.attributeFilters[key];
-            if (config.scopes) {
-                attrSelect.append('<option value="' + key + '">' + config.label + '</option>');
-            }
-        });
-    }
-
-    // returns the field config from a scope name
-    getFieldConfigFromScope(scope) {
-        for (let attribute in this.attributeFilters) {
-            const value = this.attributeFilters[attribute];
-            if ((value.scopes != null ? value.scopes[scope] : void 0) != null) {
-                return value;
-            }
-        }
-    }
+    this.form.querySelector('.checkall').addEventListener('click', event => {
+      const inputs = [...this.form.querySelectorAll(`${event.currentTarget.dataset.scope} input[type=checkbox]`)]
+      const restoreDefaults = inputs.every(input => input.checked)
+      inputs.forEach(input => { input.checked = !restoreDefaults || input.dataset.default === 'true' })
+    }, options)
+  }
 }

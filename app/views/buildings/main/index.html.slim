@@ -9,10 +9,8 @@
         = checkbox_button 'Unreviewed', :unreviewed, @search.unreviewed?
         = checkbox_button 'Uninvestigated', :uninvestigated, @search.uninvestigated?
 #grid-filters data-turbo-cache="false"= render 'shared/grid_filters', resource_class: Building
-#grid.ag-theme-balham data-turbo-cache="false"
+= render 'shared/record_grid', columns: BuildingGridTranslator.new(@search).column_def, filters_url: '/buildings/advanced_search_filters.json'
 
 .navbar.navbar-light.bg-light.navbar-expand-lg.navbar-static.bottom#search-pagination-bottom
   - count = @search.count
   .nav-item.mr-auto= "Found #{number_with_delimiter count} #{'record'.pluralize(count)}"
-
-= render 'index_script'

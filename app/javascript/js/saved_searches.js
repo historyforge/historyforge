@@ -24,6 +24,7 @@ class SavedSearches {
 
     this.searches.push({ name, url: document.location.toString() })
     this.save()
+    return true
   }
 
   remove(name) {

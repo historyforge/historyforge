@@ -8,6 +8,7 @@ RSpec.describe "1880 US Census" do
     user.add_role Role.find_by(name: "reviewer")
 
     locality = create(:locality)
+    create(:person, first_name: "Sponge", last_name: "Different")
 
     sign_in user
 
@@ -30,7 +31,10 @@ RSpec.describe "1880 US Census" do
     fill_in "Family No.", with: "1"
 
     fill_in "Last Name", with: "Squarepants"
-    fill_in "First Name", with: "Sponge"
+    fill_in "First Name", with: "Spon"
+    expect(page).to have_css('[role="option"]', text: "Sponge")
+    find_field("First Name").send_keys(:arrow_down, :enter)
+    expect(find_field("First Name").value).to eq("Sponge")
     fill_in "Middle Name", with: "Bob"
     fill_in "Title", with: "Dr"
     fill_in "Suffix", with: "III"

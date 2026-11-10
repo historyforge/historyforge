@@ -1,4 +1,3 @@
 = form.input :building_ids, collection: form.object.buildings, as: :check_boxes, label: ''
 p.lead To add a building to the list, type an address:
-input.form-control.mb-3#building-autocomplete placeholder="Enter address here"
-#building-results.list-group style="display:none"
+input.form-control.mb-3#building-autocomplete aria-label="Search for a building" autocomplete="off" data-controller="autocomplete" data-autocomplete-url="/buildings/autocomplete" data-autocomplete-min="2" data-autocomplete-delay="150" data-autocomplete-kind="media-building" placeholder="Enter address here"
