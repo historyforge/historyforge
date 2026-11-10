@@ -2,46 +2,37 @@ import { Controller } from 'stimulus'
 import SavedSearches from '../js/saved_searches'
 
 export default class extends Controller {
-    what = null
-    rebuild = () => this.build()
-    connect() {
-      const url = document.location.toString()
-      if (url.match(/buildings/)) { this.what = 'building' } else if (url.match(/\/census/)) { this.what = 'census' } else if (url.match(/people/)) { this.what = 'people' }
-      const savedSearchesClass = `${this.what}SavedSearches`
-      window[savedSearchesClass] = window[savedSearchesClass] || new SavedSearches(this.what)
-      this.searches = window[savedSearchesClass]
-      this.build()
+  rebuild = () => this.build()
 
-      window.addEventListener(`searches:${this.what}`, this.rebuild)
-    }
+  connect() {
+    this.kind = this.element.dataset.searchKind
+    this.year = this.element.dataset.searchYear
+    this.searches = SavedSearches.for(this.kind)
+    this.build()
+    window.addEventListener(`searches:${this.kind}`, this.rebuild)
+  }
 
-    disconnect() {
-      window.removeEventListener(`searches:${this.what}`, this.rebuild)
-    }
+  disconnect() {
+    window.removeEventListener(`searches:${this.kind}`, this.rebuild)
+  }
 
-    build() {
-      let searches
+  build() {
+    const menu = this.element.querySelector('.dropdown-menu')
+    const links = []
+    this.searches.forEach(search => {
+      const url = SavedSearches.urlFor(search)
+      if (!url || (this.year && SavedSearches.censusYear(url) !== this.year)) return
+      links.push(this.link(search.name, url.href))
+    })
+    menu.replaceChildren(this.link('Organize Saved Searches', `/searches/saved/${this.kind}`), ...links)
+    this.element.hidden = links.length === 0
+  }
 
-      if (this.what === 'census') {
-        const year = document.location.toString().split('/census/')[1].split('?')[0]
-        searches = this.searches.filter(search => search.url.match(`census/${year}`))
-      } else {
-        searches = this.searches
-      }
-
-      if (!searches.length) {
-        this.element.style.display = 'none'
-        return
-      }
-
-      const menu = this.element.querySelector('.dropdown-menu')
-      menu.innerHTML = `<a class="dropdown-item" href="/searches/saved/${this.what}">Organize Saved Searches</a>`
-
-      searches.forEach(({ name, url }) => {
-        const html = `<a class="dropdown-item" href="${url}">${name}</a>`
-        menu.innerHTML += html
-      })
-
-      this.element.style.display = 'inline-block'
-    }
+  link(text, href) {
+    const link = document.createElement('a')
+    link.className = 'dropdown-item'
+    link.href = href
+    link.textContent = text
+    return link
+  }
 }

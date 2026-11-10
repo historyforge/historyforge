@@ -6,14 +6,12 @@ import * as reducers from './reducers'
 import { buildStore } from './store'
 
 let reactRoot = null;
-let store = null;
 
 export const initializeForge = () => {
     const forge = document.getElementById("forge");
     if (!forge) {
         if (reactRoot) {
             reactRoot = null;
-            store = null;
         }
         return;
     }
@@ -23,10 +21,9 @@ export const initializeForge = () => {
     if (reactRoot && reactRoot !== forge) {
         ReactDOM.unmountComponentAtNode(reactRoot);
         reactRoot = null;
-        store = null;
     }
 
-    store = buildStore(reducers);
+    const store = buildStore(reducers, JSON.parse(forge.dataset.initialState));
     reactRoot = forge;
     ReactDOM.render(<Provider store={store}><Forge /></Provider>, forge);
 };
@@ -35,7 +32,6 @@ const cleanupForge = () => {
     if (reactRoot) {
         ReactDOM.unmountComponentAtNode(reactRoot);
         reactRoot = null;
-        store = null;
     }
 };
 

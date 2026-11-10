@@ -3,6 +3,23 @@
 require "rails_helper"
 
 RSpec.describe "1880 US Census" do
+  scenario "choosing an existing building updates the census form", :js do
+    locality = create(:locality)
+    building = create(:building, :reviewed, locality: locality,
+                      addresses: [build(:address, house_number: "405", name: "Tioga", prefix: "N", suffix: "St")])
+    sign_in create(:census_taker)
+    visit new_census1880_record_path
+
+    fill_in "House No.", with: "405"
+    select "N", from: "Prefix"
+    fill_in "Street Name", with: "Tioga"
+    select "St", from: "Suffix", match: :first
+    select locality.name, from: "Locality"
+    option = find(%(select#building_id option[value="#{building.id}"]))
+    option.select_option
+    expect(page).to have_no_css(".census_record_ensure_building", visible: true)
+  end
+
   scenario "record life cycle", :js do
     user = create(:census_taker)
     user.add_role Role.find_by(name: "reviewer")

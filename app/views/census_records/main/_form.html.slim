@@ -1,4 +1,6 @@
-= simple_form_for @record, as: :census_record, html: { autocomplete: :off, class: 'pb-5' } do |form|
+= simple_form_for @record, as: :census_record, html: { autocomplete: :off, class: 'pb-5', data: { controller: 'census-building-picker',
+    action: 'change->census-building-picker#change turbo:before-cache@document->census-building-picker#disconnect',
+    building_options_url: "/census/#{controller.year}/building_autocomplete" } } do |form|
   = error_messages_for @record
   = form.hidden_field :building_id
   = CensusFormGenerator.generate form, "Census#{controller.year}FormFields".safe_constantize

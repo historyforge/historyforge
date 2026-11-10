@@ -1,7 +1,8 @@
 import React from "react";
+import { useSelector } from "react-redux";
 
 export const Forges = () => {
-  const {forges} = window.initialState.forges;
+  const forges = useSelector(state => state.forges.forges);
   return (
     <div>
       <h3>Jump to Localities</h3>

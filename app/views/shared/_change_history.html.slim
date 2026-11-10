@@ -1,6 +1,6 @@
 - if user_signed_in? && item.change_history.present?
   - users = editing_users_for(item.change_history)
-  .card.mb-3
+  .card.mb-3 data-controller="change-history" data-action="turbo:before-cache@document->change-history#disconnect"
     .card-header
       | Change History
     ul.list-group

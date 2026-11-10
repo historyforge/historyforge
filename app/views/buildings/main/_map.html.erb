@@ -15,12 +15,10 @@
     </div>
   <% end %>
 <% else %>
-  <div id="miniforge"></div>
-  <script type="text/javascript">
-      window.initialState = {
-          layers: { center: {lat: <%= @building.lat %>, lng: <%= @building.lon %>}, layers: <%== mini_forge_layers.to_json %> },
-          buildings: { buildings: <%== mini_forge_buildings.to_json %>, current: <%== @building.to_json %>, editable: <%== can?(:update, @building).to_json %>},
-          search: { params: <%== params.to_json %> }
-      }
-  </script>
+  <% initial_state = {
+    layers: { center: { lat: @building.lat&.to_f, lng: @building.lon&.to_f }, layers: mini_forge_layers.as_json },
+    buildings: { buildings: mini_forge_buildings.as_json, current: @building.as_json, editable: can?(:update, @building) },
+    search: { params: params }
+  } %>
+  <%= tag.div id: 'miniforge', data: { initial_state: initial_state } %>
 <% end %>

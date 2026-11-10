@@ -58,7 +58,7 @@ export function generateDeviceLabel() {
 // Uses native JSON helpers when available, falls back to manual conversion
 function buildGetOptions(options) {
   if (window.PublicKeyCredential?.parseRequestOptionsFromJSON) {
-    return PublicKeyCredential.parseRequestOptionsFromJSON(options);
+    return window.PublicKeyCredential.parseRequestOptionsFromJSON(options);
   }
 
   const challengeBuffer = typeof options.challenge === 'string'
@@ -86,7 +86,7 @@ function buildGetOptions(options) {
 // Uses native JSON helpers when available, falls back to manual conversion
 function buildCreateOptions(options) {
   if (window.PublicKeyCredential?.parseCreationOptionsFromJSON) {
-    return PublicKeyCredential.parseCreationOptionsFromJSON(options);
+    return window.PublicKeyCredential.parseCreationOptionsFromJSON(options);
   }
 
   if (!options.challenge) {

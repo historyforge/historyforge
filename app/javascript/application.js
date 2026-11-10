@@ -114,7 +114,6 @@ function initializeHomeSearch() {
 // Initialize on both DOMContentLoaded (initial page load) and turbo:load (Turbo navigation)
 const initializePage = () => {
   initializeHomeSearch()
-  requestAnimationFrame(initializeChangeHistoryTruncation);
   initializeParallax();
   initializeTextareaResize();
 }
@@ -242,41 +241,6 @@ window.showSubmitButton = function (id, token) {
   input.form.querySelector('#contact-submit-btn').style.display = 'block'
 }
 
-function addReadMore(texts, target) {
-  if (target.nextElementSibling?.matches('.read-more-link')) return
-  const needsToggle = texts.some(text => {
-    const value = text.textContent.trim()
-    return value && value !== 'blank' && (value.length > 50 || text.scrollHeight > text.clientHeight + 10)
-  })
-  if (!needsToggle) return
-
-  const button = document.createElement('button')
-  button.type = 'button'
-  button.className = 'read-more-link visible btn btn-sm btn-link p-0'
-  button.textContent = 'Read more'
-  button.setAttribute('aria-expanded', 'false')
-  button.dataset.turboTemporary = ''
-  button.addEventListener('click', () => {
-    const expanded = !texts[0].classList.contains('expanded')
-    texts.forEach(text => text.classList.toggle('expanded', expanded))
-    button.textContent = expanded ? 'Read less' : 'Read more'
-    button.setAttribute('aria-expanded', String(expanded))
-  })
-  target.after(button)
-}
-
-function initializeChangeHistoryTruncation() {
-  for (const row of document.querySelectorAll('.change-history-row')) {
-    const pair = [...row.querySelectorAll('.truncate-text[data-row-id]')]
-    if (pair.length) addReadMore(pair, row)
-    for (const text of row.querySelectorAll('.truncate-text:not([data-row-id])')) addReadMore([text], text)
-  }
-}
-
-document.addEventListener('turbo:before-cache', () => {
-  document.querySelectorAll('.truncate-text.expanded').forEach(text => text.classList.remove('expanded'))
-})
-
 document.addEventListener('click', event => {
   event.target.closest('.alert .closer')?.closest('.alert').remove()
 
@@ -289,61 +253,13 @@ document.addEventListener('click', event => {
   window.Turbo.visit('/forge?' + params)
 })
 
-const buildingSelector = '#building_id, #census_record_building_id'
-let buildingRequest
-
-function updateEnsureBuilding(building) {
-  const field = document.querySelector('.census_record_ensure_building')
-  if (field) field.hidden = !!building.value
-}
-
-async function loadBuildingOptions() {
-  buildingRequest?.abort()
-  const building = document.querySelector(buildingSelector)
-  const street = document.getElementById('street_name')?.value
-  const locality = document.getElementById('census_record_locality_id')?.value
-  if (!building || !street || !locality) return
-
-  const request = new AbortController()
-  buildingRequest = request
-  const params = new URLSearchParams({ locality_id: locality, street })
-  for (const [name, selector] of Object.entries({
-    house: '#census_record_street_house_number, #street_house_number',
-    prefix: '#census_record_street_prefix, #street_prefix',
-    suffix: '#street_suffix'
-  })) {
-    const value = document.querySelector(selector)?.value
-    if (value) params.set(name, value)
-  }
-  const year = location.pathname.split('/')[2]
-  try {
-    const response = await fetch(`/census/${year}/building_autocomplete?${params}`, { signal: request.signal, headers: { Accept: 'application/json' } })
-    if (!response.ok) throw new Error(`HTTP ${response.status}`)
-    const items = await response.json()
-    if (request.signal.aborted || !building.isConnected) return
-    const selected = building.value
-    building.replaceChildren(new Option('Select a building', ''), ...items.map(item => new Option(item.name, item.id)))
-    building.value = items.some(item => String(item.id) === selected) ? selected : ''
-    updateEnsureBuilding(building)
-  } catch (error) {
-    if (!request.signal.aborted) console.error('Could not load building choices', error)
-  }
-}
-
 const buildingAddressFields = ['house_number', 'street_prefix', 'street_name', 'street_suffix']
 let buildingNamed = false
 document.addEventListener('turbo:load', () => {
-  const building = document.querySelector(buildingSelector)
-  if (building) {
-    updateEnsureBuilding(building)
-    loadBuildingOptions()
-  }
   buildingNamed = !!document.getElementById('building_name')?.value
 })
 
 document.addEventListener('change', ({ target }) => {
-  if (target.matches('#census_record_locality_id, #street_name, #street_suffix, #street_prefix, #street_house_number, #census_record_street_house_number, #census_record_street_prefix')) loadBuildingOptions()
-  if (target.matches(buildingSelector)) updateEnsureBuilding(target)
   if (target.id === 'building_name') buildingNamed = !!target.value
   const name = document.getElementById('building_name')
   if (name && !buildingNamed && buildingAddressFields.some(field => target.id === 'building_address_' + field)) {
