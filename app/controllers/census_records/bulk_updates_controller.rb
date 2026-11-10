@@ -9,7 +9,7 @@ module CensusRecords
 
     def show
       authorize! :bulk_update, BulkUpdate
-      @bulk_update = BulkUpdate.find params[:id]
+      @bulk_update = BulkUpdate.where(year: year).find(params[:id])
     end
 
     def new
@@ -19,7 +19,7 @@ module CensusRecords
 
     def edit
       authorize! :bulk_update, BulkUpdate
-      @bulk_update = BulkUpdate.find params[:id]
+      @bulk_update = BulkUpdate.where(year: year).find(params[:id])
     end
 
     def create
@@ -35,7 +35,7 @@ module CensusRecords
 
     def update
       authorize! :bulk_update, BulkUpdate
-      @bulk_update = BulkUpdate.find params[:id]
+      @bulk_update = BulkUpdate.where(year: year).find(params[:id])
       @bulk_update.attributes = params.require(:bulk_update).permit(:field, :value_from, :value_to, :confirm)
       if @bulk_update.save
         if @bulk_update.confirmed?
@@ -54,7 +54,7 @@ module CensusRecords
 
     def destroy
       authorize! :bulk_update, BulkUpdate
-      @bulk_update = BulkUpdate.find params[:id]
+      @bulk_update = BulkUpdate.where(year: year).find(params[:id])
       @bulk_update.destroy
       redirect_to "/census/#{year}/bulk"
     end
