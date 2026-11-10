@@ -1,22 +1,3 @@
-window.GridDataSource = {
-  getRows: (options) => {
-    const params = {
-      from: options.startRow,
-      to: options.endRow,
-      sort: options.sortModel
-    }
-
-    const $ = window.jQuery || window.$;
-    $.getJSON(document.location.toString(), params, (json) => {
-      const lastRow = json.length < 100 ? options.startRow + json.length : null
-      options.successCallback(json, lastRow)
-    }).fail((jqXHR, textStatus, errorThrown) => {
-      console.error('GridDataSource error:', textStatus, errorThrown);
-      options.failCallback();
-    })
-  }
-}
-
 // Base cell renderer class with common functionality
 class BaseCellRenderer {
   init(params) {
@@ -88,10 +69,9 @@ class HTMLCellRenderer extends BaseCellRenderer {
   }
 }
 
-// Export renderers to window object
-Object.assign(window, {
-  ActionCellRenderer,
-  NameCellRenderer,
-  CensusLinkCellRenderer,
-  HTMLCellRenderer
-})
+export {
+  ActionCellRenderer as actionCellRenderer,
+  NameCellRenderer as nameCellRenderer,
+  CensusLinkCellRenderer as censusLinkCellRenderer,
+  HTMLCellRenderer as htmlCellRenderer
+}

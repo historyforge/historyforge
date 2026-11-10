@@ -28,6 +28,26 @@ RSpec.describe "buildings" do
     expect(page).to have_content "405 N Titus Ave"
   end
 
+  scenario "a saved scope and its fields survive returning to the grid", :js do
+    sign_in create(:administrator)
+    building = create(:building, :reviewed, building_type_ids: [3], addresses: [build(:address, name: "Foundry")])
+    visit buildings_path(s: { street_address_cont: "Foundry" }, f: %w[street_address city])
+
+    find('label[for="scope_unpeopled"]').click
+    expect(page).to have_current_path(/scope=unpeopled/)
+    accept_prompt(with: "Unpeopled buildings") { click_button "Save It" }
+    expect(page).to have_css("#alerts [role=status]", text: "Saved search on this browser.")
+
+    find(%(#grid a[href$="#{building_path(building)}"])).click
+    expect(page).to have_current_path(building_path(building))
+    page.go_back
+    expect(page).to have_current_path(/scope=unpeopled/)
+    expect(page).to have_css(%(#grid a[href$="#{building_path(building)}"]))
+    expect(page).to have_css(".ag-header-cell[col-id=city]")
+    click_button "Load Search"
+    expect(page).to have_css(%q(.dropdown-menu a[href*="scope=unpeopled"]), text: "Unpeopled buildings")
+  end
+
   scenario "edit buildings" do
     sign_in create(:builder)
     building = create(:building, addresses: [build(:address, house_number: "405", name: "Cayuga", prefix: "N", suffix: "St")])

@@ -1,19 +1,3 @@
-/* eslint no-console:0 */
-// This file is automatically compiled by Webpack, along with any other files
-// present in this directory. You're encouraged to place your actual application logic in
-// a relevant structure within app/javascript and only use these pack files to reference
-// that code so it'll be compiled.
-//
-// To reference this file, add <%= javascript_pack_tag 'application' %> to the appropriate
-// layout file, like app/views/layouts/application.html.erb
-
-// Uncomment to copy all static images under ../images to the output folder and reference
-// them with the image_tag helper in views (e.g <%= image_tag 'rails.png' %>)
-// or the `imagePath` JavaScript helper below.
-//
-// const images = require.context('../images', true)
-// const imagePath = (name) => images(name, true)
-
 require('./js/cms_admin')
 require('@rails/activestorage').start()
 
@@ -28,23 +12,24 @@ document.addEventListener('shown.bs.tab', () => {
   document.querySelectorAll('.CodeMirror').forEach(editor => editor.CodeMirror.refresh())
 })
 
-const initializeCMS = () => {
-  $('textarea.codemirror').each(function() {
-    // Skip if already initialized (CodeMirror adds a class when initialized)
-    if ($(this).next('.CodeMirror').length > 0) { return; }
-    const { mode } = this.dataset || 'html'
-    const editor = CodeMirror.fromTextArea(this, {
+window.initializeCMS = () => {
+  document.querySelectorAll('textarea.codemirror').forEach(textarea => {
+    if (textarea.nextElementSibling?.classList.contains('CodeMirror')) return
+    const editor = window.CodeMirror.fromTextArea(textarea, {
       lineNumbers: true,
       theme: 'darcula',
-      mode
+      mode: textarea.dataset.mode || 'htmlmixed'
     })
     editor.setSize(null, 500)
   })
 }
 
-// Handle both initial page load and Turbo navigation
-$(initializeCMS)
-document.addEventListener('turbo:load', initializeCMS)
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', window.initializeCMS, { once: true })
+} else {
+  window.initializeCMS()
+}
+document.addEventListener('turbo:load', window.initializeCMS)
 
 addEventListener('direct-upload:initialize', event => {
   const { target, detail } = event

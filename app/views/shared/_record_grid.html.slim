@@ -1,0 +1,4 @@
+- content_for :head do
+  meta name="turbo-cache-control" content="no-cache"
+
+#grid.ag-theme-balham data-controller="record-grid" data-action="turbo:before-cache@document->record-grid#disconnect" data-columns=columns.to_json data-filters=@search.s.to_json data-filters-url=filters_url data-turbo-cache="false"

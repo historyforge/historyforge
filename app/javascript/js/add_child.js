@@ -1,35 +1,28 @@
-$(document).on('click', '.nested-form-item .remove', function(e) {
-  e.preventDefault()
-  e.stopPropagation()
+let nextChildId = 0
 
-  const item = $(this).closest('.nested-form-item')
-  const destroy = item.find('[name*="_destroy"]')
-  if (destroy.length) {
-    const destroy = item.find('[name*="_destroy"]')
-    destroy.val(1)
-    item.addClass('removed')
-  } else {
-    item.remove()
+document.addEventListener('click', event => {
+  const remove = event.target.closest('.nested-form-item .remove')
+  if (remove) {
+    event.preventDefault()
+    const item = remove.closest('.nested-form-item')
+    const destroy = item.querySelector('[name*="_destroy"]')
+    if (destroy) {
+      destroy.value = '1'
+      item.classList.add('removed')
+    } else {
+      item.remove()
+    }
+    return
   }
-})
 
-$(document).on('click', '[data-insert-fields]', function() {
-  const method = $(this).attr('data-insert-fields')
-  const content = $('#' + method + '_fields').html()
-  const formSelector = $(this).attr('data-form-selector')
-  insert_fields(this, method, content, formSelector)
+  const button = event.target.closest('[data-insert-fields]')
+  if (!button) return
+  const { insertFields, formSelector } = button.dataset
+  const template = document.getElementById(insertFields + '_fields')
+  if (!template) return
+  const form = formSelector ? document.querySelector(formSelector) : button.closest('.nested-form')
+  const target = form?.querySelector(':scope > .nested-form-items')
+  const association = insertFields.replace(/_[^_]+$/, '')
+  target?.insertAdjacentHTML('beforeend', template.innerHTML.replaceAll('new_' + association, Date.now() + ++nextChildId))
+  target?.querySelector('.nested-form-item:last-child')?.classList.remove('collapsed')
 })
-
-window.insert_fields = (link, method, content, formSelector) => {
-  const new_id = new Date().getTime()
-  method = method.split('_')
-  method.pop()
-  method = method.join('_')
-  const regexp = new RegExp('new_' + method, 'g')
-  const form = formSelector && formSelector.length ? $(formSelector) : $(link).closest('.nested-form')
-  const target = form.children('.nested-form-items')
-  console.log(form, target)
-  content = $(content.replace(regexp, new_id))
-  target.append(content).find('.nested-form-item:last').removeClass('collapsed') // .find('select').initChosen()
-  return false
-}

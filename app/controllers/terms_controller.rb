@@ -30,7 +30,7 @@ class TermsController < ApplicationController
   def peeps
     @term = @vocabulary.terms.find params[:term_id]
     @records = @term.records_for(params[:year].to_i).page(params[:page] || 1).per(10)
-    render layout: false
+    render partial: 'peeps'
   end
 
   def new

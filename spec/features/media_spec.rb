@@ -20,11 +20,16 @@ RSpec.describe 'Media editing', type: :feature do
       click_button 'Next »', match: :first
       fill_in 'Caption', with: 'Canal warehouse'
       # Advance through the optional wizard steps using the visible navigation.
-      5.times { click_button 'Next »', match: :first }
+      4.times { click_button 'Next »', match: :first }
+      click_button 'The year'
+      find('input[aria-label="Filter choices for Enter the year:"]').set('1940')
+      select '1940', from: 'Enter the year:'
+      click_button 'Next »', match: :first
       click_button 'Submit'
       expect(page).to have_content('The Photograph has been uploaded and saved.')
       photo = Photograph.order(:id).last
       expect(photo.caption).to eq('Canal warehouse')
+      expect(photo.date_year).to eq(1940)
       expect(photo.file.download).to eq(image)
       photo.file.purge
     end

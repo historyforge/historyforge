@@ -55,11 +55,7 @@ export const load = () => async (dispatch, getState) => {
   })
   if (typeof json.data === 'string') { json.data = JSON.parse(json.data) }
   dispatch({ type: 'BUILDING_LOADED', ...json.data })
-  // const qsParams = $.param(qs)
-  // const url = `/forge/?${qsParams}`
-  // if (url !== location.toString()) {
-  //   window.history.pushState(qsParams, 'HistoryForge', url)
-  // }
+
 }
 
 export const reset = () => async (dispatch, getState) => {
