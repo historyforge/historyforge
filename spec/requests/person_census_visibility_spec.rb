@@ -35,6 +35,7 @@ RSpec.describe 'Census record visibility on Person pages', type: :request do
     get person_path(person)
     expect(response).to have_http_status(:ok)
     page = Nokogiri::HTML(response.body)
+    expect(page.at_css('.person-census').text).not_to include('Matching tables', 'Linked household members')
     entries = page.css('.person-census-entry')
     expect(entries.map { |entry| entry.at_css('time')['datetime'] }).to eq(records.map { |record| record.year.to_s })
     expect(entries.map { |entry| entry.at_css('a:contains("View census record")')['href'] })

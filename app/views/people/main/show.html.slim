@@ -88,18 +88,26 @@
 - videos = @person.videos.in_chronological_order.accessible_by(current_ability).to_a
 - narratives = @person.narratives.accessible_by(current_ability).with_all_rich_text.to_a
 - if @visible_census_records.any?
-  section.person-census.person-section aria-labelledby="person-census-heading" data-controller=("census-view" if @visible_census_records.many?)
+  - can_edit_person = can?(:update, @person)
+  - show_table_option = can_edit_person || @visible_census_records.many?
+  section.person-census.person-section aria-labelledby="person-census-heading" data-controller=("census-view" if show_table_option)
     .d-flex.flex-wrap.align-items-center.justify-content-between.gap-2.mb-3
       h2#person-census-heading.h4.mb-0= @visible_census_records.one? ? 'Census appearance' : 'Life in the census'
-      - if @visible_census_records.many?
+      - if show_table_option
         .btn-group.btn-group-sm role="group" aria-label="Census record view" class="d-none" data-target="census-view.controls"
           button.btn.btn-outline-secondary.active type="button" aria-pressed="true" aria-controls="person-census-cards" data-target="census-view.cardsButton" data-action="census-view#showCards" Cards
-          button.btn.btn-outline-secondary type="button" aria-pressed="false" aria-controls="person-census-table" data-target="census-view.tableButton" data-action="census-view#showTable" Table
+          button.btn.btn-outline-secondary type="button" aria-pressed="false" aria-controls="person-census-table" data-target="census-view.tableButton" data-action="census-view#showTable" = can_edit_person ? 'Matching tables' : 'Table'
     #person-census-cards data-target="census-view.cards"
       = render 'census_appearances', records: @visible_census_records, households: @visible_census_households
-    - if @visible_census_records.many?
+    - if show_table_option
       #person-census-table hidden=true data-target="census-view.table"
-        = render 'census_comparison', records: @visible_census_records
+        - if can_edit_person
+          h3.h5 Census records
+        = render 'census_comparison', records: @visible_census_records, linked_household: false
+        - if can_edit_person
+          - linked_household_records_by_year(@visible_census_households).each do |year, records|
+            h3.h5.mt-3= "Linked household members in the #{year} census"
+            = render 'census_comparison', records:, linked_household: true
 
 .person-associated-content
   = render 'media/display_on_associated_record', item: @person, photos:, audios:, videos:, compact: true
