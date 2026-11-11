@@ -94,6 +94,31 @@ RSpec.describe CensusRecordSearch do
     end
   end
 
+  [1910, 1920, 1930, 1940].each do |year|
+    it "filters #{year} race write-ins separately from standard, unknown, and blank values" do
+      factory = :"census#{year}_record"
+      standard = create(factory, race: 'W')
+      write_in = create(factory, race: 'Portuguese')
+      unknown = create(factory, race: 'unknown')
+      legacy_unknown = create(factory, race: 'Un')
+      blank = create(factory, race: '')
+      blank.update_column(:race, '')
+      create(factory, race: nil)
+      other = CensusRecord::RACE_WRITE_IN_FILTER
+      config = "Census#{year}FormFields".constantize
+      filters = CensusFiltersGenerator.generate(Jbuilder.new, config).attributes!
+      expect(filters.fetch('race').fetch('choices')).to include(['Other', other])
+
+      other_search = described_class.generate(year:, user:, params: { s: { race_in: [other] } })
+      mixed_search = described_class.generate(year:, user:, params: { s: { race_in: [other, 'W'] } })
+      excluded_search = described_class.generate(year:, user:, params: { s: { race_not_in: [other] } })
+
+      expect(other_search.scoped).to contain_exactly(write_in)
+      expect(mixed_search.scoped).to contain_exactly(write_in, standard)
+      expect(excluded_search.scoped).to contain_exactly(standard, unknown, legacy_unknown, blank)
+    end
+  end
+
   describe 'income filters' do
     def income_search(year, filters)
       described_class.generate(year:, user:, params: { s: filters }).scoped

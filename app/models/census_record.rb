@@ -56,6 +56,33 @@ class CensusRecord < ApplicationRecord
     Arel::Nodes::NamedFunction.new('LOWER', [parent.table[:city]])
   end
 
+  RACE_WRITE_IN_FILTER = '__race_write_in__'
+  class_attribute :race_write_in_filter, default: false
+
+  def self.enable_race_write_in_filter
+    self.race_write_in_filter = true
+    standard_codes = race_choices.map(&:downcase) + ['', 'unknown', 'un']
+
+    ransacker :race_with_write_ins, type: :string do |parent|
+      race = parent.table[:race]
+      trimmed = Arel::Nodes::NamedFunction.new('BTRIM', [race])
+      normalized = Arel::Nodes::NamedFunction.new('LOWER', [trimmed])
+      Arel::Nodes::Case.new.when(normalized.not_in(standard_codes)).then(RACE_WRITE_IN_FILTER).else(race)
+    end
+  end
+
+  def self.race_filter_params(params)
+    return params unless race_write_in_filter
+
+    params.transform_keys do |key|
+      if %w[race_in race_not_in].include?(key.to_s) && Array(params[key]).include?(RACE_WRITE_IN_FILTER)
+        key.to_s.sub('race_', 'race_with_write_ins_')
+      else
+        key
+      end
+    end
+  end
+
   class_attribute :income_amount_fields, default: [].freeze
 
   def self.search_income_amounts(*fields)
@@ -71,7 +98,9 @@ class CensusRecord < ApplicationRecord
   end
 
   def self.ransackable_attributes(_auth_object = nil)
-    (super - %w[created_by_id]) + %w[street_address] + income_amount_fields.map { |field| "#{field}_amount" }
+    attributes = (super - %w[created_by_id]) + %w[street_address] + income_amount_fields.map { |field| "#{field}_amount" }
+    attributes << 'race_with_write_ins' if race_write_in_filter
+    attributes
   end
 
   def self.ransackable_scopes(_auth_object = nil)

@@ -127,6 +127,7 @@ class Census1940Record < CensusRecord
   define_enumeration :marital_status, %w[S M (M)7 Wd D].freeze
   define_enumeration :worker_class, %w[PW GW E OA NP NW].freeze
   define_enumeration :race, %w[W B In Ch Jp Fil Hin Kor].freeze
+  enable_race_write_in_filter
   define_enumeration :name_suffix, %w[Jr Sr].freeze
   define_enumeration :name_prefix, %w[Dr Mr Mrs].freeze
   define_enumeration :grade_completed, %w[0 1 2 3 4 5 6 7 8 H-1 H-2 H-3 H-4 C-1 C-2 C-3 C-4 C-5].freeze

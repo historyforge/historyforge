@@ -121,6 +121,7 @@ class Census1930Record < CensusRecord
   define_enumeration :worker_class, %w[E W OA NP].freeze
   define_enumeration :war_fought, %w[WW Sp Civ Phil Box Mex].freeze
   define_enumeration :race, %w[W B Mex In Ch Jp Fil Hin Kor].freeze
+  enable_race_write_in_filter
   define_enumeration :name_suffix, %w[Jr Sr].freeze
   define_enumeration :name_prefix, %w[Dr Mr Mrs].freeze
 

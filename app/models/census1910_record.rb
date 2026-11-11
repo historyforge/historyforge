@@ -108,6 +108,7 @@ class Census1910Record < CensusRecord
   scope :in_census_order, -> { order :ward, :enum_dist, :page_number, :page_side, :line_number }
 
   define_enumeration :race, %w[W B Mu Ch Jp In].freeze
+  enable_race_write_in_filter
   define_enumeration :marital_status, %w[S M_or_M1 M2_or_M3 Wd D].freeze
 
   COLUMNS = {
