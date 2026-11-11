@@ -1,10 +1,10 @@
 import React from 'react'
 import ScopeSelector from './ScopeSelector'
+import isValuelessPredicate from '../../search/isValuelessPredicate'
 
 export default function BasicField(props) {
   const { type, field, predicate, criteria, handleChange } = props
-  console.log(predicate)
-  const hasInput = !predicate.match(/null$/);
+  const hasInput = !isValuelessPredicate(predicate)
   return (
         <div className="row">
             <div className="col-sm-6">

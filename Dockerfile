@@ -23,29 +23,28 @@ RUN apt-get update -qq && apt-get install --no-install-recommends -y \
     build-essential git pkg-config libpq-dev libyaml-dev libssl-dev libffi-dev \
     libcurl4-openssl-dev liblzma-dev zlib1g-dev \
     && rm -rf /var/lib/apt/lists/*
+
+FROM build-tools AS ruby-dependencies
+COPY Gemfile Gemfile.lock ./
+RUN bundle install --jobs 4 --retry 5 && rm -rf /usr/local/bundle/cache
+
+FROM build-tools AS javascript-dependencies
 COPY --from=node /usr/local/bin/node /usr/local/bin/node
 COPY --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules
 RUN ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm \
     && ln -s /usr/local/lib/node_modules/corepack/dist/corepack.js /usr/local/bin/corepack \
     && corepack enable
 
-# Keep dependency caches independent: gem changes do not rerun Yarn, and vice versa.
-FROM build-tools AS javascript-dependencies
 COPY package.json yarn.lock .yarnrc.yml ./
 RUN yarn install --immutable
 
-FROM build-tools AS ruby-dependencies
-COPY Gemfile Gemfile.lock ./
-RUN bundle install --jobs 4 --retry 5 && rm -rf /usr/local/bundle/cache
+FROM scratch AS source
+COPY . /app/
+COPY lib/docker/database.yml /app/config/database.yml
 
-FROM ruby-dependencies AS source
-COPY . .
-COPY lib/docker/database.yml config/database.yml
-
-FROM source AS build
-COPY --from=javascript-dependencies /app/node_modules /app/node_modules
-COPY --from=javascript-dependencies /app/.yarn /app/.yarn
-COPY --from=javascript-dependencies /opt/corepack /opt/corepack
+FROM javascript-dependencies AS build
+COPY --from=ruby-dependencies /usr/local/bundle /usr/local/bundle
+COPY --from=source /app /app
 RUN yarn build \
     && SKIP_JS_BUILD=1 SECRET_KEY_BASE_DUMMY=1 bundle exec rails assets:precompile
 
@@ -53,14 +52,14 @@ FROM scratch AS compiled-assets
 COPY --from=build /app/public/assets /
 
 FROM base AS runtime
-ARG REVISION=unknown
-LABEL org.opencontainers.image.revision=$REVISION
 RUN groupadd --gid 32767 herokuishuser \
     && useradd --uid 32767 --gid 32767 --home-dir /app --shell /bin/bash herokuishuser
 COPY --from=ruby-dependencies /usr/local/bundle /usr/local/bundle
 COPY --from=source --chown=32767:32767 /app /app
 COPY --from=compiled-assets --chown=32767:32767 / /app/public/assets/
 RUN mkdir -p tmp/pids log storage && chown 32767:32767 /app && chown -R 32767:32767 tmp log storage
+ARG REVISION=unknown
+LABEL org.opencontainers.image.revision=$REVISION
 USER herokuishuser
 EXPOSE 5000
 CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0", "-p", "5000"]

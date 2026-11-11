@@ -49,6 +49,35 @@ RSpec.describe "buildings" do
     expect(page).to have_css(%q(.dropdown-menu a[href*="scope=unpeopled"]), text: "Unpeopled <b>buildings</b>")
   end
 
+  scenario "clearing a historical MiniForge overlay keeps the street map and building marker", :js do
+    building = create(:building, :reviewed)
+    overlay = MapOverlay.create!(name: "1888 Sanborn Atlas", year_depicted: 1888, active: true,
+                                url: "https://maps.historyforge.net/mosaics/wms/185")
+    historical_tiles = "#miniforge .leaflet-historicalMaps-pane .leaflet-layer"
+    street_attribution = "#miniforge .leaflet-control-attribution"
+    building_marker = "#miniforge .leaflet-marker-pane .leaflet-marker-icon"
+    layer_selector = "#miniforge-controls select"
+
+    visit building_path(building)
+    find(layer_selector).select(overlay.name)
+    expect(page).to have_css(historical_tiles, visible: :all)
+
+    page.refresh
+    expect(page).to have_css("#{layer_selector} option:checked", text: overlay.name, visible: :all)
+    expect(page).to have_css(historical_tiles, visible: :all)
+
+    find(layer_selector).select("No historic map")
+    expect(page).to have_no_css(historical_tiles, visible: :all)
+    expect(page).to have_css(street_attribution, text: "OpenStreetMap")
+    expect(page).to have_css(building_marker)
+
+    page.refresh
+    expect(page).to have_css("#{layer_selector} option:checked", text: "No historic map", visible: :all)
+    expect(page).to have_css(building_marker)
+    expect(page).to have_css(street_attribution, text: "OpenStreetMap")
+    expect(page).to have_no_css(historical_tiles, visible: :all)
+  end
+
   scenario "edit buildings" do
     sign_in create(:builder)
     building = create(:building, addresses: [build(:address, house_number: "405", name: "Cayuga", prefix: "N", suffix: "St")])
