@@ -2,7 +2,8 @@
   table.table.table-sm.w-100
     thead
       tr
-        th Year
+        - unless linked_household
+          th Year
         th Name
         th
           | Relation
@@ -17,8 +18,10 @@
       - records.each do |raw_row|
         - row = raw_row.decorate
         tr
-          td= row.year
-          td.text-nowrap= link_to row.name, row
+          - unless linked_household
+            td= row.year
+          td.text-nowrap
+            = link_to row.name, linked_household ? person_path(row.person_id) : row
           td= row.relation_to_head if row.year >= 1880
           td.text-nowrap= row.street_address
           td= row.age

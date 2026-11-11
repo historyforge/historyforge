@@ -3,6 +3,38 @@
 require 'rails_helper'
 
 RSpec.describe 'people' do
+  scenario 'person editors can keep the census matching tables open across person pages', :js do
+    editor = create(:active_user)
+    editor.add_role Role.find_by(name: 'person record editor')
+    sign_in editor
+
+    locality = create(:locality)
+    person = create(:person)
+    relative = create(:person)
+    record = create(:census1910_record, person:, locality:, relation_to_head: 'Head', reviewed_at: Time.current)
+    relative_record = create(:census1910_record, person: relative, locality:, relation_to_head: 'Son',
+                                               age: 12, pob: 'New York', reviewed_at: Time.current)
+    create(:census1910_record, person: create(:person), locality:, relation_to_head: 'Son',
+                              occupation: 'Private occupation')
+
+    visit person_path(person)
+    click_button 'Matching tables'
+
+    within('#person-census-table') do
+      expect(page).to have_link(href: polymorphic_path(record))
+      expect(page).to have_text('Linked household members in the 1910 census')
+      expect(page).to have_text('New York')
+      expect(page).to have_no_text('Private occupation')
+      find_link(relative_record.decorate.name, href: person_path(relative)).click
+    end
+
+    expect(page).to have_current_path(person_path(relative))
+    expect(page).to have_css('#person-census-table')
+    click_button 'Cards'
+    expect(page).to have_css('#person-census-cards')
+    expect(page).to have_no_css('#person-census-table')
+  end
+
   scenario 'shows a matched variant as a link and the primary name in See', :js do
     person = create(:person, first_name: 'William', last_name: 'Brown')
     person.names.create!(first_name: 'William', last_name: 'Browne')
