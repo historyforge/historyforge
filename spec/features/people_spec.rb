@@ -3,6 +3,23 @@
 require 'rails_helper'
 
 RSpec.describe 'people' do
+  scenario 'shows a matched variant as a link and the primary name in See', :js do
+    person = create(:person, first_name: 'William', last_name: 'Brown')
+    person.names.create!(first_name: 'William', last_name: 'Browne')
+
+    visit people_path(s: { names_last_name_eq: 'Browne' })
+
+    expect(page).to have_css('.ag-header-cell[col-id="see_name"]', text: 'See')
+    expect(page).to have_link('Browne, William', href: /#{Regexp.escape(person_path(person))}/)
+    expect(page).to have_css('.ag-cell[col-id="see_name"]', text: 'Brown, William')
+    expect(page).to have_no_link('Brown, William')
+
+    visit people_path(s: { names_last_name_eq: 'Brown' })
+
+    expect(page).to have_link('Brown, William')
+    expect(page).to have_no_css('.ag-header-cell[col-id="see_name"]')
+  end
+
   scenario 'the census narrative uses the viewer’s census permissions', driver: :rack_test do
     allow(People::PublicUrlOptions).to receive(:call).and_return({})
     person = create(:person, birth_year: 1880, is_birth_year_estimated: false,

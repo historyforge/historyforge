@@ -2,32 +2,29 @@
 
 # This translates a census record search into a format digestible by AgGrid
 class PersonGridTranslator
-  SKIP_COLUMNS = %w[name id].freeze
+  SKIP_COLUMNS = %w[name id see_name].freeze
 
   def initialize(search)
     @search = search
   end
 
   def column_def
-    search.columns.reject { |col| col == 'id' }.map(&method(:column_config))
+    columns.excluding('id', 'see_name').flat_map do |column|
+      config = column_config(column)
+      if column == 'name' && search.see_names?
+        [config, { headerName: 'See', field: 'see_name', width: 230, sortable: false, resizable: true }]
+      else
+        [config]
+      end
+    end
   end
 
   def row_data
     records.lazy.map do |record|
-      name = if record.matched_last_name.present? && (record.first_name != record.matched_first_name || record.last_name != record.matched_last_name)
-        matched_name = record.format_name(
-          first_name: record.matched_first_name,
-          last_name: record.matched_last_name
-        )
-        if matched_name == record.name
-          record.name
-        else
-          "#{matched_name} (see #{record.name})"
-        end
-      else
-        record.name
-      end
+      primary_name = record.name
+      name = matched_name(record) || primary_name
       hash = { name: { name:, reviewed: record.reviewed?, id: record.id } }
+      hash[:see_name] = primary_name if name != primary_name
 
       columns.each do |column|
         next if SKIP_COLUMNS.include?(column)
@@ -57,6 +54,13 @@ class PersonGridTranslator
     search.results
   end
 
+  def matched_name(record)
+    return if record.matched_last_name.blank?
+    return if record.first_name == record.matched_first_name && record.last_name == record.matched_last_name
+
+    record.format_name(first_name: record.matched_first_name, last_name: record.matched_last_name)
+  end
+
   def column_config(column)
     options = {
       headerName: Translator.label(entity_class, column),
@@ -79,7 +83,7 @@ class PersonGridTranslator
     id: 60,
     view: 60,
     occupation: 160,
-    name: 300,
+    name: 230,
     description: 250
   }.freeze
 
