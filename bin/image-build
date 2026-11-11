@@ -3,10 +3,29 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 image="${1:-historyforge:local}"
 revision=$(git rev-parse HEAD)
-build=(docker buildx build --platform "${PLATFORM:-linux/amd64}" --load
+platform=${PLATFORM:-linux/amd64}
+build=(docker buildx build --platform "$platform" --load
   --build-arg "REVISION=$revision" --tag "$image")
 
-if [ "${PRECOMPILE_ASSETS:-docker}" = host ]; then
+host_tools_available() {
+  local tool
+  for tool in ruby bundle node yarn rsync; do
+    command -v "$tool" >/dev/null || return 1
+  done
+}
+
+asset_mode=${PRECOMPILE_ASSETS:-auto}
+if [ "$asset_mode" = auto ]; then
+  asset_mode=docker
+  if [ "$platform" = linux/amd64 ] &&
+    [ "$(uname -s)" = Darwin ] && [ "$(uname -m)" = arm64 ] &&
+    host_tools_available; then
+    asset_mode=host
+  fi
+fi
+
+if [ "$asset_mode" = host ]; then
+  echo 'Precompiling assets on the host.' >&2
   staging=$(mktemp -d)
   trap 'rm -rf "$staging"' EXIT
   # Stage the checkout without local configuration or previously generated assets.
