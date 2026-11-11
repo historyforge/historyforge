@@ -1,3 +1,5 @@
+import isValuelessPredicate from './isValuelessPredicate'
+
 export default function selectAttribute(form, config) {
   const scopeContainer = form.querySelector('.scope-selection-container')
   const valueBox = form.querySelector('.value-input-container')
@@ -23,7 +25,7 @@ export default function selectAttribute(form, config) {
     const checked = new Set([...valueBox.querySelectorAll('input[type=checkbox]:checked')].map(input => input.value))
     valueBox.replaceChildren()
 
-    if (/null$/.test(selector.value) || config.type === 'boolean') {
+    if (isValuelessPredicate(selector.value) || config.type === 'boolean') {
       valueBox.append(input(name, 'hidden', '1'))
     } else if (config.type === 'checkboxes') {
       for (const choice of config.choices) {

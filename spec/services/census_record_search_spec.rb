@@ -37,6 +37,20 @@ RSpec.describe CensusRecordSearch do
     expect(search.scoped).to contain_exactly(match)
   end
 
+  it 'filters missing and empty institution names separately from populated names' do
+    records = [nil, '', 'County Almshouse'].each_with_index.map do |name, index|
+      create(:census1850_record, locality:, page_number: 1, line_number: index + 1,
+             county: 'Tompkins', state: 'New York', first_name: 'John', last_name: 'Doe',
+             family_id: (index + 1).to_s, occupation: 'None', institution_name: name)
+    end
+
+    blank_search = described_class.generate(year: 1850, user:, params: { s: { institution_name_blank: '1' } })
+    present_search = described_class.generate(year: 1850, user:, params: { s: { institution_name_present: '1' } })
+
+    expect(blank_search.scoped).to contain_exactly(*records.first(2))
+    expect(present_search.scoped).to contain_exactly(records.last)
+  end
+
   describe '#max_page_number' do
     before do
       Current.locality_id = locality.id

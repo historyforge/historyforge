@@ -1,3 +1,5 @@
+import isValuelessPredicate from '../../search/isValuelessPredicate'
+
 class SearchStorage {
   params = null;
   CACHE_KEY = "forgeSearch";
@@ -114,7 +116,7 @@ function forgeRemoveFilter(state, action) {
 
 function forgeSetFilter(state, action) {
   const current = { ...state.current }
-  const criteria = action.predicate.match(/null/) ? "1" : action.criteria;
+  const criteria = isValuelessPredicate(action.predicate) ? "1" : action.criteria;
   current[action.field] = { field: action.field, predicate: action.predicate, criteria }
   return { ...state, current, d: new Date().getTime(), params: buildParams(state, current) }
 }
