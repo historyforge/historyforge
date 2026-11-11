@@ -1,21 +1,30 @@
-.list-group-item.pb-3 id="narrative_#{narrative.id}"
+- as_card = local_assigns.fetch(:as_card, false)
+article class=(as_card ? "person-narrative-card border rounded p-3 p-md-4 shadow-sm" : "list-group-item pb-3") id="narrative_#{narrative.id}"
   - if can?(:review, narrative) && !narrative.reviewed?
     = link_to 'Review', [:review, @building || @person, narrative], class: 'btn btn-sm btn-danger float-right ml-2', data: { turbo_method: :put, turbo_confirm: 'Are you sure?' }
   - if can?(:destroy, narrative)
-    = link_to [@building || @person, narrative], method: :delete, data: { turbo_method: :delete, turbo_confirm: "Are you sure? This action is permanent." }, class: 'btn btn-sm btn-light float-right ml-1' do
+    = link_to [@building || @person, narrative], method: :delete, data: { turbo_method: :delete, turbo_confirm: "Are you sure? This action is permanent." }, class: "btn btn-sm #{as_card ? 'btn-outline-danger' : 'btn-light'} float-right ml-1" do
       i.fa.fa-trash
-      span.d-none.d-lg-inline
+      span class=("d-none d-lg-inline" unless as_card)
         | &nbsp; Delete
   - if can?(:update, narrative)
-    = link_to [:edit, @building || @person, narrative], class: 'btn btn-sm btn-light float-right ml-1' do
+    = link_to [:edit, @building || @person, narrative], class: "btn btn-sm #{as_card ? 'btn-outline-secondary' : 'btn-light'} float-right ml-1" do
       i.fa.fa-pencil
-      span.d-none.d-lg-inline
+      span class=("d-none d-lg-inline" unless as_card)
         | &nbsp; Edit
-  = narrative.story
-  = narrative.sources
+  - if as_card
+    div
+      = narrative.story
+    .person-narrative-source.mt-3.pt-2.small
+      strong
+        ' Source:
+      = auto_link(narrative.sources.to_s, link: :urls)
+  - else
+    = narrative.story
+    = narrative.sources
   - if narrative.date_text
     p= narrative.date_text
-  - if @person
+  - if @person && (!as_card || narrative.buildings.any?)
     p= narrative.buildings.map { |building| link_to(building.street_address, building) }.join('<br />').html_safe
   - if @building
     p= narrative.people.map { |person| link_to(person.name, person) }.join('<br />').html_safe

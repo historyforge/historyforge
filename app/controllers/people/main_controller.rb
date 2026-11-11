@@ -94,9 +94,9 @@ module People
 
     def load_representation
       evidence = LoadCensusEvidence.call(person: @person, readable: method(:census_record_readable?))
-      @visible_census_records = evidence.census_records
-      @visible_relative_records_by_year = evidence.census_households.values.flat_map(&:fellows)
-                                                 .select(&:person_id).group_by(&:year)
+      @visible_census_records = evidence.census_records.sort_by { |record| [record.year, record.id] }
+      @visible_census_households = evidence.census_households
+      ActiveRecord::Associations::Preloader.new(records: @visible_census_records, associations: %i[building locality]).call
       @person_representation = PersonSerializer.new(
         @person,
         **evidence.to_h,

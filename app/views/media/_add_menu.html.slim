@@ -1,0 +1,6 @@
+.dropdown class=local_assigns[:wrapper_class]
+  button.dropdown-toggle type="button" class=button_class data-bs-toggle="dropdown" aria-expanded="false" Add Media
+  .dropdown-menu
+    = link_to 'JPG Photograph', [:new, item, :photograph], class: 'dropdown-item'
+    = link_to 'MP3 Audio', [:new, item, :audio], class: 'dropdown-item'
+    = link_to 'MP4 Video', [:new, item, :video], class: 'dropdown-item'

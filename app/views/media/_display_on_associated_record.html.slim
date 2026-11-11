@@ -1,35 +1,43 @@
-- photos = item.photos.in_chronological_order.accessible_by(current_ability)
-- audios = item.audios.in_chronological_order.accessible_by(current_ability)
-- videos = item.videos.in_chronological_order.accessible_by(current_ability)
-.card.mb-3
-  .card-header
-    .dropdown.float-right
-      a.dropdown-toggle.btn.btn-sm.btn-light data-bs-toggle="dropdown" Add Media
-      .dropdown-menu
-        = link_to 'JPG Photograph', [:new, item, :photograph], class: 'dropdown-item'
-        = link_to 'MP3 Audio', [:new, item, :audio], class: 'dropdown-item'
-        = link_to 'MP4 Video', [:new, item, :video], class: 'dropdown-item'
-    | Media (Photos, Videos, Audio Recordings)
-  .card-body
-    .row
-      - if photos.blank? && audios.blank? && videos.blank?
-        .col-sm-12
-          p.lead No media have been attached yet!
-      - photos.each do |photo|
-        .building-photo.col-12.col-sm-6.col-lg-4 id="photo_#{photo.id}" data-href=url_for([item, photo])
-          = picture_tag photo: photo, style: 'quarter', img_class: 'img-thumbnail'
-          = simple_format photo.full_caption
-      - videos.each do |video|
-        .building-photo.col-12.col-sm-6.col-lg-4 id="video_#{video.id}"
-          - if video.remote_url&.match(/youtube\.com\/watch\?v=/)
-            iframe width="100%" src=video.remote_url.sub(/watch\?v=/, 'embed/') title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen="true"
-          = link_to url_for([item, video]) do
-            = simple_format video.full_caption
-      - audios.each do |audio|
-        .col-sm-6.col-12.col-lg-4 id="audio_#{audio.id}"
-          | Audio recording
-          span.ml-2= link_to audio.remote_url, target: :_blank, class: 'btn btn-xs btn-light' do
-            i.fa.fa-play
-          br
-          = link_to url_for([item, audio]) do
-            = simple_format audio.full_caption
+- photos = local_assigns.fetch(:photos) { item.photos.in_chronological_order.accessible_by(current_ability) }
+- audios = local_assigns.fetch(:audios) { item.audios.in_chronological_order.accessible_by(current_ability) }
+- videos = local_assigns.fetch(:videos) { item.videos.in_chronological_order.accessible_by(current_ability) }
+- compact = local_assigns.fetch(:compact, false)
+- empty_media = photos.blank? && audios.blank? && videos.blank?
+- unless compact && empty_media
+  div class=(compact ? "person-section" : "card mb-3")
+    - unless compact
+      .card-header
+        = render 'media/add_menu', item:, button_class: 'btn btn-sm btn-light', wrapper_class: 'float-right'
+        | Media (Photos, Videos, Audio Recordings)
+    div class=("card-body" unless compact)
+      - if compact && photos.any?
+        .person-record-grid data-columns=person_record_columns(photos.size)
+          - photos.each do |photo|
+            figure.person-gallery-photo.d-flex.flex-column.border.rounded.overflow-hidden.mb-0 id="photo_#{photo.id}"
+              = link_to [item, photo], class: 'd-block', aria: { label: photo.caption.presence || 'View photograph' } do
+                = picture_tag photo: photo, style: 'quarter', img_class: 'img-fluid w-100'
+              - if photo.full_caption.present?
+                figcaption.mt-auto.px-3.py-2= photo.full_caption
+      .row class=("mt-3" if compact && photos.any? && (videos.any? || audios.any?))
+        - if empty_media
+          .col-sm-12
+            p.lead No media have been attached yet!
+        - unless compact
+          - photos.each do |photo|
+            .building-photo.col-12.col-sm-6.col-lg-4 id="photo_#{photo.id}" data-href=url_for([item, photo])
+              = picture_tag photo: photo, style: 'quarter', img_class: 'img-thumbnail'
+              = simple_format photo.full_caption
+        - videos.each do |video|
+          .building-photo.col-12.col-sm-6.col-lg-4 id="video_#{video.id}"
+            - if video.remote_url&.match(/youtube\.com\/watch\?v=/)
+              iframe width="100%" src=video.remote_url.sub(/watch\?v=/, 'embed/') title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen="true"
+            = link_to url_for([item, video]) do
+              = simple_format video.full_caption
+        - audios.each do |audio|
+          .col-sm-6.col-12.col-lg-4 id="audio_#{audio.id}"
+            | Audio recording
+            span.ml-2= link_to audio.remote_url, target: :_blank, class: 'btn btn-xs btn-light' do
+              i.fa.fa-play
+            br
+            = link_to url_for([item, audio]) do
+              = simple_format audio.full_caption

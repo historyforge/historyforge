@@ -10,7 +10,7 @@
 = render 'shared/flag_resolution', item: @person
 - btn_class = 'btn btn-sm btn-secondary'
 - if user_signed_in?
-  .mb-3.person-actions
+  .mb-3.person-actions.d-flex.flex-wrap.gap-2
     - if can_people? || can?(:read, Person)
       = link_to 'View All', people_path, class: btn_class
     - if can?(:create, Flag)
@@ -26,6 +26,10 @@
         i.fa.fa-trash
         span.d-none.d-lg-inline
           | &nbsp; Delete
+    - if [Photograph, Audio, Video].any? { |type| can?(:create, type) }
+      = render 'media/add_menu', item: @person, button_class: btn_class
+    - if can?(:create, Narrative)
+      = link_to 'Add Source/Narrative', new_person_narrative_path(@person), class: btn_class
 - elsif can_people? || can?(:read, Person)
   - content_for :pills do
     .text-right
@@ -38,17 +42,17 @@
 
 - summary = @person_representation.summary
 - has_biography = summary || @person.description.present?
-.row.mb-4
+.row.person-section
   - if has_biography
-    section.col-lg-8.mb-3.mb-lg-0 aria-label="Biography"
+    section.person-biography.col-lg-8.mb-3.mb-lg-0 aria-label="Biography"
       - if summary
         - summary.split("\n\n").each do |paragraph|
-          p.mb-2= paragraph
-        p.small.mb-0
+          p.mt-0.mb-2= paragraph
+        p.small.mt-0.mb-0
           ' Census sources:
           = safe_join(@person_representation.summary_source_links.map { |source| link_to(source[:label], source[:url]) }, ', ')
       - if @person.description.present?
-        div class=("mt-3" if summary)
+        .person-description class=("mt-2" if summary)
           = auto_link(simple_format(@person.description), html: { target: '_blank', rel: 'nofollow' })
   .col-lg-4
     .card.p-2
@@ -79,69 +83,27 @@
             th scope="row" Person ID
             td= @person.id
 
-.card.mb-3
-  .card-header Census Records
-  .table-responsive
-    table.table.table-sm.w-100
-      thead
-        tr
-          th Year
-          th Name
-          th
-            | Relation
-            span.d-none.d-lg-inline &nbsp;to Head
-          th Address
-          th Age
-          th Race
-          th POB
-          th Marriage
-          th Occupation
-      tbody
-        - @visible_census_records.each do |raw_row|
-          - row = raw_row.decorate
-          tr
-            td= row.year
-            td.text-nowrap= link_to row.name, row
-            td= row.relation_to_head if row.year >= 1880
-            td.text-nowrap= row.street_address
-            td= row.age
-            td= row.race
-            td= row.pob
-            td= row.marital_status
-            td= row.occupation
+- photos = @person.photos.in_chronological_order.accessible_by(current_ability).to_a
+- audios = @person.audios.in_chronological_order.accessible_by(current_ability).to_a
+- videos = @person.videos.in_chronological_order.accessible_by(current_ability).to_a
+- narratives = @person.narratives.accessible_by(current_ability).with_all_rich_text.to_a
+- if @visible_census_records.any?
+  section.person-census.person-section aria-labelledby="person-census-heading" data-controller=("census-view" if @visible_census_records.many?)
+    .d-flex.flex-wrap.align-items-center.justify-content-between.gap-2.mb-3
+      h2#person-census-heading.h4.mb-0= @visible_census_records.one? ? 'Census appearance' : 'Life in the census'
+      - if @visible_census_records.many?
+        .btn-group.btn-group-sm role="group" aria-label="Census record view" class="d-none" data-target="census-view.controls"
+          button.btn.btn-outline-secondary.active type="button" aria-pressed="true" aria-controls="person-census-cards" data-target="census-view.cardsButton" data-action="census-view#showCards" Cards
+          button.btn.btn-outline-secondary type="button" aria-pressed="false" aria-controls="person-census-table" data-target="census-view.tableButton" data-action="census-view#showTable" Table
+    #person-census-cards data-target="census-view.cards"
+      = render 'census_appearances', records: @visible_census_records, households: @visible_census_households
+    - if @visible_census_records.many?
+      #person-census-table hidden=true data-target="census-view.table"
+        = render 'census_comparison', records: @visible_census_records
 
-- @visible_relative_records_by_year.sort.each do |year, census_records|
-  .card.mb-3
-    .card-header
-      | Relatives in #{year} US Census
-    .table-responsive
-      table.table.table-sm.w-100
-        thead
-          tr
-            th Name
-            th
-              | Relation
-              span.d-none.d-lg-inline &nbsp;to Head
-            th Address
-            th Age
-            th Race
-            th POB
-            th Marriage
-            th Occupation
-        tbody
-          - census_records.uniq(&:person_id).sort_by { |r| [r.page_number.to_i, r.page_side.to_s, r.line_number.to_i] }.each do |census_record|
-            - census_record = census_record.decorate
-            tr
-              td.text-nowrap
-                = link_to census_record.name, person_path(census_record.person_id)
-              td= census_record.relation_to_head
-              td.text-nowrap= census_record.street_address
-              td= census_record.age
-              td= census_record.race
-              td= census_record.pob
-              td= census_record.marital_status
-              td= census_record.occupation
-
+.person-associated-content
+  = render 'media/display_on_associated_record', item: @person, photos:, audios:, videos:, compact: true
+  = render 'associated_narratives', narratives:
 
 - if can?(:update, @person) && @person.possible_unmatched_records.present?
   .card.mb-3
@@ -178,22 +140,6 @@
                 = hidden_field_tag 'census_record[person_id]', @person.id
                 = hidden_field_tag 'context', 'person'
                 = form.submit 'Match!', class: 'btn btn-sm btn-secondary'
-
-= render 'media/display_on_associated_record', item: @person
-
-- narratives = @person.narratives.accessible_by(current_ability)
-.card class="#{narratives.blank? ? 'mb-3' : 'empty-card'}"
-  .card-header
-    = link_to 'Add Source/Narrative', new_person_narrative_path(@person), class: 'float-right'
-    | Sources &amp; Narratives
-  - if narratives.blank?
-    .card-body
-      p.lead No sources or narratives yet for this person.
-
-- if narratives.present?
-  .list-group
-    - narratives.each do |narrative|
-      = render 'narratives/narrative', narrative:
 
 - if @person.notes? && can?(:update, @person)
   .card.mb-3

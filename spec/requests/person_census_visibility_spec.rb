@@ -25,7 +25,8 @@ RSpec.describe 'Census record visibility on Person pages', type: :request do
   end
 
   def census_record(year, linked_person, reviewed:)
-    create(:"census#{year}_record", locality:).tap do |record|
+    relation_to_head = linked_person == person ? 'Head' : 'Boarder'
+    create(:"census#{year}_record", locality:, relation_to_head:).tap do |record|
       record.update_columns(person_id: linked_person.id, reviewed_at: reviewed ? Time.current : nil)
     end
   end
@@ -34,16 +35,22 @@ RSpec.describe 'Census record visibility on Person pages', type: :request do
     get person_path(person)
     expect(response).to have_http_status(:ok)
     page = Nokogiri::HTML(response.body)
-    cards = page.css('.card').select { |card| card.at_css('.card-header') }
-    census_card = cards.find { |card| card.at_css('.card-header').text.strip == 'Census Records' }
-    relative_cards = cards.select { |card| card.at_css('.card-header').text.strip.start_with?('Relatives in ') }
-
-    expect(census_card.css('tbody a').map { |link| link['href'] })
+    entries = page.css('.person-census-entry')
+    expect(entries.map { |entry| entry.at_css('time')['datetime'] }).to eq(records.map { |record| record.year.to_s })
+    expect(entries.map { |entry| entry.at_css('a:contains("View census record")')['href'] })
       .to eq(records.map { |record| polymorphic_path(record) })
-    expect(relative_cards.flat_map { |card| card.css('tbody a').map { |link| link['href'] } })
-      .to eq(relatives.map { |record| person_path(record.person_id) })
-    expect(relative_cards.map { |card| card.at_css('.card-header').text.strip })
-      .to eq(relatives.map { |record| "Relatives in #{record.year} US Census" }.uniq)
+    entries.zip(records).each do |entry, record|
+      expected_household = relatives.select { |relative| relative.year == record.year }
+      expect(entry.css('details a').map { |link| link['href'] })
+        .to match_array(expected_household.map { |relative| person_path(relative.person_id) })
+    end
+    comparison = page.at_css('.person-census table')
+    if records.many?
+      expect(comparison.css('tbody a').map { |link| link['href'] })
+        .to eq(records.map { |record| polymorphic_path(record) })
+    else
+      expect(comparison).to be_nil
+    end
 
     [public_record, unreviewed_record, private_record].each do |record|
       get polymorphic_path(record)
@@ -57,6 +64,31 @@ RSpec.describe 'Census record visibility on Person pages', type: :request do
 
   it 'shows guests only reviewed records from public years' do
     expect_visibility(records: [public_record], relatives: [public_relative])
+  end
+
+  it 'shows reviewed attachments alongside visible census evidence' do
+    author = create(:active_user)
+    narrative = Narrative.create!(created_by: author, people: [person], story: 'A family history',
+                                  sources: 'City directory')
+    video = Video.create!(created_by: author, people: [person], caption: 'An interview')
+
+    get person_path(person)
+    expect(response.body).not_to include('A family history', 'An interview')
+
+    narrative.update!(reviewed_at: Time.current)
+    get person_path(person)
+    page = Nokogiri::HTML(response.body)
+    expect(page.at_css('.person-census .person-census-entry')).to be_present
+    expect(page.at_css('.person-associated-content').text).to include('A family history')
+    expect(page.at_css('.person-associated-content').text).not_to include('An interview')
+
+    narrative.update!(reviewed_at: nil)
+    video.update!(reviewed_at: Time.current)
+    get person_path(person)
+    page = Nokogiri::HTML(response.body)
+    expect(page.at_css('.person-census .person-census-entry')).to be_present
+    expect(page.at_css('.person-associated-content').text).to include('An interview')
+    expect(page.at_css('.person-associated-content').text).not_to include('A family history')
   end
 
   it 'shows signed-in readers reviewed records from public and private years' do
