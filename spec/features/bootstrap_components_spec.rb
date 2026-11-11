@@ -32,9 +32,16 @@ RSpec.describe "Bootstrap components" do
     page.execute_script("Turbo.visit(arguments[0])", new_census1880_record_path)
     expect(page).to have_current_path(new_census1880_record_path)
     expect(page).to have_css("[data-bs-toggle=popover]")
-    hint = first("[data-bs-toggle=popover]")
-    page.execute_script("arguments[0].focus()", hint)
+    find_field("Institution", exact: true).send_keys(:tab)
+    last_name = find("#census_record_last_name:focus")
+    expect(page).to have_no_css(".popover.show")
+    last_name.send_keys(:f1)
     expect(page).to have_css(".popover.show", count: 1)
+
+    last_name.send_keys(:escape)
+    expect(page).to have_no_css(".popover.show")
+    last_name.send_keys(:tab)
+    expect(page).to have_css("#census_record_first_name:focus")
 
     page.execute_script("Turbo.visit(arguments[0])", buildings_path)
     expect(page).to have_current_path(buildings_path, ignore_query: true)
@@ -44,7 +51,7 @@ RSpec.describe "Bootstrap components" do
     expect(page).to have_current_path(new_census1880_record_path)
     expect(page.evaluate_script("window.bootstrapTestVisit")).to be true
     expect(page).to have_css("[data-bs-toggle=popover]")
-    page.execute_script("arguments[0].focus()", first("[data-bs-toggle=popover]"))
+    find("#census_record_last_name").send_keys(:f1)
     expect(page).to have_css(".popover.show", count: 1)
   end
 
