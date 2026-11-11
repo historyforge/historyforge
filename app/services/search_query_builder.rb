@@ -62,7 +62,8 @@ class SearchQueryBuilder
     @navigation = true
 
     # Get the ordered list of IDs from the main query (respects all filters and sorting)
-    base_query = scoped.offset(nil).limit(nil)
+    base_query = scoped
+    base_query = base_query.offset(nil).limit(nil) if from || to
 
     # Ensure the base query includes id in its select list
     base_query = base_query.select("#{entity_class.table_name}.*") unless base_query.select_values.include?("#{entity_class.table_name}.id")
@@ -104,6 +105,18 @@ class SearchQueryBuilder
   end
 
   private
+
+  def sort_columns
+    return [] unless sort.is_a?(Hash)
+
+    sort.values.filter_map do |entry|
+      next unless entry.is_a?(Hash)
+
+      column, direction = entry.with_indifferent_access.values_at(:colId, :sort)
+      direction = direction.to_s.downcase
+      [column, direction] if column.is_a?(String) && %w[asc desc].include?(direction)
+    end
+  end
 
   def builder
     relation = entity_class.ransack(ransack_params).result

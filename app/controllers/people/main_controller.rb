@@ -16,7 +16,7 @@ module People
       respond_to do |format|
         format.html
         format.json do
-          navigation = search_params.slice('s', 'scope', 'sort').merge('results' => '1')
+          navigation = grid_navigation_context
           render json: @translator.row_data { |id| person_path(id, navigation:) }
         end
         format.csv { render_csv('people', Person) }
@@ -108,15 +108,7 @@ module People
     end
 
     def load_navigation
-      context = params[:navigation]
-      if context.is_a?(ActionController::Parameters) && context[:results] == '1'
-        @navigation_context = context.slice(:results, :s, :scope, :sort).to_unsafe_h
-      end
-      navigation_params = @navigation_context || ExtractNavigationParams.call(
-        user: current_user,
-        session:,
-        search_key: self.class.name
-      )
+      navigation_params = grid_navigation_params
       return unless navigation_params
 
       @navigation_neighbors = PersonSearch.generate(

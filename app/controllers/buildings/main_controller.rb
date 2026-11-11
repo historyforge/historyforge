@@ -17,6 +17,7 @@ module Buildings
       review: :review,
       bulk_review: :review,
     }.freeze
+    NAVIGATION_FILTERS = %i[people peopleParams near].freeze
 
     wrap_parameters format: []
     respond_to :json, only: %i[index show update]
@@ -37,7 +38,8 @@ module Buildings
         format.json do
           if params[:from]
             @search.expanded = true
-            render json: BuildingGridTranslator.new(@search).row_data
+            navigation = grid_navigation_context(*NAVIGATION_FILTERS)
+            render json: BuildingGridTranslator.new(@search).row_data { |id| building_path(id, navigation:) }
           else
             render plain: ForgeQuery.new(@search).to_json, content_type: 'application/json'
           end
@@ -65,10 +67,8 @@ module Buildings
     def show
       @building = @building.decorate
 
-      load_navigation
-
       respond_to do |format|
-        format.html
+        format.html { load_navigation }
         format.json { render json: BuildingSerializer.new(@building) }
       end
     end
@@ -143,18 +143,16 @@ module Buildings
     private
 
     def load_navigation
-      navigation_params = ExtractNavigationParams.call(
-        user: current_user,
-        session:,
-        search_key: self.class.name
-      )
+      navigation_params = grid_navigation_params(*NAVIGATION_FILTERS)
       return unless navigation_params
 
-      @navigation_neighbors = BuildingSearch.generate(
+      search = BuildingSearch.generate(
         params: navigation_params,
         user: current_user,
         creator_scope: creator_search_scope(Building),
-      ).navigation_neighbors(@building.id)
+      )
+      search.expanded = true
+      @navigation_neighbors = search.navigation_neighbors(@building.id, unique: true)
     end
 
     def load_residents

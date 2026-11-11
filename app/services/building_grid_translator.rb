@@ -17,6 +17,7 @@ class BuildingGridTranslator
   def row_data
     records.map do |record|
       hash = { street_address: { name: record.street_address, id: record.id, reviewed: record.reviewed? } }
+      hash[:street_address][:href] = yield(record.id) if block_given?
       columns.each do |column|
         next if SKIP_COLUMNS.include?(column)
 

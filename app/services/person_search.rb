@@ -82,19 +82,7 @@ class PersonSearch < SearchQueryBuilder
   end
 
   def add_sorts
-    order = []
-    sort_values = sort.is_a?(Hash) ? sort.values : []
-    sort_values.each do |sort_unit|
-      next unless sort_unit.is_a?(Hash)
-
-      sort_unit = sort_unit.with_indifferent_access
-      col = sort_unit[:colId]
-      dir = sort_unit[:sort].to_s.downcase
-      next unless %w[asc desc].include?(dir)
-
-      clause = sort_clause(col, dir)
-      order << clause if clause
-    end
+    order = sort_columns.filter_map { |column, direction| sort_clause(column, direction) }
     order << name_order_clause("asc") if order.empty?
     order << "people.id ASC"
     builder.order(Arel.sql(order.join(", ")))
