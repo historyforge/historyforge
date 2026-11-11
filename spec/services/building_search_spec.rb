@@ -3,6 +3,24 @@
 require 'rails_helper'
 
 RSpec.describe BuildingSearch do
+  it 'finds buildings by description or narrative story without repeating buildings' do
+    user = create(:active_user)
+    described_building = create(:building, description: 'Sousa performed here.')
+    narrated_building = create(:building)
+    unrelated_building = create(:building, description: 'A former hotel.')
+
+    create(:narrative, buildings: [narrated_building], created_by: user,
+                       story: 'John Philip Sousa had lunch here.', sources: 'Newspaper')
+    create(:narrative, buildings: [described_building, narrated_building], created_by: user,
+                       story: 'Sousa visited in 1911.', sources: 'Local archives')
+    create(:narrative, buildings: [unrelated_building], created_by: user,
+                       story: 'The hotel opened in 1900.', sources: 'Sousa collection')
+
+    search = described_class.generate(user:, params: { s: { description_cont: 'sousa' } })
+
+    expect(search.scoped).to contain_exactly(described_building, narrated_building)
+  end
+
   it 'filters by the building creator and reserves direct creator predicates' do
     creator = create(:census_taker)
     own_building = create(:building, created_by: creator)
