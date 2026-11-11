@@ -44,10 +44,7 @@ class PersonSearch < SearchQueryBuilder
   memoize :scoped
 
   def count
-    builder.uncensused if uncensused?
-    builder.photographed if photographed?
-    scope_to_locality if Current.locality_id && !s.key?("localities_id_in")
-    entity_class.where(id: builder.scoped.select("people.id")).count
+    entity_class.where(id: unpaginated_scope.select("people.id")).count
   end
 
   def scope_to_locality
@@ -70,6 +67,14 @@ class PersonSearch < SearchQueryBuilder
 
     builder.group("person_names.id")
     builder.select(builder.scoped.select_values, "person_names.first_name as matched_first_name, person_names.last_name as matched_last_name") unless navigation
+  end
+
+  def see_names?
+    return false unless has_names_joined?
+
+    unpaginated_scope.where.not(person_names: { last_name: [nil, ""] })
+                     .where("(person_names.first_name, person_names.last_name) IS DISTINCT FROM (people.first_name, people.last_name)")
+                     .exists?
   end
 
   def add_sorts
@@ -126,6 +131,10 @@ class PersonSearch < SearchQueryBuilder
   end
 
   private
+
+  def unpaginated_scope
+    scoped.unscope(:select, :group, :order, :limit, :offset).distinct(false)
+  end
 
   def ransack_params
     # Keep the original filter keys in saved searches and filter chips.
