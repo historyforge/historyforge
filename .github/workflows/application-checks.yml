@@ -33,10 +33,10 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - name: Install system dependencies
-        timeout-minutes: 5
+        timeout-minutes: 6
         run: |
           # Stop on a failed index refresh instead of downloading from stale indexes.
-          if ! timeout 90s sudo apt-get update -o APT::Update::Error-Mode=any -o Acquire::Retries=0; then
+          if ! timeout 30s sudo apt-get update -o APT::Update::Error-Mode=any -o Acquire::Retries=0; then
             echo "::warning::APT index refresh failed; retrying with the MIT Ubuntu mirror"
             sudo sed -i 's|mirror+file:/etc/apt/apt-mirrors.txt|https://mirrors.mit.edu/ubuntu|g' /etc/apt/sources.list.d/ubuntu.sources
             sudo apt-get update -o APT::Update::Error-Mode=any -o Acquire::Retries=0
