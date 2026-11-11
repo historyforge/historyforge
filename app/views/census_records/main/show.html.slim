@@ -139,14 +139,13 @@ div.mb-3.clearfix.d-flex.justify-content-between
         .card-header
           = link_to 'Create New Person Record', [:make_person, @record], class: 'float-right', data: { turbo_method: :put, turbo_confirm: 'This will generate a new person record out of this census record.' }
           | Match Person Record
-        - if @record.likely_person_matches.blank?
+        - if @record.person_match_suggestions.blank?
           .card-body
-            p No matches on Last Name/First Name or Last Name.
+            p No person records suggested.
         - else
           .list-group
-            - unless @record.likely_exact_matches?
-              .list-group-item No exact matches. Showing possible (but usually unlikely) matches.
-            - @record.likely_person_matches.each do |match|
+            - @record.person_match_suggestions.each do |suggestion|
+              - match = suggestion.person
               .list-group-item
                 = form_for @record, html: { class: 'float-right' } do |form|
                   = hidden_field_tag 'census_record[person_id]', match.id
@@ -154,6 +153,7 @@ div.mb-3.clearfix.d-flex.justify-content-between
                 h5= link_to match, target: :_blank do
                   => match.name
                   i.fa.fa-external-link
+                p.mb-1= suggestion.reason
                 p
                   | Age: #{match.age_in_year(@record.year)} |&nbsp; #{match.race ? translated_option('race', match.race) : 'Race unspecified'} |&nbsp; #{match.occupation} |&nbsp; #{match.relation_to_head}
                 p.mb-0= match.address
