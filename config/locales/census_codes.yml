@@ -137,5 +137,7 @@ en:
       5000+: '$5,000+'
       10000+: '$10,000+'
       p6: 'Left confidential income form (P6) to be mailed'
+      un: 'Un - Unknown'
+      unknown: 'Unknown'
     residence_1935_town:
       r: 'Rural'

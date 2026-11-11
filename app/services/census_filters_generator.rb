@@ -34,6 +34,10 @@ class CensusFiltersGenerator
     if options[:collection]
       collection = options[:coded] ? coded_collection(field, options) : options[:collection]
       AttributeBuilder.collection(json, field, klass:, collection:)
+      if klass.income_amount_fields.include?(field)
+        AttributeBuilder.number(json, :"#{field}_amount", klass:, sortable: false,
+                                label: "#{Translator.filter(klass, field)} (amount in dollars)")
+      end
       return
     end
 
@@ -50,7 +54,10 @@ class CensusFiltersGenerator
   end
 
   def coded_collection(field, options)
-    options[:collection].map do |item|
+    choices = options[:collection]
+    choices = choices + ['unknown'] if klass.income_amount_fields.include?(field)
+    choices = choices + ['Un'] if klass == Census1940Record && field == :wages_or_salary
+    choices.map do |item|
       code = item.downcase == item ? item.capitalize : item
       translated_code = field == :race && @klass.respond_to?(:translate_race_code) ? @klass.translate_race_code(code) : code
       attribute = options[:coded].is_a?(Symbol) ? options[:coded] : field
