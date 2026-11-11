@@ -38,12 +38,13 @@ RSpec.describe "buildings" do
     accept_prompt(with: "Unpeopled <b>buildings</b>") { click_button "Save It" }
     expect(page).to have_css("#alerts [role=status]", text: "Saved search on this browser.")
 
-    find(%(#grid a[href$="#{building_path(building)}"])).click
-    expect(page).to have_current_path(building_path(building))
+    record_link = %(#grid a[href^="#{building_path(building)}?"])
+    find(record_link).click
+    expect(page).to have_current_path(building_path(building), ignore_query: true)
     expect(page).to have_css("#miniforge .leaflet-container")
     page.go_back
     expect(page).to have_current_path(/scope=unpeopled/)
-    expect(page).to have_css(%(#grid a[href$="#{building_path(building)}"]))
+    expect(page).to have_css(record_link)
     expect(page).to have_css(".ag-header-cell[col-id=city]")
     click_button "Load Search"
     expect(page).to have_css(%q(.dropdown-menu a[href*="scope=unpeopled"]), text: "Unpeopled <b>buildings</b>")
