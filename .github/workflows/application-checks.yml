@@ -26,15 +26,21 @@ jobs:
         ports:
           - 5432:5432
         options: >-
-          --health-cmd pg_isready
+          --health-cmd "pg_isready -U postgres"
           --health-interval 5s
           --health-timeout 5s
           --health-retries 10
     steps:
       - uses: actions/checkout@v6
       - name: Install system dependencies
+        timeout-minutes: 5
         run: |
-          sudo apt-get update
+          # Stop on a failed index refresh instead of downloading from stale indexes.
+          if ! timeout 90s sudo apt-get update -o APT::Update::Error-Mode=any -o Acquire::Retries=0; then
+            echo "::warning::APT index refresh failed; retrying with the main Ubuntu archive"
+            sudo sed -i 's|mirror+file:/etc/apt/apt-mirrors.txt|https://archive.ubuntu.com/ubuntu|g' /etc/apt/sources.list.d/ubuntu.sources
+            sudo apt-get update -o APT::Update::Error-Mode=any -o Acquire::Retries=0
+          fi
           sudo apt-get install -y libpq-dev libvips imagemagick postgresql-client
       - name: Read the Ruby version
         id: ruby
