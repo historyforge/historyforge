@@ -2,6 +2,25 @@
 
 module People
   class LikelyMatches
+    Suggestion = Data.define(:person, :reason)
+
+    AGE_TOLERANCE = 5
+    MAX_MATCHES = 20
+    MAX_SURNAME_ONLY_MATCHES = 10
+
+    # Allow a weaker surname spelling match when a given name or known nickname agrees.
+    SURNAME_SIMILARITY_WITH_GIVEN_NAME = 0.25
+
+    REASONS = {
+      1 => 'Same given or middle name and surname',
+      2 => 'Known nickname and same surname',
+      3 => 'Similar given or middle name and same surname',
+      4 => 'Matching given name or nickname and similar surname',
+      5 => 'Similar given or middle name and similar surname',
+      6 => 'Given name and surname appear reversed',
+      7 => 'Same surname only',
+    }.freeze
+
     def self.call(record:)
       new(record:).call
     end
@@ -10,112 +29,79 @@ module People
       @record = record
     end
 
-    include FastMemoize
-
-    # @!attribute [r] year
-    #   @return [Integer]
-    # @!attribute [r] age
-    #   @return [Integer]
-    # @!attribute [r] sex
-    #   @return [String]
-    delegate :year, :age, :sex, to: :record
-
     def call
-      return empty_result if only_one_census_going?
-      
-      matches = exact_matches
-      return { matches:, exact: true } if matches.present?
+      return [] if record.first_name.blank? || record.last_name.blank?
+      return [] if CensusRecords::OnlyOneCensusYear.call
 
-      { matches: fuzzy_matches, exact: false }
+      ranked = ranked_people.limit(MAX_MATCHES).preload(*CensusYears.map { |year| :"census#{year}_records" }).to_a
+      supported, surname_only = ranked.partition { |person| person.name_match_rank != REASONS.size }
+      matches = supported.presence || surname_only.first(MAX_SURNAME_ONLY_MATCHES)
+
+      matches.map { |person| Suggestion.new(person:, reason: REASONS.fetch(person.name_match_rank)) }
     end
 
     private
 
     attr_reader :record
 
-    def empty_result
-      { matches: [], exact: false }
+    def given_names
+      # A middle initial can be absent or transcribed differently across censuses.
+      middle_name = record.middle_name.to_s.downcase
+      names = [record.first_name.downcase]
+      names << middle_name if middle_name.length > 1
+      names.uniq
     end
 
-    def only_one_census_going?
-      CensusRecords::OnlyOneCensusYear.call
+    def birth_year_from_age
+      age = record.age
+      record.year - age if age && age >= 0 && age != 999
     end
 
-    def filter_matches(matches)
-      matches
-        .preload(*CensusYears.map { |year| :"census#{year}_records" })
-        .to_a
-        .select { |match| match.similar_in_age?(year, age) }
+    def ranked_people
+      eligible = Person.where(sex: record.sex)
+      birth_year = birth_year_from_age
+      if birth_year
+        eligible = eligible.where(birth_year: [nil, (birth_year - AGE_TOLERANCE)..(birth_year + AGE_TOLERANCE)])
+      end
+
+      name_ranks = PersonName.where(person_id: eligible.select(:id)).select(:person_id, Arel.sql(name_rank_sql))
+      people = Person.with(name_ranks:)
+                     .joins(<<~SQL.squish)
+                       INNER JOIN (
+                         SELECT person_id, MIN(name_match_rank) AS name_match_rank
+                         FROM name_ranks
+                         WHERE name_match_rank IS NOT NULL
+                         GROUP BY person_id
+                       ) best_name ON best_name.person_id = people.id
+                     SQL
+                     .select('people.*', 'best_name.name_match_rank')
+                     .order('best_name.name_match_rank')
+
+      people = people.order(Arel.sql('ABS(people.birth_year - ?) ASC NULLS LAST', birth_year)) if birth_year
+      people.order(:last_name, :first_name, :middle_name, :id)
     end
 
-    def first_name
-      @first_name ||= record.first_name.downcase
-    end
+    def name_rank_sql
+      names = given_names
+      nicknames = names.flat_map { |name| Nicknames.matches_for(name, record.sex) }.uniq
+      same_surname = 'LOWER(person_names.last_name) = :surname'
+      same_given = '(LOWER(person_names.first_name) IN (:names) OR LOWER(person_names.middle_name) IN (:names))'
+      known_given = '(LOWER(person_names.first_name) IN (:nicknames) OR LOWER(person_names.middle_name) IN (:nicknames))'
+      similar_given = names.map do |name|
+        PersonName.sanitize_sql_array(['(person_names.first_name % ? OR person_names.middle_name % ?)', name, name])
+      end.join(' OR ')
 
-    def last_name
-      @last_name ||= record.last_name.downcase
-    end
-
-    def first_name_cognates
-      Nicknames.matches_for(first_name, sex)
-    end
-    memoize :first_name_cognates
-
-    def first_names_with_last_name
-      names = first_name_cognates.map { |name| "#{name} #{last_name}" }
-      return names unless record.middle_name.present?
-
-      middle_name_cognates = Nicknames.matches_for(record.middle_name.downcase, sex)
-      names + middle_name_cognates.map { |name| "#{name} #{last_name}" }
-    end
-
-    def exact_matches
-      query = Person.where(sex:)
-                   .where(id: person_name_subquery)
-                   .order('people.first_name, people.middle_name')
-      
-      matches = if_exists(query)
-      matches && filter_matches(matches)
-    end
-
-    def person_name_subquery
-      PersonName.select(:person_id)
-               .where(name_conditions)
-               .where('person_names.person_id = people.id')
-    end
-
-    def name_conditions
-      [
-        '(lower(person_names.first_name) IN (?) OR person_names.first_name % ? OR ' \
-        'person_names.middle_name IN (?) OR person_names.middle_name % ?) AND ' \
-        'person_names.last_name % ?',
-        first_name_cognates, first_name, first_name_cognates, first_name, last_name
-      ]
-    end
-
-    def fuzzy_matches
-      top_matches = filter_matches(last_name_matches) if last_name_matches
-      bottom_matches = filter_matches(fuzzy_name_matches) if fuzzy_name_matches
-
-      [top_matches, bottom_matches].compact.flatten.uniq(&:id)
-    end
-
-    def fuzzy_name_matches
-      if_exists(Person.fuzzy_name_search(first_names_with_last_name)
-                      .where(sex:)
-                      .limit(20))  # Increased limit to accommodate more potential matches
-    end
-
-    def last_name_matches
-      if_exists(Person.where(sex:)
-                  .where(id: PersonName.select(:person_id)
-                               .where('LOWER(person_names.last_name) = ? OR LOWER(person_names.first_name) = ?', last_name, last_name)
-                               .where('person_names.person_id=people.id'))
-                      .order(:first_name, :middle_name).limit(10))
-    end
-
-    def if_exists(matches)
-      matches.exists? ? matches : false
+      PersonName.sanitize_sql_array([<<~SQL, { names:, nicknames:, surname: record.last_name.downcase, minimum: SURNAME_SIMILARITY_WITH_GIVEN_NAME }])
+        CASE
+          WHEN #{same_surname} AND #{same_given} THEN 1
+          WHEN #{same_surname} AND #{known_given} THEN 2
+          WHEN #{same_surname} AND (#{similar_given}) THEN 3
+          WHEN #{known_given} AND similarity(person_names.last_name, :surname) >= :minimum THEN 4
+          WHEN person_names.last_name % :surname AND (#{similar_given}) THEN 5
+          WHEN LOWER(person_names.first_name) = :surname AND LOWER(person_names.last_name) IN (:names) THEN 6
+          WHEN #{same_surname} THEN 7
+        END AS name_match_rank
+      SQL
     end
   end
 end
