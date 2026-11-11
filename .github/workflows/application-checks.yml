@@ -26,15 +26,21 @@ jobs:
         ports:
           - 5432:5432
         options: >-
-          --health-cmd pg_isready
+          --health-cmd "pg_isready -U postgres"
           --health-interval 5s
           --health-timeout 5s
           --health-retries 10
     steps:
       - uses: actions/checkout@v6
       - name: Install system dependencies
+        timeout-minutes: 6
         run: |
-          sudo apt-get update
+          # Stop on a failed index refresh instead of downloading from stale indexes.
+          if ! timeout 30s sudo apt-get update -o APT::Update::Error-Mode=any -o Acquire::Retries=0; then
+            echo "::warning::APT index refresh failed; retrying with the MIT Ubuntu mirror"
+            sudo sed -i 's|mirror+file:/etc/apt/apt-mirrors.txt|https://mirrors.mit.edu/ubuntu|g' /etc/apt/sources.list.d/ubuntu.sources
+            sudo apt-get update -o APT::Update::Error-Mode=any -o Acquire::Retries=0
+          fi
           sudo apt-get install -y libpq-dev libvips imagemagick postgresql-client
       - name: Read the Ruby version
         id: ruby

@@ -177,7 +177,7 @@ class CensusRecord < ApplicationRecord
   end
 
   def auto_generate_person_record
-    return unless reviewed? && CensusRecords::OnlyOneCensusYear.call
+    return unless reviewed? && person_id.blank? && CensusRecords::OnlyOneCensusYear.call
 
     People::GenerateFromCensusRecord.call(record: self)
   end

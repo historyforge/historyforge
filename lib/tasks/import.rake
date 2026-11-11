@@ -80,7 +80,7 @@ namespace :import do
   def process_census_row(row:, index:, year:, dry_run:, progress:)
     result = nil
     begin
-      ActiveRecord::Base.transaction do
+      ActiveRecord::Base.transaction(requires_new: true) do
         record = build_and_assign_census_record(row:, year:)
         result = census_row_result(record:, row:, index:, dry_run:)
         raise ActiveRecord::Rollback if dry_run
@@ -207,7 +207,7 @@ namespace :import do
     }.to_json)
   end
 
-  def format_failure_json(failure:)
+  def format_failure_json(failure)
     {
       index: failure[:index] + 1,
       errors: failure[:errors],
