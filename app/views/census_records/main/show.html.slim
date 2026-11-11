@@ -7,9 +7,9 @@
 
 - if @navigation
   - if @navigation[:previous_id]
-    = previous_nav_link("/census/#{@record.year}/#{@navigation[:previous_id]}")
+    = previous_nav_link(census_record_path(year: @record.year, id: @navigation[:previous_id], navigation: @navigation_context))
   - if @navigation[:next_id]
-    = next_nav_link("/census/#{@record.year}/#{@navigation[:next_id]}")
+    = next_nav_link(census_record_path(year: @record.year, id: @navigation[:next_id], navigation: @navigation_context))
 
 
 - btn_class = 'btn btn-sm btn-secondary'

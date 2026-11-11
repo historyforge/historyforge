@@ -54,11 +54,13 @@ requests `/check.txt`. It removes the temporary containers, database volume, and
 network afterward. This verifies startup with a fresh schema, not all application
 workflows or migrations against existing production data.
 
-On a machine with the project's Ruby and Node versions, Bundler, Yarn, and rsync,
-`PRECOMPILE_ASSETS=host bin/image-build historyforge:local` compiles production
-assets natively and copies them into the image. Docker skips the JavaScript
-dependency and asset build stages in this mode. The same environment variable
-works with `bin/image-publish` and `bin/deploy --publish`.
+On Apple Silicon Macs targeting `linux/amd64`, the build precompiles production
+assets on the host when Ruby, Bundler, Node, Yarn, and rsync are available.
+Docker copies in the resulting assets and skips its JavaScript dependency and
+asset build stages. Other hosts and targets compile assets in Docker by default.
+Set `PRECOMPILE_ASSETS=host` to force host precompilation with a configured local
+toolchain, or `PRECOMPILE_ASSETS=docker` to force compilation in Docker. These
+overrides also work with `bin/image-publish` and `bin/deploy --publish`.
 
 The deployment script has isolated failure-path checks: run
 `bin/deploy-test` without contacting any servers. It requires Python 3 and Ruby,

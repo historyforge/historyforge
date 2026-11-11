@@ -47,7 +47,7 @@ class NameCellRenderer extends BaseCellRenderer {
         const baseUrl = document.location.toString().split('?')[0]
         const id = this.value.id || this.value
         const link = document.createElement('a')
-        link.href = `${baseUrl}/${encodeURIComponent(id)}`
+        link.href = this.value.href || `${baseUrl}/${encodeURIComponent(id)}`
         link.title = this.value.name
         link.textContent = this.value.name
         this.eGui.append(link)

@@ -15,6 +15,7 @@ class CensusGridTranslator
   def row_data
     records.lazy.map do |record|
       hash = { name: { name: record.name, reviewed: record.reviewed?, id: record.id } }
+      hash[:name][:href] = yield(record.id) if block_given?
       columns.each do |column|
         next if SKIP_COLUMNS.include?(column)
 

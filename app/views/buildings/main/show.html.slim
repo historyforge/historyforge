@@ -19,9 +19,9 @@ div.mb-3.clearfix.d-flex.justify-content-between
 
 - if @navigation_neighbors.present?
   - if @navigation_neighbors[:previous_id]
-    = previous_nav_link(building_path(@navigation_neighbors[:previous_id]))
+    = previous_nav_link(building_path(@navigation_neighbors[:previous_id], navigation: @navigation_context))
   - if @navigation_neighbors[:next_id]
-    = next_nav_link(building_path(@navigation_neighbors[:next_id]))
+    = next_nav_link(building_path(@navigation_neighbors[:next_id], navigation: @navigation_context))
 
 .row
   .col-12.col-md-8

@@ -49,25 +49,17 @@ class CensusRecordSearch < SearchQueryBuilder
   end
 
   def add_sorts
-    if sort.blank?
+    orders = sort_columns.filter_map { |column, direction| order_clause_for(column, direction) }
+    if orders.empty?
       add_default_sort_order
     else
-      add_custom_sort_order
+      orders.each { |order| builder.order(Arel.sql(order)) }
     end
+    builder.order(id: :asc)
   end
 
   def add_default_sort_order
     builder.order census_page_order_clause('asc')
-  end
-
-  def add_custom_sort_order
-    sort.each do |_key, sort_unit|
-      col = sort_unit['colId']
-      dir = sort_unit['sort']
-      raise ArgumentError, 'Dangerous query method!' unless %w[asc desc].include?(dir)
-      order = order_clause_for(col, dir)
-      builder.order(Arel.sql(entity_class.sanitize_sql_for_order(order))) if order
-    end
   end
 
   def order_clause_for(col, dir)
@@ -79,15 +71,13 @@ class CensusRecordSearch < SearchQueryBuilder
       census_page_order_clause(dir)
     elsif col == 'family_id'
       "NULLIF(regexp_replace(NULLIF(family_id, ''), '[^0-9]+', '', 'g'), '')::numeric #{dir}"
-    elsif col =~ /wages/
+    elsif entity_class.column_names.include?(col) && col.include?('wages')
       # Use parameterized query to prevent SQL injection
       sanitized_col = entity_class.connection.quote_column_name(col)
       "NULLIF(regexp_replace(NULLIF(#{sanitized_col}, ''), '[^0-9]+', '', 'g'), '')::numeric #{dir}"
-    elsif entity_class.columns.map(&:name).include?(col)
+    elsif entity_class.column_names.include?(col)
       sanitized_col = entity_class.connection.quote_column_name(col)
       "#{sanitized_col} #{dir}"
-    else
-      raise ArgumentError, 'Unrecognized sort request.'
     end
   end
 

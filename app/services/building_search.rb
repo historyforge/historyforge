@@ -138,14 +138,15 @@ class BuildingSearch < SearchQueryBuilder
   end
 
   def add_order_clause
-    sort&.each do |_key, sort_unit|
-      col = sort_unit['colId']
-      dir = sort_unit['sort']
-      if Building.columns.map(&:name).include?(col)
-        builder.order_by(col, dir)
-      elsif col == 'street_address'
-        builder.order_by_street_address(dir)
+    columns = sort_columns.select { |column, _| column == 'street_address' || Building.column_names.include?(column) }
+    columns = [['street_address', 'asc']] if columns.empty?
+    columns.each do |column, direction|
+      if column == 'street_address'
+        builder.order_by_street_address(direction)
+      else
+        builder.order(Building.table_name => { column => direction })
       end
-    end || builder.order_by_street_address('asc')
+    end
+    builder.order(Building.table_name => { id: :asc }) unless near
   end
 end

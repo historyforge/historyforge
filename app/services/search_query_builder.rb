@@ -56,13 +56,14 @@ class SearchQueryBuilder
     count
   end
 
-  def navigation_neighbors(current_id)
+  def navigation_neighbors(current_id, unique: false)
     return nil unless current_id
 
     @navigation = true
 
     # Get the ordered list of IDs from the main query (respects all filters and sorting)
-    base_query = scoped.offset(nil).limit(nil)
+    base_query = scoped
+    base_query = base_query.offset(nil).limit(nil) if from || to
 
     # Ensure the base query includes id in its select list
     base_query = base_query.select("#{entity_class.table_name}.*") unless base_query.select_values.include?("#{entity_class.table_name}.id")
@@ -70,6 +71,7 @@ class SearchQueryBuilder
     # Wrap the base query in another query that just selects the IDs
     sql = "SELECT id FROM (#{base_query.to_sql}) AS subquery"
     ordered_ids = entity_class.connection.execute(sql).pluck("id")
+    ordered_ids.uniq! if unique
 
     # Find the current position in the ordered list
     current_index = ordered_ids.index(current_id)
@@ -103,6 +105,18 @@ class SearchQueryBuilder
   end
 
   private
+
+  def sort_columns
+    return [] unless sort.is_a?(Hash)
+
+    sort.values.filter_map do |entry|
+      next unless entry.is_a?(Hash)
+
+      column, direction = entry.with_indifferent_access.values_at(:colId, :sort)
+      direction = direction.to_s.downcase
+      [column, direction] if column.is_a?(String) && %w[asc desc].include?(direction)
+    end
+  end
 
   def builder
     relation = entity_class.ransack(ransack_params).result

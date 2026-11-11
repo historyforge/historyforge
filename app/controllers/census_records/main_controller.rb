@@ -187,12 +187,7 @@ module CensusRecords
     private
 
     def load_navigation
-      # Load navigation data if there are active search parameters
-      navigation_params = ExtractNavigationParams.call(
-        user: current_user,
-        session:,
-        search_key: search_key
-      )
+      navigation_params = grid_navigation_params
       return unless navigation_params
 
       @navigation = CensusRecordSearch.generate(
@@ -264,7 +259,8 @@ module CensusRecords
 
     def render_json
       if params[:from]
-        render json: @translator.row_data
+        navigation = grid_navigation_context
+        render json: @translator.row_data { |id| census_record_path(year:, id:, navigation:) }
       else
         respond_with @search.to_a, each_serializer: CensusRecordSerializer
       end

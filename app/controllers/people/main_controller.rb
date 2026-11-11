@@ -15,7 +15,10 @@ module People
       @translator = PersonGridTranslator.new(@search)
       respond_to do |format|
         format.html
-        format.json { render json: @translator.row_data }
+        format.json do
+          navigation = grid_navigation_context
+          render json: @translator.row_data { |id| person_path(id, navigation:) }
+        end
         format.csv { render_csv('people', Person) }
       end
     end
@@ -105,18 +108,14 @@ module People
     end
 
     def load_navigation
-      navigation_params = ExtractNavigationParams.call(
-        user: current_user,
-        session:,
-        search_key: self.class.name
-      )
+      navigation_params = grid_navigation_params
       return unless navigation_params
 
       @navigation_neighbors = PersonSearch.generate(
         params: navigation_params,
         user: current_user,
         creator_scope: creator_search_scope(Person),
-      ).navigation_neighbors(@person.id)
+      ).navigation_neighbors(@person.id, unique: true)
     end
 
     def search_params
