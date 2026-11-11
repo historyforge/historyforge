@@ -56,7 +56,7 @@ RSpec.describe "1940 US Census" do
     fill_in "State", with: "New York", name: "census_record[residence_1935_state]"
     check "On a Farm"
 
-    check "Private/Non-emergency Government Work"
+    check "Inst — Institution"
     check "Public Emergency Work"
     check "Seeking Work"
     check "Employed but Temporarily Absent"
@@ -108,11 +108,13 @@ RSpec.describe "1940 US Census" do
 
     click_on "Squarepants III, Sponge Bob Dr"
     expect(page).to have_content "Squarepants III, Sponge Bob Dr"
-    # This would be a good place to verify that the page has all the things
+    expect(page).to have_css(".form-group.row", text: /Inst — Institution\s+Yes/)
 
     click_on "Edit"
     expect(page).to have_content "Census Scope"
     expect(find_field("Last Name").value).to eq("Squarepants")
+    expect(page).to have_checked_field("Inst — Institution")
+    expect(page).to have_unchecked_field("Private/Non-emergency Government Work")
     fill_in "Last Name", with: "Roundpants"
     click_on "Save", match: :first
     expect(page).to have_content "Roundpants"
