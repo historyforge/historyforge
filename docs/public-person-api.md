@@ -8,6 +8,12 @@ census years. Signed-in callers may receive additional records their permissions
 allow. Signed-in responses are marked `Cache-Control: no-store`. The endpoint
 has no write operations.
 
+For cross-origin browser requests, set `API_CORS_ORIGINS` to a comma-separated
+list of exact origins, such as `https://map.example.org,http://localhost:5173`,
+and restart the app. Include the scheme and any non-default port, without a
+trailing slash. With an empty list, CORS is disabled. Cross-origin requests
+can use GET and HEAD without credentials.
+
 | Field | Meaning |
 | --- | --- |
 | `id`, `name`, `canonical_url` | The installation's numeric Person ID, display name, and absolute URL of the HTML Person page. Use the canonical URL to identify the Person across installations. |
