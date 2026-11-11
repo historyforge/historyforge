@@ -38,23 +38,28 @@ FROM build-tools AS ruby-dependencies
 COPY Gemfile Gemfile.lock ./
 RUN bundle install --jobs 4 --retry 5 && rm -rf /usr/local/bundle/cache
 
-FROM ruby-dependencies AS build
+FROM ruby-dependencies AS source
+COPY . .
+COPY lib/docker/database.yml config/database.yml
+
+FROM source AS build
 COPY --from=javascript-dependencies /app/node_modules /app/node_modules
 COPY --from=javascript-dependencies /app/.yarn /app/.yarn
 COPY --from=javascript-dependencies /opt/corepack /opt/corepack
-COPY . .
-COPY lib/docker/database.yml config/database.yml
 RUN yarn build \
-    && SECRET_KEY_BASE_DUMMY=1 bundle exec rails assets:precompile \
-    && rm -rf node_modules .yarn/cache tmp/cache
+    && SKIP_JS_BUILD=1 SECRET_KEY_BASE_DUMMY=1 bundle exec rails assets:precompile
+
+FROM scratch AS compiled-assets
+COPY --from=build /app/public/assets /
 
 FROM base AS runtime
 ARG REVISION=unknown
 LABEL org.opencontainers.image.revision=$REVISION
 RUN groupadd --gid 32767 herokuishuser \
     && useradd --uid 32767 --gid 32767 --home-dir /app --shell /bin/bash herokuishuser
-COPY --from=build /usr/local/bundle /usr/local/bundle
-COPY --from=build --chown=32767:32767 /app /app
+COPY --from=ruby-dependencies /usr/local/bundle /usr/local/bundle
+COPY --from=source --chown=32767:32767 /app /app
+COPY --from=compiled-assets --chown=32767:32767 / /app/public/assets/
 RUN mkdir -p tmp/pids log storage && chown 32767:32767 /app && chown -R 32767:32767 tmp log storage
 USER herokuishuser
 EXPOSE 5000

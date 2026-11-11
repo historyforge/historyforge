@@ -54,6 +54,12 @@ requests `/check.txt`. It removes the temporary containers, database volume, and
 network afterward. This verifies startup with a fresh schema, not all application
 workflows or migrations against existing production data.
 
+On a machine with the project's Ruby and Node versions, Bundler, Yarn, and rsync,
+`PRECOMPILE_ASSETS=host bin/image-build historyforge:local` compiles production
+assets natively and copies them into the image. This can speed up amd64 builds
+on ARM workstations. The same environment variable works with
+`bin/image-publish` and `bin/deploy --publish`.
+
 The deployment script has isolated failure-path checks: run
 `bin/deploy-test` without contacting any servers. It requires Python 3 and Ruby,
 but no additional Python packages, Docker, or running Rails application.
@@ -103,9 +109,10 @@ For the combined test → build → smoke-test → publish → deploy workflow, 
 a clean checkout before publishing. Explicit digest deployment does not rerun
 tests or rebuild the image, which also makes it suitable for recovery.
 
-The first selected installation is the canary. Rollout is intentionally serial:
-each Dokku deployment and external health check must pass before continuing.
-Failures stop the rollout and produce a nonzero exit code. There is no `--all`
+The first selected installation is the canary. After its Dokku deployment and
+external health check pass, the remaining hosts deploy in parallel. Apps on the
+same SSH host deploy in inventory order. A failure skips that host's remaining
+apps while other hosts finish, and the command exits nonzero. There is no `--all`
 rebuild and no implicit use of `latest`. `bin/deploy-push` is a compatibility alias
 for `bin/deploy`; the old `lib/docker/build` command prints migration guidance.
 

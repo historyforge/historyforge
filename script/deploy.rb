@@ -3,6 +3,7 @@
 require 'json'
 require 'fileutils'
 require 'shellwords'
+require 'tempfile'
 require 'time'
 
 root = File.expand_path('..', __dir__)
@@ -33,34 +34,58 @@ File.open(File.join(state_dir, 'lock'), 'w') do |lock|
     File.write("#{state_path}.tmp", JSON.pretty_generate(state) + "\n")
     File.rename("#{state_path}.tmp", state_path)
   end
-  installations.each_with_index do |installation, index|
+  state_lock = Mutex.new
+  deploy = lambda do |installation, label|
     name, host, app, url = installation.values_at('name', 'host', 'app', 'url')
     key = "#{host}/#{app}"
-    entry = state[key] ||= {}
-    entry.merge!('desired' => release, 'status' => 'deploying', 'updated_at' => Time.now.utc.iso8601)
-    save.call
-    puts "#{index.zero? ? 'Canary' : 'Deploying'}: #{name} (#{key}) -> #{release}"
-    $stdout.flush
+    entry = state_lock.synchronize do
+      record = state[key] ||= {}
+      record.merge!('desired' => release, 'status' => 'deploying', 'updated_at' => Time.now.utc.iso8601)
+      save.call
+      puts "#{label}: #{name} (#{key}) -> #{release}"
+      $stdout.flush
+      record
+    end
     # Override locale values forwarded by SSH (macOS may send LC_CTYPE=UTF-8).
     command = ['env', 'LANG=C.UTF-8', 'LC_ALL=C.UTF-8', 'LC_CTYPE=C.UTF-8',
                'dokku', 'git:from-image', app, release].shelljoin
     deployed = system('ssh', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=15', host, command)
-    healthy = deployed && system('curl', '--fail', '--silent', '--show-error', '--max-time', '20',
-                                 '--retry', '3', '--output', File.join(state_dir, 'health.txt'),
-                                 "#{url.sub(%r{/$}, '')}/check.txt")
-    healthy &&= File.read(File.join(state_dir, 'health.txt')).include?('simple_check')
-    unless healthy
-      entry.merge!('status' => deployed ? 'verification_failed' : 'deploy_failed', 'updated_at' => Time.now.utc.iso8601)
+    healthy = deployed && Tempfile.create('health', state_dir) do |response|
+      system('curl', '--fail', '--silent', '--show-error', '--max-time', '20',
+             '--retry', '3', '--output', response.path, "#{url.sub(%r{/$}, '')}/check.txt") &&
+        response.read.include?('simple_check')
+    end
+    state_lock.synchronize do
+      if healthy
+        if entry['successful'] != release
+          entry['previous_successful'] = entry['successful']
+          entry['successful'] = release
+        end
+        entry['status'] = 'verified'
+      else
+        entry['status'] = deployed ? 'verification_failed' : 'deploy_failed'
+      end
+      entry['updated_at'] = Time.now.utc.iso8601
       save.call
-      abort "FAILED: #{name}; rollout stopped. Inspect Dokku logs and #{state_path}. No automatic rollback was attempted."
+      if healthy
+        puts "Verified: #{name} -> #{release}"
+      else
+        warn "FAILED: #{name}. Inspect Dokku logs and #{state_path}."
+      end
     end
-    if entry['successful'] != release
-      entry['previous_successful'] = entry['successful']
-      entry['successful'] = release
-    end
-    entry.merge!('status' => 'verified', 'updated_at' => Time.now.utc.iso8601)
-    save.call
-    puts "Verified: #{name} -> #{release}"
+    healthy
   end
+
+  canary, *remaining = installations
+  abort 'Canary failed. Rollout stopped.' unless deploy.call(canary, 'Canary')
+
+  workers = remaining.group_by { |installation| installation.fetch('host') }.values.map do |sites|
+    Thread.new do
+      sites.all? { |installation| deploy.call(installation, 'Deploying') }
+    end
+  end
+  results = workers.map(&:value)
+  abort 'Rollout failed on one or more hosts.' unless results.all?
+
   puts "Deployment completed for #{installations.size} installation(s). State: #{state_path}"
 end

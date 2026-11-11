@@ -3,5 +3,26 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 image="${1:-historyforge:local}"
 revision=$(git rev-parse HEAD)
-docker buildx build --platform "${PLATFORM:-linux/amd64}" --load \
-  --build-arg "REVISION=$revision" --tag "$image" .
+build=(docker buildx build --platform "${PLATFORM:-linux/amd64}" --load
+  --build-arg "REVISION=$revision" --tag "$image")
+
+if [ "${PRECOMPILE_ASSETS:-docker}" = host ]; then
+  staging=$(mktemp -d)
+  trap 'rm -rf "$staging"' EXIT
+  # Stage the checkout without local configuration or previously generated assets.
+  git ls-files -z --cached --others --exclude-standard |
+    rsync -a --from0 --files-from=- ./ "$staging/"
+  (
+    cd "$staging"
+    cp lib/docker/database.yml config/database.yml
+    mkdir -p log
+    bundle check || bundle install
+    yarn install --immutable
+    export RAILS_ENV=production
+    yarn build
+    SKIP_JS_BUILD=1 SECRET_KEY_BASE_DUMMY=1 bundle exec rails assets:precompile
+  )
+  "${build[@]}" --build-context "compiled-assets=$staging/public/assets" "$staging"
+else
+  "${build[@]}" .
+fi

@@ -22,6 +22,19 @@ class RolloutTest(unittest.TestCase):
         executables.mkdir()
         (executables / 'ssh').write_text(
             '#!/bin/sh\nprintf "%s\\n" "$*" >> "$CALLS"\n'
+            'if [ -n "${PARALLEL_CHECK:-}" ]; then\n'
+            '  case "$*" in\n'
+            '    *badhost*) touch "$PARALLEL_CHECK/badhost"; peer=otherhost;;\n'
+            '    *otherhost*) touch "$PARALLEL_CHECK/otherhost"; peer=badhost;;\n'
+            '  esac\n'
+            '  if [ -n "${peer:-}" ]; then\n'
+            '    for attempt in 1 2 3 4 5; do\n'
+            '      [ ! -e "$PARALLEL_CHECK/$peer" ] || break\n'
+            '      sleep 0.2\n'
+            '    done\n'
+            '    [ -e "$PARALLEL_CHECK/$peer" ] || exit 1\n'
+            '  fi\n'
+            'fi\n'
             'case "$*" in *badhost*) exit 1;; esac\n')
         (executables / 'curl').write_text(
             '#!/usr/bin/env python3\nimport os, sys\nfrom pathlib import Path\n'
@@ -35,7 +48,7 @@ class RolloutTest(unittest.TestCase):
             'installations': [
                 {'name': name, 'host': host, 'app': 'hf', 'url': 'https://example.org'}
                 for name, host in [('first', 'goodhost'), ('second', 'badhost'),
-                                   ('third', 'unreached')]
+                                   ('third', 'otherhost')]
             ]
         }))
         self.env = dict(os.environ, PATH=str(executables) + ':' + os.environ['PATH'],
@@ -50,12 +63,24 @@ class RolloutTest(unittest.TestCase):
     def state(self):
         return json.loads((self.path / 'state/releases.json').read_text())
 
-    def test_failure_stops_remaining_installations(self):
+    def test_failed_canary_stops_rollout(self):
+        result = self.run_deploy(RELEASE, 'second', 'third')
+        self.assertNotEqual(0, result.returncode)
+        self.assertNotIn('otherhost', (self.path / 'calls').read_text())
+        self.assertEqual('deploy_failed', self.state()['badhost/hf']['status'])
+
+    def test_hosts_run_in_parallel_and_failure_skips_remaining_apps_on_that_host(self):
+        config = json.loads(self.config.read_text())
+        config['installations'].append(
+            {'name': 'fourth', 'host': 'badhost', 'app': 'skipped-app', 'url': 'https://example.org'})
+        self.config.write_text(json.dumps(config))
+        self.env['PARALLEL_CHECK'] = str(self.path)
         result = self.run_deploy(RELEASE)
         self.assertNotEqual(0, result.returncode)
-        self.assertNotIn('unreached', (self.path / 'calls').read_text())
+        self.assertNotIn('skipped-app', (self.path / 'calls').read_text())
         self.assertEqual(RELEASE, self.state()['goodhost/hf']['successful'])
         self.assertEqual('deploy_failed', self.state()['badhost/hf']['status'])
+        self.assertEqual(RELEASE, self.state()['otherhost/hf']['successful'])
 
     def test_selected_rollout_preserves_previous_release_on_retry(self):
         for release in [RELEASE, NEXT_RELEASE, NEXT_RELEASE]:
