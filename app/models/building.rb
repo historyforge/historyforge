@@ -160,8 +160,14 @@ class Building < ApplicationRecord
   scope :building_types_id_not_null, -> { where.not(building_types_mask: nil) }
 
   scope :description_cont, lambda { |query|
-    left_joins(:rich_text_description, narratives: :rich_text_story)
-      .merge(ActionText::RichText.where("action_text_rich_texts.body ILIKE ?", "%" + query + "%"))
+    matching_text = ActionText::RichText.where("action_text_rich_texts.body ILIKE ?", "%#{query}%")
+    descriptions = matching_text.where(record_type: Building.polymorphic_name, name: "description").select(:record_id)
+    stories = Narrative.joins(:rich_text_story, :buildings)
+                       .merge(matching_text)
+                       .reorder(nil)
+                       .select("buildings.id")
+
+    where(id: descriptions).or(where(id: stories))
   }
 
   def self.ransackable_scopes(_auth_object = nil)
