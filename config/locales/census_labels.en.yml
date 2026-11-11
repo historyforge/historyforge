@@ -82,6 +82,7 @@ en:
         institution: 'Institution'
         institution_name: 'Institution Name'
         institution_type: 'Institution Type'
+        institutional_work: 'Inst — Institution'
         just_married: 'Married during Census Year'
         language_spoken: 'Language Spoken'
         last_name: 'Last Name'

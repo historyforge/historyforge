@@ -47,6 +47,7 @@
 #  residence_1935_state    :string
 #  residence_1935_farm     :boolean
 #  private_work            :boolean
+#  institutional_work      :boolean
 #  public_work             :boolean
 #  seeking_work            :boolean
 #  had_job                 :boolean
@@ -112,7 +113,6 @@
 class Census1940Record < CensusRecord
   self.table_name = 'census_1940_records'
   self.year = 1940
-  self.ignored_columns += %w[institutional_work]
 
   belongs_to :locality, inverse_of: :census1940_records
 
@@ -228,6 +228,7 @@ class Census1940Record < CensusRecord
     residence_1935_state: 19,
     residence_1935_farm: 20,
     private_work: 21,
+    institutional_work: 21,
     public_work: 22,
     seeking_work: 23,
     had_job: 24,
