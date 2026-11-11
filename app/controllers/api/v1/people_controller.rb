@@ -5,6 +5,7 @@ module Api
     class PeopleController < ActionController::API
       include CensusAccess
       include LoadSettings
+      include PublicApiRateLimit
 
       impersonates :user
 
