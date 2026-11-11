@@ -37,10 +37,11 @@ RSpec.describe 'People search', type: :request do
     expect(response).to have_http_status(:ok)
     expect(response.parsed_body.map { |row| row.dig('name', 'id') }).to eq([earlier.id, later.id, longer.id])
     expect(response.parsed_body.map { |row| row.dig('name', 'name') }).to eq([
-      'Brown, Abby (see Zimmer, Jenny)',
+      'Brown, Abby',
       'Brown, Haines',
       'Brownell, Abram'
     ])
+    expect(response.parsed_body.map { |row| row['see_name'] }).to eq(['Zimmer, Jenny', nil, nil])
 
     descending = filters.merge(sort: { '0' => { colId: 'name', sort: 'desc' } })
     get people_path(format: :json), params: descending.merge(from: 0, to: 100)
