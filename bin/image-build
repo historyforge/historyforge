@@ -16,6 +16,7 @@ if [ "${PRECOMPILE_ASSETS:-docker}" = host ]; then
     cd "$staging"
     cp lib/docker/database.yml config/database.yml
     mkdir -p log
+    export BUNDLE_FROZEN=true
     bundle check || bundle install
     yarn install --immutable
     export RAILS_ENV=production
