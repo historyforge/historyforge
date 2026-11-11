@@ -39,13 +39,13 @@ class CensusFiltersGenerator
 
     case options[:as]
     when :number, :integer
-      AttributeBuilder.number json, field, klass:
+      AttributeBuilder.number(json, field, klass:)
     when :boolean
-      AttributeBuilder.boolean json, field, klass:
+      AttributeBuilder.boolean(json, field, klass:)
     when :radio_buttons, :radio_buttons_other
-      AttributeBuilder.enumeration json, klass, field
+      AttributeBuilder.enumeration(json, klass, field)
     else
-      AttributeBuilder.text json, field, klass:
+      AttributeBuilder.text(json, field, klass:)
     end
   end
 

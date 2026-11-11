@@ -93,7 +93,9 @@ RSpec.describe "1880 US Census" do
     expect(find_field("Last Name").value).to eq "Squarepants"
     expect(find_field("Locality").value).to eq locality.id.to_s
 
-    click_link "View All"
+    view_all = find_link("View All")
+    scroll_to(view_all, align: :center)
+    view_all.click
     expect(page).to have_content "1880 U.S. Census"
     expect(page).to have_content "Found 1 record"
     expect(find(".ag-cell", match: :first)).to have_content("Squarepants")
