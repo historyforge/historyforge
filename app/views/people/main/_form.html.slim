@@ -60,7 +60,8 @@
         .col-8
           = form.input :death_year
         .col-4
-          = form.input :is_death_year_estimated, as: :boolean, inline_label: 'Yes', label: 'Estimated?'
+          = form.input :is_death_year_estimated, as: :boolean, inline_label: 'Yes', label: 'Estimated?',
+            input_html: {checked: @person.death_year.present? && @person.is_death_year_estimated?}
       .row
         .col-8
           = form.input :pob, input_html: {autocomplete: 'new-password'}

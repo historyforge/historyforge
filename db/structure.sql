@@ -2209,7 +2209,7 @@ CREATE TABLE public.people (
     description text,
     sortable_name character varying,
     death_year integer,
-    is_death_year_estimated boolean DEFAULT true,
+    is_death_year_estimated boolean DEFAULT false,
     ever_enslaved boolean DEFAULT false,
     created_by_id bigint
 );
@@ -5792,6 +5792,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('9'),
 ('8'),
 ('4'),
+('20261111000000'),
 ('20261107000001'),
 ('20261107000000'),
 ('20260909000002'),
