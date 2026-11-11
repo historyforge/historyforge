@@ -56,7 +56,7 @@ class SearchQueryBuilder
     count
   end
 
-  def navigation_neighbors(current_id)
+  def navigation_neighbors(current_id, unique: false)
     return nil unless current_id
 
     @navigation = true
@@ -70,6 +70,7 @@ class SearchQueryBuilder
     # Wrap the base query in another query that just selects the IDs
     sql = "SELECT id FROM (#{base_query.to_sql}) AS subquery"
     ordered_ids = entity_class.connection.execute(sql).pluck("id")
+    ordered_ids.uniq! if unique
 
     # Find the current position in the ordered list
     current_index = ordered_ids.index(current_id)

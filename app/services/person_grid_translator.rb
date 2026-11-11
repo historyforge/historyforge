@@ -24,6 +24,7 @@ class PersonGridTranslator
       primary_name = record.name
       name = matched_name(record) || primary_name
       hash = { name: { name:, reviewed: record.reviewed?, id: record.id } }
+      hash[:name][:href] = yield(record.id) if block_given?
       hash[:see_name] = primary_name if name != primary_name
 
       columns.each do |column|

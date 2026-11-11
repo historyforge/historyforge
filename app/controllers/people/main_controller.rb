@@ -15,7 +15,10 @@ module People
       @translator = PersonGridTranslator.new(@search)
       respond_to do |format|
         format.html
-        format.json { render json: @translator.row_data }
+        format.json do
+          navigation = search_params.slice('s', 'scope', 'sort').merge('results' => '1')
+          render json: @translator.row_data { |id| person_path(id, navigation:) }
+        end
         format.csv { render_csv('people', Person) }
       end
     end
@@ -105,7 +108,11 @@ module People
     end
 
     def load_navigation
-      navigation_params = ExtractNavigationParams.call(
+      context = params[:navigation]
+      if context.is_a?(ActionController::Parameters) && context[:results] == '1'
+        @navigation_context = context.slice(:results, :s, :scope, :sort).to_unsafe_h
+      end
+      navigation_params = @navigation_context || ExtractNavigationParams.call(
         user: current_user,
         session:,
         search_key: self.class.name
@@ -116,7 +123,7 @@ module People
         params: navigation_params,
         user: current_user,
         creator_scope: creator_search_scope(Person),
-      ).navigation_neighbors(@person.id)
+      ).navigation_neighbors(@person.id, unique: true)
     end
 
     def search_params

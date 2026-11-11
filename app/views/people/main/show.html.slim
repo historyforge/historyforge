@@ -36,9 +36,9 @@
       = link_to 'View All', people_path, class: 'btn btn-light'
 - if @navigation_neighbors.present?
   - if @navigation_neighbors[:previous_id]
-    = previous_nav_link(person_path(@navigation_neighbors[:previous_id]))
+    = previous_nav_link(person_path(@navigation_neighbors[:previous_id], navigation: @navigation_context))
   - if @navigation_neighbors[:next_id]
-    = next_nav_link(person_path(@navigation_neighbors[:next_id]))
+    = next_nav_link(person_path(@navigation_neighbors[:next_id], navigation: @navigation_context))
 
 - summary = @person_representation.summary
 - has_biography = summary || @person.description.present?

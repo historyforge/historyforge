@@ -57,9 +57,13 @@ class PersonSearch < SearchQueryBuilder
     CensusYears.each do |year|
       next unless f.include?("census#{year}")
 
-      table = CensusRecord.for_year(year).table_name
-      builder.select(builder.scoped.select_values, "(select array_agg(#{table}.id) from #{table} where person_id=people.id) AS census#{year}")
+      add_census_record_link(year)
     end
+  end
+
+  private def add_census_record_link(year)
+    table = CensusRecord.for_year(year).table_name
+    builder.select("(select array_agg(#{table}.id order by #{table}.id) from #{table} where person_id=people.id) AS census#{year}")
   end
 
   def add_see_names
@@ -79,20 +83,32 @@ class PersonSearch < SearchQueryBuilder
 
   def add_sorts
     order = []
-    sort&.each_value do |sort_unit|
-      sort_unit = sort_unit.with_indifferent_access
-      col = sort_unit["colId"]
-      dir = sort_unit["sort"]
-      next if col == "locality_ids"
+    sort_values = sort.is_a?(Hash) ? sort.values : []
+    sort_values.each do |sort_unit|
+      next unless sort_unit.is_a?(Hash)
 
-      order << if col == "name"
-        name_order_clause(dir)
-      else
-        "#{col} #{dir}"
-      end
+      sort_unit = sort_unit.with_indifferent_access
+      col = sort_unit[:colId]
+      dir = sort_unit[:sort].to_s.downcase
+      next unless %w[asc desc].include?(dir)
+
+      clause = sort_clause(col, dir)
+      order << clause if clause
     end
-    order << name_order_clause("ASC") if sort.blank?
-    builder.order(entity_class.sanitize_sql_for_order(order.join(", "))) if order
+    order << name_order_clause("asc") if order.empty?
+    order << "people.id ASC"
+    builder.order(Arel.sql(order.join(", ")))
+  end
+
+  private def sort_clause(column, direction)
+    if column == "name"
+      name_order_clause(direction)
+    elsif entity_class.column_names.include?(column)
+      "people.#{entity_class.connection.quote_column_name(column)} #{direction}"
+    elsif (year = CensusYears::YEARS.find { |year| column == "census#{year}" })
+      add_census_record_link(year) if navigation || !f.include?(column)
+      "#{column} #{direction}"
+    end
   end
 
   def name_order_clause(dir)
