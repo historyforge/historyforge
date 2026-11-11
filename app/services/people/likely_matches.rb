@@ -96,8 +96,8 @@ module People
     def fuzzy_matches
       top_matches = filter_matches(last_name_matches) if last_name_matches
       bottom_matches = filter_matches(fuzzy_name_matches) if fuzzy_name_matches
-      
-      [top_matches, bottom_matches].compact.flatten
+
+      [top_matches, bottom_matches].compact.flatten.uniq(&:id)
     end
 
     def fuzzy_name_matches
