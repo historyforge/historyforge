@@ -1,0 +1,45 @@
+ol.person-census-entries.person-record-grid.list-unstyled.mb-0 data-columns=person_record_columns(records.size)
+  - records.each do |record|
+    - row = record.decorate
+    - household = households.fetch(record).members
+    - address = row.street_address.presence
+    - locality = row.locality.presence
+    - occupation = row.occupation.to_s.squish.presence
+    - industry = record.try(:industry).to_s.squish.presence
+    - age_recorded = record.age.present? || (record.has_attribute?(:age_months) && record.age_months.present?)
+    li.person-census-entry.d-flex.flex-column.border.rounded
+      header.person-census-entry-heading.d-flex.flex-wrap.align-items-baseline.justify-content-between.gap-2.px-3.py-2
+        h3.h4.mb-0
+          time datetime=row.year = row.year
+        - if age_recorded && record.age != 999
+          span.small.text-body-secondary= "Age #{row.age}"
+      - if address || locality || occupation
+        .px-3.py-3
+          - if address
+            p.mt-0.mb-0.fw-semibold
+              - if record.building && can?(:read, record.building)
+                = link_to address, record.building
+              - else
+                = address
+          - if locality
+            p.mt-0.mb-0 class=(address ? 'small text-body-secondary' : 'fw-semibold') = locality
+          - if occupation
+            p.mb-0 class=(address || locality ? 'mt-2' : 'mt-0') = occupation
+            - if industry && !industry.casecmp?(occupation)
+              p.small.text-body-secondary.mt-0.mb-0= industry
+      footer.person-census-entry-footer.mt-auto.px-3.py-2.small
+        = link_to 'View census record', record
+        - if household.any?
+          details.mt-2.small
+            summary= "Household members (#{household.size})"
+            p.text-body-secondary.mt-2.mb-1 Relationships are as recorded relative to the head of household.
+            ul.list-unstyled.mb-0
+              - household.each do |member|
+                - member_row = member.decorate
+                li.mb-1
+                  - if member.person_id
+                    = link_to member_row.name, person_path(member.person_id)
+                  - else
+                    = link_to member_row.name, member
+                  - if member_row.respond_to?(:relation_to_head) && member_row.relation_to_head.present?
+                    = " · #{member_row.relation_to_head}"

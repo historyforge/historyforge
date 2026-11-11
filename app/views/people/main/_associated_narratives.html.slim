@@ -1,0 +1,6 @@
+- if narratives.any?
+  section.person-section aria-labelledby="person-narratives-heading"
+    h2#person-narratives-heading.h5.mb-3 Sources &amp; narratives
+    .d-grid.gap-3
+      - narratives.each do |narrative|
+        = render 'narratives/narrative', narrative:, as_card: true

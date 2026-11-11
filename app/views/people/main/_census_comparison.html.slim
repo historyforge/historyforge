@@ -1,0 +1,28 @@
+.table-responsive
+  table.table.table-sm.w-100
+    thead
+      tr
+        th Year
+        th Name
+        th
+          | Relation
+          span.d-none.d-lg-inline &nbsp;to Head
+        th Address
+        th Age
+        th Race
+        th Birthplace
+        th Marriage
+        th Occupation
+    tbody
+      - records.each do |raw_row|
+        - row = raw_row.decorate
+        tr
+          td= row.year
+          td.text-nowrap= link_to row.name, row
+          td= row.relation_to_head if row.year >= 1880
+          td.text-nowrap= row.street_address
+          td= row.age
+          td= row.race
+          td= row.pob
+          td= row.marital_status
+          td= row.occupation
