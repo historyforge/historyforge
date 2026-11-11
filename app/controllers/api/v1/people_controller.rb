@@ -9,7 +9,7 @@ module Api
       impersonates :user
 
       RATE_LIMIT_WINDOW = 1.minute
-      requests_per_minute = Integer(ENV.fetch('PERSON_API_REQUESTS_PER_MINUTE', '0'), 10)
+      requests_per_minute = Integer(ENV.fetch('PERSON_API_REQUESTS_PER_MINUTE', '120'), 10)
       if requests_per_minute.positive?
         rate_limit to: requests_per_minute, within: RATE_LIMIT_WINDOW, only: :show,
                    store: ActiveSupport::Cache::MemoryStore.new, with: :rate_limit_exceeded
