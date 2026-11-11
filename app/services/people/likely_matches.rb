@@ -2,6 +2,8 @@
 
 module People
   class LikelyMatches
+    Suggestion = Data.define(:person, :reason)
+
     AGE_TOLERANCE = 5
     MAX_MATCHES = 20
     MAX_SURNAME_ONLY_MATCHES = 10
@@ -28,14 +30,14 @@ module People
     end
 
     def call
-      return { matches: [], reasons: {} } if record.first_name.blank? || record.last_name.blank?
-      return { matches: [], reasons: {} } if CensusRecords::OnlyOneCensusYear.call
+      return [] if record.first_name.blank? || record.last_name.blank?
+      return [] if CensusRecords::OnlyOneCensusYear.call
 
       ranked = ranked_people.limit(MAX_MATCHES).preload(*CensusYears.map { |year| :"census#{year}_records" }).to_a
       supported, surname_only = ranked.partition { |person| person.name_match_rank != REASONS.size }
       matches = supported.presence || surname_only.first(MAX_SURNAME_ONLY_MATCHES)
 
-      { matches:, reasons: matches.to_h { |person| [person.id, REASONS.fetch(person.name_match_rank)] } }
+      matches.map { |person| Suggestion.new(person:, reason: REASONS.fetch(person.name_match_rank)) }
     end
 
     private

@@ -181,16 +181,8 @@ class CensusRecord < ApplicationRecord
     attrs
   end
 
-  # @return [Array<Person>]
-  def likely_person_matches
-    person_match_suggestions[:matches]
-  end
-
-  def likely_person_match_reason(person)
-    person_match_suggestions[:reasons].fetch(person.id)
-  end
-
-  private def person_match_suggestions
+  # @return [Array<People::LikelyMatches::Suggestion>]
+  def person_match_suggestions
     People::LikelyMatches.call(record: self)
   end
   memoize :person_match_suggestions
