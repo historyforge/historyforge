@@ -3,6 +3,39 @@
 require "rails_helper"
 
 RSpec.describe "The Forge" do
+  scenario "filters 1940 wages by a dollar amount or a special code", :js do
+    user = create(:census_taker)
+    sign_in user
+    locality = create(:locality)
+    %w[900 1000 5000+].each do |value|
+      building = create(:building, :reviewed, locality:)
+      create(:census1940_record, building:, locality:, wages_or_salary: value,
+             reviewed_at: Time.current, reviewed_by: user)
+    end
+
+    visit forge_path
+    find("#forge-sidebar-right-toggle", wait: 10).click
+    find("select", text: "Select a year to search").find("option", text: "1940", exact_text: true).select_option
+    find("option[value=wages_or_salary_amount]").select_option
+
+    within(".modal.show") do
+      choose "less than", exact: true
+      find("input[type=number]").set("1000")
+      click_button "Search"
+    end
+    expect(page).to have_content("Found 1 person in 1 building.")
+
+    find(".list-group-item", text: "(amount in dollars)").find("span.float-right").click
+    expect(page).to have_content("Found 3 people in 3 buildings.")
+    find("option[value=wages_or_salary]").select_option
+
+    within(".modal.show") do
+      check "$5,000+"
+      click_button "Search"
+    end
+    expect(page).to have_content("Found 1 person in 1 building.")
+  end
+
   scenario "filters census buildings and opens the matching building details", :js do
     user = create(:census_taker)
     sign_in user

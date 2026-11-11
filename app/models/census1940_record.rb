@@ -135,6 +135,7 @@ class Census1940Record < CensusRecord
   define_enumeration :no_work_reason, %w[H S U Ot].freeze
   define_enumeration :deduction_rate, %w[1 2 3].freeze
   define_enumeration :wages_or_salary, %w[5000+].freeze
+  search_income_amounts :wages_or_salary
   define_enumeration :residence_1935_town, ['Same House', 'Same Place', 'R'].freeze
 
   auto_upcase_attributes :occupation_code, :usual_occupation_code,

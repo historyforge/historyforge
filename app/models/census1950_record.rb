@@ -137,6 +137,9 @@ class Census1950Record < CensusRecord
   define_enumeration :own_business_family, income_enumeration.freeze
   define_enumeration :unearned_income_family, income_enumeration.freeze
 
+  search_income_amounts :wages_or_salary_self, :own_business_self, :unearned_income_self,
+                        :wages_or_salary_family, :own_business_family, :unearned_income_family
+
   auto_upcase_attributes :occupation_code, :industry_code, :worker_class_code
 
   def self.translate_race_code(code)
