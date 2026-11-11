@@ -8,6 +8,13 @@ module Api
 
       impersonates :user
 
+      RATE_LIMIT_WINDOW = 1.minute
+      requests_per_minute = Integer(ENV.fetch('PERSON_API_REQUESTS_PER_MINUTE', '0'), 10)
+      if requests_per_minute.positive?
+        rate_limit to: requests_per_minute, within: RATE_LIMIT_WINDOW, only: :show,
+                   store: ActiveSupport::Cache::MemoryStore.new, with: :rate_limit_exceeded
+      end
+
       rescue_from CanCan::AccessDenied, with: :permission_denied
 
       def show
@@ -24,6 +31,12 @@ module Api
       end
 
       private
+
+      def rate_limit_exceeded
+        no_store
+        response.set_header('Retry-After', RATE_LIMIT_WINDOW.to_i.to_s)
+        render json: { error: 'rate_limit_exceeded' }, status: :too_many_requests
+      end
 
       def permission_denied
         render json: { error: 'forbidden' }, status: :forbidden

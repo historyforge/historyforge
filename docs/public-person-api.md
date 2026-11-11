@@ -23,3 +23,16 @@ Collections are empty arrays when there is no readable evidence. A disabled publ
 endpoint or a denied read returns HTTP 403 with `{"error":"forbidden"}`. An
 unknown numeric Person ID returns HTTP 404 with `{"error":"not_found"}` when
 public access is enabled.
+
+To enable rate limiting, set `PERSON_API_REQUESTS_PER_MINUTE` to a positive
+integer and restart the app. Start with `120` and adjust based on traffic.
+An unset value or `0` disables the limit. GET and HEAD requests from the same
+client IP share a quota across all Person IDs. CORS preflight requests do
+not count. Requests over the limit receive HTTP 429 with
+`{"error":"rate_limit_exceeded"}` and a `Retry-After: 60` header.
+
+Verify that Rails sees the visitor's IP behind your reverse proxy before
+enabling the limit. Visitors on a shared network can share a quota. Each
+Puma process keeps its own counters, which reset when the process restarts.
+For one quota across multiple workers or containers, enforce it at a shared
+proxy or gateway.
