@@ -1,4 +1,5 @@
 import React from 'react'
+import isValuelessPredicate from '../../search/isValuelessPredicate'
 
 export default function ScopeSelector({ field, predicate, criteria, config: { scopes }, handleChange }) {
   return Object.keys(scopes).map(scope => (
@@ -8,7 +9,7 @@ export default function ScopeSelector({ field, predicate, criteria, config: { sc
                        name="predicate"
                        value={scope}
                        checked={predicate === scope}
-                       onChange={() => handleChange(field, scope, criteria)}
+                       onChange={() => handleChange(field, scope, isValuelessPredicate(predicate) ? null : criteria)}
                 />
                 {scopes[scope]}
             </label>

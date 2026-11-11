@@ -83,8 +83,22 @@ class CensusRecord < ApplicationRecord
     end
   end
 
+  class_attribute :income_amount_fields, default: [].freeze
+
+  def self.search_income_amounts(*fields)
+    self.income_amount_fields = fields.freeze
+
+    fields.each do |field|
+      ransacker :"#{field}_amount", type: :decimal do |parent|
+        column = parent.table[field]
+        amount = Arel::Nodes::NamedFunction.new('CAST', [column.as('numeric')])
+        Arel::Nodes::Case.new.when(column.matches_regexp('^[+-]?[0-9]+$')).then(amount)
+      end
+    end
+  end
+
   def self.ransackable_attributes(_auth_object = nil)
-    attributes = (super - %w[created_by_id]) + %w[street_address]
+    attributes = (super - %w[created_by_id]) + %w[street_address] + income_amount_fields.map { |field| "#{field}_amount" }
     attributes << 'race_with_write_ins' if race_write_in_filter
     attributes
   end

@@ -43,5 +43,17 @@ module People
 
       it { is_expected.to eq(matching_person) }
     end
+
+    context "when both fallback searches find the same person" do
+      let(:record) do
+        FactoryBot.create(:census1910_record, first_name: "Quentin", middle_name: nil, last_name: "Furber", sex: "m", race: "W")
+      end
+      let(:matching_person) { FactoryBot.create(:person, first_name: "Furber", last_name: "Quentin", sex: "m", race: "W") }
+
+      it "suggests each person once in last-name search order" do
+        expect(outcome[:exact]).to be false
+        expect(outcome[:matches]).to eq([matching_person, non_matching_person])
+      end
+    end
   end
 end

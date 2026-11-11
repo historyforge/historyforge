@@ -37,29 +37,18 @@ RSpec.describe CensusRecordSearch do
     expect(search.scoped).to contain_exactly(match)
   end
 
-  [1910, 1920, 1930, 1940].each do |year|
-    it "filters #{year} race write-ins separately from standard, unknown, and blank values" do
-      factory = :"census#{year}_record"
-      standard = create(factory, race: 'W')
-      write_in = create(factory, race: 'Portuguese')
-      unknown = create(factory, race: 'unknown')
-      legacy_unknown = create(factory, race: 'Un')
-      blank = create(factory, race: '')
-      blank.update_column(:race, '')
-      create(factory, race: nil)
-      other = CensusRecord::RACE_WRITE_IN_FILTER
-      config = "Census#{year}FormFields".constantize
-      filters = CensusFiltersGenerator.generate(Jbuilder.new, config).attributes!
-      expect(filters.fetch('race').fetch('choices')).to include(['Other', other])
-
-      other_search = described_class.generate(year:, user:, params: { s: { race_in: [other] } })
-      mixed_search = described_class.generate(year:, user:, params: { s: { race_in: [other, 'W'] } })
-      excluded_search = described_class.generate(year:, user:, params: { s: { race_not_in: [other] } })
-
-      expect(other_search.scoped).to contain_exactly(write_in)
-      expect(mixed_search.scoped).to contain_exactly(write_in, standard)
-      expect(excluded_search.scoped).to contain_exactly(standard, unknown, legacy_unknown, blank)
+  it 'filters missing and empty institution names separately from populated names' do
+    records = [nil, '', 'County Almshouse'].each_with_index.map do |name, index|
+      create(:census1850_record, locality:, page_number: 1, line_number: index + 1,
+             county: 'Tompkins', state: 'New York', first_name: 'John', last_name: 'Doe',
+             family_id: (index + 1).to_s, occupation: 'None', institution_name: name)
     end
+
+    blank_search = described_class.generate(year: 1850, user:, params: { s: { institution_name_blank: '1' } })
+    present_search = described_class.generate(year: 1850, user:, params: { s: { institution_name_present: '1' } })
+
+    expect(blank_search.scoped).to contain_exactly(*records.first(2))
+    expect(present_search.scoped).to contain_exactly(records.last)
   end
 
   describe '#max_page_number' do
@@ -102,6 +91,71 @@ RSpec.describe CensusRecordSearch do
     it 'drops invalid page numbers' do
       search = build_search(s: { page_number_eq: 'abc' })
       expect(search.s[:page_number_eq]).to be_nil
+    end
+  end
+
+  [1910, 1920, 1930, 1940].each do |year|
+    it "filters #{year} race write-ins separately from standard, unknown, and blank values" do
+      factory = :"census#{year}_record"
+      standard = create(factory, race: 'W')
+      write_in = create(factory, race: 'Portuguese')
+      unknown = create(factory, race: 'unknown')
+      legacy_unknown = create(factory, race: 'Un')
+      blank = create(factory, race: '')
+      blank.update_column(:race, '')
+      create(factory, race: nil)
+      other = CensusRecord::RACE_WRITE_IN_FILTER
+      config = "Census#{year}FormFields".constantize
+      filters = CensusFiltersGenerator.generate(Jbuilder.new, config).attributes!
+      expect(filters.fetch('race').fetch('choices')).to include(['Other', other])
+
+      other_search = described_class.generate(year:, user:, params: { s: { race_in: [other] } })
+      mixed_search = described_class.generate(year:, user:, params: { s: { race_in: [other, 'W'] } })
+      excluded_search = described_class.generate(year:, user:, params: { s: { race_not_in: [other] } })
+
+      expect(other_search.scoped).to contain_exactly(write_in)
+      expect(mixed_search.scoped).to contain_exactly(write_in, standard)
+      expect(excluded_search.scoped).to contain_exactly(standard, unknown, legacy_unknown, blank)
+    end
+  end
+
+  describe 'income filters' do
+    def income_search(year, filters)
+      described_class.generate(year:, user:, params: { s: filters }).scoped
+    end
+
+    it 'compares 1940 wages numerically and preserves special-code searches' do
+      lower = create(:census1940_record, wages_or_salary: '900')
+      upper = create(:census1940_record, wages_or_salary: '1000')
+      top_coded = create(:census1940_record, wages_or_salary: '5000+')
+      legacy_unknown = create(:census1940_record, wages_or_salary: 'Un')
+      unknown = create(:census1940_record, wages_or_salary: 'unknown')
+      create(:census1940_record, wages_or_salary: '')
+      create(:census1940_record, wages_or_salary: nil)
+
+      expect(income_search(1940, wages_or_salary_amount_lt: '1000')).to contain_exactly(lower)
+      expect(income_search(1940, wages_or_salary_amount_gteq: '900', wages_or_salary_amount_lteq: '1000'))
+        .to contain_exactly(lower, upper)
+      expect(income_search(1940, wages_or_salary_in: %w[5000+ Un unknown])).to contain_exactly(top_coded, legacy_unknown, unknown)
+    end
+
+    it 'supports amounts and special codes across the 1950 income fields' do
+      fields = %i[wages_or_salary_self own_business_self unearned_income_self
+                  wages_or_salary_family own_business_family unearned_income_family]
+      records = ['900', '1000', '10000+', 'P6'].each_with_index.map do |value, index|
+        attributes = fields.index_with(value)
+        create(:census1950_record, locality:, page_number: 1, page_side: 'A', line_number: index + 1,
+               enum_dist: '1', county: 'Tompkins', state: 'New York', first_name: 'John', last_name: 'Doe',
+               family_id: (index + 1).to_s, occupation: 'None', relation_to_head: 'Head', **attributes)
+      end
+
+      filters = CensusFiltersGenerator.generate(Jbuilder.new, Census1950FormFields).attributes!
+      fields.each do |field|
+        expect(filters.fetch("#{field}_amount").fetch('type')).to eq('number')
+        expect(filters.fetch(field.to_s).fetch('choices').map(&:last)).to include('10000+')
+        expect(income_search(1950, "#{field}_amount_lt" => '1000')).to contain_exactly(records.first)
+      end
+      expect(income_search(1950, wages_or_salary_self_in: %w[10000+ P6])).to contain_exactly(*records.last(2))
     end
   end
 end

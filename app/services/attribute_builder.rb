@@ -33,8 +33,8 @@ class AttributeBuilder
     NumberAttribute.new(json:, key:, extras: args.extract_options!).to_json
   end
 
-  def self.text(json, key, *args)
-    TextAttribute.new(json:, key:, extras: args.extract_options!).to_json
+  def self.text(json, key, blank_filters: false, **extras)
+    TextAttribute.new(json:, key:, blank_filters:, extras:).to_json
   end
 
   class BaseAttribute
@@ -196,6 +196,11 @@ class AttributeBuilder
   end
 
   class TextAttribute < BaseAttribute
+    def initialize(blank_filters: false, **options)
+      super(**options)
+      @blank_filters = blank_filters
+    end
+
     def type
       'text'
     end
@@ -212,8 +217,10 @@ class AttributeBuilder
       json.set! :"#{key}_cont_every_term", 'contains all of'
       json.set! :"#{key}_lt", 'comes before'
       json.set! :"#{key}_gt", 'comes after'
-      # json.set! "#{key}_null".to_sym, 'is blank'
-      # json.set! "#{key}_not_null", 'is not blank'
+      if @blank_filters
+        json.set! "#{key}_blank", 'is blank'
+        json.set! "#{key}_present", 'is not blank'
+      end
     end
 
     def extras

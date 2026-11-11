@@ -3,6 +3,39 @@
 require "rails_helper"
 
 RSpec.describe "The Forge" do
+  scenario "filters 1940 wages by a dollar amount or a special code", :js do
+    user = create(:census_taker)
+    sign_in user
+    locality = create(:locality)
+    %w[900 1000 5000+].each do |value|
+      building = create(:building, :reviewed, locality:)
+      create(:census1940_record, building:, locality:, wages_or_salary: value,
+             reviewed_at: Time.current, reviewed_by: user)
+    end
+
+    visit forge_path
+    find("#forge-sidebar-right-toggle", wait: 10).click
+    find("select", text: "Select a year to search").find("option", text: "1940", exact_text: true).select_option
+    find("option[value=wages_or_salary_amount]").select_option
+
+    within(".modal.show") do
+      choose "less than", exact: true
+      find("input[type=number]").set("1000")
+      click_button "Search"
+    end
+    expect(page).to have_content("Found 1 person in 1 building.")
+
+    find(".list-group-item", text: "(amount in dollars)").find("span.float-right").click
+    expect(page).to have_content("Found 3 people in 3 buildings.")
+    find("option[value=wages_or_salary]").select_option
+
+    within(".modal.show") do
+      check "$5,000+"
+      click_button "Search"
+    end
+    expect(page).to have_content("Found 1 person in 1 building.")
+  end
+
   scenario "finds census race write-ins alongside a selected standard code", :js do
     user = create(:census_taker)
     sign_in user
@@ -83,5 +116,38 @@ RSpec.describe "The Forge" do
 
     uncheck name
     expect(page).to have_no_css("#{pane} .leaflet-layer", visible: :all)
+  end
+
+  scenario "filters by blank and populated institution names without a text input", :js do
+    user = create(:census_taker)
+    sign_in user
+    locality = create(:locality)
+    [nil, "", "County Almshouse"].each_with_index do |name, index|
+      building = create(:building, :reviewed, locality:)
+      create(:census1850_record, building:, locality:, page_number: 1, line_number: index + 1,
+             county: "Tompkins", state: "New York", first_name: "John", last_name: "Doe",
+             family_id: (index + 1).to_s, occupation: "None", institution_name: name, sex: "M", race: "W",
+             reviewed_at: Time.current, reviewed_by: user)
+    end
+
+    visit forge_path
+    find("#forge-sidebar-right-toggle", wait: 10).click
+    find("select", text: "Select a year to search").find("option", text: "1850", exact_text: true).select_option
+    find("select", text: "Select a field to search").find("option", text: "Institution Name", exact_text: true).select_option
+
+    within(".modal.show") do
+      choose "is blank"
+      expect(page).to have_no_css("input[type=text]")
+      click_button "Search"
+    end
+    expect(page).to have_content("Found 2 people in 2 buildings.")
+
+    find(".list-group-item", text: "Institution Name is blank").click
+    within(".modal.show") do
+      choose "is not blank"
+      expect(page).to have_no_css("input[type=text]")
+      click_button "Search"
+    end
+    expect(page).to have_content("Found 1 person in 1 building.")
   end
 end

@@ -56,9 +56,9 @@ workflows or migrations against existing production data.
 
 On a machine with the project's Ruby and Node versions, Bundler, Yarn, and rsync,
 `PRECOMPILE_ASSETS=host bin/image-build historyforge:local` compiles production
-assets natively and copies them into the image. This can speed up amd64 builds
-on ARM workstations. The same environment variable works with
-`bin/image-publish` and `bin/deploy --publish`.
+assets natively and copies them into the image. Docker skips the JavaScript
+dependency and asset build stages in this mode. The same environment variable
+works with `bin/image-publish` and `bin/deploy --publish`.
 
 The deployment script has isolated failure-path checks: run
 `bin/deploy-test` without contacting any servers. It requires Python 3 and Ruby,

@@ -8,10 +8,10 @@ import { moveBuilding, highlight } from '../forge/actions'
 import { addFullscreenControl } from './fullscreenControl'
 import { useDispatch, useSelector } from "react-redux";
 
+const historicalLayerKey = 'miniforge-layer'
+
 export const Map = () => {
   const {
-    layeredAt,
-    opacityAt,
     center,
     layer,
     opacity,
@@ -22,15 +22,12 @@ export const Map = () => {
     buildings,
   } = useSelector(state => ({ ...state.layers, ...state.buildings, ...state.search }));
   const dispatch = useDispatch();
-  const toggle = (id) => dispatch({ type: 'LAYER_TOGGLE', id });
 
   const mapDivRef = useRef(null);
   const [map, setMap] = useState(null);
   const [markers, setMarkers] = useState(null);
   const [marker, setMarker] = useState(null);
   const [currentHighlight, setCurrentHighlight] = useState(null);
-  const [lastLayeredAt, setLastLayeredAt] = useState(null);
-  const [lastOpacityAt, setLastOpacityAt] = useState(null);
   const wmsLayerRef = useRef(null);
 
   useEffect(() => {
@@ -54,6 +51,9 @@ export const Map = () => {
 
       addFullscreenControl(leafletMap, mapDivRef.current)
 
+      const savedLayerId = window.localStorage.getItem(historicalLayerKey)
+      if (savedLayerId) dispatch({ type: 'LAYER_TOGGLE', id: savedLayerId })
+
       setMap(leafletMap);
 
       return () => {
@@ -70,20 +70,10 @@ export const Map = () => {
   }, [map, center]);
 
   useEffect(() => {
-    if (map && mapDivRef.current) {
-      if (!marker) {
-        setMarker(addMainMarker(map, current, editable, (building) => dispatch(moveBuilding(building))))
-        if (!layer) {
-          const layerId = window.localStorage.getItem('miniforge-layer')
-          if (layerId) {
-            toggle(layerId)
-          }
-        } else {
-          addLayer(map, layer, wmsLayerRef)
-        }
-      }
+    if (map && !marker) {
+      setMarker(addMainMarker(map, current, editable, (building) => dispatch(moveBuilding(building))))
     }
-  }, [map, marker, current, editable, layer]);
+  }, [map, marker, current, editable]);
 
   useEffect(() => {
     if (map && mapDivRef.current) {
@@ -118,38 +108,23 @@ export const Map = () => {
   }, [map, building, highlighted, currentHighlight, markers]);
 
   useEffect(() => {
-    if (mapDivRef.current && map && layer) {
-      if (layeredAt !== lastLayeredAt) {
-        addLayer(map, layer, wmsLayerRef);
-        setLastLayeredAt(layeredAt);
-      }
+    if (!map) return
+
+    wmsLayerRef.current?.remove()
+    wmsLayerRef.current = null
+    if (layer) {
+      wmsLayerRef.current = loadWMS(map, layer).addTo(map)
+      window.localStorage.setItem(historicalLayerKey, layer.id)
+    } else {
+      window.localStorage.removeItem(historicalLayerKey)
     }
-  }, [map, layer, layeredAt, lastLayeredAt]);
+  }, [map, layer]);
 
   useEffect(() => {
-    if (mapDivRef.current && map && layer && opacity !== null) {
-      if (opacityAt !== lastOpacityAt) {
-        if (wmsLayerRef.current) {
-          wmsLayerRef.current.setOpacity(parseInt(opacity) / 100);
-        }
-        setLastOpacityAt(opacityAt);
-      }
-    }
-  }, [map, layer, opacity, opacityAt]);
+    wmsLayerRef.current?.setOpacity(Number(opacity ?? 100) / 100)
+  }, [map, layer, opacity]);
 
   return <div id="map" ref={mapDivRef} />;
-}
-
-function addLayer(map, layer, wmsLayerRef) {
-  if (wmsLayerRef.current) {
-    map.removeLayer(wmsLayerRef.current);
-    wmsLayerRef.current = null;
-  }
-  if (layer) {
-    wmsLayerRef.current = loadWMS(map, layer);
-    wmsLayerRef.current.addTo(map);
-    window.localStorage.setItem("miniforge-layer", layer.id);
-  }
 }
 
 function addMarkers(map, markers) {

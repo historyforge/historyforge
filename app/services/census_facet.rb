@@ -139,7 +139,8 @@ class CensusFacet
     {
       rows: generator.rows,
       total: generator.total,
-      charts: generator.charts
+      charts: generator.charts,
+      explanation: options[:demographics_explanation]
     }
   end
 

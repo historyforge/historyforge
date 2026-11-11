@@ -52,6 +52,7 @@ class CensusFormGenerator
   end
 
   def apply_options_for(field, options)
+    options.delete :demographics_explanation
     options[:hint] = options.key?(:hint) ? options[:hint] : hint_for(field, options[:as])
     options[:hint_html] = { data: { controller: 'hint-popover', action: 'turbo:before-cache@document->hint-popover#disconnect' } } if options[:hint]
     options.delete :placeholder

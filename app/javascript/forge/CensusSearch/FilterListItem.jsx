@@ -1,4 +1,5 @@
 import React from 'react'
+import isValuelessPredicate from '../../search/isValuelessPredicate'
 
 function getFilterText(predicate, criteria, config) {
   const { type, scopes } = config
@@ -17,11 +18,8 @@ function getFilterText(predicate, criteria, config) {
       return criteria.length && <span> ({output})</span>
     case 'number':
     case 'text':
-      if (predicate.match(/not\_null/)) {
-        return <span> is not blank</span>;
-      }
-      if (predicate.match(/null$/)) {
-        return <span> is blank</span>;
+      if (isValuelessPredicate(predicate)) {
+        return <span> {scopes[predicate]}</span>
       }
       return criteria && predicate && <span> {scopes[predicate]} {criteria}</span>
   }
