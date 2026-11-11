@@ -183,14 +183,17 @@ class CensusRecord < ApplicationRecord
 
   # @return [Array<Person>]
   def likely_person_matches
-    result = People::LikelyMatches.call(record: self)
-    @likely_exact_matches = result[:exact]
-    result[:matches]
+    person_match_suggestions[:matches]
   end
-  memoize :likely_person_matches
 
-  # @return [Boolean]
-  def likely_exact_matches? = @likely_exact_matches || false
+  def likely_person_match_reason(person)
+    person_match_suggestions[:reasons].fetch(person.id)
+  end
+
+  private def person_match_suggestions
+    People::LikelyMatches.call(record: self)
+  end
+  memoize :person_match_suggestions
 
   def fellows
     CensusRecords::FindFamilyMembers.call(record: self)
