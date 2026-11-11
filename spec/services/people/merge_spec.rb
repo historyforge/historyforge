@@ -42,6 +42,26 @@ module People
       expect(target.audit_logs.pluck(:message)).to include(match(/Connected to 1920 Census Record/))
     end
 
+    it "keeps the target death year and its exact status when both people have a year" do
+      source.update!(death_year: 1941, is_death_year_estimated: true)
+      target.update!(death_year: 1940, is_death_year_estimated: false)
+
+      described_class.call(source:, target:)
+
+      expect(target.reload).to have_attributes(death_year: 1940, is_death_year_estimated: false)
+    end
+
+    [false, true].each do |estimated|
+      it "copies the source death year and estimated flag (#{estimated}) when the target has no year" do
+        source.update!(death_year: 1940, is_death_year_estimated: estimated)
+        target.update!(is_death_year_estimated: !estimated)
+
+        described_class.call(source:, target:)
+
+        expect(target.reload).to have_attributes(death_year: 1940, is_death_year_estimated: estimated)
+      end
+    end
+
     it "rolls back transferred records and changes if the source cannot be deleted" do
       allow(source).to receive(:destroy).and_return(false)
 

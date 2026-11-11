@@ -117,6 +117,43 @@ RSpec.describe 'people' do
     expect(page).to have_css('tr', text: /Also recorded as.*Maria Jones, Mary Jones/)
   end
 
+  scenario 'the new person form defaults to an exact death year', driver: :rack_test do
+    sign_in create(:administrator)
+
+    visit new_person_path
+
+    expect(page).to have_unchecked_field('person_is_death_year_estimated')
+  end
+
+  scenario 'entering a death year on an older person record defaults to exact', driver: :rack_test do
+    sign_in create(:administrator)
+    person = create(:person, death_year: nil, is_death_year_estimated: true)
+
+    visit edit_person_path(person)
+    expect(page).to have_unchecked_field('person_is_death_year_estimated')
+    fill_in 'Death Year', with: '1940'
+    within('form.edit_person') { click_on 'Save' }
+
+    expect(person.reload).to have_attributes(death_year: 1940, is_death_year_estimated: false)
+    within('table[aria-label="Person details"]') do
+      expect(page).to have_css('tr', text: /Died\s*1940/)
+    end
+  end
+
+  scenario 'an explicitly estimated death year stays estimated when editing a person', driver: :rack_test do
+    sign_in create(:administrator)
+    person = create(:person, death_year: 1940, is_death_year_estimated: true)
+
+    visit edit_person_path(person)
+    expect(page).to have_checked_field('person_is_death_year_estimated')
+    within('form.edit_person') { click_on 'Save' }
+
+    expect(person.reload.is_death_year_estimated).to be true
+    within('table[aria-label="Person details"]') do
+      expect(page).to have_css('tr', text: /Died\s*About 1940/)
+    end
+  end
+
   scenario 'edit people' do
     sign_in create(:administrator)
     person = create(:person, death_year: 1940, is_death_year_estimated: false)
