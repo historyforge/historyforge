@@ -1,4 +1,4 @@
-// import {IAttributeFilter, AttributeFilterConfig, ScopeValue} from "./types";
+import isValuelessPredicate from './isValuelessPredicate'
 
 class AttributeFilter {
     html = document.createElement('DIV');
@@ -39,8 +39,8 @@ class AttributeFilter {
     }
 
     renderInput() {
-        if (this.scope.match(/null$/)) {
-            this.renderNullInput();
+        if (isValuelessPredicate(this.scope)) {
+            this.renderBoolean();
         } else {
             switch (this.config.type) {
                 case 'boolean':
@@ -102,12 +102,6 @@ class AttributeFilter {
     }
 
     renderBoolean() {
-        this.input.setAttribute('value', '1');
-        this.html.appendChild(this.input);
-    }
-
-    renderNullInput() {
-        this.input.setAttribute('type', 'hidden');
         this.input.setAttribute('value', '1');
         this.html.appendChild(this.input);
     }
