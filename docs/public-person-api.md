@@ -8,6 +8,24 @@ census years. Signed-in callers may receive additional records their permissions
 allow. Signed-in responses are marked `Cache-Control: no-store`. The endpoint
 has no write operations.
 
+Use Cross-Origin Resource Sharing (CORS) when a website hosted separately from
+HistoryForge needs to read Person records directly from browser JavaScript. For
+example, a kiosk at `https://kiosk.example.org` can fetch and display Person
+records from your installation once you add the kiosk's origin to the list.
+
+Set `API_CORS_ORIGINS` to a comma-separated list of exact origins, such as
+`https://kiosk.example.org,http://localhost:5173`, and restart the app. Include
+the scheme and any non-default port, without a trailing slash. Browsers let
+JavaScript from those origins read responses to GET and HEAD requests made
+without credentials. Leave the list empty if you have no separate browser
+client.
+
+The list governs what browsers let JavaScript read. Anyone can still read
+public Person records by opening the API URL directly, using a command-line
+tool such as curl, or calling from a server. HistoryForge's People and census
+visibility settings determine what the API returns. An installation that needs
+to restrict the API itself to a kiosk would need server-side access controls.
+
 | Field | Meaning |
 | --- | --- |
 | `id`, `name`, `canonical_url` | The installation's numeric Person ID, display name, and absolute URL of the HTML Person page. Use the canonical URL to identify the Person across installations. |
