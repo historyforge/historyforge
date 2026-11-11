@@ -96,6 +96,7 @@ class Census1920Record < CensusRecord
 
   define_enumeration :employment, %w[W Em OA].freeze
   define_enumeration :race, %w[W B Mu In Ch Jp Fil Hin Kor].freeze
+  enable_race_write_in_filter
 
   COLUMNS = {
     street_house_number: 2,

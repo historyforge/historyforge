@@ -3,6 +3,34 @@
 require "rails_helper"
 
 RSpec.describe "The Forge" do
+  scenario "finds census race write-ins alongside a selected standard code", :js do
+    user = create(:census_taker)
+    sign_in user
+    locality = create(:locality)
+    %w[Portuguese W B unknown].each do |race|
+      building = create(:building, :reviewed, locality:)
+      create(:census1910_record, building:, locality:, race:, reviewed_at: Time.current, reviewed_by: user)
+    end
+
+    visit forge_path
+    find("#forge-sidebar-right-toggle", wait: 10).click
+    find("select", text: "Select a year to search").find("option", text: "1910", exact_text: true).select_option
+    find("option[value=race]").select_option
+
+    within(".modal.show") do
+      check "Other"
+      click_button "Search"
+    end
+    expect(page).to have_content("Found 1 person in 1 building.")
+
+    find(".list-group-item", text: "Race").click
+    within(".modal.show") do
+      check "W - White"
+      click_button "Search"
+    end
+    expect(page).to have_content("Found 2 people in 2 buildings.")
+  end
+
   scenario "filters census buildings and opens the matching building details", :js do
     user = create(:census_taker)
     sign_in user

@@ -33,6 +33,7 @@ class CensusFiltersGenerator
 
     if options[:collection]
       collection = options[:coded] ? coded_collection(field, options) : options[:collection]
+      collection += [['Other', CensusRecord::RACE_WRITE_IN_FILTER]] if field == :race && klass.race_write_in_filter
       AttributeBuilder.collection(json, field, klass:, collection:)
       return
     end

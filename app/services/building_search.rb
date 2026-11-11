@@ -127,7 +127,7 @@ class BuildingSearch < SearchQueryBuilder
   def enrich_with_residents
     people_class = CensusYears.class_for(people)
     people_records = people_class.where.not(reviewed_at: nil)
-    people_records = people_records.ransack(people_params).result if people_params.present?
+    people_records = people_records.ransack(people_class.race_filter_params(people_params)).result if people_params.present?
     people_records = people_records.pluck(:building_id)
 
     # Force it to return no results if there are no people - otherwise it returns all results when
