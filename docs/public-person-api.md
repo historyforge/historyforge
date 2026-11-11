@@ -24,16 +24,16 @@ endpoint or a denied read returns HTTP 403 with `{"error":"forbidden"}`. An
 unknown numeric Person ID returns HTTP 404 with `{"error":"not_found"}` when
 public access is enabled.
 
-The Person API defaults to 120 requests per minute per client IP. Set
-`PERSON_API_REQUESTS_PER_MINUTE` to a positive integer to change the limit,
+The public API defaults to 120 requests per minute per client IP. Set
+`API_REQUESTS_PER_MINUTE` to a positive integer to change the limit,
 or set it to `0` to disable the limit. Restart the app after changing the
-value. GET and HEAD requests from the same client IP share a quota across
-all Person IDs. CORS preflight requests do
-not count. Requests over the limit receive HTTP 429 with
+value. GET and HEAD requests share one quota across public API controllers
+that include `PublicApiRateLimit`. The Person endpoint uses this quota today.
+CORS preflight requests do not count. Requests over the limit receive HTTP 429 with
 `{"error":"rate_limit_exceeded"}` and a `Retry-After: 60` header.
 
 Verify that Rails sees the visitor's IP behind your reverse proxy. Visitors
-on a shared network can share a quota. Each
-Puma process keeps its own counters, which reset when the process restarts.
+on a shared network can share a quota. Each Puma process keeps its own
+counters, which reset when the process restarts.
 For one quota across multiple workers or containers, enforce it at a shared
 proxy or gateway.
