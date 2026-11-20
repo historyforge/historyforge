@@ -59,6 +59,9 @@ RSpec.describe "buildings" do
     matching_link = %Q(#grid a[href^="#{building_path(matching)}?"])
     other_link = %Q(#grid a[href^="#{building_path(other)}?"])
     find(matching_link).click
+    expect(page).to have_current_path(building_path(matching), ignore_query: true)
+    expect(page).to have_link("View All", href: buildings_path)
+
     within "#main-header" do
       click_link "Data"
       click_link "Buildings"
