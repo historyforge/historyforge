@@ -51,6 +51,27 @@ module People
       expect(target.reload).to have_attributes(death_year: 1940, is_death_year_estimated: false)
     end
 
+    it "keeps the target's exact birth year when the source is estimated" do
+      source.update!(birth_year: 1881, is_birth_year_estimated: true)
+      target.update!(birth_year: 1880, is_birth_year_estimated: false)
+
+      described_class.call(source:, target:)
+
+      expect(target.reload).to have_attributes(birth_year: 1880, is_birth_year_estimated: false)
+    end
+
+    it "copies exact birth and death years over estimates on the target" do
+      source.update!(birth_year: 1880, is_birth_year_estimated: false,
+                     death_year: 1940, is_death_year_estimated: false)
+      target.update!(birth_year: 1881, is_birth_year_estimated: true,
+                     death_year: 1941, is_death_year_estimated: true)
+
+      described_class.call(source:, target:)
+
+      expect(target.reload).to have_attributes(birth_year: 1880, is_birth_year_estimated: false,
+                                               death_year: 1940, is_death_year_estimated: false)
+    end
+
     [false, true].each do |estimated|
       it "copies the source death year and estimated flag (#{estimated}) when the target has no year" do
         source.update!(death_year: 1940, is_death_year_estimated: estimated)
