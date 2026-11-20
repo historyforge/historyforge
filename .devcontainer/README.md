@@ -1,6 +1,6 @@
 # Develop HistoryForge in a container
 
-This optional environment builds locally and includes Ruby 4.0.6 (matching
+This optional environment builds locally and includes Ruby 4.0.10 (matching
 Gemfile), Node 22/Corepack, PostgreSQL 15, image libraries, and Chromium. It does
 not require a registry account or affect the production Docker/Dokku workflow.
 
