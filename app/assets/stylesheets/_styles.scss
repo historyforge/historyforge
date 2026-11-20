@@ -967,7 +967,17 @@ form .trix-content {
   border-top: 1px solid var(--bs-border-color);
 
   summary {
-    color: var(--bs-body-color);
+    color: var(--bs-link-hover-color);
     cursor: pointer;
+    font-weight: 600;
+  }
+
+  summary:hover {
+    text-decoration: underline;
+  }
+
+  details:not([open]) .when-open,
+  details[open] .when-closed {
+    display: none;
   }
 }
