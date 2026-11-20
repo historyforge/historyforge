@@ -31,7 +31,9 @@ ol.person-census-entries.person-record-grid.list-unstyled.mb-0 data-columns=pers
         = link_to 'View census record', record
         - if household.any?
           details.mt-2.small
-            summary= "Household members (#{household.size})"
+            summary
+              span.when-closed= "Show household members (#{household.size})"
+              span.when-open= "Hide household members (#{household.size})"
             p.text-body-secondary.mt-2.mb-1 Relationships are as recorded relative to the head of household.
             ul.list-unstyled.mb-0
               - household.each do |member|
