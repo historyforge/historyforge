@@ -12,7 +12,7 @@ module People
     end
 
     MERGEABLE_ATTRIBUTES = %i[
-      birth_year is_birth_year_estimated pob is_pob_estimated sex race
+      pob is_pob_estimated sex race
     ].freeze
 
     def call
@@ -41,11 +41,17 @@ module People
       MERGEABLE_ATTRIBUTES.each do |attr|
         target[attr] ||= source[attr]
       end
-      if target.death_year.nil? && source.death_year.present?
-        target.death_year = source.death_year
-        target.is_death_year_estimated = source.is_death_year_estimated
-      end
+      merge_year(:birth_year, :is_birth_year_estimated)
+      merge_year(:death_year, :is_death_year_estimated)
       target.save!
+    end
+
+    def merge_year(year, estimated)
+      return if source[year].nil?
+      return if target[year].present? && (!target[estimated] || source[estimated])
+
+      target[year] = source[year]
+      target[estimated] = source[estimated]
     end
 
     def merge_associations
