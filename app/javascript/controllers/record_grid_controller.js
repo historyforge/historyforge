@@ -6,7 +6,7 @@ import { gridRequestURL } from '../search/gridRequestURL'
 export default class extends Controller {
   connect() {
     this.requests = new AbortController()
-    this.url = location.href
+    this.url = new URL(this.element.dataset.resultsUrl, document.baseURI)
     const form = document.getElementById('new_s')
     if (form) {
       new AdvancedSearch(form, this.element.dataset.filtersUrl, JSON.parse(this.element.dataset.filters), this.requests.signal)
@@ -36,6 +36,7 @@ export default class extends Controller {
     try {
       const response = await fetch(gridRequestURL(this.url, params), {
         headers: { Accept: 'application/json' },
+        cache: 'no-store',
         signal
       })
       if (!response.ok) throw new Error(`HTTP ${response.status}`)

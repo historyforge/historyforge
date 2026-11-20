@@ -50,6 +50,25 @@ RSpec.describe "buildings" do
     expect(page).to have_css(%q(.dropdown-menu a[href*="scope=unpeopled"]), text: "Unpeopled <b>buildings</b>")
   end
 
+  scenario "returning to Buildings loads rows for the restored filters", :js do
+    sign_in create(:administrator)
+    matching = create(:building, :reviewed, addresses: [build(:address, name: "Foundry")])
+    other = create(:building, :reviewed, addresses: [build(:address, name: "Market")])
+    visit buildings_path(s: { street_address_cont: "Foundry" })
+
+    matching_link = %Q(#grid a[href^="#{building_path(matching)}?"])
+    other_link = %Q(#grid a[href^="#{building_path(other)}?"])
+    find(matching_link).click
+    within "#main-header" do
+      click_link "Data"
+      click_link "Buildings"
+    end
+
+    expect(page).to have_content("Found 1 record")
+    expect(page).to have_css(matching_link)
+    expect(page).to have_no_css(other_link)
+  end
+
   scenario "clearing a historical MiniForge overlay keeps the street map and building marker", :js do
     building = create(:building, :reviewed)
     overlay = MapOverlay.create!(name: "1888 Sanborn Atlas", year_depicted: 1888, active: true,
