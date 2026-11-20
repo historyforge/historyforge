@@ -1,5 +1,5 @@
 FROM node:22-bookworm-slim AS node
-FROM ruby:4.0.6-bookworm
+FROM ruby:4.0.10-bookworm
 
 COPY --from=node /usr/local/bin/node /usr/local/bin/node
 COPY --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules

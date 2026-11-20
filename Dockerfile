@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-ARG RUBY_VERSION=4.0.6
+ARG RUBY_VERSION=4.0.10
 FROM node:22-bookworm-slim AS node
 FROM ruby:${RUBY_VERSION}-slim-bookworm AS base
 ENV RAILS_ENV=production \
