@@ -41,7 +41,9 @@ module Buildings
             navigation = grid_navigation_context(*NAVIGATION_FILTERS)
             render json: BuildingGridTranslator.new(@search).row_data { |id| building_path(id, navigation:) }
           else
-            render plain: ForgeQuery.new(@search).to_json, content_type: 'application/json'
+            photo_scope = Photograph.accessible_by(current_ability).joins(:file_attachment) if params[:photos] == '1'
+            query = ForgeQuery.new(@search, photo_scope: photo_scope, ability: current_ability)
+            render plain: query.to_json, content_type: 'application/json'
           end
         end
       end

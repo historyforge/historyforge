@@ -225,3 +225,30 @@
   }
 }
 
+
+.forge-photo-controls {
+  position: absolute; top: 12px; left: 60px; z-index: 800;
+  display: flex; align-items: center; gap: 8px; max-width: calc(100% - 130px);
+  flex-wrap: wrap;
+  > span { background: white; padding: 6px 10px; border-radius: 4px; }
+}
+.forge-photo-marker {
+  background: #355c7d; color: white; border: 2px solid white;
+  border-radius: 50%; text-align: center; line-height: 24px;
+  box-shadow: 0 1px 4px #555;
+}
+.forge-photo-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px;
+}
+.forge-photo-card {
+  background: white; border: 2px solid #ddd; border-radius: 4px; padding: 6px;
+  text-align: left; color: #222;
+  &.selected { border-color: #355c7d; }
+  img { width: 100%; height: 140px; object-fit: contain; background: #eee; }
+  span, small { display: block; margin-top: 4px; }
+}
+.forge-photo-viewer {
+  margin-bottom: 24px;
+  > img { display: block; max-width: 100%; max-height: 65vh; margin: auto; object-fit: contain; }
+}
+.forge-photo-description { white-space: pre-line; }

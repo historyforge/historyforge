@@ -3,8 +3,9 @@ import Layers from './Layers'
 import { Map } from './Map'
 import CensusSearch from './CensusSearch'
 import {BuildingModal} from './Building'
-import {forgeInit, getBuildingsNearMe, reset, resetMap} from './actions'
+import {forgeInit, getBuildingsNearMe, reset, resetMap, togglePhotos, load} from './actions'
 import {useDispatch, useSelector} from 'react-redux'
+import PhotoGallery from './PhotoGallery'
 import {Forges} from "./Forges";
 
 const App = () => {
@@ -21,6 +22,7 @@ const App = () => {
     const forgeActive = useSelector(state => state.layers.active || state.search.current);
     const focusing = useSelector(state => state.layers.focusing || false);
 
+    const { photoMode, resultPhotoMode, loading, error, buildings } = useSelector(state => state.buildings);
     const building = useSelector(state => state.buildings.building);
     const years = useSelector(state => state.search.years);
 
@@ -57,6 +59,15 @@ const App = () => {
     return (
         <div className="map-wrap">
             <Map />
+            <div className="forge-photo-controls">
+                <button type="button" className={`btn ${photoMode ? 'btn-primary' : 'btn-light'}`}
+                    aria-pressed={!!photoMode} onClick={() => dispatch(togglePhotos())}>
+                    <i className="fa fa-camera" aria-hidden="true" /> Photos
+                </button>
+                {loading ? <span role="status">Loading…</span> : error ? <span role="alert">{error} <button type="button" className="btn btn-light" onClick={() => dispatch(load())}>Retry</button></span>
+                    : resultPhotoMode && <span role="status">{buildings?.length || 0} buildings with photographs</span>}
+            </div>
+            <PhotoGallery />
             <button id="near-me-button" onClick={centerOnMe} className="btn btn-primary">
                 <i className="fa fa-bullseye" />
             </button>
@@ -134,7 +145,7 @@ const App = () => {
                     </>
                 )}
             </div>
-            <BuildingModal building={building} years={years} />
+            <BuildingModal building={photoMode ? null : building} years={years} />
         </div>
     )
 }

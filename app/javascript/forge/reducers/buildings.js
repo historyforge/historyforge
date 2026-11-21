@@ -1,4 +1,9 @@
 export const buildings = function(state = {}, action) {
+  if (action.type === 'FORGE_PHOTOS') return { ...state, photoMode: action.enabled, building: null, photoBuildingId: null }
+  if (action.type === 'PHOTO_BUILDING_SELECTED') return { ...state, photoBuildingId: action.id }
+  if (action.type === 'PHOTO_BUILDING_DESELECT') return { ...state, photoBuildingId: null }
+  if (action.type === 'BUILDINGS_LOADING') return { ...state, loading: true, error: null }
+  if (action.type === 'BUILDINGS_FAILED') return { ...state, loading: false, error: 'Unable to load the map. Please try again.' }
   if (action.type === 'BUILDING_HIGHLIGHT') {
     return {
       ...state,
@@ -17,7 +22,7 @@ export const buildings = function(state = {}, action) {
   if (action.type === 'BUILDING_LOADED') {
     const { buildings } = action
     const info = action.meta ? action.meta.info : `Found ${buildings.length} results.`
-    return { ...state, building: null, highlighted: null, buildings, message: info, loadedAt: new Date().getTime() }
+    return { ...state, building: null, photoBuildingId: null, loading: false, resultPhotoMode: !!action.photoMode, highlighted: null, buildings: buildings || [], message: info, loadedAt: new Date().getTime() }
   }
 
   if (action.type === 'BUILDING_SELECTED') {

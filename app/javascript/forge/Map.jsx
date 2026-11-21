@@ -62,6 +62,7 @@ function buildClusterGroup() {
     maxClusterRadius: 50,
     iconCreateFunction: (cluster) => {
       const count = cluster.getChildCount();
+      const photos = cluster.getAllChildMarkers()[0]?.options.photoMode;
       const diameter = count >= 100 ? 60 : count > 10 ? 50 : 40;
       return L.divIcon({
         html: `<div style="
@@ -70,10 +71,10 @@ function buildClusterGroup() {
           line-height:${diameter}px;
           text-align:center;
           border-radius:50%;
-          background:rgba(255,0,0,0.8);
+          background:${photos ? '#355c7d' : 'rgba(255,0,0,0.8)'};
           color:rgba(255,255,255,0.9);
           font-size:12px;
-        ">${count}</div>`,
+        ">${photos ? '<i class="fa fa-camera" aria-hidden="true"></i> ' : ''}${count}</div>`,
         className: '',
         iconSize: [diameter, diameter],
       });
