@@ -1,3 +1,4 @@
+import OpenRecordLink from './OpenRecordLink'
 import PlaceView from './PlaceView'
 import React, { createContext, useContext, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
@@ -12,6 +13,7 @@ export function RecordLink({ href, children, ...props }) {
 
 // Keep the existing record pages and their authorization checks inside the Forge.
 export function RecordProvider({ children }) {
+  const [recordUrl, setRecordUrl] = useState(null)
   const [placeTitle, setPlaceTitle] = useState('Loading place…')
   const [history, setHistory] = useState([])
   const [openSequence, setOpenSequence] = useState(0)
@@ -49,7 +51,7 @@ export function RecordProvider({ children }) {
   useEffect(() => {
     const navigate = event => {
       const link = event.target.closest('a[href]')
-      if (!link || link.getAttribute('href').startsWith('#')) return
+      if (!link || link.hasAttribute('data-forge-exit') || link.getAttribute('href').startsWith('#')) return
       const destination = new URL(link.href)
       if (destination.origin !== window.location.origin || /\/forge\/?$/.test(destination.pathname)) return
       event.preventDefault()
@@ -67,10 +69,10 @@ export function RecordProvider({ children }) {
       <header>
         <button type="button" className="btn btn-light" disabled={history.length < 2}
           onClick={() => { setLoading(true); setHistory(current => current.slice(0, -1)) }}>Back</button>
-        <h2>{placeId ? placeTitle : loading ? 'Loading…' : 'Explore HistoryForge'}</h2>
-        <button type="button" className="btn btn-light" onClick={() => setHistory([])} autoFocus>Close</button>
+        <div><h2>{placeId ? placeTitle : loading ? 'Loading…' : 'Explore HistoryForge'}</h2>{placeId && <OpenRecordLink href={recordUrl} />}</div>
+        <button type="button" className="forge-photo-close" aria-label="Close" onClick={() => setHistory([])} autoFocus><span aria-hidden="true">×</span></button>
       </header>
-      {placeId ? <div className="forge-overlay-content" key={placeId}><PlaceView onTitle={setPlaceTitle} id={placeId} onNavigate={open} /></div> : <iframe key={url} ref={frame} src={url} title="HistoryForge record" onLoad={() => setLoading(false)}
+      {placeId ? <div className="forge-overlay-content" key={placeId}><PlaceView onRecord={setRecordUrl} onTitle={setPlaceTitle} id={placeId} onNavigate={open} /></div> : <iframe key={url} ref={frame} src={url} title="HistoryForge record" onLoad={() => setLoading(false)}
         sandbox="allow-same-origin allow-scripts allow-forms" />}
     </dialog>, document.body)}
   </RecordContext.Provider>

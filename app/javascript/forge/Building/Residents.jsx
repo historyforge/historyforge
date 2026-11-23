@@ -1,10 +1,10 @@
 import { RecordLink } from '../RecordViewer'
 import React from "react";
 
-export const Residents = ({ buildingId, residents, years }) => (
+export const Residents = ({ buildingId, residents, years, showYearHeading = true }) => (
     years.map(year => residents[year] && (
         <div key={year} className="mt-4">
-            <h5 className="mb-3">Residents in {year}</h5>
+            {showYearHeading && <h5 className="mb-3">{year} census</h5>}
             {residents[year].map((family, index) => (
                 <div key={`family-${index}`}>
                     {family.map((person, personIndex) => (

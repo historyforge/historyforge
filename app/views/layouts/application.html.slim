@@ -59,6 +59,7 @@ html
       main.forge-embedded-record
         #alerts= flash_messages
         h1= page_title if page_title
+        = render 'layouts/forge_open_record'
         - if content_for?(:content)
           = yield :content
         - else

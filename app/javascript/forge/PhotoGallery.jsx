@@ -2,7 +2,9 @@ import { RecordLink } from './RecordViewer'
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useDispatch, useSelector } from 'react-redux'
+import OpenRecordLink from './OpenRecordLink'
 import axios from 'axios'
+import LinkedText from './LinkedText'
 import { openDialog } from './openDialog'
 
 export default function PhotoGallery() {
@@ -38,29 +40,30 @@ export default function PhotoGallery() {
 
   if (!id) return null
   const photo = gallery?.photos[selected]
-  return createPortal(<dialog ref={dialog} className="forge-photo-overlay" aria-labelledby="forge-photo-title"
+  return createPortal(<dialog ref={dialog} className={`forge-photo-overlay${gallery?.photos.length > 1 ? "" : " forge-photo-overlay-single"}`} aria-labelledby="forge-photo-title"
     onCancel={event => { event.preventDefault(); close() }}>
     <header className="forge-photo-header">
       <div>
         <h2 id="forge-photo-title">{gallery?.address || 'Photographs'}</h2>
         {gallery && <RecordLink href={gallery.url}>Explore this place</RecordLink>}
+        <OpenRecordLink href={photo?.can_edit ? photo.url : null} />
       </div>
-      <button type="button" className="forge-photo-close" aria-label="Close photographs" onClick={close} autoFocus>
+      <button type="button" className="forge-photo-close" aria-label="Close" onClick={close} autoFocus>
         <span aria-hidden="true">×</span>
       </button>
     </header>
     {error ? <div className="forge-photo-message" role="alert">Unable to load photographs. <button type="button" className="btn btn-light" onClick={() => setAttempt(attempt + 1)}>Try again</button></div>
       : !gallery ? <p className="forge-photo-message" role="status">Loading photographs…</p>
         : !photo ? <p className="forge-photo-message">No photographs are available for this building.</p> : <>
-          <nav className="forge-photo-strip" aria-label="Photographs at this building">
+          {gallery.photos.length > 1 && <nav className="forge-photo-strip" aria-label="Photographs at this building">
             {gallery.photos.map((item, index) => <button key={item.id} type="button"
               className={`forge-photo-card${selected === index ? ' selected' : ''}`}
-              aria-label={`Photograph ${index + 1}: ${item.caption || 'Untitled photograph'}${item.date ? ` (${item.date})` : ''}`}
+              aria-label={`Photograph ${index + 1}${item.caption?.trim() ? `: ${item.caption}` : ''}${item.date ? ` (${item.date})` : ''}`}
               aria-pressed={selected === index} onClick={() => setSelected(index)}>
               <img src={item.thumbnail} alt="" loading="lazy" />
               <span>{item.date || `Photograph ${index + 1}`}</span>
             </button>)}
-          </nav>
+          </nav>}
           <section className="forge-photo-viewer" aria-label="Selected photograph">
             <div className="forge-photo-image"><img key={photo.id} src={photo.image} alt={photo.caption || 'Historical photograph'} /></div>
             <div className="forge-photo-details">
@@ -71,9 +74,9 @@ export default function PhotoGallery() {
               </nav>}
               <div key={photo.id} className="forge-photo-copy">
               {photo.date && <p className="forge-photo-date">{photo.date}</p>}
-              <h3>{photo.caption || 'Untitled photograph'}</h3>
+              {photo.caption?.trim() && <h3>{photo.caption}</h3>}
               {photo.creator && <p className="forge-photo-creator">{photo.creator}</p>}
-              {photo.description && <p className="forge-photo-description">{photo.description}</p>}
+              {photo.description && <p className="forge-photo-description"><LinkedText text={photo.description} /></p>}
 
               </div>
             </div>

@@ -5,7 +5,7 @@ script
   |   document.addEventListener('DOMContentLoaded', () => send('forge:ready'));
   |   document.addEventListener('click', event => {
   |     const link = event.target.closest('a[href]');
-  |     if (!link || link.getAttribute('href').startsWith('#') || link.hasAttribute('data-bs-toggle') || link.hasAttribute('data-turbo-method') || link.hasAttribute('data-method')) return;
+  |     if (!link || link.hasAttribute('data-forge-exit') || link.getAttribute('href').startsWith('#') || link.hasAttribute('data-bs-toggle') || link.hasAttribute('data-turbo-method') || link.hasAttribute('data-method')) return;
   |     event.preventDefault();
   |     event.stopImmediatePropagation();
   |     const destination = new URL(link.href);
