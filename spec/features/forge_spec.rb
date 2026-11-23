@@ -91,9 +91,11 @@ RSpec.describe "The Forge" do
 
     expect(page).to have_content("Found 1 person in 1 building.")
     find("#map .leaflet-overlay-pane path.leaflet-interactive").click
-    within(".forge-record-overlay[open]", text: "Explore this place") do
-      expect(page).to have_heading(/92 Foundry St/)
-      find("summary", text: "1880 census").click
+    within(".forge-record-overlay[open]", text: "92 Foundry St") do
+      expect(page).to have_css("h2", text: /92 Foundry St/)
+      find('[role="tab"]', text: "Residents", exact_text: true).click
+      expect(page).to have_css("h5", text: "1880 census", exact_text: true)
+      expect(page).to have_no_css("summary", text: "1880 census")
       expect(page).to have_content("Foundry, Beatrice")
     end
   end

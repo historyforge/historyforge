@@ -73,7 +73,7 @@ export function RecordProvider({ children }) {
         <button type="button" className="forge-photo-close" aria-label="Close" onClick={() => setHistory([])} autoFocus><span aria-hidden="true">×</span></button>
       </header>
       {placeId ? <div className="forge-overlay-content" key={placeId}><PlaceView onRecord={setRecordUrl} onTitle={setPlaceTitle} id={placeId} onNavigate={open} /></div> : <iframe key={url} ref={frame} src={url} title="HistoryForge record" onLoad={() => setLoading(false)}
-        sandbox="allow-same-origin allow-scripts allow-forms" />}
+        sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox" />}
     </dialog>, document.body)}
   </RecordContext.Provider>
 }

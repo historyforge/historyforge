@@ -63,15 +63,16 @@ RSpec.describe "Bootstrap components" do
     find("select", text: "Select a year to search").find("option", text: "1880", exact_text: true).select_option
     find("select", text: "Select a field to search").find("option", text: "Last Name", exact_text: true).select_option
 
-    dialog = find(".modal.show", text: "Last Name")
+    dialog = find(".forge-record-overlay[open]", text: "Last Name")
     dialog.find(%q(button[aria-label="Close"])).click
-    expect(page).to have_no_css(".modal-backdrop")
+    expect(page).to have_no_css(".forge-record-overlay[open]")
+    expect(page).to have_no_css('body[style*="overflow: hidden"]')
 
     find("#forge-right-col .list-group-item", text: "Last Name").click
-    expect(page).to have_css(".modal.show", text: "Last Name")
+    expect(page).to have_css(".forge-record-overlay[open]", text: "Last Name")
     page.execute_script("Turbo.visit(arguments[0])", root_path)
     expect(page).to have_current_path(root_path)
-    expect(page).to have_no_css(".modal-backdrop")
-    expect(page).to have_no_css("body.modal-open")
+    expect(page).to have_no_css(".forge-record-overlay[open]")
+    expect(page).to have_no_css('body[style*="overflow: hidden"]')
   end
 end
