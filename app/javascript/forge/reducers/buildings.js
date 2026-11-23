@@ -1,6 +1,7 @@
 export const buildings = function(state = {}, action) {
+  if (action.type === 'PLACE_FOCUSED') return { ...state, focusedPlace: action.place }
   if (action.type === 'FORGE_PHOTOS') return { ...state, photoMode: action.enabled, building: null, photoBuildingId: null }
-  if (action.type === 'PHOTO_BUILDING_SELECTED') return { ...state, photoBuildingId: action.id }
+  if (action.type === 'PHOTO_BUILDING_SELECTED') return { ...state, photoBuildingId: action.id, photoOpenSequence: (state.photoOpenSequence || 0) + 1 }
   if (action.type === 'PHOTO_BUILDING_DESELECT') return { ...state, photoBuildingId: null }
   if (action.type === 'BUILDINGS_LOADING') return { ...state, loading: true, error: null }
   if (action.type === 'BUILDINGS_FAILED') return { ...state, loading: false, error: 'Unable to load the map. Please try again.' }

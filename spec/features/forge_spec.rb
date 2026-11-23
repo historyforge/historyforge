@@ -18,7 +18,7 @@ RSpec.describe "The Forge" do
     find("select", text: "Select a year to search").find("option", text: "1940", exact_text: true).select_option
     find("option[value=wages_or_salary_amount]").select_option
 
-    within(".modal.show") do
+    within(".forge-record-overlay[open]") do
       choose "less than", exact: true
       find("input[type=number]").set("1000")
       click_button "Search"
@@ -29,7 +29,7 @@ RSpec.describe "The Forge" do
     expect(page).to have_content("Found 3 people in 3 buildings.")
     find("option[value=wages_or_salary]").select_option
 
-    within(".modal.show") do
+    within(".forge-record-overlay[open]") do
       check "$5,000+"
       click_button "Search"
     end
@@ -50,14 +50,14 @@ RSpec.describe "The Forge" do
     find("select", text: "Select a year to search").find("option", text: "1910", exact_text: true).select_option
     find("option[value=race]").select_option
 
-    within(".modal.show") do
+    within(".forge-record-overlay[open]") do
       check "Other"
       click_button "Search"
     end
     expect(page).to have_content("Found 1 person in 1 building.")
 
     find(".list-group-item", text: "Race").click
-    within(".modal.show") do
+    within(".forge-record-overlay[open]") do
       check "W - White"
       click_button "Search"
     end
@@ -84,15 +84,16 @@ RSpec.describe "The Forge" do
     find("select", text: "Select a year to search").find("option", text: "1880", exact_text: true).select_option
     find("select", text: "Select a field to search").find("option", text: "Last Name", exact_text: true).select_option
 
-    within(".modal.show") do
+    within(".forge-record-overlay[open]") do
       find("input[type=text]").set("Foundry")
       click_button "Search"
     end
 
     expect(page).to have_content("Found 1 person in 1 building.")
     find("#map .leaflet-overlay-pane path.leaflet-interactive").click
-    within(".modal.show", text: "Building Details") do
-      expect(page).to have_link("92 Foundry St", href: building_path(building))
+    within(".forge-record-overlay[open]", text: "Explore this place") do
+      expect(page).to have_heading(/92 Foundry St/)
+      find("summary", text: "1880 census").click
       expect(page).to have_content("Foundry, Beatrice")
     end
   end
@@ -135,7 +136,7 @@ RSpec.describe "The Forge" do
     find("select", text: "Select a year to search").find("option", text: "1850", exact_text: true).select_option
     find("select", text: "Select a field to search").find("option", text: "Institution Name", exact_text: true).select_option
 
-    within(".modal.show") do
+    within(".forge-record-overlay[open]") do
       choose "is blank"
       expect(page).to have_no_css("input[type=text]")
       click_button "Search"
@@ -143,7 +144,7 @@ RSpec.describe "The Forge" do
     expect(page).to have_content("Found 2 people in 2 buildings.")
 
     find(".list-group-item", text: "Institution Name is blank").click
-    within(".modal.show") do
+    within(".forge-record-overlay[open]") do
       choose "is not blank"
       expect(page).to have_no_css("input[type=text]")
       click_button "Search"

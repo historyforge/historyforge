@@ -11,6 +11,10 @@ class ForgeController < ApplicationController
     render json: {
       id: building.id, address: building.primary_street_address,
       url: building_path(building),
+      description: building.description&.to_plain_text,
+      nearby: (building.lat? ? building.nearbys(0.1).accessible_by(current_ability).limit(8).includes(:addresses) : []).map { |neighbor|
+        { id: neighbor.id, address: neighbor.primary_street_address }
+      },
       photos: photos.map { |photo|
         { id: photo.id, caption: photo.caption, date: photo.date_text,
           description: photo.description, creator: photo.creator,

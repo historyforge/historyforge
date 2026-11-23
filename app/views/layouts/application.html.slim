@@ -48,11 +48,22 @@ html
     = javascript_include_tag 'application'
     = javascript_include_tag 'cms' if can?(:update, Cms::Page)
 
+    - if params[:forge_view] == '1'
+      = render 'layouts/forge_record_navigation'
     = yield :head
   body data-turbo-suppress-warning="true" data-bs-no-jquery=""
     = yield :announcement
-    = render 'layouts/header'
-    - if @full_layout
+    - unless params[:forge_view] == '1'
+      = render 'layouts/header'
+    - if forge_view?
+      main.forge-embedded-record
+        #alerts= flash_messages
+        h1= page_title if page_title
+        - if content_for?(:content)
+          = yield :content
+        - else
+          = yield
+    - elsif @full_layout
       = yield
     -else
       div class="container#{@full_layout ? '-fluid' : ''} pb-5"
@@ -66,7 +77,7 @@ html
           = yield :content
         - else
           = yield
-    = render 'shared/passkey_prompt' if user_signed_in? && current_user.passkeys.empty?
+    = render 'shared/passkey_prompt' if params[:forge_view] != '1' && user_signed_in? && current_user.passkeys.empty?
     = yield :body_end
 
     = yield :html_end

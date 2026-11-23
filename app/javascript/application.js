@@ -136,6 +136,7 @@ document.addEventListener('turbo:load', initializeMaps)
 // expires. Compare the server-rendered auth state on each page to the header and reload
 // when they disagree.
 function syncAuthStateWithHeader() {
+  if (!document.querySelector('#main-header')) return
   const authMeta = document.querySelector('meta[name="hf-auth"]')
   if (!authMeta) return
 

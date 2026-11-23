@@ -1,3 +1,4 @@
+import { RecordLink } from '../RecordViewer'
 import React from "react";
 
 export const Residents = ({ buildingId, residents, years }) => (
@@ -29,7 +30,7 @@ const Resident = ({ person, year }) => {
     return (
         <div className="row">
             <div className="col-7 col-sm-6">
-                <a href={`/census/${year}/${person.id}`} target="_blank">{person.name}</a>
+                <RecordLink href={`/census/${year}/${person.id}`}>{person.name}</RecordLink>
             </div>
             <div className="col-5 col-sm-6">
                 {person.relation_to_head}

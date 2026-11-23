@@ -31,7 +31,10 @@ module AdvancedRestoreSearch
       action: params[:action]
     )
 
-    redirect_to redirect_url if redirect_url
+    if redirect_url
+      redirect_url = redirect_url.merge(forge_view: '1') if params[:forge_view] == '1'
+      redirect_to redirect_url
+    end
   end
 
   # Not restoring filters for json request because these will already have the filters
