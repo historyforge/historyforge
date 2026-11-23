@@ -1,0 +1,17 @@
+/ Keep linked records inside the parent Forge, including links handled by Turbo.
+script
+  | (() => {
+  |   const send = (type, url) => window.parent.postMessage({ type, url }, window.location.origin);
+  |   document.addEventListener('DOMContentLoaded', () => send('forge:ready'));
+  |   document.addEventListener('click', event => {
+  |     const link = event.target.closest('a[href]');
+  |     if (!link || link.hasAttribute('data-forge-exit') || link.getAttribute('href').startsWith('#') || link.hasAttribute('data-bs-toggle') || link.hasAttribute('data-turbo-method') || link.hasAttribute('data-method')) return;
+  |     event.preventDefault();
+  |     event.stopImmediatePropagation();
+  |     const destination = new URL(link.href);
+  |     if (destination.origin === window.location.origin) send('forge:navigate', destination.href);
+  |   }, true);
+  |   document.addEventListener('keydown', event => {
+  |     if (event.key === 'Escape') { event.preventDefault(); send('forge:close'); }
+  |   });
+  | })();

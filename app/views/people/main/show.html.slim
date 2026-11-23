@@ -9,7 +9,7 @@
     == ERB::Util.json_escape(PersonJsonLdSerializer.new(@person_representation).to_json)
 = render 'shared/flag_resolution', item: @person
 - btn_class = 'btn btn-sm btn-secondary'
-- if user_signed_in?
+- if user_signed_in? && !forge_view?
   .mb-3.person-actions.d-flex.flex-wrap.gap-2
     - if can_people? || can?(:read, Person)
       = link_to 'View All', people_path, class: btn_class
@@ -30,11 +30,11 @@
       = render 'media/add_menu', item: @person, button_class: btn_class
     - if can?(:create, Narrative)
       = link_to 'Add Source/Narrative', new_person_narrative_path(@person), class: btn_class
-- elsif can_people? || can?(:read, Person)
+- elsif !forge_view? && (can_people? || can?(:read, Person))
   - content_for :pills do
     .text-right
       = link_to 'View All', people_path, class: 'btn btn-light'
-- if @navigation_neighbors.present?
+- if !forge_view? && @navigation_neighbors.present?
   - if @navigation_neighbors[:previous_id]
     = previous_nav_link(person_path(@navigation_neighbors[:previous_id], navigation: @navigation_context))
   - if @navigation_neighbors[:next_id]

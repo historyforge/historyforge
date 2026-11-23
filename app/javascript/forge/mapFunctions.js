@@ -28,7 +28,7 @@ export function getMainIcon() {
   })
 }
 
-export function generateMarkers(items, handlers) {
+export function generateMarkers(items, handlers, photos = false) {
   if (!items || !Array.isArray(items)) return null
 
   const markers = {}
@@ -46,7 +46,10 @@ export function generateMarkers(items, handlers) {
       return
     }
 
-    const marker = L.circleMarker([lat, lon], { ...staticStyle })
+    const marker = photos ? L.marker([lat, lon], {
+      icon: L.divIcon({ html: '<i class="fa fa-camera" aria-hidden="true"></i>', className: 'forge-photo-marker', iconSize: [28, 28] }),
+      title: 'View photographs', alt: 'View photographs', photoMode: true,
+    }) : L.circleMarker([lat, lon], { ...staticStyle })
     marker.buildingId = item.id
     marker.on('click', () => handlers.onClick(item))
     marker.on('mouseover', () => handlers.onMouseOver(item, marker))
@@ -60,14 +63,14 @@ export function highlightMarker(id, markers) {
   if (!markers) return
   const marker = markers[id]
   if (!marker) return
-  marker.setStyle(hoverStyle)
-  marker.bringToFront()
+  marker.setStyle?.(hoverStyle)
+  marker.bringToFront?.()
 }
 
 export function unhighlightMarker(id, markers) {
   if (!markers) return
   const marker = markers[id]
   if (!marker) return
-  marker.setStyle({ fillColor: 'red' })
-  marker.bringToBack()
+  marker.setStyle?.({ fillColor: 'red' })
+  marker.bringToBack?.()
 }

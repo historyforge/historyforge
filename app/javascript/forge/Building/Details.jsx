@@ -1,13 +1,14 @@
+import { RecordLink } from '../RecordViewer'
 import React from 'react'
 import SimpleFormat from '../SimpleFormat'
 
 export const Details = (building) => (
     <>
         <h5>
-            <a href={`/buildings/${building.id}`} target="_blank"
-               title="Open building record in new tab" rel="noreferrer">
+            <RecordLink href={`/buildings/${building.id}`}
+               title="View building record" rel="noreferrer">
                 <SimpleFormat text={building.street_address} />
-            </a>
+            </RecordLink>
         </h5>
 
         {(building.year_earliest || building.year_latest) && (

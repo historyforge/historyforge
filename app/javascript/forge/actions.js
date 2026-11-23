@@ -41,6 +41,7 @@ export const getBuildingsNearMe = ({ latitude, longitude }) => async (dispatch, 
   const qs = buildParams(getState().search || {});
   const params = {
     ...qs,
+    photos: getState().buildings.photoMode ? "1" : undefined,
     near
   };
   const json = await axios.get('/buildings.json', { params })
@@ -48,13 +49,27 @@ export const getBuildingsNearMe = ({ latitude, longitude }) => async (dispatch, 
   dispatch({ type: 'FORGE_FOCUS', buildings: json.data.buildings })
 }
 
+export const togglePhotos = () => (dispatch, getState) => {
+  dispatch({ type: 'FORGE_PHOTOS', enabled: !getState().buildings.photoMode })
+  dispatch(load())
+}
+
+let loadSequence = 0
 export const load = () => async (dispatch, getState) => {
+  const sequence = ++loadSequence
+  const photoMode = !!getState().buildings.photoMode
   const qs = getState().search || {}
-  const json = await axios.get('/buildings.json', {
-    params: buildParams(qs)
-  })
-  if (typeof json.data === 'string') { json.data = JSON.parse(json.data) }
-  dispatch({ type: 'BUILDING_LOADED', ...json.data })
+  dispatch({ type: 'BUILDINGS_LOADING' })
+  try {
+    const json = await axios.get('/buildings.json', {
+      params: { ...buildParams(qs), photos: photoMode ? '1' : undefined }
+    })
+    if (typeof json.data === 'string') { json.data = JSON.parse(json.data) }
+    if (sequence !== loadSequence) return
+    dispatch({ type: 'BUILDING_LOADED', ...json.data, photoMode })
+  } catch (error) {
+    if (sequence === loadSequence) dispatch({ type: 'BUILDINGS_FAILED' })
+  }
 
 }
 

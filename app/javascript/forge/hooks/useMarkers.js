@@ -6,7 +6,9 @@ import { useDispatch, useSelector } from "react-redux";
 
 export function useMarkers(map, clusterMachine) {
   const dispatch = useDispatch();
-  const { addressedAt, loadedAt, bubble, buildings } = useSelector(state => state.buildings);
+  const { addressedAt, loadedAt, bubble, buildings, resultPhotoMode, loading } = useSelector(state => state.buildings);
+  const busy = useRef(loading);
+  busy.current = loading;
   const searchParams = useSelector(state => state.search.params);
 
   const [prevLoadedAt, setPrevLoadedAt] = useState(null);
@@ -43,7 +45,9 @@ export function useMarkers(map, clusterMachine) {
       console.warn(`Invalid building ID: ${buildingId}`);
       return;
     }
-    dispatch(actions.select(buildingId, searchParams));
+    if (busy.current) return;
+    if (resultPhotoMode) dispatch({ type: 'PHOTO_BUILDING_SELECTED', id: buildingId });
+    else dispatch(actions.select(buildingId, searchParams));
   }
 
   const highlight = (buildingId) => {
@@ -98,11 +102,12 @@ export function useMarkers(map, clusterMachine) {
         unHighlight(parseInt(building.id));
       }
     }
-    markers.current = generateMarkers(buildings, handlers);
+    markers.current = generateMarkers(buildings, handlers, resultPhotoMode);
     setPrevLoadedAt(loadedAt);
+    map.closePopup();
     clusterMachine.clearLayers();
     if (markers.current) {
       clusterMachine.addLayers(Object.values(markers.current));
     }
-  }, [loadedAt, prevLoadedAt]);
+  }, [map, clusterMachine, loadedAt, prevLoadedAt]);
 }

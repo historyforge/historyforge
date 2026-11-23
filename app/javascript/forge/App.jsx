@@ -3,8 +3,10 @@ import Layers from './Layers'
 import { Map } from './Map'
 import CensusSearch from './CensusSearch'
 import {BuildingModal} from './Building'
-import {forgeInit, getBuildingsNearMe, reset, resetMap} from './actions'
+import {forgeInit, getBuildingsNearMe, reset, resetMap, togglePhotos, load} from './actions'
 import {useDispatch, useSelector} from 'react-redux'
+import PhotoGallery from './PhotoGallery'
+import { RecordProvider } from './RecordViewer'
 import {Forges} from "./Forges";
 
 const App = () => {
@@ -21,6 +23,7 @@ const App = () => {
     const forgeActive = useSelector(state => state.layers.active || state.search.current);
     const focusing = useSelector(state => state.layers.focusing || false);
 
+    const { photoMode, resultPhotoMode, loading, error, buildings } = useSelector(state => state.buildings);
     const building = useSelector(state => state.buildings.building);
     const years = useSelector(state => state.search.years);
 
@@ -55,8 +58,9 @@ const App = () => {
     }
 
     return (
-        <div className="map-wrap">
+        <RecordProvider><div className="map-wrap">
             <Map />
+            <PhotoGallery />
             <button id="near-me-button" onClick={centerOnMe} className="btn btn-primary">
                 <i className="fa fa-bullseye" />
             </button>
@@ -90,9 +94,9 @@ const App = () => {
                     <CensusSearch />
                 </div>
             )}
-            <div id="button-bar" className="btn-group">
+            <div id="button-bar">
                 {!sidebarLeft && !sidebarRight && !forgePickerOpen && (
-                    <>
+                    <div className="btn-group">
                       {hasForges && (
                           <button type="button"
                                   id="forge-picker-toggle"
@@ -128,14 +132,24 @@ const App = () => {
                                 }}>
                             <i className="fa fa-search"/>
                         </button>
+                        <button type="button" className={`btn btn-primary${photoMode ? ' active' : ''}`}
+                            aria-label="Photos" aria-pressed={!!photoMode} onClick={() => dispatch(togglePhotos())}>
+                            <i className="fa fa-camera" aria-hidden="true" />
+                        </button>
                         {forgeActive && (
                             <button type="button" className="btn btn-primary" onClick={resetForge}>Reset</button>
                         )}
-                    </>
+                    </div>
+                )}
+                {!sidebarLeft && !sidebarRight && !forgePickerOpen && (
+                    <div className="forge-photo-status">
+                        {loading ? <span role="status">Loading…</span> : error ? <span role="alert">{error} <button type="button" className="btn btn-light" onClick={() => dispatch(load())}>Retry</button></span>
+                            : resultPhotoMode && <span role="status">{buildings?.length || 0} buildings with photographs</span>}
+                    </div>
                 )}
             </div>
-            <BuildingModal building={building} years={years} />
-        </div>
+            <BuildingModal building={photoMode ? null : building} years={years} />
+        </div></RecordProvider>
     )
 }
 

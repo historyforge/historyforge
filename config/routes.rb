@@ -36,6 +36,7 @@ Rails.application.routes.draw do
   get '/photos/:id/:style/:device' => 'buildings/main#photo', as: 'photo'
 
   get '/forge' => 'forge#index', as: 'forge'
+  get '/forge/buildings/:id/photographs' => 'forge#photographs'
   get '/:locality_slug/forge' => 'forge#index', as: 'local_forge'
 
   post '/census/rebuild', to: 'census_records/main#rebuild', as: 'rebuild_index'

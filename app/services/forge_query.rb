@@ -7,8 +7,10 @@ class ForgeQuery
   include ActionView::Helpers::NumberHelper
   include ActionView::Helpers::TextHelper
 
-  def initialize(search)
+  def initialize(search, photo_scope: nil, ability: nil)
     @search = search
+    @photo_scope = photo_scope
+    @ability = ability
   end
 
   # This serves the Forge with a raw list of building ids with lat/lng
@@ -25,6 +27,8 @@ class ForgeQuery
   def info
     if query['data'].nil?
       'Found no results'
+    elsif @photo_scope
+      "Showing #{pluralize_with_delimiter query['meta'] || 0, 'building'} with photographs."
     elsif @search.num_residents
       "Found #{pluralize_with_delimiter @search.num_residents, 'person'} in #{pluralize_with_delimiter query['meta'], 'building'}."
     else
@@ -37,7 +41,12 @@ class ForgeQuery
   end
 
   def query
-    sql = scoped.select('buildings.id,buildings.lat,buildings.lon').to_sql
+    records = scoped
+    if @photo_scope
+      records = records.merge(Building.accessible_by(@ability))
+                       .where(id: Building.joins(:photos).where(photographs: { id: @photo_scope.select(:id) }).select(:id))
+    end
+    sql = records.select('buildings.id,buildings.lat,buildings.lon').to_sql
     sql = "select array_to_json(array_agg(row_to_json(t))) as data, count(*) as meta from (#{sql}) t"
     ActiveRecord::Base.connection.execute(sql).first
   end

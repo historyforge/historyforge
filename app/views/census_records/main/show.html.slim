@@ -5,37 +5,38 @@
       li.breadcrumb-item= link_to @record.year, resource_class
       li.breadcrumb-item= link_to @record.census_scope, path_to_census_sheet(@record), class: 'float-right'
 
-- if @navigation
+- if !forge_view? && @navigation
   - if @navigation[:previous_id]
     = previous_nav_link(census_record_path(year: @record.year, id: @navigation[:previous_id], navigation: @navigation_context))
   - if @navigation[:next_id]
     = next_nav_link(census_record_path(year: @record.year, id: @navigation[:next_id], navigation: @navigation_context))
 
 
-- btn_class = 'btn btn-sm btn-secondary'
-div.mb-3.clearfix.d-flex.justify-content-between
-  div.mr-auto
-    - if can?(:create, Flag)
-      = render 'shared/flag_it', item: @record, item_class: btn_class
-    - if can?(:update, @record)
-      => link_to [:edit, @record], class: btn_class do
-        i.fa.fa-pencil
-        span.d-none.d-md-inline
-          | &nbsp;Edit
-    - if can?(:destroy, @record)
-      = link_to @record, method: :delete, data: { turbo_method: :delete, turbo_confirm: 'Are you sure? There is no return short of re-entering the census record.' }, class: btn_class do
-        i.fa.fa-trash
-        span.d-none.d-md-inline
-          | &nbsp;Delete
-    - if !@record.reviewed? && can?(:review, @record)
-      | &nbsp;
-      => link_to 'Review', [:reviewed, @record], class: 'btn btn-sm btn-danger', data: { turbo_method: :put, turbo_confirm: 'You are about to make this census record public.' }
+- unless forge_view?
+  - btn_class = 'btn btn-sm btn-secondary'
+  div.mb-3.clearfix.d-flex.justify-content-between
+    div.mr-auto
+      - if can?(:create, Flag)
+        = render 'shared/flag_it', item: @record, item_class: btn_class
+      - if can?(:update, @record)
+        => link_to [:edit, @record], class: btn_class do
+          i.fa.fa-pencil
+          span.d-none.d-md-inline
+            | &nbsp;Edit
+      - if can?(:destroy, @record)
+        = link_to @record, method: :delete, data: { turbo_method: :delete, turbo_confirm: 'Are you sure? There is no return short of re-entering the census record.' }, class: btn_class do
+          i.fa.fa-trash
+          span.d-none.d-md-inline
+            | &nbsp;Delete
+      - if !@record.reviewed? && can?(:review, @record)
+        | &nbsp;
+        => link_to 'Review', [:reviewed, @record], class: 'btn btn-sm btn-danger', data: { turbo_method: :put, turbo_confirm: 'You are about to make this census record public.' }
 
-  - if can?(:create, CensusRecord)
-    .add-another-form.ml-auto.d-flex.justify-content-right
-      = form_tag([:save_as, @record], method: :put, class: 'form-inline') do
-        = select_tag 'then', options_for_select([['In this family', 'family'], ['In this dwelling', 'dwelling'], ['On the same street', 'street'], ['On this page', 'page'], ['In this enumeration district', 'enumeration']], params[:then]), prompt: 'Select', class: 'form-control form-control-sm d-inline-block', style: 'width:120px'
-        = submit_tag 'Add', class: 'btn btn-sm btn-primary'
+    - if can?(:create, CensusRecord)
+      .add-another-form.ml-auto.d-flex.justify-content-right
+        = form_tag([:save_as, @record], method: :put, class: 'form-inline') do
+          = select_tag 'then', options_for_select([['In this family', 'family'], ['In this dwelling', 'dwelling'], ['On the same street', 'street'], ['On this page', 'page'], ['In this enumeration district', 'enumeration']], params[:then]), prompt: 'Select', class: 'form-control form-control-sm d-inline-block', style: 'width:120px'
+          = submit_tag 'Add', class: 'btn btn-sm btn-primary'
 
 = render 'shared/flag_resolution', item: @record
 

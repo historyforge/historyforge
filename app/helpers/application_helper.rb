@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 module ApplicationHelper
+  def forge_view?
+    params[:forge_view] == '1'
+  end
+
   def browser_title
     title = @browser_title || page_title
     "#{title ? "#{title} | " : nil}#{Rails.application.name}"

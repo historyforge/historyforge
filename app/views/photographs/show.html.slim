@@ -15,12 +15,13 @@
   .row.mb-3
     .col-12.col-md-6
       = image_tag @asset.file, class: 'img img-thumbnail', id: 'photograph', data: { controller: 'blowup' }
-      p
-        - if can?(:update, @asset)
-          = link_to 'Edit Photo', [:edit, @asset], class: 'btn btn-light'
-        - if can?(:destroy, @asset)
-          = link_to 'Delete Photo', @asset, method: :delete, class: 'btn btn-light', data: { turbo_method: :delete, turbo_confirm: 'Are you sure?' }
-        = render 'shared/flag_it', item: @asset.object, item_class: 'btn btn-light'
+      - unless forge_view?
+        p
+          - if can?(:update, @asset)
+            = link_to 'Edit Photo', [:edit, @asset], class: 'btn btn-light'
+          - if can?(:destroy, @asset)
+            = link_to 'Delete Photo', @asset, method: :delete, class: 'btn btn-light', data: { turbo_method: :delete, turbo_confirm: 'Are you sure?' }
+          = render 'shared/flag_it', item: @asset.object, item_class: 'btn btn-light'
 
     .col-12.col-md-6
       - if @asset.date

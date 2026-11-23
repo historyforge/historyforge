@@ -1,0 +1,8 @@
+- if action_name == 'show'
+  - record = @record || @asset || @person || @building
+  - record = record.object if record.respond_to?(:object)
+  - if record && can?(:update, record)
+    = link_to request.path, class: 'forge-open-record', target: '_blank', rel: 'noopener noreferrer', data: { forge_exit: true } do
+      | Open record
+      span aria-hidden="true"  ↗
+      span.visually-hidden  (new tab)
