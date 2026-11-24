@@ -22,6 +22,7 @@ export const Map = () => {
         maxZoom: 22,
         zoomControl: false,
         scrollWheelZoom: false,
+        preferCanvas: !L.Browser.svg,
       });
 
       L.control.zoom({ position: 'bottomright' }).addTo(mapRef.current);
