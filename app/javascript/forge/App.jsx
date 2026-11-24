@@ -9,7 +9,7 @@ import PhotoGallery from './PhotoGallery'
 import { RecordProvider } from './RecordViewer'
 import {Forges} from "./Forges";
 
-const App = () => {
+const App = ({ kiosk }) => {
     const [sidebarLeft, setSidebarLeft] = useState(false)
     const [sidebarRight, setSidebarRight] = useState(false);
     const [forgePickerOpen, setForgePickerOpen] = useState(false);
@@ -58,7 +58,7 @@ const App = () => {
     }
 
     return (
-        <RecordProvider><div className="map-wrap">
+        <RecordProvider kiosk={kiosk}><div className="map-wrap">
             <Map />
             <PhotoGallery />
             <button id="near-me-button" onClick={centerOnMe} className="btn btn-primary">

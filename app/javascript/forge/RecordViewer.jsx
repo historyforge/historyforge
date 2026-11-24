@@ -12,7 +12,7 @@ export function RecordLink({ href, children, ...props }) {
 }
 
 // Keep the existing record pages and their authorization checks inside the Forge.
-export function RecordProvider({ children }) {
+export function RecordProvider({ children, kiosk }) {
   const [recordUrl, setRecordUrl] = useState(null)
   const [placeTitle, setPlaceTitle] = useState('Loading place…')
   const [history, setHistory] = useState([])
@@ -49,18 +49,20 @@ export function RecordProvider({ children }) {
   }, [])
 
   useEffect(() => {
+    if (!kiosk) return
+
     const navigate = event => {
       const link = event.target.closest('a[href]')
       if (!link || link.hasAttribute('data-forge-exit') || link.getAttribute('href').startsWith('#')) return
       const destination = new URL(link.href)
-      if (destination.origin !== window.location.origin || /\/forge\/?$/.test(destination.pathname)) return
+      if (destination.origin !== window.location.origin || /\/(forge|kiosk)\/?$/.test(destination.pathname)) return
       event.preventDefault()
       event.stopImmediatePropagation()
       open(destination.href)
     }
     document.addEventListener('click', navigate, true)
     return () => document.removeEventListener('click', navigate, true)
-  }, [])
+  }, [kiosk])
 
   return <RecordContext.Provider value={open}>
     {children}
