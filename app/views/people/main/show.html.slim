@@ -89,7 +89,8 @@
 - narratives = @person.narratives.accessible_by(current_ability).with_all_rich_text.to_a
 - if @visible_census_records.any?
   - can_edit_person = can?(:update, @person)
-  - show_table_option = can_edit_person || @visible_census_records.many?
+  - linked_households = linked_household_records_by_year(@visible_census_households)
+  - show_table_option = can_edit_person || @visible_census_records.many? || linked_households.any?
   section.person-census.person-section aria-labelledby="person-census-heading" data-controller=("census-view" if show_table_option)
     .d-flex.flex-wrap.align-items-center.justify-content-between.gap-2.mb-3
       h2#person-census-heading.h4.mb-0= @visible_census_records.one? ? 'Census appearance' : 'Life in the census'
@@ -104,10 +105,9 @@
         - if can_edit_person
           h3.h5 Census records
         = render 'census_comparison', records: @visible_census_records, linked_household: false
-        - if can_edit_person
-          - linked_household_records_by_year(@visible_census_households).each do |year, records|
-            h3.h5.mt-3= "Linked household members in the #{year} census"
-            = render 'census_comparison', records:, linked_household: true
+        - linked_households.each do |year, records|
+          h3.h5.mt-3= "Linked household members in the #{year} census"
+          = render 'census_comparison', records:, linked_household: true
 
 .person-associated-content
   = render 'media/display_on_associated_record', item: @person, photos:, audios:, videos:, compact: true

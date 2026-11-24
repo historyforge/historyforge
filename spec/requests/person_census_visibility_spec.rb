@@ -35,7 +35,8 @@ RSpec.describe 'Census record visibility on Person pages', type: :request do
     get person_path(person)
     expect(response).to have_http_status(:ok)
     page = Nokogiri::HTML(response.body)
-    expect(page.at_css('.person-census').text).not_to include('Matching tables', 'Linked household members')
+    expect(page.at_css('.person-census').text).not_to include('Matching tables')
+    expect(page.at_css('button[aria-controls="person-census-table"]').text).to eq('Table')
     entries = page.css('.person-census-entry')
     expect(entries.map { |entry| entry.at_css('time')['datetime'] }).to eq(records.map { |record| record.year.to_s })
     expect(entries.map { |entry| entry.at_css('a:contains("View census record")')['href'] })
@@ -45,13 +46,14 @@ RSpec.describe 'Census record visibility on Person pages', type: :request do
       expect(entry.css('details a').map { |link| link['href'] })
         .to match_array(expected_household.map { |relative| person_path(relative.person_id) })
     end
-    comparison = page.at_css('.person-census table')
-    if records.many?
-      expect(comparison.css('tbody a').map { |link| link['href'] })
-        .to eq(records.map { |record| polymorphic_path(record) })
-    else
-      expect(comparison).to be_nil
-    end
+    table_view = page.at_css('#person-census-table')
+    comparison, *household_tables = table_view.css('table')
+    expect(comparison.css('tbody a').map { |link| link['href'] })
+      .to eq(records.map { |record| polymorphic_path(record) })
+    expect(table_view.css('h3').map(&:text))
+      .to eq(relatives.map(&:year).uniq.sort.map { |year| "Linked household members in the #{year} census" })
+    expect(household_tables.flat_map { |table| table.css('tbody a').map { |link| link['href'] } })
+      .to match_array(relatives.map { |relative| person_path(relative.person_id) })
 
     [public_record, unreviewed_record, private_record].each do |record|
       get polymorphic_path(record)
