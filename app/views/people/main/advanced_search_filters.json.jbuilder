@@ -18,7 +18,9 @@ json.filters do
   AttributeBuilder.collection json, :localities_id, klass: Person, collection: localities
 
   AttributeBuilder.enumeration json, Person, :sex
-  AttributeBuilder.enumeration json, Person, :race
+  race_choices = Person.race_choices.map { |code| [Translator.option(:race, code), code] }
+  race_choices += [['Left blank', 'blank'], %w[Unknown unknown], ['Other', RaceWriteInFilter::RACE_WRITE_IN_FILTER]]
+  AttributeBuilder.collection json, :race, klass: Person, collection: race_choices, columns: 2, sortable: true
 
   AttributeBuilder.text json, :pob
 

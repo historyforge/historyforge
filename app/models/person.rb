@@ -35,6 +35,7 @@
 # A person record is the glue that connects multiple census records to the same individual person. A person record
 # itself is pretty sparse, mainly glue, but does not have to have census records.
 class Person < ApplicationRecord
+  include RaceWriteInFilter
   include Flaggable
   include PersonNames
   include Versioning
@@ -50,6 +51,7 @@ class Person < ApplicationRecord
 
   define_enumeration :sex, SEXES
   define_enumeration :race, RACES
+  enable_race_write_in_filter
 
   has_many :census1850_records, dependent: :nullify, class_name: 'Census1850Record', inverse_of: :person
   has_many :census1860_records, dependent: :nullify, class_name: 'Census1860Record', inverse_of: :person
@@ -132,7 +134,7 @@ class Person < ApplicationRecord
   }
 
   def self.ransackable_attributes(_auth_object = nil)
-    (super - %w[created_by_id]) + %w[name]
+    (super - %w[created_by_id]) + %w[name race_with_write_ins]
   end
 
   def self.ransackable_scopes(_auth_object = nil)
@@ -149,6 +151,15 @@ class Person < ApplicationRecord
     return RACES if race.blank? || RACES.include?(race)
 
     RACES.dup << race
+  end
+
+  def race_label
+    return if race.blank? || race == 'on'
+
+    known_values = RACES.map(&:downcase) + NON_WRITE_IN_RACE_VALUES
+    return Translator.option(:race, race.strip) if known_values.include?(race.strip.downcase)
+
+    "Other-#{race}"
   end
 
   def variant_names

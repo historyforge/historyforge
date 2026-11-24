@@ -14,6 +14,22 @@ RSpec.describe PersonGridTranslator do
     described_class.new(PersonSearch.generate(params:))
   end
 
+  it 'finds write-ins under Other and combines them with named race choices' do
+    primary_match.update!(race: 'AsiInd')
+    variant_match.update!(race: 'Burmese')
+    unknown = create(:person, race: 'unknown')
+    legacy_unknown = create(:person, race: 'Un')
+    blank = create(:person)
+    blank.update_column(:race, '')
+    other = RaceWriteInFilter::RACE_WRITE_IN_FILTER
+
+    expect(translate(s: { race_in: [other] }).row_data.to_a.pluck('race')).to eq(['Other-Burmese'])
+    expect(translate(s: { race_in: ['AsiInd', other] }).row_data.to_a.pluck('race'))
+      .to contain_exactly('Asiatic Indian', 'Other-Burmese')
+    expect(translate(s: { race_not_in: [other] }).row_data.to_a.pluck(:name).pluck(:id))
+      .to contain_exactly(primary_match.id, unknown.id, legacy_unknown.id, blank.id)
+  end
+
   it 'shows See across pages when a later result matches a variant' do
     filters = { names_last_name_start: 'Brown' }
     first_page = translate(s: filters, from: 0, to: 1)

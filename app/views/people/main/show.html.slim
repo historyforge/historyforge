@@ -71,10 +71,14 @@
             tr
               th scope="row" Died
               td= "#{'About ' if @person.is_death_year_estimated?}#{@person.death_year}"
-          - if @person.race.present? && @person.race != 'on'
+          - if @person.pob.present?
+            tr
+              th scope="row" Place of birth
+              td= @person.pob
+          - if (race_label = @person.race_label)
             tr
               th scope="row" Race
-              td= Translator.option(:race, @person.race)
+              td= race_label
           - if @person.sex.present? && @person.sex != 'on'
             tr
               th scope="row" Sex
