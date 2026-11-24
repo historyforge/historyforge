@@ -140,6 +140,10 @@
         .card-header
           = button_to 'Create New Person Record', [:make_person, @record], method: :put, class: 'btn btn-link p-0', form: { class: 'float-right', data: { turbo_confirm: 'This will generate a new person record out of this census record.' } }
           | Match Person Record
+        .card-body
+          details.small
+            summary How suggestions are ranked
+            p.mb-0 Suggestions compare recorded names, known nicknames, and spelling similarities. An exact surname or matching given name allows a weaker spelling match on the other name. Candidates must have the same recorded sex. When the census age is known, candidates with a known birth year must be within five years of the implied birth year. Surname-only suggestions appear when there are no stronger name matches.
         - if @record.person_match_suggestions.blank?
           .card-body
             p No person records suggested.

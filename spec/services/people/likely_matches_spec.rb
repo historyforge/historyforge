@@ -73,6 +73,19 @@ module People
       end
     end
 
+    context "when the surname agrees and the given name is weakly similar" do
+      let(:record) { build(:census1880_record, first_name: "Jackson", last_name: "Tupper", sex: "M", age: 26) }
+      let(:matching_person) { create(:person, first_name: "Judson", last_name: "Tupper", sex: "M", birth_year: 1853) }
+
+      it "suggests Judson even when a stronger name match is available" do
+        create(:census1910_record)
+        exact = create(:person, first_name: "Jackson", last_name: "Tupper", sex: "M", birth_year: 1854)
+
+        expect(suggestions.map(&:person)).to eq([exact, matching_person])
+        expect(suggestions.last.reason).to eq("Similar given or middle name and same surname")
+      end
+    end
+
     context "when earlier surname-only candidates are outside the age window" do
       let(:record) { create(:census1910_record, first_name: "Eli", middle_name: nil, last_name: "Ng", sex: "M", age: 30) }
       let(:matching_person) { create(:person, first_name: "Zebulon", last_name: "Ng", sex: "M", birth_year: 1880) }
