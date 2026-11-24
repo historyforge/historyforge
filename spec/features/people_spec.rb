@@ -3,6 +3,23 @@
 require 'rails_helper'
 
 RSpec.describe 'people' do
+  scenario 'renders one People grid when reconnecting to copied grid markup', :js do
+    create(:person, first_name: 'William', last_name: 'Brown')
+    visit people_path
+    expect(page).to have_link('Brown, William')
+
+    page.execute_script(<<~JS)
+      const grid = document.querySelector('#grid')
+      const copy = grid.cloneNode(true)
+      copy.querySelector('.ag-root-wrapper').dataset.copiedGrid = 'true'
+      grid.replaceWith(copy)
+    JS
+
+    expect(page).to have_css('#grid .ag-root-wrapper:not([data-copied-grid])')
+    expect(page).to have_css('#grid .ag-root-wrapper', count: 1)
+    expect(page).to have_link('Brown, William', count: 1)
+  end
+
   scenario 'person editors can keep the census matching tables open across person pages', :js do
     editor = create(:active_user)
     editor.add_role Role.find_by(name: 'person record editor')

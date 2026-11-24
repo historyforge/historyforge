@@ -5,6 +5,9 @@ import { gridRequestURL } from '../search/gridRequestURL'
 
 export default class extends Controller {
   connect() {
+    if (this.api) return
+
+    this.element.replaceChildren()
     this.requests = new AbortController()
     this.url = new URL(this.element.dataset.resultsUrl, document.baseURI)
     const form = document.getElementById('new_s')
