@@ -37,6 +37,7 @@ export const Map = () => {
         center: [center.lat, center.lng],
         zoomControl: true,
         scrollWheelZoom: false,
+        preferCanvas: !L.Browser.svg,
       });
 
       const streetLayer = createStreetLayer().addTo(leafletMap)
