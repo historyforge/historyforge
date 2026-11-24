@@ -262,7 +262,7 @@ module CensusRecords
         navigation = grid_navigation_context
         render json: @translator.row_data { |id| census_record_path(year:, id:, navigation:) }
       else
-        respond_with @search.to_a, each_serializer: CensusRecordSerializer
+        render json: @search.results.map { |record| CensusRecordSerializer.new(record).serializable_hash }.to_a
       end
     end
 
