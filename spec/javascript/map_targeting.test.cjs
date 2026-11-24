@@ -20,7 +20,7 @@ for (const points of [[{ lat: 42, lon: -76 }], []]) {
       react: { useEffect: callback => effects.push(callback), useState: () => [null, () => {}] },
       'react-redux': {
         useDispatch: () => action => actions.push(action),
-        useSelector: select => select({ layers: { focusOnPoints: points } }),
+        useSelector: select => select({ buildings: {}, layers: { focusOnPoints: points } }),
       },
       leaflet: { latLng: (lat, lon) => [lat, lon], latLngBounds: values => ({
         values, isValid: () => values.length > 0,
