@@ -72,6 +72,7 @@ module Buildings
       respond_to do |format|
         format.html { load_navigation }
         format.json { render json: BuildingSerializer.new(@building) }
+        format.any { head :not_acceptable }
       end
     end
 
