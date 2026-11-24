@@ -45,7 +45,7 @@ html
     meta name="maps-url" content=asset_path('maps.js')
     meta name="maplibre-worker-url" content=asset_path('maplibre-worker.js')
     = javascript_include_tag 'bootstrap', data: { turbo_track: 'reload' }
-    = javascript_include_tag 'application'
+    = javascript_include_tag 'application', data: { turbo_track: 'reload' }
     = javascript_include_tag 'cms' if can?(:update, Cms::Page)
 
     - if params[:forge_view] == '1'
