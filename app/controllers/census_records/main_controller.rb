@@ -155,8 +155,8 @@ module CensusRecords
       @search.scoped.to_a.each do |record|
         next if record.person_id.present?
 
-        People::GenerateFromCensusRecord.call(record:)
-        count += 1
+        person = People::GenerateFromCensusRecord.call(record:)
+        count += 1 if person.persisted?
       end
 
       flash[:notice] = "Person records have been generated for #{count} census records."

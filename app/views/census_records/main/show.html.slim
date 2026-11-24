@@ -138,7 +138,7 @@
     - if @record.person_id.blank? && can?(:review, @record)
       .card.mb-3
         .card-header
-          = link_to 'Create New Person Record', [:make_person, @record], class: 'float-right', data: { turbo_method: :put, turbo_confirm: 'This will generate a new person record out of this census record.' }
+          = button_to 'Create New Person Record', [:make_person, @record], method: :put, class: 'btn btn-link p-0', form: { class: 'float-right', data: { turbo_confirm: 'This will generate a new person record out of this census record.' } }
           | Match Person Record
         - if @record.person_match_suggestions.blank?
           .card-body

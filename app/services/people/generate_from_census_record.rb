@@ -12,8 +12,9 @@ module People
 
     def call
       person = person_from_census_record
-      person.save!
-      record.update!(person_id: person.id)
+      Person.transaction do
+        record.update!(person_id: person.id) if person.save
+      end
       person
     end
 
