@@ -120,7 +120,8 @@ class Census1950Record < CensusRecord
 
   define_enumeration :page_side, %w[A B C D].freeze, strict: true
   define_enumeration :marital_status, %w[Nev Mar Wd D Sep].freeze
-  define_enumeration :race, %w[W B In Ch Jp Fil].freeze
+  define_enumeration :race, %w[W B In Ch Jp Fil AsiInd].freeze
+  enable_race_write_in_filter
   define_enumeration :name_suffix, %w[Jr Sr].freeze
   define_enumeration :name_prefix, %w[Dr Mr Mrs].freeze
   define_enumeration :activity_last_week, %w[Wk H U Ot Inmate].freeze

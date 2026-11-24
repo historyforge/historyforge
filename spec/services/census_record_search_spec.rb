@@ -119,6 +119,25 @@ RSpec.describe CensusRecordSearch do
     end
   end
 
+  it 'finds the 1950 Asiatic Indian choice separately from American Indian and Other' do
+    asiatic_indian, american_indian, write_in = %w[AsiInd In Portuguese].map.with_index(1) do |race, line_number|
+      create(:census1950_record, locality:, page_number: 1, page_side: 'A', line_number:,
+             enum_dist: '1', first_name: 'John', last_name: 'Doe', family_id: '1', relation_to_head: 'Head', race:)
+    end
+    other = CensusRecord::RACE_WRITE_IN_FILTER
+    filters = CensusFiltersGenerator.generate(Jbuilder.new, Census1950FormFields).attributes!
+    expect(filters.fetch('race').fetch('choices')).to include(['AsiInd - Asiatic Indian', 'AsiInd'], ['Other', other])
+
+    search = described_class.generate(year: 1950, user:, params: { s: { race_in: [other] } })
+    expect(search.scoped).to contain_exactly(write_in)
+
+    search = described_class.generate(year: 1950, user:, params: { s: { race_in: ['AsiInd', other] } })
+    expect(search.scoped).to contain_exactly(asiatic_indian, write_in)
+
+    search = described_class.generate(year: 1950, user:, params: { s: { race_in: ['In'] } })
+    expect(search.scoped).to contain_exactly(american_indian)
+  end
+
   describe 'income filters' do
     def income_search(year, filters)
       described_class.generate(year:, user:, params: { s: filters }).scoped
