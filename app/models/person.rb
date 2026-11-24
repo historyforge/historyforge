@@ -44,7 +44,7 @@ class Person < ApplicationRecord
   NAME_VARIANT_ATTRIBUTES = %w[first_name last_name].freeze
   PRIMARY_NAME_ATTRIBUTES = %w[name_prefix first_name middle_name last_name name_suffix].freeze
   SEXES = %w[M F].freeze
-  RACES = %w[W B Mu Mex In Ch Jp Fil Hin Kor].freeze
+  RACES = [*%w[W B Mu Mex In Ch Jp Fil Hin Kor], 'Asiatic Indian'].freeze
 
   attr_accessor :match_score
 
