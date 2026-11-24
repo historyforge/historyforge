@@ -142,7 +142,7 @@ RSpec.describe 'people' do
   end
 
   scenario 'keeps the facts visible without generating an About paragraph for sparse records', driver: :rack_test do
-    person = create(:person, birth_year: 1933)
+    person = create(:person, birth_year: 1933, pob: 'Burma', is_pob_estimated: false, race: 'Burmese')
 
     visit person_path(person)
 
@@ -152,6 +152,8 @@ RSpec.describe 'people' do
     within('table[aria-label="Person details"]') do
       expect(page).to have_css('th', text: 'Born')
       expect(page).to have_css('td', text: 'About 1933')
+      expect(page).to have_css('td', text: 'Burma')
+      expect(page).to have_css('td', text: 'Other-Burmese')
     end
   end
 

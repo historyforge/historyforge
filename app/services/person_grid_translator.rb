@@ -30,7 +30,7 @@ class PersonGridTranslator
       columns.each do |column|
         next if SKIP_COLUMNS.include?(column)
 
-        value = record.public_send(column)
+        value = column == 'race' ? record.race_label : record.public_send(column)
         if /census\d{4}/.match?(column)
           value = value.compact
           value = value.present? ? { year: column[-4...].to_i, id: value } : nil
