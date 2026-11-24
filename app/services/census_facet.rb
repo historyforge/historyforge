@@ -23,7 +23,7 @@ class CensusFacet
     end
 
     def charts
-      %i[pie bar]
+      %i[pie]
     end
 
     def sql
@@ -75,15 +75,15 @@ class CensusFacet
 
     # Inspired by this: https://dba.stackexchange.com/questions/195664/aggregate-values-by-interval-range-given-by-parameter
     def sql
-      snippet = "WITH CTS AS ( SELECT generate_series(#{from}, #{to}, #{step} ) Serie )"
-      from = "CTS LEFT JOIN #{search.entity_class.table_name} ON #{facet} >= CTS.Serie AND #{facet} <= CTS.Serie + #{step}"
-      base = search.scoped
-                   .from(from)
-                   .reorder('CTS.Serie')
-                   .reselect("COALESCE(COUNT(#{facet}), 0) AS value, CONCAT(Serie, ' - ', Serie + #{step - 1}) as facet")
-                   .group('CTS.Serie')
-                   .where("#{facet} IS NOT NULL")
-      "#{snippet} #{base.to_sql}"
+      values = search.scoped.reorder(nil).reselect("#{facet} AS facet_value")
+      <<~SQL
+        SELECT CONCAT(bucket, ' - ', bucket + #{step - 1}) AS facet, COUNT(facet_value) AS value
+        FROM generate_series(#{from}, #{to}, #{step}) AS buckets(bucket)
+        LEFT JOIN (#{values.to_sql}) AS records
+          ON facet_value >= bucket AND facet_value < bucket + #{step}
+        GROUP BY bucket
+        ORDER BY bucket
+      SQL
     end
     memoize :sql
   end
