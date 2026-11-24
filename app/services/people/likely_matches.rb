@@ -8,8 +8,8 @@ module People
     MAX_MATCHES = 20
     MAX_SURNAME_ONLY_MATCHES = 10
 
-    # Allow a weaker surname spelling match when a given name or known nickname agrees.
-    SURNAME_SIMILARITY_WITH_GIVEN_NAME = 0.25
+    # Allow a weaker spelling match when the other part of the name agrees.
+    SIMILARITY_WITH_MATCHING_NAME = 0.25
 
     REASONS = {
       1 => 'Same given or middle name and surname',
@@ -90,12 +90,18 @@ module People
       similar_given = names.map do |name|
         PersonName.sanitize_sql_array(['(person_names.first_name % ? OR person_names.middle_name % ?)', name, name])
       end.join(' OR ')
+      similar_given_with_same_surname = names.map do |name|
+        PersonName.sanitize_sql_array([
+          '(similarity(person_names.first_name, :name) >= :minimum OR similarity(person_names.middle_name, :name) >= :minimum)',
+          { name:, minimum: SIMILARITY_WITH_MATCHING_NAME }
+        ])
+      end.join(' OR ')
 
-      PersonName.sanitize_sql_array([<<~SQL, { names:, nicknames:, surname: record.last_name.downcase, minimum: SURNAME_SIMILARITY_WITH_GIVEN_NAME }])
+      PersonName.sanitize_sql_array([<<~SQL, { names:, nicknames:, surname: record.last_name.downcase, minimum: SIMILARITY_WITH_MATCHING_NAME }])
         CASE
           WHEN #{same_surname} AND #{same_given} THEN 1
           WHEN #{same_surname} AND #{known_given} THEN 2
-          WHEN #{same_surname} AND (#{similar_given}) THEN 3
+          WHEN #{same_surname} AND (#{similar_given_with_same_surname}) THEN 3
           WHEN #{known_given} AND similarity(person_names.last_name, :surname) >= :minimum THEN 4
           WHEN person_names.last_name % :surname AND (#{similar_given}) THEN 5
           WHEN LOWER(person_names.first_name) = :surname AND LOWER(person_names.last_name) IN (:names) THEN 6
