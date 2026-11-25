@@ -34,6 +34,8 @@ RSpec.describe 'Census coverage', type: :request do
     get census_coverages_path
     expect(response).to have_http_status(:ok)
     html = Nokogiri::HTML(response.body)
+    guide = html.css('details').find { |section| section.at_css('summary')&.text == 'How census coverage works' }
+    expect(guide.text).to include('750 / 1,000', 'Import coverage targets', 'Enter a target manually')
     year_index = html.css('thead th').map(&:text).index('1910')
     target_cell = html.css('tbody tr').first.element_children[year_index]
     expect(target_cell.text).to eq('0 / 14,802')

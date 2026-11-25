@@ -9,27 +9,12 @@
       .card
         .card-body.p-4
           h2.h4 Set your first coverage targets
-          p A coverage target is the number of census records you expect to transcribe for one locality and census year. For example, if you expect 1,000 records and have transcribed 750, the coverage grid shows 750 / 1,000.
-          p Use the grid to see where work remains and which censuses are ready to verify. If you’ve checked all the intended schedules, you can mark transcription complete even when the counts differ.
-          - if @localities.empty?
-            p Add a locality before setting coverage targets.
-            = link_to 'Add a locality', new_locality_path, class: 'btn btn-primary'
-          - else
-            h3.h6 Get started
-            ol
-              li Find a published population count for the area you plan to transcribe, or count the person entries on the census schedules you’re covering.
-              li Record the expected count and where it came from. Note any boundary differences or areas you’re leaving out.
-            p Start with the targets you know. You can add more later.
-            .mb-3
-              = link_to 'Import coverage targets', census_coverage_import_localities_path, class: 'btn btn-primary'
-              p.small.text-muted.mt-2.mb-0 Use the site-specific CSV template to add several targets at once. The import page includes a research prompt to help find published counts.
-            details.border-top.pt-3
-              summary.fw-semibold Enter a target manually
-              p.small.text-muted.mt-2.mb-2 Choose a locality below, then select a census year and save its target.
-              ul.list-unstyled.mb-0.mt-2
-                - @localities.each do |locality|
-                  li.mb-1= link_to locality.name, census_coverage_locality_path(locality)
+          = render 'census_coverage_guide'
 - else
+  details.border.rounded.mb-3
+    summary.fw-semibold.px-3.py-2 How census coverage works
+    .px-3.pb-3
+      = render 'census_coverage_guide'
   p.small.text-muted.mb-2 Transcribed / expected census records. A checkmark means the target was reached or transcription was verified complete. A dash means no target.
   .table-responsive
     table.table.table-sm.table-striped.align-middle.small
