@@ -31,11 +31,13 @@ class LocalitiesController < ApplicationController
 
   def census_coverages
     @localities = Locality.all
+    targets = CensusCoverage.all.to_a
+    @targets = targets.index_by { |target| [target.locality_id, target.census_year] }
+    return if targets.empty?
+
     CensusYears.each do |year|
       ActiveRecord::Precounter.new(@localities).precount(:"census#{year}_records")
     end
-    targets = CensusCoverage.all.to_a
-    @targets = targets.index_by { |target| [target.locality_id, target.census_year] }
     @target_totals = targets.group_by(&:census_year).transform_values { |year_targets| year_targets.sum(&:expected_records) }
   end
 

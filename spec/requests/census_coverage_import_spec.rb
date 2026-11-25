@@ -28,6 +28,8 @@ RSpec.describe 'Census coverage import', type: :request do
 
     get census_coverages_path
     expect(response.body).to include(census_coverage_import_localities_path)
+    expect(response.body).to include('Set your first coverage targets', 'Enter a target manually',
+                                     census_coverage_locality_path(another_locality))
 
     get census_coverage_import_localities_path
     expect(response).to have_http_status(:ok)
