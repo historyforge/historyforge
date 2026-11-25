@@ -1,0 +1,48 @@
+- set_page_title 'Census Coverage'
+- content_for :pills do
+  = link_to 'Import CSV', census_coverage_import_localities_path, class: 'btn btn-primary btn-sm'
+  = link_to 'Statistics', stats_path, class: 'btn btn-light btn-sm'
+
+- if @localities.empty?
+  p No localities found.
+- else
+  p.small.text-muted.mb-2 Transcribed / expected census records. A checkmark means the target was reached or transcription was verified complete. A dash means no target.
+  .table-responsive
+    table.table.table-sm.table-striped.align-middle.small
+      thead
+        tr
+          th scope="col" Locality
+          - CensusYears.each do |year|
+            th.text-end scope="col"= year
+          th scope="col"
+      tbody
+        - @localities.each do |locality|
+          tr
+            th.text-nowrap scope="row"= locality.short_name
+            - CensusYears.each do |year|
+              - target = @targets[[locality.id, year]]
+              td.text-end
+                - if target
+                  - expected = target.expected_records
+                  - transcribed = locality.public_send(:"census#{year}_records_count")
+                  - verified = target.verified_complete?
+                  - complete = verified || transcribed >= expected
+                  - percent = [(transcribed.fdiv(expected) * 100).round(1), 100].min
+                  div.text-nowrap class=('text-success fw-semibold' if complete) title=(target.verification_note if verified)
+                    - if complete
+                      i.fa.fa-check.me-1 aria-hidden="true"
+                      span.visually-hidden= verified ? 'Verified complete.' : 'Target reached.'
+                    = "#{number_with_delimiter(transcribed)} / #{number_with_delimiter(expected)}"
+                  .progress style="height: 3px" role="progressbar" aria-label="Transcription progress" aria-valuenow=percent aria-valuemin="0" aria-valuemax="100"
+                    .progress-bar class=('bg-success' if complete) style="width: #{percent}%"
+                - else
+                  | —
+            td.text-end
+              = link_to 'Edit', census_coverage_locality_path(locality), class: 'btn btn-sm btn-light py-0', aria: { label: "Edit coverage for #{locality.name}" }
+      tfoot
+        tr
+          th.text-nowrap scope="row" Known targets
+          - CensusYears.each do |year|
+            - total = @target_totals[year]
+            td.text-end= total ? number_with_delimiter(total) : '—'
+          td

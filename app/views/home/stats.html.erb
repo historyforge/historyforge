@@ -1,70 +1,90 @@
 <% set_page_title 'Statistics' %>
-<h2>Census Records</h2>
+<%= form_with url: stats_path, method: :get, class: 'mb-4' do |form| %>
+  <%= form.label :locality_id, 'Locality', class: 'form-label' %>
+  <div class="d-flex flex-column flex-sm-row align-items-start gap-2">
+    <%= form.collection_select :locality_id, @localities, :id, :name,
+          { include_blank: 'All localities', selected: @locality&.id }, class: 'form-select w-auto' %>
+    <%= form.submit 'Show statistics', class: 'btn btn-primary' %>
+  </div>
+<% end %>
 
-<div class="row">
-  <div class="col-sm-6">
-    <h3>Added in past 90 days</h3>
-    <table class="table table-striped">
-      <thead>
-      <tr>
-        <th>Year</th>
-        <th>Total</th>
-        <th>Reviewed</th>
-      </tr>
-      </thead>
-      <tbody>
-        <% @stats.recent_census_summaries.each do |row| %>
-        <tr>
-          <th><%= row[:year] %></th>
-          <td><%= number_with_delimiter row[:total] %></td>
-          <td><%= number_with_delimiter row[:reviewed] %></td>
-        </tr>
-        <% end %>
-      </tbody>
-      <tfoot>
-      <tr>
-        <th>Total</th>
-        <td><%= number_with_delimiter @stats.recent_census_summaries.map { |row| row[:total] }.sum %></td>
-        <td><%= number_with_delimiter @stats.recent_census_summaries.map { |row| row[:reviewed] }.sum %></td>
-      </tr>
-      </tfoot>
-    </table>
-  </div>
-  <div class="col-sm-6">
-    <h3>Overall</h3>
-    <table class="table table-striped">
-      <thead>
-      <tr>
-        <th>Year</th>
-        <th>Total</th>
-        <th>Reviewed</th>
-      </tr>
-      </thead>
-      <tbody>
-        <% @stats.census_summaries.each do |row| %>
-        <tr>
-          <th><%= row[:year] %></th>
-          <th><%= number_with_delimiter row[:total] %></th>
-          <th><%= number_with_delimiter row[:reviewed] %></th>
-        </tr>
-        <% end %>
-      </tbody>
-      <tfoot>
-      <tr>
-        <th>Total</th>
-        <td><%= number_with_delimiter @stats.census_summaries.map { |row| row[:total] }.sum %></td>
-        <td><%= number_with_delimiter @stats.census_summaries.map { |row| row[:reviewed] }.sum %></td>
-      </tr>
-      </tfoot>
-    </table>
-  </div>
+<% summaries = @stats.census_summaries %>
+<% recent_by_year = @stats.recent_census_summaries.index_by { |row| row[:year] } %>
+<% totals = [:total, :reviewed, :pending].index_with { |key| summaries.sum { |row| row.fetch(key) } } %>
+<h2 class="h4 mb-3"><%= @locality&.name || 'All localities' %></h2>
+<div class="row row-cols-1 row-cols-sm-3 g-2 mb-4">
+  <% { total: 'Transcribed', reviewed: 'Reviewed', pending: 'Awaiting review' }.each do |key, label| %>
+    <div class="col">
+      <div class="card h-100">
+        <div class="card-body py-2">
+          <div class="small text-muted"><%= label %></div>
+          <div class="fs-4 fw-semibold"><%= number_with_delimiter totals.fetch(key) %></div>
+        </div>
+      </div>
+    </div>
+  <% end %>
 </div>
 
-<h2>Data Entry Heroes</h2>
+<h2 class="h4">Census activity and review</h2>
+<div class="table-responsive mb-4">
+  <table class="table table-sm table-striped align-middle small">
+    <thead>
+      <tr>
+        <th scope="col">Census year</th>
+        <th scope="col" class="text-end">Transcribed</th>
+        <th scope="col" class="text-end">Reviewed</th>
+        <th scope="col" class="text-end">Awaiting review</th>
+        <th scope="col" class="text-end">Added in 90 days</th>
+        <th scope="col" class="text-end">Reviewed in 90 days</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% summaries.each do |row| %>
+        <% recent = recent_by_year.fetch(row[:year]) %>
+        <% complete = row[:total].positive? && row[:pending].zero? %>
+        <tr>
+          <th scope="row"><%= row[:year] %></th>
+          <td class="text-end"><%= number_with_delimiter row[:total] %></td>
+          <td class="text-end">
+            <div class="<%= 'text-success fw-semibold' if complete %>">
+              <% if complete %>
+                <i class="fa fa-check me-1" aria-hidden="true"></i>
+                <span class="visually-hidden">All transcribed records reviewed.</span>
+              <% end %>
+              <%= number_with_delimiter row[:reviewed] %>
+            </div>
+            <% if row[:total].positive? %>
+              <% percent = (row[:reviewed].fdiv(row[:total]) * 100).round(1) %>
+              <div class="progress ms-auto" style="height: 3px; max-width: 8rem" role="progressbar"
+                   aria-label="<%= row[:year] %> review progress" aria-valuenow="<%= percent %>" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-bar <%= 'bg-success' if complete %>" style="width: <%= percent %>%"></div>
+              </div>
+            <% end %>
+          </td>
+          <td class="text-end <%= 'fw-semibold' if row[:pending].positive? %>"><%= number_with_delimiter row[:pending] %></td>
+          <td class="text-end"><%= number_with_delimiter recent[:total] %></td>
+          <td class="text-end"><%= number_with_delimiter recent[:reviewed] %></td>
+        </tr>
+      <% end %>
+    </tbody>
+    <tfoot>
+      <tr>
+        <th scope="row">Total</th>
+        <% totals.each_value do |count| %>
+          <td class="text-end"><%= number_with_delimiter count %></td>
+        <% end %>
+        <td class="text-end"><%= number_with_delimiter recent_by_year.values.sum { |row| row[:total] } %></td>
+        <td class="text-end"><%= number_with_delimiter recent_by_year.values.sum { |row| row[:reviewed] } %></td>
+      </tr>
+    </tfoot>
+  </table>
+</div>
+
+<h2 class="h4">Site-wide Data Entry Heroes</h2>
 <div class="row">
   <div class="col-sm-6">
-    <h3>Recent - Past 90 days</h3>
-    <table class="table table-striped">
+    <h3 class="h6">Past 90 days</h3>
+    <table class="table table-sm table-striped small">
       <thead>
       <tr>
         <th>Name</th>
@@ -83,8 +103,8 @@
   </div>
 
   <div class="col-sm-6">
-    <h3>All-Time</h3>
-    <table class="table table-striped">
+    <h3 class="h6">All time</h3>
+    <table class="table table-sm table-striped small">
       <thead>
       <tr>
         <th>Name</th>

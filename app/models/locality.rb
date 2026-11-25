@@ -32,6 +32,7 @@ class Locality < ApplicationRecord
   has_and_belongs_to_many :documents, dependent: :nullify
   has_many :buildings, dependent: :restrict_with_exception
   has_many :map_overlays, dependent: :restrict_with_exception
+  has_many :census_coverages, dependent: :destroy, inverse_of: :locality
   has_many :census1850_records, dependent: :nullify, class_name: 'Census1850Record', inverse_of: :locality
   has_many :census1860_records, dependent: :nullify, class_name: 'Census1860Record', inverse_of: :locality
   has_many :census1870_records, dependent: :nullify, class_name: 'Census1870Record', inverse_of: :locality

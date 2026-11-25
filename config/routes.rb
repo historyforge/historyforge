@@ -135,9 +135,17 @@ Rails.application.routes.draw do
 
   resources :flags
 
+  get 'census_coverage', to: 'localities#census_coverages', as: :census_coverages
+
   resources :localities, concerns: %i[moveable] do
     put :set, on: :member
     put :reset, on: :collection
+    get :census_coverage_import, on: :collection
+    post :import_census_coverage, on: :collection
+    get :census_coverage_template, on: :collection
+    get :census_coverage, on: :member
+    patch :update_census_coverage, on: :member
+    delete :remove_census_coverage, on: :member
   end
 
   resources :map_overlays

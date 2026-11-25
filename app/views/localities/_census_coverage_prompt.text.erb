@@ -1,0 +1,14 @@
+Fill in the attached HistoryForge census coverage CSV and return the completed CSV. The project covers [enter county and state or other region]. Ask me if any locality name or project boundary is ambiguous.
+
+The site uses these locality names and slugs. The slug is the exact identifier HistoryForge uses to match the row to its locality.
+<% @coverage_localities.each do |slug, name| -%>
+- <%= name %> (`<%= slug %>`)
+<% end -%>
+
+The template includes these census years for every locality: <%= CensusYears::YEARS.join(', ') %>.
+
+Find population totals in official census publications for the historical municipality and census year. Use the final published figures when available. If a city, town, and village overlap, check whether the published town total includes the village and explain any subtraction or boundary choice. For partial transcription projects, use the number of person entries expected for the intended schedules when that can be verified.
+
+Keep the CSV headers and the locality_name, locality_slug, and census_year values unchanged. The locality_name is for reference. Fill expected_records with a positive whole number without commas. Set target_basis to exactly one of <%= CensusCoverage::TARGET_BASES.join(', ') %>. Use Published population for figures taken from or calculated from published population tables, Schedule count for counts of the original schedule entries, and Estimate for documented approximations. In source, identify the publication, table or page, and link if available, or explain how a schedule count or estimate was obtained. Add an optional scope_note to document inclusions, exclusions, or historical boundaries.
+
+Leave all four target fields blank for rows where a defensible count cannot be established. Tell me which rows need follow-up. Return the CSV with the original columns.

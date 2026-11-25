@@ -10,6 +10,12 @@ body {
   font-family: 'Open Sans';
 }
 
+@media (min-width: 992px) {
+  .admin-dropdown {
+    min-width: 28rem;
+  }
+}
+
 .volunteer-application-form {
   .form-group.check_boxes,
   .form-group.radio_buttons {

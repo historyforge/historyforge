@@ -9,7 +9,9 @@ class HomeController < ApplicationController
   end
 
   def stats
-    @stats = CensusStats.new
+    @localities = Locality.all
+    @locality = @localities.find(params[:locality_id]) if params[:locality_id].present?
+    @stats = CensusStats.new(locality: @locality)
   end
 
   def saved_searches; end
