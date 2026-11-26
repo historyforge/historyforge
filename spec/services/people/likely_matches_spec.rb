@@ -116,6 +116,18 @@ module People
       end
     end
 
+    context "when 1920 records an infant's age in months" do
+      let(:record) { create(:census1920_record, first_name: "Ivan", last_name: "Robinson", sex: "M", age: nil, age_months: 1) }
+      let(:matching_person) { create(:person, first_name: "Ivan", last_name: "Robinson", sex: "M", birth_year: 1914) }
+
+      it "uses the estimated 1919 birth year for the five-year matching window" do
+        create(:census1910_record)
+        create(:person, first_name: "Ivan", last_name: "Robinson", sex: "M", birth_year: 1913)
+
+        expect(suggestions.map(&:person)).to eq([matching_person])
+      end
+    end
+
     context "when the census age is unavailable" do
       let(:matching_person) { create(:person, first_name: "David", last_name: "Furber", sex: "m", birth_year: 1880) }
 
