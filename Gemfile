@@ -17,7 +17,7 @@ gem 'chartkick'
 gem 'devise'
 gem 'devise-bootstrap-views', '~> 1.0'
 # Version 3 requires migrating invitation data from users to devise_invitations.
-gem 'devise_invitable', '~> 2.0.12'
+gem 'devise_invitable', '~> 3.1.0'
 gem 'devise-passkeys'
 gem 'dotenv-rails'
 gem 'fast_memoize'

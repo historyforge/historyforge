@@ -161,9 +161,9 @@ GEM
     devise-passkeys (0.3.0)
       devise (>= 4.7.1)
       warden-webauthn (>= 0.3.0)
-    devise_invitable (2.0.12)
-      actionmailer (>= 5.0)
-      devise (>= 4.6)
+    devise_invitable (3.1.0)
+      actionmailer (>= 7.0)
+      devise (>= 5.0)
     diff-lcs (1.6.2)
     dotenv (3.2.0)
     dotenv-rails (3.2.0)
@@ -571,7 +571,7 @@ DEPENDENCIES
   devise
   devise-bootstrap-views (~> 1.0)
   devise-passkeys
-  devise_invitable (~> 2.0.12)
+  devise_invitable (~> 3.1.0)
   dotenv-rails
   factory_bot_rails
   faker

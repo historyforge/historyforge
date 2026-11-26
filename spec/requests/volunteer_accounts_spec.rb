@@ -54,7 +54,7 @@ RSpec.describe 'Volunteer user accounts', type: :request do
     post volunteer_application_account_path(volunteer), params: { volunteer_account: attributes }
     mail = ActionMailer::Base.deliveries.last
     body = (mail.text_part || mail).body.decoded
-    token = body.match(/invitation_token=([^\s]+)/)[1]
+    token = CGI.unescape(body.match(/invitation_token=([^\s]+)/)[1])
     recipient = open_session
     recipient.put '/u/invitation', params: { user: { invitation_token: token, password: 'b1g_sekrit', password_confirmation: 'b1g_sekrit' } }
     expect(volunteer.reload.user.invitation_accepted_at).to be_present
