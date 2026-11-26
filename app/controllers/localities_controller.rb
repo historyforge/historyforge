@@ -67,7 +67,9 @@ class LocalitiesController < ApplicationController
     render :census_coverage_import, status: :unprocessable_content
   end
 
-  def census_coverage; end
+  def census_coverage
+    load_transcription_counts
+  end
 
   def update_census_coverage
     attributes = params.require(:census_coverage).permit(:expected_records, :target_basis, :source, :scope_note,
@@ -81,6 +83,7 @@ class LocalitiesController < ApplicationController
       redirect_to census_coverage_locality_path(locality, year: @coverage.census_year),
                   notice: 'Coverage target saved.', status: :see_other
     else
+      load_transcription_counts
       render :census_coverage, status: :unprocessable_content
     end
   end
@@ -143,6 +146,12 @@ class LocalitiesController < ApplicationController
 
     @coverages_by_year = locality.census_coverages.index_by(&:census_year)
     @coverage = @coverages_by_year[year.to_i] || locality.census_coverages.build(census_year: year.to_i)
+  end
+
+  def load_transcription_counts
+    @transcription_counts = CensusYears::YEARS.index_with do |year|
+      locality.public_send(:"census#{year}_records").count
+    end
   end
 
   def locality
