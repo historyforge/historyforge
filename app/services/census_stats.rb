@@ -1,17 +1,25 @@
 # frozen_string_literal: true
 
 class CensusStats
+  RECENT_DAYS = 90
+
+  def initialize(locality: nil)
+    @locality = locality
+    @recent_since = RECENT_DAYS.days.ago
+  end
+
   def census_summaries
     @census_summaries ||= CensusYears.map do |year|
-      klass = "Census#{year}Record".constantize
-      { year:, total: klass.count, reviewed: klass.reviewed.count }
+      total, reviewed = records_for(year).pick(Arel.sql('COUNT(*)'), Arel.sql('COUNT(reviewed_at)'))
+      { year:, total:, reviewed:, pending: total - reviewed }
     end
   end
 
   def recent_census_summaries
     @recent_census_summaries ||= CensusYears.map do |year|
-      klass = "Census#{year}Record".constantize
-      { year:, total: klass.recently_added.count, reviewed: klass.recently_reviewed.count }
+      records = records_for(year)
+      { year:, total: records.where(created_at: @recent_since..).count,
+        reviewed: records.where(reviewed_at: @recent_since..).count }
     end
   end
 
@@ -44,6 +52,13 @@ class CensusStats
       UNION SELECT id, created_by_id FROM census_1940_records WHERE created_at>=:date
       UNION SELECT id, created_by_id FROM census_1950_records WHERE created_at>=:date
     ) census_records INNER JOIN users ON census_records.created_by_id=users.id
-    GROUP BY users.login ORDER BY total DESC LIMIT 10", { date: 3.months.ago }])
+    GROUP BY users.login ORDER BY total DESC LIMIT 10", { date: @recent_since }])
+  end
+
+  private
+
+  def records_for(year)
+    records = CensusYears.class_for(year).all
+    @locality ? records.where(locality_id: @locality.id) : records.where.not(locality_id: nil)
   end
 end

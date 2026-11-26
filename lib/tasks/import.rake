@@ -3,6 +3,19 @@ require 'benchmark'
 require 'csv'
 
 namespace :import do
+  desc 'Validate census coverage targets from FILE (set APPLY=1 to save)'
+  task census_coverages: :environment do
+    path = ENV.fetch('FILE', '')
+    abort 'Provide a CSV path as FILE' unless File.file?(path)
+
+    apply = ENV.fetch('APPLY', '0')
+    abort 'APPLY must be 0 or 1' unless %w[0 1].include?(apply)
+    counts = CensusCoverageImporter.new(path).import(apply: apply == '1')
+    puts "#{apply == '1' ? 'Imported' : 'Dry run'}: #{counts.map { |status, count| "#{count} #{status}" }.join(', ')}"
+  rescue ArgumentError => error
+    abort error.message
+  end
+
   desc 'Import census file into HistoryForge, updating if it exists'
   task census: :environment do
     year = ENV.fetch('YEAR', nil)

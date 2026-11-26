@@ -1595,6 +1595,46 @@ ALTER SEQUENCE public.census_1950_records_id_seq OWNED BY public.census_1950_rec
 
 
 --
+-- Name: census_coverages; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.census_coverages (
+    id bigint NOT NULL,
+    locality_id bigint NOT NULL,
+    census_year integer NOT NULL,
+    expected_records integer NOT NULL,
+    target_basis character varying NOT NULL,
+    source character varying NOT NULL,
+    scope_note text,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL,
+    verified_at timestamp(6) without time zone,
+    verification_note text,
+    verified_by_id bigint,
+    CONSTRAINT census_coverages_positive_target CHECK ((expected_records > 0))
+);
+
+
+--
+-- Name: census_coverages_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.census_coverages_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: census_coverages_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.census_coverages_id_seq OWNED BY public.census_coverages.id;
+
+
+--
 -- Name: client_applications; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -3141,6 +3181,13 @@ ALTER TABLE ONLY public.census_1950_records ALTER COLUMN id SET DEFAULT nextval(
 
 
 --
+-- Name: census_coverages id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.census_coverages ALTER COLUMN id SET DEFAULT nextval('public.census_coverages_id_seq'::regclass);
+
+
+--
 -- Name: client_applications id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3575,6 +3622,14 @@ ALTER TABLE ONLY public.census_1940_records
 
 ALTER TABLE ONLY public.census_1950_records
     ADD CONSTRAINT census_1950_records_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: census_coverages census_coverages_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.census_coverages
+    ADD CONSTRAINT census_coverages_pkey PRIMARY KEY (id);
 
 
 --
@@ -4559,6 +4614,13 @@ CREATE INDEX index_census_1950_records_on_searchable_name ON public.census_1950_
 
 
 --
+-- Name: index_census_coverages_on_locality_id_and_census_year; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_census_coverages_on_locality_id_and_census_year ON public.census_coverages USING btree (locality_id, census_year);
+
+
+--
 -- Name: index_client_applications_on_key; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -5052,6 +5114,22 @@ ALTER TABLE ONLY public.audios_buildings
 
 ALTER TABLE ONLY public.census_1860_records
     ADD CONSTRAINT fk_rails_25e3e35798 FOREIGN KEY (building_id) REFERENCES public.buildings(id);
+
+
+--
+-- Name: census_coverages census_coverages_verified_by_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.census_coverages
+    ADD CONSTRAINT census_coverages_verified_by_fk FOREIGN KEY (verified_by_id) REFERENCES public.users(id) ON DELETE SET NULL;
+
+
+--
+-- Name: census_coverages fk_rails_29f64d276c; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.census_coverages
+    ADD CONSTRAINT fk_rails_29f64d276c FOREIGN KEY (locality_id) REFERENCES public.localities(id);
 
 
 --
@@ -5792,6 +5870,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('9'),
 ('8'),
 ('4'),
+('20261124000001'),
+('20261124000000'),
 ('20261111000000'),
 ('20261107000001'),
 ('20261107000000'),

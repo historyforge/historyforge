@@ -1,5 +1,7 @@
 - content_for :pills do
   = link_to 'Add New', { action: :new }, class: 'btn btn-light btn-xs'
+  = link_to 'Census Coverage', census_coverages_path, class: 'btn btn-light btn-xs'
+  = link_to 'Statistics', stats_path, class: 'btn btn-light btn-xs'
 - set_page_title "Localities"
 
 - if @localities.blank?
@@ -21,7 +23,7 @@
             td= number_with_delimiter record.send(:"census#{year}_records_count")
           td= number_with_delimiter record.total_count
           td style="text-align:right;white-space:nowrap"
-            = link_to 'Edit', [:edit, record], class: 'btn btn-xs btn-light'
+            = link_to 'Edit', [:edit, record], class: 'btn btn-sm btn-light'
             = link_to move_to_top_locality_path(record), class: 'btn btn-sm btn-light', data: { turbo_method: :put } do
               i.fa.fa-long-arrow-up
             = link_to move_up_locality_path(record), class: 'btn btn-sm btn-light', data: { turbo_method: :put } do

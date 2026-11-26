@@ -1,0 +1,34 @@
+- set_page_title 'Import Census Coverage'
+- content_for :pills do
+  = link_to 'Census Coverage', census_coverages_path, class: 'btn btn-light btn-xs'
+
+- if @import_error
+  .alert.alert-danger role="alert"
+    strong Import failed. No coverage targets were saved.
+    div= @import_error
+
+h2 Prepare a CSV
+ol
+  li.mb-2
+    = link_to 'Download the CSV template', census_coverage_template_localities_path
+    | . It lists each locality's name and slug for every supported census year. Keep these columns as provided.
+  li.mb-2
+    | Fill in the expected census record count, how you got it, and where someone can verify it. Use the optional scope note for boundary differences or partial coverage. You can also attach the template to a new chat with the prompt below.
+  li.mb-2
+    | Review the sources and check that their boundaries match the records your project intends to transcribe. Leave the target fields blank for any row you want to skip.
+
+h2 Upload the completed CSV
+p Existing targets are updated by locality and year. Blank targets are skipped. If any row has an error, the import saves nothing.
+= form_with url: import_census_coverage_localities_path, multipart: true, class: 'mb-4 col-md-8 col-lg-6' do |form|
+  = form.label :file, 'Coverage CSV', class: 'form-label'
+  .d-flex.flex-column.flex-sm-row.align-items-start.gap-2
+    = form.file_field :file, accept: '.csv,text/csv', required: true, class: 'form-control'
+    = form.submit 'Import targets', class: 'btn btn-primary flex-shrink-0', data: { turbo_submits_with: 'Importing…' }
+
+h2 Research prompt
+p Copy this prompt into a new chat, fill in the region, and attach the downloaded template.
+div data-controller="clipboard"
+  .d-flex.align-items-center.gap-2.mb-2
+    button.btn.btn-outline-secondary type="button" data-action="clipboard#copy" Copy prompt
+    span.text-muted role="status" data-clipboard-target="status"
+  = text_area_tag :coverage_prompt, render(partial: 'census_coverage_prompt', formats: [:text]).strip, readonly: true, rows: 13, class: 'form-control', aria: { label: 'Research prompt' }, data: { clipboard_target: 'source' }
