@@ -76,12 +76,15 @@ class Setting < ApplicationRecord
       value_of "enabled_private_#{year}"
     end
 
-    def can_view_public_demographics?(year)
-      value_of "demographics_public_#{year}"
+    def census_summaries_enabled?
+      value_of 'census_summaries_enabled'
     end
 
-    def can_view_private_demographics?(year)
-      value_of "demographics_private_#{year}"
+    def add_census_summaries_setting
+      add 'census_summaries_enabled', type: :boolean, value: '0', group: 'Census Summaries',
+          name: 'Enable Census Summaries',
+          hint: 'Show tables and charts that count people in matching census records by a selected field, ' \
+                'such as age, birthplace, or occupation. Visitors can view summaries for census years they can already access.'
     end
 
     def can_people_public?
