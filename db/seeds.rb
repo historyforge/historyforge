@@ -40,6 +40,8 @@ Setting.add 'announcement_url', type: :string, value: nil, group:, name: 'Announ
 Setting.add 'document_page_title', type: :string, value: 'Resources', group: 'Documents', name: 'Document Page Title', hint: 'Show up on the main menu and as the page title.'
 Setting.add 'document_category_page', type: :boolean, value: false, group: 'Documents', name: 'Document Category Pages', hint: 'If true, then each category has its own page. If false, then all the documents and categories show up on on page in an accordion.'
 
+Setting.add_census_summaries_setting
+
 CensusYears.each do |year|
   group = "#{year} US Census"
   Setting.add "enabled_private_#{year}", type: :boolean, value: Rails.env.test? ? '1' : '0', group: group, name: 'Enabled Private', hint: 'This census year is available to logged-in users for data entry.'

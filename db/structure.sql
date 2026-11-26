@@ -5867,6 +5867,7 @@ ALTER TABLE ONLY public.photographs
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20261126000000'),
 ('9'),
 ('8'),
 ('4'),

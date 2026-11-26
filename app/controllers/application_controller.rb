@@ -25,7 +25,7 @@ class ApplicationController < ActionController::Base
   rescue_from ActionDispatch::Http::Parameters::ParseError, with: :invalid_request_parameters
 
   def can_demographics?(year)
-    Setting.can_view_public_demographics?(year) || (user_signed_in? && Setting.can_view_private_demographics?(year))
+    Setting.census_summaries_enabled? && can_census?(year)
   end
 
   def can_people?
