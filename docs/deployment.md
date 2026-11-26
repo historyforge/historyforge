@@ -222,3 +222,22 @@ Provider backups do not include files uploaded to the application server.
 Database exports do not include uploaded files. For a complete manual copy,
 include the site's upload directory and configuration separately. Test restores
 in a separate database, not over a running collection.
+
+## Upgrading invitation storage to Devise Invitable 3.x
+
+Rehearse on a canary before upgrading other sites. Back up each installation
+and pause invitation creation, acceptance, and resends, including background
+delivery, until the migration and application switch are complete. Keep the
+same application secrets so previously emailed links can still be verified.
+After switching, confirm an outstanding 2.x link can be accepted, a new admin
+and volunteer invitation can be sent and accepted, and ordinary login works.
+
+The migration keeps the old invitation columns on `users`. The new application
+writes invitation state to `devise_invitations`. If rolling back, pause writes
+again and export both tables before switching. For each affected user, reconcile
+the current invitation with the saved 2.x columns. Preserve accepted timestamps
+and inviter attribution. For a still-pending invitation created or resent on 3.x,
+clear any stale token on the user and send a fresh invitation after switching
+back. Devise Invitable 2.x cannot read the links issued by 3.x. Keep user IDs and
+volunteer application links intact, and retain the shared table for audit and
+reconciliation. Test this process on a copy before applying it to a live site.

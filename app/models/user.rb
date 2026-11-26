@@ -102,15 +102,8 @@ class User < ApplicationRecord
     %i[roles_id_eq]
   end
 
-  def self.find_by_invitation_token(original_token, only_valid)
-    invitation_token = Devise.token_generator.digest(self, :invitation_token, original_token)
-    invitable = find_or_initialize_with_error_by(:invitation_token, invitation_token)
-    if invitable.invitation_token && invitable.persisted? && !invitable.valid_invitation?
-      invitable.errors.add(:invitation_token,
-                           :invalid)
-    end
-    invitable unless only_valid && invitable.errors.present?
-  end
+  before_invitation_accepted { self.enabled = true }
+  before_destroy :revoke_pending_invitations, prepend: true
 
   def confirmed?
     enabled? || !!confirmed_at
@@ -197,9 +190,20 @@ class User < ApplicationRecord
 
   attr_writer :public_signup
 
-  def accept_invitation
-    super
-    self.enabled = true
+  def resend_pending_invitation
+    with_lock do
+      return false unless invitation_pending?
+
+      current_invitation.invitation_sent_at = nil
+      generate_invitation_token!
+      generate_acceptance_token
+      deliver_invitation
+      true
+    end
+  end
+
+  private def revoke_pending_invitations
+    devise_invitations.pending.update_all(revoked_at: Time.current, invitation_token: nil)
   end
 
   def self.from_omniauth(auth)

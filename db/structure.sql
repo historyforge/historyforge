@@ -1805,6 +1805,50 @@ ALTER SEQUENCE public.contacts_id_seq OWNED BY public.contacts.id;
 
 
 --
+-- Name: devise_invitations; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.devise_invitations (
+    id bigint NOT NULL,
+    invitation_token character varying,
+    invitation_created_at timestamp(6) without time zone,
+    invitation_sent_at timestamp(6) without time zone,
+    invitation_accepted_at timestamp(6) without time zone,
+    superseded_at timestamp(6) without time zone,
+    superseded_reason character varying,
+    revoked_at timestamp(6) without time zone,
+    resource_created_at timestamp(6) without time zone,
+    invite_key json DEFAULT '{}'::json NOT NULL,
+    invite_key_digest character varying NOT NULL,
+    invitable_type character varying,
+    invitable_id bigint,
+    invited_by_type character varying,
+    invited_by_id bigint,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: devise_invitations_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.devise_invitations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: devise_invitations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.devise_invitations_id_seq OWNED BY public.devise_invitations.id;
+
+
+--
 -- Name: document_categories; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -3223,6 +3267,13 @@ ALTER TABLE ONLY public.contacts ALTER COLUMN id SET DEFAULT nextval('public.con
 
 
 --
+-- Name: devise_invitations id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.devise_invitations ALTER COLUMN id SET DEFAULT nextval('public.devise_invitations_id_seq'::regclass);
+
+
+--
 -- Name: document_categories id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3670,6 +3721,14 @@ ALTER TABLE ONLY public.construction_materials
 
 ALTER TABLE ONLY public.contacts
     ADD CONSTRAINT contacts_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: devise_invitations devise_invitations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.devise_invitations
+    ADD CONSTRAINT devise_invitations_pkey PRIMARY KEY (id);
 
 
 --
@@ -4646,6 +4705,34 @@ CREATE INDEX index_cms_pages_on_controller_and_action ON public.cms_pages USING 
 --
 
 CREATE INDEX index_cms_pages_on_url_path ON public.cms_pages USING btree (url_path);
+
+
+--
+-- Name: index_devise_invitations_on_invitable; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_devise_invitations_on_invitable ON public.devise_invitations USING btree (invitable_type, invitable_id);
+
+
+--
+-- Name: index_devise_invitations_on_invitation_token; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_devise_invitations_on_invitation_token ON public.devise_invitations USING btree (invitation_token);
+
+
+--
+-- Name: index_devise_invitations_on_invited_by; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_devise_invitations_on_invited_by ON public.devise_invitations USING btree (invited_by_type, invited_by_id);
+
+
+--
+-- Name: index_devise_invitations_on_type_and_invite_key; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_devise_invitations_on_type_and_invite_key ON public.devise_invitations USING btree (invitable_type, invite_key_digest);
 
 
 --
@@ -5867,6 +5954,7 @@ ALTER TABLE ONLY public.photographs
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20261126000001'),
 ('20261126000000'),
 ('9'),
 ('8'),

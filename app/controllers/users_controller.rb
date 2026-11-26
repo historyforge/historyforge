@@ -78,7 +78,7 @@ class UsersController < ApplicationController
   def create
     authorize! :create, User
     @user = User.invite!(user_params, current_user)
-    if @user.save
+    if @user.persisted? && @user.errors.empty?
       flash[:notice] = "An invitation email has been sent to #{@user.email}."
       redirect_to user_path(@user)
     else
@@ -181,9 +181,12 @@ class UsersController < ApplicationController
 
   def resend_invitation
     user = User.find params[:id]
-    user.deliver_invitation
-    user.volunteer_applications.each { |application| application.resolve_submission_flag!(current_user) }
-    flash[:notice] = 'Resent the invitation!'
+    if user.resend_pending_invitation
+      user.volunteer_applications.each { |application| application.resolve_submission_flag!(current_user) }
+      flash[:notice] = 'Resent the invitation!'
+    else
+      flash[:error] = 'This user has no pending invitation to resend.'
+    end
     redirect_to action: :edit
   end
 

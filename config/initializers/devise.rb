@@ -274,6 +274,7 @@ Devise.setup do |config|
   # After this period, the invited resource won't be able to accept the invitation.
   # When invite_for is 0 (the default), the invitation won't expire.
   # config.invite_for = 2.weeks
+  config.create_resource_on_invitation = true
 
   # Number of invitations users can send.
   # - If invitation_limit is nil, there is no limit for invitations, users can
