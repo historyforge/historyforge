@@ -92,7 +92,26 @@ class CensusRecord < ApplicationRecord
   end
 
   def infant_birth_year
-    nil
+    return unless age.nil? || age.zero?
+
+    recorded_year = self[:birth_year] if has_attribute?(:birth_year)
+    return recorded_year if recorded_year&.between?(year - 1, year)
+
+    census_month, census_day = case year
+                              when 1850, 1860, 1870, 1880, 1900 then [6, 1]
+                              when 1910 then [4, 15]
+                              when 1920 then [1, 1]
+                              when 1930, 1940, 1950 then [4, 1]
+                              else return
+                              end
+    month = self[:birth_month] if has_attribute?(:birth_month)
+    months_old = self[:age_months] if has_attribute?(:age_months)
+
+    # A birth in the census month could be in either year. Prefer the recorded age in months in that case.
+    return month < census_month ? year : year - 1 if month&.between?(1, 12) && month != census_month
+    return (Date.new(year, census_month, census_day) << months_old).year if months_old&.between?(0, 12)
+
+    year - 1 if month == census_month
   end
 
   def per_side

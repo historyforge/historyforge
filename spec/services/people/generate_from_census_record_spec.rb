@@ -13,6 +13,15 @@ RSpec.describe People::GenerateFromCensusRecord do
   it { expect(person.last_name).to eq(record.last_name) }
   it { expect(person.id).to(eq(record.person_id)) }
 
+  context 'when the 1910 census gives an infant age in months' do
+    let(:record) { create(:census1910_record, age: nil, age_months: 7) }
+
+    it 'saves an estimate that can be recalculated from the census record' do
+      expect(person.reload).to have_attributes(birth_year: 1909, is_birth_year_estimated: true)
+      expect(person.estimated_birth_year).to eq(1909)
+    end
+  end
+
   context 'when the 1950 census gives an infant birth month' do
     let(:record) do
       create(:census1950_record, first_name: 'Ivan', last_name: 'Robinson', sex: 'M', race: 'W', age: nil, birth_month: month,
