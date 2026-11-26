@@ -3,6 +3,31 @@
 require "rails_helper"
 
 RSpec.describe "The Forge" do
+  scenario "opens header links as normal page navigation", :js do
+    visit forge_path
+    find("#near-me-button", wait: 10)
+
+    within("#main-header") do
+      click_link "More"
+      click_link "Contact"
+    end
+
+    expect(page).to have_current_path(contact_path)
+  end
+
+  scenario "opens header links inside the kiosk", :js do
+    visit kiosk_path
+    find("#near-me-button", wait: 10)
+
+    within("#main-header") do
+      click_link "More"
+      click_link "Contact"
+    end
+
+    expect(page).to have_css('dialog[open] iframe[src="' + contact_path(forge_view: 1) + '"]')
+    expect(page).to have_current_path(kiosk_path)
+  end
+
   scenario "filters 1940 wages by a dollar amount or a special code", :js do
     user = create(:census_taker)
     sign_in user

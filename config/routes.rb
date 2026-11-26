@@ -38,6 +38,8 @@ Rails.application.routes.draw do
   get '/forge' => 'forge#index', as: 'forge'
   get '/forge/buildings/:id/photographs' => 'forge#photographs'
   get '/:locality_slug/forge' => 'forge#index', as: 'local_forge'
+  get '/kiosk' => 'forge#index', as: 'kiosk', defaults: { kiosk: true }
+  get '/:locality_slug/kiosk' => 'forge#index', as: 'local_kiosk', defaults: { kiosk: true }
 
   post '/census/rebuild', to: 'census_records/main#rebuild', as: 'rebuild_index'
 

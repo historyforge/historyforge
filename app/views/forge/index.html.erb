@@ -1,11 +1,14 @@
 <% @full_layout = true %>
+<% kiosk = request.path_parameters[:kiosk] == true %>
 <% set_page_title("#{Current.locality ? "#{Current.locality.name} - " : ''}HistoryForge") %>
 <% initial_state = {
   layers: { center: { lat: (Current.locality&.latitude || AppConfig[:latitude])&.to_f,
                       lng: (Current.locality&.longitude || AppConfig[:longitude])&.to_f }, layers: @layers.as_json },
   buildings: { buildings: nil },
-  forges: { forges: Locality.where.not(latitude: nil).map { |forge| { name: forge.name, slug: forge.slug } } },
+  forges: { forges: Locality.where.not(latitude: nil).map { |forge|
+    { name: forge.name, slug: forge.slug, path: kiosk ? local_kiosk_path(forge.slug) : local_forge_path(forge.slug) }
+  } },
   search: { params: { f: params[:f], s: params[:s]&.compact_blank, people: params[:people], buildings: params[:buildings] },
             years: CensusYears.visible_to_user(user_signed_in?) }
 } %>
-<%= tag.div id: 'forge', data: { initial_state: initial_state } %>
+<%= tag.div id: 'forge', data: { initial_state: initial_state, kiosk: kiosk } %>

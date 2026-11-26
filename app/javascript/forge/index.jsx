@@ -25,7 +25,7 @@ export const initializeForge = () => {
 
     const store = buildStore(reducers, JSON.parse(forge.dataset.initialState));
     reactRoot = forge;
-    ReactDOM.render(<Provider store={store}><Forge /></Provider>, forge);
+    ReactDOM.render(<Provider store={store}><Forge kiosk={forge.dataset.kiosk === 'true'} /></Provider>, forge);
 };
 
 const cleanupForge = () => {
