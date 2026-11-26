@@ -272,7 +272,7 @@ class Person < ApplicationRecord
     aged_records = census_records.reject { |r| r.age&.> 120 }
     return if aged_records.blank?
 
-    aged_records.sum { |r| r.year - (r.age || 0) } / (census_records.length || 1)
+    aged_records.sum { |r| r.infant_birth_year || r.year - (r.age || 0) } / (census_records.length || 1)
   end
 
   # This gets called from AuditPersonConnection, which gets called when

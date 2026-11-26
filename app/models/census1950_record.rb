@@ -152,6 +152,14 @@ class Census1950Record < CensusRecord
     code
   end
 
+  def infant_birth_year
+    return unless age.nil? || age.zero?
+    return unless birth_month&.between?(1, 12)
+
+    # April 1 was Census Day. With no birth day, treat April as the prior year.
+    birth_month < 4 ? year : year - 1
+  end
+
   def per_side
     40
   end

@@ -59,7 +59,7 @@ module People
 
     def ranked_people
       eligible = Person.where(sex: record.sex)
-      birth_year = birth_year_from_age
+      birth_year = record.infant_birth_year || birth_year_from_age
       if birth_year
         eligible = eligible.where(birth_year: [nil, (birth_year - AGE_TOLERANCE)..(birth_year + AGE_TOLERANCE)])
       end
