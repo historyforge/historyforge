@@ -91,6 +91,10 @@ class CensusRecord < ApplicationRecord
     "#{year} Census Record"
   end
 
+  def infant_birth_year
+    nil
+  end
+
   def per_side
     50
   end

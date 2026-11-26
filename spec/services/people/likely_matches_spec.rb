@@ -100,6 +100,22 @@ module People
       end
     end
 
+    context "when the 1950 census gives an infant's birth month" do
+      let(:record) do
+        create(:census1950_record, first_name: "Ivan", last_name: "Robinson", sex: "M", age: nil, birth_month: 8,
+               locality: create(:locality), page_number: 1, page_side: "A", line_number: 1,
+               enum_dist: "1", family_id: "1", relation_to_head: "Son")
+      end
+      let(:matching_person) { create(:person, first_name: "Ivan", last_name: "Robinson", sex: "M", birth_year: 1944) }
+
+      it "uses the estimated 1949 birth year for the five-year matching window" do
+        create(:person, first_name: "Ivan", last_name: "Robinson", sex: "M", birth_year: 1907)
+        create(:person, first_name: "Ivan", last_name: "Robinson", sex: "M", birth_year: 1943)
+
+        expect(suggestions.map(&:person)).to eq([matching_person])
+      end
+    end
+
     context "when the census age is unavailable" do
       let(:matching_person) { create(:person, first_name: "David", last_name: "Furber", sex: "m", birth_year: 1880) }
 

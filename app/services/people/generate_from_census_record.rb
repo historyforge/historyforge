@@ -34,7 +34,8 @@ module People
       person.name_suffix = record.name_suffix
       person.race = record.race
       person.sex = record.sex
-      person.birth_year = record.year - record.age if record.age&.< 120
+      person.birth_year = record.infant_birth_year ||
+                          (record.year - record.age if record.age&.< 120)
       person.pob = record.pob
 
       # Add the census record association after attributes are set
