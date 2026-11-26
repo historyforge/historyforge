@@ -11,7 +11,7 @@ body {
 }
 
 @media (min-width: 992px) {
-  .admin-dropdown {
+  .two-column-dropdown {
     min-width: 28rem;
   }
 }
@@ -478,8 +478,12 @@ div.date {
     position: static;
     margin-right: 8px;
     margin-top: 0;
-    border: none;
-    box-shadow: none;
+
+    &.form-check-input {
+      width: 1em;
+      height: 1em;
+      padding: 0;
+    }
   }
 
   span.radio,
@@ -495,6 +499,12 @@ div.date {
 
 .card>.table {
   margin-bottom: 0;
+}
+
+.settings-checkbox {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: .5rem;
 }
 
 form table {

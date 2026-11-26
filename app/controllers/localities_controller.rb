@@ -10,12 +10,18 @@ class LocalitiesController < ApplicationController
   def set
     locality = Locality.find params[:id]
     locality && (session[:locality] = locality.id)
-    redirect_back_or_to root_path
+    redirect_back_or_to root_path unless redirect_to_locality_return_path
   end
 
   def reset
     session.delete(:locality)
-    redirect_back_or_to root_path
+    redirect_back_or_to root_path unless redirect_to_locality_return_path
+  end
+
+  private def redirect_to_locality_return_path
+    return unless (path = url_from(params[:return_to]))
+
+    redirect_to path, status: :see_other
   end
 
   def index

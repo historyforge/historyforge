@@ -11,13 +11,23 @@
     .list-group
       - @settings.each do |setting|
         .list-group-item
-          = simple_fields_for setting do |form|
-            - if setting.name =~ /city/
-              = form.input :value, as: :select, collection: City.all.map { |city| [city.name, city.key] }, label: setting.name, hint: setting.hint, input_html: { name: "settings[#{setting.id}][value]" }
-            - elsif setting.input_type == 'boolean'
-              = form.input :value, as: :boolean, label: setting.name, inline_label: setting.hint, input_html: { name: "settings[#{setting.id}][value]" }
-            - else
-              = form.input :value, as: setting.input_type.to_sym, label: setting.name, hint: setting.hint, input_html: { name: "settings[#{setting.id}][value]" }
-    .card-footer
+          - field_name = "settings[#{setting.id}][value]"
+          - if setting.input_type == 'boolean' && setting.name !~ /city/
+            - field_id = "setting_#{setting.id}_value"
+            - hint_id = "#{field_id}_hint" if setting.hint.present?
+            .settings-checkbox
+              = hidden_field_tag field_name, '0', id: nil
+              = check_box_tag field_name, '1', setting.cast_value, id: field_id, class: 'form-check-input', aria: { describedby: hint_id }
+              div
+                = label_tag field_id, setting.name, class: 'form-check-label fw-semibold'
+                - if hint_id
+                  div.small.text-muted id=hint_id = setting.hint
+          - else
+            = simple_fields_for setting do |form|
+              - if setting.name =~ /city/
+                = form.input :value, as: :select, collection: City.all.map { |city| [city.name, city.key] }, label: setting.name, hint: setting.hint, input_html: { name: field_name }
+              - else
+                = form.input :value, as: setting.input_type.to_sym, label: setting.name, hint: setting.hint, input_html: { name: field_name }
+    .card-footer.mt-3
       button.btn.btn-lg.btn-primary type="submit" Submit
       = link_to 'Cancel', settings_path, class: 'btn btn-lg btn-secondary'
