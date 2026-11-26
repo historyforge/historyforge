@@ -1,29 +1,186 @@
 - content_for :pills do
-  = simple_form_for @search, url: url_for(), method: :get, as: :s do |form|
-    .form-inline
-      = select_tag 'facet', options_for_select([['Select a facet', nil]].concat(@search.facets.map { |f| [translated_label(resource_class, f), f]}), params[:facet]), class: 'form-control'
-      = form.submit 'Draw', class: 'btn btn-primary'
+  - export_fields = (@search.columns + Array(@facet)).uniq
+  - export_fields |= ['age_months'] if @facet == 'age' && @age_months_available
+  .dropdown data-controller="clipboard"
+    span.small.text-muted.me-2 role="status" data-clipboard-target="status"
+    button.btn.btn-sm.btn-light.dropdown-toggle type="button" data-bs-toggle="dropdown" aria-expanded="false" Summary actions
+    ul.dropdown-menu.dropdown-menu-end
+      li
+        = link_to 'View matching records', census_records_path(@summary_params.merge(year: controller.year)), class: 'dropdown-item'
+      li
+        = link_to 'Download matching records', census_records_path(@summary_params.merge(year: controller.year, format: :csv, f: export_fields)), class: 'dropdown-item'
+      - if @summary
+        - summary_path_params = @summary_params.merge(year: controller.year, facet: @facet)
+        - if @search.s[:locality_id_in].blank? && Current.locality
+          - summary_path_params[:s] = summary_path_params.fetch(:s, {}).merge(locality_id_in: [Current.locality.id])
+        - elsif @search.s[:locality_id_in].blank?
+          - summary_path_params[:summary_locality] = 'all'
+        li
+          hr.dropdown-divider
+        li
+          = link_to 'Copy link to this page', demographics_census_records_path(summary_path_params), class: 'dropdown-item', data: { action: 'clipboard#copyLink' }
+        li
+          = link_to 'Download CSV', demographics_census_records_path(summary_path_params.merge(format: :csv)), class: 'dropdown-item'
 
-- if params[:facet].present?
-  - content_for :head do
-    = javascript_include_tag 'demographics', defer: true
-  - CensusFacet.with_data_for(@search, params[:facet]) do |data|
-    h3.pt-3.text-center= params[:facet].titleize
-    - if data[:explanation].present?
-      p.demographics-explanation= data[:explanation]
-    - chart_data = aggregate_chart_data data[:rows]
-    - data[:charts].each do |chart|
-      = public_send :"#{chart}_chart", chart_data
-    br
-    h3.pt-6= "#{params[:facet].titleize} Data"
-    = table do
-      tbody
-        - data[:rows].each do |row|
-          tr
-            th= row[0]
-            td= number_with_delimiter(row[1])
-            td= number_to_percentage(row[1].to_d / data[:total].to_d * 100, precision: 2)
-        tr
-          th Total
-          td= number_with_delimiter(data[:total])
-          td 100%
+.d-flex.flex-column.flex-md-row.align-items-start.align-items-md-center.justify-content-between.gap-2.mb-2
+  .col-12.col-md-7.d-flex.flex-column.flex-sm-row.gap-2
+    = form_with url: demographics_census_records_path(year: controller.year), method: :get, class: 'flex-grow-1' do |form|
+      - URI.decode_www_form(@summary_params.to_query).each do |name, value|
+        = hidden_field_tag name, value, id: nil
+      = label_tag :facet, 'Summary field', class: 'visually-hidden'
+      = select_tag :facet, options_for_select(@search.facets.excluding(:age_months).map { |field| [translated_label(resource_class, field), field] }, @facet), include_blank: 'Choose a field', class: 'form-select', data: { controller: 'search-scope', action: 'change->search-scope#submit' }
+      noscript
+        = form.submit 'Show summary', class: 'btn btn-primary mt-2'
+  - if @summary_years.size > 1
+    - previous_year = @summary_years.keys.reverse.find { |year| year < controller.year }
+    - next_year = @summary_years.keys.find { |year| year > controller.year }
+    nav aria-label="Census summary years"
+      .btn-group
+        - if previous_year
+          = link_to "‹ #{previous_year}", census_summary_year_path(@summary_years.fetch(previous_year)), class: 'btn btn-sm btn-outline-secondary', rel: 'prev'
+        button.btn.btn-sm.btn-outline-secondary.dropdown-toggle type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Choose census year, currently #{controller.year}"= controller.year
+        ul.dropdown-menu.dropdown-menu-md-end
+          - @summary_years.each do |year, destination|
+            li
+              - if destination
+                = link_to year, census_summary_year_path(destination), class: 'dropdown-item'
+              - else
+                span.dropdown-item.active aria-current="page"= year
+        - if next_year
+          = link_to "#{next_year} ›", census_summary_year_path(@summary_years.fetch(next_year)), class: 'btn btn-sm btn-outline-secondary', rel: 'next'
+
+- if params[:field_unavailable] == '1'
+  p.small.text-muted.mb-2 That field is unavailable for this census. Choose a field to summarize.
+- omitted_filters = params[:omitted_filters].to_s.to_i
+- if omitted_filters.positive?
+  p.small.text-muted.mb-2= "#{pluralize(omitted_filters, 'filter')} did not carry over to #{controller.year}."
+- if @summary_years.size <= 1 && @other_summary_years_enabled && @facet
+  p.small.text-muted.mb-3= "#{translated_label(resource_class, @facet)} is only available in #{controller.year} among enabled summaries."
+- elsif !@other_summary_years_enabled && current_user&.has_role?('administrator')
+  p.small.text-muted.mb-3
+    | Only this census year has summaries available.
+    =<> link_to 'Enable summaries for another year in Settings', settings_path
+    | to compare years here.
+
+- side_by_side = @summary && @summary[:chart] == :pie && @summary[:included].positive?
+.row.g-4
+  div class=(side_by_side ? 'col-12 col-lg-5' : 'col-12')
+    - if @summary
+      h2.h4.mb-1= translated_label(resource_class, @facet)
+      - if @summary_locality_value.nil? && @summary_localities.any?
+        p.small.text-muted.mb-2= @summary_localities.map(&:name).to_sentence
+      - if @summary[:explanation].present?
+        p.demographics-explanation= @summary[:explanation]
+      - if @summary[:included].positive?
+        - content_for :head do
+          = javascript_include_tag 'demographics', defer: true
+        - chart_data = @summary[:chart] == :pie ? aggregate_chart_data(@summary[:rows]) : @summary[:rows]
+        - chart_options = @summary[:chart] == :bar ? { height: "#{[chart_data.size * 18, 300].max}px" } : { donut: true, height: '360px', legend: 'bottom' }
+        = public_send :"#{@summary[:chart]}_chart", chart_data, **chart_options
+      - else
+        p No matching records have a usable value for this field.
+      - if @summary[:description].present? && @summary[:description] != @summary[:explanation]
+        p.summary-field-description.small.text-muted.mt-2.mb-0= @summary[:description]
+
+    - if @coverage_targets.empty?
+      p.small.text-muted.mt-2.mb-2 Transcription coverage is unknown. See “About these results” for what that means.
+
+    - if @coverage_targets.empty? && current_user&.has_role?('administrator')
+      p.small.mt-3.mb-2
+        = link_to 'Set up census coverage', census_coverages_path
+        |  to show readers how much of the census has been transcribed and where the expected counts came from.
+  - if @summary
+    div class=(side_by_side ? 'col-12 col-lg-7' : 'col-12')
+      .table-responsive
+        table.table.table-sm.table-striped
+          caption.visually-hidden= "#{controller.year} #{translated_label(resource_class, @facet)} · #{@summary_localities.map(&:name).to_sentence.presence || 'All localities'}"
+          thead
+            tr
+              th scope="col" Recorded value
+              th.text-end scope="col" Records
+              th.text-end scope="col" Share of included records
+          tbody
+            - if @summary[:included].positive?
+              - @summary[:rows].each do |label, count|
+                tr
+                  th scope="row"= label
+                  td.text-end= number_with_delimiter(count)
+                  td.text-end= number_to_percentage(count.fdiv(@summary[:included]) * 100, precision: 2)
+          tfoot.table-group-divider
+            tr
+              th scope="row" Included in chart
+              td.text-end= number_with_delimiter(@summary[:included])
+              td.text-end= '100%' if @summary[:included].positive?
+            - { blank: 'Blank', unknown: 'Unknown', outside_range: 'Outside the chart range' }.each do |key, label|
+              - if @summary[key].positive?
+                tr.text-muted
+                  th.fw-normal scope="row"= label
+                  td.text-end= number_with_delimiter(@summary[key])
+                  td
+            tr
+              th scope="row" Matching records
+              td.text-end.fw-semibold= number_with_delimiter(@summary[:matching])
+              td
+
+details.border.rounded.my-3
+  summary.fw-semibold.px-3.py-2 About these results
+  .px-3.pb-3
+    p
+      | These summaries describe the census records available in HistoryForge.
+        Where we have an expected record count, we show how much has been transcribed and flag localities we’ve verified as complete.
+        If you’re using these summaries for demographic research, check coverage for each locality and year before drawing conclusions about the population.
+    - if @coverage_targets.empty?
+      .alert.alert-secondary
+        p.mb-0
+          strong An exploratory summary.
+          |  Coverage for this area and census year is unknown, so the results may reflect only part of the population recorded in the census.
+    .row.g-3
+      div class=(@coverage_targets.any? ? 'col-lg-7' : 'col-12')
+        section.card.h-100
+          .card-body
+            h2.h5 Records in this summary
+            - if @summary
+              p.mb-2
+                = "The chart uses #{number_with_delimiter(@summary[:included])} of #{number_with_delimiter(@summary[:matching])} matching HistoryForge records. "
+                | The percentages in the table use the records included in the chart.
+              - if @summary[:conditional]
+                p.mb-2 This field was asked only of certain people. Blanks can include records where the question did not apply.
+            p.mb-2= "#{summary_review_status}."
+            - if @search.unhoused?
+              p.mb-2 Limited to records without a linked building.
+            - if @search.unmatched?
+              p.mb-2 Limited to records without a linked person.
+            - if @summary_params[:s].present?
+              dl.row.small.mb-0
+                - @summary_params[:s].each do |key, value|
+                  dt.col-sm-5= key.to_s.humanize
+                  dd.col-sm-7= Array(value).join(', ')
+            - else
+              p.small.text-muted.mb-0 No record filters applied.
+      - if @coverage_targets.any?
+        .col-lg-5
+          section.card.h-100
+            .card-body
+              h2.h5 Transcription coverage
+              p.small.text-muted Locality-wide counts for this census year, before the summary filters.
+              ul.list-unstyled.mb-0
+                - @summary_localities.each do |locality|
+                  - coverage = @coverage_targets[locality.id]
+                  li.border-top.py-2
+                    - if coverage
+                      - transcribed, reviewed = @coverage_counts.fetch(locality.id, [0, 0])
+                      details
+                        summary
+                          strong= locality.name
+                          div.small.text-muted.ms-3= "#{number_with_delimiter(transcribed)} transcribed / #{number_with_delimiter(coverage.expected_records)} expected · #{number_with_delimiter(reviewed)} reviewed"
+                          - if coverage.verified_complete?
+                            div.small.text-success.fw-semibold.ms-3 Verified complete
+                        .small.ms-3.mt-2
+                          div= "#{coverage.target_basis} · #{coverage.source}"
+                          - if coverage.scope_note.present?
+                            div= coverage.scope_note
+                          - if coverage.verified_complete?
+                            div= coverage.verification_note
+                    - else
+                      strong= locality.name
+                      div.small.text-muted Coverage unknown

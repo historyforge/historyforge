@@ -84,6 +84,14 @@ class Setting < ApplicationRecord
       value_of "demographics_private_#{year}"
     end
 
+    def add_census_summary_settings(year)
+      group = "#{year} US Census"
+      add "demographics_private_#{year}", type: :boolean, value: '0', group:,
+          name: 'Demographics Private', hint: 'Allow signed-in users to view census record summaries for this year.'
+      add "demographics_public_#{year}", type: :boolean, value: '0', group:,
+          name: 'Demographics Public', hint: 'Allow the public to view census record summaries for this year.'
+    end
+
     def can_people_public?
       value_of 'people_public'
     end
