@@ -83,7 +83,7 @@
         p.summary-field-description.small.text-muted.mt-2.mb-0= @summary[:description]
 
     - if @coverage_targets.empty?
-      p.small.text-muted.mt-2.mb-2 Exploratory summary · Transcription coverage is unknown.
+      p.small.text-muted.mt-2.mb-2 Transcription coverage is unknown. See “About these results” for what that means.
 
     - if @coverage_targets.empty? && current_user&.has_role?('administrator')
       p.small.mt-3.mb-2
@@ -125,11 +125,15 @@
 details.border.rounded.my-3
   summary.fw-semibold.px-3.py-2 About these results
   .px-3.pb-3
+    p
+      | These summaries describe the census records available in HistoryForge.
+        Where we have an expected record count, we show how much has been transcribed and flag localities we’ve verified as complete.
+        If you’re using these summaries for demographic research, check coverage for each locality and year before drawing conclusions about the population.
     - if @coverage_targets.empty?
       .alert.alert-secondary
         p.mb-0
           strong An exploratory summary.
-          |  These counts describe matching HistoryForge records. Transcription coverage for this area and census year is unknown, so the results may not represent everyone recorded in the census.
+          |  Coverage for this area and census year is unknown, so the results may reflect only part of the population recorded in the census.
     .row.g-3
       div class=(@coverage_targets.any? ? 'col-lg-7' : 'col-12')
         section.card.h-100
