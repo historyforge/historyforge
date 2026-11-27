@@ -28,3 +28,16 @@
             td.text-end = number_with_delimiter(count)
   - else
     p No census records were created by this operator.
+
+section#recent-operators.mt-4
+  h2.h4 Recent operators
+  - if @recent_operators.any?
+    ul.list-group
+      - @recent_operators.each do |operator, last_created|
+        li.list-group-item.d-flex.justify-content-between.align-items-baseline.gap-3
+          = link_to operator.full_name.presence || operator.login, operator_census_activity_path(creator_id: operator.id)
+          small.text-muted
+            ' Last entry
+            time datetime=last_created.iso8601 = last_created.to_date.to_fs(:long)
+  - else
+    p No census entries with a recorded operator were found.
