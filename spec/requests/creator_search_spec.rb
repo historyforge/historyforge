@@ -102,6 +102,9 @@ RSpec.describe 'Creator search', :versioning, type: :request do
     match = create(:active_user, login: 'Volunteer A', full_name: 'Marisol Ruiz', email: 'marisol@example.test')
     sign_in_as(reviewer)
 
+    get creator_autocomplete_users_path(format: :json), params: { term: match.id.to_s }
+    expect(response.parsed_body.first.fetch('id')).to eq(match.id)
+
     ['Ruiz', 'Volunteer A', 'marisol@example.test'].each do |term|
       get creator_autocomplete_users_path(format: :json), params: { term: }
       expect(response).to have_http_status(:ok)

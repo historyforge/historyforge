@@ -95,6 +95,8 @@ header data-turbo-permanent="true" id="main-header"
               a.nav-link.dropdown-toggle data-bs-toggle="dropdown" href="#" My
               .dropdown-menu
                 = link_to 'My stuff', my_stuff_users_path, class: 'dropdown-item'
+                - if can?(:search_by_creator, CensusRecord)
+                  = link_to 'Operator census activity', operator_census_activity_path, class: 'dropdown-item'
                 .dropdown-divider
                 = render 'users/my_search_links', link_class: 'dropdown-item'
 

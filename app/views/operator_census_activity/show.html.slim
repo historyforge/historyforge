@@ -1,0 +1,43 @@
+- set_page_title 'Operator census activity'
+- creator_name = @creator&.full_name.presence || @creator&.login
+
+- if Current.locality
+  p.text-muted = "Locality: #{Current.locality.name}"
+
+= form_with url: operator_census_activity_path, method: :get, class: 'row g-2 align-items-end mb-4', data: { controller: 'creator-picker' } do |form|
+  = form.hidden_field :creator_id, value: @creator&.id, data: { target: 'creator-picker.id' }
+  .col-sm-6
+    = label_tag :operator_lookup, 'Operator', class: 'form-label'
+    = search_field_tag :operator_lookup, creator_name, name: nil, placeholder: 'Name, login, or operator ID', autocomplete: 'off', class: 'form-control', data: { controller: 'autocomplete', action: 'input->creator-picker#clearSelection autocomplete:selected->creator-picker#select', autocomplete_min: 1, autocomplete_delay: 250, autocomplete_kind: 'creator', autocomplete_url: creator_autocomplete_users_path(format: :json) }
+  .col-auto
+    = form.submit 'Show activity', class: 'btn btn-primary', disabled: @creator.nil?, data: { target: 'creator-picker.submit' }
+
+- if @creator
+  h2.h4 = creator_name == @creator.login ? creator_name : "#{creator_name} (#{@creator.login})"
+  - if @counts.present?
+    table.table
+      thead
+        tr
+          th scope="col" Census
+          th.text-end scope="col" Records created
+      tbody
+        - @counts.sort.each do |year, count|
+          tr
+            th scope="row"
+              = link_to "#{year} US Census", census_records_path(year:, s: { creator_id: @creator.id })
+            td.text-end = number_with_delimiter(count)
+  - else
+    p No census records were created by this operator.
+
+section#recent-operators.mt-4
+  h2.h4 Recent operators
+  - if @recent_operators.any?
+    ul.list-group
+      - @recent_operators.each do |operator, last_created|
+        li.list-group-item.d-flex.justify-content-between.align-items-baseline.gap-3
+          = link_to operator.full_name.presence || operator.login, operator_census_activity_path(creator_id: operator.id)
+          small.text-muted
+            ' Last entry
+            time datetime=last_created.iso8601 = last_created.to_date.to_fs(:long)
+  - else
+    p No census entries with a recorded operator were found.

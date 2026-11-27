@@ -138,6 +138,7 @@ Rails.application.routes.draw do
 
   resources :flags
 
+  get 'operator_census_activity', to: 'operator_census_activity#show'
   get 'census_coverage', to: 'localities#census_coverages', as: :census_coverages
 
   resources :localities, concerns: %i[moveable] do
