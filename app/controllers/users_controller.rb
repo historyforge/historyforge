@@ -25,12 +25,17 @@ class UsersController < ApplicationController
 
     response.headers['Cache-Control'] = 'no-store'
     term = params[:term].to_s.strip
-    return render json: [] unless term.length.between?(2, 100)
+    numeric_id = term.match?(/\A[0-9]{1,18}\z/)
+    return render json: [] unless numeric_id || term.length.between?(2, 100)
 
     pattern = "%#{User.sanitize_sql_like(term)}%"
-    creators = User.where('login ILIKE :pattern OR full_name ILIKE :pattern OR email ILIKE :pattern', pattern:)
-                    .order(:login, :id).limit(10)
-                    .pluck(:id, :login, :full_name)
+    matches = User.where('login ILIKE :pattern OR full_name ILIKE :pattern OR email ILIKE :pattern', pattern:)
+    if numeric_id
+      by_id = User.where(id: term.to_i)
+      matches = term.length == 1 ? by_id : matches.or(by_id)
+      matches = matches.in_order_of(:id, [term.to_i], filter: false)
+    end
+    creators = matches.order(:login, :id).limit(10).pluck(:id, :login, :full_name)
     render json: creators.map { |id, login, full_name| { id:, name: full_name.presence || login, login: } }
   end
 
