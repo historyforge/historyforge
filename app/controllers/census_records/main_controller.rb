@@ -72,6 +72,7 @@ module CensusRecords
     end
 
     def edit
+      @navigation_context = explicit_grid_navigation
       @record = resource_class.find params[:id]
       authorize! :update, @record
     end
@@ -89,6 +90,7 @@ module CensusRecords
     end
 
     def update
+      @navigation_context = explicit_grid_navigation
       @record = resource_class.find params[:id]
       authorize! :update, @record
       if @record.update(resource_params)
@@ -225,7 +227,7 @@ module CensusRecords
         attributes = NextCensusRecordAttributes.call(@record, params[:then])
         redirect_to send(:"new_census#{year}_record_path", attributes:)
       else
-        redirect_to @record
+        redirect_to polymorphic_path(@record, navigation: @navigation_context)
       end
     end
 
