@@ -1,8 +1,8 @@
 import isValuelessPredicate from './isValuelessPredicate'
 
-export default function selectAttribute(form, config) {
-  const scopeContainer = form.querySelector('.scope-selection-container')
-  const valueBox = form.querySelector('.value-input-container')
+export default function selectAttribute(condition, config) {
+  const scopeContainer = condition.querySelector('.scope-selection-container')
+  const valueBox = condition.querySelector('.value-input-container')
   scopeContainer.replaceChildren()
   valueBox.replaceChildren()
   if (!config) return
@@ -10,13 +10,14 @@ export default function selectAttribute(form, config) {
   const scopes = Object.entries(config.scopes)
   const selector = document.createElement('select')
   selector.className = 'scope form-control'
+  selector.setAttribute('aria-label', 'Filter comparison')
   scopes.forEach(([value, label]) => selector.add(new Option(label, value)))
   if (scopes.length === 1) {
     selector.hidden = true
     scopeContainer.append(scopes[0][1])
   }
   scopeContainer.append(selector)
-  valueBox.className = `value-input-container col-6 ${config.type}`
+  valueBox.className = `value-input-container col-md ${config.type}`
   if (config.columns) valueBox.classList.add(`column-count-${config.columns}`)
 
   const renderValue = () => {
@@ -43,6 +44,7 @@ export default function selectAttribute(form, config) {
         : input(name, config.type === 'text' ? 'text' : 'number', previous ?? '')
       field.name = name
       field.className = 'form-control'
+      field.setAttribute('aria-label', `${config.label} value`)
       if (config.type === 'dropdown') {
         config.choices.filter(choice => typeof choice === 'string').forEach(choice => field.add(new Option(choice)))
         if (previous && [...field.options].some(option => option.value === previous)) field.value = previous

@@ -19,7 +19,7 @@ header data-turbo-permanent="true" id="main-header"
                     = flags_count
                   = ' ' if flags_count > 0
                   | Admin
-                .dropdown-menu.admin-dropdown
+                .dropdown-menu.two-column-dropdown
                   .row.row-cols-1.row-cols-lg-2.g-0
                     .col
                       = link_to flags_path, class: 'dropdown-item' do
@@ -53,33 +53,42 @@ header data-turbo-permanent="true" id="main-header"
                     = flags_count
 
           - localities = Locality.all
+          - summary_return_path = summary_locality_return_path if respond_to?(:summary_locality_return_path)
+          - locality_return = { return_to: summary_return_path }.compact
+          - active_locality = summary_return_path ? summary_locality_id : Current.locality_id
           - if localities.length > 1
             li.nav-item.dropdown
               a.dropdown-toggle.nav-link data-bs-toggle="dropdown" href="#"
-                - if Current.locality_id
-                  = localities.detect { |item| item.id == Current.locality_id }.short_name
+                - if active_locality
+                  = localities.detect { |item| item.id == active_locality }.short_name
                 - else
                   | Localities
               .dropdown-menu
-                - if Current.locality_id
-                  = link_to 'Show All', reset_localities_path, data: { turbo_method: :put }, class: 'dropdown-item'
+                - if active_locality || summary_return_path
+                  = link_to 'Show All', reset_localities_path(locality_return), data: { turbo_method: :put }, class: 'dropdown-item'
                 - localities.each do |row|
-                  - next if Current.locality_id && row.id == Current.locality_id
-                  = link_to row.short_name, set_locality_path(row), data: { turbo_method: :put }, class: 'dropdown-item'
+                  - next if row.id == active_locality
+                  = link_to row.short_name, set_locality_path(row, locality_return), data: { turbo_method: :put }, class: 'dropdown-item'
 
           li.nav-item= link_to 'The Forge', forge_path, class: 'nav-link'
           li.nav-item.dropdown
             a.nav-link.dropdown-toggle data-bs-toggle='dropdown' href="#"
               | Data
-            .dropdown-menu
-              = link_to 'Buildings', buildings_path, class: 'dropdown-item'
-              - CensusYears.each_visible_to_user(user_signed_in?) do |year|
-                = link_to "#{year} US Census", census_records_path(year: year), class: 'dropdown-item'
-              = link_to 'All People', people_path, class: 'dropdown-item' if can_people?
-              = link_to AppConfig[:document_page_title] || 'Resources & Credits', documents_path, class: 'dropdown-item'
-              = link_to "Photographs", photographs_path, class: 'dropdown-item'
-              = link_to 'Audio Recordings', audios_path, class: 'dropdown-item'
-              = link_to 'Videos', videos_path, class: 'dropdown-item'
+            .dropdown-menu.dropdown-menu-lg-end.two-column-dropdown
+              .row.row-cols-1.row-cols-lg-2.g-0
+                .col
+                  - CensusYears.each_visible_to_user(user_signed_in?) do |year|
+                    = link_to "#{year} US Census", census_records_path(year: year), class: 'dropdown-item'
+                  - summary_year = CensusYears.visible_to_user(current_user).reverse.find { |year| can_demographics?(year) }
+                  - if summary_year
+                    = link_to 'Census Summaries', census_summary_year_path(year: summary_year, facet: 'race'), class: 'dropdown-item'
+                .col
+                  = link_to 'Buildings', buildings_path, class: 'dropdown-item'
+                  = link_to 'All People', people_path, class: 'dropdown-item' if can_people?
+                  = link_to AppConfig[:document_page_title] || 'Resources & Credits', documents_path, class: 'dropdown-item'
+                  = link_to "Photographs", photographs_path, class: 'dropdown-item'
+                  = link_to 'Audio Recordings', audios_path, class: 'dropdown-item'
+                  = link_to 'Videos', videos_path, class: 'dropdown-item'
 
           - if my_stuff_available?
             li.nav-item.dropdown id="my-menu-item"

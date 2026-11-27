@@ -17,7 +17,7 @@ RSpec.describe 'Census coverage', type: :request do
     get census_coverage_locality_path(locality, year: 1910)
     expect(response).to have_http_status(:ok)
     coverage_page = Nokogiri::HTML(response.body)
-    expect(coverage_page.at_css('nav[aria-label="Census years"] a[aria-current="page"]').text).to include('1910', 'Target unset')
+    expect(coverage_page.at_css('nav[aria-label="Census years"] a[aria-current="page"]').text).to include('1910', '0 / —')
     expect(coverage_page.css('.form-check input[type="radio"]').map { |radio| radio['value'] })
       .to eq(CensusCoverage::TARGET_BASES)
 
@@ -29,7 +29,7 @@ RSpec.describe 'Census coverage', type: :request do
     expect(response).to redirect_to(census_coverage_locality_path(locality, year: 1910))
     expect(locality.census_coverages.pluck(:census_year, :expected_records)).to eq([[1910, 14_802]])
     follow_redirect!
-    expect(response.body).to include('14,802 expected')
+    expect(response.body).to include('0 / 14,802')
 
     get census_coverages_path
     expect(response).to have_http_status(:ok)
@@ -94,6 +94,8 @@ RSpec.describe 'Census coverage', type: :request do
 
     get census_coverage_locality_path(locality, year: 1920)
     expect(response.body).to include('Verified on', 'Compared with all intended schedules.')
+    selected_year = Nokogiri::HTML(response.body).at_css('nav[aria-label="Census years"] [aria-current="page"]')
+    expect(selected_year.text).to include('1 / 17,004', 'Verified complete')
 
     patch path, params: { census_coverage: { verified_complete: '0' } }
     expect(response).to have_http_status(:see_other)

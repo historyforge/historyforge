@@ -24,19 +24,122 @@ export default class AdvancedSearch {
           || Object.values(filters).find(field => field.scopes?.[scope.replace(/_eq/, '_in')])
         if (config) addAttributeFilter(chips, this.form, config, scope, value)
       }
-      chips.classList.toggle('mb-3', chips.children.length > 0)
-
-      const attribute = this.form.querySelector('select.attribute')
-      attribute.replaceChildren(new Option('Select field name', ''))
-      for (const [key, config] of Object.entries(filters)) {
-        if (config.scopes) attribute.add(new Option(config.label, key))
-      }
-      attribute.addEventListener('change', () => {
-        selectAttribute(this.form, filters[attribute.value])
-      }, { signal: this.signal })
+      this.bindFilterDialog(filters)
     } catch (error) {
       if (!this.signal.aborted) console.error('Could not load search filters', error)
     }
+  }
+
+  bindFilterDialog(filters) {
+    const options = { signal: this.signal }
+    const dialog = this.form.querySelector('#newAttributeFilter')
+    const conditions = dialog.querySelector('[data-filter-conditions]')
+    const template = dialog.querySelector('[data-filter-condition-template]')
+    const addButton = dialog.querySelector('[data-add-condition]')
+    const groupStorage = dialog.querySelector('[data-filter-group-storage]')
+    const groups = [...groupStorage.children]
+    const censusScope = groups.find(group => group.dataset.filterGroup === '__census_scope')
+    const censusScopeFields = new Set(Array.from(censusScope?.querySelectorAll('[name]') ?? [],
+      field => field.name.match(/^s\[(.+)_eq\]$/)?.[1]))
+    let originalValues = new Map()
+    let applying = false
+
+    const groupFields = group => {
+      const fields = [...group.querySelectorAll('input, select')]
+      const creator = this.form.elements['s[creator_id]']
+      if (group.dataset.filterGroup === '__creation_details' && creator) fields.push(creator)
+      return fields
+    }
+
+    const returnGroup = group => {
+      if (!group) return
+      for (const [field, value] of originalValues.get(group) || []) field.value = value
+      group.querySelector('#s_creation_date_range')?.dispatchEvent(new Event('change', { bubbles: true }))
+      groupStorage.append(group)
+    }
+
+    const updateChoices = () => {
+      const fields = [...conditions.querySelectorAll('select.attribute')]
+      const selected = new Set(fields.map(field => field.value).filter(Boolean))
+      addButton.hidden = selected.size === 0
+      for (const field of fields) {
+        for (const option of field.options) {
+          option.disabled = option.value !== field.value && selected.has(option.value)
+        }
+      }
+      addButton.disabled = fields.some(field => !field.value) ||
+        selected.size === fields[0]?.options.length - 1
+    }
+
+    const addCondition = () => {
+      const condition = template.content.firstElementChild.cloneNode(true)
+      const field = condition.querySelector('select.attribute')
+      field.add(new Option('Select field name', ''))
+      if (groups.length) {
+        const quickFilters = document.createElement('optgroup')
+        quickFilters.label = 'Quick filters'
+        for (const group of groups) {
+          quickFilters.append(new Option(group.dataset.filterLabel, group.dataset.filterGroup))
+        }
+        field.append(quickFilters)
+      }
+      const individualFields = document.createElement('optgroup')
+      individualFields.label = 'Individual fields'
+      for (const [key, config] of Object.entries(filters)) {
+        if (config.scopes && !censusScopeFields.has(key)) individualFields.append(new Option(config.label, key))
+      }
+      field.append(individualFields)
+      const groupSlot = condition.querySelector('[data-condition-group]')
+      const removeButton = condition.querySelector('[data-remove-condition]')
+      field.addEventListener('change', () => {
+        returnGroup(groupSlot.firstElementChild)
+        const group = groups.find(item => item.dataset.filterGroup === field.value)
+        groupSlot.hidden = !group
+        if (group) groupSlot.append(group)
+        removeButton.hidden = !field.value
+        selectAttribute(condition, filters[field.value])
+        updateChoices()
+      }, options)
+      removeButton.addEventListener('click', () => {
+        returnGroup(groupSlot.firstElementChild)
+        condition.remove()
+        if (conditions.childElementCount === 0) addCondition().focus()
+        else {
+          updateChoices()
+          conditions.querySelector('select.attribute').focus()
+        }
+      }, options)
+      conditions.append(condition)
+      updateChoices()
+      return field
+    }
+
+    addCondition()
+    addButton.addEventListener('click', () => addCondition().focus(), options)
+    dialog.addEventListener('show.bs.modal', () => {
+      originalValues = new Map(groups.map(group => [group, groupFields(group).map(field => [field, field.value])]))
+    }, options)
+    dialog.addEventListener('shown.bs.modal', () => conditions.querySelector('select.attribute').focus(), options)
+    dialog.addEventListener('hidden.bs.modal', () => {
+      if (applying) return
+      groups.forEach(returnGroup)
+      conditions.replaceChildren()
+      addCondition()
+    }, options)
+    this.form.addEventListener('formdata', ({ formData }) => {
+      if (!censusScope || !conditions.contains(censusScope)) return
+
+      for (const field of groupFields(censusScope)) {
+        if (field.value) formData.set(field.name, field.value)
+        else formData.delete(field.name)
+      }
+    }, options)
+    this.form.addEventListener('submit', () => {
+      if (!dialog.classList.contains('show')) return
+      applying = true
+      window.bootstrap.Modal.getInstance(dialog)?.hide()
+      applying = false
+    }, options)
   }
 
   bindFormEvents() {

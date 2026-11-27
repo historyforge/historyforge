@@ -1,23 +1,33 @@
 - search_year = controller.year if controller.respond_to?(:year)
 - search_kind = search_year ? 'census' : (resource_class == Building ? 'building' : 'people')
 - content_for :pills do
-  - if can?(:create, resource_class)
-    = link_to 'Add New Record', [:new, resource_class.model_name.singular_route_key.to_sym], class: 'btn btn-sm btn-light'
-  - if can?(:bulk_update, resource_class) && controller.respond_to?(:year)
-    = link_to 'Bulk Update', "/census/#{controller.year}/bulk", class: 'btn btn-sm btn-light'
-  - if can?(:review, resource_class) && controller.respond_to?(:year) && @search.census_scope_search?
-    - count = @search.scoped.unreviewed.count
-    - if count > 0
-      = link_to "Mark #{count} Reviewed", request.params.merge(action: :bulk_review, from: 1, to: 100), class: 'btn btn-sm btn-light', data: { remote: false, turbo_method: :post, turbo_confirm: "Are you sure? Undoing this action may be painful." }
-    - count = @search.scoped.unmatched.count
-    - if count > 0
-      = link_to "Make #{count} Persons", request.params.merge(action: :bulk_person_match, from: 1, to: 100), class: 'btn btn-sm btn-light', data: { remote: false, turbo_method: :post, turbo_confirm: "Are you sure? Undoing this action may be painful." }
+  .d-flex.flex-wrap.align-items-center.justify-content-md-end.gap-2.mb-2
+    - if can?(:create, resource_class)
+      = link_to 'Add New Record', [:new, resource_class.model_name.singular_route_key.to_sym], class: 'btn btn-sm btn-light'
+    - if can?(:bulk_update, resource_class) && controller.respond_to?(:year)
+      = link_to 'Bulk Update', "/census/#{controller.year}/bulk", class: 'btn btn-sm btn-light'
+    - if can?(:review, resource_class) && controller.respond_to?(:year) && @search.census_scope_search?
+      - count = @search.scoped.unreviewed.count
+      - if count > 0
+        = link_to "Mark #{count} Reviewed", request.params.merge(action: :bulk_review, from: 1, to: 100), class: 'btn btn-sm btn-light', data: { remote: false, turbo_method: :post, turbo_confirm: "Are you sure? Undoing this action may be painful." }
+      - count = @search.scoped.unmatched.count
+      - if count > 0
+        = link_to "Make #{count} Persons", request.params.merge(action: :bulk_person_match, from: 1, to: 100), class: 'btn btn-sm btn-light', data: { remote: false, turbo_method: :post, turbo_confirm: "Are you sure? Undoing this action may be painful." }
 
-  - if @search.active?
-    = link_to 'Start New Search', url_for(reset: true), class: 'btn btn-sm btn-light'
-  .dropdown.ml-2 data-controller="load-saved-search" data-search-kind=search_kind data-search-year=search_year
-    button.dropdown-toggle.btn.btn-sm.btn-light type="button" data-bs-toggle="dropdown" aria-expanded="false" Load Search
-    .dropdown-menu
+    - if @search.active?
+      = link_to 'Start New Search', url_for(reset: true), class: 'btn btn-sm btn-light'
+    .dropdown data-controller="load-saved-search" data-search-kind=search_kind data-search-year=search_year
+      button.dropdown-toggle.btn.btn-sm.btn-light type="button" data-bs-toggle="dropdown" aria-expanded="false" Load Search
+      .dropdown-menu.dropdown-menu-end
+    = link_to 'CSV', request.params.merge(format: :csv), class: 'btn btn-sm btn-primary'
+    - if controller.respond_to?(:year)
+      button.btn.btn-sm.btn-primary#search-map type="button" form="new_s" data-year=controller.year Map It
+      - if can_demographics?(controller.year)
+        = link_to 'Summarize Records', demographics_census_records_path(request.query_parameters.slice('s', 'scope', 'locality_slug').merge(year:, facet: 'race')), class: 'btn btn-sm btn-primary'
+    - elsif resource_class == Building
+      button.btn.btn-sm.btn-primary#search-map type="button" form="new_s" Map It
+    - if @search.active?
+      button.btn.btn-sm.btn-primary type="button" data-controller="save-search" data-search-kind=search_kind data-action="save-search#add" Save It
 
 - creator_filter = @search.creator_filter
 - selected_creator_name = creator_filter&.selected_creator_name
@@ -25,99 +35,99 @@
 = simple_form_for @search, url: url_for(), method: :get, as: :s, html: { data: creator_picker } do |form|
   - if creator_filter
     = hidden_field_tag 's[creator_id]', creator_filter.params[:creator_id], data: { target: 'creator-picker.id' }
-  .float-right
-    = form.submit 'Submit', style: 'display: none'
-    => link_to 'CSV', request.params.merge(format: :csv), class: 'btn btn-sm btn-primary'
-    - if controller.respond_to?(:year)
-      => form.submit 'Map It', class: 'btn btn-sm btn-primary', id: 'search-map', data: {year: controller.year}
-      - if can_demographics?(controller.year)
-        => link_to 'Demographics', send("demographics_census#{year}_records_path", facet: 'race'), class: 'btn btn-sm btn-primary'
-    - elsif params[:controller] == 'buildings/main'
-      => form.submit 'Map It', class: 'btn btn-sm btn-primary', id: 'search-map'
-    - if @search.active?
-      button.btn.btn-sm.btn-primary type="button" data-controller="save-search" data-search-kind=search_kind data-action="save-search#add" Save It
-  .mb-3
-    button.btn.btn-sm.btn-light type="button" data-bs-toggle="collapse" data-bs-target="#fieldSelector" = pluralize @search.columns.size, 'Field'
-    button.btn.btn-sm.btn-light.mr-3 type="button" data-bs-toggle="collapse" data-bs-target="#newAttributeFilter" Filter
+  = form.submit 'Submit', hidden: true
+  .d-flex.flex-wrap.align-items-center.gap-2.mb-3
+    button.btn.btn-sm.btn-light type="button" data-bs-toggle="collapse" data-bs-target="#fieldSelector" aria-controls="fieldSelector" aria-expanded="false" Columns
+    button.btn.btn-sm.btn-light type="button" data-bs-toggle="modal" data-bs-target="#newAttributeFilter" aria-haspopup="dialog" Add filter
+    #attribute-filters.d-flex.flex-wrap.gap-2 role="group" aria-label="Active filters"
+      - if creator_filter&.active?
+        - if creator_filter.creator_selected?
+          - creator_name = creator_filter.params[:creator_id].to_s == current_user.id.to_s ? 'you' : (selected_creator_name || "User ##{creator_filter.params[:creator_id]}")
+          - creator_label = "Created by #{creator_name}"
+        - date_label = creator_filter.creation_date_label
+        - { 'Created by' => creator_label, 'Creation date' => date_label }.each do |label, value|
+          - if value
+            .attribute-filter.btn.btn-sm.btn-light data-creator-filter-chip="true"
+              button.btn-close.remove-filter type="button" aria-label="Remove #{label} filter" data-clear-creator-filter=(label == 'Created by' ? 'creator' : 'date')
+              = value
 
   = yield :filter_buttons
-
-  #attribute-filters class=('mb-3' if creator_filter&.active?)
-    - if creator_filter&.active?
-      - if creator_filter.creator_selected?
-        - creator_name = creator_filter.params[:creator_id].to_s == current_user.id.to_s ? 'you' : (selected_creator_name || "User ##{creator_filter.params[:creator_id]}")
-        - creator_label = "Created by #{creator_name}"
-      - date_label = creator_filter.creation_date_label
-      - { 'Created by' => creator_label, 'Creation date' => date_label }.each do |label, value|
-        - if value
-          .attribute-filter.btn.btn-sm.btn-light data-creator-filter-chip="true"
-            button.btn-close.remove-filter type="button" aria-label="Remove #{label} filter" data-clear-creator-filter=(label == 'Created by' ? 'creator' : 'date')
-            = value
 
   .collapse.fade#fieldSelector
     .card.mb-3
       .card-header
         button.float-end.btn-close type="button" data-bs-toggle="collapse" data-bs-target="#fieldSelector" aria-label="Close"
-        span Fields
+        span Columns
 
       .card-body
+        p.small.text-muted These columns appear in the results and CSV export.
         .column-count-2.checkboxes#fields
           - @search.all_fields.each do |field|
             label.dropdown-item.checkbox for="f_#{field}"
               = check_box_tag 'f[]', field, @search.f.include?(field), id: "f_#{field}", data: { default: @search.default_field?(field) }
               = translated_label resource_class, field
       .card-footer
-        = form.submit 'Submit', data: { turbo_submits_with: 'Sending...' }, class: 'btn btn-primary mr-auto'
+        = form.submit 'Apply columns', data: { turbo_submits_with: 'Applying…' }, class: 'btn btn-primary mr-auto'
         button.btn.btn-light.ml-auto.checkall data-scope="#fields" type="button" Check all
 
-  .collapse.fade#newAttributeFilter
-    .card.mb-3
-      .card-header
-        button.float-end.btn-close type="button" data-bs-toggle="collapse" data-bs-target="#newAttributeFilter" aria-label="Close"
-        span Search Filters
-      .card-body
-        - if creator_filter
-          .form-row
-            .form-group.col-md-4
-              - if creator_filter.scope == :all
-                = label_tag 'creator_lookup', 'Created by'
-                = search_field_tag 'creator_lookup', selected_creator_name, name: nil, placeholder: 'Search by name or email', autocomplete: 'off', class: 'form-control mb-2', data: { controller: 'autocomplete', action: 'input->creator-picker#clearSelection autocomplete:selected->creator-picker#select', autocomplete_min: 2, autocomplete_delay: 250, autocomplete_kind: 'creator', autocomplete_url: creator_autocomplete_users_path(format: :json) }
-            .form-group.col-md-8 data-controller="creation-date-range"
-              - creation_date_range = creator_filter.creation_date_range
-              - custom_range = creation_date_range == 'custom'
-              = label_tag 's_creation_date_range', 'Creation date'
-              = select_tag 's[creation_date_range]', options_for_select(CreatorFilter::CREATION_DATE_CHOICES, creation_date_range), class: 'form-control', data: { target: 'creation-date-range.preset', action: 'change->creation-date-range#update' }
-              .form-row.mt-2 hidden=(!custom_range) data-target="creation-date-range.custom"
-                .col
-                  = label_tag 's_creation_date_from', 'Start date'
-                  = date_field_tag 's[creation_date_from]', creator_filter.params[:creation_date_from], class: 'form-control', disabled: !custom_range
-                .col
-                  = label_tag 's_creation_date_to', 'End date'
-                  = date_field_tag 's[creation_date_to]', creator_filter.params[:creation_date_to], class: 'form-control', disabled: !custom_range
-          hr
-
-        - if controller.respond_to?(:year) && user_signed_in?
-          .row
-            - if controller.year >= 1880
-              .col-3
-                label for="s_ward_eq"= translated_label(resource_class, :ward)
-                input.form-control#s_ward_eq type="search" name="s[ward_eq]" value=@search.s[:ward_eq]
-              .col-3
-                label for="s_enum_dist_eq"= translated_label(resource_class, :enum_dist)
-                input.form-control#s_enum_dist_eq type="search" name="s[enum_dist_eq]" value=@search.s[:enum_dist_eq]
-            .col-3
-              label for="s_page_number_eq"= translated_label(resource_class, :page_number)
-              input.form-control#s_page_number_eq type="number" name="s[page_number_eq]" value=@search.s[:page_number_eq] min="1" max=CensusRecordSearch::PAGE_NUMBER_MAX
-            - if controller.year < 1950 and controller.year >= 1880
-              .col-3
-                label for="s_page_side_eq"= translated_label(resource_class, :page_side)
-                = select_tag 's[page_side_eq]', options_for_select(resource_class.page_side_choices, @search.s[:page_side_eq]), include_blank: true, class: 'form-control'
-          hr
-
-        .row
-          .col-3
-            select.attribute.form-control
-          .scope-selection-container.col-3
-          .value-input-container.col-6
-      .card-footer
-        = form.submit 'Submit', data: { turbo_submits_with: 'Sending...' }, class: 'btn btn-primary'
+  .modal#newAttributeFilter tabindex="-1" aria-labelledby="newAttributeFilterTitle" aria-hidden="true"
+    .modal-dialog.modal-lg.modal-dialog-scrollable
+      .modal-content
+        .modal-header
+          h2.modal-title.fs-5#newAttributeFilterTitle Add filters
+          button.btn-close type="button" data-bs-dismiss="modal" aria-label="Close"
+        .modal-body
+          div hidden=true data-filter-group-storage=""
+            - if controller.respond_to?(:year)
+              .filter-group data-filter-group="__census_scope" data-filter-label="Census scope"
+                .row.g-2
+                  - if controller.year >= 1880
+                    .col-6.col-md
+                      label for="s_ward_eq"= translated_label(resource_class, :ward)
+                      input.form-control#s_ward_eq type="search" name="s[ward_eq]" value=@search.s[:ward_eq]
+                    .col-6.col-md
+                      label for="s_enum_dist_eq"= translated_label(resource_class, :enum_dist)
+                      input.form-control#s_enum_dist_eq type="search" name="s[enum_dist_eq]" value=@search.s[:enum_dist_eq]
+                  .col-6.col-md
+                    label for="s_page_number_eq"= translated_label(resource_class, :page_number)
+                    input.form-control#s_page_number_eq type="number" name="s[page_number_eq]" value=@search.s[:page_number_eq] min="1" max=CensusRecordSearch::PAGE_NUMBER_MAX
+                  - if controller.year < 1950 and controller.year >= 1880
+                    .col-6.col-md
+                      label for="s_page_side_eq"= translated_label(resource_class, :page_side)
+                      = select_tag 's[page_side_eq]', options_for_select(resource_class.page_side_choices, @search.s[:page_side_eq]), include_blank: true, class: 'form-control'
+                  .col-6.col-md
+                    label for="s_line_number_eq"= translated_label(resource_class, :line_number)
+                    input.form-control#s_line_number_eq type="number" name="s[line_number_eq]" value=@search.s[:line_number_eq] min="1"
+            - if creator_filter
+              .filter-group data-filter-group="__creation_details" data-filter-label="Creation details"
+                .row.g-2
+                  .form-group.col-md-4
+                    - if creator_filter.scope == :all
+                      = label_tag 'creator_lookup', 'Created by'
+                      = search_field_tag 'creator_lookup', selected_creator_name, name: nil, placeholder: 'Search by name or email', autocomplete: 'off', class: 'form-control mb-2', data: { controller: 'autocomplete', action: 'input->creator-picker#clearSelection autocomplete:selected->creator-picker#select', autocomplete_min: 2, autocomplete_delay: 250, autocomplete_kind: 'creator', autocomplete_url: creator_autocomplete_users_path(format: :json) }
+                  .form-group.col-md-8 data-controller="creation-date-range"
+                    - creation_date_range = creator_filter.creation_date_range
+                    - custom_range = creation_date_range == 'custom'
+                    = label_tag 's_creation_date_range', 'Creation date'
+                    = select_tag 's[creation_date_range]', options_for_select(CreatorFilter::CREATION_DATE_CHOICES, creation_date_range), class: 'form-control', data: { target: 'creation-date-range.preset', action: 'change->creation-date-range#update' }
+                    .form-row.mt-2 hidden=(!custom_range) data-target="creation-date-range.custom"
+                      .col
+                        = label_tag 's_creation_date_from', 'Start date'
+                        = date_field_tag 's[creation_date_from]', creator_filter.params[:creation_date_from], class: 'form-control', disabled: !custom_range
+                      .col
+                        = label_tag 's_creation_date_to', 'End date'
+                        = date_field_tag 's[creation_date_to]', creator_filter.params[:creation_date_to], class: 'form-control', disabled: !custom_range
+          .d-grid.gap-3 data-filter-conditions=""
+          template data-filter-condition-template=""
+            .row.g-2.align-items-start data-filter-condition=""
+              .col-md-3
+                select.attribute.form-select aria-label="Filter field"
+              .scope-selection-container.col-md-3
+              .value-input-container.col-md
+              .col-auto
+                button.btn.btn-sm.btn-outline-secondary type="button" data-remove-condition="" aria-label="Remove condition" hidden=true Remove
+              .col-12 data-condition-group="" hidden=true
+        .modal-footer
+          button.btn.btn-outline-primary.me-auto type="button" data-add-condition="" hidden=true disabled=true Add another condition
+          button.btn.btn-secondary.ms-auto type="button" data-bs-dismiss="modal" Cancel
+          = form.submit 'Apply filters', data: { turbo_submits_with: 'Applying…' }, class: 'btn btn-primary'

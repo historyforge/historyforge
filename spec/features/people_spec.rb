@@ -3,6 +3,42 @@
 require 'rails_helper'
 
 RSpec.describe 'people' do
+  scenario 'applies two People filters from one dialog', :js do
+    create(:person, first_name: 'William', last_name: 'Brown', sex: 'M')
+    create(:person, first_name: 'Mary', last_name: 'Brown', sex: 'F')
+    create(:person, first_name: 'Joseph', last_name: 'Jones', sex: 'M')
+
+    visit people_path
+    click_button 'Add filter'
+    expect(page).to have_no_button('Add another condition')
+    expect(page).to have_no_css('[data-remove-condition]')
+    find('select.attribute option[value="name"]').select_option
+    expect(page).to have_css('[data-remove-condition]')
+    click_button 'Cancel'
+    click_button 'Add filter'
+    expect(find('select.attribute').value).to eq('')
+    find('select.attribute option[value="name"]').select_option
+    find('select.scope option[value="name_cont"]').select_option
+    find('input[name="s[name_cont]"]').set('Brown')
+    click_button 'Add another condition'
+    within(all('[data-filter-condition]').last) do
+      expect(page).to have_no_css('[data-remove-condition]')
+      find('select.attribute option[value="sex"]').select_option
+      check 'Male'
+    end
+    expect(page).to have_no_css('#attribute-filters .attribute-filter')
+    click_button 'Apply filters'
+
+    within('#attribute-filters') do
+      expect(page).to have_css('.attribute-filter', text: 'Brown')
+      expect(page).to have_css('.attribute-filter', text: 'Male')
+    end
+    expect(page).to have_link('Brown, William')
+    expect(page).to have_no_link('Brown, Mary')
+    expect(page).to have_no_link('Jones, Joseph')
+    expect(page).to have_no_css('.modal-backdrop')
+  end
+
   scenario 'renders one People grid when reconnecting to copied grid markup', :js do
     create(:person, first_name: 'William', last_name: 'Brown')
     visit people_path

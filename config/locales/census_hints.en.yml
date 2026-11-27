@@ -154,6 +154,7 @@ en:
         institution: 'The Institution Name is entered in the line above the names of the institution’s inmates. Enter what you see on the census. If the field is blank on the census, leave it blank on HistoryForge.'
 
       census1900_record:
+        attended_school: 'Months of school attendance during the year ending June 1, 1900. Enumerators entered 0 for school-age people who did not attend and left the field blank when the question did not apply.'
         age_months: 'Enter what you see on the census. If the field is blank, leave blank. If the answer is Un (Unknown) enter 999. A child that is less than one year of age will be listed by their age in months on the census i.e., 3/12 or 11/12. If the age is entered this way on the census, enter the years in the Age field and the months in the Age (months) field on HistoryForge.'
         age: 'Enter what you see on the census. If the field is blank, leave blank. If the answer is Un (Unknown) enter 999. A child that is less than one year of age will be listed by their age in months on the census i.e., 3/12 or 11/12. If the age is entered this way on the census, enter the years in the Age field and the months in the Age (months) field on HistoryForge.'
         industry: 'There is no industry field on this census, but sometimes it was supplied by the enumerator after the profession.  If that is the case, enter it here.'

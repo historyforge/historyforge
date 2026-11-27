@@ -3,6 +3,47 @@
 require "rails_helper"
 
 RSpec.describe "1880 US Census" do
+  scenario "offers census scope to signed-out visitors", :js do
+    visit census_records_path(year: 1880)
+
+    click_button "Add filter"
+    select "Census scope"
+
+    expect(page).to have_field("s_line_number_eq")
+    expect(page).to have_no_css("select.attribute option[value='line_number']", visible: :all)
+  end
+
+  scenario "applies and edits the census scope as a group", :js do
+    sign_in create(:census_taker)
+    visit census_records_path(year: 1880)
+
+    click_button "Add filter"
+    select "Census scope"
+    %w[ward enum_dist page_number page_side line_number].each do |field|
+      expect(page).to have_no_css("select.attribute option[value='#{field}']", visible: :all)
+    end
+    fill_in "s_ward_eq", with: "2"
+    fill_in "s_enum_dist_eq", with: "240"
+    fill_in "s_page_number_eq", with: "6"
+    select "B", from: "s_page_side_eq"
+    fill_in "s_line_number_eq", with: "21"
+    click_button "Apply filters"
+
+    expect(page).to have_current_path(/page_side_eq/)
+    filters = Rack::Utils.parse_nested_query(URI.parse(page.current_url).query).fetch("s")
+    expect(filters).to include("ward_eq" => "2", "enum_dist_eq" => "240", "page_number_eq" => "6",
+                               "page_side_eq" => "B", "line_number_eq" => "21")
+
+    click_button "Add filter"
+    select "Census scope"
+    expect(page).to have_field("s_page_number_eq", with: "6")
+    fill_in "s_enum_dist_eq", with: ""
+    click_button "Apply filters"
+
+    expect(page).to have_no_current_path(/enum_dist_eq/)
+    expect(page).to have_current_path(/page_side_eq/)
+  end
+
   scenario "choosing an existing building updates the census form", :js do
     locality = create(:locality)
     building = create(:building, :reviewed, locality: locality,
