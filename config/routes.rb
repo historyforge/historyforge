@@ -68,7 +68,6 @@ Rails.application.routes.draw do
 
   concern :census_directory do
     collection do
-      get :demographics
       get :advanced_search_filters
       get :building_autocomplete
       get :autocomplete
@@ -104,6 +103,8 @@ Rails.application.routes.draw do
     end
     resources :merges, only: %i[new create], controller: 'buildings/merges'
   end
+
+  get 'census/:year/summary', to: 'census_records/summaries#show', as: :census_summary
 
   resources :bulk, controller: 'census_records/bulk_updates', path: 'census/:year/bulk', as: 'census_bulk'
   resources :census_records,

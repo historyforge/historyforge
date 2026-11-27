@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'csv'
+
 # Base class for census record CRUD actions.
 module CensusRecords
   class MainController < ApplicationController
@@ -9,7 +11,6 @@ module CensusRecords
     include SqlInjectionProtection
 
     prepend_before_action :check_access, except: :rebuild
-    prepend_before_action :check_demographics_access, only: :demographics
 
     respond_to :json, only: :index
     respond_to :csv, only: :index
@@ -68,11 +69,6 @@ module CensusRecords
         year:,
       ).perform
       render json: results
-    end
-
-    def demographics
-      load_census_records
-      @page_title = "Demographics for #{year} US Census"
     end
 
     def edit
@@ -204,10 +200,6 @@ module CensusRecords
     # This is a blanket access check for whether this census year is activated for this HF instance
     def check_access
       permission_denied unless can_census?(year)
-    end
-
-    def check_demographics_access
-      permission_denied unless can_demographics?(year)
     end
 
     def resource_class

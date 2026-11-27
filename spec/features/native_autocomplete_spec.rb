@@ -36,7 +36,8 @@ RSpec.describe "Native autocomplete" do
     creator = create(:active_user, login: "canal_reviewer")
 
     visit people_path
-    click_button "Filter"
+    click_button "Add filter"
+    select "Creation details"
     lookup = find("#creator_lookup")
     lookup.set("ca")
     expect(page).to have_css('[role="option"]', text: "canal_reviewer")

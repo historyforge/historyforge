@@ -3,6 +3,17 @@ import { Controller } from 'stimulus'
 export default class extends Controller {
   static targets = ['source', 'status']
 
+  async copyLink(event) {
+    event.preventDefault()
+    const url = event.currentTarget.href
+    try {
+      await navigator.clipboard.writeText(url)
+      this.statusTarget.textContent = 'Summary link copied.'
+    } catch {
+      window.prompt('Copy this summary link:', url)
+    }
+  }
+
   async copy() {
     try {
       await navigator.clipboard.writeText(this.sourceTarget.value)

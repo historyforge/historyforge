@@ -88,11 +88,11 @@ module CensusRecordsHelper
   end
 
   def aggregate_chart_data(data)
-    sorted = data.sort_by(&:last).reverse
-    if sorted.length < 10
-      sorted
-    else
-      sorted[0..10] << ['Other', sorted[11..].map(&:last).sum]
-    end
+    return data if data.length <= 10
+
+    largest = data.max_by(9, &:last).to_set
+    shown, remaining = data.partition { |row| largest.include?(row) }
+    shown << ['Remaining categories', remaining.sum(&:last)]
   end
+
 end

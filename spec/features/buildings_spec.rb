@@ -16,11 +16,11 @@ RSpec.describe "buildings" do
 
     expect(page).to have_content "Buildings"
     expect(page).to have_content "Found 3 records"
-    click_button "Filter"
+    click_button "Add filter"
     select "Street Address"
     select "contains"
     fill_in with: "405 N Titus"
-    click_on "Submit"
+    click_on "Apply filters"
     expect(page).to have_content "Found 1 record"
     # sleep 1 # Otherwise sometimes it says it can't find View
     expect(page).to have_content "405 N Titus Ave", wait: 5

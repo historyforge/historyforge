@@ -190,6 +190,7 @@ en:
         page_number: 'Page'
         birth_month: 'Born During Census Year'
       census1900_record:
+        attended_school: 'Months of School Attendance'
       census1910_record:
       census1920_record:
       census1930_record:
