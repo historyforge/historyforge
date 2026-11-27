@@ -104,7 +104,7 @@ Rails.application.routes.draw do
     resources :merges, only: %i[new create], controller: 'buildings/merges'
   end
 
-  get 'census/:year/summary', to: 'census_summaries#show', as: :census_summary
+  get 'census/:year/summary', to: 'census_records/summaries#show', as: :census_summary
 
   resources :bulk, controller: 'census_records/bulk_updates', path: 'census/:year/bulk', as: 'census_bulk'
   resources :census_records,
