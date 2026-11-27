@@ -38,7 +38,7 @@
   = form.submit 'Submit', name: nil, hidden: true
   .d-flex.flex-wrap.align-items-center.gap-2.mb-3
     button.btn.btn-sm.btn-light type="button" data-bs-toggle="collapse" data-bs-target="#fieldSelector" aria-controls="fieldSelector" aria-expanded="false" Columns
-    button.btn.btn-sm.btn-light type="button" data-bs-toggle="modal" data-bs-target="#newAttributeFilter" aria-haspopup="dialog" Add filter
+    button.btn.btn-sm.btn-light type="button" data-bs-toggle="modal" data-bs-target="#newAttributeFilter" aria-haspopup="dialog" Add/edit filters
     #attribute-filters.d-flex.flex-wrap.gap-2 role="group" aria-label="Active filters"
       - if creator_filter&.active?
         - if creator_filter.creator_selected?
@@ -47,9 +47,9 @@
         - date_label = creator_filter.creation_date_label
         - { 'Created by' => creator_label, 'Creation date' => date_label }.each do |label, value|
           - if value
-            .attribute-filter.btn.btn-sm.btn-light data-creator-filter-chip="true"
-              button.btn-close.remove-filter type="button" aria-label="Remove #{label} filter" data-clear-creator-filter=(label == 'Created by' ? 'creator' : 'date')
-              = value
+            .attribute-filter.btn.btn-sm.btn-light.p-0 data-creator-filter-chip="true"
+              button.btn-close.remove-filter.ms-2 type="button" aria-label="Remove #{label} filter" data-clear-creator-filter=(label == 'Created by' ? 'creator' : 'date')
+              button.btn.btn-sm.btn-light type="button" data-bs-toggle="modal" data-bs-target="#newAttributeFilter" data-edit-scope=(label == 'Created by' ? 'creator_id' : 'creation_date_range') aria-haspopup="dialog" = value
 
   = yield :filter_buttons
 
@@ -74,7 +74,7 @@
     .modal-dialog.modal-lg.modal-dialog-scrollable
       .modal-content
         .modal-header
-          h2.modal-title.fs-5#newAttributeFilterTitle Add filters
+          h2.modal-title.fs-5#newAttributeFilterTitle Add/edit filters
           button.btn-close type="button" data-bs-dismiss="modal" aria-label="Close"
         .modal-body
           div hidden=true data-filter-group-storage=""

@@ -43,6 +43,7 @@ export default class AdvancedSearch {
       field => field.name.match(/^s\[(.+)_eq\]$/)?.[1]))
     let originalValues = new Map()
     let applying = false
+    const chipInputs = this.form.querySelectorAll('#attribute-filters input[type=hidden]')
 
     const groupFields = group => {
       const fields = [...group.querySelectorAll('input, select')]
@@ -53,7 +54,9 @@ export default class AdvancedSearch {
 
     const returnGroup = group => {
       if (!group) return
-      for (const [field, value] of originalValues.get(group) || []) field.value = value
+      for (const field of groupFields(group)) {
+        field.value = field.name === 's[creation_date_range]' ? 'all' : ''
+      }
       group.querySelector('#s_creation_date_range')?.dispatchEvent(new Event('change', { bubbles: true }))
       groupStorage.append(group)
     }
@@ -114,17 +117,77 @@ export default class AdvancedSearch {
       return field
     }
 
-    addCondition()
-    addButton.addEventListener('click', () => addCondition().focus(), options)
-    dialog.addEventListener('show.bs.modal', () => {
+    const addAppliedCondition = (key, scope, value) => {
+      const field = addCondition()
+      field.value = key
+      field.dispatchEvent(new Event('change'))
+      if (!scope) return
+
+      const row = field.closest('[data-filter-condition]')
+      row.dataset.editScope = scope
+      const comparison = row.querySelector('select.scope')
+      comparison.value = filters[key].scopes[scope] ? scope : scope.replace(/_eq$/, '_in')
+      comparison.dispatchEvent(new Event('change'))
+      const box = row.querySelector('.value-input-container')
+      const values = [value].flat().map(String)
+      if (filters[key].type === 'checkboxes') {
+        const checkboxes = [...box.querySelectorAll('input[type=checkbox]')]
+        const standard = new Set(checkboxes.map(input => input.value))
+        for (const input of checkboxes) input.checked = values.includes(input.value)
+        const other = checkboxes.find(input => input.value === '__race_write_in__')
+        if (other) {
+          const writeIns = values.filter(item => !standard.has(item))
+          other.checked ||= writeIns.length > 0
+          other.dispatchEvent(new Event('change'))
+          writeIns.forEach((value, index) => {
+            if (index > 0) box.querySelector('[data-add-write-in]').click()
+            const field = box.querySelectorAll('[data-write-in]')[index]
+            field.value = value
+            field.dispatchEvent(new Event('input'))
+          })
+        }
+      } else {
+        const input = box.querySelector('select, input:not([type=hidden])')
+        if (input) input.value = values[0]
+      }
+    }
+
+    const openEditor = () => {
       originalValues = new Map(groups.map(group => [group, groupFields(group).map(field => [field, field.value])]))
+      for (const input of chipInputs) input.disabled = true
+      for (const group of groups) {
+        if (groupFields(group).some(field => field.value && !(field.name === 's[creation_date_range]' && field.value === 'all'))) {
+          addAppliedCondition(group.dataset.filterGroup)
+        }
+      }
+      for (const [scope, value] of Object.entries(this.filters)) {
+        const match = Object.entries(filters).find(([, config]) => config.scopes?.[scope] || config.scopes?.[scope.replace(/_eq$/, '_in')])
+        if (match && !censusScopeFields.has(match[0]) && value !== '' && value != null) addAppliedCondition(match[0], scope, value)
+      }
+      if (!conditions.childElementCount) addCondition()
+    }
+
+    addButton.addEventListener('click', () => addCondition().focus(), options)
+    dialog.addEventListener('show.bs.modal', openEditor, options)
+    if (dialog.classList.contains('show')) openEditor()
+    dialog.addEventListener('shown.bs.modal', event => {
+      const scope = event.relatedTarget?.dataset.editScope
+      const rows = [...conditions.children]
+      const row = scope && rows.find(item => item.dataset.editScope === scope ||
+        item.querySelector(`[name="s[${CSS.escape(scope)}]"]`) ||
+        (scope === 'creator_id' && item.querySelector('[data-filter-group="__creation_details"]')))
+      const field = row?.querySelector('select.attribute') || conditions.querySelector('select.attribute')
+      field?.focus()
     }, options)
-    dialog.addEventListener('shown.bs.modal', () => conditions.querySelector('select.attribute').focus(), options)
     dialog.addEventListener('hidden.bs.modal', () => {
       if (applying) return
-      groups.forEach(returnGroup)
+      for (const input of chipInputs) input.disabled = false
+      for (const group of groups) {
+        groupStorage.append(group)
+        for (const [field, value] of originalValues.get(group)) field.value = value
+        group.querySelector('#s_creation_date_range')?.dispatchEvent(new Event('change', { bubbles: true }))
+      }
       conditions.replaceChildren()
-      addCondition()
     }, options)
     this.form.addEventListener('formdata', ({ formData }) => {
       if (!censusScope || !conditions.contains(censusScope)) return
@@ -138,7 +201,6 @@ export default class AdvancedSearch {
       if (!dialog.classList.contains('show')) return
       applying = true
       window.bootstrap.Modal.getInstance(dialog)?.hide()
-      applying = false
     }, options)
   }
 

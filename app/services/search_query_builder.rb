@@ -149,9 +149,20 @@ class SearchQueryBuilder
 
   memoize :ransack_params
 
+  class InvalidFilters < ArgumentError; end
+
+  def self.parse_filters(value)
+    value = JSON.parse(value) if value.is_a?(String)
+    value = value.to_unsafe_hash if value.respond_to?(:to_unsafe_hash)
+    raise InvalidFilters unless value.is_a?(Hash)
+
+    value
+  rescue JSON::ParserError
+    raise InvalidFilters
+  end
+
   def prepare_search_filters
-    @s = @s.is_a?(String) ? JSON.parse(@s) : @s
-    @s = @s.respond_to?(:to_unsafe_hash) ? @s.to_unsafe_hash : @s
+    @s = SearchQueryBuilder.parse_filters(@s)
     @s = @s.reject { |key, value| value == "" || (!@creator_scope && CreatorFilter::PARAM_KEYS.include?(key.to_sym)) }
     @s.transform_values! do |value|
       case value

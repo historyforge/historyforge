@@ -22,7 +22,7 @@ class ApplicationController < ActionController::Base
   layout :cms_choose_layout
 
   rescue_from CanCan::AccessDenied, with: :permission_denied
-  rescue_from ActionDispatch::Http::Parameters::ParseError, with: :invalid_request_parameters
+  rescue_from ActionDispatch::Http::Parameters::ParseError, SearchQueryBuilder::InvalidFilters, with: :invalid_request_parameters
 
   def can_view_census_summary?(year)
     Setting.census_summaries_enabled? && can_census?(year)

@@ -3,6 +3,17 @@
 require 'rails_helper'
 
 RSpec.describe 'Census record JSON search', type: :request do
+  it 'rejects malformed filters before saving them as the last search' do
+    { 1900 => 'A', 1950 => '74' }.each do |year, value|
+      get "/census/#{year}?s=#{value}", headers: { 'User-Agent' => 'Mozilla 5.0 (ExaSearchBot/1.0)' }
+      expect(response).to have_http_status(:bad_request)
+      get "/census/#{year}"
+      expect(response).to have_http_status(:ok)
+    end
+    get '/census/1900.json', params: { s: '["A"]' }
+    expect(response).to have_http_status(:bad_request)
+  end
+
   it 'serializes matching reviewed records when grid pagination is omitted' do
     match = create(:census1940_record, last_name: 'Hasbrouck', reviewed_at: Time.current)
     create(:census1940_record, last_name: 'Hasbrouck')

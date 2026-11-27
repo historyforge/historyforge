@@ -3,19 +3,22 @@
 require 'rails_helper'
 
 RSpec.describe 'people' do
-  scenario 'applies two People filters from one dialog', :js do
-    create(:person, first_name: 'William', last_name: 'Brown', sex: 'M')
+  scenario 'adds, edits, cancels and removes filters in the People grid', :js do
+    sign_in create(:administrator)
+    creator = create(:active_user, login: 'canal_reviewer')
+    create(:person, first_name: 'Edward', last_name: 'Brown', sex: 'M')
+    create(:person, first_name: 'William', last_name: 'Brown', sex: 'M', created_by_id: creator.id)
     create(:person, first_name: 'Mary', last_name: 'Brown', sex: 'F')
     create(:person, first_name: 'Joseph', last_name: 'Jones', sex: 'M')
 
     visit people_path
-    click_button 'Add filter'
+    click_button 'Add/edit filters'
     expect(page).to have_no_button('Add another condition')
     expect(page).to have_no_css('[data-remove-condition]')
     find('select.attribute option[value="name"]').select_option
     expect(page).to have_css('[data-remove-condition]')
     click_button 'Cancel'
-    click_button 'Add filter'
+    click_button 'Add/edit filters'
     expect(find('select.attribute').value).to eq('')
     find('select.attribute option[value="name"]').select_option
     find('select.scope option[value="name_cont"]').select_option
@@ -26,6 +29,18 @@ RSpec.describe 'people' do
       find('select.attribute option[value="sex"]').select_option
       check 'Male'
     end
+    click_button 'Add another condition'
+    within(all('[data-filter-condition]').last) { select 'Creation details' }
+    lookup = find('#creator_lookup')
+    lookup.set('canal')
+    expect(page).to have_css('[role="option"]', text: creator.login)
+    lookup.send_keys(:arrow_down, :enter)
+    expect(page).to have_field('s[creator_id]', type: :hidden, with: creator.id.to_s)
+    lookup.set('unselected')
+    expect(page).to have_field('s[creator_id]', type: :hidden, with: '')
+    lookup.set('canal')
+    find('[role="option"]', text: creator.login).click
+    select 'Last 7 days', from: 'Creation date'
     expect(page).to have_no_css('#attribute-filters .attribute-filter')
     click_button 'Apply filters'
 
@@ -36,7 +51,32 @@ RSpec.describe 'people' do
     expect(page).to have_link('Brown, William')
     expect(page).to have_no_link('Brown, Mary')
     expect(page).to have_no_link('Jones, Joseph')
+    expect(page).to have_no_link('Brown, Edward')
     expect(page).to have_no_css('.modal-backdrop')
+
+    click_button "Created by #{creator.login}"
+    expect(page).to have_field('creator_lookup', with: creator.login)
+    select 'Today', from: 'Creation date'
+    click_button 'Cancel'
+    expect(page).to have_no_css('.modal.show')
+
+    click_button 'Created in the last 7 days'
+    expect(page).to have_select('Creation date', selected: 'Last 7 days')
+    select 'Last 30 days', from: 'Creation date'
+    click_button 'Apply filters'
+    expect(page).to have_button('Created in the last 30 days')
+    expect(page).to have_button("Created by #{creator.login}")
+
+    find('button[aria-label="Remove Created by filter"]').click
+    expect(page).to have_no_button("Created by #{creator.login}")
+    expect(page).to have_button('Created in the last 30 days')
+    expect(page).to have_no_css('.modal.show')
+    expect(page).to have_link('Brown, Edward')
+    expect(page).to have_link('Brown, William')
+    expect(page).to have_no_link('Brown, Mary')
+    expect(page).to have_no_link('Jones, Joseph')
+    filters = Rack::Utils.parse_nested_query(URI.parse(page.current_url).query).fetch('s')
+    expect(filters).to eq('creation_date_range' => 'last30', 'name_cont' => 'Brown', 'sex_in' => ['M'])
   end
 
   scenario 'renders one People grid when reconnecting to copied grid markup', :js do

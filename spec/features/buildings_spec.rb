@@ -16,7 +16,7 @@ RSpec.describe "buildings" do
 
     expect(page).to have_content "Buildings"
     expect(page).to have_content "Found 3 records"
-    click_button "Add filter"
+    click_button "Add/edit filters"
     select "Street Address"
     select "contains"
     fill_in with: "405 N Titus"

@@ -23,8 +23,10 @@ module AdvancedRestoreSearch
   end
 
   def restore_search
+    query = request.query_parameters.with_indifferent_access
+    query[:s] = SearchQueryBuilder.parse_filters(query[:s]) if query.key?(:s)
     redirect_url = RestoreAdvancedSearch.call(
-      params: request.query_parameters.with_indifferent_access,
+      params: query,
       user: current_user,
       session:,
       search_key:,

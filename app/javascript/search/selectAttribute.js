@@ -23,6 +23,7 @@ export default function selectAttribute(condition, config) {
   const renderValue = () => {
     const name = `s[${selector.value}]`
     const previous = valueBox.querySelector('input:not([type=hidden]):not([type=checkbox]), select')?.value
+    const writeIns = [...valueBox.querySelectorAll('[data-write-in]')].map(field => field.value)
     const checked = new Set([...valueBox.querySelectorAll('input[type=checkbox]:checked')].map(input => input.value))
     valueBox.replaceChildren()
 
@@ -38,6 +39,9 @@ export default function selectAttribute(condition, config) {
         checkbox.checked = checked.has(checkbox.value)
         wrapper.append(checkbox, label)
         valueBox.append(wrapper)
+        if (value === '__race_write_in__') {
+          addWriteInFields(valueBox, checkbox, name, writeIns)
+        }
       }
     } else {
       const field = config.type === 'dropdown' ? document.createElement('select')
@@ -76,4 +80,56 @@ function input(name, type, value) {
   const field = document.createElement('input')
   Object.assign(field, { name, type, value })
   return field
+}
+
+function addWriteInFields(container, checkbox, name, values) {
+  const editor = document.createElement('div')
+  const rows = document.createElement('div')
+  const add = document.createElement('button')
+  add.type = 'button'
+  add.className = 'btn btn-sm btn-outline-secondary'
+  add.dataset.addWriteIn = ''
+  add.textContent = 'Add another write-in'
+  editor.append(rows, add)
+  container.append(editor)
+
+  function update() {
+    editor.hidden = !checkbox.checked
+    const fields = [...rows.querySelectorAll('input')]
+    checkbox.name = fields.some(field => field.value.trim()) ? '' : name + '[]'
+    for (const field of fields) field.disabled = !checkbox.checked
+    for (const button of rows.querySelectorAll('button')) button.hidden = fields.length === 1
+  }
+
+  function addRow(value = '') {
+    const row = document.createElement('div')
+    row.className = 'd-flex gap-2 mb-2'
+    const field = input(name + '[]', 'text', value)
+    field.dataset.writeIn = ''
+    field.className = 'form-control'
+    field.placeholder = 'Any write-in'
+    field.setAttribute('aria-label', 'Other race as recorded')
+    field.addEventListener('input', update)
+    field.addEventListener('change', () => { field.value = field.value.trim() })
+    const remove = document.createElement('button')
+    remove.type = 'button'
+    remove.className = 'btn btn-sm btn-outline-secondary'
+    remove.textContent = 'Remove write-in'
+    remove.addEventListener('click', () => {
+      row.remove()
+      update()
+      rows.querySelector('input').focus()
+    })
+    row.append(field, remove)
+    rows.append(row)
+    update()
+    return field
+  }
+
+  for (const value of values.length ? values : ['']) addRow(value)
+  add.addEventListener('click', () => addRow().focus())
+  checkbox.addEventListener('change', () => {
+    update()
+    if (checkbox.checked) rows.querySelector('input').focus()
+  })
 }

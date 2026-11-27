@@ -44,8 +44,10 @@ RSpec.describe 'Creator search', :versioning, type: :request do
     expect(form.at_css('form[data-controller="creator-picker"] #s_creator_id')['value']).to eq(creator.id.to_s)
     chips = form.css('#attribute-filters [data-creator-filter-chip]')
     expect(chips.map(&:text)).to eq(["Created by #{creator.login}", 'Created in the last 7 days'])
-    expect(chips.css('button').map { |button| button['aria-label'] })
+    expect(chips.css('button[data-clear-creator-filter]').map { |button| button['aria-label'] })
       .to eq(['Remove Created by filter', 'Remove Creation date filter'])
+    expect(chips.css('button[data-bs-target="#newAttributeFilter"]').map { |button| button['data-edit-scope'] })
+      .to eq(%w[creator_id creation_date_range])
 
     expect(people_created_by(creator, creation_date_from: '2025-01-08', creation_date_to: '2025-01-08'))
       .to eq([person.id])
