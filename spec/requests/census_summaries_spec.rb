@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'Census demographics', type: :request do
+RSpec.describe 'Census summaries', type: :request do
   before do
     allow(Setting).to receive(:census_summaries_enabled?).and_return(true)
     allow(Setting).to receive(:can_view_public?).and_return(false)
@@ -12,7 +12,7 @@ RSpec.describe 'Census demographics', type: :request do
   it 'denies summary access for public censuses when summaries are disabled' do
     allow(Setting).to receive(:census_summaries_enabled?).and_return(false)
 
-    get demographics_census1910_records_path(facet: 'race')
+    get census_summary_path(year: 1910, facet: 'race')
 
     expect(response).to redirect_to(root_path)
   end
@@ -21,7 +21,7 @@ RSpec.describe 'Census demographics', type: :request do
     allow(Setting).to receive(:can_view_public?).with(1910).and_return(false)
     allow(Setting).to receive(:can_view_private?).and_call_original
     allow(Setting).to receive(:can_view_private?).with(1910).and_return(true)
-    path = demographics_census1910_records_path(facet: 'race')
+    path = census_summary_path(year: 1910, facet: 'race')
 
     get path
     expect(response).to redirect_to(root_path)
@@ -44,11 +44,11 @@ RSpec.describe 'Census demographics', type: :request do
     locality = create(:locality)
     settings = { locality_id_in: [locality.id], race_in: ['Mu'], sex_in: ['F'], page_number_eq: '2',
                  ward_eq: '', creation_date_range: 'all' }
-    get demographics_census1910_records_path(facet: 'race', s: settings, scope: 'on')
+    get census_summary_path(year: 1910, facet: 'race', s: settings, scope: 'on')
 
     nav = Nokogiri::HTML(response.body).at_css('nav[aria-label="Census summary years"]')
     jump = nav.css('.dropdown-item[href]').find { |link| link.text == '1950' }['href']
-    expect(URI.parse(jump).path).to eq('/census/1950/demographics')
+    expect(URI.parse(jump).path).to eq('/census/1950/summary')
     expect(nav.at_css('[rel="next"]').text).to include('1920')
     expect(nav.text).not_to include('1930')
     query = Rack::Utils.parse_nested_query(URI.parse(jump).query)
@@ -67,7 +67,7 @@ RSpec.describe 'Census demographics', type: :request do
   it 'omits enabled years that lack the selected field' do
     allow(Setting).to receive(:can_view_public?).with(1920).and_return(true)
 
-    get demographics_census1910_records_path(facet: 'language_spoken')
+    get census_summary_path(year: 1910, facet: 'language_spoken')
 
     expect(response).to have_http_status(:ok)
     expect(Nokogiri::HTML(response.body).at_css('nav[aria-label="Census summary years"]')).to be_nil
@@ -82,30 +82,30 @@ RSpec.describe 'Census demographics', type: :request do
     create(:census1910_record, locality: city, race: 'B', reviewed_at: Time.current)
     create(:census1910_record, locality: town, race: 'W', reviewed_at: Time.current)
 
-    get demographics_census1910_records_path(facet: 'race', locality_slug: city.slug)
+    get census_summary_path(year: 1910, facet: 'race', locality_slug: city.slug)
     html = Nokogiri::HTML(response.body)
     expect(html.at_css('h1').text).to eq('1910 Census Record Summaries for City of Ithaca')
     expect(html.at_css('#summary_locality')).to be_nil
 
-    get demographics_census1910_records_path(facet: 'race', summary_locality: town.id)
+    get census_summary_path(year: 1910, facet: 'race', summary_locality: town.id)
     html = Nokogiri::HTML(response.body)
     expect(html.at_css('h1').text).to eq('1910 Census Record Summaries for Town of Caroline')
     expect(html.css('table tbody th').map(&:text)).to eq(['White'])
     jump = html.at_css('nav[aria-label="Census summary years"] [rel="next"]')['href']
     expect(Rack::Utils.parse_nested_query(URI.parse(jump).query).dig('s', 'locality_id_in')).to eq([town.id.to_s])
 
-    get demographics_census1910_records_path(facet: 'race', summary_locality: 'all')
+    get census_summary_path(year: 1910, facet: 'race', summary_locality: 'all')
     html = Nokogiri::HTML(response.body)
     expect(html.at_css('h1').text).to eq('1910 Census Record Summaries')
     expect(html.css('table tbody th').map(&:text)).to contain_exactly('White', 'Black')
 
-    get demographics_census1910_records_path(facet: 'race')
+    get census_summary_path(year: 1910, facet: 'race')
     html = Nokogiri::HTML(response.body)
     expect(html.at_css('h1').text).to eq('1910 Census Record Summaries for City of Ithaca')
     shortcut = html.css('#main-header a').find { |link| link.text == 'Census Summaries' }
-    expect(URI.parse(shortcut['href']).path).to eq('/census/1920/demographics')
+    expect(URI.parse(shortcut['href']).path).to eq('/census/1920/summary')
 
-    get demographics_census1910_records_path(facet: 'race', locality_slug: city.slug, s: { locality_id_in: [city.id] })
+    get census_summary_path(year: 1910, facet: 'race', locality_slug: city.slug, s: { locality_id_in: [city.id] })
     header = Nokogiri::HTML(response.body).at_css('#main-header')
     switch = header.css('a').find { |link| link.text == town.short_name }
     put switch['href']
@@ -179,7 +179,7 @@ RSpec.describe 'Census demographics', type: :request do
     create(:census1910_record, age: 1, age_months: 3, reviewed_at: Time.current)
     create(:census1910_record, age: nil, age_months: 12, reviewed_at: Time.current)
 
-    get demographics_census1910_records_path(facet: 'age_months')
+    get census_summary_path(year: 1910, facet: 'age_months')
 
     expect(response).to have_http_status(:ok)
     expect(response.body).to include('An exploratory summary.', 'Chartkick["BarChart"]')
@@ -204,7 +204,7 @@ RSpec.describe 'Census demographics', type: :request do
     administrator = create(:administrator)
     post user_session_path, params: { user: { email: administrator.email, password: 'b1g_sekrit' } }
 
-    get demographics_census1910_records_path(facet: 'race')
+    get census_summary_path(year: 1910, facet: 'race')
 
     expect(response).to have_http_status(:ok)
     expect(response.body).to include('Only this census year has summaries available.',
@@ -217,7 +217,7 @@ RSpec.describe 'Census demographics', type: :request do
   end
 
   it 'rejects unsupported summary fields' do
-    get demographics_census1910_records_path(facet: 'id')
+    get census_summary_path(year: 1910, facet: 'id')
     expect(response).to have_http_status(:bad_request)
   end
 
@@ -227,7 +227,7 @@ RSpec.describe 'Census demographics', type: :request do
     create(:census1900_record, birth_month: 1, reviewed_at: Time.current)
     create(:census1900_record, reviewed_at: Time.current).update_column(:birth_month, 999)
 
-    get demographics_census1900_records_path(facet: 'birth_month')
+    get census_summary_path(year: 1900, facet: 'birth_month')
 
     expect(response).to have_http_status(:ok)
     expect(response.body).to include('Chartkick["BarChart"]')
@@ -242,7 +242,7 @@ RSpec.describe 'Census demographics', type: :request do
   it 'omits the field description for a self-explanatory field' do
     create(:census1910_record, sex: 'F', reviewed_at: Time.current)
 
-    get demographics_census1910_records_path(facet: 'sex')
+    get census_summary_path(year: 1910, facet: 'sex')
 
     expect(response).to have_http_status(:ok)
     html = Nokogiri::HTML(response.body)
@@ -256,7 +256,7 @@ RSpec.describe 'Census demographics', type: :request do
       create(:census1900_record, attended_school: months, reviewed_at: Time.current)
     end
 
-    get demographics_census1900_records_path(facet: 'attended_school')
+    get census_summary_path(year: 1900, facet: 'attended_school')
 
     expect(response).to have_http_status(:ok)
     expect(response.body).to include('Months of School Attendance', 'Chartkick["BarChart"]')
@@ -274,21 +274,21 @@ RSpec.describe 'Census demographics', type: :request do
     [10, 10, 2].zip(%w[Teacher Teacher Baker]).each do |years, occupation|
       create(:census1910_record, years_married: years, occupation:, reviewed_at: Time.current)
     end
-    get demographics_census1910_records_path(facet: 'years_married')
+    get census_summary_path(year: 1910, facet: 'years_married')
     expect(Nokogiri::HTML(response.body).css('tbody th').map(&:text)).to eq(%w[2 10])
 
-    get demographics_census1910_records_path(facet: 'occupation')
+    get census_summary_path(year: 1910, facet: 'occupation')
     expect(Nokogiri::HTML(response.body).css('tbody th').map(&:text)).to eq(%w[Baker Teacher])
 
     allow(Setting).to receive(:can_view_public?).with(1940).and_return(true)
     %w[C-1 H-1 8].each { |grade| create(:census1940_record, grade_completed: grade, reviewed_at: Time.current) }
-    get demographics_census1940_records_path(facet: 'grade_completed')
+    get census_summary_path(year: 1940, facet: 'grade_completed')
     expect(Nokogiri::HTML(response.body).css('tbody th').map(&:text)).to eq(['8', 'H-1 or 9', 'C-1'])
   end
 
   it 'explains why blanks in a supplemental field cannot be treated as missing answers' do
     allow(Setting).to receive(:can_view_public?).with(1950).and_return(true)
-    get demographics_census1950_records_path(facet: 'highest_grade')
+    get census_summary_path(year: 1950, facet: 'highest_grade')
 
     expect(response).to have_http_status(:ok)
     expect(response.body).to include('This field was asked only of certain people.')
@@ -303,7 +303,7 @@ RSpec.describe 'Census demographics', type: :request do
       original.call(field).merge(demographics_explanation: explanation)
     end
 
-    get demographics_census1910_records_path(facet: 'race')
+    get census_summary_path(year: 1910, facet: 'race')
 
     expect(response).to have_http_status(:ok)
     html = Nokogiri::HTML(response.body)
@@ -312,7 +312,7 @@ RSpec.describe 'Census demographics', type: :request do
     expect(paragraph.element_children).to be_empty
     expect(paragraph.next_element['id']).to start_with('chart-')
 
-    get demographics_census1910_records_path(facet: 'occupation')
+    get census_summary_path(year: 1910, facet: 'occupation')
 
     expect(response).to have_http_status(:ok)
     expect(Nokogiri::HTML(response.body).at_css('.demographics-explanation')).to be_nil
@@ -326,7 +326,7 @@ RSpec.describe 'Census demographics', type: :request do
       original.call(field).merge(demographics_explanation: explanation)
     end
 
-    get demographics_census1910_records_path(facet: 'race')
+    get census_summary_path(year: 1910, facet: 'race')
 
     expect(response).to have_http_status(:ok)
     html = Nokogiri::HTML(response.body)
@@ -335,7 +335,7 @@ RSpec.describe 'Census demographics', type: :request do
     expect(paragraph.element_children).to be_empty
     expect(paragraph.next_element['id']).to start_with('chart-')
 
-    get demographics_census1910_records_path(facet: 'occupation')
+    get census_summary_path(year: 1910, facet: 'occupation')
 
     expect(response).to have_http_status(:ok)
     expect(Nokogiri::HTML(response.body).at_css('.demographics-explanation')).to be_nil

@@ -24,7 +24,7 @@ class ApplicationController < ActionController::Base
   rescue_from CanCan::AccessDenied, with: :permission_denied
   rescue_from ActionDispatch::Http::Parameters::ParseError, with: :invalid_request_parameters
 
-  def can_demographics?(year)
+  def can_view_census_summary?(year)
     Setting.census_summaries_enabled? && can_census?(year)
   end
 
@@ -32,7 +32,7 @@ class ApplicationController < ActionController::Base
     Setting.can_people_public? || (user_signed_in? && Setting.can_people_private?)
   end
 
-  helper_method :can_census?, :can_demographics?, :can_people?, :creator_search_scope, :my_stuff_available?
+  helper_method :can_census?, :can_view_census_summary?, :can_people?, :creator_search_scope, :my_stuff_available?
 
   def check_administrator_role
     check_role('administrator')

@@ -11,7 +11,6 @@ module CensusRecords
     include SqlInjectionProtection
 
     prepend_before_action :check_access, except: :rebuild
-    prepend_before_action :check_demographics_access, only: :demographics
 
     respond_to :json, only: :index
     respond_to :csv, only: :index
@@ -71,34 +70,6 @@ module CensusRecords
       ).perform
       render json: results
     end
-
-    def demographics
-      authorize! :read, resource_class
-      @report = CensusSummaries::Report.new(
-        year:, params: search_params, user: current_user, creator_scope: creator_search_scope(resource_class)
-      )
-      @page_title = @report.title
-      if request.format.csv?
-        return head :bad_request unless @report.statistics
-
-        return send_data CensusSummaries::CsvExport.new(@report).generate,
-                         filename: "historyforge-#{year}-#{@report.field}-summary.csv", type: 'text/csv; charset=utf-8'
-      end
-
-      available_years = CensusYears::YEARS.select { |candidate| can_demographics?(candidate) }
-      @year_navigation = CensusSummaries::YearNavigation.new(@report, available_years, &method(:creator_search_scope))
-    rescue CensusSummaries::Report::InvalidSelection
-      head :bad_request
-    end
-
-    def summary_locality_return_path
-      demographics_census_records_path(@report.locality_return_params) if @report
-    end
-
-    def summary_locality_id
-      @report&.locality_id
-    end
-    helper_method :summary_locality_return_path, :summary_locality_id
 
     def edit
       @record = resource_class.find params[:id]
@@ -229,10 +200,6 @@ module CensusRecords
     # This is a blanket access check for whether this census year is activated for this HF instance
     def check_access
       permission_denied unless can_census?(year)
-    end
-
-    def check_demographics_access
-      permission_denied unless can_demographics?(year)
     end
 
     def resource_class

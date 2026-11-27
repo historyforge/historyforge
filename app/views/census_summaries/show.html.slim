@@ -14,13 +14,13 @@
         li
           hr.dropdown-divider
         li
-          = link_to 'Copy link to this page', demographics_census_records_path(@report.link_params), class: 'dropdown-item', data: { action: 'clipboard#copyLink' }
+          = link_to 'Copy link to this page', census_summary_path(@report.link_params.symbolize_keys), class: 'dropdown-item', data: { action: 'clipboard#copyLink' }
         li
-          = link_to 'Download CSV', demographics_census_records_path(@report.link_params.merge(format: :csv)), class: 'dropdown-item'
+          = link_to 'Download CSV', census_summary_path(@report.link_params.merge(format: :csv).symbolize_keys), class: 'dropdown-item'
 
 .d-flex.flex-column.flex-md-row.align-items-start.align-items-md-center.justify-content-between.gap-2.mb-2
   .col-12.col-md-7.d-flex.flex-column.flex-sm-row.gap-2
-    = form_with url: demographics_census_records_path(year: controller.year), method: :get, class: 'flex-grow-1' do |form|
+    = form_with url: census_summary_path(year: controller.year), method: :get, class: 'flex-grow-1' do |form|
       - URI.decode_www_form(@report.search_params.to_query).each do |name, value|
         = hidden_field_tag name, value, id: nil
       = label_tag :facet, 'Summary field', class: 'visually-hidden'
@@ -33,17 +33,17 @@
     nav aria-label="Census summary years"
       .btn-group
         - if previous_year
-          = link_to "‹ #{previous_year}", census_summary_year_path(year_destinations.fetch(previous_year)), class: 'btn btn-sm btn-outline-secondary', rel: 'prev'
+          = link_to "‹ #{previous_year}", census_summary_path(year_destinations.fetch(previous_year).symbolize_keys), class: 'btn btn-sm btn-outline-secondary', rel: 'prev'
         button.btn.btn-sm.btn-outline-secondary.dropdown-toggle type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Choose census year, currently #{controller.year}"= controller.year
         ul.dropdown-menu.dropdown-menu-md-end
           - year_destinations.each do |year, destination|
             li
               - if destination
-                = link_to year, census_summary_year_path(destination), class: 'dropdown-item'
+                = link_to year, census_summary_path(destination.symbolize_keys), class: 'dropdown-item'
               - else
                 span.dropdown-item.active aria-current="page"= year
         - if next_year
-          = link_to "#{next_year} ›", census_summary_year_path(year_destinations.fetch(next_year)), class: 'btn btn-sm btn-outline-secondary', rel: 'next'
+          = link_to "#{next_year} ›", census_summary_path(year_destinations.fetch(next_year).symbolize_keys), class: 'btn btn-sm btn-outline-secondary', rel: 'next'
 
 - if params[:field_unavailable] == '1'
   p.small.text-muted.mb-2 That field is unavailable for this census. Choose a field to summarize.

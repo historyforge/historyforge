@@ -95,8 +95,4 @@ module CensusRecordsHelper
     shown << ['Remaining categories', remaining.sum(&:last)]
   end
 
-  def census_summary_year_path(destination)
-    year = destination.fetch(:year)
-    public_send("demographics_census#{year}_records_path", destination.except(:year))
-  end
 end

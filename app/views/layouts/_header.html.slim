@@ -79,9 +79,9 @@ header data-turbo-permanent="true" id="main-header"
                 .col
                   - CensusYears.each_visible_to_user(user_signed_in?) do |year|
                     = link_to "#{year} US Census", census_records_path(year: year), class: 'dropdown-item'
-                  - summary_year = CensusYears.visible_to_user(current_user).reverse.find { |year| can_demographics?(year) }
+                  - summary_year = CensusYears.visible_to_user(current_user).reverse.find { |year| can_view_census_summary?(year) }
                   - if summary_year
-                    = link_to 'Census Summaries', census_summary_year_path(year: summary_year, facet: 'race'), class: 'dropdown-item'
+                    = link_to 'Census Summaries', census_summary_path(year: summary_year, facet: 'race'), class: 'dropdown-item'
                 .col
                   = link_to 'Buildings', buildings_path, class: 'dropdown-item'
                   = link_to 'All People', people_path, class: 'dropdown-item' if can_people?

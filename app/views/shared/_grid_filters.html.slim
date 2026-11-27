@@ -22,8 +22,8 @@
     = link_to 'CSV', request.params.merge(format: :csv), class: 'btn btn-sm btn-primary'
     - if controller.respond_to?(:year)
       button.btn.btn-sm.btn-primary#search-map type="button" form="new_s" data-year=controller.year Map It
-      - if can_demographics?(controller.year)
-        = link_to 'Summarize Records', demographics_census_records_path(request.query_parameters.slice('s', 'scope', 'locality_slug').merge(year:, facet: 'race')), class: 'btn btn-sm btn-primary'
+      - if can_view_census_summary?(controller.year)
+        = link_to 'Summarize Records', census_summary_path(request.query_parameters.slice('s', 'scope', 'locality_slug').merge(year:, facet: 'race')), class: 'btn btn-sm btn-primary'
     - elsif resource_class == Building
       button.btn.btn-sm.btn-primary#search-map type="button" form="new_s" Map It
     - if @search.active?
