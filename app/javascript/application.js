@@ -12,32 +12,11 @@ import { loadMaps } from './loadMaps'
 import { Notifier } from '@airbrake/browser'
 
 if (window.airbrakeCreds && window.env === 'production') {
-  const airbrake = new Notifier({
+  new Notifier({
     projectId: window.airbrakeCreds.app_id,
     projectKey: window.airbrakeCreds.api_key,
     host: window.airbrakeCreds.host,
     environment: 'production'
-  })
-
-  window.addEventListener('error', (event) => {
-    airbrake.notify({
-      error: event.error,
-      params: {
-        message: event.message,
-        filename: event.filename,
-        lineno: event.lineno,
-        colno: event.colno
-      }
-    })
-  })
-
-  window.addEventListener('unhandledrejection', (event) => {
-    airbrake.notify({
-      error: event.reason,
-      params: {
-        promise: event.promise
-      }
-    })
   })
 }
 
