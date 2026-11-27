@@ -23,6 +23,7 @@ export default function selectAttribute(condition, config) {
   const renderValue = () => {
     const name = `s[${selector.value}]`
     const previous = valueBox.querySelector('input:not([type=hidden]):not([type=checkbox]), select')?.value
+    const writeInText = valueBox.querySelector('textarea')?.value ?? ''
     const checked = new Set([...valueBox.querySelectorAll('input[type=checkbox]:checked')].map(input => input.value))
     valueBox.replaceChildren()
 
@@ -39,18 +40,21 @@ export default function selectAttribute(condition, config) {
         wrapper.append(checkbox, label)
         valueBox.append(wrapper)
         if (value === '__race_write_in__') {
-          const writeIn = document.createElement('input')
-          if (previous?.trim() && checked.has(previous.trim())) {
-            checkbox.checked = true
-            writeIn.value = previous
-          }
-          writeIn.type = 'text'
+          const writeIn = document.createElement('textarea')
+          writeIn.value = writeInText
+          writeIn.rows = 2
           writeIn.className = 'form-control'
-          writeIn.placeholder = 'Any write-in'
+          writeIn.placeholder = 'One write-in per line'
           writeIn.setAttribute('aria-label', 'Other race as recorded')
+          const entries = document.createElement('div')
           const updateWriteIn = () => {
             writeIn.hidden = !checkbox.checked
-            checkbox.value = writeIn.value.trim() || value
+            const values = [...new Set(writeIn.value.split(/\r?\n/).map(line => line.trim()).filter(Boolean))]
+            checkbox.name = values.length ? '' : name + '[]'
+            entries.replaceChildren()
+            if (checkbox.checked) {
+              for (const text of values) entries.append(input(name + '[]', 'hidden', text))
+            }
           }
           checkbox.addEventListener('change', () => {
             updateWriteIn()
@@ -58,7 +62,7 @@ export default function selectAttribute(condition, config) {
           })
           writeIn.addEventListener('input', updateWriteIn)
           updateWriteIn()
-          valueBox.append(writeIn)
+          valueBox.append(writeIn, entries)
         }
       }
     } else {
