@@ -124,6 +124,7 @@ export default class AdvancedSearch {
       if (!scope) return
 
       const row = field.closest('[data-filter-condition]')
+      row.dataset.editScope = scope
       const comparison = row.querySelector('select.scope')
       comparison.value = filters[key].scopes[scope] ? scope : scope.replace(/_eq$/, '_in')
       comparison.dispatchEvent(new Event('change'))
@@ -169,7 +170,15 @@ export default class AdvancedSearch {
     addButton.addEventListener('click', () => addCondition().focus(), options)
     dialog.addEventListener('show.bs.modal', openEditor, options)
     if (dialog.classList.contains('show')) openEditor()
-    dialog.addEventListener('shown.bs.modal', () => conditions.querySelector('select.attribute')?.focus(), options)
+    dialog.addEventListener('shown.bs.modal', event => {
+      const scope = event.relatedTarget?.dataset.editScope
+      const rows = [...conditions.children]
+      const row = scope && rows.find(item => item.dataset.editScope === scope ||
+        item.querySelector(`[name="s[${CSS.escape(scope)}]"]`) ||
+        (scope === 'creator_id' && item.querySelector('[data-filter-group="__creation_details"]')))
+      const field = row?.querySelector('select.attribute') || conditions.querySelector('select.attribute')
+      field?.focus()
+    }, options)
     dialog.addEventListener('hidden.bs.modal', () => {
       if (applying) return
       for (const input of chipInputs) input.disabled = false

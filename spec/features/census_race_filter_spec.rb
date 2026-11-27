@@ -16,7 +16,7 @@ RSpec.describe 'Census race filters' do
     expect(page).to have_css('#attribute-filters', text: 'Other: Asiatic Indian')
     filters = Rack::Utils.parse_nested_query(URI.parse(page.current_url).query).fetch('s')
     expect(filters.fetch('race_in')).to eq(['Asiatic Indian', 'Portuguese'])
-    click_button 'Add/edit filters'
+    find('#attribute-filters button[data-edit-scope="race_in"]').click
     expect(all('[data-write-in]').map(&:value)).to eq(['Asiatic Indian', 'Portuguese'])
     all('button', text: 'Remove write-in').last.click
     find('[data-write-in]').set('Burmese')

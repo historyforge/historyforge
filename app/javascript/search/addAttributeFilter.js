@@ -11,7 +11,7 @@ class AttributeFilter {
     }
 
     render() {
-        ['attribute-filter', 'btn', 'btn-sm', 'btn-light'].forEach((text) => {
+        ['attribute-filter', 'btn', 'btn-sm', 'btn-light', 'p-0'].forEach((text) => {
             this.html.classList.add(text)
         })
 
@@ -33,9 +33,17 @@ class AttributeFilter {
     renderLabel() {
         const closeButton = document.createElement('button')
         closeButton.type = 'button'
-        closeButton.className = 'btn-close remove-filter'
+        closeButton.className = 'btn-close remove-filter ms-2'
         closeButton.setAttribute('aria-label', `Remove ${this.config.label} filter`)
-        this.html.append(closeButton, this.sentence.join(' '), this.config.append || '')
+        const editButton = document.createElement('button')
+        editButton.type = 'button'
+        editButton.className = 'btn btn-sm btn-light'
+        editButton.dataset.bsToggle = 'modal'
+        editButton.dataset.bsTarget = '#newAttributeFilter'
+        editButton.dataset.editScope = this.scope
+        editButton.setAttribute('aria-haspopup', 'dialog')
+        editButton.textContent = this.sentence.join(' ') + (this.config.append || '')
+        this.html.append(closeButton, editButton)
     }
 
     renderInput() {
@@ -104,7 +112,7 @@ class AttributeFilter {
 export default function addAttributeFilter(container, form, config, scope, value) {
     const filter = new AttributeFilter(config, scope, value).render()
     container.append(filter)
-    filter.querySelector('button').addEventListener('click', () => {
+    filter.querySelector('.remove-filter').addEventListener('click', () => {
         const name = `s[${scope}]`
         const names = [name, name + '[]', name.replace('_in', '_eq')]
         for (const field of form.elements) {
