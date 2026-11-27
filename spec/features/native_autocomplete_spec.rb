@@ -36,7 +36,7 @@ RSpec.describe "Native autocomplete" do
     creator = create(:active_user, login: "canal_reviewer")
 
     visit people_path
-    click_button "Add filter"
+    click_button "Add/edit filters"
     select "Creation details"
     lookup = find("#creator_lookup")
     lookup.set("ca")

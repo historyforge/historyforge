@@ -6,7 +6,7 @@ RSpec.describe "1880 US Census" do
   scenario "offers census scope to signed-out visitors", :js do
     visit census_records_path(year: 1880)
 
-    click_button "Add filter"
+    click_button "Add/edit filters"
     select "Census scope"
 
     expect(page).to have_field("s_line_number_eq")
@@ -17,7 +17,7 @@ RSpec.describe "1880 US Census" do
     sign_in create(:census_taker)
     visit census_records_path(year: 1880)
 
-    click_button "Add filter"
+    click_button "Add/edit filters"
     select "Census scope"
     %w[ward enum_dist page_number page_side line_number].each do |field|
       expect(page).to have_no_css("select.attribute option[value='#{field}']", visible: :all)
@@ -38,7 +38,7 @@ RSpec.describe "1880 US Census" do
     expect(filters).to include("ward_eq" => "2", "enum_dist_eq" => "240", "page_number_eq" => "6",
                                "page_side_eq" => "B", "line_number_eq" => "21")
 
-    click_button "Add filter"
+    click_button "Add/edit filters"
     select "Census scope"
     expect(page).to have_field("s_page_number_eq", with: "6")
     fill_in "s_enum_dist_eq", with: ""

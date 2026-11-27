@@ -9,13 +9,13 @@ RSpec.describe 'people' do
     create(:person, first_name: 'Joseph', last_name: 'Jones', sex: 'M')
 
     visit people_path
-    click_button 'Add filter'
+    click_button 'Add/edit filters'
     expect(page).to have_no_button('Add another condition')
     expect(page).to have_no_css('[data-remove-condition]')
     find('select.attribute option[value="name"]').select_option
     expect(page).to have_css('[data-remove-condition]')
     click_button 'Cancel'
-    click_button 'Add filter'
+    click_button 'Add/edit filters'
     expect(find('select.attribute').value).to eq('')
     find('select.attribute option[value="name"]').select_option
     find('select.scope option[value="name_cont"]').select_option
