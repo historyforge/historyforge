@@ -13,13 +13,16 @@ module AdvancedRestoreSearch
     search_params.slice(:s, :scope, :sort, *additional_keys).merge(results: '1')
   end
 
-  def grid_navigation_params(*additional_keys)
+  def explicit_grid_navigation(*additional_keys)
     context = params[:navigation]
     if context.is_a?(ActionController::Parameters) && context[:results] == '1'
-      return @navigation_context = context.slice(:results, :s, :scope, :sort, *additional_keys).to_unsafe_h
+      context.slice(:results, :s, :scope, :sort, *additional_keys).to_unsafe_h
     end
+  end
 
-    ExtractNavigationParams.call(user: current_user, session:, search_key:)
+  def grid_navigation_params(*additional_keys)
+    @navigation_context = explicit_grid_navigation(*additional_keys)
+    @navigation_context || ExtractNavigationParams.call(user: current_user, session:, search_key:)
   end
 
   def restore_search
