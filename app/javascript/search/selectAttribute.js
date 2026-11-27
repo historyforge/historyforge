@@ -38,6 +38,28 @@ export default function selectAttribute(condition, config) {
         checkbox.checked = checked.has(checkbox.value)
         wrapper.append(checkbox, label)
         valueBox.append(wrapper)
+        if (value === '__race_write_in__') {
+          const writeIn = document.createElement('input')
+          if (previous?.trim() && checked.has(previous.trim())) {
+            checkbox.checked = true
+            writeIn.value = previous
+          }
+          writeIn.type = 'text'
+          writeIn.className = 'form-control'
+          writeIn.placeholder = 'Any write-in'
+          writeIn.setAttribute('aria-label', 'Other race as recorded')
+          const updateWriteIn = () => {
+            writeIn.hidden = !checkbox.checked
+            checkbox.value = writeIn.value.trim() || value
+          }
+          checkbox.addEventListener('change', () => {
+            updateWriteIn()
+            if (checkbox.checked) writeIn.focus()
+          })
+          writeIn.addEventListener('input', updateWriteIn)
+          updateWriteIn()
+          valueBox.append(writeIn)
+        }
       }
     } else {
       const field = config.type === 'dropdown' ? document.createElement('select')

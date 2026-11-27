@@ -78,27 +78,21 @@ class AttributeFilter {
     }
 
     renderCheckboxes() {
-        const values = [];
-        this.config.choices.forEach((choice) => {
-            let label, value;
-            if (typeof choice === 'string') {
-                label = value = choice;
-            } else {
-                [label, value] = choice;
-            }
-            const scopeValue = (typeof this.scopeValue === 'string') ? [this.scopeValue] : this.scopeValue;
-            scopeValue.forEach((singleScopeValue) => {
-                if (value.toString() === singleScopeValue.toString()) {
-                    values.push(label);
-                    let multiInput = document.createElement('INPUT');
-                    multiInput.setAttribute('type', 'hidden');
-                    multiInput.setAttribute('name', `s[${this.scope}][]`);
-                    multiInput.setAttribute('value', singleScopeValue);
-                    this.html.appendChild(multiInput);
-                }
-            })
-        })
-        this.sentence.push(values.join(', '));
+        const choices = new Map(this.config.choices.map(choice =>
+            Array.isArray(choice) ? [String(choice[1]), choice[0]] : [String(choice), choice]
+        ))
+        const labels = []
+        for (const value of [this.scopeValue].flat()) {
+            const label = choices.get(String(value))
+            if (!label && !choices.has('__race_write_in__')) continue
+            labels.push(label || `Other: ${value}`)
+            const field = document.createElement('input')
+            field.type = 'hidden'
+            field.name = `s[${this.scope}][]`
+            field.value = value
+            this.html.append(field)
+        }
+        this.sentence.push(labels.join(', '))
     }
 
     renderBoolean() {
