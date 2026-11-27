@@ -24,4 +24,25 @@ RSpec.describe 'Census race filters' do
     expect(page).to have_css('#attribute-filters', text: 'Other: Burmese')
     expect(page).to have_no_css('#attribute-filters', text: 'Portuguese')
   end
+
+  scenario 'restores the latest 1950 write-in filter and columns from the Data menu', :js do
+    sign_in create(:administrator)
+    fields = %w[name race industry]
+    visit census_records_path(year: 1950, s: { race_in: ['Burmese'] }, f: fields)
+
+    expect(page).to have_css('#attribute-filters', text: 'Other: Burmese')
+    find('#attribute-filters button[data-edit-scope="race_in"]').click
+    find('[data-write-in]').set('Asiatic Indian')
+    click_button 'Apply filters'
+    expect(page).to have_css('#attribute-filters', text: 'Other: Asiatic Indian')
+
+    visit root_path
+    click_link 'Data', exact: true
+    click_link '1950 US Census'
+
+    expect(page).to have_css('#attribute-filters', text: 'Other: Asiatic Indian')
+    restored = Rack::Utils.parse_nested_query(URI.parse(page.current_url).query)
+    expect(restored.fetch('s').fetch('race_in')).to eq(['Asiatic Indian'])
+    expect(restored.fetch('f')).to match_array(fields)
+  end
 end
