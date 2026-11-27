@@ -145,10 +145,14 @@ export default class AdvancedSearch {
   bindFormEvents() {
     const options = { signal: this.signal }
     this.form.addEventListener('formdata', ({ formData }) => {
+      if (formData.get('scope') === 'on') formData.delete('scope')
+      if (formData.get('s[creation_date_range]') === 'all') {
+        for (const field of ['range', 'from', 'to']) formData.delete(`s[creation_date_${field}]`)
+      }
       for (const name of new Set(formData.keys())) {
         if (!name.startsWith('s[')) continue
         const values = formData.getAll(name)
-        let nonempty = values.filter(value => value !== '')
+        let nonempty = values.filter(value => value.trim() !== '')
         if (nonempty.length > 1 && nonempty.every(value => value === nonempty[0])) nonempty = [nonempty[0]]
         if (nonempty.length === values.length) continue
         formData.delete(name)

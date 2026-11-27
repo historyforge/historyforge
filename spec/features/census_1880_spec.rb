@@ -30,7 +30,11 @@ RSpec.describe "1880 US Census" do
     click_button "Apply filters"
 
     expect(page).to have_current_path(/page_side_eq/)
-    filters = Rack::Utils.parse_nested_query(URI.parse(page.current_url).query).fetch("s")
+    query = Rack::Utils.parse_nested_query(URI.parse(page.current_url).query)
+    expect(query.keys).not_to include("scope")
+    expect(query.keys).not_to include("commit")
+    filters = query.fetch("s")
+    expect(filters).not_to have_key("creation_date_range")
     expect(filters).to include("ward_eq" => "2", "enum_dist_eq" => "240", "page_number_eq" => "6",
                                "page_side_eq" => "B", "line_number_eq" => "21")
 

@@ -23,7 +23,7 @@
     - if controller.respond_to?(:year)
       button.btn.btn-sm.btn-primary#search-map type="button" form="new_s" data-year=controller.year Map It
       - if can_view_census_summary?(controller.year)
-        = link_to 'Summarize Records', census_summary_path(request.query_parameters.slice('s', 'scope', 'locality_slug').merge(year:, facet: 'race')), class: 'btn btn-sm btn-primary'
+        = link_to 'Summarize it', census_summary_path(request.query_parameters.slice('s', 'scope', 'locality_slug').merge(year:, facet: 'race')), class: 'btn btn-sm btn-primary'
     - elsif resource_class == Building
       button.btn.btn-sm.btn-primary#search-map type="button" form="new_s" Map It
     - if @search.active?
@@ -35,7 +35,7 @@
 = simple_form_for @search, url: url_for(), method: :get, as: :s, html: { data: creator_picker } do |form|
   - if creator_filter
     = hidden_field_tag 's[creator_id]', creator_filter.params[:creator_id], data: { target: 'creator-picker.id' }
-  = form.submit 'Submit', hidden: true
+  = form.submit 'Submit', name: nil, hidden: true
   .d-flex.flex-wrap.align-items-center.gap-2.mb-3
     button.btn.btn-sm.btn-light type="button" data-bs-toggle="collapse" data-bs-target="#fieldSelector" aria-controls="fieldSelector" aria-expanded="false" Columns
     button.btn.btn-sm.btn-light type="button" data-bs-toggle="modal" data-bs-target="#newAttributeFilter" aria-haspopup="dialog" Add filter
@@ -67,7 +67,7 @@
               = check_box_tag 'f[]', field, @search.f.include?(field), id: "f_#{field}", data: { default: @search.default_field?(field) }
               = translated_label resource_class, field
       .card-footer
-        = form.submit 'Apply columns', data: { turbo_submits_with: 'Applying…' }, class: 'btn btn-primary mr-auto'
+        = form.submit 'Apply columns', name: nil, data: { turbo_submits_with: 'Applying…' }, class: 'btn btn-primary mr-auto'
         button.btn.btn-light.ml-auto.checkall data-scope="#fields" type="button" Check all
 
   .modal#newAttributeFilter tabindex="-1" aria-labelledby="newAttributeFilterTitle" aria-hidden="true"
@@ -130,4 +130,4 @@
         .modal-footer
           button.btn.btn-outline-primary.me-auto type="button" data-add-condition="" hidden=true disabled=true Add another condition
           button.btn.btn-secondary.ms-auto type="button" data-bs-dismiss="modal" Cancel
-          = form.submit 'Apply filters', data: { turbo_submits_with: 'Applying…' }, class: 'btn btn-primary'
+          = form.submit 'Apply filters', name: nil, data: { turbo_submits_with: 'Applying…' }, class: 'btn btn-primary'

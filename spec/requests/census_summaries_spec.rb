@@ -130,7 +130,7 @@ RSpec.describe 'Census summaries', type: :request do
 
     get census_records_path(year: 1910), params: { s: filters }
     html = Nokogiri::HTML(response.body)
-    summary_url = html.css('a').find { |link| link.text == 'Summarize Records' }['href']
+    summary_url = html.css('a').find { |link| link.text == 'Summarize it' }['href']
     expect(Rack::Utils.parse_nested_query(URI.parse(summary_url).query)['s']).to eq('sex_in' => ['F'])
 
     get summary_url, params: { from: 0, to: 1 }
