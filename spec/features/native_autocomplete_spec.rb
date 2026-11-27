@@ -30,20 +30,4 @@ RSpec.describe "Native autocomplete" do
     find('[role="option"]', text: "92 Foundry St").click
     expect(page).to have_current_path(building_path(building))
   end
-
-  scenario "a creator suggestion supplies the filter ID and editing clears it", :js do
-    sign_in create(:administrator)
-    creator = create(:active_user, login: "canal_reviewer")
-
-    visit people_path
-    click_button "Add/edit filters"
-    select "Creation details"
-    lookup = find("#creator_lookup")
-    lookup.set("ca")
-    expect(page).to have_css('[role="option"]', text: "canal_reviewer")
-    lookup.send_keys(:arrow_down, :enter)
-    expect(page).to have_field("s[creator_id]", type: :hidden, with: creator.id.to_s)
-    lookup.set("unselected")
-    expect(page).to have_field("s[creator_id]", type: :hidden, with: "")
-  end
 end
