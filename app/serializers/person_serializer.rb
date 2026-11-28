@@ -4,9 +4,7 @@
 class PersonSerializer < ApplicationSerializer
   class ObservationSerializer < CensusRecordSerializer
     def serializable_attributes
-      attributes = super + [:pob]
-      attributes.delete(:relation_to_head) unless object.respond_to?(:relation_to_head)
-      attributes
+      super + [:pob]
     end
   end
 

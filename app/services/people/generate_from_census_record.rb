@@ -13,7 +13,7 @@ module People
     def call
       person = person_from_census_record
       Person.transaction do
-        record.update!(person_id: person.id) if person.save
+        record.update!(person_id: person.id) if person.save(context: :census_generation)
       end
       person
     end

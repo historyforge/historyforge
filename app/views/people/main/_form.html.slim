@@ -41,7 +41,7 @@
     .card-body
       .row
         .col-4
-          = form.input :race, as: :radio_buttons, collection: @person.race_choices, coded: true
+          = form.input :race, as: :radio_buttons_other, coded: true
         .col-4
           = form.input :sex, as: :radio_buttons, collection: Person.sex_choices, coded: true
         .col-4

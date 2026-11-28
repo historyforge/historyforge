@@ -12,7 +12,7 @@ module CensusRecords
 
     prepend_before_action :check_access, except: :rebuild
 
-    respond_to :json, only: :index
+    respond_to :json, only: %i[index show]
     respond_to :csv, only: :index
     respond_to :html
 
@@ -36,8 +36,14 @@ module CensusRecords
     def show
       @model = resource_class.find params[:id]
       authorize! :read, @model
-      @record = @model.decorate
-      load_navigation
+      respond_to do |format|
+        format.html do
+          @record = @model.decorate
+          load_navigation
+        end
+        format.json { render json: CensusRecordSerializer.new(@model.decorate).serializable_hash }
+        format.any { head :not_acceptable }
+      end
     end
 
     def new

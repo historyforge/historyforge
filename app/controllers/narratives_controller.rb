@@ -3,6 +3,7 @@
 class NarrativesController < MediaController
   self.model_class = Narrative
   self.model_association = :narratives
+  self.plain_query_scope = :name_cont
 
   def show
     @asset = scoped_model.find params[:id]
