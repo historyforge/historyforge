@@ -65,10 +65,16 @@ export default class extends Controller {
 
   async load(term) {
     this.timer = null
-    const request = new AbortController()
-    this.request = request
     const url = new URL(this.element.dataset.autocompleteUrl, document.baseURI)
     url.searchParams.set('term', term)
+    const localityField = this.element.dataset.autocompleteLocalityField
+    if (localityField) {
+      const locality = this.element.form.elements.namedItem(localityField)?.value
+      if (!locality) return
+      url.searchParams.set('locality_id', locality)
+    }
+    const request = new AbortController()
+    this.request = request
     try {
       const response = await fetch(url, { signal: request.signal, headers: { Accept: 'application/json' } })
       if (!response.ok) return
@@ -113,8 +119,11 @@ export default class extends Controller {
 
   position() {
     if (this.list.hidden) return
-    const { left, bottom, width } = this.element.getBoundingClientRect()
-    Object.assign(this.list.style, { left: `${left}px`, top: `${bottom}px`, width: `${width}px` })
+    const { left, top, bottom, width } = this.element.getBoundingClientRect()
+    Object.assign(this.list.style, { left: `${left}px`, width: `${width}px` })
+    const height = this.list.offsetHeight
+    const above = bottom + height > window.innerHeight && top >= height
+    this.list.style.top = `${above ? top - height : bottom}px`
   }
 
   keydown(event) {

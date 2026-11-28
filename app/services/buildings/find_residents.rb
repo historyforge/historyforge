@@ -3,34 +3,34 @@
 module Buildings
   # Loads the residents of a building record.
   class FindResidents
-    def self.call(building:, year: nil, filters: nil, reviewed_only: true)
-      new(building:, year:, filters:, reviewed_only:).call
+    def self.call(building:, year: nil, filters: nil, user: nil)
+      new(building:, year:, filters:, user:).call
     end
 
-    def initialize(building:, year: nil, filters: nil, reviewed_only: true)
+    def initialize(building:, year: nil, filters: nil, user: nil)
       @building = building
-      @year = year
+      @year = year.presence&.to_i
       @filters = filters
-      @reviewed_only = reviewed_only
+      @ability = Ability.new(user)
+      @visible_years = CensusYears.visible_to_user(user)
     end
 
     def call
       prepare_filters(@filters)
 
-      if year
-        load_for_year(year)
-      else
-        CensusYears.map { |year| load_for_year(year).to_a }.flatten
-      end
+      years = year ? @visible_years & [year] : @visible_years
+      years.flat_map { |visible_year| load_for_year(visible_year).to_a }
     end
 
     private
 
-    attr_reader :building, :year, :reviewed_only
+    attr_reader :building, :year
 
     def load_for_year(year)
-      records = building_for_year(year).send("census#{year}_records")
-      records = records.reviewed if reviewed_only
+      source = building_for_year(year)
+      return [] unless source && @ability.can?(:read, source)
+
+      records = source.public_send("census#{year}_records").accessible_by(@ability)
       records = records.ransack(@filters).result if @filters
       records.in_census_order
     end

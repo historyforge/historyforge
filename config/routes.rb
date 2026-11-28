@@ -89,6 +89,7 @@ Rails.application.routes.draw do
     collection do
       get :autocomplete
       get :advanced_search_filters
+      get :predecessor_options
       post :bulk_review
     end
     member do

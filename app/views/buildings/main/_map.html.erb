@@ -1,5 +1,5 @@
 <% if bot? %>
-  <% nearby_buildings = @building.neighbors.includes(:addresses).limit(5) %>
+  <% nearby_buildings = readable_nearby_buildings %>
   <% if nearby_buildings.any? %>
     <div id="building-list">
       <h3>Nearby Buildings</h3>
@@ -17,7 +17,7 @@
 <% else %>
   <% initial_state = {
     layers: { center: { lat: @building.lat&.to_f, lng: @building.lon&.to_f }, layers: mini_forge_layers.as_json },
-    buildings: { buildings: mini_forge_buildings.as_json, current: @building.as_json, editable: can?(:update, @building) },
+    buildings: { buildings: mini_forge_buildings.as_json, current: mini_forge_current_building, editable: can?(:update, @building) },
     search: { params: params }
   } %>
   <%= tag.div id: 'miniforge', data: { initial_state: initial_state } %>

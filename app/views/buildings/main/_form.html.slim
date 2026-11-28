@@ -1,4 +1,4 @@
-= simple_form_for @building do |form|
+= simple_form_for @building, html: { data: { controller: 'predecessor-picker' } } do |form|
   = error_messages_for @building
   .card.mb-2
     .card-header
@@ -22,7 +22,10 @@
     .card-body
       .row
         .col-sm-6
-          = form.input :parent_id, as: :select, collection: form.object.nearbys(0.03) || Buildings::PossibleMatches.perform(form.object), input_html: { id: 'building_id' }
+          - predecessor_options = Buildings::PredecessorOptions.new(form.object, current_ability)
+          = form.input :parent_id, collection: predecessor_options.suggestions, include_blank: 'No predecessor', input_html: { data: { target: 'predecessor-picker.predecessor' } }
+          = label_tag :predecessor_search, 'Search recorded addresses'
+          = search_field_tag :predecessor_search, nil, name: nil, class: 'form-control', autocomplete: 'off', data: { controller: 'autocomplete', autocomplete_url: predecessor_options_buildings_path(building_id: form.object.id), autocomplete_locality_field: 'building[locality_id]', target: 'predecessor-picker.search', action: 'autocomplete:selected->predecessor-picker#select' }
         .col-sm-6
           = form.input :hive_year
       .nested-form
@@ -46,7 +49,7 @@
     .card-body
       .row
         .col-sm-4
-          = form.input :locality_id, collection: Locality.all, required: true
+          = form.input :locality_id, collection: Locality.all, required: true, input_html: { data: { action: 'change->predecessor-picker#clear' } }
         .col-sm-4
           = form.input :lat
         .col-sm-4
