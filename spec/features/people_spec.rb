@@ -3,6 +3,38 @@
 require 'rails_helper'
 
 RSpec.describe 'people' do
+  scenario 'saves a blank race and edits a race write-in on the Person record', :js do
+    sign_in create(:administrator)
+    person = create(:person, race: nil)
+    census_record = create(:census1950_record, person:, race: 'iraq', sex: person.sex,
+                           first_name: person.first_name, last_name: person.last_name,
+                           locality: create(:locality), page_number: 1, line_number: 1, enum_dist: '1',
+                           family_id: '1', relation_to_head: 'Head')
+    save_person = "form[action='#{person_path(person)}'] input[type='submit'][value='Save']"
+    write_in = 'input[aria-label="Other race as recorded"]:enabled'
+
+    visit edit_person_path(person)
+    expect(page).to have_checked_field('Left blank', name: 'person[race]')
+    find(save_person).click
+    expect(page).to have_current_path(person_path(person))
+    expect(person.reload.race).to be_nil
+
+    visit edit_person_path(person)
+    choose 'person_race_other'
+    find(write_in).set('Iraq "as recorded"')
+    find(save_person).click
+    expect(page).to have_current_path(person_path(person))
+    expect(person.reload.race).to eq('Iraq "as recorded"')
+    expect(census_record.reload.race).to eq('iraq')
+
+    visit edit_person_path(person)
+    expect(find(write_in).value).to eq('Iraq "as recorded"')
+    find(write_in).set('Iraq')
+    find(save_person).click
+    expect(page).to have_current_path(person_path(person))
+    expect(person.reload.race).to eq('Iraq')
+  end
+
   scenario 'adds, edits, cancels and removes filters in the People grid', :js do
     sign_in create(:administrator)
     creator = create(:active_user, login: 'canal_reviewer')

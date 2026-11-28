@@ -4,12 +4,14 @@ class MediaController < ApplicationController
   include BotDetection
   include SqlInjectionProtection
   include Devise::Controllers::StoreLocation
+  before_action :normalize_search_query, except: :review
   include RestoreSearch
   before_action :store_location!, only: :new
   before_action :load_parent, except: :review
 
   class_attribute :model_class
   class_attribute :model_association
+  class_attribute :plain_query_scope, default: :full_text_search
 
   helper_method :what, :model_class
 
@@ -117,6 +119,18 @@ class MediaController < ApplicationController
 
   def what
     @what ||= model_class.model_name.human
+  end
+
+  def normalize_search_query
+    query = params[:q]
+    case query
+    when String
+      params[:q] = { plain_query_scope => query }
+    when nil, ActionController::Parameters
+      return
+    else
+      head :bad_request
+    end
   end
 
   def load_parent

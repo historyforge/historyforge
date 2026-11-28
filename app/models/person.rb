@@ -75,7 +75,8 @@ class Person < ApplicationRecord
            inverse_of: :person
   accepts_nested_attributes_for :names, allow_destroy: true, reject_if: proc { |p| p['first_name'].blank? || p['last_name'].blank? }
 
-  validates :first_name, :last_name, :sex, :race, presence: true
+  validates :first_name, :last_name, :sex, presence: true
+  validates :race, presence: true, on: :census_generation
 
   before_validation do
     self.sex = nil if sex.blank? || sex == 'on'
@@ -145,12 +146,6 @@ class Person < ApplicationRecord
     %w[names localities census_1850_records census_1860_records
        census_1870_records census_1880_records census_1900_records census_1910_records census_1920_records
        census_1930_records census_1940_records census_1950_records photos]
-  end
-
-  def race_choices
-    return RACES if race.blank? || RACES.include?(race)
-
-    RACES.dup << race
   end
 
   def race_label

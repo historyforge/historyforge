@@ -46,6 +46,48 @@ RSpec.describe 'People search', type: :request do
     end
   end
 
+  describe 'filtering by race' do
+    let!(:null_race) { create(:person).tap { |person| person.update_column(:race, nil) } }
+    let!(:empty_race) { create(:person).tap { |person| person.update_column(:race, '') } }
+    let!(:standard_race) { create(:person, race: 'AsiInd') }
+    let!(:unknown_race) { create(:person, race: 'unknown') }
+    let!(:write_in) { create(:person, race: 'Burmese') }
+    let!(:lowercase_write_in) { create(:person, race: 'burmese') }
+    let!(:literal_blank) { create(:person, race: 'blank') }
+
+    def matching_people(filters)
+      get people_path(format: :json), params: { s: filters, from: 0, to: 100 }
+
+      expect(response).to have_http_status(:ok)
+      response.parsed_body.map { |row| row.dig('name', 'id') }
+    end
+
+    it 'includes or excludes both null and empty races when Left blank is the only choice' do
+      expect(matching_people(race_in: ['blank'])).to contain_exactly(null_race.id, empty_race.id)
+      expect(matching_people(race_not_in: ['blank'])).to contain_exactly(
+        standard_race.id, unknown_race.id, write_in.id, lowercase_write_in.id, literal_blank.id
+      )
+    end
+
+    it 'combines Left blank with standard and case-sensitive write-in choices' do
+      expect(matching_people(race_in: %w[blank AsiInd Burmese])).to contain_exactly(
+        null_race.id, empty_race.id, standard_race.id, write_in.id
+      )
+      expect(matching_people(race_not_in: %w[blank AsiInd Burmese])).to contain_exactly(
+        unknown_race.id, lowercase_write_in.id, literal_blank.id
+      )
+    end
+
+    it 'combines Left blank and Other for inclusion and exclusion' do
+      choices = ['blank', RaceWriteInFilter::RACE_WRITE_IN_FILTER]
+
+      expect(matching_people(race_in: choices)).to contain_exactly(
+        null_race.id, empty_race.id, write_in.id, lowercase_write_in.id, literal_blank.id
+      )
+      expect(matching_people(race_not_in: choices)).to contain_exactly(standard_race.id, unknown_race.id)
+    end
+  end
+
   it 'sorts by surname before given name and follows that order in record navigation' do
     longer = create(:person, first_name: 'Abram', last_name: 'Brownell')
     later = create(:person, first_name: 'Haines', last_name: 'Brown')

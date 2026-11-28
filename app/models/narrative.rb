@@ -38,6 +38,12 @@ class Narrative < ApplicationRecord
   default_scope -> { order(:weight) }
   scope :with_attached_file, -> { with_all_rich_text }
   scope :unreviewed_only, ->(val) { val == "1" ? unreviewed : self }
+  scope :name_cont, ->(name) do
+    pattern = "%#{sanitize_sql_like(name)}%"
+    people_matches = joins(people: :names).where('person_names.searchable_name ILIKE ?', pattern)
+    building_matches = joins(:buildings).where('buildings.name ILIKE ?', pattern)
+    where(id: people_matches.reorder(nil).select(:id)).or(where(id: building_matches.reorder(nil).select(:id)))
+  end
   pg_search_scope :full_text_search,
                   against: :searchable_text,
                   using: {
@@ -47,7 +53,7 @@ class Narrative < ApplicationRecord
   before_save :generate_searchable_text
 
   def self.ransackable_scopes(_auth_object = nil)
-    %i[unreviewed_only full_text_search]
+    %i[unreviewed_only full_text_search name_cont]
   end
 
   def process = nil

@@ -132,16 +132,19 @@ class SearchQueryBuilder
     s.each do |key, value|
       next if CreatorFilter::PARAM_KEYS.include?(key.to_sym)
 
-      if value.is_a?(Array) && value.include?("blank")
-        p[:g] ||= []
-        case key
-        when /_not_in$/
-          p[:g] << { m: "and", key.to_sym => value, key.sub(/not_in$/, "present").to_sym => true }
-        when /_in$/
-          p[:g] << { m: "or", key.to_sym => value, key.sub(/in$/, "present").to_sym => true }
-        end
-      else
+      if !value.is_a?(Array) || !value.include?("blank") || !key.to_s.end_with?("_in")
         p[key.to_sym] = value
+        next
+      end
+
+      excluding = key.to_s.end_with?("_not_in")
+      blank_key = key.to_s.sub(/(?:not_)?in\z/, excluding ? "present" : "blank").to_sym
+      choices = value - ["blank"]
+      if choices.empty?
+        p[blank_key] = true
+      else
+        p[:g] ||= []
+        p[:g] << { m: excluding ? "and" : "or", key.to_sym => choices, blank_key => true }
       end
     end
     p

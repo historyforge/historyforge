@@ -27,12 +27,14 @@ module RaceWriteInFilter
     def race_filter_params(params)
       return params unless race_write_in_filter
 
-      params.transform_keys do |key|
-        if %w[race_in race_not_in].include?(key.to_s) && Array(params[key]).include?(RACE_WRITE_IN_FILTER)
-          key.to_s.sub('race_', 'race_with_write_ins_')
-        else
-          key
+      params.each_with_object({}) do |(key, value), rewritten|
+        if key.to_s == 'g' && value.is_a?(Array)
+          value = value.map { |group| group.is_a?(Hash) ? race_filter_params(group) : group }
         end
+        if %w[race_in race_not_in].include?(key.to_s) && Array(value).include?(RACE_WRITE_IN_FILTER)
+          key = key.to_s.sub('race_', 'race_with_write_ins_')
+        end
+        rewritten[key] = value
       end
     end
   end

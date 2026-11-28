@@ -2,6 +2,8 @@
 
 class CensusRecordSerializer < ApplicationSerializer
   def serializable_attributes
-    %i[id name year occupation race sex age relation_to_head]
+    attributes = %i[id name year occupation race sex age]
+    attributes << :relation_to_head if object.respond_to?(:relation_to_head)
+    attributes
   end
 end

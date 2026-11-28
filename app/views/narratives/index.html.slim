@@ -20,8 +20,11 @@
       = link_to 'Reset', narratives_path(reset: true), class: 'btn btn-light'
 
 - if params[:q]
+  - query = params[:q]
+  - name_filter = "name contains #{query[:name_cont]}" if query[:name_cont].present?
+  - unreviewed_filter = 'unreviewed' if query[:unreviewed_only] == '1'
   h3
-    | Searching for #{[params[:q][:full_text_search], !!params[:q][:unreviewed_only] ? 'unreviewed' : nil].compact_blank.join(' and ')}
+    | Searching for #{[name_filter, query[:full_text_search], unreviewed_filter].compact_blank.join(' and ')}
 
 = page_entries_info @assets
 

@@ -12,8 +12,10 @@ function toggleDependents(input) {
 }
 
 document.addEventListener('turbo:load', () => {
+  document.querySelectorAll('[data-type=other-radio-button]').forEach(input => {
+    input.disabled = !input.closest('.form-check')?.querySelector('input[type=radio]')?.checked
+  })
   document.querySelectorAll(censusForm).forEach(form => {
-    form.querySelectorAll('[data-type=other-radio-button]').forEach(input => { input.disabled = !input.value.length })
     form.querySelectorAll('[data-dependents] :is(input[type=radio]:checked, input[type=checkbox], input[type=text])')
       .forEach(toggleDependents)
   })
@@ -24,31 +26,34 @@ document.addEventListener('keypress', event => {
 })
 
 document.addEventListener('click', ({ target }) => {
+  let selectedOther = false
+  if (target.matches('input[type=radio]')) {
+    const other = target.closest('.form-group')?.querySelector('[data-type=other-radio-button]')
+    if (other) {
+      selectedOther = target.closest('.form-check')?.contains(other)
+      other.disabled = !selectedOther
+      if (selectedOther) {
+        target.value = other.value
+        other.focus()
+      } else other.value = ''
+    }
+  }
   if (!target.closest(censusForm)) return
   if (target.matches('[data-dependents] input')) toggleDependents(target)
-  if (!target.matches('input[type=radio]')) return
-  const other = target.closest('.form-group')?.querySelector('[data-type=other-radio-button]')
-  if (other) {
-    const selected = target.closest('.form-check')?.contains(other)
-    other.disabled = !selected
-    if (selected) other.focus()
-    else other.value = ''
-  }
-  if (target.name === 'census_record[war_fought]') {
+  if (target.matches('input[type=radio]') && target.name === 'census_record[war_fought]') {
     const veteran = document.getElementById('census_record_veteran')
-    if (veteran) veteran.checked = !!target.value && target.value !== 'on'
+    if (veteran) veteran.checked = selectedOther || (!!target.value && target.value !== 'on')
   }
+})
+
+document.addEventListener('input', ({ target }) => {
+  if (!target.matches('[data-type=other-radio-button]')) return
+  const radio = target.closest('.form-check')?.querySelector('input[type=radio]')
+  if (radio) radio.value = target.value
 })
 
 document.addEventListener('change', ({ target }) => {
   if (target.matches('[data-dependents] input')) toggleDependents(target)
-  if (target.matches('[data-type=other-radio-button]')) {
-    const radio = target.closest('.form-check')?.querySelector('input[type=radio]')
-    if (radio) {
-      radio.checked = true
-      radio.value = target.value
-    }
-  }
   if (target.id === 'census_record_page_side') {
     const line = document.getElementById('census_record_line_number')
     if (line) {
