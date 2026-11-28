@@ -82,8 +82,8 @@ en:
         building_type: 'Building type'
         building_type_ids: 'Building type'
         street_address: 'Street Address'
-        hive_year: 'Approximate Year of Address Split'
-        parent_id: 'Parent Address'
+        hive_year: 'First year recorded separately'
+        parent_id: 'Predecessor building'
         city: 'Place'
       person:
         id: 'ID'
@@ -92,8 +92,8 @@ en:
         pob: 'Place of Birth'
     hints:
       building:
-        parent_id: 'If a building/address/parcel splits into multiple pieces, from which building did this one split? This happens mostly when a single family house splits into a duplex.'
-        hive_year: 'The earliest year at which we know the split happened. Might just be the earliest census year for this address.'
+        parent_id: 'Select a suggested building or search by any recorded address in the selected locality.'
+        hive_year: 'Earlier censuses come from the predecessor. Starting in this year, censuses come from this building. Address “as of” years describe when each address was recorded.'
         address: 'Address'
         architects_list: 'comma-separated list of names'
         year_earliest: 'Year built or first mentioned.'

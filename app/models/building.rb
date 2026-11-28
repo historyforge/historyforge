@@ -92,6 +92,7 @@ class Building < ApplicationRecord
   validates :name, presence: true, length: { maximum: 255 }
   validates :year_earliest, :year_latest, numericality: { minimum: 1500, maximum: 2100, allow_nil: true }
   validate :validate_primary_address
+  validate :validate_predecessor, if: -> { will_save_change_to_parent_id? || will_save_change_to_locality_id? }
   validates :addresses, length: { minimum: 1, too_short: " - a building must have at least one." }
 
   delegate :name, to: :frame_type, prefix: true, allow_nil: true
@@ -319,7 +320,7 @@ class Building < ApplicationRecord
   attr_writer :residents
 
   def residents
-    Buildings::FindResidents.call(building: self, reviewed_only: true)
+    Buildings::FindResidents.call(building: self)
   end
 
   memoize :residents
@@ -373,6 +374,16 @@ class Building < ApplicationRecord
   end
 
   private
+
+  def validate_predecessor
+    return if parent_id.nil?
+
+    if parent_id == id
+      errors.add(:parent_id, 'must be a different building')
+    elsif parent.nil? || parent.locality_id != locality_id
+      errors.add(:parent_id, 'must be a building in the same locality')
+    end
+  end
 
   def validate_primary_address
     primary_addresses = addresses.to_a.select(&:is_primary)

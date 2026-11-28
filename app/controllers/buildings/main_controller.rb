@@ -10,6 +10,7 @@ module Buildings
 
     AUTH_ACTIONS = {
       new: :create,
+      predecessor_options: :create,
       create: :create,
       edit: :update,
       update: :update,
@@ -64,6 +65,13 @@ module Buildings
           lon: building.lon,
         }
       }
+    end
+
+    def predecessor_options
+      building = params[:building_id].present? ? Building.find(params[:building_id]) : Building.new
+      authorize! :update, building if building.persisted?
+      options = PredecessorOptions.new(building, current_ability, locality_id: params[:locality_id])
+      render json: options.search(params[:term])
     end
 
     def show
@@ -163,7 +171,7 @@ module Buildings
         building: @building,
         year: params[:people],
         filters: params[:peopleParams],
-        reviewed_only: !user_signed_in?,
+        user: current_user,
       )
     end
 
@@ -188,7 +196,7 @@ module Buildings
     end
 
     def building_params
-      params.require(:building).permit(
+      attributes = params.require(:building).permit(
         :name, :description, :stories, :block_number,
         :year_earliest, :year_latest, :year_latest_circa, :year_earliest_circa,
         :lining_type_id, :frame_type_id, :locality_id, :lat, :lon, :architects_list,
@@ -200,6 +208,11 @@ module Buildings
           annotations_attributes: %i[_destroy id map_overlay_id annotation_text],
         }
       )
+      predecessor_id = attributes[:parent_id].presence
+      if predecessor_id && predecessor_id.to_i != @building&.parent_id
+        authorize! :read, Building.find(predecessor_id)
+      end
+      attributes
     end
 
     def load_buildings

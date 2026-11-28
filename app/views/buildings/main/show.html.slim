@@ -42,22 +42,20 @@ div.mb-3.clearfix.d-flex.justify-content-between
                 dd= @building.name
               dt Address
               dd
-                - if @building.parent_id
-                  = link_to @building.parent do
-                    = "Split from #{@building.parent.address.address_with_locality}"
-                    -if @building.hive_year.present?
-                      = " after #{@building.hive_year}"
+                - if @building.parent && can?(:read, @building.parent)
+                  = link_to "Predecessor: #{@building.parent.primary_street_address.squish}", @building.parent
+                  - if @building.hive_year.present?
+                    = " · First year recorded separately: #{@building.hive_year}"
                   br
                 - @building.addresses.each do |address|
                   = address.address_with_locality
                   - if address.year?
                     = " (as of #{address.year})"
                   br
-                - @building.children.each do |child|
-                  = link_to child do
-                    = "#{child.address.address_with_locality} split off"
-                    - if child.hive_year.present?
-                      = " after #{child.hive_year}"
+                - @building.children.accessible_by(current_ability).includes(:addresses).each do |child|
+                  = link_to "Successor: #{child.primary_street_address.squish}", child
+                  - if child.hive_year.present?
+                    = " · First year recorded separately: #{child.hive_year}"
                   br
               dt Year Built
               dd
@@ -144,6 +142,14 @@ div.mb-3.clearfix.d-flex.justify-content-between
           .card.mb-3
             .card-header
               = "Resident Household in #{year}"
+              - addressed_row = family.find { |row| row.street_name.present? || row.street_house_number.present? }
+              - address = addressed_row&.street_address&.squish
+              - if address
+                span.d-block= address
+              - elsif family.first.building_id == @building.parent_id
+                span.d-block
+                  ' Predecessor:
+                  = link_to @building.parent.primary_street_address.squish, @building.parent
             table.table.card-table
               thead
                 tr

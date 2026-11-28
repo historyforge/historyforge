@@ -18,8 +18,8 @@ module Buildings
       new(record).buildings_on_street
     end
 
-    def buildings_on_street
-      items = Building.where(locality_id:)
+    def buildings_on_street(scope: Building.all)
+      items = scope.where(locality_id:)
                       .left_outer_joins(:addresses)
                       .includes(:addresses)
                       .where(addresses: { name: street_name })

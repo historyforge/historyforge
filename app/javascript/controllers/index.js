@@ -1,6 +1,7 @@
 import { Application } from 'stimulus'
 
 import CensusBuildingPickerController from './census_building_picker_controller'
+import PredecessorPickerController from './predecessor_picker_controller'
 import CensusViewController from './census_view_controller'
 import ChangeHistoryController from './change_history_controller'
 import ClipboardController from './clipboard_controller'
@@ -22,6 +23,7 @@ import SavedSearchesController from "./saved_searches_controller";
 
 const definitions = [
     { identifier: 'census-building-picker', controllerConstructor: CensusBuildingPickerController },
+    { identifier: 'predecessor-picker', controllerConstructor: PredecessorPickerController },
     { identifier: 'census-view', controllerConstructor: CensusViewController },
     { identifier: 'change-history', controllerConstructor: ChangeHistoryController },
     { identifier: 'clipboard', controllerConstructor: ClipboardController },
